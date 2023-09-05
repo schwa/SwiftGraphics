@@ -1,0 +1,542 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 60;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		450AED6D2A9696E600930EF9 /* StairView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450AED6C2A9696E600930EF9 /* StairView.swift */; };
+		450AED6F2A96970200930EF9 /* ElbowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450AED6E2A96970200930EF9 /* ElbowView.swift */; };
+		451698B42A97C1A3009DF247 /* SketchEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451698B32A97C1A3009DF247 /* SketchEditorView.swift */; };
+		451698BE2A97DC3A009DF247 /* SwiftFormats in Frameworks */ = {isa = PBXBuildFile; productRef = 451698BD2A97DC3A009DF247 /* SwiftFormats */; };
+		454597632A8EBDA800902922 /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 454597622A8EBDA800902922 /* Algorithms */; };
+		45469CBA2A9F69A300AAE2EF /* LineExperimentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45469CB92A9F69A300AAE2EF /* LineExperimentView.swift */; };
+		45493BE62A8F140A0057FD00 /* Shader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 45493BE52A8F140A0057FD00 /* Shader.metal */; };
+		456A74322A95531B00E75A8E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456A74312A95531B00E75A8E /* ContentView.swift */; };
+		457FC7F42AA2B01C00A27074 /* Sketches in Frameworks */ = {isa = PBXBuildFile; productRef = 457FC7F32AA2B01C00A27074 /* Sketches */; };
+		457FC7F62AA2B01C00A27074 /* VectorSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 457FC7F52AA2B01C00A27074 /* VectorSupport */; };
+		45A82B012AB6D104006D6C59 /* LegacyGraphics in Frameworks */ = {isa = PBXBuildFile; productRef = 45A82B002AB6D104006D6C59 /* LegacyGraphics */; };
+		45A82B0B2AB6D166006D6C59 /* Array2D in Frameworks */ = {isa = PBXBuildFile; productRef = 45A82B0A2AB6D166006D6C59 /* Array2D */; };
+		45A82B0D2AB6D166006D6C59 /* CoreGraphicsSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 45A82B0C2AB6D166006D6C59 /* CoreGraphicsSupport */; };
+		45A82B0F2AB6D166006D6C59 /* Geometry in Frameworks */ = {isa = PBXBuildFile; productRef = 45A82B0E2AB6D166006D6C59 /* Geometry */; };
+		45A82B112AB6D166006D6C59 /* LegacyGraphics in Frameworks */ = {isa = PBXBuildFile; productRef = 45A82B102AB6D166006D6C59 /* LegacyGraphics */; };
+		45A82B132AB6D166006D6C59 /* Raster in Frameworks */ = {isa = PBXBuildFile; productRef = 45A82B122AB6D166006D6C59 /* Raster */; };
+		45A82B162AB6D3B1006D6C59 /* Everything in Frameworks */ = {isa = PBXBuildFile; productRef = 45A82B152AB6D3B1006D6C59 /* Everything */; };
+		45B268AB2A8FDA000033A727 /* PathCanvas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B268AA2A8FDA000033A727 /* PathCanvas.swift */; };
+		45B268AD2A8FDA060033A727 /* Scratch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B268AC2A8FDA060033A727 /* Scratch.swift */; };
+		45B641FD2A9E88AA00171EE0 /* SketchInspector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B641FC2A9E88AA00171EE0 /* SketchInspector.swift */; };
+		45B642012A9EC6AB00171EE0 /* SketchDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B642002A9EC6AB00171EE0 /* SketchDocument.swift */; };
+		45B642042A9EC7DC00171EE0 /* SketchDocumentEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B642032A9EC7DC00171EE0 /* SketchDocumentEditor.swift */; };
+		45E5B5E32A8EA04100B46CDC /* VectorLaboratoryApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E5B5E22A8EA04100B46CDC /* VectorLaboratoryApp.swift */; };
+		45E5B5E52A8EA04100B46CDC /* StrokeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E5B5E42A8EA04100B46CDC /* StrokeView.swift */; };
+		45E5B5E72A8EA04400B46CDC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 45E5B5E62A8EA04400B46CDC /* Assets.xcassets */; };
+		45E5B5EB2A8EA04400B46CDC /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 45E5B5EA2A8EA04400B46CDC /* Preview Assets.xcassets */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		450AED6C2A9696E600930EF9 /* StairView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StairView.swift; sourceTree = "<group>"; };
+		450AED6E2A96970200930EF9 /* ElbowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElbowView.swift; sourceTree = "<group>"; };
+		451698B32A97C1A3009DF247 /* SketchEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SketchEditorView.swift; sourceTree = "<group>"; };
+		45469CB92A9F69A300AAE2EF /* LineExperimentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineExperimentView.swift; sourceTree = "<group>"; };
+		45493BE52A8F140A0057FD00 /* Shader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Shader.metal; sourceTree = "<group>"; };
+		456665E02AA2AFDC003A92CC /* SwiftGraphics */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = SwiftGraphics; path = ..; sourceTree = "<group>"; };
+		456A74312A95531B00E75A8E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		45B268AA2A8FDA000033A727 /* PathCanvas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathCanvas.swift; sourceTree = "<group>"; };
+		45B268AC2A8FDA060033A727 /* Scratch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scratch.swift; sourceTree = "<group>"; };
+		45B641FC2A9E88AA00171EE0 /* SketchInspector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SketchInspector.swift; sourceTree = "<group>"; };
+		45B642002A9EC6AB00171EE0 /* SketchDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SketchDocument.swift; sourceTree = "<group>"; };
+		45B642022A9EC70500171EE0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		45B642032A9EC7DC00171EE0 /* SketchDocumentEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SketchDocumentEditor.swift; sourceTree = "<group>"; };
+		45E5B5DF2A8EA04100B46CDC /* VectorLaboratory.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VectorLaboratory.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		45E5B5E22A8EA04100B46CDC /* VectorLaboratoryApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VectorLaboratoryApp.swift; sourceTree = "<group>"; };
+		45E5B5E42A8EA04100B46CDC /* StrokeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrokeView.swift; sourceTree = "<group>"; };
+		45E5B5E62A8EA04400B46CDC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		45E5B5E82A8EA04400B46CDC /* VectorLaboratory.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = VectorLaboratory.entitlements; sourceTree = "<group>"; };
+		45E5B5EA2A8EA04400B46CDC /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		45E5B5DC2A8EA04100B46CDC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				45A82B132AB6D166006D6C59 /* Raster in Frameworks */,
+				454597632A8EBDA800902922 /* Algorithms in Frameworks */,
+				45A82B0D2AB6D166006D6C59 /* CoreGraphicsSupport in Frameworks */,
+				457FC7F62AA2B01C00A27074 /* VectorSupport in Frameworks */,
+				45A82B012AB6D104006D6C59 /* LegacyGraphics in Frameworks */,
+				45A82B0F2AB6D166006D6C59 /* Geometry in Frameworks */,
+				45A82B112AB6D166006D6C59 /* LegacyGraphics in Frameworks */,
+				45A82B162AB6D3B1006D6C59 /* Everything in Frameworks */,
+				45A82B0B2AB6D166006D6C59 /* Array2D in Frameworks */,
+				451698BE2A97DC3A009DF247 /* SwiftFormats in Frameworks */,
+				457FC7F42AA2B01C00A27074 /* Sketches in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		45BCDD962A968C02001968BC /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		45E5B5D62A8EA04100B46CDC = {
+			isa = PBXGroup;
+			children = (
+				456665E02AA2AFDC003A92CC /* SwiftGraphics */,
+				45E5B5E12A8EA04100B46CDC /* VectorLaboratory */,
+				45E5B5E02A8EA04100B46CDC /* Products */,
+				45BCDD962A968C02001968BC /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		45E5B5E02A8EA04100B46CDC /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				45E5B5DF2A8EA04100B46CDC /* VectorLaboratory.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		45E5B5E12A8EA04100B46CDC /* VectorLaboratory */ = {
+			isa = PBXGroup;
+			children = (
+				45B642022A9EC70500171EE0 /* Info.plist */,
+				45E5B5E22A8EA04100B46CDC /* VectorLaboratoryApp.swift */,
+				456A74312A95531B00E75A8E /* ContentView.swift */,
+				451698B32A97C1A3009DF247 /* SketchEditorView.swift */,
+				45B641FC2A9E88AA00171EE0 /* SketchInspector.swift */,
+				45B642002A9EC6AB00171EE0 /* SketchDocument.swift */,
+				45B642032A9EC7DC00171EE0 /* SketchDocumentEditor.swift */,
+				45469CB92A9F69A300AAE2EF /* LineExperimentView.swift */,
+				45E5B5E42A8EA04100B46CDC /* StrokeView.swift */,
+				450AED6C2A9696E600930EF9 /* StairView.swift */,
+				45B268AA2A8FDA000033A727 /* PathCanvas.swift */,
+				45B268AC2A8FDA060033A727 /* Scratch.swift */,
+				450AED6E2A96970200930EF9 /* ElbowView.swift */,
+				45493BE52A8F140A0057FD00 /* Shader.metal */,
+				45E5B5E62A8EA04400B46CDC /* Assets.xcassets */,
+				45E5B5E82A8EA04400B46CDC /* VectorLaboratory.entitlements */,
+				45E5B5E92A8EA04400B46CDC /* Preview Content */,
+			);
+			path = VectorLaboratory;
+			sourceTree = "<group>";
+		};
+		45E5B5E92A8EA04400B46CDC /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				45E5B5EA2A8EA04400B46CDC /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		45E5B5DE2A8EA04100B46CDC /* VectorLaboratory */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 45E5B6042A8EA04400B46CDC /* Build configuration list for PBXNativeTarget "VectorLaboratory" */;
+			buildPhases = (
+				45E5B5DB2A8EA04100B46CDC /* Sources */,
+				45E5B5DC2A8EA04100B46CDC /* Frameworks */,
+				45E5B5DD2A8EA04100B46CDC /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = VectorLaboratory;
+			packageProductDependencies = (
+				454597622A8EBDA800902922 /* Algorithms */,
+				451698BD2A97DC3A009DF247 /* SwiftFormats */,
+				457FC7F32AA2B01C00A27074 /* Sketches */,
+				457FC7F52AA2B01C00A27074 /* VectorSupport */,
+				45A82B002AB6D104006D6C59 /* LegacyGraphics */,
+				45A82B0A2AB6D166006D6C59 /* Array2D */,
+				45A82B0C2AB6D166006D6C59 /* CoreGraphicsSupport */,
+				45A82B0E2AB6D166006D6C59 /* Geometry */,
+				45A82B102AB6D166006D6C59 /* LegacyGraphics */,
+				45A82B122AB6D166006D6C59 /* Raster */,
+				45A82B152AB6D3B1006D6C59 /* Everything */,
+			);
+			productName = StairTest;
+			productReference = 45E5B5DF2A8EA04100B46CDC /* VectorLaboratory.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		45E5B5D72A8EA04100B46CDC /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					45E5B5DE2A8EA04100B46CDC = {
+						CreatedOnToolsVersion = 15.0;
+					};
+				};
+			};
+			buildConfigurationList = 45E5B5DA2A8EA04100B46CDC /* Build configuration list for PBXProject "VectorLaboratory" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 45E5B5D62A8EA04100B46CDC;
+			packageReferences = (
+				454597612A8EBDA800902922 /* XCRemoteSwiftPackageReference "swift-algorithms" */,
+				451698BC2A97DC3A009DF247 /* XCRemoteSwiftPackageReference "SwiftFormats" */,
+				45A82B092AB6D166006D6C59 /* XCLocalSwiftPackageReference ".." */,
+				45A82B142AB6D3B1006D6C59 /* XCLocalSwiftPackageReference "../../Everything" */,
+			);
+			productRefGroup = 45E5B5E02A8EA04100B46CDC /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				45E5B5DE2A8EA04100B46CDC /* VectorLaboratory */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		45E5B5DD2A8EA04100B46CDC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				45E5B5EB2A8EA04400B46CDC /* Preview Assets.xcassets in Resources */,
+				45E5B5E72A8EA04400B46CDC /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		45E5B5DB2A8EA04100B46CDC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				45B268AD2A8FDA060033A727 /* Scratch.swift in Sources */,
+				45B642042A9EC7DC00171EE0 /* SketchDocumentEditor.swift in Sources */,
+				45469CBA2A9F69A300AAE2EF /* LineExperimentView.swift in Sources */,
+				45B268AB2A8FDA000033A727 /* PathCanvas.swift in Sources */,
+				450AED6D2A9696E600930EF9 /* StairView.swift in Sources */,
+				45B641FD2A9E88AA00171EE0 /* SketchInspector.swift in Sources */,
+				456A74322A95531B00E75A8E /* ContentView.swift in Sources */,
+				45493BE62A8F140A0057FD00 /* Shader.metal in Sources */,
+				45B642012A9EC6AB00171EE0 /* SketchDocument.swift in Sources */,
+				451698B42A97C1A3009DF247 /* SketchEditorView.swift in Sources */,
+				45E5B5E52A8EA04100B46CDC /* StrokeView.swift in Sources */,
+				450AED6F2A96970200930EF9 /* ElbowView.swift in Sources */,
+				45E5B5E32A8EA04100B46CDC /* VectorLaboratoryApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		45E5B6022A8EA04400B46CDC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		45E5B6032A8EA04400B46CDC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		45E5B6052A8EA04400B46CDC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = VectorLaboratory/VectorLaboratory.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"VectorLaboratory/Preview Content\"";
+				DEVELOPMENT_TEAM = 6E23EP94PG;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = VectorLaboratory/Info.plist;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = io.schwa.VectorLaboratory;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		45E5B6062A8EA04400B46CDC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = VectorLaboratory/VectorLaboratory.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"VectorLaboratory/Preview Content\"";
+				DEVELOPMENT_TEAM = 6E23EP94PG;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = VectorLaboratory/Info.plist;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = io.schwa.VectorLaboratory;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		45E5B5DA2A8EA04100B46CDC /* Build configuration list for PBXProject "VectorLaboratory" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				45E5B6022A8EA04400B46CDC /* Debug */,
+				45E5B6032A8EA04400B46CDC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		45E5B6042A8EA04400B46CDC /* Build configuration list for PBXNativeTarget "VectorLaboratory" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				45E5B6052A8EA04400B46CDC /* Debug */,
+				45E5B6062A8EA04400B46CDC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		45A82B092AB6D166006D6C59 /* XCLocalSwiftPackageReference ".." */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ..;
+		};
+		45A82B142AB6D3B1006D6C59 /* XCLocalSwiftPackageReference "../../Everything" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../Everything;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		451698BC2A97DC3A009DF247 /* XCRemoteSwiftPackageReference "SwiftFormats" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "http://github.com/schwa/SwiftFormats";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.3.3;
+			};
+		};
+		454597612A8EBDA800902922 /* XCRemoteSwiftPackageReference "swift-algorithms" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-algorithms.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		451698BD2A97DC3A009DF247 /* SwiftFormats */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 451698BC2A97DC3A009DF247 /* XCRemoteSwiftPackageReference "SwiftFormats" */;
+			productName = SwiftFormats;
+		};
+		454597622A8EBDA800902922 /* Algorithms */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 454597612A8EBDA800902922 /* XCRemoteSwiftPackageReference "swift-algorithms" */;
+			productName = Algorithms;
+		};
+		457FC7F32AA2B01C00A27074 /* Sketches */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Sketches;
+		};
+		457FC7F52AA2B01C00A27074 /* VectorSupport */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = VectorSupport;
+		};
+		45A82B002AB6D104006D6C59 /* LegacyGraphics */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = LegacyGraphics;
+		};
+		45A82B0A2AB6D166006D6C59 /* Array2D */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Array2D;
+		};
+		45A82B0C2AB6D166006D6C59 /* CoreGraphicsSupport */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = CoreGraphicsSupport;
+		};
+		45A82B0E2AB6D166006D6C59 /* Geometry */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Geometry;
+		};
+		45A82B102AB6D166006D6C59 /* LegacyGraphics */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = LegacyGraphics;
+		};
+		45A82B122AB6D166006D6C59 /* Raster */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Raster;
+		};
+		45A82B152AB6D3B1006D6C59 /* Everything */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Everything;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 45E5B5D72A8EA04100B46CDC /* Project object */;
+}
