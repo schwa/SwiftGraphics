@@ -8,7 +8,7 @@ typealias LineSegment = VectorSupport.LineSegment
 
 public struct Sketch {
     public var elements: [Element]
-        
+
     public init() {
         elements = []
     }
@@ -21,7 +21,7 @@ public struct Element: Identifiable {
     public var color: Color
     public var label: String
     public var shape: SketchShapeEnum
-    
+
     public init(color: Color = .black, label: String = "", shape: SketchShapeEnum) {
         self.id = UUID()
         self.color = color
@@ -50,7 +50,7 @@ public protocol HandlesProtocol {
 
 public struct SingleHandle: HandlesProtocol {
     public var position: CGPoint
-    
+
     public var positions: [AnyHashable: CGPoint] {
         get {
             return ["_": position]
@@ -82,7 +82,7 @@ public extension SketchShapeEnum {
             fatalError()
         }
     }
-    
+
     var shape: any SketchShape {
         switch self {
         case .point(let shape):
@@ -93,8 +93,7 @@ public extension SketchShapeEnum {
             return shape
         }
     }
-    
-    
+
     func `as`<Shape>(_ type: Shape.Type) -> Shape? where Shape: SketchShape {
         return shape as? Shape
     }
@@ -103,11 +102,11 @@ public extension SketchShapeEnum {
 extension Sketch {
     public struct Point: SketchShape {
         public var position: CGPoint
-        
+
         public init(position: CGPoint) {
             self.position = position
         }
-        
+
         public var handles: SingleHandle {
             get {
                 SingleHandle(position: position)
@@ -116,29 +115,29 @@ extension Sketch {
                 position = newValue.position
             }
         }
-        
+
         public var path: Path {
             Path.circle(center: position, radius: 4)
         }
     }
-    
+
     public struct LineSegment: SketchShape {
         public var start: CGPoint
         public var end: CGPoint
-        
+
         public init(start: CGPoint, end: CGPoint) {
             self.start = start
             self.end = end
         }
-        
+
         public var path: Path {
             Path(lineSegment: (start, end))
         }
-        
+
         public struct Handle: HandlesProtocol {
             var start: CGPoint
             var end: CGPoint
-            
+
             public var positions: [WritableKeyPath<Handle, CGPoint>: CGPoint] {
                 get {
                     [\Handle.start: start, \Handle.end: end]
@@ -149,7 +148,7 @@ extension Sketch {
                 }
             }
         }
-        
+
         public var handles: Handle {
             get {
                 Handle(start: start, end: end)
@@ -159,11 +158,11 @@ extension Sketch {
             }
         }
     }
-    
+
     public struct Rectangle: SketchShape {
         public var start: CGPoint
         public var end: CGPoint
-        
+
         public init(start: CGPoint, end: CGPoint) {
             self.start = start
             self.end = end
@@ -187,7 +186,7 @@ extension Sketch {
                 }
             }
         }
-        
+
         public var handles: Handle {
             get {
                 Handle(start: start, end: end)
@@ -197,7 +196,6 @@ extension Sketch {
             }
         }
     }
-
 }
 
 public extension CGRect {

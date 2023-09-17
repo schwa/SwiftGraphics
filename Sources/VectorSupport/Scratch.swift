@@ -17,14 +17,13 @@ internal extension ComparisonResult {
 }
 
 public extension Path {
-    
     // TODO: rename "open polygonal chain" um yeah
     init(lineSegments: [CGPoint]) {
         self = Path { path in
             path.addLines(lineSegments)
         }
     }
-    
+
     init(lineSegment: (CGPoint, CGPoint)) {
         self = Path { path in
             path.move(to: lineSegment.0)
@@ -44,11 +43,11 @@ public extension Path {
             path.closeSubpath()
         }
     }
-    
+
     static func circle(center: CGPoint, radius: CGFloat) -> Path {
         return Path(ellipseIn: CGRect(center: center, radius: radius))
     }
-    
+
     init(lineSegment: LineSegment) {
         self = Path { path in
             path.move(to: lineSegment.start)
@@ -58,17 +57,16 @@ public extension Path {
 }
 
 public struct DumbSVGGenerator {
-    
     var elements: [() -> String] = []
-    
+
     //      <rect x="10" y="10" width="30" height="30" stroke="black" fill="transparent" stroke-width="5"/>
-    
+
     public mutating func add(_ value: LineSegment, color: String = "black", arrow: Bool = false) {
         elements.append {
             return "<line x1=\"\(value.start.x)\" y1=\"\(value.start.y)\" x2=\"\(value.end.x)\" y2=\"\(value.end.y)\" fill=\"none\" stroke=\"\(color)\" \(arrow ? "marker-end=\"url(#head)\"" : "")/>"
         }
     }
-    
+
     public mutating func add(_ value: CGRect, stroke: String = "black", fill: String = "none") {
         elements.append {
             return "<rect x=\"\(value.minX)\" y=\"\(value.minY)\" width=\"\(value.width)\" height=\"\(value.height)\" fill=\"\(fill)\" stroke=\"\(stroke)\"/>"
@@ -96,7 +94,6 @@ extension DumbSVGGenerator: CustomStringConvertible {
 //          fill='none' stroke='black'
 //          d='M0,0, 80 100,120'
 //          />
-
 
         elements.forEach { element in
             print(element(), to: &s)
