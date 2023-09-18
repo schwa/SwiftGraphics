@@ -14,6 +14,8 @@ let package = Package(
         .library(name: "Array2D", targets: ["Array2D"]),
         .library(name: "CoreGraphicsSupport", targets: ["CoreGraphicsSupport"]),
         .library(name: "SIMDSupport", targets: ["SIMDSupport"]),
+        .library(name: "MetalSupport", targets: ["MetalSupport"]),
+        .library(name: "MetalSupportUnsafeConformances", targets: ["MetalSupportUnsafeConformances"]),
         .library(name: "Sketches", targets: ["Sketches"]),
         .library(name: "Geometry", targets: ["Geometry"]),
         .library(name: "Raster", targets: ["Raster"]),
