@@ -23,7 +23,7 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/schwa/ApproximateEquality", from: "0.2.1"),
         .package(url: "https://github.com/apple/swift-algorithms", from: "1.0.0"),
-        .package(url: "https://github.com/apple/swift-numerics", from: "1.0.0"),
+//        .package(url: "https://github.com/apple/swift-numerics", from: "1.0.0"),
         .package(url: "https://github.com/apple/swift-syntax.git", from: "509.0.0"),
     ],
     targets: [
@@ -31,13 +31,12 @@ let package = Package(
             dependencies: [
                 "CoreGraphicsSupport",
                 "Geometry",
-                .product(name: "Algorithms", package: "swift-algorithms"),
+            .product(name: "Algorithms", package: "swift-algorithms"),
             ]
         ),
         .target(name: "CoreGraphicsSupport"),
         .target(name: "Geometry", dependencies: ["ApproximateEquality"]),
-        .target(
-            name: "LegacyGraphics",
+        .target(name: "LegacyGraphics",
             dependencies: [
                 "CoreGraphicsSupport",
                 "SIMDSupport",
@@ -45,6 +44,8 @@ let package = Package(
                 "Support"
             ]
         ),
+        .target(name: "MetalSupport"),
+        .target(name: "MetalSupportUnsafeConformances"),
         .target(name: "Raster",
             dependencies: [
                 "Geometry",
@@ -68,8 +69,7 @@ let package = Package(
                 .product(name: "Algorithms", package: "swift-algorithms"),
             ]
         ),
-        .target(
-            name: "VectorSupport",
+        .target(name: "VectorSupport",
             dependencies: [
                 .product(name: "ApproximateEquality", package: "ApproximateEquality"),
                 .product(name: "ApproximateEqualityMacros", package: "ApproximateEquality"),
@@ -78,8 +78,9 @@ let package = Package(
                 "Geometry",
             ]
         ),
-
+        
         .testTarget(name: "LegacyGraphicsTests", dependencies: ["LegacyGraphics"]),
+        .testTarget(name: "MetalSupportTests", dependencies: ["MetalSupport"]),
         .testTarget(name: "SketchesTests", dependencies: ["Sketches"]),
         .testTarget(name: "VectorSupportTests", dependencies: [
             "VectorSupport",
