@@ -9,6 +9,7 @@ let package = Package(
         .macOS(.v12),
         .macCatalyst(.v15),
         .tvOS(.v16),
+        .visionOS(.v1)
     ],
     products: [
         .library(name: "Array2D", targets: ["Array2D"]),
