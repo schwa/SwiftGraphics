@@ -12,12 +12,12 @@ public extension MTLComputeCommandEncoder {
     func setBuffer<T>(_ buffer: MTLBuffer?, offset: Int, index: T) where T: RawRepresentable, T.RawValue == Int {
         setBuffer(buffer, offset: offset, index: index.rawValue)
     }
-    
+
     @available(*, deprecated, message: "RawRepresentable variants are deprecated")
     func setBytes<T>(_ bytes: UnsafeRawPointer, length: Int, index: T) where T: RawRepresentable, T.RawValue == Int {
         setBytes(bytes, length: length, index: index.rawValue)
     }
-        
+
     @available(*, deprecated, message: "RawRepresentable variants are deprecated")
     func setTexture<T>(_ texture: MTLTexture?, index: T) where T: RawRepresentable, T.RawValue == Int {
         setTexture(texture, index: index.rawValue)
@@ -29,7 +29,7 @@ public extension MTLRenderCommandEncoder {
     func setFragmentBuffer<T>(_ buffer: MTLBuffer?, offset: Int, index: T) where T: RawRepresentable, T.RawValue == Int {
         setFragmentBuffer(buffer, offset: offset, index: index.rawValue)
     }
-    
+
     @available(*, deprecated, message: "RawRepresentable variants are deprecated")
     func setVertexTexture<T>(_ texture: MTLTexture?, index: T) where T: RawRepresentable, T.RawValue == Int {
         setVertexTexture(texture, index: index.rawValue)
@@ -56,7 +56,7 @@ public extension MTLRenderCommandEncoder {
             fatalError("Unexpected case")
         }
     }
-    
+
     @available(*, deprecated, message: "MTLRenderStage variants are deprecated")
     func setBytes(_ bytes: UnsafeRawPointer, length: Int, stage: MTLRenderStages, index: Int) {
         switch stage {
@@ -68,7 +68,7 @@ public extension MTLRenderCommandEncoder {
             fatalError("Unexpected case")
         }
     }
-    
+
     @available(*, deprecated, message: "MTLRenderStage variants are deprecated")
     func setBytes(_ buffer: UnsafeRawBufferPointer, stage: MTLRenderStages, index: Int) {
         setBytes(buffer.baseAddress!, length: buffer.count, stage: stage, index: index)
@@ -80,7 +80,7 @@ public extension MTLRenderCommandEncoder {
             setBytes(buffer, stage: stage, index: index)
         }
     }
-    
+
     @available(*, deprecated, message: "MTLRenderStage variants are deprecated")
     func setBytes(of array: [some Any], stage: MTLRenderStages, index: Int) {
         array.withUnsafeBytes { buffer in
@@ -111,5 +111,4 @@ public extension MTLRenderCommandEncoder {
             fatalError("Unexpected case")
         }
     }
-
 }
