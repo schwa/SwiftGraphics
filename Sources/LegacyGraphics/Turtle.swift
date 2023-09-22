@@ -185,21 +185,20 @@ public class PathCanvas: TurtleCanvasProtocol {
     }
 }
 
-@available(*, deprecated, message: "Too specialised")
-public struct Cursor<Iterator: IteratorProtocol>: IteratorProtocol {
-    public private(set) var iterator: Iterator
-    public private(set) var current: Iterator.Element?
+internal struct Cursor<Iterator: IteratorProtocol>: IteratorProtocol {
+    private(set) var iterator: Iterator
+    private(set) var current: Iterator.Element?
 
-    public init(_ iterator: Iterator) {
+    init(_ iterator: Iterator) {
         self.iterator = iterator
     }
 
-    public mutating func next() -> Iterator.Element? {
+    mutating func next() -> Iterator.Element? {
         current = iterator.next()
         return current
     }
 
-    public mutating func advance() {
+    mutating func advance() {
         current = iterator.next()
     }
 }
