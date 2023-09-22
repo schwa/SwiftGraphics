@@ -38,7 +38,10 @@ let package = Package(
             ]
         ),
         .target(name: "CoreGraphicsSupport"),
-        .target(name: "Geometry", dependencies: ["ApproximateEquality"]),
+        .target(name: "Geometry", dependencies: [
+            "ApproximateEquality",
+            "CoreGraphicsSupport",
+            ]),
         .target(name: "LegacyGraphics",
             dependencies: [
                 "CoreGraphicsSupport",
@@ -81,7 +84,7 @@ let package = Package(
                 "Geometry",
             ]
         ),
-        
+
         .testTarget(name: "LegacyGraphicsTests", dependencies: ["LegacyGraphics"]),
         .testTarget(name: "MetalSupportTests", dependencies: ["MetalSupport"]),
         .testTarget(name: "SketchesTests", dependencies: ["Sketches"]),
