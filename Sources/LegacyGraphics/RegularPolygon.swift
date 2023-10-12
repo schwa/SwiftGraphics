@@ -2,7 +2,6 @@
 
 import CoreGraphics
 import Geometry
-import Support
 
 // MARK: Regular Polygon
 
@@ -31,7 +30,7 @@ public struct RegularPolygon {
 }
 
 public extension RegularPolygon {
-    var isDegenerate: Bool { nside < 3 || center ==% vertex }
+    var isDegenerate: Bool { nside < 3 || isFuzzyEqual(center, vertex) }
 
     var centralAngle: CGFloat { CGFloat(2 * .pi / Double(nside)) }
     var interiorAngle: CGFloat { CGFloat(Double(nside - 2) * .pi / Double(nside)) }
@@ -92,7 +91,7 @@ public extension RegularPolygon {
         func isBeside(i1: Int, i2: Int) -> Bool {
             i1 >= 0 && i1 < i2 && i2 < nside && (i1 == i2 - 1 || (i1 == 0 && i2 == nside - 1))
         }
-        if isBeside(i1: min(v1.0, v2.0), i2: max(v1.0, v2.0)) && v1.1 !=% v2.1 {
+        if isBeside(i1: min(v1.0, v2.0), i2: max(v1.0, v2.0)) && !isFuzzyEqual(v1.1, v2.1) {
             let xf = CGAffineTransform(from1: points[v1.0], from2: points[v2.0], to1: v1.1, to2: v2.1)
             return self * xf
         }

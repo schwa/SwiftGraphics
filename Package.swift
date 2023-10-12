@@ -44,19 +44,19 @@ let package = Package(
             ]),
         .target(name: "LegacyGraphics",
             dependencies: [
+                .product(name: "Algorithms", package: "swift-algorithms"),
                 "CoreGraphicsSupport",
                 "SIMDSupport",
                 "Geometry",
-                "Support"
             ]
         ),
         .target(name: "MetalSupport"),
         .target(name: "MetalSupportUnsafeConformances"),
         .target(name: "Raster",
             dependencies: [
+                .product(name: "Algorithms", package: "swift-algorithms"),
                 "Geometry",
                 "LegacyGraphics",
-                "Support"
             ]
         ),
         .target(name: "SIMDSupport"),
@@ -69,12 +69,6 @@ let package = Package(
                 "VectorSupport",
             ]
         ),
-        .target(name: "Support",
-            dependencies: [
-                "ApproximateEquality",
-                .product(name: "Algorithms", package: "swift-algorithms"),
-            ]
-        ),
         .target(name: "VectorSupport",
             dependencies: [
                 .product(name: "ApproximateEquality", package: "ApproximateEquality"),
@@ -85,7 +79,9 @@ let package = Package(
             ]
         ),
 
-        .testTarget(name: "LegacyGraphicsTests", dependencies: ["LegacyGraphics"]),
+        .testTarget(name: "LegacyGraphicsTests", dependencies: [
+            "LegacyGraphics",
+        ]),
         .testTarget(name: "MetalSupportTests", dependencies: ["MetalSupport"]),
         .testTarget(name: "SketchesTests", dependencies: ["Sketches"]),
         .testTarget(name: "VectorSupportTests", dependencies: [

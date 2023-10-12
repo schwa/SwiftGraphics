@@ -1,6 +1,6 @@
 import CoreGraphics
 import LegacyGraphics
-import Support
+import Algorithms
 
 public extension Polygon {
     func toScanlines(step: CGFloat = 1.0) -> [LineSegment] {
@@ -92,3 +92,13 @@ public func polygonToScanlines(_ polygon: Polygon, step: CGFloat = 1.0) -> [Line
 
     return rays
 }
+
+internal extension Collection {
+    func pairs() -> [(Element, Element?)] {
+        chunks(ofCount: 2).map {
+            let a = Array($0)
+            return (a[0], a.count == 2 ? a[1] : nil)
+        }
+    }
+}
+
