@@ -2,7 +2,6 @@
 
 import CoreGraphics
 import Geometry
-import Support
 
 public struct Triangle {
     public let vertex: (CGPoint, CGPoint, CGPoint)
@@ -59,22 +58,22 @@ public extension Triangle {
     }
 
     var isEquilateral: Bool {
-        equalities(lengths) { $0 ==% $1 } == 3
+        equalities(lengths) { isFuzzyEqual($0, $1) } == 3
     }
 
     var isIsosceles: Bool {
-        equalities(lengths) { $0 ==% $1 } == 2
+        equalities(lengths) { isFuzzyEqual($0, $1) } == 2
     }
 
     var isScalene: Bool {
-        equalities(lengths) { $0 ==% $1 } == 1
+        equalities(lengths) { isFuzzyEqual($0, $1) } == 1
     }
 
     var isRightAngled: Bool {
         let a = angles
         let rightAngle = CGFloat(0.5 * .pi)
-        return a.0 ==% rightAngle || a.1 ==% rightAngle || a.2 ==% rightAngle
-    }
+        return isFuzzyEqual(a.0, rightAngle) || isFuzzyEqual(a.1, rightAngle) || isFuzzyEqual(a.2, rightAngle
+)    }
 
     var isOblique: Bool {
         isRightAngled == false
@@ -95,7 +94,7 @@ public extension Triangle {
     var isDegenerate: Bool {
         let a = angles
         let r180 = CGFloat.pi
-        return a.0 ==% r180 || a.1 ==% r180 || a.2 ==% r180
+        return isFuzzyEqual(a.0, r180) || isFuzzyEqual(a.1, r180) || isFuzzyEqual(a.2, r180)
     }
 
     var signedArea: CGFloat {

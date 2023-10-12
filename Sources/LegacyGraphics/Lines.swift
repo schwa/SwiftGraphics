@@ -1,6 +1,6 @@
 import CoreGraphics
 import SwiftUI
-import Support
+import Algorithms
 
 public struct Lines {
     public let lineSegments: [LineSegment]
@@ -44,3 +44,13 @@ extension Lines: Pathable {
         return path
     }
 }
+
+internal extension Collection {
+    func pairs() -> [(Element, Element?)] {
+        chunks(ofCount: 2).map {
+            let a = Array($0)
+            return (a[0], a.count == 2 ? a[1] : nil)
+        }
+    }
+}
+
