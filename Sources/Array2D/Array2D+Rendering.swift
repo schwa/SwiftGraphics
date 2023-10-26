@@ -71,7 +71,7 @@ public extension Array2D where Element: BinaryInteger {
 
 public extension Array2D {
     func toCGImage(_ block: (Element) -> CGColor) -> CGImage {
-        let definition = BitmapDefinition(width: size.width, height: size.height, pixelFormat: .rgba)
+        let definition = BitmapDefinition(width: size.width, height: size.height, pixelFormat: .rgba8)
         guard let bitmapContext = CGContext.bitmapContext(data: nil, definition: definition) else {
             fatalError("Could not create bitmap context")
         }
