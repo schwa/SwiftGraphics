@@ -5,10 +5,10 @@ import PackageDescription
 let package = Package(
     name: "SwiftGraphics",
     platforms: [
-        .iOS(.v15),
-        .macOS(.v12),
-        .macCatalyst(.v15),
-        .tvOS(.v16),
+        .iOS(.v17),
+        .macOS(.v14),
+        .macCatalyst(.v17),
+        .tvOS(.v17),
         .visionOS(.v1)
     ],
     products: [
