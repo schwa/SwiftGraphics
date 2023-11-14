@@ -27,7 +27,7 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-algorithms", from: "1.0.0"),
         .package(url: "https://github.com/apple/swift-syntax.git", from: "509.0.0"),
         .package(url: "https://github.com/schwa/ApproximateEquality", from: "0.2.1"),
-//        .package(url: "https://github.com/apple/swift-numerics", from: "1.0.0"),
+        //        .package(url: "https://github.com/apple/swift-numerics", from: "1.0.0"),
     ],
     targets: [
         .target(name: "Array2D",
@@ -56,7 +56,10 @@ let package = Package(
                     "Geometry",
                     "LegacyGraphics",
                 ]),
-        .target(name: "SIMDSupport"),
+        .target(name: "SIMDSupport",
+                dependencies: [
+                    .product(name: "ApproximateEquality", package: "ApproximateEquality"),
+                ]),
         .target(name: "Sketches",
                 dependencies: [
                     .product(name: "ApproximateEquality", package: "ApproximateEquality"),
@@ -73,21 +76,21 @@ let package = Package(
                     "SIMDSupport",
                     "Geometry",
                 ]),
-
-        .testTarget(name: "SwiftGraphicsTests", dependencies: [
-            "Array2D",
-            "CoreGraphicsSupport",
-            "Geometry",
-            "LegacyGraphics",
-            "MetalSupport",
-            "MetalSupportUnsafeConformances",
-            "Raster",
-            "SIMDSupport",
-            "Sketches",
-            "VectorSupport",
-            .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
-            .product(name: "SwiftSyntax", package: "swift-syntax"),
-            .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
-        ]),
+        
+            .testTarget(name: "SwiftGraphicsTests", dependencies: [
+                "Array2D",
+                "CoreGraphicsSupport",
+                "Geometry",
+                "LegacyGraphics",
+                "MetalSupport",
+                "MetalSupportUnsafeConformances",
+                "Raster",
+                "SIMDSupport",
+                "Sketches",
+                "VectorSupport",
+                .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
+                .product(name: "SwiftSyntax", package: "swift-syntax"),
+                .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
+            ]),
     ]
 )
