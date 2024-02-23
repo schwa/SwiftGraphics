@@ -106,9 +106,11 @@ struct PathCanvas: View {
     func dragGesture(offset: Int) -> some Gesture {
         DragGesture(coordinateSpace: coordinateSpace).onChanged({ value in
             var location = value.location
+            #if os(macOS)
             if NSEvent.modifierFlags.contains(.shift) {
                 location = location.map { round($0 / 10) * 10 }
             }
+            #endif
             points[offset] = location
         })
     }
