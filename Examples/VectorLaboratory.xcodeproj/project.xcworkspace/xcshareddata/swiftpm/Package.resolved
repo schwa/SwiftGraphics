@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/schwa/ApproximateEquality",
       "state" : {
-        "revision" : "3d9482250f75df6ef78f50735f352b3edc23a265",
-        "version" : "0.1.1"
+        "revision" : "13ae17c1b1eb3bab0912bb29b264d3be2ea38115",
+        "version" : "0.2.1"
       }
     },
     {
@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-algorithms.git",
       "state" : {
-        "revision" : "b14b7f4c528c942f121c8b860b9410b2bf57825e",
-        "version" : "1.0.0"
+        "revision" : "f6919dfc309e7f1b56224378b11e28bab5bccc42",
+        "version" : "1.2.0"
       }
     },
     {
@@ -32,8 +32,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-syntax.git",
       "state" : {
-        "revision" : "057bdfb4632cc758973d46efaf98e43d07ee4bdb",
-        "version" : "509.0.0-swift-DEVELOPMENT-SNAPSHOT-2023-08-28-a"
+        "revision" : "64889f0c732f210a935a0ad7cda38f77f876262d",
+        "version" : "509.1.1"
       }
     },
     {
