@@ -25,7 +25,9 @@ struct SketchEditorView: View {
     var body: some View {
         SketchView(sketch: $sketch, selection: $selection)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        #if os(macOS)
         .lastRightMouseDownLocation($contextMenuLocation)
+        #endif
         .toolbar {
             ForEach(shapeTemplates, id: \.0) { name, image, shape in
                 Button(title: "Add \(name)", systemImage: image) {

@@ -10,6 +10,7 @@ extension CGPoint {
     }
 }
 
+#if os(macOS)
 struct LastRightMouseDownLocationModifier: ViewModifier {
     
     @Binding
@@ -31,11 +32,13 @@ struct LastRightMouseDownLocationModifier: ViewModifier {
     }
 }
 
+
 extension View {
     func lastRightMouseDownLocation(_ location: Binding <CGPoint?>) -> some View {
         modifier(LastRightMouseDownLocationModifier(location))
     }
 }
+#endif
 
 struct Composite <Root, Stem> {
     var root: Root
