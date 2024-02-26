@@ -1,18 +1,9 @@
-sync-MetalSupport:
-    cd Sources/MetalSupport
-    rsync --archive --delete . ~/Projects/MetalSupport/Sources/MetalSupport
-    cd ~/Projects/MetalSupport
-    # git add .
-    # git commit -m "Sync MetalSupport"
-    # git push
-
 diff-SIMDSupport:
     ksdiff Sources/SIMDSupport ~/Projects/SIMD-Support/Sources/SIMDSupport
 
 
 sync-SIMDSupport:
-    rsync --archive --delete Sources/SIMDSupport ~/Projects/SIMD-Support/Sources/SIMDSupport
-    cd ~/Projects/SIMD-Support
-    # git add .
-    # git commit -m "Sync SIMDSupport"
-    # git push
+    rsync --archive --delete Sources/SIMDSupport/ ~/Projects/SIMD-Support/Sources/SIMDSupport
+    git -C ~/Projects/SIMD-Support add .
+    git -C ~/Projects/SIMD-Support commit  -m "Sync SIMD-Support with SwiftGraphicss"
+    git -C ~/Projects/SIMD-Support push
