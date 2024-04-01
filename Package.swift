@@ -14,13 +14,13 @@ let package = Package(
     products: [
         .library(name: "Array2D", targets: ["Array2D"]),
         .library(name: "CoreGraphicsSupport", targets: ["CoreGraphicsSupport"]),
-        .library(name: "CoreGraphicsSupportUnsafeConformances", targets: ["CoreGraphicsSupportUnsafeConformances"]),
         .library(name: "Geometry", targets: ["Geometry"]),
         .library(name: "LegacyGraphics", targets: ["LegacyGraphics"]),
         .library(name: "MetalSupport", targets: ["MetalSupport"]),
         .library(name: "MetalSupportUnsafeConformances", targets: ["MetalSupportUnsafeConformances"]),
         .library(name: "Raster", targets: ["Raster"]),
         .library(name: "SIMDSupport", targets: ["SIMDSupport"]),
+        .library(name: "SIMDSupportUnsafeConformances", targets: ["SIMDSupportUnsafeConformances"]),
         .library(name: "Sketches", targets: ["Sketches"]),
         .library(name: "VectorSupport", targets: ["VectorSupport"]),
     ],
@@ -38,7 +38,6 @@ let package = Package(
                     .product(name: "Algorithms", package: "swift-algorithms"),
                 ]),
         .target(name: "CoreGraphicsSupport"),
-        .target(name: "CoreGraphicsSupportUnsafeConformances"),
         .target(name: "Geometry", dependencies: [
             "ApproximateEquality",
             "CoreGraphicsSupport",
@@ -62,6 +61,7 @@ let package = Package(
                 dependencies: [
                     .product(name: "ApproximateEquality", package: "ApproximateEquality"),
                 ]),
+        .target(name: "SIMDSupportUnsafeConformances"),
         .target(name: "Sketches",
                 dependencies: [
                     .product(name: "ApproximateEquality", package: "ApproximateEquality"),
@@ -79,20 +79,21 @@ let package = Package(
                     "Geometry",
                 ]),
 
-        .testTarget(name: "SwiftGraphicsTests", dependencies: [
-            "Array2D",
-            "CoreGraphicsSupport",
-            "Geometry",
-            "LegacyGraphics",
-            "MetalSupport",
-            "MetalSupportUnsafeConformances",
-            "Raster",
+            .testTarget(name: "LegacyGraphicsTests", dependencies: [
+                "LegacyGraphics",
+            ]),
+        .testTarget(name: "SIMDSupportTests", dependencies: [
             "SIMDSupport",
+        ]),
+        .testTarget(name: "SketchesTests", dependencies: [
             "Sketches",
+        ]),
+        .testTarget(name: "VectorSupportTests", dependencies: [
             "VectorSupport",
-            .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
-            .product(name: "SwiftSyntax", package: "swift-syntax"),
-            .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
         ]),
     ]
 )
+
+//            .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
+//            .product(name: "SwiftSyntax", package: "swift-syntax"),
+//            .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
