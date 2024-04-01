@@ -8,6 +8,6 @@ targets:
 - MetalSupportUnsafeConformances
 - Raster
 - SIMDSupport
+- SIMDSupportUnsafeConformances
 - Sketches
-- Support
 - VectorSupport
