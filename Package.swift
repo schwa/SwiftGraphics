@@ -28,5 +28,14 @@ let package = Package(
                 dependencies: [
                     .product(name: "ApproximateEquality", package: "ApproximateEquality"),
                 ]),
+        .testTarget(name: "SwiftGraphicsTests", dependencies: [
+            "CoreGraphicsSupport",
+            "MetalSupport",
+            "MetalSupportUnsafeConformances",
+            "SIMDSupport",
+//            .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
+//            .product(name: "SwiftSyntax", package: "swift-syntax"),
+//            .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
+        ])
     ]
 )
