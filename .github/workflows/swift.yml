@@ -2,6 +2,8 @@ name: Swift
 on:
   push:
   pull_request:
+    branches:
+      - main
 jobs:
   build:
     runs-on: macos-14 # macos-latest
