@@ -85,7 +85,7 @@ func repeatChomper(_ cursor: inout Cursor<IndexingIterator<[String]>>) throws ->
         let current = cursor.current!
         if current == "]" {
             _ = cursor.next()
-            return .repeat(count, try Program.compile(source: source))
+            return try .repeat(count, Program.compile(source: source))
         }
         source.append(current)
     }
@@ -185,7 +185,7 @@ public class PathCanvas: TurtleCanvasProtocol {
     }
 }
 
-internal struct Cursor<Iterator: IteratorProtocol>: IteratorProtocol {
+struct Cursor<Iterator: IteratorProtocol>: IteratorProtocol {
     private(set) var iterator: Iterator
     private(set) var current: Iterator.Element?
 

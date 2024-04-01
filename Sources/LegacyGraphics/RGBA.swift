@@ -1,6 +1,6 @@
 import CoreGraphics
-import simd
 import Geometry
+import simd
 
 // TODO: Replace with SIMD4<>?
 
@@ -93,8 +93,8 @@ public extension RGBA {
 }
 
 // TODO: FIXME
-//public extension Array2D where Element == RGBA {
+// public extension Array2D where Element == RGBA {
 //    init(size: IntSize) {
 //        self = Array2D<RGBA>(repeating: RGBA.black, size: size)
 //    }
-//}
+// }

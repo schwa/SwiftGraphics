@@ -103,7 +103,7 @@ extension Float: Lerpable {
 
 public extension Lerpable where Self: UnitLerpable {
     static func lerp(from v0: Self, to v1: Self, by t: Self) -> Self {
-        (Self.unit - t) * v0 + t * v1
+        (unit - t) * v0 + t * v1
     }
 }
 

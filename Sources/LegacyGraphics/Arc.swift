@@ -28,14 +28,14 @@ extension Arc: Equatable {
     }
 }
 
-//extension Arc: FuzzyEquatable {
+// extension Arc: FuzzyEquatable {
 //    public static func ==% (lhs: Arc, rhs: Arc) -> Bool {
 //        lhs.center ==% rhs.center
 //            && lhs.radius ==% rhs.radius
 //            && lhs.theta ==% rhs.theta
 //            && lhs.phi ==% rhs.phi
 //    }
-//}
+// }
 
 public extension Arc {
     static func arcToBezierCurves(center: CGPoint, radius: CGFloat, alpha: CGFloat, beta: CGFloat, maximumArcs: Int = 4) -> [BezierCurve] {

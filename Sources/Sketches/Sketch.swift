@@ -1,7 +1,8 @@
-import SwiftUI
 import CoreGraphicsSupport
-//import Algorithms
-//import Observation
+import SwiftUI
+
+// import Algorithms
+// import Observation
 import VectorSupport
 
 typealias LineSegment = VectorSupport.LineSegment
@@ -23,7 +24,7 @@ public struct Element: Identifiable {
     public var shape: SketchShapeEnum
 
     public init(color: Color = .black, label: String = "", shape: SketchShapeEnum) {
-        self.id = UUID()
+        id = UUID()
         self.color = color
         self.label = label
         self.shape = shape
@@ -53,10 +54,10 @@ public struct SingleHandle: HandlesProtocol {
 
     public var positions: [AnyHashable: CGPoint] {
         get {
-            return ["_": position]
+            ["_": position]
         }
         set {
-            self.position = newValue["_"]!
+            position = newValue["_"]!
         }
     }
 }
@@ -70,7 +71,7 @@ public enum SketchShapeEnum: Equatable, Codable {
 }
 
 public extension SketchShapeEnum {
-    init<Shape>(_ shape: Shape) where Shape: SketchShape {
+    init(_ shape: some SketchShape) {
         switch shape {
         case let shape as Sketch.Point:
             self = .point(shape)
@@ -86,21 +87,21 @@ public extension SketchShapeEnum {
     var shape: any SketchShape {
         switch self {
         case .point(let shape):
-            return shape
+            shape
         case .lineSegment(let shape):
-            return shape
+            shape
         case .rectangle(let shape):
-            return shape
+            shape
         }
     }
 
     func `as`<Shape>(_ type: Shape.Type) -> Shape? where Shape: SketchShape {
-        return shape as? Shape
+        shape as? Shape
     }
 }
 
-extension Sketch {
-    public struct Point: SketchShape {
+public extension Sketch {
+    struct Point: SketchShape {
         public var position: CGPoint
 
         public init(position: CGPoint) {
@@ -121,7 +122,7 @@ extension Sketch {
         }
     }
 
-    public struct LineSegment: SketchShape {
+    struct LineSegment: SketchShape {
         public var start: CGPoint
         public var end: CGPoint
 
@@ -159,7 +160,7 @@ extension Sketch {
         }
     }
 
-    public struct Rectangle: SketchShape {
+    struct Rectangle: SketchShape {
         public var start: CGPoint
         public var end: CGPoint
 

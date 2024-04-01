@@ -1,7 +1,7 @@
 import CoreGraphics
 import Foundation
-import SwiftUI
 import Geometry
+import SwiftUI
 
 public protocol Pathable {
     func toPath() throws -> Path
@@ -63,40 +63,40 @@ extension Ellipse: Pathable {
 
 // Line
 
-//extension LineSegment: Pathable {
+// extension LineSegment: Pathable {
 //    public func toPath() -> Path {
 //        Path(vertices: [first, second])
 //    }
-//}
+// }
 //
-//extension LineString: Pathable {
+// extension LineString: Pathable {
 //    public func toPath() -> Path {
 //        Path(vertices: points)
 //    }
-//}
+// }
 
 // TODO: FIXME
 
-//extension Polygon: Pathable {
+// extension Polygon: Pathable {
 //    public func toPath() -> Path {
 //        Path(vertices: points, closed: true)
 //    }
-//}
+// }
 
 // TODO: FIXME
-//extension RegularPolygon: Pathable {
+// extension RegularPolygon: Pathable {
 //    public func toPath() -> Path {
 //        Path(vertices: points, closed: true)
 //    }
-//}
+// }
 
-//extension Triangle: Pathable {
+// extension Triangle: Pathable {
 //    public func toPath() -> Path {
 //        Path(vertices: points, closed: true)
 //    }
-//}
+// }
 //
-//public extension CGContext {
+// public extension CGContext {
 //    @available(*, deprecated, message: "Use SwiftUI.Canvas")
 //    func add(_ element: some Pathable) {
 //        forceTry {
@@ -105,4 +105,4 @@ extension Ellipse: Pathable {
 //            addPath(cgPath)
 //        }
 //    }
-//}
+// }

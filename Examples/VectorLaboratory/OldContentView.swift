@@ -1,53 +1,48 @@
-import SwiftUI
-import CoreGraphicsSupport
 import Algorithms
+import CoreGraphicsSupport
+import SwiftUI
 
 struct OldContentView: View {
-
     @State
     var points: [CGPoint] = [[50, 50], [250, 50], [300, 100]]
-    
+
     var body: some View {
         ZStack {
             PathCanvas(points: $points)
             CustomStrokeView(points: points)
-            .contentShape(.interaction, EmptyShape())
-                
+                .contentShape(.interaction, EmptyShape())
         }
     }
-    
 }
 
 struct CustomStrokeView: View {
     let points: [CGPoint]
-    
+
     var segments: [LineSegment] {
         points.windows(ofCount: 2).map(\.tuple).map {
             LineSegment(start: $0, end: $1)
         }
     }
-    
+
     @State
     var widths: [CGFloat] = []
-    
+
     var body: some View {
-        Canvas { context, size in
+        Canvas { context, _ in
 
             for segment in segments {
-                //context.stroke(Path(segment), with: .color(.red))
+                // context.stroke(Path(segment), with: .color(.red))
                 let left = segment.parallel(offset: -10)
                 context.stroke(Path(left), with: .color(.red))
                 let right = segment.parallel(offset: 10)
                 context.stroke(Path(right), with: .color(.green))
             }
-            
-            
         }
         .onAppear {
-            self.widths = Array(repeating: 10, count: segments.count)
+            widths = Array(repeating: 10, count: segments.count)
         }
         .onChange(of: points) {
-            self.widths = Array(repeating: 10, count: segments.count)
+            widths = Array(repeating: 10, count: segments.count)
         }
     }
 }
@@ -101,36 +96,33 @@ func intersection(_ lhs: Line, _ rhs: Line) -> Intersection {
     }
 }
 
-
 extension LineSegment {
-    
     func map(_ t: (CGPoint) throws -> CGPoint) rethrows -> LineSegment {
-        return LineSegment(start: try t(start), end: try t(end))
+        try LineSegment(start: t(start), end: t(end))
     }
-    
+
     func parallel(offset: CGFloat) -> LineSegment {
         let angle = angle(start, end) - .degrees(90)
         let offset = CGPoint(distance: offset, angle: angle)
         return map { $0 + offset }
     }
-    
 }
 
 struct ElbowView: View {
     let points: [CGPoint]
     let width: CGFloat = 20
-    
+
     var body: some View {
-        Canvas { context, size in
+        Canvas { context, _ in
             let angles = points.indexed().map { index, point in
                 switch index {
                 case points.startIndex:
-                    return angle(point, points[index+1])
+                    return angle(point, points[index + 1])
                 case points.endIndex - 1:
-                    return angle(points[index-1], point)
+                    return angle(points[index - 1], point)
                 default:
-                    let angle0 = angle(points[index-1], point)
-                    let angle1 = angle(point, points[index+1])
+                    let angle0 = angle(points[index - 1], point)
+                    let angle1 = angle(point, points[index + 1])
                     return (angle0 + angle1) / 2
                 }
             }
@@ -146,7 +138,7 @@ struct ElbowView: View {
             do {
                 let segments = points.windows(ofCount: 2).map(\.tuple)
                 let lengths = segments.map(distance)
-                let totalLength = segments.reduce(0) { return $0 + distance($1) }
+                let totalLength = segments.reduce(0) { $0 + distance($1) }
 
                 var result: [[CGFloat]] = [[]]
                 var iterator = lengths.makeIterator()
@@ -166,7 +158,6 @@ struct ElbowView: View {
                 }
 
                 for (lengths, lines) in zip(result, lines.windows(ofCount: 2).map(\.tuple)) {
-                    
                     let left = (lines.0.left, lines.1.left)
                     let right = (lines.0.right, lines.1.right)
 
@@ -174,19 +165,16 @@ struct ElbowView: View {
                         let left = lerp(from: left.0, to: left.1, by: length)
                         let right = lerp(from: right.0, to: right.1, by: length)
                         context.stroke(Path(line: (left, right)), with: .color(.purple))
-
-                        
                     }
                 }
             }
-
         }
     }
 }
 
 struct StairView: View {
     var body: some View {
-        Canvas { context, size in
+        Canvas { context, _ in
             let rect = CGRect(x: 10, y: 10, width: 500, height: 100)
             context.stroke(Path(rect), with: .color(.red.opacity(0.5)))
             let points = [rect.minXMinY, rect.maxXMinY, rect.maxXMaxY, rect.minXMaxY]
@@ -207,6 +195,6 @@ struct StairView: View {
 
 struct EmptyShape: Shape {
     func path(in rect: CGRect) -> Path {
-        return Path()
+        Path()
     }
 }
