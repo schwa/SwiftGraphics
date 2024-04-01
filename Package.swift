@@ -14,6 +14,7 @@ let package = Package(
     products: [
         .library(name: "Array2D", targets: ["Array2D"]),
         .library(name: "CoreGraphicsSupport", targets: ["CoreGraphicsSupport"]),
+        .library(name: "CoreGraphicsSupportUnsafeConformances", targets: ["CoreGraphicsSupportUnsafeConformances"]),
         .library(name: "Geometry", targets: ["Geometry"]),
         .library(name: "LegacyGraphics", targets: ["LegacyGraphics"]),
         .library(name: "MetalSupport", targets: ["MetalSupport"]),
@@ -37,6 +38,7 @@ let package = Package(
                     .product(name: "Algorithms", package: "swift-algorithms"),
                 ]),
         .target(name: "CoreGraphicsSupport"),
+        .target(name: "CoreGraphicsSupportUnsafeConformances"),
         .target(name: "Geometry", dependencies: [
             "ApproximateEquality",
             "CoreGraphicsSupport",
