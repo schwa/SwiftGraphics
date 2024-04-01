@@ -16,6 +16,7 @@ let package = Package(
         .library(name: "MetalSupport", targets: ["MetalSupport"]),
         .library(name: "MetalSupportUnsafeConformances", targets: ["MetalSupportUnsafeConformances"]),
         .library(name: "SIMDSupport", targets: ["SIMDSupport"]),
+        .library(name: "SIMDSupportUnsafeConformances", targets: ["SIMDSupportUnsafeConformances"]),
     ],
     dependencies: [
         .package(url: "https://github.com/schwa/ApproximateEquality", from: "0.2.1"),
@@ -28,14 +29,9 @@ let package = Package(
                 dependencies: [
                     .product(name: "ApproximateEquality", package: "ApproximateEquality"),
                 ]),
-        .testTarget(name: "SwiftGraphicsTests", dependencies: [
-            "CoreGraphicsSupport",
-            "MetalSupport",
-            "MetalSupportUnsafeConformances",
+        .target(name: "SIMDSupportUnsafeConformances"),
+        .testTarget(name: "SIMDSupportTests", dependencies: [
             "SIMDSupport",
-//            .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
-//            .product(name: "SwiftSyntax", package: "swift-syntax"),
-//            .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
         ])
     ]
 )
