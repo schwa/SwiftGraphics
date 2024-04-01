@@ -1,0 +1,6 @@
+retain_public: true
+targets:
+- CoreGraphicsSupport
+- MetalSupport
+- MetalSupportUnsafeConformances
+- SIMDSupport
