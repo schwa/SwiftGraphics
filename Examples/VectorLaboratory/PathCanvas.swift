@@ -1,18 +1,17 @@
-import SwiftUI
-import CoreGraphicsSupport
 import Algorithms
+import CoreGraphicsSupport
+import SwiftUI
 import VectorSupport
 
 struct PathCanvas: View {
-    
     @Binding
     var points: [CGPoint]
-    
+
     @State
     var selection: Set<Int> = []
-    
+
     let coordinateSpace = NamedCoordinateSpace.named("canvas")
-    
+
     var body: some View {
         ZStack(alignment: .topLeading) {
             Color.white
@@ -20,7 +19,7 @@ struct PathCanvas: View {
                     print(value.location)
                     points.append(value.location)
                 }))
-            
+
             let elements = points.windows(ofCount: 2).map(\.tuple).enumerated()
             ForEach(Array(elements), id: \.offset) { offset, points in
                 let path = Path(lineSegment: points)
@@ -39,18 +38,17 @@ struct PathCanvas: View {
                             self.points.insert(newPoint, at: offset + 1)
                         }
                         Button("Remove") {
-                            self.points.remove(at: offset+1)
+                            self.points.remove(at: offset + 1)
                             self.points.remove(at: offset)
                         }
                     }
-                
             }
             ForEach(Array(points.enumerated()), id: \.0) { offset, point in
                 Circle().position(point).frame(width: 8, height: 8)
-                //.foregroundStyle(selection.contains(offset) ? Color.accentColor : .black)
+                    // .foregroundStyle(selection.contains(offset) ? Color.accentColor : .black)
                     .background {
                         if selection.contains(offset) {
-                            RelativeTimelineView(schedule: .animation) { context, time in
+                            RelativeTimelineView(schedule: .animation) { _, time in
                                 Path.circle(center: point, radius: 10).fill(Color.accentColor)
                                     .colorEffect(ShaderLibrary.my_color_effect(.float(time)))
                             }
@@ -63,7 +61,7 @@ struct PathCanvas: View {
                     }
                     .contextMenu {
                         Button("Remove") {
-                            self.points.remove(at: offset)
+                            points.remove(at: offset)
                         }
                     }
             }
@@ -90,26 +88,26 @@ struct PathCanvas: View {
             }
         }
         .fileImporter(isPresented: $isFileImporterPresented, allowedContentTypes: [.json], onCompletion: { result in
-            if case let .success(url) = result {
+            if case .success(let url) = result {
                 let data = try! Data(contentsOf: url)
-                self.points = try! JSONDecoder().decode([CGPoint].self, from: data)
+                points = try! JSONDecoder().decode([CGPoint].self, from: data)
             }
         })
         .fileExporter(isPresented: $isFileExporterPresented, item: JSONCodingTransferable(element: points)) { _ in }
     }
-    
+
     @State
     var isFileImporterPresented = false
     @State
     var isFileExporterPresented = false
-    
+
     func dragGesture(offset: Int) -> some Gesture {
         DragGesture(coordinateSpace: coordinateSpace).onChanged({ value in
             var location = value.location
             #if os(macOS)
-            if NSEvent.modifierFlags.contains(.shift) {
-                location = location.map { round($0 / 10) * 10 }
-            }
+                if NSEvent.modifierFlags.contains(.shift) {
+                    location = location.map { round($0 / 10) * 10 }
+                }
             #endif
             points[offset] = location
         })

@@ -1,22 +1,22 @@
+import CoreGraphicsSupport
 import SwiftUI
 import VectorSupport
-import CoreGraphicsSupport
 
 struct ElbowView: View {
     let points: [CGPoint]
     let width: CGFloat = 20
-    
+
     var body: some View {
-        Canvas { context, size in
+        Canvas { context, _ in
             let angles = points.indexed().map { index, point in
                 switch index {
                 case points.startIndex:
-                    return CGPoint.angle(point, points[index+1])
+                    return CGPoint.angle(point, points[index + 1])
                 case points.endIndex - 1:
-                    return CGPoint.angle(points[index-1], point)
+                    return CGPoint.angle(points[index - 1], point)
                 default:
-                    let angle0 = CGPoint.angle(points[index-1], point)
-                    let angle1 = CGPoint.angle(point, points[index+1])
+                    let angle0 = CGPoint.angle(points[index - 1], point)
+                    let angle1 = CGPoint.angle(point, points[index + 1])
                     return (angle0 + angle1) / 2
                 }
             }
@@ -32,7 +32,7 @@ struct ElbowView: View {
             do {
                 let segments = points.windows(ofCount: 2).map(\.tuple)
                 let lengths = segments.map(CGPoint.distance)
-                let totalLength = segments.reduce(0) { return $0 + CGPoint.distance($1) }
+                let totalLength = segments.reduce(0) { $0 + CGPoint.distance($1) }
 
                 var result: [[CGFloat]] = [[]]
                 var iterator = lengths.makeIterator()
@@ -52,7 +52,6 @@ struct ElbowView: View {
                 }
 
                 for (lengths, lines) in zip(result, lines.windows(ofCount: 2).map(\.tuple)) {
-                    
                     let left = (lines.0.left, lines.1.left)
                     let right = (lines.0.right, lines.1.right)
 
@@ -60,12 +59,9 @@ struct ElbowView: View {
                         let left = lerp(from: left.0, to: left.1, by: length)
                         let right = lerp(from: right.0, to: right.1, by: length)
                         context.stroke(Path(lineSegment: (left, right)), with: .color(.purple))
-
-                        
                     }
                 }
             }
-
         }
     }
 }

@@ -72,8 +72,8 @@ public extension Triangle {
     var isRightAngled: Bool {
         let a = angles
         let rightAngle = CGFloat(0.5 * .pi)
-        return isFuzzyEqual(a.0, rightAngle) || isFuzzyEqual(a.1, rightAngle) || isFuzzyEqual(a.2, rightAngle
-)    }
+        return isFuzzyEqual(a.0, rightAngle) || isFuzzyEqual(a.1, rightAngle) || isFuzzyEqual(a.2, rightAngle)
+    }
 
     var isOblique: Bool {
         isRightAngled == false

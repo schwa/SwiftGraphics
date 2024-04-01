@@ -27,11 +27,11 @@ extension Turn: CustomStringConvertible {
     public var description: String {
         switch self {
         case .none:
-            return "none"
+            "none"
         case .left:
-            return "left"
+            "left"
         case .right:
-            return "right"
+            "right"
         }
     }
 }

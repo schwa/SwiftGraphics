@@ -23,7 +23,7 @@ public struct IsotoxalPolygonShape: InsettableShape {
     public var vertices: [CGPoint] {
         (0 ..< (vertexCount)).map { index in
             let angle = Double(index) / Double(vertexCount) * .pi * 2 + startAngle.radians
-            let ratio = index.isMultiple(of: 2) ? self.ratio : 1.0
+            let ratio = index.isMultiple(of: 2) ? ratio : 1.0
             let x = cos(angle) * ratio
             let y = sin(angle) * ratio
             return CGPoint(x: x, y: y)

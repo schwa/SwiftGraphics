@@ -1,10 +1,10 @@
-import SwiftUI
-import Foundation
-import CoreGraphics
-import CoreGraphicsSupport
 import Algorithms
 import ApproximateEquality
 import ApproximateEqualityMacros
+import CoreGraphics
+import CoreGraphicsSupport
+import Foundation
+import SwiftUI
 
 public extension CGPoint {
     init(origin: CGPoint = .zero, distance d: Double, angle: Angle) {
@@ -12,19 +12,19 @@ public extension CGPoint {
     }
 
     var angle: Angle {
-        return .radians(atan2(y, x))
+        .radians(atan2(y, x))
     }
 
     var magnitude: Double {
-        return x * x + y * y
+        x * x + y * y
     }
 
     var distance: Double {
-        return sqrt(magnitude)
+        sqrt(magnitude)
     }
 
     var normalized: CGPoint {
-        return self / distance
+        self / distance
     }
 
     static func angle(_ lhs: CGPoint, _ rhs: CGPoint) -> Angle {
@@ -38,19 +38,19 @@ public extension CGPoint {
     }
 
     static func distance(_ points: (CGPoint, CGPoint)) -> Double {
-        return distance(points.0, points.1)
+        distance(points.0, points.1)
     }
 }
 
 public extension CGPoint {
     func map(_ f: (Double) -> Double) -> CGPoint {
-        return CGPoint(x: f(x), y: f(y))
+        CGPoint(x: f(x), y: f(y))
     }
 }
 
 public extension CGRect {
     var edges: [LineSegment] {
-        return [
+        [
             LineSegment(minXMinY, maxXMinY),
             LineSegment(maxXMinY, maxXMaxY),
             LineSegment(maxXMaxY, maxXMinY),
@@ -107,9 +107,9 @@ public extension Line {
     func y(for x: Double) -> Double? {
         switch self {
         case .vertical:
-            return nil
+            nil
         case .slopeIntercept(let m, let y0):
-            return m * x + y0
+            m * x + y0
         }
     }
 
@@ -122,11 +122,11 @@ public extension Line {
     }
 
     var m: Double? {
-        if case let .slopeIntercept(m, _) = self { m } else { nil }
+        if case .slopeIntercept(let m, _) = self { m } else { nil }
     }
 
     var y0: Double? {
-        if case let .slopeIntercept(_, b) = self { b } else { nil }
+        if case .slopeIntercept(_, let b) = self { b } else { nil }
     }
 
 //    var rise: Double? {
@@ -140,9 +140,9 @@ public extension Line {
     var xIntercept: Double? {
         switch self {
         case .vertical(let x):
-            return x
+            x
         case .slopeIntercept(let m, let y0):
-            return m != 0 ? -y0 / m : nil
+            m != 0 ? -y0 / m : nil
         }
     }
 
@@ -155,9 +155,9 @@ public extension Line {
     var angle: Angle {
         switch self {
         case .vertical:
-            return .degrees(90)
+            .degrees(90)
         case .slopeIntercept(let m, _):
-            return .radians(atan(m))
+            .radians(atan(m))
         }
     }
 }
@@ -195,9 +195,9 @@ public extension Line {
     func compare(point: CGPoint) -> ComparisonResult {
         switch self {
         case .vertical(let x):
-            return ComparisonResult.compare(x, point.x)
+            ComparisonResult.compare(x, point.x)
         case .slopeIntercept(let m, let y0):
-            return ComparisonResult.compare(m * point.x + y0, point.y)
+            ComparisonResult.compare(m * point.x + y0, point.y)
         }
     }
 }
@@ -222,8 +222,8 @@ extension LineSegment: Equatable {
 
 public extension LineSegment {
     init(_ x0: Double, _ y0: Double, _ x1: Double, _ y1: Double) {
-        self.start = CGPoint(x0, y0)
-        self.end = CGPoint(x1, y1)
+        start = CGPoint(x0, y0)
+        end = CGPoint(x1, y1)
     }
 
     var reversed: LineSegment {
@@ -245,7 +245,7 @@ public extension LineSegment {
 
 public extension LineSegment {
     func map(_ t: (CGPoint) throws -> CGPoint) rethrows -> LineSegment {
-        return LineSegment(try t(start), try t(end))
+        try LineSegment(t(start), t(end))
     }
 
     func parallel(offset: Double) -> LineSegment {
@@ -286,20 +286,20 @@ public extension Line {
 //    }
 
     func lineSegment(bounds: CGRect) -> LineSegment? {
-/*
- 0: 2---3  1: 2---3  2: 2---3  3: 2---3  4: 2--X3  5: 2-X-3  6: 2---3  7: 2X--3
-    |   |     X   |     |   X     |   |     | / |     | | |     |   |     | \ |
-    |   |     |\  |     |  /|     X---X     |/  |     | | |     |   |     |  \|
-    |   |     | \ |     | / |     |   |     X   |     | | |     |   |     |   X
-    0---1     0--X1     0X--1     0---1     0---1     0-X-1     0---1     0---1
+        /*
+         0: 2---3  1: 2---3  2: 2---3  3: 2---3  4: 2--X3  5: 2-X-3  6: 2---3  7: 2X--3
+            |   |     X   |     |   X     |   |     | / |     | | |     |   |     | \ |
+            |   |     |\  |     |  /|     X---X     |/  |     | | |     |   |     |  \|
+            |   |     | \ |     | / |     |   |     X   |     | | |     |   |     |   X
+            0---1     0--X1     0X--1     0---1     0---1     0-X-1     0---1     0---1
 
- 8: 2X--3  9: 2---3 10: 2-X-3 11: 2--X3 12: 2---3 13: 2---3 14: 2---3 15: 2---3
-    | \ |     |   |     | | |     | / |     |   |     |   X     X   |     |   |
-    |  \|     |   |     | | |     |/  |     X---X     |  /|     |\  |     |   |
-    |   X     |   |     | | |     X   |     |   |     | / |     | \ |     |   |
-    0---1     0---1     0-X-1     0---1     0---1     0X--1     0--X1     0---1
+         8: 2X--3  9: 2---3 10: 2-X-3 11: 2--X3 12: 2---3 13: 2---3 14: 2---3 15: 2---3
+            | \ |     |   |     | | |     | / |     |   |     |   X     X   |     |   |
+            |  \|     |   |     | | |     |/  |     X---X     |  /|     |\  |     |   |
+            |   X     |   |     | | |     X   |     |   |     | / |     | \ |     |   |
+            0---1     0---1     0-X-1     0---1     0---1     0X--1     0--X1     0---1
 
- */
+         */
         let corner_0 = (compare(point: bounds.minXMinY) == .orderedDescending) ? 1 : 0
         let corner_1 = (compare(point: bounds.maxXMinY) == .orderedDescending) ? 1 : 0
         let corner_2 = (compare(point: bounds.minXMaxY) == .orderedDescending) ? 1 : 0
@@ -335,21 +335,20 @@ public extension Line {
     }
 }
 
-//binary   3 2 1 0  class
-//0  0000    ≤ ≤ ≤ ≤    0
-//1  0001    ≤ ≤ ≤ >    1
-//2  0010    ≤ ≤ > ≤    1
-//3  0011    ≤ ≤ > >    2
-//4  0100    ≤ > ≤ ≤    1
-//5  0101    ≤ > ≤ >    2
-//6  0110    ≤ > > ≤    0
-//7  0111    ≤ > > >    1
-//8  1000    > ≤ ≤ ≤    1
-//9  1001    > ≤ ≤ >    0
-//10  1010    > ≤ > ≤    2
-//11  1011    > ≤ > >    1
-//12  1100    > > ≤ ≤    2
-//13  1101    > > ≤ >    1
-//14  1110    > > > ≤    1
-//15  1111    > > > >    0
-
+// binary   3 2 1 0  class
+// 0  0000    ≤ ≤ ≤ ≤    0
+// 1  0001    ≤ ≤ ≤ >    1
+// 2  0010    ≤ ≤ > ≤    1
+// 3  0011    ≤ ≤ > >    2
+// 4  0100    ≤ > ≤ ≤    1
+// 5  0101    ≤ > ≤ >    2
+// 6  0110    ≤ > > ≤    0
+// 7  0111    ≤ > > >    1
+// 8  1000    > ≤ ≤ ≤    1
+// 9  1001    > ≤ ≤ >    0
+// 10  1010    > ≤ > ≤    2
+// 11  1011    > ≤ > >    1
+// 12  1100    > > ≤ ≤    2
+// 13  1101    > > ≤ >    1
+// 14  1110    > > > ≤    1
+// 15  1111    > > > >    0

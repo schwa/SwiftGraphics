@@ -1,8 +1,8 @@
 import CoreGraphics
-import SwiftUI
-import VectorSupport
 import CoreGraphicsSupport
 import Geometry
+import SwiftUI
+import VectorSupport
 
 extension CGPoint {
     func flipVertically(within rect: CGRect) -> CGPoint {
@@ -11,39 +11,37 @@ extension CGPoint {
 }
 
 #if os(macOS)
-struct LastRightMouseDownLocationModifier: ViewModifier {
-    
-    @Binding
-    var location: CGPoint?
-    
-    init(_ location: Binding<CGPoint?>) {
-        self._location = location
-    }
-    
-    func body(content: Content) -> some View {
-        content.onAppear(perform: {
-            NSEvent.addLocalMonitorForEvents(matching: [.rightMouseDown]) {
-                if let frame = $0.window?.frame {
-                    location = $0.locationInWindow.flipVertically(within: frame)
+    struct LastRightMouseDownLocationModifier: ViewModifier {
+        @Binding
+        var location: CGPoint?
+
+        init(_ location: Binding<CGPoint?>) {
+            _location = location
+        }
+
+        func body(content: Content) -> some View {
+            content.onAppear(perform: {
+                NSEvent.addLocalMonitorForEvents(matching: [.rightMouseDown]) {
+                    if let frame = $0.window?.frame {
+                        location = $0.locationInWindow.flipVertically(within: frame)
+                    }
+                    return $0
                 }
-                return $0
-            }
-        })
+            })
+        }
     }
-}
 
-
-extension View {
-    func lastRightMouseDownLocation(_ location: Binding <CGPoint?>) -> some View {
-        modifier(LastRightMouseDownLocationModifier(location))
+    extension View {
+        func lastRightMouseDownLocation(_ location: Binding<CGPoint?>) -> some View {
+            modifier(LastRightMouseDownLocationModifier(location))
+        }
     }
-}
 #endif
 
-struct Composite <Root, Stem> {
+struct Composite<Root, Stem> {
     var root: Root
     var stem: Stem?
-    
+
     init(_ root: Root, _ stem: Stem? = nil) {
         self.root = root
         self.stem = stem
@@ -54,19 +52,18 @@ extension Composite: Equatable where Root: Equatable, Stem: Equatable {
 }
 
 extension Composite: Hashable where Root: Hashable, Stem: Hashable {
-    
 }
 
 public struct EmptyShape: Shape {
     public init() {
     }
-    
+
     public func path(in rect: CGRect) -> Path {
-        return Path()
+        Path()
     }
 }
 
-public struct Identified <ID, Content>: Identifiable where ID: Hashable {
+public struct Identified<ID, Content>: Identifiable where ID: Hashable {
     public let id: ID
     public let content: Content
 }
@@ -76,25 +73,25 @@ extension Identified: Equatable where Content: Equatable {
 
 extension Identified: Comparable where Content: Comparable {
     public static func < (lhs: Identified<ID, Content>, rhs: Identified<ID, Content>) -> Bool {
-        return lhs.content < rhs.content
+        lhs.content < rhs.content
     }
 }
 
 public extension Array {
     func identifiedByIndex() -> [Identified<Int, Element>] {
-        return self.enumerated().map {
+        enumerated().map {
             Identified(id: $0.offset, content: $0.element)
         }
     }
 }
 
-public struct JSONCodingTransferable <Element>: Transferable where Element: Codable {
+public struct JSONCodingTransferable<Element>: Transferable where Element: Codable {
     let element: Element
-    
+
     public init(element: Element) {
         self.element = element
     }
-    
+
     public static var transferRepresentation: some TransferRepresentation {
         DataRepresentation(contentType: .json) { layer in
             try JSONEncoder().encode(layer.element)
@@ -105,25 +102,23 @@ public struct JSONCodingTransferable <Element>: Transferable where Element: Coda
     }
 }
 
-public struct RelativeTimelineView <Schedule, Content>: View where Schedule: TimelineSchedule, Content: View {
-    
+public struct RelativeTimelineView<Schedule, Content>: View where Schedule: TimelineSchedule, Content: View {
     let schedule: Schedule
     let content: (TimelineViewDefaultContext, TimeInterval) -> Content
-    
+
     @State
-    var start: Date = Date()
-    
+    var start: Date = .init()
+
     public init(schedule: Schedule, content: @escaping (TimelineViewDefaultContext, TimeInterval) -> Content, start: Date = Date()) {
         self.schedule = schedule
         self.content = content
         self.start = start
     }
-    
+
     public var body: some View {
         TimelineView(schedule) { context in content(context, Date().timeIntervalSince(start)) }
     }
 }
-
 
 public extension GraphicsContext {
     func drawDot(at position: CGPoint) {
@@ -132,24 +127,21 @@ public extension GraphicsContext {
 }
 
 public extension Array {
-    func `get`(index: Index) -> Element? {
+    func get(index: Index) -> Element? {
         if (startIndex ..< endIndex).contains(index) {
-            return self[index]
+            self[index]
         }
         else {
-            return nil
+            nil
         }
     }
 }
-
 
 extension Angle: CustomStringConvertible {
     public var description: String {
-        return "\(degrees.formatted())°"
+        "\(degrees.formatted())°"
     }
 }
-
-
 
 public extension Sequence {
     // TODO: Deprecate do not use in production.
@@ -158,7 +150,7 @@ public extension Sequence {
         assert(array.count == 2)
         return (array[0], array[1])
     }
-    
+
     var tuple3: (Element, Element, Element) {
         let array = Array(self)
         assert(array.count == 3)
@@ -166,17 +158,16 @@ public extension Sequence {
     }
 }
 
-
-public struct PeekingWindowIterator <I>: IteratorProtocol where I: IteratorProtocol {
+public struct PeekingWindowIterator<I>: IteratorProtocol where I: IteratorProtocol {
     public typealias Element = (previous: I.Element?, current: I.Element, next: I.Element?)
-    
+
     var iterator: I
     var element: Element?
-    
+
     public init(iterator: I) {
         self.iterator = iterator
     }
-    
+
     public mutating func next() -> Element? {
         if element == nil {
             guard let current = iterator.next() else {
@@ -200,7 +191,7 @@ public struct PeekingWindowIterator <I>: IteratorProtocol where I: IteratorProto
 }
 
 public extension Sequence {
-    func peekingWindow() -> PeekingWindowIterator <Iterator> {
+    func peekingWindow() -> PeekingWindowIterator<Iterator> {
         PeekingWindowIterator(iterator: makeIterator())
     }
 }
@@ -211,13 +202,11 @@ public extension GraphicsContext {
     }
 }
 
-
 extension Dictionary where Value: Identifiable, Key == Value.ID {
-    
     func contains(_ value: Value) -> Bool {
-        return self[value.id] != nil
+        self[value.id] != nil
     }
-    
+
     @discardableResult
     mutating func insert(_ newMember: Value) -> (inserted: Bool, memberAfterInsert: Value) {
         if let oldMember = self[newMember.id] {
@@ -228,37 +217,34 @@ extension Dictionary where Value: Identifiable, Key == Value.ID {
             return (true, newMember)
         }
     }
-    
+
     @discardableResult
     mutating func update(with newMember: Value) -> Value? {
         let oldValue = self[newMember.id]
         self[newMember.id] = newMember
         return oldValue
     }
-    
+
     @discardableResult
     mutating func remove(_ member: Value) -> Value? {
         let oldValue = self[member.id]
         self[member.id] = nil
         return oldValue
     }
-    
 }
 
 struct MarkingsView: View {
-    
     enum Guide {
         case line(Line)
         case point(CGPoint)
         //        case circle
         //        case
     }
-    
+
     let guides = [
-        Self.rulerGuides(width: 20, angle: .zero)
+        Self.rulerGuides(width: 20, angle: .zero),
     ]
-    
-    
+
     var body: some View {
         Canvas { context, size in
             let bounds = CGRect(size: size)
@@ -278,9 +264,9 @@ struct MarkingsView: View {
             }
         }
     }
-    
+
     static func rulerGuides(width: Double, angle: Angle, includeZero: Bool = true) -> (_ origin: CGPoint, _ bounds: CGRect) -> [Guide] {
-        return { origin, bounds in
+        { _, bounds in
             let d = CGPoint(bounds.size).distance
             return stride(from: includeZero ? 0 : width, through: d, by: width).map { Guide.line(Line.vertical(x: $0)) }
         }

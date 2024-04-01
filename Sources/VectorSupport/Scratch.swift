@@ -1,17 +1,17 @@
+import CoreGraphicsSupport
 import Foundation
 import SwiftUI
-import CoreGraphicsSupport
 
-internal extension ComparisonResult {
+extension ComparisonResult {
     static func compare<T: Comparable>(_ lhs: T, _ rhs: T) -> ComparisonResult {
         if lhs == rhs {
-            return .orderedSame
+            .orderedSame
         }
         else if lhs < rhs {
-            return .orderedAscending
+            .orderedAscending
         }
         else {
-            return .orderedDescending
+            .orderedDescending
         }
     }
 }
@@ -35,7 +35,7 @@ public extension Path {
         self = Path { path in
             let radius = width / 2
             let angle = CGPoint.angle(lineSegment.0, lineSegment.1)
-                //            path.move(to: line.0 + CGPoint(distance: radius, angle: angle - .degrees(90)))
+            //            path.move(to: line.0 + CGPoint(distance: radius, angle: angle - .degrees(90)))
             path.addRelativeArc(center: lineSegment.0, radius: radius, startAngle: angle + .degrees(90), delta: .degrees(180))
             path.addLine(to: lineSegment.1 + CGPoint(distance: radius, angle: angle - .degrees(90)))
             path.addRelativeArc(center: lineSegment.1, radius: radius, startAngle: angle - .degrees(90), delta: .degrees(180))
@@ -45,7 +45,7 @@ public extension Path {
     }
 
     static func circle(center: CGPoint, radius: CGFloat) -> Path {
-        return Path(ellipseIn: CGRect(center: center, radius: radius))
+        Path(ellipseIn: CGRect(center: center, radius: radius))
     }
 
     init(lineSegment: LineSegment) {
@@ -63,13 +63,13 @@ public struct DumbSVGGenerator {
 
     public mutating func add(_ value: LineSegment, color: String = "black", arrow: Bool = false) {
         elements.append {
-            return "<line x1=\"\(value.start.x)\" y1=\"\(value.start.y)\" x2=\"\(value.end.x)\" y2=\"\(value.end.y)\" fill=\"none\" stroke=\"\(color)\" \(arrow ? "marker-end=\"url(#head)\"" : "")/>"
+            "<line x1=\"\(value.start.x)\" y1=\"\(value.start.y)\" x2=\"\(value.end.x)\" y2=\"\(value.end.y)\" fill=\"none\" stroke=\"\(color)\" \(arrow ? "marker-end=\"url(#head)\"" : "")/>"
         }
     }
 
     public mutating func add(_ value: CGRect, stroke: String = "black", fill: String = "none") {
         elements.append {
-            return "<rect x=\"\(value.minX)\" y=\"\(value.minY)\" width=\"\(value.width)\" height=\"\(value.height)\" fill=\"\(fill)\" stroke=\"\(stroke)\"/>"
+            "<rect x=\"\(value.minX)\" y=\"\(value.minY)\" width=\"\(value.width)\" height=\"\(value.height)\" fill=\"\(fill)\" stroke=\"\(stroke)\"/>"
         }
     }
 }
@@ -95,11 +95,10 @@ extension DumbSVGGenerator: CustomStringConvertible {
 //          d='M0,0, 80 100,120'
 //          />
 
-        elements.forEach { element in
+        for element in elements {
             print(element(), to: &s)
         }
         print(#"</svg>"#, to: &s)
         return s
     }
 }
-

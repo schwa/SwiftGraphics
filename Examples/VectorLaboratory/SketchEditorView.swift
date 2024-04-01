@@ -1,45 +1,44 @@
-import SwiftUI
-import CoreGraphicsSupport
 import Algorithms
-import Observation
-import VectorSupport
+import CoreGraphicsSupport
 import Everything
-import SwiftFormats
+import Observation
 import Sketches
+import SwiftFormats
+import SwiftUI
+import VectorSupport
 
 typealias Element = Sketches.Element
 
 struct SketchEditorView: View {
-    
     static let coordinateSpace = NamedCoordinateSpace.named("Sketch")
-    
+
     @Binding
     var sketch: Sketch
-    
+
     @State
     var contextMenuLocation: CGPoint?
-    
+
     @State
     var selection: Set<Element.ID> = []
-    
+
     var body: some View {
         SketchView(sketch: $sketch, selection: $selection)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         #if os(macOS)
-        .lastRightMouseDownLocation($contextMenuLocation)
+            .lastRightMouseDownLocation($contextMenuLocation)
         #endif
-        .toolbar {
-            ForEach(shapeTemplates, id: \.0) { name, image, shape in
-                Button(title: "Add \(name)", systemImage: image) {
-                    sketch.elements.append(Element(shape: shape))
+            .toolbar {
+                ForEach(shapeTemplates, id: \.0) { name, image, shape in
+                    Button(title: "Add \(name)", systemImage: image) {
+                        sketch.elements.append(Element(shape: shape))
+                    }
                 }
             }
-        }
-        .inspector(isPresented: .constant(true)) {
-            ElementsInspectorView(sketch: $sketch, selection: $selection)
-        }
+            .inspector(isPresented: .constant(true)) {
+                ElementsInspectorView(sketch: $sketch, selection: $selection)
+            }
     }
-    
+
     var shapeTemplates: [(String, String, SketchShapeEnum)] {
         [
             ("Line", "line.diagonal", .init(Sketch.LineSegment(start: [50, 50], end: [100, 100]))),
@@ -52,28 +51,27 @@ struct SketchEditorView: View {
 struct SketchView: View {
     @Binding
     var sketch: Sketch
-    
+
     @Binding
     var selection: Set<Element.ID>
 
     @Environment(\.sketchOverlay)
     var sketchOverlay
-    
-    
+
     var body: some View {
         ZStack(alignment: .topLeading) {
             Color.white
                 .onTapGesture {
                     selection = []
                 }
-            ForEach(sketch.elements.indexed(), id: \.element.id) { index, element in
+            ForEach(sketch.elements.indexed(), id: \.element.id) { index, _ in
                 let element = Binding<Element> {
-                    return sketch.elements[index]
+                    sketch.elements[index]
                 } set: { newValue in
                     sketch.elements[index] = newValue
                 }
                 let selected = Binding<Bool> {
-                    return selection.contains(element.id)
+                    selection.contains(element.id)
                 } set: { newValue in
                     if newValue {
                         selection.insert(element.id)
@@ -93,10 +91,10 @@ struct SketchView: View {
 struct ElementView: View {
     @Binding
     var element: Element
-    
+
     @Binding
     var selected: Bool
-    
+
     var body: some View {
         switch element.shape {
         case .point(let shape):
@@ -107,8 +105,8 @@ struct ElementView: View {
             shapeView(shape)
         }
     }
-    
-    func shapeView<Shape>(_ shape: Shape) -> some View where Shape: SketchShape {
+
+    func shapeView(_ shape: some SketchShape) -> some View {
         let shape = Binding {
             shape
         } set: { newValue in
@@ -118,13 +116,13 @@ struct ElementView: View {
     }
 }
 
-struct ShapeView <Shape>: View where Shape: SketchShape {
+struct ShapeView<Shape>: View where Shape: SketchShape {
     @Binding
     var shape: Shape
-    
+
     @Binding
     var selected: Bool
-    
+
     var body: some View {
         ZStack {
             shape.path.stroke()
@@ -133,20 +131,19 @@ struct ShapeView <Shape>: View where Shape: SketchShape {
                 }
             HandlesView(handle: $shape.handles, selected: $selected)
         }
-        
     }
 }
 
-struct HandlesView <Handle>: View where Handle: HandlesProtocol {
+struct HandlesView<Handle>: View where Handle: HandlesProtocol {
     @Binding
     var handle: Handle
-    
+
     @Binding
     var selected: Bool
-    
+
     @State
     var hover = false
-    
+
     @ViewBuilder
     var body: some View {
         ForEach(Array(handle.positions), id: \.0) { key, position in
@@ -160,14 +157,14 @@ struct HandlesView <Handle>: View where Handle: HandlesProtocol {
                 .contentShape(Path.circle(center: position, radius: 8))
         }
     }
-    
+
     func dragGesture(key: Handle.Key) -> some Gesture {
         DragGesture(coordinateSpace: SketchEditorView.coordinateSpace)
             .onChanged { value in
                 handle.positions[key] = value.location
             }
     }
-    
+
     var fillColor: Color {
         if selected {
             Color.accentColor
@@ -178,9 +175,8 @@ struct HandlesView <Handle>: View where Handle: HandlesProtocol {
         else {
             Color.white
         }
-        
     }
-    
+
     var strokeColor: Color {
         if hover {
             Color.accentColor
@@ -209,8 +205,7 @@ extension EnvironmentValues {
 }
 
 extension View {
-    func sketchOverlay <Content>(@ViewBuilder _ overlay: () -> Content) -> some View where Content: View {
+    func sketchOverlay(@ViewBuilder _ overlay: () -> some View) -> some View {
         environment(\.sketchOverlay, AnyView(overlay()))
     }
 }
-

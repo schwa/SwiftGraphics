@@ -135,7 +135,7 @@ public struct IntRectSequence: Sequence {
         private var x: Int
         private var y: Int
 
-        internal init(rect: IntRect) {
+        init(rect: IntRect) {
             self.rect = rect
 
             x = rect.minX

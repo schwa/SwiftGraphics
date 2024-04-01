@@ -142,7 +142,7 @@ public extension Array2D {
     }
 }
 
-//public extension Array2D where Element: ColorConvertible {
+// public extension Array2D where Element: ColorConvertible {
 //    // TODO: Replace with methods on CGContext
 //    func render(in context: CGContext, cellSize: CGSize, dirtyRect: CGRect = .infinite) {
 //        var lastColor: CGColor!
@@ -159,7 +159,7 @@ public extension Array2D {
 //            }
 //        }
 //    }
-//}
+// }
 
 public extension Array2D {
     // TODO: Replace with methods on CGContext
