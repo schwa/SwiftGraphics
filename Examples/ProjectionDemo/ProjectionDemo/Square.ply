@@ -1,0 +1,8 @@
+ply
+format ascii 1.0
+comment Created in Blender version 4.0.2
+element vertex 0
+property float x
+property float y
+property float z
+end_header

@@ -1,8 +1,10 @@
 import CoreGraphics
 import CoreGraphicsSupport
+import Everything
 import Geometry
 import SwiftUI
 import VectorSupport
+import Everything
 
 extension CGPoint {
     func flipVertically(within rect: CGRect) -> CGPoint {
