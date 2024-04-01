@@ -230,8 +230,7 @@ public class EllipticalArc {
      */
     public convenience init(center: CGPoint, a: Double, b: Double,
                             theta: Double, lambda1: Double, lambda2: Double,
-                            isPieSlice: Bool)
-    {
+                            isPieSlice: Bool) {
         self.init(cx: Double(center.x), cy: Double(center.y), a: a, b: b, theta: theta, lambda1: lambda1, lambda2: lambda2, isPieSlice: isPieSlice)
     }
 
@@ -248,8 +247,7 @@ public class EllipticalArc {
      */
     public init(cx: Double, cy: Double, a: Double, b: Double,
                 theta: Double, lambda1: Double, lambda2: Double,
-                isPieSlice: Bool)
-    {
+                isPieSlice: Bool) {
         self.cx = cx
         self.cy = cy
         self.a = a
@@ -578,8 +576,7 @@ public class EllipticalArc {
      */
     // swiftlint:disable:next function_body_length
     private func intersectArc(_ xA: Double, _ yA: Double,
-                              _ xB: Double, _ yB: Double) -> Bool
-    {
+                              _ xB: Double, _ yB: Double) -> Bool {
         var dx = xA - xB
         var dy = yA - yB
         let l = sqrt(dx * dx + dy * dy)
@@ -656,8 +653,7 @@ public class EllipticalArc {
     private static func intersect(_ x1: Double, _ y1: Double,
                                   _ x2: Double, _ y2: Double,
                                   _ xA: Double, _ yA: Double,
-                                  _ xB: Double, _ yB: Double) -> Bool
-    {
+                                  _ xB: Double, _ yB: Double) -> Bool {
         // elements of the equation of the (1, 2) line segment
         let dx12 = x2 - x1
         let dy12 = y2 - y1
@@ -685,8 +681,7 @@ public class EllipticalArc {
      * @return true if the two line segments intersect
      */
     private func intersectOutline(_ xA: Double, _ yA: Double,
-                                  _ xB: Double, _ yB: Double) -> Bool
-    {
+                                  _ xB: Double, _ yB: Double) -> Bool {
         if intersectArc(xA, yA, xB, yB) {
             return true
         }
