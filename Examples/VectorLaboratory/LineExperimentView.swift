@@ -1,13 +1,13 @@
-import SwiftUI
 import Sketches
+import SwiftUI
 import VectorSupport
 
 struct LineExperimentView: View {
     @Binding
     var sketch: Sketch
-    
+
     var body: some View {
-        Canvas { context, size in
+        Canvas { context, _ in
             for bounds in rectangles {
                 for segment in lineSegments {
                     let line = segment.line
@@ -18,13 +18,13 @@ struct LineExperimentView: View {
             }
         }
     }
-    
+
     var rectangles: [CGRect] {
         sketch.elements.map(\.shape).compactMap { shape in
             shape.as(Sketch.Rectangle.self).map { CGRect($0) }
         }
     }
-    
+
     var lineSegments: [LineSegment] {
         sketch.elements.map(\.shape).compactMap { shape in
             shape.as(Sketch.LineSegment.self).map { LineSegment($0) }

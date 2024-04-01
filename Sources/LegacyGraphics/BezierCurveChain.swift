@@ -1,6 +1,6 @@
 import CoreGraphics
-import SwiftUI
 import Geometry
+import SwiftUI
 
 public struct BezierCurveChain {
     // TODO: This isn't really an accurate representaiton of what we want.

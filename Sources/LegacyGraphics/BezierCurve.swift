@@ -1,8 +1,8 @@
 // swiftlint:disable identifier_name
 
 import CoreGraphics
-import SwiftUI
 import Geometry
+import SwiftUI
 
 public struct BezierCurve {
     public enum Order {
@@ -29,20 +29,20 @@ public struct BezierCurve {
     public var order: Order {
         switch controls.count + 2 {
         case 3:
-            return .quadratic
+            .quadratic
         case 4:
-            return .cubic
+            .cubic
         default:
-            return .orderN(controls.count + 2)
+            .orderN(controls.count + 2)
         }
     }
 
     public var points: [CGPoint] {
         if let start {
-            return [start] + controls + [end]
+            [start] + controls + [end]
         }
         else {
-            return controls + [end]
+            controls + [end]
         }
     }
 }

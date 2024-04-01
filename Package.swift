@@ -76,21 +76,21 @@ let package = Package(
                     "SIMDSupport",
                     "Geometry",
                 ]),
-        
-            .testTarget(name: "SwiftGraphicsTests", dependencies: [
-                "Array2D",
-                "CoreGraphicsSupport",
-                "Geometry",
-                "LegacyGraphics",
-                "MetalSupport",
-                "MetalSupportUnsafeConformances",
-                "Raster",
-                "SIMDSupport",
-                "Sketches",
-                "VectorSupport",
-                .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
-                .product(name: "SwiftSyntax", package: "swift-syntax"),
-                .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
-            ]),
+
+        .testTarget(name: "SwiftGraphicsTests", dependencies: [
+            "Array2D",
+            "CoreGraphicsSupport",
+            "Geometry",
+            "LegacyGraphics",
+            "MetalSupport",
+            "MetalSupportUnsafeConformances",
+            "Raster",
+            "SIMDSupport",
+            "Sketches",
+            "VectorSupport",
+            .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
+            .product(name: "SwiftSyntax", package: "swift-syntax"),
+            .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
+        ]),
     ]
 )

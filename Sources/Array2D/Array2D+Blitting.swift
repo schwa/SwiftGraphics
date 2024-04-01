@@ -8,9 +8,9 @@ public extension Array2D {
         let sourcePoints = IntRectSequence(rect: frame)
         let destinationPoints = IntRectSequence(rect: IntRect(origin: position, size: frame.size))
 
-        zip(sourcePoints, destinationPoints).forEach { sourcePoint, destinationPoint in
+        for (sourcePoint, destinationPoint) in zip(sourcePoints, destinationPoints) {
             if let clip, !clip.contains(destinationPoint) {
-                return
+                continue
             }
             let sourceElement = source[sourcePoint]
             let destinationElement = self[destinationPoint]
@@ -32,8 +32,8 @@ public extension Array2D {
     }
 
     struct RectSlice: Sequence {
-        internal let array: Array2D
-        internal let rect: IntRect
+        let array: Array2D
+        let rect: IntRect
 
         init(array: Array2D, rect: IntRect) {
             self.array = array

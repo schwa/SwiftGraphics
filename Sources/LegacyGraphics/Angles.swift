@@ -1,6 +1,6 @@
 //
-//  File.swift
-//  
+//  Angles.swift
+//
 //
 //  Created by Jonathan Wight on 9/16/23.
 //

@@ -40,4 +40,3 @@ extension Element: Codable {
         try container.encode(shape, forKey: .shape)
     }
 }
-

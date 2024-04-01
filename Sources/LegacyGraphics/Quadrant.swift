@@ -12,18 +12,18 @@ public extension Quadrant {
     static func from(point: CGPoint) -> Quadrant {
         if point.y >= 0 {
             if point.x >= 0 {
-                return .maxXMaxY
+                .maxXMaxY
             }
             else {
-                return .minXMaxY
+                .minXMaxY
             }
         }
         else {
             if point.x >= 0 {
-                return .maxXMinY
+                .maxXMinY
             }
             else {
-                return .minXMinY
+                .minXMinY
             }
         }
     }
@@ -31,13 +31,13 @@ public extension Quadrant {
     func toPoint() -> CGPoint {
         switch self {
         case .minXMinY:
-            return CGPoint(x: -1, y: -1)
+            CGPoint(x: -1, y: -1)
         case .maxXMinY:
-            return CGPoint(x: 1, y: -1)
+            CGPoint(x: 1, y: -1)
         case .minXMaxY:
-            return CGPoint(x: -1, y: 1)
+            CGPoint(x: -1, y: 1)
         case .maxXMaxY:
-            return CGPoint(x: 1, y: 1)
+            CGPoint(x: 1, y: 1)
         }
     }
 

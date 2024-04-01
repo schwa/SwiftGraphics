@@ -1,4 +1,5 @@
 import Foundation
+
 //
 // Adapted from https://en.wikipedia.org/wiki/Midpoint_circle_algorithm & https://web.archive.org/web/20120422045142/https://banu.com/blog/7/drawing-circles/
 public func drawCircle(radius: Int, setPixel: (Int, Int) -> Void) {

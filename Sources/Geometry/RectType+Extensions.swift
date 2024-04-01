@@ -427,10 +427,10 @@ public extension RectType where Scalar == Int, Scalar == Point.Scalar, Scalar ==
 
     func contains(point: Point) -> Bool {
         if point.x < minX || point.x >= maxX || point.y < minY || point.y >= maxY {
-            return false
+            false
         }
         else {
-            return true
+            true
         }
     }
 

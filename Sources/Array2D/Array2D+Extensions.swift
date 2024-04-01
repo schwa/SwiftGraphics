@@ -1,6 +1,6 @@
+import Algorithms
 import Foundation
 import Geometry
-import Algorithms
 
 public extension Array2D {
     var rows: [[Element]] {
@@ -56,7 +56,7 @@ public extension Array2D {
 
     func flipped(axis: Axis) -> Array2D {
         var result = self
-        indices.forEach { index in
+        for index in indices {
             let location = index.point
             switch axis {
             case .vertical:

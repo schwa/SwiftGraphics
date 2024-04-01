@@ -29,12 +29,12 @@ public extension CGAffineTransform {
 
 // MARK: -
 
-//@available(*, deprecated, message: "Too tied to CGAffineTransform")
+// @available(*, deprecated, message: "Too tied to CGAffineTransform")
 public protocol AffineTransformable {
     static func * (lhs: Self, rhs: CGAffineTransform) -> Self
 }
 
-//@available(*, deprecated, message: "Too tied to CGAffineTransform")
+// @available(*, deprecated, message: "Too tied to CGAffineTransform")
 public extension AffineTransformable {
     static func *= (lhs: inout Self, rhs: CGAffineTransform) {
         // swiftlint:disable:next shorthand_operator
@@ -42,21 +42,21 @@ public extension AffineTransformable {
     }
 }
 
-//@available(*, deprecated, message: "Too tied to CGAffineTransform")
+// @available(*, deprecated, message: "Too tied to CGAffineTransform")
 extension CGPoint: AffineTransformable {
     public static func * (lhs: CGPoint, rhs: CGAffineTransform) -> CGPoint {
         lhs.applying(rhs)
     }
 }
 
-//@available(*, deprecated, message: "Too tied to CGAffineTransform")
+// @available(*, deprecated, message: "Too tied to CGAffineTransform")
 extension CGSize: AffineTransformable {
     public static func * (lhs: CGSize, rhs: CGAffineTransform) -> CGSize {
         lhs.applying(rhs)
     }
 }
 
-//@available(*, deprecated, message: "Too tied to CGAffineTransform")
+// @available(*, deprecated, message: "Too tied to CGAffineTransform")
 extension CGRect: AffineTransformable {
     public static func * (lhs: CGRect, rhs: CGAffineTransform) -> CGRect {
         lhs.applying(rhs)

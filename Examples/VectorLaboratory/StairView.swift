@@ -1,10 +1,10 @@
+import CoreGraphicsSupport
 import SwiftUI
 import VectorSupport
-import CoreGraphicsSupport
 
 struct StairView: View {
     var body: some View {
-        Canvas { context, size in
+        Canvas { context, _ in
             let rect = CGRect(x: 10, y: 10, width: 500, height: 100)
             context.stroke(Path(rect), with: .color(.red.opacity(0.5)))
             let points = [rect.minXMinY, rect.maxXMinY, rect.maxXMaxY, rect.minXMaxY]

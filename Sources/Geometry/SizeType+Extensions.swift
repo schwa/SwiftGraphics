@@ -65,13 +65,13 @@ public extension CGSize {
 
     var orientation: Orientation {
         if abs(width) > abs(height) {
-            return .landscape
+            .landscape
         }
         else if abs(width) == abs(height) {
-            return .square
+            .square
         }
         else {
-            return .portrait
+            .portrait
         }
     }
 

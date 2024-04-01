@@ -1,6 +1,7 @@
 import Accelerate
 import Foundation
 import simd
+
 //
 public extension Array2D where Element == Float {
     static func * (lhs: Self, rhs: Self) -> Self {
