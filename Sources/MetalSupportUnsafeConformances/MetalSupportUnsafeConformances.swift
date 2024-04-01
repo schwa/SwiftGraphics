@@ -257,9 +257,7 @@ extension MTLGPUFamily: CaseIterable, CustomStringConvertible {
         case .macCatalyst2: return "macCatalyst2"
         case .apple8: return "apple8"
         case .metal3: return "metal3"
-        #if os(iOS)
-            case .apple9: return "apple9"
-        #endif
+        case .apple9: return "apple9"
         @unknown default:
             fatalError("Unknown MTLGPUFamily")
         }
