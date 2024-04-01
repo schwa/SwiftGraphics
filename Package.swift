@@ -24,10 +24,14 @@ let package = Package(
         .library(name: "SIMDSupportUnsafeConformances", targets: ["SIMDSupportUnsafeConformances"]),
         .library(name: "Sketches", targets: ["Sketches"]),
         .library(name: "VectorSupport", targets: ["VectorSupport"]),
+
+        .library(name: "Projection", targets: ["Projection"]),
+        .library(name: "GeometryX", targets: ["GeometryX"]),
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-algorithms", from: "1.0.0"),
         .package(url: "https://github.com/schwa/ApproximateEquality", from: "0.2.1"),
+        .package(url: "https://github.com/apple/swift-argument-parser", from: "1.3.0"),
     ],
     targets: [
         .target(name: "Array2D",
@@ -39,11 +43,9 @@ let package = Package(
         .target(name: "CoreGraphicsSupport"),
         .target(name: "earcut",
                 dependencies: ["earcut_cpp"],
-                swiftSettings: [.interoperabilityMode(.Cxx)]
-               ),
+                swiftSettings: [.interoperabilityMode(.Cxx)]),
         .target(name: "earcut_cpp",
-                exclude: ["earcut.hpp/test", "earcut.hpp/glfw"]
-               ),
+                exclude: ["earcut.hpp/test", "earcut.hpp/glfw"]),
         .target(name: "Geometry", dependencies: [
             "ApproximateEquality",
             "CoreGraphicsSupport",
@@ -84,12 +86,11 @@ let package = Package(
                     "SIMDSupport",
                     "Geometry",
                 ]),
-        
+
         .testTarget(name: "earcuttests", dependencies: [
             "earcut",
-            ],
-            swiftSettings: [.interoperabilityMode(.Cxx)]
-        ),
+        ],
+        swiftSettings: [.interoperabilityMode(.Cxx)]),
         .testTarget(name: "LegacyGraphicsTests", dependencies: [
             "LegacyGraphics",
         ]),
@@ -102,5 +103,19 @@ let package = Package(
         .testTarget(name: "VectorSupportTests", dependencies: [
             "VectorSupport",
         ]),
+
+        .target(name: "Projection",
+                dependencies: ["SIMDSupport"]),
+        .target(name: "GeometryX",
+                dependencies: [
+                    "earcut",
+                    "SIMDSupport",
+                    "CoreGraphicsSupport",
+                    .product(name: "Algorithms", package: "swift-algorithms"),
+                ],
+                swiftSettings: [.interoperabilityMode(.Cxx)]),
+        .executableTarget(name: "TrivialMeshCLI",
+                          dependencies: ["GeometryX", .product(name: "ArgumentParser", package: "swift-argument-parser")],
+                          swiftSettings: [.interoperabilityMode(.Cxx)]),
     ]
 )

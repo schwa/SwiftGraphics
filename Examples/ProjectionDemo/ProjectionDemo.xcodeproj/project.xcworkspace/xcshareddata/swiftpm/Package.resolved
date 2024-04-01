@@ -1,0 +1,86 @@
+{
+  "pins" : [
+    {
+      "identity" : "approximateequality",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/schwa/ApproximateEquality",
+      "state" : {
+        "revision" : "13ae17c1b1eb3bab0912bb29b264d3be2ea38115",
+        "version" : "0.2.1"
+      }
+    },
+    {
+      "identity" : "earcut-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/schwa/earcut-swift",
+      "state" : {
+        "branch" : "main",
+        "revision" : "84309d9350a3e818412c4c13156af5d95d761147"
+      }
+    },
+    {
+      "identity" : "everything",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/schwa/Everything",
+      "state" : {
+        "branch" : "jwight/downsizing",
+        "revision" : "3a9fa51785b50adf07675ee2a13994c71df5ffe2"
+      }
+    },
+    {
+      "identity" : "swift-algorithms",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-algorithms",
+      "state" : {
+        "revision" : "f6919dfc309e7f1b56224378b11e28bab5bccc42",
+        "version" : "1.2.0"
+      }
+    },
+    {
+      "identity" : "swift-argument-parser",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-argument-parser",
+      "state" : {
+        "revision" : "c8ed701b513cf5177118a175d85fbbbcd707ab41",
+        "version" : "1.3.0"
+      }
+    },
+    {
+      "identity" : "swift-numerics",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-numerics",
+      "state" : {
+        "revision" : "0a5bc04095a675662cf24757cc0640aa2204253b",
+        "version" : "1.0.2"
+      }
+    },
+    {
+      "identity" : "swift-syntax",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-syntax.git",
+      "state" : {
+        "revision" : "6ad4ea24b01559dde0773e3d091f1b9e36175036",
+        "version" : "509.0.2"
+      }
+    },
+    {
+      "identity" : "swiftformats",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/schwa/swiftFormats",
+      "state" : {
+        "revision" : "de0d13b019b9a0b68b1d6a83e1f48db3c4d06512",
+        "version" : "0.3.3"
+      }
+    },
+    {
+      "identity" : "swiftgraphics",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/schwa/swiftgraphics.git",
+      "state" : {
+        "branch" : "jwight/develop",
+        "revision" : "14b1d8531f4a89468bca8ae4b30ac0d2731f9029"
+      }
+    }
+  ],
+  "version" : 2
+}
