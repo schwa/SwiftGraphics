@@ -79,9 +79,9 @@ let package = Package(
                     "Geometry",
                 ]),
 
-            .testTarget(name: "LegacyGraphicsTests", dependencies: [
-                "LegacyGraphics",
-            ]),
+        .testTarget(name: "LegacyGraphicsTests", dependencies: [
+            "LegacyGraphics",
+        ]),
         .testTarget(name: "SIMDSupportTests", dependencies: [
             "SIMDSupport",
         ]),
@@ -93,7 +93,3 @@ let package = Package(
         ]),
     ]
 )
-
-//            .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
-//            .product(name: "SwiftSyntax", package: "swift-syntax"),
-//            .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
