@@ -1,0 +1,6 @@
+steps:
+    - commands:
+          - "swift package clean"
+          - "swift build --configuration release"
+          - "swift test"
+          - "swiftlint lint --quiet"

@@ -1,0 +1,14 @@
+--disable andOperator
+--disable emptyBraces
+--disable fileHeader
+--disable redundantParens
+--disable trailingClosures
+--enable isEmpty
+
+--elseposition next-line
+--ifdef indent
+--patternlet inline
+--stripunusedargs closure-only
+--closingparen balanced
+--wraparguments preserve
+--wrapcollections before-first
