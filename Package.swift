@@ -15,7 +15,7 @@ let package = Package(
         .library(name: "Array2D", targets: ["Array2D"]),
         .library(name: "CoreGraphicsSupport", targets: ["CoreGraphicsSupport"]),
         .library(name: "earcut", targets: ["earcut"]),
-        .library(name: "Geometry", targets: ["Geometry"]),
+        .library(name: "LegacyGeometry", targets: ["LegacyGeometry"]),
         .library(name: "LegacyGraphics", targets: ["LegacyGraphics"]),
         .library(name: "MetalSupport", targets: ["MetalSupport"]),
         .library(name: "MetalSupportUnsafeConformances", targets: ["MetalSupportUnsafeConformances"]),
@@ -37,7 +37,7 @@ let package = Package(
         .target(name: "Array2D",
             dependencies: [
                 "CoreGraphicsSupport",
-                "Geometry",
+                "LegacyGeometry",
                 .product(name: "Algorithms", package: "swift-algorithms"),
             ]
         ),
@@ -47,7 +47,7 @@ let package = Package(
             swiftSettings: [.interoperabilityMode(.Cxx)]
         ),
         .target(name: "earcut_cpp", exclude: ["earcut.hpp/test", "earcut.hpp/glfw"]),
-        .target(name: "Geometry", dependencies: [
+        .target(name: "LegacyGeometry", dependencies: [
             "ApproximateEquality",
             "CoreGraphicsSupport",
         ]),
@@ -55,7 +55,7 @@ let package = Package(
             dependencies: [
                 .product(name: "Algorithms", package: "swift-algorithms"),
                 "CoreGraphicsSupport",
-                "Geometry",
+                "LegacyGeometry",
                 "SIMDSupport",
             ]
         ),
@@ -64,7 +64,7 @@ let package = Package(
         .target(name: "Raster",
             dependencies: [
                 .product(name: "Algorithms", package: "swift-algorithms"),
-                "Geometry",
+                "LegacyGeometry",
                 "LegacyGraphics",
             ]
         ),
@@ -78,7 +78,7 @@ let package = Package(
             dependencies: [
                 .product(name: "ApproximateEquality", package: "ApproximateEquality"),
                 "CoreGraphicsSupport",
-                "Geometry",
+                "LegacyGeometry",
                 "SIMDSupport",
                 "VectorSupport",
             ]
@@ -89,7 +89,7 @@ let package = Package(
                 .product(name: "ApproximateEqualityMacros", package: "ApproximateEquality"),
                 "CoreGraphicsSupport",
                 "SIMDSupport",
-                "Geometry",
+                "LegacyGeometry",
             ]
         ),
 

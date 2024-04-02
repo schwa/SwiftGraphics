@@ -1,7 +1,7 @@
 // swiftlint:disable identifier_name
 
 import CoreGraphics
-import Geometry
+import LegacyGeometry
 
 // MARK: Regular Polygon
 

@@ -1,7 +1,7 @@
 import CoreGraphics
 import CoreGraphicsSupport
 import Everything
-import Geometry
+import LegacyGeometry
 import SwiftUI
 import VectorSupport
 import Everything
