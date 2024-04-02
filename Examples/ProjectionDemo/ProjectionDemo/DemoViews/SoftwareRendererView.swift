@@ -1,6 +1,6 @@
 import Algorithms
 import CoreGraphicsSupport
-import GeometryX
+import LegacyGeometryX
 import ModelIO
 import Projection
 import SIMDSupport

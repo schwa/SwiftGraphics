@@ -11,7 +11,7 @@ build-ProjectionDemo:
     xcodebuild -scheme ProjectionDemo -project Examples/ProjectionDemo/ProjectionDemo.xcodeproj -destination 'platform=OS X,arch=x86_64' clean build
     xcodebuild -scheme ProjectionDemo -project Examples/ProjectionDemo/ProjectionDemo.xcodeproj -destination 'generic/platform=iOS' clean build
 
-
-build-examples:
-
+build-VectorLaboratory:
     xcodebuild -scheme VectorLaboratory -project Examples/VectorLaboratory/VectorLaboratory.xcodeproj build
+
+build-all: build-package build-ProjectionDemo build-VectorLaboratory
