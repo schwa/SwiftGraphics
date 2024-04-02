@@ -8,3 +8,23 @@
 - [ ]: Clean up all deprecated code.
 - [ ]: Move all unsafe conformances
 - [ ]: Get test coverage up for Support targets
+- Polygon2D actions
+  - Boolean algebra
+  - Offset
+  - Mirror
+  - Linear Pattern
+  - Circular Pattern
+  - Transform
+  - "Fill" spine
+  - Extrude
+  - isSimple
+  - isConvex
+  - isConcave
+  - Equiangular: all corner angles are equal.
+  - Equilateral: all edges are of the same length.
+  - Regular: both equilateral and equiangular.
+  - cyclic
+  
+- Polygon3D
+  - isPlanar/isSkew
+  - Flip Normals

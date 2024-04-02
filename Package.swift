@@ -94,7 +94,6 @@ let package = Package(
         ),
 
         .testTarget(name: "earcuttests", dependencies: ["earcut"], swiftSettings: [.interoperabilityMode(.Cxx)]),
-        .testTarget(name: "LegacyGraphicsTests", dependencies: ["LegacyGraphics"]),
         .testTarget(name: "SIMDSupportTests", dependencies: ["SIMDSupport"]),
         .testTarget(name: "SketchesTests", dependencies: ["Sketches"]),
         .testTarget(name: "VectorSupportTests", dependencies: ["VectorSupport"]),

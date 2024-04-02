@@ -1,6 +1,32 @@
 import CoreGraphics
 import simd
 
+// MARK: Platonic Solids
+
+// Tetrahedron
+// Cube
+// Octahedron
+// Dodecahedron
+// Icosahedron
+
+// MARK: -
+
+// Sphere
+// Hemisphere
+// Box
+// Pyramid
+// // Truncated Cone
+// Hemioctahedron
+
+// Cone
+// Truncated Cone
+// Capsule
+// Torus
+// Prism
+
+
+// MARK: -
+
 public struct Box<Point: PointLike> {
     public var min: Point
     public var max: Point
