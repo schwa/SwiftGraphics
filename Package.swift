@@ -35,87 +35,86 @@ let package = Package(
     ],
     targets: [
         .target(name: "Array2D",
-                dependencies: [
-                    "CoreGraphicsSupport",
-                    "Geometry",
-                    .product(name: "Algorithms", package: "swift-algorithms"),
-                ]),
+            dependencies: [
+                "CoreGraphicsSupport",
+                "Geometry",
+                .product(name: "Algorithms", package: "swift-algorithms"),
+            ]
+        ),
         .target(name: "CoreGraphicsSupport"),
         .target(name: "earcut",
-                dependencies: ["earcut_cpp"],
-                swiftSettings: [.interoperabilityMode(.Cxx)]),
-        .target(name: "earcut_cpp",
-                exclude: ["earcut.hpp/test", "earcut.hpp/glfw"]),
+            dependencies: ["earcut_cpp"],
+            swiftSettings: [.interoperabilityMode(.Cxx)]
+        ),
+        .target(name: "earcut_cpp", exclude: ["earcut.hpp/test", "earcut.hpp/glfw"]),
         .target(name: "Geometry", dependencies: [
             "ApproximateEquality",
             "CoreGraphicsSupport",
         ]),
         .target(name: "LegacyGraphics",
-                dependencies: [
-                    .product(name: "Algorithms", package: "swift-algorithms"),
-                    "CoreGraphicsSupport",
-                    "Geometry",
-                    "SIMDSupport",
-                ]),
+            dependencies: [
+                .product(name: "Algorithms", package: "swift-algorithms"),
+                "CoreGraphicsSupport",
+                "Geometry",
+                "SIMDSupport",
+            ]
+        ),
         .target(name: "MetalSupport"),
         .target(name: "MetalSupportUnsafeConformances"),
         .target(name: "Raster",
-                dependencies: [
-                    .product(name: "Algorithms", package: "swift-algorithms"),
-                    "Geometry",
-                    "LegacyGraphics",
-                ]),
+            dependencies: [
+                .product(name: "Algorithms", package: "swift-algorithms"),
+                "Geometry",
+                "LegacyGraphics",
+            ]
+        ),
         .target(name: "SIMDSupport",
-                dependencies: [
-                    .product(name: "ApproximateEquality", package: "ApproximateEquality"),
-                ]),
+            dependencies: [
+                .product(name: "ApproximateEquality", package: "ApproximateEquality"),
+            ]
+        ),
         .target(name: "SIMDSupportUnsafeConformances"),
         .target(name: "Sketches",
-                dependencies: [
-                    .product(name: "ApproximateEquality", package: "ApproximateEquality"),
-                    "CoreGraphicsSupport",
-                    "Geometry",
-                    "SIMDSupport",
-                    "VectorSupport",
-                ]),
+            dependencies: [
+                .product(name: "ApproximateEquality", package: "ApproximateEquality"),
+                "CoreGraphicsSupport",
+                "Geometry",
+                "SIMDSupport",
+                "VectorSupport",
+            ]
+        ),
         .target(name: "VectorSupport",
-                dependencies: [
-                    .product(name: "ApproximateEquality", package: "ApproximateEquality"),
-                    .product(name: "ApproximateEqualityMacros", package: "ApproximateEquality"),
-                    "CoreGraphicsSupport",
-                    "SIMDSupport",
-                    "Geometry",
-                ]),
+            dependencies: [
+                .product(name: "ApproximateEquality", package: "ApproximateEquality"),
+                .product(name: "ApproximateEqualityMacros", package: "ApproximateEquality"),
+                "CoreGraphicsSupport",
+                "SIMDSupport",
+                "Geometry",
+            ]
+        ),
 
-        .testTarget(name: "earcuttests", dependencies: [
-            "earcut",
-        ],
-        swiftSettings: [.interoperabilityMode(.Cxx)]),
-        .testTarget(name: "LegacyGraphicsTests", dependencies: [
-            "LegacyGraphics",
-        ]),
-        .testTarget(name: "SIMDSupportTests", dependencies: [
-            "SIMDSupport",
-        ]),
-        .testTarget(name: "SketchesTests", dependencies: [
-            "Sketches",
-        ]),
-        .testTarget(name: "VectorSupportTests", dependencies: [
-            "VectorSupport",
-        ]),
+        .testTarget(name: "earcuttests", dependencies: ["earcut"], swiftSettings: [.interoperabilityMode(.Cxx)]),
+        .testTarget(name: "LegacyGraphicsTests", dependencies: ["LegacyGraphics"]),
+        .testTarget(name: "SIMDSupportTests", dependencies: ["SIMDSupport"]),
+        .testTarget(name: "SketchesTests", dependencies: ["Sketches"]),
+        .testTarget(name: "VectorSupportTests", dependencies: ["VectorSupport"]),
 
-        .target(name: "Projection",
-                dependencies: ["SIMDSupport"]),
+        .target(name: "Projection", dependencies: ["SIMDSupport"]),
         .target(name: "GeometryX",
-                dependencies: [
-                    "earcut",
-                    "SIMDSupport",
-                    "CoreGraphicsSupport",
-                    .product(name: "Algorithms", package: "swift-algorithms"),
-                ],
-                swiftSettings: [.interoperabilityMode(.Cxx)]),
+            dependencies: [
+                "earcut",
+                "SIMDSupport",
+                "CoreGraphicsSupport",
+                .product(name: "Algorithms", package: "swift-algorithms"),
+            ],
+            swiftSettings: [.interoperabilityMode(.Cxx)]
+        ),
         .executableTarget(name: "TrivialMeshCLI",
-                          dependencies: ["GeometryX", .product(name: "ArgumentParser", package: "swift-argument-parser")],
-                          swiftSettings: [.interoperabilityMode(.Cxx)]),
+            dependencies: [
+                "GeometryX",
+                .product(name: "ArgumentParser", package: "swift-argument-parser")
+            ],
+            swiftSettings: [.interoperabilityMode(.Cxx)]
+        ),
     ]
 )
