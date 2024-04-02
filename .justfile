@@ -1,18 +1,17 @@
-diff-SIMDSupport:
-    ksdiff Sources/SIMDSupport/ ~/Projects/SIMD-Support/Sources/SIMDSupport
-    ksdiff Tests/SIMDSupportTests/ ~/Projects/SIMD-Support/Tests/SIMDSupportTests
+prepare:
+    git submodule update --init --recursive
 
-sync-SIMDSupport:
-    rsync --archive --delete Sources/SIMDSupport/ ~/Projects/SIMD-Support/Sources/SIMDSupport
-    rsync --archive --delete Tests/SIMDSupportTests/ ~/Projects/SIMD-Support/Tests/SIMDSupportTests
-    git -C ~/Projects/SIMD-Support add .
-    git -C ~/Projects/SIMD-Support commit  -m "Sync SIMD-Support with SwiftGraphics"
-    git -C ~/Projects/SIMD-Support push
+build-package:
+    swift package clean
+    swift build --configuration debug
+    swift build --configuration release
+    swift test
 
-diff-CoreGraphicsSupport:
-    ksdiff Sources/CoreGraphicsSupport/ ~/Projects/CoreGraphicsGeometrySupport/Sources/CoreGraphicsGeometrySupport
-    ksdiff Tests/CoreGraphicsSupportTests/ ~/Projects/CoreGraphicsGeometrySupport/Tests/CoreGraphicsGeometrySupportTests
+build-ProjectionDemo:
+    xcodebuild -scheme ProjectionDemo -project Examples/ProjectionDemo/ProjectionDemo.xcodeproj -destination 'platform=OS X,arch=x86_64' clean build
+    xcodebuild -scheme ProjectionDemo -project Examples/ProjectionDemo/ProjectionDemo.xcodeproj -destination 'generic/platform=iOS' clean build
+
 
 build-examples:
-    xcodebuild -scheme ProjectionDemo -project Examples/ProjectionDemo/ProjectionDemo.xcodeproj build
+
     xcodebuild -scheme VectorLaboratory -project Examples/VectorLaboratory/VectorLaboratory.xcodeproj build
