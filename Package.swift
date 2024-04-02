@@ -26,7 +26,7 @@ let package = Package(
         .library(name: "VectorSupport", targets: ["VectorSupport"]),
 
         .library(name: "Projection", targets: ["Projection"]),
-        .library(name: "GeometryX", targets: ["GeometryX"]),
+        .library(name: "LegacyGeometryX", targets: ["LegacyGeometryX"]),
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-algorithms", from: "1.0.0"),
@@ -99,7 +99,7 @@ let package = Package(
         .testTarget(name: "VectorSupportTests", dependencies: ["VectorSupport"]),
 
         .target(name: "Projection", dependencies: ["SIMDSupport"]),
-        .target(name: "GeometryX",
+        .target(name: "LegacyGeometryX",
             dependencies: [
                 "earcut",
                 "SIMDSupport",
@@ -110,7 +110,7 @@ let package = Package(
         ),
         .executableTarget(name: "TrivialMeshCLI",
             dependencies: [
-                "GeometryX",
+                "LegacyGeometryX",
                 .product(name: "ArgumentParser", package: "swift-argument-parser")
             ],
             swiftSettings: [.interoperabilityMode(.Cxx)]

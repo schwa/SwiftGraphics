@@ -1,5 +1,5 @@
 import CoreGraphicsSupport
-import GeometryX
+import LegacyGeometryX
 import Projection
 import SwiftUI
 

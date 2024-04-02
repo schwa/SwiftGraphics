@@ -15,7 +15,7 @@
       "location" : "https://github.com/schwa/Everything",
       "state" : {
         "branch" : "jwight/downsizing",
-        "revision" : "3a9fa51785b50adf07675ee2a13994c71df5ffe2"
+        "revision" : "1522ed7fa343227c9910b755ffd8cabd0c0176fd"
       }
     },
     {
@@ -59,8 +59,8 @@
       "kind" : "remoteSourceControl",
       "location" : "http://github.com/schwa/SwiftFormats",
       "state" : {
-        "revision" : "de0d13b019b9a0b68b1d6a83e1f48db3c4d06512",
-        "version" : "0.3.3"
+        "revision" : "1cc4b51e9e4cead543979e85e5524e0282e7ff29",
+        "version" : "0.3.4"
       }
     }
   ],

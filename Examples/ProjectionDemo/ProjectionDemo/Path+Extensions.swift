@@ -1,4 +1,4 @@
-import GeometryX
+import LegacyGeometryX
 import SwiftUI
 
 extension Path {
