@@ -10,15 +10,6 @@
       }
     },
     {
-      "identity" : "earcut-swift",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/schwa/earcut-swift",
-      "state" : {
-        "branch" : "main",
-        "revision" : "84309d9350a3e818412c4c13156af5d95d761147"
-      }
-    },
-    {
       "identity" : "everything",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/schwa/Everything",
@@ -41,8 +32,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-argument-parser",
       "state" : {
-        "revision" : "c8ed701b513cf5177118a175d85fbbbcd707ab41",
-        "version" : "1.3.0"
+        "revision" : "46989693916f56d1186bd59ac15124caef896560",
+        "version" : "1.3.1"
       }
     },
     {
@@ -70,15 +61,6 @@
       "state" : {
         "revision" : "de0d13b019b9a0b68b1d6a83e1f48db3c4d06512",
         "version" : "0.3.3"
-      }
-    },
-    {
-      "identity" : "swiftgraphics",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/schwa/swiftgraphics.git",
-      "state" : {
-        "branch" : "jwight/develop",
-        "revision" : "14b1d8531f4a89468bca8ae4b30ac0d2731f9029"
       }
     }
   ],
