@@ -1,9 +1,9 @@
 import CoreGraphicsSupport
 import SwiftUI
-@testable import VectorSupport
+@testable import Shapes2D
 import XCTest
 
-final class VectorSupportTests: XCTestCase {
+final class Shapes2DTests: XCTestCase {
     //    func testExample() throws {
     //        func f <Element>(_ tuple: (previous: Element?, current: Element, next: Element?)?) -> [Element?]? {
     //            tuple.map { [$0.previous, $0.current, $0.next] }

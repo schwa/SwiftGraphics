@@ -1,7 +1,7 @@
 import Algorithms
 import CoreGraphicsSupport
 import SwiftUI
-import VectorSupport
+import Shapes2D
 
 struct PathCanvas: View {
     @Binding

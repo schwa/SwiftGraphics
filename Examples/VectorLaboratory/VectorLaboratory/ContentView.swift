@@ -3,7 +3,7 @@ import CoreGraphicsSupport
 import Observation
 import Sketches
 import SwiftUI
-import VectorSupport
+import Shapes2D
 
 struct ContentView: View {
     @State

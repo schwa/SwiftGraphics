@@ -3,9 +3,9 @@ import SwiftUI
 
 // import Algorithms
 // import Observation
-import VectorSupport
+import Shapes2D
 
-typealias LineSegment = VectorSupport.LineSegment
+typealias LineSegment = Shapes2D.LineSegment
 
 public struct Sketch {
     public var elements: [Element]

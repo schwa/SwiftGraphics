@@ -1,6 +1,6 @@
 import CoreGraphicsSupport
 import SwiftUI
-import VectorSupport
+import Shapes2D
 
 struct StairView: View {
     var body: some View {

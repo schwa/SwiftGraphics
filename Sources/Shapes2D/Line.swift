@@ -6,61 +6,6 @@ import CoreGraphicsSupport
 import Foundation
 import SwiftUI
 
-public extension CGPoint {
-    init(origin: CGPoint = .zero, distance d: Double, angle: Angle) {
-        self = CGPoint(x: origin.x + Darwin.cos(angle.radians) * d, y: origin.y + sin(angle.radians) * d)
-    }
-
-    var angle: Angle {
-        .radians(atan2(y, x))
-    }
-
-    var magnitude: Double {
-        x * x + y * y
-    }
-
-    var distance: Double {
-        sqrt(magnitude)
-    }
-
-    var normalized: CGPoint {
-        self / distance
-    }
-
-    static func angle(_ lhs: CGPoint, _ rhs: CGPoint) -> Angle {
-        let d = rhs - lhs
-        return d.angle
-    }
-
-    static func distance(_ lhs: CGPoint, _ rhs: CGPoint) -> Double {
-        let d = rhs - lhs
-        return sqrt(d.x * d.x + d.y * d.y)
-    }
-
-    static func distance(_ points: (CGPoint, CGPoint)) -> Double {
-        distance(points.0, points.1)
-    }
-}
-
-public extension CGPoint {
-    func map(_ f: (Double) -> Double) -> CGPoint {
-        CGPoint(x: f(x), y: f(y))
-    }
-}
-
-public extension CGRect {
-    var edges: [LineSegment] {
-        [
-            LineSegment(minXMinY, maxXMinY),
-            LineSegment(maxXMinY, maxXMaxY),
-            LineSegment(maxXMaxY, maxXMinY),
-            LineSegment(maxXMinY, minXMinY),
-        ]
-    }
-}
-
-// MARK: -
-
 public enum Line: Equatable {
     // https://byjus.com/maths/general-equation-of-a-line/
 
@@ -204,56 +149,6 @@ public extension Line {
 
 // MARK: -
 
-@DeriveApproximateEquality
-public struct LineSegment {
-    public var start: CGPoint
-    public var end: CGPoint
-
-    public init(_ start: CGPoint, _ end: CGPoint) {
-        self.start = start
-        self.end = end
-    }
-}
-
-extension LineSegment: Equatable {
-}
-
-// MARK: -
-
-public extension LineSegment {
-    init(_ x0: Double, _ y0: Double, _ x1: Double, _ y1: Double) {
-        start = CGPoint(x0, y0)
-        end = CGPoint(x1, y1)
-    }
-
-    var reversed: LineSegment {
-        LineSegment(end, start)
-    }
-
-    var line: Line {
-        Line(points: (start, end))
-    }
-
-    typealias Intersection = Line.Intersection
-
-    static func intersection(_ lhs: LineSegment, _ rhs: LineSegment) -> Intersection {
-        let lhs = lhs.line
-        let rhs = rhs.line
-        return Line.intersection(lhs, rhs)
-    }
-}
-
-public extension LineSegment {
-    func map(_ t: (CGPoint) throws -> CGPoint) rethrows -> LineSegment {
-        try LineSegment(t(start), t(end))
-    }
-
-    func parallel(offset: Double) -> LineSegment {
-        let angle = CGPoint.angle(start, end) - .degrees(90)
-        let offset = CGPoint(distance: offset, angle: angle)
-        return map { $0 + offset }
-    }
-}
 
 // https://math.stackexchange.com/questions/2465810/length-of-a-line-inside-a-rectangle
 public extension Line {
@@ -334,6 +229,7 @@ public extension Line {
         }
     }
 }
+
 
 // binary   3 2 1 0  class
 // 0  0000    ≤ ≤ ≤ ≤    0

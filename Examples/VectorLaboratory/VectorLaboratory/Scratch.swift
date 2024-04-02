@@ -3,7 +3,7 @@ import CoreGraphicsSupport
 import Everything
 import LegacyGeometry
 import SwiftUI
-import VectorSupport
+import Shapes2D
 import Everything
 
 extension CGPoint {

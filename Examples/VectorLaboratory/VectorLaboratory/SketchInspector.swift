@@ -2,7 +2,7 @@ import Algorithms
 import CoreGraphicsSupport
 import Observation
 import SwiftUI
-import VectorSupport
+import Shapes2D
 
 import Sketches
 
