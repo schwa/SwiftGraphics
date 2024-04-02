@@ -21,9 +21,9 @@ public extension Triangle {
         if rotation != 0.0 {
             let mid = rect.mid
             let transform = CGAffineTransform(rotation: rotation, origin: mid)
-            p0 *= transform
-            p1 *= transform
-            p2 *= transform
+            p0 = p0.applying(transform)
+            p1 = p1.applying(transform)
+            p2 = p2.applying(transform)
         }
 
         vertex = (p0, p1, p2)

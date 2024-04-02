@@ -106,6 +106,6 @@ public extension LineSegment {
 
     func rotated(angle: CGFloat) -> LineSegment {
         let transform = CGAffineTransform(rotation: angle)
-        return LineSegment(first: first * transform, second: second * transform)
+        return LineSegment(first: first.applying(transform), second: second.applying(transform))
     }
 }

@@ -1,5 +1,5 @@
 import CoreGraphics
-import Geometry
+import CoreGraphicsSupport
 import SwiftUI
 
 public struct BezierCurveChain {
@@ -32,9 +32,9 @@ extension BezierCurveChain: CustomStringConvertible {
 }
 
 extension BezierCurveChain: AffineTransformable {
-    public static func * (lhs: BezierCurveChain, rhs: CGAffineTransform) -> BezierCurveChain {
-        let transformedCurves = lhs.curves.map {
-            $0 * rhs
+    public func applying(_ transform: CGAffineTransform) -> BezierCurveChain {
+        let transformedCurves = curves.map {
+            $0.applying(transform)
         }
         return BezierCurveChain(curves: transformedCurves)
     }
