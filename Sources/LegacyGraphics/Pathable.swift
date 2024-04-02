@@ -1,6 +1,6 @@
 import CoreGraphics
 import Foundation
-import Geometry
+import LegacyGeometry
 import SwiftUI
 
 public protocol Pathable {

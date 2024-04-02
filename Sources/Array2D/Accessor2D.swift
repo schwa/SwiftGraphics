@@ -1,5 +1,5 @@
 //
-import Geometry
+import LegacyGeometry
 
 // TODO: Reduce Storage requirements.
 public struct Accessor2D<Storage> where Storage: RandomAccessCollection & MutableCollection, Storage.Index == Int {

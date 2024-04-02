@@ -1,7 +1,7 @@
 // swiftlint:disable identifier_name
 
 import CoreGraphics
-import Geometry
+import LegacyGeometry
 
 public enum LineSegmentIntersection {
     case intersect(CGPoint)

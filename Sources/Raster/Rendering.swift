@@ -1,5 +1,5 @@
 import Foundation
-import Geometry
+import LegacyGeometry
 
 public func horizontalLine(start: IntPoint, length: Int, plot: (IntPoint) -> Void) {
     let range: CountableRange<Int> = length > 0 ? 0 ..< length : (0 + length) ..< 0

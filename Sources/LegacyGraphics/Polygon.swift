@@ -1,7 +1,7 @@
 // swiftlint:disable identifier_name
 
 import CoreGraphics
-import Geometry
+import LegacyGeometry
 
 public struct Polygon {
     public let points: [CGPoint]

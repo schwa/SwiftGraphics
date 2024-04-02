@@ -3,7 +3,7 @@
 // MARK: Circle
 
 import CoreGraphics
-import Geometry
+import LegacyGeometry
 
 public struct Circle {
     public let center: CGPoint

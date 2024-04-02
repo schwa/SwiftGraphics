@@ -1,5 +1,5 @@
 import CoreGraphics
-import Geometry
+import LegacyGeometry
 
 public struct LineSegment {
     public enum LineEnd {

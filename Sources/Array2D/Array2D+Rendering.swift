@@ -1,7 +1,7 @@
 import Algorithms
 import CoreGraphics
 import CoreGraphicsSupport
-import Geometry
+import LegacyGeometry
 
 // protocol CGImageConvertable {
 //    init(cgImage: CGImage)

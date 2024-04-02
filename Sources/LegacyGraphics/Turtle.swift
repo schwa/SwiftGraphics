@@ -1,6 +1,6 @@
 import CoreGraphics
 import Foundation
-import Geometry
+import LegacyGeometry
 
 public enum TurtleError: Error {
     case compilationError(String)

@@ -1,5 +1,5 @@
 import CoreGraphics
-import Geometry
+import LegacyGeometry
 import simd
 
 // TODO: Replace with SIMD4<>?

@@ -1,6 +1,6 @@
 import CoreGraphics
 import Foundation
-import Geometry
+import LegacyGeometry
 
 public protocol UnitLerpable {
     static var unit: Self { get }
