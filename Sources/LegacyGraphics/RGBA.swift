@@ -7,7 +7,7 @@ import simd
 // TODO: Deprecate
 public typealias RGBA = SIMD4<UInt8>
 
-//// @available(*, deprecated, message: "Use SIMD4<UInt8> instead") TODO: Will deprecate
+//@available(*, deprecated, message: "Use SIMD4<UInt8> instead") TODO: Will deprecate
 // public struct RGBA: Equatable {
 //    public var r: UInt8
 //    public var g: UInt8

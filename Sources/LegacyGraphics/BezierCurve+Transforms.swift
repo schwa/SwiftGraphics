@@ -1,16 +1,16 @@
 import CoreGraphics
-import Geometry
+import CoreGraphicsSupport
 
 extension BezierCurve: AffineTransformable {
-    public static func * (lhs: BezierCurve, rhs: CGAffineTransform) -> BezierCurve {
-        let controls = lhs.controls.map {
-            $0 * rhs
+    public func applying(_ transform: CGAffineTransform) -> Self {
+        let controls = controls.map {
+            $0.applying(transform)
         }
-        if let start = lhs.start {
-            return BezierCurve(start: start * rhs, controls: controls, end: lhs.end * rhs)
+        if let start = start {
+            return BezierCurve(start: start.applying(transform), controls: controls, end: end.applying(transform))
         }
         else {
-            return BezierCurve(controls: controls, end: lhs.end * rhs)
+            return BezierCurve(controls: controls, end: end.applying(transform))
         }
     }
 }

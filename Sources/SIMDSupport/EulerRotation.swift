@@ -3,7 +3,7 @@ import simd
 /**
  A geometric rotation consisting of an axis and an angle around that axis
  */
-// @available(*, deprecated, message: "Will be renamed to angle & axis")
+@available(*, deprecated, message: "Will be renamed to angle & axis")
 public struct EulerRotation<Scalar> where Scalar: SIMDScalar {
     public var angle: Scalar
     public var axis: SIMD3<Scalar>

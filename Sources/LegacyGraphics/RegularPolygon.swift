@@ -56,7 +56,7 @@ public extension RegularPolygon {
 
 public extension RegularPolygon {
     static func * (lhs: RegularPolygon, rhs: CGAffineTransform) -> RegularPolygon {
-        RegularPolygon(nside: lhs.nside, center: lhs.center * rhs, vertex: lhs.vertex * rhs)
+        RegularPolygon(nside: lhs.nside, center: lhs.center.applying(rhs), vertex: lhs.vertex.applying(rhs))
     }
 }
 

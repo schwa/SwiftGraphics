@@ -205,3 +205,10 @@ public extension CGAffineTransform {
 //        }
 //    }
 }
+
+// MARK: -
+
+public protocol AffineTransformable {
+    func applying(_ transform: CGAffineTransform) -> Self
+}
+

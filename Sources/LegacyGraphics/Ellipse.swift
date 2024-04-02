@@ -38,8 +38,8 @@ public struct Ellipse {
     public var foci: (CGPoint, CGPoint) {
         let t = CGAffineTransform(rotationAngle: rotation)
         return (
-            center + CGPoint(x: -F, y: 0) * t,
-            center + CGPoint(x: +F, y: 0) * t
+            center + CGPoint(x: -F, y: 0).applying(t),
+            center + CGPoint(x: +F, y: 0).applying(t)
         )
     }
 }
@@ -124,28 +124,28 @@ public extension Ellipse {
         let da = a * c
         let db = b * c
         let curve0 = BezierCurve(
-            start: center + CGPoint(x: 0, y: b) * t,
-            control1: center + (CGPoint(x: 0, y: b) + CGPoint(x: da, y: 0)) * t,
-            control2: center + (CGPoint(x: a, y: 0) + CGPoint(x: 0, y: db)) * t,
-            end: center + CGPoint(x: a, y: 0) * t
+            start: center + CGPoint(x: 0, y: b).applying(t),
+            control1: center + (CGPoint(x: 0, y: b) + CGPoint(x: da, y: 0)).applying(t),
+            control2: center + (CGPoint(x: a, y: 0) + CGPoint(x: 0, y: db)).applying(t),
+            end: center + CGPoint(x: a, y: 0).applying(t)
         )
         let curve1 = BezierCurve(
-            start: center + CGPoint(x: a, y: 0) * t,
-            control1: center + (CGPoint(x: a, y: 0) + CGPoint(x: 0, y: -db)) * t,
-            control2: center + (CGPoint(x: 0, y: -b) + CGPoint(x: da, y: 0)) * t,
-            end: center + CGPoint(x: 0, y: -b) * t
+            start: center + CGPoint(x: a, y: 0).applying(t),
+            control1: center + (CGPoint(x: a, y: 0) + CGPoint(x: 0, y: -db)).applying(t),
+            control2: center + (CGPoint(x: 0, y: -b) + CGPoint(x: da, y: 0)).applying(t),
+            end: center + CGPoint(x: 0, y: -b).applying(t)
         )
         let curve2 = BezierCurve(
-            start: center + CGPoint(x: 0, y: -b) * t,
-            control1: center + (CGPoint(x: 0, y: -b) + CGPoint(x: -da, y: 0)) * t,
-            control2: center + (CGPoint(x: -a, y: 0) + CGPoint(x: 0, y: -db)) * t,
-            end: center + CGPoint(x: -a, y: 0) * t
+            start: center + CGPoint(x: 0, y: -b).applying(t),
+            control1: center + (CGPoint(x: 0, y: -b) + CGPoint(x: -da, y: 0)).applying(t),
+            control2: center + (CGPoint(x: -a, y: 0) + CGPoint(x: 0, y: -db)).applying(t),
+            end: center + CGPoint(x: -a, y: 0).applying(t)
         )
         let curve3 = BezierCurve(
-            start: center + CGPoint(x: -a, y: 0) * t,
-            control1: center + (CGPoint(x: -a, y: 0) + CGPoint(x: 0, y: db)) * t,
-            control2: center + (CGPoint(x: 0, y: b) + CGPoint(x: -da, y: 0)) * t,
-            end: center + CGPoint(x: 0, y: b) * t
+            start: center + CGPoint(x: -a, y: 0).applying(t),
+            control1: center + (CGPoint(x: -a, y: 0) + CGPoint(x: 0, y: db)).applying(t),
+            control2: center + (CGPoint(x: 0, y: b) + CGPoint(x: -da, y: 0)).applying(t),
+            end: center + CGPoint(x: 0, y: b).applying(t)
         )
 
         return (curve0, curve1, curve2, curve3)
