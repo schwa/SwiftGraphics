@@ -1,0 +1,28 @@
+{
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "sourceLanguages": [
+                "swift"
+            ],
+            "args": [],
+            "cwd": "${workspaceFolder:SwiftGraphics}",
+            "name": "Debug TrivialMeshCLI",
+            "program": "${workspaceFolder:SwiftGraphics}/.build/debug/TrivialMeshCLI",
+            "preLaunchTask": "swift: Build Debug TrivialMeshCLI"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "sourceLanguages": [
+                "swift"
+            ],
+            "args": [],
+            "cwd": "${workspaceFolder:SwiftGraphics}",
+            "name": "Release TrivialMeshCLI",
+            "program": "${workspaceFolder:SwiftGraphics}/.build/release/TrivialMeshCLI",
+            "preLaunchTask": "swift: Build Release TrivialMeshCLI"
+        }
+    ]
+}

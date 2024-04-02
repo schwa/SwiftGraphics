@@ -12,3 +12,7 @@ sync-SIMDSupport:
 diff-CoreGraphicsSupport:
     ksdiff Sources/CoreGraphicsSupport/ ~/Projects/CoreGraphicsGeometrySupport/Sources/CoreGraphicsGeometrySupport
     ksdiff Tests/CoreGraphicsSupportTests/ ~/Projects/CoreGraphicsGeometrySupport/Tests/CoreGraphicsGeometrySupportTests
+
+build-examples:
+    xcodebuild -scheme ProjectionDemo -project Examples/ProjectionDemo/ProjectionDemo.xcodeproj build
+    xcodebuild -scheme VectorLaboratory -project Examples/VectorLaboratory/VectorLaboratory.xcodeproj build
