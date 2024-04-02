@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 60;
+	objectVersion = 56;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -16,16 +16,12 @@
 		452299852B07DC3D00812D1A /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 452299842B07DC3D00812D1A /* Preview Assets.xcassets */; };
 		4522998D2B07DC7800812D1A /* Projection in Frameworks */ = {isa = PBXBuildFile; productRef = 4522998C2B07DC7800812D1A /* Projection */; };
 		4522998F2B07DC8B00812D1A /* SoftwareRendererView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4522998E2B07DC8B00812D1A /* SoftwareRendererView.swift */; };
-		452299922B07DCD200812D1A /* Array2D in Frameworks */ = {isa = PBXBuildFile; productRef = 452299912B07DCD200812D1A /* Array2D */; };
-		452299942B07DCD200812D1A /* CoreGraphicsSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 452299932B07DCD200812D1A /* CoreGraphicsSupport */; };
 		4522999D2B07DCEA00812D1A /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 4522999C2B07DCEA00812D1A /* Algorithms */; };
 		4522999F2B07DDB200812D1A /* Support.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4522999E2B07DDB200812D1A /* Support.swift */; };
 		452299A12B07DE1200812D1A /* Projections.swift in Sources */ = {isa = PBXBuildFile; fileRef = 452299A02B07DE1200812D1A /* Projections.swift */; };
 		452299A52B07E1C400812D1A /* BallRotationModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 452299A42B07E1C400812D1A /* BallRotationModifier.swift */; };
 		452299A82B07E2A900812D1A /* Everything in Frameworks */ = {isa = PBXBuildFile; productRef = 452299A72B07E2A900812D1A /* Everything */; };
 		452299AE2B07E3F200812D1A /* Teapot.ply in Resources */ = {isa = PBXBuildFile; fileRef = 452299AD2B07E3F200812D1A /* Teapot.ply */; };
-		452299B72B07E77B00812D1A /* earcut in Frameworks */ = {isa = PBXBuildFile; productRef = 452299B62B07E77B00812D1A /* earcut */; };
-		452299C02B07F0A300812D1A /* SIMDSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 452299BF2B07F0A300812D1A /* SIMDSupport */; };
 		452299CD2B08103B00812D1A /* Path+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 452299CC2B08103B00812D1A /* Path+Extensions.swift */; };
 		452299CF2B0832B900812D1A /* Inspectors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 452299CE2B0832B900812D1A /* Inspectors.swift */; };
 		452299D22B0832E100812D1A /* SwiftFormats in Frameworks */ = {isa = PBXBuildFile; productRef = 452299D12B0832E100812D1A /* SwiftFormats */; };
@@ -39,6 +35,7 @@
 /* Begin PBXFileReference section */
 		4504788A2B0A9E6F00267CA8 /* Monkey.ply */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Monkey.ply; sourceTree = "<group>"; };
 		4504788E2B0AB69D00267CA8 /* MeshView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeshView.swift; sourceTree = "<group>"; };
+		4506AB852BBBBE3700F83EBE /* SwiftGraphics */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = SwiftGraphics; path = ../..; sourceTree = "<group>"; };
 		4517B4B52B093D78008A0863 /* BoxesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoxesView.swift; sourceTree = "<group>"; };
 		452299792B07DC3C00812D1A /* ProjectionDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ProjectionDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4522997C2B07DC3C00812D1A /* ProjectionDemoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectionDemoApp.swift; sourceTree = "<group>"; };
@@ -54,8 +51,6 @@
 		452299CC2B08103B00812D1A /* Path+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Path+Extensions.swift"; sourceTree = "<group>"; };
 		452299CE2B0832B900812D1A /* Inspectors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Inspectors.swift; sourceTree = "<group>"; };
 		454E16C52B3E78FB00EB6996 /* HalfEdgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HalfEdgeView.swift; sourceTree = "<group>"; };
-		4564DED72B1FAC2A00A76C03 /* GeometryX */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = GeometryX; sourceTree = "<group>"; };
-		45E61CD82B3E25E7001467C2 /* Projection */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Projection; path = ../..; sourceTree = "<group>"; };
 		45E61CD92B3E313B001467C2 /* Cube.ply */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Cube.ply; sourceTree = "<group>"; };
 		45E61CDB2B3E329A001467C2 /* Square.ply */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Square.ply; sourceTree = "<group>"; };
 		45E61CDD2B3E329E001467C2 /* Icosphere.ply */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Icosphere.ply; sourceTree = "<group>"; };
@@ -68,12 +63,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				4522999D2B07DCEA00812D1A /* Algorithms in Frameworks */,
-				452299922B07DCD200812D1A /* Array2D in Frameworks */,
-				452299C02B07F0A300812D1A /* SIMDSupport in Frameworks */,
 				4522998D2B07DC7800812D1A /* Projection in Frameworks */,
-				452299942B07DCD200812D1A /* CoreGraphicsSupport in Frameworks */,
 				452299D22B0832E100812D1A /* SwiftFormats in Frameworks */,
-				452299B72B07E77B00812D1A /* earcut in Frameworks */,
 				452299A82B07E2A900812D1A /* Everything in Frameworks */,
 				4564DED92B1FAC3200A76C03 /* GeometryX in Frameworks */,
 			);
@@ -85,8 +76,8 @@
 		452299702B07DC3C00812D1A = {
 			isa = PBXGroup;
 			children = (
+				4506AB852BBBBE3700F83EBE /* SwiftGraphics */,
 				4522997B2B07DC3C00812D1A /* ProjectionDemo */,
-				4564DED52B1FA5AC00A76C03 /* Packages */,
 				4522997A2B07DC3C00812D1A /* Products */,
 				452299BE2B07F0A300812D1A /* Frameworks */,
 			);
@@ -138,15 +129,6 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		4564DED52B1FA5AC00A76C03 /* Packages */ = {
-			isa = PBXGroup;
-			children = (
-				45E61CD82B3E25E7001467C2 /* Projection */,
-				4564DED72B1FAC2A00A76C03 /* GeometryX */,
-			);
-			path = Packages;
-			sourceTree = "<group>";
-		};
 		45F6E26D2B0ACB9F000D93DB /* DemoViews */ = {
 			isa = PBXGroup;
 			children = (
@@ -177,12 +159,8 @@
 			name = ProjectionDemo;
 			packageProductDependencies = (
 				4522998C2B07DC7800812D1A /* Projection */,
-				452299912B07DCD200812D1A /* Array2D */,
-				452299932B07DCD200812D1A /* CoreGraphicsSupport */,
 				4522999C2B07DCEA00812D1A /* Algorithms */,
 				452299A72B07E2A900812D1A /* Everything */,
-				452299B62B07E77B00812D1A /* earcut */,
-				452299BF2B07F0A300812D1A /* SIMDSupport */,
 				452299D12B0832E100812D1A /* SwiftFormats */,
 				4564DED82B1FAC3200A76C03 /* GeometryX */,
 			);
@@ -198,7 +176,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1510;
-				LastUpgradeCheck = 1510;
+				LastUpgradeCheck = 1530;
 				TargetAttributes = {
 					452299782B07DC3C00812D1A = {
 						CreatedOnToolsVersion = 15.1;
@@ -215,11 +193,8 @@
 			);
 			mainGroup = 452299702B07DC3C00812D1A;
 			packageReferences = (
-				4522998B2B07DC7800812D1A /* XCLocalSwiftPackageReference ".." */,
-				452299902B07DCD200812D1A /* XCRemoteSwiftPackageReference "swiftgraphics" */,
 				4522999B2B07DCEA00812D1A /* XCRemoteSwiftPackageReference "swift-algorithms" */,
 				452299A62B07E2A900812D1A /* XCRemoteSwiftPackageReference "Everything" */,
-				452299B52B07E77B00812D1A /* XCRemoteSwiftPackageReference "earcut-swift" */,
 				452299D02B0832E100812D1A /* XCRemoteSwiftPackageReference "swiftFormats" */,
 			);
 			productRefGroup = 4522997A2B07DC3C00812D1A /* Products */;
@@ -304,6 +279,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -365,6 +341,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -392,6 +369,7 @@
 				CODE_SIGN_ENTITLEMENTS = ProjectionDemo/ProjectionDemo.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"ProjectionDemo/Preview Content\"";
 				DEVELOPMENT_TEAM = 6E23EP94PG;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -432,6 +410,7 @@
 				CODE_SIGN_ENTITLEMENTS = ProjectionDemo/ProjectionDemo.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"ProjectionDemo/Preview Content\"";
 				DEVELOPMENT_TEAM = 6E23EP94PG;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -487,22 +466,7 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCLocalSwiftPackageReference section */
-		4522998B2B07DC7800812D1A /* XCLocalSwiftPackageReference ".." */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = ..;
-		};
-/* End XCLocalSwiftPackageReference section */
-
 /* Begin XCRemoteSwiftPackageReference section */
-		452299902B07DCD200812D1A /* XCRemoteSwiftPackageReference "swiftgraphics" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/schwa/swiftgraphics.git";
-			requirement = {
-				branch = jwight/develop;
-				kind = branch;
-			};
-		};
 		4522999B2B07DCEA00812D1A /* XCRemoteSwiftPackageReference "swift-algorithms" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apple/swift-algorithms.git";
@@ -516,14 +480,6 @@
 			repositoryURL = "https://github.com/schwa/Everything";
 			requirement = {
 				branch = jwight/downsizing;
-				kind = branch;
-			};
-		};
-		452299B52B07E77B00812D1A /* XCRemoteSwiftPackageReference "earcut-swift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/schwa/earcut-swift";
-			requirement = {
-				branch = main;
 				kind = branch;
 			};
 		};
@@ -542,16 +498,6 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = Projection;
 		};
-		452299912B07DCD200812D1A /* Array2D */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 452299902B07DCD200812D1A /* XCRemoteSwiftPackageReference "swiftgraphics" */;
-			productName = Array2D;
-		};
-		452299932B07DCD200812D1A /* CoreGraphicsSupport */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 452299902B07DCD200812D1A /* XCRemoteSwiftPackageReference "swiftgraphics" */;
-			productName = CoreGraphicsSupport;
-		};
 		4522999C2B07DCEA00812D1A /* Algorithms */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 4522999B2B07DCEA00812D1A /* XCRemoteSwiftPackageReference "swift-algorithms" */;
@@ -561,16 +507,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 452299A62B07E2A900812D1A /* XCRemoteSwiftPackageReference "Everything" */;
 			productName = Everything;
-		};
-		452299B62B07E77B00812D1A /* earcut */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 452299B52B07E77B00812D1A /* XCRemoteSwiftPackageReference "earcut-swift" */;
-			productName = earcut;
-		};
-		452299BF2B07F0A300812D1A /* SIMDSupport */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 452299902B07DCD200812D1A /* XCRemoteSwiftPackageReference "swiftgraphics" */;
-			productName = SIMDSupport;
 		};
 		452299D12B0832E100812D1A /* SwiftFormats */ = {
 			isa = XCSwiftPackageProductDependency;
