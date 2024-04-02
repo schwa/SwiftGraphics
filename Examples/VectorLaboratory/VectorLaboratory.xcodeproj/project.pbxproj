@@ -11,6 +11,7 @@
 		450AED6F2A96970200930EF9 /* ElbowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450AED6E2A96970200930EF9 /* ElbowView.swift */; };
 		451698B42A97C1A3009DF247 /* SketchEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451698B32A97C1A3009DF247 /* SketchEditorView.swift */; };
 		451698BE2A97DC3A009DF247 /* SwiftFormats in Frameworks */ = {isa = PBXBuildFile; productRef = 451698BD2A97DC3A009DF247 /* SwiftFormats */; };
+		4525862D2BBCBE5A003E85B4 /* Shapes2D in Frameworks */ = {isa = PBXBuildFile; productRef = 4525862C2BBCBE5A003E85B4 /* Shapes2D */; };
 		454597632A8EBDA800902922 /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 454597622A8EBDA800902922 /* Algorithms */; };
 		45462DBF2BBBBCDD00CF5EF8 /* Everything in Frameworks */ = {isa = PBXBuildFile; productRef = 45462DBE2BBBBCDD00CF5EF8 /* Everything */; };
 		45469CBA2A9F69A300AAE2EF /* LineExperimentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45469CB92A9F69A300AAE2EF /* LineExperimentView.swift */; };
@@ -18,7 +19,6 @@
 		454CE1052BBCB16300ECB521 /* LegacyGeometry in Frameworks */ = {isa = PBXBuildFile; productRef = 454CE1042BBCB16300ECB521 /* LegacyGeometry */; };
 		456A74322A95531B00E75A8E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456A74312A95531B00E75A8E /* ContentView.swift */; };
 		457FC7F42AA2B01C00A27074 /* Sketches in Frameworks */ = {isa = PBXBuildFile; productRef = 457FC7F32AA2B01C00A27074 /* Sketches */; };
-		457FC7F62AA2B01C00A27074 /* VectorSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 457FC7F52AA2B01C00A27074 /* VectorSupport */; };
 		45A82B012AB6D104006D6C59 /* LegacyGraphics in Frameworks */ = {isa = PBXBuildFile; productRef = 45A82B002AB6D104006D6C59 /* LegacyGraphics */; };
 		45A82B0B2AB6D166006D6C59 /* Array2D in Frameworks */ = {isa = PBXBuildFile; productRef = 45A82B0A2AB6D166006D6C59 /* Array2D */; };
 		45A82B0D2AB6D166006D6C59 /* CoreGraphicsSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 45A82B0C2AB6D166006D6C59 /* CoreGraphicsSupport */; };
@@ -66,8 +66,8 @@
 				45A82B132AB6D166006D6C59 /* Raster in Frameworks */,
 				454597632A8EBDA800902922 /* Algorithms in Frameworks */,
 				45A82B0D2AB6D166006D6C59 /* CoreGraphicsSupport in Frameworks */,
-				457FC7F62AA2B01C00A27074 /* VectorSupport in Frameworks */,
 				45A82B012AB6D104006D6C59 /* LegacyGraphics in Frameworks */,
+				4525862D2BBCBE5A003E85B4 /* Shapes2D in Frameworks */,
 				45A82B112AB6D166006D6C59 /* LegacyGraphics in Frameworks */,
 				45462DBF2BBBBCDD00CF5EF8 /* Everything in Frameworks */,
 				45A82B0B2AB6D166006D6C59 /* Array2D in Frameworks */,
@@ -156,7 +156,6 @@
 				454597622A8EBDA800902922 /* Algorithms */,
 				451698BD2A97DC3A009DF247 /* SwiftFormats */,
 				457FC7F32AA2B01C00A27074 /* Sketches */,
-				457FC7F52AA2B01C00A27074 /* VectorSupport */,
 				45A82B002AB6D104006D6C59 /* LegacyGraphics */,
 				45A82B0A2AB6D166006D6C59 /* Array2D */,
 				45A82B0C2AB6D166006D6C59 /* CoreGraphicsSupport */,
@@ -164,6 +163,7 @@
 				45A82B122AB6D166006D6C59 /* Raster */,
 				45462DBE2BBBBCDD00CF5EF8 /* Everything */,
 				454CE1042BBCB16300ECB521 /* LegacyGeometry */,
+				4525862C2BBCBE5A003E85B4 /* Shapes2D */,
 			);
 			productName = StairTest;
 			productReference = 45E5B5DF2A8EA04100B46CDC /* VectorLaboratory.app */;
@@ -495,6 +495,10 @@
 			package = 451698BC2A97DC3A009DF247 /* XCRemoteSwiftPackageReference "SwiftFormats" */;
 			productName = SwiftFormats;
 		};
+		4525862C2BBCBE5A003E85B4 /* Shapes2D */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Shapes2D;
+		};
 		454597622A8EBDA800902922 /* Algorithms */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 454597612A8EBDA800902922 /* XCRemoteSwiftPackageReference "swift-algorithms" */;
@@ -512,10 +516,6 @@
 		457FC7F32AA2B01C00A27074 /* Sketches */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Sketches;
-		};
-		457FC7F52AA2B01C00A27074 /* VectorSupport */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = VectorSupport;
 		};
 		45A82B002AB6D104006D6C59 /* LegacyGraphics */ = {
 			isa = XCSwiftPackageProductDependency;

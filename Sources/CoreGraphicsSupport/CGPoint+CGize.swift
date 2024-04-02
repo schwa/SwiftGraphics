@@ -269,3 +269,4 @@ public extension CGSize {
 
     // TODO: It doesn't really make any sense to have other RNG methods on CGSize?
 }
+

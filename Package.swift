@@ -23,7 +23,7 @@ let package = Package(
         .library(name: "SIMDSupport", targets: ["SIMDSupport"]),
         .library(name: "SIMDSupportUnsafeConformances", targets: ["SIMDSupportUnsafeConformances"]),
         .library(name: "Sketches", targets: ["Sketches"]),
-        .library(name: "VectorSupport", targets: ["VectorSupport"]),
+        .library(name: "Shapes2D", targets: ["Shapes2D"]),
 
         .library(name: "Projection", targets: ["Projection"]),
         .library(name: "LegacyGeometryX", targets: ["LegacyGeometryX"]),
@@ -80,10 +80,11 @@ let package = Package(
                 "CoreGraphicsSupport",
                 "LegacyGeometry",
                 "SIMDSupport",
-                "VectorSupport",
+                "Shapes2D",
             ]
         ),
-        .target(name: "VectorSupport",
+
+        .target(name: "Shapes2D",
             dependencies: [
                 .product(name: "ApproximateEquality", package: "ApproximateEquality"),
                 .product(name: "ApproximateEqualityMacros", package: "ApproximateEquality"),
@@ -96,7 +97,7 @@ let package = Package(
         .testTarget(name: "earcuttests", dependencies: ["earcut"], swiftSettings: [.interoperabilityMode(.Cxx)]),
         .testTarget(name: "SIMDSupportTests", dependencies: ["SIMDSupport"]),
         .testTarget(name: "SketchesTests", dependencies: ["Sketches"]),
-        .testTarget(name: "VectorSupportTests", dependencies: ["VectorSupport"]),
+        .testTarget(name: "Shapes2DTests", dependencies: ["Shapes2D"]),
 
         .target(name: "Projection", dependencies: ["SIMDSupport"]),
         .target(name: "LegacyGeometryX",

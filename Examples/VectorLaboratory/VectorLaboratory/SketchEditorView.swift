@@ -5,7 +5,7 @@ import Observation
 import Sketches
 import SwiftFormats
 import SwiftUI
-import VectorSupport
+import Shapes2D
 
 typealias Element = Sketches.Element
 

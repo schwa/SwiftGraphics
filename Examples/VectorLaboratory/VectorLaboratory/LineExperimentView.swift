@@ -1,6 +1,6 @@
 import Sketches
 import SwiftUI
-import VectorSupport
+import Shapes2D
 
 struct LineExperimentView: View {
     @Binding

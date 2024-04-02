@@ -1,5 +1,7 @@
 import CoreGraphics
 import CoreGraphicsSupport
+//import struct SwiftUI.Angle
+import SwiftUI
 
 public extension CGAffineTransform {
     // Constructor with two fingers' positions while moving fingers.
@@ -12,7 +14,7 @@ public extension CGAffineTransform {
             let angle1 = (to2 - to1).angle, angle2 = (from2 - from1).angle
             self = CGAffineTransform(translation: to1 - from1)
                 * CGAffineTransform(scale: scale, origin: to1)
-                * CGAffineTransform(rotation: angle1 - angle2, origin: to1)
+                * CGAffineTransform(rotation: (angle1 - angle2).radians, origin: to1)
         }
     }
 }
