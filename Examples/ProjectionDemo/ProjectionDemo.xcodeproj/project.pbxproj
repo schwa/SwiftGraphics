@@ -25,8 +25,8 @@
 		452299CD2B08103B00812D1A /* Path+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 452299CC2B08103B00812D1A /* Path+Extensions.swift */; };
 		452299CF2B0832B900812D1A /* Inspectors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 452299CE2B0832B900812D1A /* Inspectors.swift */; };
 		452299D22B0832E100812D1A /* SwiftFormats in Frameworks */ = {isa = PBXBuildFile; productRef = 452299D12B0832E100812D1A /* SwiftFormats */; };
+		452586312BBCC098003E85B4 /* Shapes3D in Frameworks */ = {isa = PBXBuildFile; productRef = 452586302BBCC098003E85B4 /* Shapes3D */; };
 		454E16C62B3E78FB00EB6996 /* HalfEdgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454E16C52B3E78FB00EB6996 /* HalfEdgeView.swift */; };
-		459210142BBCAF0500906FA7 /* LegacyGeometryX in Frameworks */ = {isa = PBXBuildFile; productRef = 459210132BBCAF0500906FA7 /* LegacyGeometryX */; };
 		45E61CDA2B3E313B001467C2 /* Cube.ply in Resources */ = {isa = PBXBuildFile; fileRef = 45E61CD92B3E313B001467C2 /* Cube.ply */; };
 		45E61CDC2B3E329A001467C2 /* Square.ply in Resources */ = {isa = PBXBuildFile; fileRef = 45E61CDB2B3E329A001467C2 /* Square.ply */; };
 		45E61CDE2B3E329E001467C2 /* Icosphere.ply in Resources */ = {isa = PBXBuildFile; fileRef = 45E61CDD2B3E329E001467C2 /* Icosphere.ply */; };
@@ -62,9 +62,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				452586312BBCC098003E85B4 /* Shapes3D in Frameworks */,
 				4522999D2B07DCEA00812D1A /* Algorithms in Frameworks */,
 				4522998D2B07DC7800812D1A /* Projection in Frameworks */,
-				459210142BBCAF0500906FA7 /* LegacyGeometryX in Frameworks */,
 				452299D22B0832E100812D1A /* SwiftFormats in Frameworks */,
 				452299A82B07E2A900812D1A /* Everything in Frameworks */,
 			);
@@ -162,7 +162,7 @@
 				4522999C2B07DCEA00812D1A /* Algorithms */,
 				452299A72B07E2A900812D1A /* Everything */,
 				452299D12B0832E100812D1A /* SwiftFormats */,
-				459210132BBCAF0500906FA7 /* LegacyGeometryX */,
+				452586302BBCC098003E85B4 /* Shapes3D */,
 			);
 			productName = ProjectionDemo;
 			productReference = 452299792B07DC3C00812D1A /* ProjectionDemo.app */;
@@ -513,9 +513,9 @@
 			package = 452299D02B0832E100812D1A /* XCRemoteSwiftPackageReference "swiftFormats" */;
 			productName = SwiftFormats;
 		};
-		459210132BBCAF0500906FA7 /* LegacyGeometryX */ = {
+		452586302BBCC098003E85B4 /* Shapes3D */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = LegacyGeometryX;
+			productName = Shapes3D;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

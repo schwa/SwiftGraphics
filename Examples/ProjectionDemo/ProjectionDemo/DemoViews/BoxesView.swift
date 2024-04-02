@@ -1,5 +1,5 @@
 import CoreGraphicsSupport
-import LegacyGeometryX
+import Shapes3D
 import SwiftUI
 
 struct BoxesView: View {
