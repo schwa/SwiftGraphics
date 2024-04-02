@@ -1,6 +1,6 @@
 import ArgumentParser
 import Foundation
-import LegacyGeometryX
+import Shapes3D
 
 @main
 struct TrivialMeshCLI: ParsableCommand {

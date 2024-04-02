@@ -4,7 +4,7 @@ import CoreGraphicsSupport
 import CoreText
 import earcut
 import Everything
-import LegacyGeometryX
+import Shapes3D
 import ModelIO
 import Projection
 import simd

@@ -1,4 +1,4 @@
-import LegacyGeometryX
+import Shapes3D
 import SwiftUI
 
 extension Path {

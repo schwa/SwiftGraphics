@@ -1,5 +1,5 @@
 import CoreGraphicsSupport
-import LegacyGeometryX
+import Shapes3D
 import Projection
 import simd
 import SwiftUI
@@ -71,7 +71,7 @@ extension HalfEdgeMesh {
         return mesh
     }
 
-    var polygons: [LegacyGeometryX.Polygon<SIMD3<Float>>] {
+    var polygons: [Shapes3D.Polygon<SIMD3<Float>>] {
         faces.map { face in
             var vertices: [SIMD3<Float>] = []
             var halfEdge: HalfEdge! = face.halfEdge

@@ -24,9 +24,9 @@ let package = Package(
         .library(name: "SIMDSupportUnsafeConformances", targets: ["SIMDSupportUnsafeConformances"]),
         .library(name: "Sketches", targets: ["Sketches"]),
         .library(name: "Shapes2D", targets: ["Shapes2D"]),
+        .library(name: "Shapes3D", targets: ["Shapes3D"]),
 
         .library(name: "Projection", targets: ["Projection"]),
-        .library(name: "LegacyGeometryX", targets: ["LegacyGeometryX"]),
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-algorithms", from: "1.0.0"),
@@ -100,7 +100,7 @@ let package = Package(
         .testTarget(name: "Shapes2DTests", dependencies: ["Shapes2D"]),
 
         .target(name: "Projection", dependencies: ["SIMDSupport"]),
-        .target(name: "LegacyGeometryX",
+        .target(name: "Shapes3D",
             dependencies: [
                 "earcut",
                 "SIMDSupport",
@@ -111,7 +111,7 @@ let package = Package(
         ),
         .executableTarget(name: "TrivialMeshCLI",
             dependencies: [
-                "LegacyGeometryX",
+                "Shapes3D",
                 .product(name: "ArgumentParser", package: "swift-argument-parser")
             ],
             swiftSettings: [.interoperabilityMode(.Cxx)]
