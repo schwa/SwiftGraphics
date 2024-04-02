@@ -76,10 +76,9 @@
 		452299702B07DC3C00812D1A = {
 			isa = PBXGroup;
 			children = (
-				4506AB852BBBBE3700F83EBE /* SwiftGraphics */,
 				4522997B2B07DC3C00812D1A /* ProjectionDemo */,
 				4522997A2B07DC3C00812D1A /* Products */,
-				452299BE2B07F0A300812D1A /* Frameworks */,
+				4506AB852BBBBE3700F83EBE /* SwiftGraphics */,
 			);
 			sourceTree = "<group>";
 		};
@@ -120,13 +119,6 @@
 				452299842B07DC3D00812D1A /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
-			sourceTree = "<group>";
-		};
-		452299BE2B07F0A300812D1A /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		45F6E26D2B0ACB9F000D93DB /* DemoViews */ = {
