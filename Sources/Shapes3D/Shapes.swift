@@ -24,7 +24,6 @@ import simd
 // Torus
 // Prism
 
-
 // MARK: -
 
 public struct Box<Point: PointLike> {

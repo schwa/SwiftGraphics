@@ -28,3 +28,6 @@
 - Polygon3D
   - isPlanar/isSkew
   - Flip Normals
+
+- Pathable - one way to convert to path
+- PointLike/GenericPoints/VertexLike - sort it out mate

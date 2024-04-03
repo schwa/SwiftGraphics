@@ -10,7 +10,8 @@ struct ContentView: View {
     var sketch = Sketch()
 
     var body: some View {
-        SketchEditorView(sketch: $sketch)
+        //SketchEditorView(sketch: $sketch)
+        LineDemoView()
     }
 }
 

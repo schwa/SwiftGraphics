@@ -17,6 +17,9 @@ public struct LineSegment {
     }
 }
 
+extension LineSegment: Codable {
+}
+
 extension LineSegment: Equatable {
 }
 
@@ -43,6 +46,10 @@ public extension LineSegment {
         let rhs = rhs.line
         return Line.intersection(lhs, rhs)
     }
+
+    var length: Double {
+        return (end - start).length
+    }
 }
 
 public extension LineSegment {
@@ -56,3 +63,4 @@ public extension LineSegment {
         return map { $0 + offset }
     }
 }
+

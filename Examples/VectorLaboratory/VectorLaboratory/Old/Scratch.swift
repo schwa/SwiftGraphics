@@ -270,7 +270,119 @@ struct MarkingsView: View {
     static func rulerGuides(width: Double, angle: Angle, includeZero: Bool = true) -> (_ origin: CGPoint, _ bounds: CGRect) -> [Guide] {
         { _, bounds in
             let d = CGPoint(bounds.size).distance
-            return stride(from: includeZero ? 0 : width, through: d, by: width).map { Guide.line(Line.vertical(x: $0)) }
+            return stride(from: includeZero ? 0 : width, through: d, by: width).map { Guide.line(.vertical(x: $0)) }
         }
+    }
+}
+
+protocol VerticesConvertible {
+    var vertices: [CGPoint] { get }
+}
+
+extension LineSegment: VerticesConvertible {
+    var vertices: [CGPoint] {
+        [start, end]
+    }
+}
+
+protocol PathConvertible {
+    var path: Path { get }
+}
+
+extension LineSegment: PathConvertible {
+    var path: Path {
+        Path { path in
+            path.addLines([start, end])
+        }
+    }
+}
+
+extension Path {
+    init(_ other: some PathConvertible) {
+        self = other.path
+    }
+}
+
+extension GraphicsContext {
+    func drawMarkers(at positions: [CGPoint], size: CGSize) {
+        positions.forEach {
+            let image = Image(systemName: "circle.fill")
+            draw(image, in: CGRect(center: $0, size: size))
+        }
+    }
+}
+
+
+extension Path {
+
+    init(lines: [CGPoint]) {
+        self = Path { path in
+            path.addLines(lines)
+        }
+    }
+
+    static func line(from: CGPoint, to: CGPoint) -> Path {
+        .init(lines: [from, to])
+    }
+
+    static func horizontalLine(from: CGPoint, length: CGFloat) -> Path {
+        .init(lines: [from, from + [length, 0]])
+    }
+
+    static func verticalLine(from: CGPoint, length: CGFloat) -> Path {
+        .init(lines: [from, from + [0, length]])
+    }
+
+    static func + (lhs: Path, rhs: Path) -> Path {
+        var result = lhs
+        result.addPath(rhs)
+        return result
+    }
+}
+
+extension Binding where Value == CGPoint {
+    func transformed(_ transform: CGAffineTransform) -> Binding {
+        let inverse = transform.inverted()
+        return Binding {
+            wrappedValue.applying(transform)
+        } set: { newValue in
+            wrappedValue = newValue.applying(inverse)
+        }
+    }
+
+    func transformed(_ modify: @escaping (Double) -> Double) -> Binding {
+        return Binding {
+            wrappedValue
+        } set: { newValue in
+            wrappedValue = newValue.map(modify)
+        }
+    }
+}
+
+extension GraphicsContext {
+    func stroke(_ path: Path, with shading: GraphicsContext.Shading, lineWidth: CGFloat = 1, transform: CGAffineTransform) {
+        let path = path.applying(transform)
+        stroke(path, with: shading, lineWidth: lineWidth)
+    }
+
+    func fill(_ path: Path, with shading: GraphicsContext.Shading, transform: CGAffineTransform) {
+        let path = path.applying(transform)
+        fill(path, with: shading)
+    }
+}
+
+extension Color: Codable {
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let components = try container.decode([Double].self)
+        self = .init(red: components[0], green: components[1], blue: components[2])
+    }
+
+    public func encode(to encoder: any Encoder) throws {
+        var container = encoder.singleValueContainer()
+        guard let components = self.resolve(in: .init()).cgColor.converted(to: CGColorSpace(name: CGColorSpace.sRGB)!, intent: .defaultIntent, options: nil)?.components else {
+            fatalError()
+        }
+        try container.encode(components)
     }
 }
