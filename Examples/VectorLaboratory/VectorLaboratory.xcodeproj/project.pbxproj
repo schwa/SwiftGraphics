@@ -9,9 +9,11 @@
 /* Begin PBXBuildFile section */
 		450AED6D2A9696E600930EF9 /* StairView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450AED6C2A9696E600930EF9 /* StairView.swift */; };
 		450AED6F2A96970200930EF9 /* ElbowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450AED6E2A96970200930EF9 /* ElbowView.swift */; };
+		4512ED132BBF5BE80016D02F /* CodableAppStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4512ED122BBF5BE80016D02F /* CodableAppStorage.swift */; };
 		451698B42A97C1A3009DF247 /* SketchEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451698B32A97C1A3009DF247 /* SketchEditorView.swift */; };
 		451698BE2A97DC3A009DF247 /* SwiftFormats in Frameworks */ = {isa = PBXBuildFile; productRef = 451698BD2A97DC3A009DF247 /* SwiftFormats */; };
 		4525862D2BBCBE5A003E85B4 /* Shapes2D in Frameworks */ = {isa = PBXBuildFile; productRef = 4525862C2BBCBE5A003E85B4 /* Shapes2D */; };
+		452586342BBCF8B8003E85B4 /* LineDemoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 452586332BBCF8B8003E85B4 /* LineDemoView.swift */; };
 		454597632A8EBDA800902922 /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 454597622A8EBDA800902922 /* Algorithms */; };
 		45462DBF2BBBBCDD00CF5EF8 /* Everything in Frameworks */ = {isa = PBXBuildFile; productRef = 45462DBE2BBBBCDD00CF5EF8 /* Everything */; };
 		45469CBA2A9F69A300AAE2EF /* LineExperimentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45469CB92A9F69A300AAE2EF /* LineExperimentView.swift */; };
@@ -38,7 +40,9 @@
 /* Begin PBXFileReference section */
 		450AED6C2A9696E600930EF9 /* StairView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StairView.swift; sourceTree = "<group>"; };
 		450AED6E2A96970200930EF9 /* ElbowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElbowView.swift; sourceTree = "<group>"; };
+		4512ED122BBF5BE80016D02F /* CodableAppStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodableAppStorage.swift; sourceTree = "<group>"; };
 		451698B32A97C1A3009DF247 /* SketchEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SketchEditorView.swift; sourceTree = "<group>"; };
+		452586332BBCF8B8003E85B4 /* LineDemoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineDemoView.swift; sourceTree = "<group>"; };
 		45462DBC2BBBBC6700CF5EF8 /* SwiftGraphics */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = SwiftGraphics; path = ../..; sourceTree = "<group>"; };
 		45469CB92A9F69A300AAE2EF /* LineExperimentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineExperimentView.swift; sourceTree = "<group>"; };
 		45493BE52A8F140A0057FD00 /* Shader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Shader.metal; sourceTree = "<group>"; };
@@ -79,6 +83,24 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		452586322BBCF8AA003E85B4 /* Old */ = {
+			isa = PBXGroup;
+			children = (
+				451698B32A97C1A3009DF247 /* SketchEditorView.swift */,
+				45B641FC2A9E88AA00171EE0 /* SketchInspector.swift */,
+				45B642002A9EC6AB00171EE0 /* SketchDocument.swift */,
+				45B642032A9EC7DC00171EE0 /* SketchDocumentEditor.swift */,
+				45469CB92A9F69A300AAE2EF /* LineExperimentView.swift */,
+				45E5B5E42A8EA04100B46CDC /* StrokeView.swift */,
+				450AED6C2A9696E600930EF9 /* StairView.swift */,
+				45B268AA2A8FDA000033A727 /* PathCanvas.swift */,
+				45B268AC2A8FDA060033A727 /* Scratch.swift */,
+				450AED6E2A96970200930EF9 /* ElbowView.swift */,
+				4512ED122BBF5BE80016D02F /* CodableAppStorage.swift */,
+			);
+			path = Old;
+			sourceTree = "<group>";
+		};
 		454CE1032BBCB16300ECB521 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -110,16 +132,8 @@
 				45B642022A9EC70500171EE0 /* Info.plist */,
 				45E5B5E22A8EA04100B46CDC /* VectorLaboratoryApp.swift */,
 				456A74312A95531B00E75A8E /* ContentView.swift */,
-				451698B32A97C1A3009DF247 /* SketchEditorView.swift */,
-				45B641FC2A9E88AA00171EE0 /* SketchInspector.swift */,
-				45B642002A9EC6AB00171EE0 /* SketchDocument.swift */,
-				45B642032A9EC7DC00171EE0 /* SketchDocumentEditor.swift */,
-				45469CB92A9F69A300AAE2EF /* LineExperimentView.swift */,
-				45E5B5E42A8EA04100B46CDC /* StrokeView.swift */,
-				450AED6C2A9696E600930EF9 /* StairView.swift */,
-				45B268AA2A8FDA000033A727 /* PathCanvas.swift */,
-				45B268AC2A8FDA060033A727 /* Scratch.swift */,
-				450AED6E2A96970200930EF9 /* ElbowView.swift */,
+				452586332BBCF8B8003E85B4 /* LineDemoView.swift */,
+				452586322BBCF8AA003E85B4 /* Old */,
 				45493BE52A8F140A0057FD00 /* Shader.metal */,
 				45E5B5E62A8EA04400B46CDC /* Assets.xcassets */,
 				45E5B5E82A8EA04400B46CDC /* VectorLaboratory.entitlements */,
@@ -226,11 +240,13 @@
 			files = (
 				45B268AD2A8FDA060033A727 /* Scratch.swift in Sources */,
 				45B642042A9EC7DC00171EE0 /* SketchDocumentEditor.swift in Sources */,
+				4512ED132BBF5BE80016D02F /* CodableAppStorage.swift in Sources */,
 				45469CBA2A9F69A300AAE2EF /* LineExperimentView.swift in Sources */,
 				45B268AB2A8FDA000033A727 /* PathCanvas.swift in Sources */,
 				450AED6D2A9696E600930EF9 /* StairView.swift in Sources */,
 				45B641FD2A9E88AA00171EE0 /* SketchInspector.swift in Sources */,
 				456A74322A95531B00E75A8E /* ContentView.swift in Sources */,
+				452586342BBCF8B8003E85B4 /* LineDemoView.swift in Sources */,
 				45493BE62A8F140A0057FD00 /* Shader.metal in Sources */,
 				45B642012A9EC6AB00171EE0 /* SketchDocument.swift in Sources */,
 				451698B42A97C1A3009DF247 /* SketchEditorView.swift in Sources */,

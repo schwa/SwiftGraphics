@@ -15,3 +15,6 @@ build-VectorLaboratory:
     xcodebuild -scheme VectorLaboratory -project Examples/VectorLaboratory/VectorLaboratory.xcodeproj build
 
 build-all: build-package build-ProjectionDemo build-VectorLaboratory
+
+lint-fix:
+    swiftlint lint --fix

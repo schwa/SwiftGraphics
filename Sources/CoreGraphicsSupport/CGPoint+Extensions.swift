@@ -50,3 +50,18 @@ public extension CGPoint {
         CGPoint(x: f(x), y: f(y))
     }
 }
+
+public extension CGPoint {
+    var length: Double {
+        get {
+            sqrt(lengthSquared)
+        }
+        set {
+            self = .init(distance: newValue, angle: angle)
+        }
+    }
+
+    var lengthSquared: Double {
+        x * x + y * y
+    }
+}

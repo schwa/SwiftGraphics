@@ -30,7 +30,6 @@ public extension Path {
         }
     }
 
-    @available(*, deprecated, message: "Moved.")
     static func circle(center: CGPoint, radius: CGFloat) -> Path {
         Path(ellipseIn: CGRect(center: center, radius: radius))
     }
@@ -42,5 +41,4 @@ public extension Path {
         }
     }
 }
-
 

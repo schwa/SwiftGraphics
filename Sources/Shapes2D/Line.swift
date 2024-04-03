@@ -6,13 +6,71 @@ import CoreGraphicsSupport
 import Foundation
 import SwiftUI
 
-public enum Line: Equatable {
-    // https://byjus.com/maths/general-equation-of-a-line/
+//public typealias Line = Line
+// https://www.desmos.com/calculator/gtdbajcu41
+// https://www.wolframalpha.com/input?i=line
+// https://byjus.com/maths/general-equation-of-a-line/
+// https://www.omnicalculator.com/math/standard-form-to-slope-intercept-form
+// https://www.wolframalpha.com/widgets/view.jsp?id=4be4308d0f9d17d1da68eea39de9b2ce
 
-    case vertical(x: Double) // TODO: there are two vertical versions of this surely?
-    case slopeIntercept(m: Double, y0: Double) // y = mx+y0
-//    case general(a: Double, b: Double, c: Double) // Ax + By +C = 0,
+public typealias StandardFormLine = Line
+
+public struct Line: Equatable {
+    public var a, b, c: Double
+
+    public init(a: Double, b: Double, c: Double) {
+        assert(a != 0 || b != 0)
+        self.a = a
+        self.b = b
+        self.c = c
+    }
 }
+
+public extension Line {
+    static func horizontal(y: Double) -> Self {
+        .init(a: 0, b: 1, c: -y)
+    }
+
+    static func vertical(x: Double) -> Self {
+        .init(a: 1, b: 0, c: x)
+    }
+
+    init(_ tuple: (a: Double, b: Double, c: Double)) {
+        self = .init(a: tuple.a, b: tuple.b, c: tuple.c)
+    }
+}
+
+public extension Line {
+    var isHorizontal: Bool {
+        a == 0
+    }
+
+    var isVertical: Bool {
+        b == 0
+    }
+
+    func x(forY y: Double) -> Double? {
+        a == 0 ? 0 : (c - b * y) / a
+    }
+
+    func y(forX x: Double) -> Double? {
+        return b == 0 ? nil : -((-c + a * x) / b)
+    }
+
+    var xIntercept: CGPoint? {
+        isHorizontal ? nil : CGPoint(c / a, 0)
+    }
+
+    var yIntercept: CGPoint? {
+        isVertical ? nil : CGPoint(0, c / b)
+    }
+
+    var slope: Double {
+        (-c / b) / (c / a)
+    }
+}
+
+// MARK: -
 
 public extension Line {
     init(points: (CGPoint, CGPoint)) {
@@ -21,91 +79,53 @@ public extension Line {
         let x2 = points.1.x
         let y2 = points.1.y
         if x1 == x2 {
-            self = .vertical(x: x1)
+            self.init(a: 1, b: 0, c: x1)
         }
         else {
             let m = (y2 - y1) / (x2 - x1)
-            let y0 = y1 - m * x1
-            self = .slopeIntercept(m: m, y0: y0)
+            let b = y1 - m * x1
+            self = .init(slopeInterceptFormToStandardForm(m: m, b: b))
         }
     }
+}
 
+// TODO: 
+//public extension Line {
+//    init(point: CGPoint, slope: Double) {
+//        fatalError()
+//    }
+//}
+
+public extension Line {
     // TODO: Unconfirmed/untested
     // [+X, 0] == 0°, clockwise
     init(point: CGPoint, angle: Angle) {
         if angle.degrees == 90 || angle.degrees == 270 {
-            self = .vertical(x: point.x)
+            self.init(a: 1, b: 0, c: point.x)
         }
         else {
             let m = tan(angle.radians)
-            let y0 = m * point.x + point.y
-            self = .slopeIntercept(m: m, y0: -y0)
+            let b = -m * point.x + point.y
+            self = .init(slopeInterceptFormToStandardForm(m: m, b: b))
         }
     }
 }
+
+// MARK: -
 
 public extension Line {
-    func rotate(angle: Angle) -> Line {
-        fatalError()
-    }
-
-    func y(for x: Double) -> Double? {
-        switch self {
-        case .vertical:
-            nil
-        case .slopeIntercept(let m, let y0):
-            m * x + y0
+    func normalized() -> Line {
+        var result = self
+        if b != 0 {
+            result.a = 1.0 / b * result.a
+            result.b = 1.0 / b * result.b
+            result.c = 1.0 / b * result.c
         }
-    }
-
-    var isHorizontal: Bool {
-        m == 0
-    }
-
-    var isVertical: Bool {
-        if case .vertical = self { true } else { false }
-    }
-
-    var m: Double? {
-        if case .slopeIntercept(let m, _) = self { m } else { nil }
-    }
-
-    var y0: Double? {
-        if case .slopeIntercept(_, let b) = self { b } else { nil }
-    }
-
-//    var rise: Double? {
-//        fatalError()
-//    }
-
-//    var run: Double? {
-//        fatalError()
-//    }
-
-    var xIntercept: Double? {
-        switch self {
-        case .vertical(let x):
-            x
-        case .slopeIntercept(let m, let y0):
-            m != 0 ? -y0 / m : nil
-        }
-    }
-
-    var yIntercept: Double? {
-        y0
-    }
-
-    // TODO: Unconfirmed
-    // [+X, 0] == 0°, clockwise
-    var angle: Angle {
-        switch self {
-        case .vertical:
-            .degrees(90)
-        case .slopeIntercept(let m, _):
-            .radians(atan(m))
-        }
+        return result
     }
 }
+
+// MARK: Line Intersection
 
 public extension Line {
     enum Intersection: Equatable {
@@ -114,72 +134,65 @@ public extension Line {
         case everywhere
     }
 
-    static func intersection(_ lhs: Line, _ rhs: Line) -> Intersection {
+    static func intersection(_ lhs: Self, _ rhs: Self) -> Intersection {
+        // TODO: we can clean this up tremendously (write unit tests first!), get rid of forced unwraps.
         if lhs == rhs {
             return .everywhere
         }
-        switch (lhs, rhs) {
-        case (.vertical, .vertical):
-            return .everywhere
-        case (.vertical, .slopeIntercept(_, let y0)):
-            return .point(CGPoint(0, y0))
-        case (.slopeIntercept(_, let y0), .vertical):
-            return .point(CGPoint(0, y0))
-        case (.slopeIntercept(let m1, let b1), .slopeIntercept(let m2, let b2)):
-            if m1 == m2 {
+
+        func verticalIntersection(line: Self, x: Double) -> CGPoint {
+            let y = line.y(forX: x)!
+            return CGPoint(x: x, y: y)
+        }
+
+        switch (lhs.isVertical, rhs.isVertical) {
+        case (true, true):
+            // Two vertical lines.
+            return lhs.xIntercept == rhs.xIntercept ? .everywhere : .none
+        case (false, true):
+            let point = verticalIntersection(line: lhs, x: rhs.xIntercept!.x)
+            return .point(point)
+        case (true, false):
+            let point = verticalIntersection(line: rhs, x: lhs.xIntercept!.x)
+            return .point(point)
+        case (false, false):
+            let lhs = lhs.slopeInterceptForm!
+            let rhs = rhs.slopeInterceptForm!
+            if lhs.m == rhs.m {
                 return .none
             }
-            let x = (b2 - b1) / (m1 - m2)
-            let y = m1 * x + b1
+            let x = (rhs.b - lhs.b) / (lhs.m - rhs.m)
+            let y = lhs.m * x + lhs.b
             return .point(CGPoint(x, y))
         }
     }
 }
 
+// TODO:
+//public extension Line {
+//    func rotate(angle: Angle) -> Line {
+//        fatalError()
+//    }
+//
+//    func reflect(point: CGPoint) -> CGPoint {
+//    }
+//}
+
+// MARK: -
+
 public extension Line {
     func compare(point: CGPoint) -> ComparisonResult {
-        switch self {
-        case .vertical(let x):
-            ComparisonResult.compare(x, point.x)
-        case .slopeIntercept(let m, let y0):
-            ComparisonResult.compare(m * point.x + y0, point.y)
+        if isVertical {
+            return ComparisonResult.compare(xIntercept!.x, point.x)
+        }
+        else {
+            let (m, b) = slopeInterceptForm!.tuple
+            return ComparisonResult.compare(m * point.x + b, point.y)
         }
     }
 }
 
-// MARK: -
-
-
-// https://math.stackexchange.com/questions/2465810/length-of-a-line-inside-a-rectangle
 public extension Line {
-    func interceptsY(x: Double) -> Double? {
-        switch self {
-        case .vertical:
-            nil
-        case .slopeIntercept(let m, let y0):
-            // TODO: Unit test
-            m * x + y0
-        }
-    }
-
-    func interceptsX(y: Double) -> Double? {
-        switch self {
-        case .vertical(let x):
-            x
-        case .slopeIntercept(let m, let y0):
-            // TODO: Unit test
-            (y + -y0) / m
-        }
-    }
-
-//    func interceptsX(_ point: CGPoint) -> CGPoint? {
-//        interceptsX(y: point.y).map { CGPoint($0, point.y) }
-//    }
-
-//    func interceptsY(_ point: CGPoint) -> CGPoint? {
-//        interceptsY(x: point.x).map { CGPoint(point.x, $0) }
-//    }
-
     func lineSegment(bounds: CGRect) -> LineSegment? {
         /*
          0: 2---3  1: 2---3  2: 2---3  3: 2---3  4: 2--X3  5: 2-X-3  6: 2---3  7: 2X--3
@@ -201,35 +214,34 @@ public extension Line {
         let corner_3 = (compare(point: bounds.maxXMaxY) == .orderedDescending) ? 1 : 0
         switch corner_3 << 3 | corner_2 << 2 | corner_1 << 1 | corner_0 << 0 {
         case 1, 14:
-            let x0 = interceptsX(y: bounds.minY)!
-            let y0 = interceptsY(x: bounds.minX)!
+            let x0 = x(forY: bounds.minY)!
+            let y0 = y(forX: bounds.minX)!
             return LineSegment(bounds.minX, y0, x0, bounds.minY)
         case 2, 13:
-            let x0 = interceptsX(y: bounds.minY)!
-            let y0 = interceptsY(x: bounds.maxX)!
+            let x0 = x(forY: bounds.minY)!
+            let y0 = y(forX: bounds.maxX)!
             return LineSegment(bounds.maxX, y0, x0, bounds.minY)
         case 3, 12:
-            let y0 = interceptsY(x: bounds.minX)!
-            let y1 = interceptsY(x: bounds.maxX)!
+            let y0 = y(forX: bounds.minX)!
+            let y1 = y(forX: bounds.maxX)!
             return LineSegment(bounds.minX, y0, bounds.maxX, y1)
         case 4, 11:
-            let x0 = interceptsX(y: bounds.maxY)!
-            let y0 = interceptsY(x: bounds.minX)!
+            let x0 = x(forY: bounds.maxY)!
+            let y0 = y(forX: bounds.minX)!
             return LineSegment(bounds.minX, y0, x0, bounds.maxY)
         case 5, 10:
-            let x0 = interceptsX(y: bounds.minY)!
-            let x1 = interceptsX(y: bounds.maxY)!
+            let x0 = x(forY: bounds.minY)!
+            let x1 = x(forY: bounds.maxY)!
             return LineSegment(CGPoint(x0, bounds.minY), CGPoint(x1, bounds.maxY))
         case 7, 8:
-            let x0 = interceptsX(y: bounds.maxY)!
-            let y0 = interceptsY(x: bounds.maxX)!
+            let x0 = x(forY: bounds.maxY)!
+            let y0 = y(forX: bounds.maxX)!
             return LineSegment(CGPoint(bounds.maxX, y0), CGPoint(x0, bounds.maxY))
         default:
             return nil
         }
     }
 }
-
 
 // binary   3 2 1 0  class
 // 0  0000    ≤ ≤ ≤ ≤    0
@@ -248,3 +260,6 @@ public extension Line {
 // 13  1101    > > ≤ >    1
 // 14  1110    > > > ≤    1
 // 15  1111    > > > >    0
+
+// MARK: -
+
