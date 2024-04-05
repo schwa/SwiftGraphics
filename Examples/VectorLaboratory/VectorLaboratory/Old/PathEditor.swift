@@ -3,7 +3,8 @@ import CoreGraphicsSupport
 import SwiftUI
 import Shapes2D
 
-struct PathCanvas: View {
+struct PathEditor: View {
+
     @Binding
     var points: [CGPoint]
 
