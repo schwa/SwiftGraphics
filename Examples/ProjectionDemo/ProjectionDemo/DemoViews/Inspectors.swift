@@ -148,12 +148,6 @@ struct MapInspector: View {
     }
 }
 
-extension Path {
-    mutating func addLine(to point: CGPoint, relative: Bool) {
-        addLine(to: relative ? (currentPoint ?? .zero) + point : point)
-    }
-}
-
 extension CGPoint {
     init(angle: SwiftUI.Angle, length: Double) {
         self = .init(x: cos(angle.radians) * length, y: sin(angle.radians) * length)

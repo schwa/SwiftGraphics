@@ -2,7 +2,7 @@ import Algorithms
 import CoreGraphics
 import CoreGraphicsSupport
 import CoreText
-import earcut
+import Earcut
 import Everything
 import Shapes3D
 import ModelIO
@@ -184,26 +184,6 @@ extension Path3D {
     }
 }
 
-extension Path {
-    static func star(points: Int, innerRadius: Double, outerRadius: Double) -> Path {
-        var path = Path()
-        assert(points > 1, "Number of points should be greater than 1 for a star")
-        var angle = -0.5 * .pi // Starting from the top
-        for n in 0 ..< points * 2 {
-            let radius = n % 2 == 0 ? outerRadius : innerRadius
-            let point = CGPoint(x: radius * cos(angle), y: radius * sin(angle))
-            if path.isEmpty {
-                path.move(to: point)
-            }
-            else {
-                path.addLine(to: point)
-            }
-            angle += .pi / Double(points)
-        }
-        path.closeSubpath()
-        return path
-    }
-}
 
 public extension SIMD3 where Scalar: BinaryFloatingPoint {
     init(xy: SIMD2<Scalar>) {

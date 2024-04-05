@@ -313,33 +313,6 @@ extension GraphicsContext {
 }
 
 
-extension Path {
-
-    init(lines: [CGPoint]) {
-        self = Path { path in
-            path.addLines(lines)
-        }
-    }
-
-    static func line(from: CGPoint, to: CGPoint) -> Path {
-        .init(lines: [from, to])
-    }
-
-    static func horizontalLine(from: CGPoint, length: CGFloat) -> Path {
-        .init(lines: [from, from + [length, 0]])
-    }
-
-    static func verticalLine(from: CGPoint, length: CGFloat) -> Path {
-        .init(lines: [from, from + [0, length]])
-    }
-
-    static func + (lhs: Path, rhs: Path) -> Path {
-        var result = lhs
-        result.addPath(rhs)
-        return result
-    }
-}
-
 extension Binding where Value == CGPoint {
     func transformed(_ transform: CGAffineTransform) -> Binding {
         let inverse = transform.inverted()
@@ -431,5 +404,6 @@ extension CodableAppStorage where Value : ExpressibleByNilLiteral {
             self._storage = .init(initialValue: nil)
         }
     }
+
 
 }

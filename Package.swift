@@ -14,7 +14,7 @@ let package = Package(
     products: [
         .library(name: "Array2D", targets: ["Array2D"]),
         .library(name: "CoreGraphicsSupport", targets: ["CoreGraphicsSupport"]),
-        .library(name: "earcut", targets: ["earcut"]),
+        .library(name: "Earcut", targets: ["Earcut"]),
         .library(name: "LegacyGeometry", targets: ["LegacyGeometry"]),
         .library(name: "LegacyGraphics", targets: ["LegacyGraphics"]),
         .library(name: "MetalSupport", targets: ["MetalSupport"]),
@@ -32,6 +32,7 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-algorithms", from: "1.0.0"),
         .package(url: "https://github.com/schwa/ApproximateEquality", from: "0.2.1"),
         .package(url: "https://github.com/apple/swift-argument-parser", from: "1.3.0"),
+        .package(url: "https://github.com/ordo-one/package-benchmark", .upToNextMajor(from: "1.4.0")),
     ],
     targets: [
         .target(name: "Array2D",
@@ -42,7 +43,7 @@ let package = Package(
             ]
         ),
         .target(name: "CoreGraphicsSupport"),
-        .target(name: "earcut",
+        .target(name: "Earcut",
             dependencies: ["earcut_cpp"],
             swiftSettings: [.interoperabilityMode(.Cxx)]
         ),
@@ -91,10 +92,11 @@ let package = Package(
                 "CoreGraphicsSupport",
                 "SIMDSupport",
                 "LegacyGeometry",
+                .product(name: "Algorithms", package: "swift-algorithms"),
             ]
         ),
 
-        .testTarget(name: "earcuttests", dependencies: ["earcut"], swiftSettings: [.interoperabilityMode(.Cxx)]),
+        .testTarget(name: "EarcutTests", dependencies: ["Earcut"], swiftSettings: [.interoperabilityMode(.Cxx)]),
         .testTarget(name: "SIMDSupportTests", dependencies: ["SIMDSupport"]),
         .testTarget(name: "SketchesTests", dependencies: ["Sketches"]),
         .testTarget(name: "Shapes2DTests", dependencies: ["Shapes2D"]),
@@ -102,7 +104,7 @@ let package = Package(
         .target(name: "Projection", dependencies: ["SIMDSupport"]),
         .target(name: "Shapes3D",
             dependencies: [
-                "earcut",
+                "Earcut",
                 "SIMDSupport",
                 "CoreGraphicsSupport",
                 .product(name: "Algorithms", package: "swift-algorithms"),
@@ -116,5 +118,19 @@ let package = Package(
             ],
             swiftSettings: [.interoperabilityMode(.Cxx)]
         ),
+        .executableTarget(
+            name: "Shapes2DBenchmarkTarget",
+            dependencies: [
+                "Shapes2D",
+                "CoreGraphicsSupport",
+                .product(name: "Benchmark", package: "package-benchmark"),
+            ],
+            path: "Benchmarks/Shapes2DBenchmarkTarget",
+            plugins: [
+                .plugin(name: "BenchmarkPlugin", package: "package-benchmark")
+            ]
+        ),
+
     ]
 )
+

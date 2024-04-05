@@ -3,7 +3,7 @@ import CoreGraphicsSupport
 import SwiftUI
 import Shapes2D
 
-struct PathEditor: View {
+struct LegacyPathEditor: View {
 
     @Binding
     var points: [CGPoint]

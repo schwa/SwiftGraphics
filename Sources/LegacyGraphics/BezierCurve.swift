@@ -91,8 +91,8 @@ public extension BezierCurve {
     func increasedOrder() -> BezierCurve {
         switch controls.count {
         case 1:
-            let CP1 = points[0] + (CGPoint.Factor(2.0 / 3.0) * (points[1] - points[0]))
-            let CP2 = points[2] + (CGPoint.Factor(2.0 / 3.0) * (points[1] - points[2]))
+            let CP1 = points[0] + (2.0 / 3.0 * (points[1] - points[0]))
+            let CP2 = points[2] + (2.0 / 3.0 * (points[1] - points[2]))
             return BezierCurve(start: start!, controls: [CP1, CP2], end: end)
         case 2:
             return self
