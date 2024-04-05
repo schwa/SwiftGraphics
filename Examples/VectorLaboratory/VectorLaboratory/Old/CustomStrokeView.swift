@@ -3,6 +3,19 @@ import CoreGraphicsSupport
 import SwiftUI
 import Shapes2D
 
+struct CustomStrokeEditor: View {
+    @State
+    var points: [CGPoint] = [[50, 50], [250, 50], [300, 100]]
+
+    var body: some View {
+        ZStack {
+            PathEditor(points: $points)
+            CustomStrokeView(points: points)
+                .allowsHitTesting(false)
+        }
+    }
+}
+
 struct CustomStrokeView: View {
     let points: [CGPoint]
 
