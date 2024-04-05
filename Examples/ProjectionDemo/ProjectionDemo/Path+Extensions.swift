@@ -2,14 +2,6 @@ import Shapes3D
 import SwiftUI
 
 extension Path {
-    var elements: [Path.Element] {
-        var elements: [Path.Element] = []
-        forEach { element in
-            elements.append(element)
-        }
-        return elements
-    }
-
     var polygonalChains: [PolygonalChain<CGPoint>] {
         var polygons: [[CGPoint]] = []
         var current: [CGPoint] = []
@@ -41,11 +33,5 @@ extension Path {
             polygons.append(current)
         }
         return polygons.map { .init(vertices: $0) }
-    }
-
-    init(lines points: [CGPoint]) {
-        self = Path { path in
-            path.addLines(points)
-        }
     }
 }

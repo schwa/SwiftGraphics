@@ -18,3 +18,9 @@ build-all: build-package build-ProjectionDemo build-VectorLaboratory
 
 lint-fix:
     swiftlint lint --fix
+
+benchmark:
+    swift package benchmark --target Shapes2DBenchmarkTarget
+
+# plot-benchmark:
+#     swift package benchmark --target Shapes2DBenchmarkTarget run --filter InternalUTCClock-now --metric wallClock --format histogramPercentiles

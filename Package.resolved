@@ -10,6 +10,33 @@
       }
     },
     {
+      "identity" : "hdrhistogram-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/HdrHistogram/hdrhistogram-swift",
+      "state" : {
+        "revision" : "a69fa24d7b70421870cafa86340ece900489e17e",
+        "version" : "0.1.2"
+      }
+    },
+    {
+      "identity" : "package-benchmark",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ordo-one/package-benchmark",
+      "state" : {
+        "revision" : "e495d16b054737222106f51c80534a020490ac3d",
+        "version" : "1.22.4"
+      }
+    },
+    {
+      "identity" : "package-jemalloc",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ordo-one/package-jemalloc",
+      "state" : {
+        "revision" : "e8a5db026963f5bfeac842d9d3f2cc8cde323b49",
+        "version" : "1.0.0"
+      }
+    },
+    {
       "identity" : "swift-algorithms",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-algorithms",
@@ -28,6 +55,15 @@
       }
     },
     {
+      "identity" : "swift-atomics",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-atomics",
+      "state" : {
+        "revision" : "cd142fd2f64be2100422d658e7411e39489da985",
+        "version" : "1.2.0"
+      }
+    },
+    {
       "identity" : "swift-numerics",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-numerics",
@@ -43,6 +79,24 @@
       "state" : {
         "revision" : "74203046135342e4a4a627476dd6caf8b28fe11b",
         "version" : "509.0.0"
+      }
+    },
+    {
+      "identity" : "swift-system",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-system",
+      "state" : {
+        "revision" : "025bcb1165deab2e20d4eaba79967ce73013f496",
+        "version" : "1.2.1"
+      }
+    },
+    {
+      "identity" : "texttable",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ordo-one/TextTable",
+      "state" : {
+        "revision" : "a27a07300cf4ae322e0079ca0a475c5583dd575f",
+        "version" : "0.0.2"
       }
     }
   ],

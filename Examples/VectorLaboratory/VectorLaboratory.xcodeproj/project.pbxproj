@@ -10,6 +10,7 @@
 		451698BE2A97DC3A009DF247 /* SwiftFormats in Frameworks */ = {isa = PBXBuildFile; productRef = 451698BD2A97DC3A009DF247 /* SwiftFormats */; };
 		4525862D2BBCBE5A003E85B4 /* Shapes2D in Frameworks */ = {isa = PBXBuildFile; productRef = 4525862C2BBCBE5A003E85B4 /* Shapes2D */; };
 		452586342BBCF8B8003E85B4 /* LineDemoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 452586332BBCF8B8003E85B4 /* LineDemoView.swift */; };
+		453777EB2BC096BB00E600A6 /* BeziersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453777EA2BC096BB00E600A6 /* BeziersView.swift */; };
 		454597632A8EBDA800902922 /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 454597622A8EBDA800902922 /* Algorithms */; };
 		45462DBF2BBBBCDD00CF5EF8 /* Everything in Frameworks */ = {isa = PBXBuildFile; productRef = 45462DBE2BBBBCDD00CF5EF8 /* Everything */; };
 		45493BE62A8F140A0057FD00 /* Shader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 45493BE52A8F140A0057FD00 /* Shader.metal */; };
@@ -21,20 +22,22 @@
 		45A82B0D2AB6D166006D6C59 /* CoreGraphicsSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 45A82B0C2AB6D166006D6C59 /* CoreGraphicsSupport */; };
 		45A82B112AB6D166006D6C59 /* LegacyGraphics in Frameworks */ = {isa = PBXBuildFile; productRef = 45A82B102AB6D166006D6C59 /* LegacyGraphics */; };
 		45A82B132AB6D166006D6C59 /* Raster in Frameworks */ = {isa = PBXBuildFile; productRef = 45A82B122AB6D166006D6C59 /* Raster */; };
-		45B268AB2A8FDA000033A727 /* PathEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B268AA2A8FDA000033A727 /* PathEditor.swift */; };
+		45B268AB2A8FDA000033A727 /* LegacyPathEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B268AA2A8FDA000033A727 /* LegacyPathEditor.swift */; };
 		45B268AD2A8FDA060033A727 /* Scratch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B268AC2A8FDA060033A727 /* Scratch.swift */; };
 		45E5B5E32A8EA04100B46CDC /* VectorLaboratoryApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E5B5E22A8EA04100B46CDC /* VectorLaboratoryApp.swift */; };
 		45E5B5E52A8EA04100B46CDC /* CustomStrokeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E5B5E42A8EA04100B46CDC /* CustomStrokeView.swift */; };
 		45E5B5E72A8EA04400B46CDC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 45E5B5E62A8EA04400B46CDC /* Assets.xcassets */; };
 		45E5B5EB2A8EA04400B46CDC /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 45E5B5EA2A8EA04400B46CDC /* Preview Assets.xcassets */; };
+		45F5D7FD2BC0687E00CA1686 /* PathEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F5D7FC2BC0687E00CA1686 /* PathEditor.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		452586332BBCF8B8003E85B4 /* LineDemoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineDemoView.swift; sourceTree = "<group>"; };
+		453777EA2BC096BB00E600A6 /* BeziersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeziersView.swift; sourceTree = "<group>"; };
 		45462DBC2BBBBC6700CF5EF8 /* SwiftGraphics */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = SwiftGraphics; path = ../..; sourceTree = "<group>"; };
 		45493BE52A8F140A0057FD00 /* Shader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Shader.metal; sourceTree = "<group>"; };
 		456A74312A95531B00E75A8E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		45B268AA2A8FDA000033A727 /* PathEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathEditor.swift; sourceTree = "<group>"; };
+		45B268AA2A8FDA000033A727 /* LegacyPathEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyPathEditor.swift; sourceTree = "<group>"; };
 		45B268AC2A8FDA060033A727 /* Scratch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scratch.swift; sourceTree = "<group>"; };
 		45B642022A9EC70500171EE0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		45E5B5DF2A8EA04100B46CDC /* VectorLaboratory.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VectorLaboratory.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -43,6 +46,7 @@
 		45E5B5E62A8EA04400B46CDC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		45E5B5E82A8EA04400B46CDC /* VectorLaboratory.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = VectorLaboratory.entitlements; sourceTree = "<group>"; };
 		45E5B5EA2A8EA04400B46CDC /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		45F5D7FC2BC0687E00CA1686 /* PathEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathEditor.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,8 +74,6 @@
 		452586322BBCF8AA003E85B4 /* Old */ = {
 			isa = PBXGroup;
 			children = (
-				45E5B5E42A8EA04100B46CDC /* CustomStrokeView.swift */,
-				45B268AA2A8FDA000033A727 /* PathEditor.swift */,
 			);
 			path = Old;
 			sourceTree = "<group>";
@@ -109,6 +111,10 @@
 				456A74312A95531B00E75A8E /* ContentView.swift */,
 				452586332BBCF8B8003E85B4 /* LineDemoView.swift */,
 				45B268AC2A8FDA060033A727 /* Scratch.swift */,
+				453777EA2BC096BB00E600A6 /* BeziersView.swift */,
+				45E5B5E42A8EA04100B46CDC /* CustomStrokeView.swift */,
+				45B268AA2A8FDA000033A727 /* LegacyPathEditor.swift */,
+				45F5D7FC2BC0687E00CA1686 /* PathEditor.swift */,
 				452586322BBCF8AA003E85B4 /* Old */,
 				45493BE52A8F140A0057FD00 /* Shader.metal */,
 				45E5B5E62A8EA04400B46CDC /* Assets.xcassets */,
@@ -215,12 +221,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				45B268AD2A8FDA060033A727 /* Scratch.swift in Sources */,
-				45B268AB2A8FDA000033A727 /* PathEditor.swift in Sources */,
+				45B268AB2A8FDA000033A727 /* LegacyPathEditor.swift in Sources */,
 				456A74322A95531B00E75A8E /* ContentView.swift in Sources */,
 				452586342BBCF8B8003E85B4 /* LineDemoView.swift in Sources */,
 				45493BE62A8F140A0057FD00 /* Shader.metal in Sources */,
 				45E5B5E52A8EA04100B46CDC /* CustomStrokeView.swift in Sources */,
+				453777EB2BC096BB00E600A6 /* BeziersView.swift in Sources */,
 				45E5B5E32A8EA04100B46CDC /* VectorLaboratoryApp.swift in Sources */,
+				45F5D7FD2BC0687E00CA1686 /* PathEditor.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

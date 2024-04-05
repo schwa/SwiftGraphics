@@ -1,6 +1,6 @@
 import Algorithms
 import CoreGraphics
-import earcut
+import Earcut
 import simd
 
 // swiftlint:disable force_unwrapping

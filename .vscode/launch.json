@@ -23,6 +23,30 @@
             "name": "Release TrivialMeshCLI",
             "program": "${workspaceFolder:SwiftGraphics}/.build/release/TrivialMeshCLI",
             "preLaunchTask": "swift: Build Release TrivialMeshCLI"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "sourceLanguages": [
+                "swift"
+            ],
+            "args": [],
+            "cwd": "${workspaceFolder:SwiftGraphics}",
+            "name": "Debug Shapes2DBenchmarkTarget",
+            "program": "${workspaceFolder:SwiftGraphics}/.build/debug/Shapes2DBenchmarkTarget",
+            "preLaunchTask": "swift: Build Debug Shapes2DBenchmarkTarget"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "sourceLanguages": [
+                "swift"
+            ],
+            "args": [],
+            "cwd": "${workspaceFolder:SwiftGraphics}",
+            "name": "Release Shapes2DBenchmarkTarget",
+            "program": "${workspaceFolder:SwiftGraphics}/.build/release/Shapes2DBenchmarkTarget",
+            "preLaunchTask": "swift: Build Release Shapes2DBenchmarkTarget"
         }
     ]
 }

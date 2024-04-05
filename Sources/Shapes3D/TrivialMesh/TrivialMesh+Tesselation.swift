@@ -1,5 +1,5 @@
 import CoreGraphics
-import earcut
+import Earcut
 import simd
 
 public extension TrivialMesh where Vertex == SIMD3<Float> {
