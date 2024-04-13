@@ -9,14 +9,8 @@ public extension Path {
         }
     }
 
-    init(lineSegment: (CGPoint, CGPoint)) {
-        self = Path { path in
-            path.move(to: lineSegment.0)
-            path.addLine(to: lineSegment.1)
-        }
-    }
-
-    init(lineSegment: (CGPoint, CGPoint), width: CGFloat, lineCap: CGLineCap) {
+    @available(*, deprecated, message: "REMOVE")
+    init(lineSegment: (CGPoint, CGPoint), width: Double, lineCap: CGLineCap) {
         self = Path { path in
             let radius = width / 2
             let angle = CGPoint.angle(lineSegment.0, lineSegment.1)
@@ -29,28 +23,26 @@ public extension Path {
         }
     }
 
-    static func circle(center: CGPoint, radius: CGFloat) -> Path {
-        Path(ellipseIn: CGRect(center: center, radius: radius))
-    }
-
-    init(lineSegment: LineSegment) {
-        self = Path { path in
-            path.move(to: lineSegment.start)
-            path.addLine(to: lineSegment.end)
+    init(paths: [Path]) {
+        self.init()
+        for path in paths {
+            self.addPath(path)
         }
     }
+}
 
-
-    static func line(from: CGPoint, to: CGPoint) -> Path {
-        .init(lines: [from, to])
+public extension Path {
+    mutating func moveTo(x: Double, y: Double, relative: Bool = false) {
+        let point = CGPoint(x: x, y: y)
+        move(to: relative ? (currentPoint ?? .zero) + point : point)
     }
 
-    static func horizontalLine(from: CGPoint, length: CGFloat) -> Path {
-        .init(lines: [from, from + [length, 0]])
+    mutating func addLineTo(x: Double, y: Double, relative: Bool = false) {
+        addLine(to: CGPoint(x: x, y: y), relative: relative)
     }
 
-    static func verticalLine(from: CGPoint, length: CGFloat) -> Path {
-        .init(lines: [from, from + [0, length]])
+    mutating func addLine(to point: CGPoint, relative: Bool) {
+        addLine(to: relative ? (currentPoint ?? .zero) + point : point)
     }
 
     static func + (lhs: Path, rhs: Path) -> Path {
@@ -58,17 +50,94 @@ public extension Path {
         result.addPath(rhs)
         return result
     }
+}
 
-    mutating func addLine(to point: CGPoint, relative: Bool) {
-        addLine(to: relative ? (currentPoint ?? .zero) + point : point)
+
+
+public extension Path {
+    static func rect(x: Double = 0, y: Double = 0, w: Double, h: Double) -> Path {
+        Path(CGRect(x: x, y: y, width: w, height: h))
+    }
+    static func rect(x: Double = 0, y: Double = 0, w: Double, h: Double, r: Double, style: RoundedCornerStyle = .circular) -> Path {
+        Path(roundedRect: CGRect(x: x, y: y, width: w, height: h), cornerSize: CGSize(width: r, height: r), style: style)
+    }
+    static func rect(x: Double = 0, y: Double = 0, w: Double, h: Double, rx: Double, ry: Double, style: RoundedCornerStyle = .circular) -> Path {
+        Path(roundedRect: CGRect(x: x, y: y, width: w, height: h), cornerSize: CGSize(width: rx, height: ry), style: style)
     }
 
-    var elements: [Path.Element] {
-        var elements: [Path.Element] = []
-        forEach { element in
-            elements.append(element)
+    static func circle(center: CGPoint, radius: Double) -> Path {
+        Path(ellipseIn: CGRect(center: center, radius: radius))
+    }
+
+    static func circle(cx: Double, cy: Double, r: Double) -> Path {
+        Path(ellipseIn: CGRect(center: CGPoint(x: cx, y: cy), radius: r))
+    }
+
+    static func ellipse(center: CGPoint, radius: CGSize) -> Path {
+        Path(ellipseIn: CGRect(center: center, size: radius * 2))
+    }
+    static func ellipse(center: CGPoint, rx: Double, ry: Double) -> Path {
+        ellipse(center: center, radius: CGSize(width: rx, height: ry))
+    }
+    static func ellipse(cx: Double, cy: Double, rx: Double, ry: Double) -> Path {
+        ellipse(center: CGPoint(x: cx, y: cy), radius: CGSize(width: rx, height: ry))
+    }
+    static func ellipse(cx: Double, cy: Double, r: Double) -> Path {
+        ellipse(center: CGPoint(x: cx, y: cy), radius: CGSize(width: r, height: r))
+    }
+    static func lines(_ lines: [CGPoint], closed: Bool = false) -> Path {
+        Path { path in
+            path.addLines(lines)
+            if closed {
+                path.closeSubpath()
+            }
         }
-        return elements
+    }
+    static func line(from: CGPoint, to: CGPoint) -> Path {
+        Path { path in
+            path.move(to: from)
+            path.addLine(to: to)
+        }
+    }
+
+    static func horizontalLine(from: CGPoint, length: Double) -> Path {
+        line(from: from, to: CGPoint(x: from.x + length, y: from.y))
+    }
+
+    static func verticalLine(from: CGPoint, length: Double) -> Path {
+        line(from: from, to: CGPoint(x: from.x, y: from.y + length))
+    }
+
+    // curve
+    // arc
+    // regular polygon
+    // star
+    // cross
+
+    static func cross(_ rect: CGRect) -> Path {
+        Path { path in
+            path.moveTo(x: rect.minX, y: rect.midY)
+            path.addLineTo(x: rect.maxX, y: rect.midY)
+            path.moveTo(x: rect.midX, y: rect.minY)
+            path.addLineTo(x: rect.midX, y: rect.maxY)
+        }
+    }
+
+    static func saltire(_ rect: CGRect) -> Path {
+        Path { path in
+            path.moveTo(x: rect.minX, y: rect.minY)
+            path.addLineTo(x: rect.maxX, y: rect.maxY)
+            path.moveTo(x: rect.minX, y: rect.maxY)
+            path.addLineTo(x: rect.maxX, y: rect.minY)
+        }
+    }
+
+    static func dots(_ dots: [CGPoint], radius: Double) -> Path {
+        Path { path in
+            for dot in dots {
+                path.addEllipse(in: CGRect(center: dot, radius: radius))
+            }
+        }
     }
 
     static func star(points: Int, innerRadius: Double, outerRadius: Double) -> Path {
@@ -91,7 +160,17 @@ public extension Path {
     }
 }
 
-extension Path {
+public extension Path {
+    var elements: [Path.Element] {
+        var elements: [Path.Element] = []
+        forEach { element in
+            elements.append(element)
+        }
+        return elements
+    }
+}
+
+public extension Path {
     var polygonalChains: [PolygonalChain] {
         var polygons: [[CGPoint]] = []
         var current: [CGPoint] = []
@@ -124,14 +203,5 @@ extension Path {
         }
         return polygons.map { .init(vertices: $0) }
     }
-}
 
-public extension Path {
-    init(dots: [CGPoint], radius: Double) {
-        self = Path { path in
-            for dot in dots {
-                path.addEllipse(in: CGRect(center: dot, radius: radius))
-            }
-        }
-    }
 }

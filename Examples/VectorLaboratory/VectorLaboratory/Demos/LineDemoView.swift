@@ -30,7 +30,7 @@ struct LineDemoView: View {
         ZStack {
             GeometryReader { proxy in
                 let size = proxy.size
-                let transform = CGAffineTransform(tx: 2, ty: 2) * CGAffineTransform(scaleX: 100, y: 100) * CGAffineTransform(scaleX: 1, y: -1) * CGAffineTransform(tx: 0, ty: size.height)
+                let transform: CGAffineTransform = .translation(x: 2, y: 2) * .scale(x: 100, y: 100) * .scale(x: 1, y: -1) * .translation(x: 0, y: size.height)
                 AxisView(transform: transform)
                     .onTapGesture {
                         selectedElement = nil
@@ -165,13 +165,13 @@ struct AxisView: View {
     func drawRules(context: GraphicsContext, bounds: CGRect, distance d: Double, shading: GraphicsContext.Shading) {
         for x: Double in stride(from: floor(bounds.minX / d) * d, through: bounds.maxX, by: d) {
             if let segment = Line.vertical(x: x).lineSegment(bounds: bounds) {
-                let path = Path(lineSegment: (segment.start, segment.end))
+                let path = Path.line(from: segment.start, to: segment.end)
                 context.stroke(path, with: shading, lineWidth: 1, transform: transform)
             }
         }
         for y: Double in stride(from: floor(bounds.minY / d) * d, through: bounds.maxY, by: d) {
             if let segment = Line.horizontal(y: y).lineSegment(bounds: bounds) {
-                let path = Path(lineSegment: (segment.start, segment.end))
+                let path = Path.line(from: segment.start, to: segment.end)
                 context.stroke(path, with: shading, lineWidth: 1, transform: transform)
             }
         }
@@ -180,28 +180,6 @@ struct AxisView: View {
 
 // MARK: -
 
-struct Handle: View {
-
-    @Binding
-    var location: CGPoint
-
-    init(_ location: Binding<CGPoint>) {
-        self._location = location
-    }
-
-    var body: some View {
-        Image(systemName: "circle.fill")
-            .position(location)
-            .gesture(drag)
-    }
-
-    var drag: some Gesture {
-        DragGesture()
-            .onChanged { value in
-                self.location = value.location
-            }
-    }
-}
 
 struct LineSegmentInfoView: View {
     @Binding

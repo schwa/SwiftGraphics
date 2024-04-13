@@ -86,15 +86,17 @@ public extension RegularPolygon {
         return self * CGAffineTransform(translation: v.1 - center)
     }
 
-    /// Returns new polygon whose two adjacent vertexes moved to the specified locations.
-    func twoPointsMoved(v1: (Int, CGPoint), _ v2: (Int, CGPoint)) -> RegularPolygon {
-        func isBeside(i1: Int, i2: Int) -> Bool {
-            i1 >= 0 && i1 < i2 && i2 < nside && (i1 == i2 - 1 || (i1 == 0 && i2 == nside - 1))
-        }
-        if isBeside(i1: min(v1.0, v2.0), i2: max(v1.0, v2.0)) && !isFuzzyEqual(v1.1, v2.1) {
-            let xf = CGAffineTransform(from1: points[v1.0], from2: points[v2.0], to1: v1.1, to2: v2.1)
-            return self * xf
-        }
-        return self
-    }
+
+// TODO: 
+//    /// Returns new polygon whose two adjacent vertexes moved to the specified locations.
+//    func twoPointsMoved(v1: (Int, CGPoint), _ v2: (Int, CGPoint)) -> RegularPolygon {
+//        func isBeside(i1: Int, i2: Int) -> Bool {
+//            i1 >= 0 && i1 < i2 && i2 < nside && (i1 == i2 - 1 || (i1 == 0 && i2 == nside - 1))
+//        }
+//        if isBeside(i1: min(v1.0, v2.0), i2: max(v1.0, v2.0)) && !isFuzzyEqual(v1.1, v2.1) {
+//            let xf = CGAffineTransform(from1: points[v1.0], from2: points[v2.0], to1: v1.1, to2: v2.1)
+//            return self * xf
+//        }
+//        return self
+//    }
 }

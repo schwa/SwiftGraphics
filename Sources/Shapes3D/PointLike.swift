@@ -37,6 +37,7 @@ public protocol PointLike3: PointLike {
 }
 
 extension CGPoint: PointLike {
+    
     public var length: CGFloat {
         sqrt(lengthSquared)
     }

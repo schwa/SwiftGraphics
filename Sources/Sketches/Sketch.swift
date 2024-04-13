@@ -132,7 +132,7 @@ public extension Sketch {
         }
 
         public var path: Path {
-            Path(lineSegment: (start, end))
+            Path.line(from: start, to: end)
         }
 
         public struct Handle: HandlesProtocol {
