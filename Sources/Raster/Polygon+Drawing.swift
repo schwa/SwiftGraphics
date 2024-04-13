@@ -1,15 +1,15 @@
 import Algorithms
 import CoreGraphics
-import LegacyGraphics
+import Shapes2D
 
 public extension Polygon {
     func toScanlines(step: CGFloat = 1.0) -> [LineSegment] {
-        let bounds: CGRect = .boundingBox(points: points)
+        let bounds: CGRect = .boundingBox(points: vertices)
         let segments: [LineSegment] = toLineSegments()
 
         // swiftlint:disable:next closure_body_length
         let rays = stride(from: bounds.minY, to: bounds.maxY, by: step).flatMap { (y: CGFloat) -> [LineSegment] in
-            let scanLine = LineSegment(first: CGPoint(x: bounds.minX, y: y), second: CGPoint(x: bounds.maxX, y: y))
+            let scanLine = LineSegment(CGPoint(x: bounds.minX, y: y), CGPoint(x: bounds.maxX, y: y))
             let intersections = segments.enumerated()
                 .flatMap { (index: Int, segment: LineSegment) -> [CGPoint] in
                     guard let intersection: LineSegmentIntersection = segment.advancedIntersection(scanLine) else {
@@ -21,12 +21,12 @@ public extension Polygon {
                     case .endIntersect(let intersection):
 
                         // http://www.sunshine2k.de/coding/java/Polygon/Filling/FillPolygon.htm
-                        if intersection == segment.second {
+                        if intersection == segment.end {
                             return []
                         }
-                        else if intersection == segment.first {
+                        else if intersection == segment.start {
                             let previousSegment = segments[(segments.count + index - 1) % segments.count]
-                            if (previousSegment.first.y - y).sign == (segment.second.y - y).sign {
+                            if (previousSegment.start.y - y).sign == (segment.end.y - y).sign {
                                 return [intersection, intersection]
                             }
                         }
@@ -39,7 +39,7 @@ public extension Polygon {
 
             let lines = intersections.pairs()
                 .map { first, second -> LineSegment in
-                    LineSegment(first: first, second: second ?? first)
+                    LineSegment(first, second ?? first)
                 }
             return lines
         }
@@ -49,12 +49,12 @@ public extension Polygon {
 }
 
 public func polygonToScanlines(_ polygon: Polygon, step: CGFloat = 1.0) -> [LineSegment] {
-    let bounds: CGRect = .boundingBox(points: polygon.points)
+    let bounds: CGRect = .boundingBox(points: polygon.vertices)
     let segments: [LineSegment] = polygon.toLineSegments()
 
     // swiftlint:disable:next closure_body_length
     let rays = stride(from: bounds.minY, to: bounds.maxY, by: step).flatMap { (y: CGFloat) -> [LineSegment] in
-        let scanLine = LineSegment(first: CGPoint(x: bounds.minX, y: y), second: CGPoint(x: bounds.maxX, y: y))
+        let scanLine = LineSegment(CGPoint(x: bounds.minX, y: y), CGPoint(x: bounds.maxX, y: y))
         let intersections = segments.enumerated()
             .flatMap { (index: Int, segment: LineSegment) -> [CGPoint] in
                 guard let intersection: LineSegmentIntersection = segment.advancedIntersection(scanLine) else {
@@ -67,12 +67,12 @@ public func polygonToScanlines(_ polygon: Polygon, step: CGFloat = 1.0) -> [Line
                 case .endIntersect(let intersection):
 
                     // http://www.sunshine2k.de/coding/java/Polygon/Filling/FillPolygon.htm
-                    if intersection == segment.second {
+                    if intersection == segment.end {
                         return []
                     }
-                    else if intersection == segment.first {
+                    else if intersection == segment.start {
                         let previousSegment = segments[(segments.count + index - 1) % segments.count]
-                        if (previousSegment.first.y - y).sign == (segment.second.y - y).sign {
+                        if (previousSegment.start.y - y).sign == (segment.end.y - y).sign {
                             return [intersection, intersection]
                         }
                     }
@@ -85,7 +85,7 @@ public func polygonToScanlines(_ polygon: Polygon, step: CGFloat = 1.0) -> [Line
 
         let lines = intersections.pairs()
             .map { first, second -> LineSegment in
-                LineSegment(first: first, second: second ?? first)
+                LineSegment(first, second ?? first)
             }
         return lines
     }

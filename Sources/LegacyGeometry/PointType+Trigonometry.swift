@@ -2,6 +2,7 @@
 
 import ApproximateEquality
 import CoreGraphics
+import SwiftUI
 
 infix operator ⋅: MultiplicationPrecedence
 infix operator ⨉: MultiplicationPrecedence
@@ -119,8 +120,8 @@ public func angle<T>(_ vertex: T, _ p1: T, _ p2: T) -> T.Scalar where T: PointTy
 }
 
 public extension CGPoint {
-    func rotated(_ angle: CGFloat) -> CGPoint {
-        applying(CGAffineTransform(rotation: angle))
+    func rotated(_ angle: Angle) -> CGPoint {
+        applying(.rotation(angle))
     }
 }
 

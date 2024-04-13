@@ -19,7 +19,7 @@ struct BeziersView: View {
             ZStack {
 //                Path(curve: curve).stroke()
                 Path(lines: curve.render()).stroke().foregroundColor(.red)
-                Path(dots: curve.render(), radius: 2).fill().foregroundColor(.red)
+                Path.dots(curve.render(), radius: 2).fill().foregroundColor(.red)
             }
         }
     }

@@ -26,13 +26,13 @@ extension CGPoint: CompositeLerpable {
 }
 
 extension CGSize: CompositeLerpable {
+
+    public typealias Factor = CGFloat
+
     // TODO: Move
     public static func * (lhs: CGFloat, rhs: CGSize) -> CGSize {
         Self(width: lhs * rhs.width, height: lhs * rhs.height)
     }
-
-    public typealias Factor = CGFloat
-
     public static func - (lhs: CGSize, rhs: CGSize) -> CGSize {
         Self(width: lhs.width - rhs.width, height: lhs.height - rhs.height)
     }

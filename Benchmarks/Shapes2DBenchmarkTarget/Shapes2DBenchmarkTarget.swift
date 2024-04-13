@@ -42,7 +42,6 @@ func testBernsteinPolynomal() {
         blackHole(xSolver.sample_cubic(t: t))
         blackHole(ySolver.sample_cubic(t: t))
     }
-
 }
 
 

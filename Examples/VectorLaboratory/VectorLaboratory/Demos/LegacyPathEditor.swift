@@ -23,9 +23,8 @@ struct LegacyPathEditor: View {
 
             let elements = points.windows(ofCount: 2).map(\.tuple).enumerated()
             ForEach(Array(elements), id: \.offset) { offset, points in
-                let path = Path(lineSegment: points)
+                let path = Path.line(from: points.0, to: points.1)
                 path.stroke()
-                    .foregroundStyle(Color.black)
                     .contentShape(Path(lineSegment: points, width: 20, lineCap: .round), eoFill: false)
                     .gesture(SpatialTapGesture(coordinateSpace: coordinateSpace).onEnded({ value in
                         self.points.insert(value.location, at: offset + 1)
@@ -45,7 +44,7 @@ struct LegacyPathEditor: View {
                     }
             }
             ForEach(Array(points.enumerated()), id: \.0) { offset, point in
-                Circle().position(point).frame(width: 8, height: 8)
+                SwiftUI.Circle().position(point).frame(width: 8, height: 8)
                     // .foregroundStyle(selection.contains(offset) ? Color.accentColor : .black)
                     .background {
                         if selection.contains(offset) {

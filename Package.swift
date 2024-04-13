@@ -16,7 +16,7 @@ let package = Package(
         .library(name: "CoreGraphicsSupport", targets: ["CoreGraphicsSupport"]),
         .library(name: "Earcut", targets: ["Earcut"]),
         .library(name: "LegacyGeometry", targets: ["LegacyGeometry"]),
-        .library(name: "LegacyGraphics", targets: ["LegacyGraphics"]),
+//        .library(name: "LegacyGraphics", targets: ["LegacyGraphics"]),
         .library(name: "MetalSupport", targets: ["MetalSupport"]),
         .library(name: "MetalSupportUnsafeConformances", targets: ["MetalSupportUnsafeConformances"]),
         .library(name: "Raster", targets: ["Raster"]),
@@ -32,7 +32,7 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-algorithms", from: "1.0.0"),
         .package(url: "https://github.com/schwa/ApproximateEquality", from: "0.2.1"),
         .package(url: "https://github.com/apple/swift-argument-parser", from: "1.3.0"),
-        .package(url: "https://github.com/ordo-one/package-benchmark", .upToNextMajor(from: "1.4.0")),
+//        .package(url: "https://github.com/ordo-one/package-benchmark", .upToNextMajor(from: "1.4.0")),
     ],
     targets: [
         .target(name: "Array2D",
@@ -52,21 +52,22 @@ let package = Package(
             "ApproximateEquality",
             "CoreGraphicsSupport",
         ]),
-        .target(name: "LegacyGraphics",
-            dependencies: [
-                .product(name: "Algorithms", package: "swift-algorithms"),
-                "CoreGraphicsSupport",
-                "LegacyGeometry",
-                "SIMDSupport",
-            ]
-        ),
+//        .target(name: "LegacyGraphics",
+//            dependencies: [
+//                .product(name: "Algorithms", package: "swift-algorithms"),
+//                "CoreGraphicsSupport",
+//                "LegacyGeometry",
+//                "SIMDSupport",
+//            ]
+//        ),
         .target(name: "MetalSupport"),
         .target(name: "MetalSupportUnsafeConformances"),
         .target(name: "Raster",
             dependencies: [
                 .product(name: "Algorithms", package: "swift-algorithms"),
                 "LegacyGeometry",
-                "LegacyGraphics",
+                "CoreGraphicsSupport",
+                "Shapes2D",
             ]
         ),
         .target(name: "SIMDSupport",
@@ -118,18 +119,18 @@ let package = Package(
             ],
             swiftSettings: [.interoperabilityMode(.Cxx)]
         ),
-        .executableTarget(
-            name: "Shapes2DBenchmarkTarget",
-            dependencies: [
-                "Shapes2D",
-                "CoreGraphicsSupport",
-                .product(name: "Benchmark", package: "package-benchmark"),
-            ],
-            path: "Benchmarks/Shapes2DBenchmarkTarget",
-            plugins: [
-                .plugin(name: "BenchmarkPlugin", package: "package-benchmark")
-            ]
-        ),
+//        .executableTarget(
+//            name: "Shapes2DBenchmarkTarget",
+//            dependencies: [
+//                "Shapes2D",
+//                "CoreGraphicsSupport",
+//                .product(name: "Benchmark", package: "package-benchmark"),
+//            ],
+//            path: "Benchmarks/Shapes2DBenchmarkTarget",
+//            plugins: [
+//                .plugin(name: "BenchmarkPlugin", package: "package-benchmark")
+//            ]
+//        ),
 
     ]
 )

@@ -80,26 +80,6 @@ public extension LineSegment {
         slope == other.slope
     }
 
-    func containsPoint(point: CGPoint) -> Bool {
-        if first.x != second.x { // self is not vertical
-            if first.x <= point.x && point.x <= second.x {
-                return true
-            }
-            else if first.x >= point.x && point.x >= second.x {
-                return true
-            }
-        }
-        else { // self is vertical, so test y coordinate
-            if first.y <= point.y && point.y <= second.y {
-                return true
-            }
-            else if first.y >= point.y && point.y >= second.y {
-                return true
-            }
-        }
-        return false
-    }
-
     var midpoint: CGPoint {
         (first + second) * 0.5
     }

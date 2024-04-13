@@ -6,39 +6,42 @@ import SwiftUI
 import Shapes2D
 import Everything
 
-extension CGPoint {
-    func flipVertically(within rect: CGRect) -> CGPoint {
-        CGPoint(x: x, y: rect.height - y)
-    }
-}
-
 #if os(macOS)
     struct LastRightMouseDownLocationModifier: ViewModifier {
         @Binding
         var location: CGPoint?
 
-        init(_ location: Binding<CGPoint?>) {
+        var coordinateSpace: CoordinateSpace
+
+        init(_ location: Binding<CGPoint?>, coordinateSpace: CoordinateSpace = .local) {
             _location = location
+            self.coordinateSpace = coordinateSpace
         }
 
         func body(content: Content) -> some View {
-            content.onAppear(perform: {
-                NSEvent.addLocalMonitorForEvents(matching: [.rightMouseDown]) {
-                    if let frame = $0.window?.frame {
-                        location = $0.locationInWindow.flipVertically(within: frame)
+            GeometryReader { geometry in
+                content.onAppear(perform: {
+                    NSEvent.addLocalMonitorForEvents(matching: [.rightMouseDown]) {
+                        if let frame = $0.window?.frame {
+                            let windowLocation = $0.locationInWindow.flipVertically(within: frame)
+                            let localWindowFrame = geometry.frame(in: coordinateSpace)
+                            location = windowLocation - localWindowFrame.origin
+                        }
+                        return $0
                     }
-                    return $0
-                }
-            })
+                })
+            }
         }
     }
 
     extension View {
-        func lastRightMouseDownLocation(_ location: Binding<CGPoint?>) -> some View {
-            modifier(LastRightMouseDownLocationModifier(location))
+        func lastRightMouseDownLocation(_ location: Binding<CGPoint?>, coordinateSpace: CoordinateSpace = .local) -> some View {
+            modifier(LastRightMouseDownLocationModifier(location, coordinateSpace: coordinateSpace))
         }
     }
 #endif
+
+// MARK: -
 
 struct Composite<Root, Stem> {
     var root: Root
@@ -56,6 +59,8 @@ extension Composite: Equatable where Root: Equatable, Stem: Equatable {
 extension Composite: Hashable where Root: Hashable, Stem: Hashable {
 }
 
+// MARK: -
+
 public struct EmptyShape: Shape {
     public init() {
     }
@@ -65,9 +70,23 @@ public struct EmptyShape: Shape {
     }
 }
 
+// MARK: -
+
 public struct Identified<ID, Content>: Identifiable where ID: Hashable {
-    public let id: ID
-    public let content: Content
+    public var id: ID
+    public var content: Content
+
+    init(id: ID, content: Content) {
+        self.id = id
+        self.content = content
+    }
+}
+
+public extension Identified where ID == UUID {
+    init(_ content: Content) {
+        self.id = .init()
+        self.content = content
+    }
 }
 
 extension Identified: Equatable where Content: Equatable {
@@ -79,6 +98,13 @@ extension Identified: Comparable where Content: Comparable {
     }
 }
 
+extension Identified: Encodable where ID: Encodable, Content: Encodable {
+}
+
+extension Identified: Decodable where ID: Decodable, Content: Decodable {
+}
+
+
 public extension Array {
     func identifiedByIndex() -> [Identified<Int, Element>] {
         enumerated().map {
@@ -86,6 +112,8 @@ public extension Array {
         }
     }
 }
+
+// MARK: -
 
 public struct JSONCodingTransferable<Element>: Transferable where Element: Codable {
     let element: Element
@@ -104,6 +132,9 @@ public struct JSONCodingTransferable<Element>: Transferable where Element: Codab
     }
 }
 
+// MARK: -
+
+
 public struct RelativeTimelineView<Schedule, Content>: View where Schedule: TimelineSchedule, Content: View {
     let schedule: Schedule
     let content: (TimelineViewDefaultContext, TimeInterval) -> Content
@@ -111,7 +142,7 @@ public struct RelativeTimelineView<Schedule, Content>: View where Schedule: Time
     @State
     var start: Date = .init()
 
-    public init(schedule: Schedule, content: @escaping (TimelineViewDefaultContext, TimeInterval) -> Content, start: Date = Date()) {
+    public init(schedule: Schedule, @ViewBuilder content: @escaping (TimelineViewDefaultContext, TimeInterval) -> Content, start: Date = Date()) {
         self.schedule = schedule
         self.content = content
         self.start = start
@@ -121,6 +152,8 @@ public struct RelativeTimelineView<Schedule, Content>: View where Schedule: Time
         TimelineView(schedule) { context in content(context, Date().timeIntervalSince(start)) }
     }
 }
+
+// MARK: -
 
 public extension GraphicsContext {
     func drawDot(at position: CGPoint) {
@@ -256,7 +289,7 @@ struct MarkingsView: View {
                     switch guide {
                     case .line(let line):
                         if let segment = line.lineSegment(bounds: bounds) {
-                            let path = Path(lineSegment: segment)
+                            let path = Path.line(from: segment.start, to: segment.end)
                             context.stroke(path, with: .color(Color.black), lineWidth: 1 / 4)
                         }
                     default:
@@ -275,33 +308,6 @@ struct MarkingsView: View {
     }
 }
 
-protocol VerticesConvertible {
-    var vertices: [CGPoint] { get }
-}
-
-extension LineSegment: VerticesConvertible {
-    var vertices: [CGPoint] {
-        [start, end]
-    }
-}
-
-protocol PathConvertible {
-    var path: Path { get }
-}
-
-extension LineSegment: PathConvertible {
-    var path: Path {
-        Path { path in
-            path.addLines([start, end])
-        }
-    }
-}
-
-extension Path {
-    init(_ other: some PathConvertible) {
-        self = other.path
-    }
-}
 
 extension GraphicsContext {
     func drawMarkers(at positions: [CGPoint], size: CGSize) {
@@ -323,7 +329,7 @@ extension Binding where Value == CGPoint {
         }
     }
 
-    func transformed(_ modify: @escaping (Double) -> Double) -> Binding {
+    func transformed(_ modify: @escaping (CGFloat) -> CGFloat) -> Binding {
         return Binding {
             wrappedValue
         } set: { newValue in
@@ -406,4 +412,91 @@ extension CodableAppStorage where Value : ExpressibleByNilLiteral {
     }
 
 
+}
+
+
+@resultBuilder
+struct ViewModifierBuilder {
+    static func buildExpression<Content>(_ content: Content) -> Content where Content: ViewModifier {
+        content
+    }
+    static func buildBlock() -> EmptyViewModifier {
+        return EmptyViewModifier()
+    }
+
+    static func buildBlock<Content>(_ content: Content) -> Content where Content: ViewModifier {
+        content
+    }
+
+    static func buildEither<TrueContent, FalseContent>(first: TrueContent) -> ConditionalViewModifier<TrueContent, FalseContent> where TrueContent : ViewModifier, FalseContent : ViewModifier {
+        .init(trueModifier: first)
+    }
+
+    static func buildEither<TrueContent, FalseContent>(second: FalseContent) -> ConditionalViewModifier<TrueContent, FalseContent> where TrueContent : ViewModifier, FalseContent : ViewModifier {
+        .init(falseModifier: second)
+    }
+}
+
+struct ConditionalViewModifier <TrueModifier, FalseModifier>: ViewModifier where TrueModifier: ViewModifier, FalseModifier: ViewModifier {
+
+    var trueModifier: TrueModifier?
+    var falseModifier: FalseModifier?
+
+    init(trueModifier: TrueModifier) {
+        self.trueModifier = trueModifier
+    }
+
+    init(falseModifier: FalseModifier) {
+        self.falseModifier = falseModifier
+    }
+
+    func body(content: Content) -> some View {
+        if let trueModifier {
+            content.modifier(trueModifier)
+        }
+        else if let falseModifier {
+            content.modifier(falseModifier)
+        }
+        else {
+            fatalError()
+        }
+    }
+
+}
+
+/// A view modifier that does nothing.
+struct EmptyViewModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+    }
+}
+
+public extension Array where Element: Identifiable {
+    @discardableResult
+    mutating func remove(identifiedBy id: Element.ID) -> Element {
+        if let index = firstIndex(identifiedBy: id) {
+            return remove(at: index)
+        }
+        else {
+            fatalError()
+        }
+    }
+}
+
+
+
+extension LineSegment {
+    var angle: Angle {
+        (CGPoint.angle(start, end) + .degrees(360 + 90)).truncatingRemainder(dividingBy: .degrees(360))
+    }
+
+    var inverted: LineSegment {
+        .init(end, start)
+    }
+}
+
+extension Angle {
+    func truncatingRemainder(dividingBy d: Self) -> Self {
+        .radians(radians.truncatingRemainder(dividingBy: d.radians))
+    }
 }

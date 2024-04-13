@@ -6,7 +6,7 @@ import CoreGraphicsSupport
 import Foundation
 import SwiftUI
 
-//public typealias Line = Line
+// public typealias Line = Line
 // https://www.desmos.com/calculator/gtdbajcu41
 // https://www.wolframalpha.com/input?i=line
 // https://byjus.com/maths/general-equation-of-a-line/
@@ -54,7 +54,7 @@ public extension Line {
     }
 
     func y(forX x: Double) -> Double? {
-        return b == 0 ? nil : -((-c + a * x) / b)
+        b == 0 ? nil : -((-c + a * x) / b)
     }
 
     var xIntercept: CGPoint? {
@@ -89,12 +89,12 @@ public extension Line {
     }
 }
 
-// TODO: 
-//public extension Line {
+// TODO:
+// public extension Line {
 //    init(point: CGPoint, slope: Double) {
 //        fatalError()
 //    }
-//}
+// }
 
 public extension Line {
     // TODO: Unconfirmed/untested
@@ -169,14 +169,14 @@ public extension Line {
 }
 
 // TODO:
-//public extension Line {
+// public extension Line {
 //    func rotate(angle: Angle) -> Line {
 //        fatalError()
 //    }
 //
 //    func reflect(point: CGPoint) -> CGPoint {
 //    }
-//}
+// }
 
 // MARK: -
 
@@ -263,3 +263,18 @@ public extension Line {
 
 // MARK: -
 
+public extension Line {
+    func distance(to point: CGPoint) -> Double {
+        if isVertical {
+            return abs(point.x - xIntercept!.x)
+        }
+        else {
+            let (m, b) = slopeInterceptForm!.tuple
+            return abs(m * point.x - point.y + b) / sqrt(m * m + 1)
+        }
+    }
+
+    func contains(_ point: CGPoint, tolerance: Double = 0.0) -> Bool {
+        abs(distance(to: point)) <= tolerance
+    }
+}

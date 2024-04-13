@@ -36,7 +36,7 @@ public let kellyColors: [(Float, Float, Float)] = [
 
 public extension Color {
     init(rgb: (Float, Float, Float)) {
-        self = .init(red: Double(rgb.0), green: Double(rgb.1), blue: Double(rgb.2))
+        self = .init(red: CGFloat(rgb.0), green: CGFloat(rgb.1), blue: CGFloat(rgb.2))
     }
 }
 

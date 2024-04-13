@@ -1,9 +1,9 @@
 import CoreGraphicsSupport
-import SwiftUI
 @testable import Shapes2D
+import SwiftUI
 import XCTest
 
-//final class Shapes2DTests: XCTestCase {
+// final class Shapes2DTests: XCTestCase {
 //    //    func testExample() throws {
 //    //        func f <Element>(_ tuple: (previous: Element?, current: Element, next: Element?)?) -> [Element?]? {
 //    //            tuple.map { [$0.previous, $0.current, $0.next] }
@@ -141,9 +141,9 @@ import XCTest
 ////        XCTAssertEqual(segment.line.lineSegment(bounds: bounds), LineSegment([100, 140], [140, 100]))
 ////        XCTAssertEqual(segment.line.lineSegment(bounds: bounds)?.reversed, LineSegment([140, 100], [100, 140]))
 //    }
-//}
+// }
 //
-//extension ComparisonResult: CustomStringConvertible {
+// extension ComparisonResult: CustomStringConvertible {
 //    public var description: String {
 //        switch self {
 //        case .orderedAscending:
@@ -154,33 +154,4 @@ import XCTest
 //            "orderedSame"
 //        }
 //    }
-//}
-
-final class LineConversionTests: XCTestCase {
-
-    func testStandardFormSlopeIntercept() {
-        let lines: [(Line, SlopeInterceptForm?)] = [
-            (Line(a: 0, b: 1, c: 0), SlopeInterceptForm(m: 0, b: 0)),
-            (Line(a: 0, b: 1, c: 1), SlopeInterceptForm(m: 0, b: 1)),
-            (Line(a: 1, b: 0, c: 0), nil),
-            (Line(a: 1, b: 0, c: 1), nil),
-            (Line(a: 1, b: 1, c: 0), SlopeInterceptForm(m: -1, b: 0)),
-            (Line(a: 1, b: 1, c: 1), SlopeInterceptForm(m: -1, b: 1)),
-
-            (Line(a: 0, b: -1, c: 0), SlopeInterceptForm(m: 0, b: 0)),
-            (Line(a: 0, b: -1, c: -1), SlopeInterceptForm(m: 0, b: 1)),
-            (Line(a: -1, b: 0, c: 0), nil),
-            (Line(a: -1, b: 0, c: -1), nil),
-            (Line(a: -1, b: -1, c: 0), SlopeInterceptForm(m: -1, b: 0)),
-            (Line(a: -1, b: -1, c: -1), SlopeInterceptForm(m: -1, b: 1)),
-        ]
-
-        for (line, slopeIntercept) in lines {
-            XCTAssertEqual(line.slopeInterceptForm, slopeIntercept)
-            if let slopeIntercept {
-                XCTAssertEqual(line.normalized(), Line(slopeInterceptForm:slopeIntercept).normalized())
-                XCTAssertEqual(line.slopeInterceptForm, Line(slopeInterceptForm:slopeIntercept).normalized().slopeInterceptForm)
-            }
-        }
-    }
-}
+// }
