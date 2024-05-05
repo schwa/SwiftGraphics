@@ -74,7 +74,7 @@ func quadBezFlatten(_ q: QuadraticBezierCurve, tolerance: Double) -> [CGPoint] {
     let params = quadBezMapToBasic(q);
     let a0 = approxIntegral(params.x0);
     let a2 = approxIntegral(params.x2);
-    let count = 0.5 * abs(a2 - a0) * sqrt(params.scale / tolerance);
+    let count: Double = 0.5 * Swift.abs(a2 - a0) * sqrt(params.scale / tolerance)
     let n = ceil(count);
     // Handle case where all the points are collinear and the end point is between the start point and the control point
     if !n.isFinite || n == 0 || n == 1 {
