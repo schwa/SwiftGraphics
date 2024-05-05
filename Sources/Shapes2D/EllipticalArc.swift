@@ -733,7 +733,7 @@ public class EllipticalArc {
      * specified rectangular area; false otherwise
      */
     public func contains(r: CGRect) -> Bool {
-        contains(Double(r.x), Double(r.y), Double(r.width), Double(r.height))
+        contains(Double(r.minX), Double(r.minY), Double(r.width), Double(r.height))
     }
 
     /** Returns an integer Rectangle that completely encloses the Shape.

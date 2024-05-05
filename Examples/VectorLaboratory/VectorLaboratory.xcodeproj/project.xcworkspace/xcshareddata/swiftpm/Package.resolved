@@ -10,15 +10,6 @@
       }
     },
     {
-      "identity" : "everything",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/schwa/Everything",
-      "state" : {
-        "branch" : "jwight/downsizing",
-        "revision" : "1522ed7fa343227c9910b755ffd8cabd0c0176fd"
-      }
-    },
-    {
       "identity" : "swift-algorithms",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-algorithms.git",

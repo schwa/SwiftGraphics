@@ -131,7 +131,7 @@ struct MeshView: View {
                 default:
                     fatalError()
                 }
-                let polygons = path.polygonalChains.filter(\.isClosed).map { Polygon(polygonalChain: $0) }
+                let polygons = path.polygonalChains.map { Polygon(polygonalChain: PolygonalChain(vertices: $0)) }//.filter(\.isClosed) // TODO: TODO
                 var mesh = TrivialMesh(merging: polygons.map { $0.extrude(min: 0, max: 3, topCap: true, bottomCap: true) })
                 mesh = mesh.offset(by: -mesh.boundingBox.min)
                 self.mesh = mesh

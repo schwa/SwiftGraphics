@@ -99,14 +99,14 @@ func quadBezFlatten(_ q: QuadraticBezierCurve, tolerance: Double) -> [CGPoint] {
     }
     let u0 = approxInvIntegral(a0);
     let u2 = approxInvIntegral(a2);
-    let result: [CGPoint] = [];
+    var result: [Double] = [];
     for i in stride(from: 1, to: n, by: 1) {
         let u = approxInvIntegral(a0 + ((a2 - a0) * i) / n);
         let t = (u - u0) / (u2 - u0);
-//        result.push(t);
+        result.append(t);
     }
-//    result.push(1);
-    return result;
+    result.append(1);
+    return result.adjacentPairs().map { CGPoint($0.0, $0.1) }
 }
 
 ////

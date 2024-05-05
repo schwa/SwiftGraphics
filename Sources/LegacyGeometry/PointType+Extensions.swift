@@ -1,5 +1,3 @@
-import CoreGraphics
-
 // swiftlint:disable shorthand_operator
 
 public extension PointType {

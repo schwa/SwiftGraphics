@@ -1,7 +1,7 @@
 // swiftlint:disable identifier_name
 
 import CoreGraphics
-import LegacyGeometry
+import CoreGraphicsSupport
 
 public struct Arc {
     public var center: CGPoint

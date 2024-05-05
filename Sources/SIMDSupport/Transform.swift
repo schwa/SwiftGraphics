@@ -1,4 +1,5 @@
 import simd
+import SwiftUI
 
 /**
  A type to represent a 3d transformation as an `SRT` or a SIMD matrix.
@@ -158,7 +159,7 @@ public extension Transform {
         return copy
     }
 
-    func rotated(angle: Angle<Float>, axis: SIMD3<Float>) -> Transform {
+    func rotated(angle: Angle, axis: SIMD3<Float>) -> Transform {
         rotated(simd_quatf(angle: angle, axis: axis))
     }
 }

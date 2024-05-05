@@ -1,9 +1,5 @@
 // swiftlint:disable file_length
 
-import CoreGraphics
-
-// MARK: -
-
 public extension RectType {
     var x: Point.Scalar {
         get {
@@ -241,60 +237,6 @@ public extension RectType where Scalar == Point.Scalar, Scalar == Size.Scalar {
 
 // MARK: -
 
-// public extension RectType where Scalar == Point.Scalar, Scalar == Size.Scalar, Point.Scalar: FloatingPoint {
-//    var midX: Point.Scalar {
-//        return x + width * Point.Scalar(0.5)
-//    }
-//
-//    var midY: Point.Scalar {
-//        return y + height * Point.Scalar(0.5)
-//    }
-//
-//    var mid: Point {
-//        return Point(x: midX, y: midY)
-//    }
-//
-//    // MARK: -
-//
-//    var minXMinY: Point {
-//        return Point(x: minX, y: minY)
-//    }
-//
-//    var midXMinY: Point {
-//        return Point(x: midX, y: minY)
-//    }
-//
-//    var maxXMinY: Point {
-//        return Point(x: maxX, y: minY)
-//    }
-//
-//    var minXMidY: Point {
-//        return Point(x: minX, y: midY)
-//    }
-//
-//    var midXMidY: Point {
-//        return Point(x: midX, y: midY)
-//    }
-//
-//    var maxXMidY: Point {
-//        return Point(x: maxX, y: midY)
-//    }
-//
-//    var minXMaxY: Point {
-//        return Point(x: minX, y: maxY)
-//    }
-//
-//    var midXMaxY: Point {
-//        return Point(x: midX, y: maxY)
-//    }
-//
-//    var maxXMaxY: Point {
-//        return Point(x: maxX, y: maxY)
-//    }
-// }
-
-// MARK: -
-
 public extension RectType where Scalar == Point.Scalar, Scalar == Size.Scalar {
     func union(_ point: Point) -> Self {
         let minX = min(minX, point.x)
@@ -362,52 +304,6 @@ public extension RectType where Scalar == Point.Scalar, Scalar == Size.Scalar {
 }
 
 // MARK: -
-
-// TODO: Stop from being CG
-
-public extension CGRect {
-    func offsetBy(delta: CGPoint) -> CGRect {
-        offsetBy(dx: delta.x, dy: delta.y)
-    }
-
-    var isFinite: Bool {
-        isNull == false && isInfinite == false
-    }
-
-    static func unionOf(rects: [CGRect]) -> CGRect {
-        rects[1 ..< rects.count].reduce(rects[0]) { accumulator, current in
-            accumulator.union(current)
-        }
-    }
-
-    static func unionOf(points: [CGPoint]) -> CGRect {
-        points.reduce(CGRect(origin: points[0], size: CGSize.zero)) { accumulator, current in
-            accumulator.union(current)
-        }
-    }
-
-    func rectByUnion(point: CGPoint) -> CGRect {
-        union(CGRect(center: point, radius: 0.0))
-    }
-
-//    mutating func union(point: CGPoint) {
-//        unionInPlace(CGRect(center: point, radius: 0.0))
-//    }
-
-    func toTuple() -> (CGFloat, CGFloat, CGFloat, CGFloat) {
-        (origin.x, origin.y, size.width, size.height)
-    }
-
-    func partiallyIntersects(_ other: CGRect) -> Bool {
-        if intersects(other) == true {
-            let union = union(other)
-            if self != union {
-                return true
-            }
-        }
-        return false
-    }
-}
 
 public extension RectType {
     static func boundingBox<Point, Rect: RectType>(points: [Point]) -> Rect where Rect.Scalar: FloatingPoint, Rect.Scalar == Rect.Point.Scalar, Rect.Scalar == Rect.Size.Scalar, Point == Rect.Point {

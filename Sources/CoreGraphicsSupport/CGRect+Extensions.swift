@@ -3,6 +3,11 @@ import CoreGraphics
 // MARK: CGRect
 
 public extension CGRect {
+
+    init(size: CGSize) {
+        self.init(origin: .zero, size: size)
+    }
+
     init(width: CGFloat, height: CGFloat) {
         self.init(x: 0, y: 0, width: width, height: height)
     }
@@ -118,3 +123,49 @@ public extension CGRect {
     }
 }
 
+
+// TODO: Validate all of these.
+public extension CGRect {
+
+    init(_ origin: CGPoint) {
+        self = CGRect(origin: origin, size: .zero)
+    }
+
+    func offsetBy(delta: CGPoint) -> CGRect {
+        offsetBy(dx: delta.x, dy: delta.y)
+    }
+
+    var isFinite: Bool {
+        isNull == false && isInfinite == false
+    }
+
+    static func unionOf(rects: [CGRect]) -> CGRect {
+        rects[1 ..< rects.count].reduce(rects[0]) { accumulator, current in
+            accumulator.union(current)
+        }
+    }
+
+    static func unionOf(points: [CGPoint]) -> CGRect {
+        points.reduce(CGRect(origin: points[0], size: CGSize.zero)) { accumulator, current in
+            accumulator.union(CGRect(current))
+        }
+    }
+
+    func rectByUnion(point: CGPoint) -> CGRect {
+        union(CGRect(center: point, radius: 0.0))
+    }
+
+    func toTuple() -> (CGFloat, CGFloat, CGFloat, CGFloat) {
+        (origin.x, origin.y, size.width, size.height)
+    }
+
+    func partiallyIntersects(_ other: CGRect) -> Bool {
+        if intersects(other) == true {
+            let union = union(other)
+            if self != union {
+                return true
+            }
+        }
+        return false
+    }
+}

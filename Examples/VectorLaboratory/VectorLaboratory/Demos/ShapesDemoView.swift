@@ -47,11 +47,3 @@ struct ShapesDemoView: View {
     ShapesDemoView()
 }
 
-extension Path {
-    static func dot(_ point: CGPoint) -> Path {
-        Path.circle(center: point, radius: 4)
-    }
-    static func dot(x: Double, y: Double) -> Path {
-        dot(CGPoint(x: x, y:y))
-    }
-}

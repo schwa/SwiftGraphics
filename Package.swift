@@ -16,7 +16,6 @@ let package = Package(
         .library(name: "CoreGraphicsSupport", targets: ["CoreGraphicsSupport"]),
         .library(name: "Earcut", targets: ["Earcut"]),
         .library(name: "LegacyGeometry", targets: ["LegacyGeometry"]),
-//        .library(name: "LegacyGraphics", targets: ["LegacyGraphics"]),
         .library(name: "MetalSupport", targets: ["MetalSupport"]),
         .library(name: "MetalSupportUnsafeConformances", targets: ["MetalSupportUnsafeConformances"]),
         .library(name: "Raster", targets: ["Raster"]),
@@ -52,14 +51,6 @@ let package = Package(
             "ApproximateEquality",
             "CoreGraphicsSupport",
         ]),
-//        .target(name: "LegacyGraphics",
-//            dependencies: [
-//                .product(name: "Algorithms", package: "swift-algorithms"),
-//                "CoreGraphicsSupport",
-//                "LegacyGeometry",
-//                "SIMDSupport",
-//            ]
-//        ),
         .target(name: "MetalSupport"),
         .target(name: "MetalSupportUnsafeConformances"),
         .target(name: "Raster",
@@ -85,7 +76,6 @@ let package = Package(
                 "Shapes2D",
             ]
         ),
-
         .target(name: "Shapes2D",
             dependencies: [
                 .product(name: "ApproximateEquality", package: "ApproximateEquality"),

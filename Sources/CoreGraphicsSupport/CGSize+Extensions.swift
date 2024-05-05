@@ -132,3 +132,56 @@ public extension CGSize {
 
     // TODO: It doesn't really make any sense to have other RNG methods on CGSize?
 }
+
+// TODO: Validate need for below.
+
+// TODO: Move elsewhere? Rename AreaOrientation?
+public enum Orientation {
+    case square
+    case landscape
+    case portrait
+}
+
+// TODO: Stop being CG based
+
+public extension CGSize {
+    var aspectRatio: CGFloat {
+        width / height
+    }
+
+    var orientation: Orientation {
+        if abs(width) > abs(height) {
+            .landscape
+        }
+        else if abs(width) == abs(height) {
+            .square
+        }
+        else {
+            .portrait
+        }
+    }
+
+    func toRect() -> CGRect {
+        CGRect(size: self)
+    }
+}
+
+public extension CGSize {
+    init(_ v: (CGFloat, CGFloat)) {
+        self.init(width: v.0, height: v.1)
+    }
+
+    func toTuple() -> (CGFloat, CGFloat) {
+        (width, height)
+    }
+}
+
+public extension CGSize {
+    var min: CGFloat {
+        Swift.min(width, height)
+    }
+
+    var max: CGFloat {
+        Swift.max(width, height)
+    }
+}

@@ -1,5 +1,6 @@
 import Foundation
 import CoreGraphicsSupport
+import SwiftUI
 
 // From: https://www.jakelow.com/blog/hobby-curves
 // https://www.jakelow.com/blog/hobby-curves/hobby.js
@@ -42,7 +43,7 @@ func hobby(points: [CGPoint], omega: Double = 0.0) -> [CGPoint] {
     // gamma[0] is undefined gamma[n] is artificially defined to be zero
     var gamma = Array(repeating: 0.0, count: n + 1)
     for i in 1 ..< n {
-        gamma[i] = CGPoint.angle(chords[i - 1], chords[i]).radians
+        gamma[i] = Angle(from: chords[i - 1], to: chords[i]).radians
     }
     gamma[n] = 0
 

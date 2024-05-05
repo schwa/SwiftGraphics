@@ -2,6 +2,7 @@
 
 import CoreGraphics
 import CoreGraphicsSupport
+import SwiftUI
 
 public struct Ellipse {
     public let center: CGPoint
@@ -9,9 +10,9 @@ public struct Ellipse {
     public let b: Double // Semi minor axis
     public let e: Double // Eccentricity
     public let F: Double // Distance to foci
-    public let rotation: Double
+    public let rotation: Angle
 
-    public init(center: CGPoint, semiMajorAxis a: Double, eccentricity e: Double, rotation: Double = 0.0) {
+    public init(center: CGPoint, semiMajorAxis a: Double, eccentricity e: Double, rotation: Angle = .zero) {
         assert(a >= 0)
         assert(e >= 0 && e <= 1)
 
@@ -23,7 +24,7 @@ public struct Ellipse {
         self.rotation = rotation
     }
 
-    public init(center: CGPoint, semiMajorAxis a: Double, semiMinorAxis b: Double, rotation: Double = 0.0) {
+    public init(center: CGPoint, semiMajorAxis a: Double, semiMinorAxis b: Double, rotation: Angle = .zero) {
         assert(a >= b)
         assert(a >= 0)
 
@@ -36,7 +37,7 @@ public struct Ellipse {
     }
 
     public var foci: (CGPoint, CGPoint) {
-        let t = CGAffineTransform(rotationAngle: rotation)
+        let t = CGAffineTransform(rotationAngle: rotation.radians)
         return (
             center + CGPoint(x: -F, y: 0).applying(t),
             center + CGPoint(x: +F, y: 0).applying(t)
@@ -51,20 +52,20 @@ extension Ellipse: CustomStringConvertible {
 }
 
 public extension Ellipse {
-    init(center: CGPoint, size: CGSize, rotation: Double = 0.0) {
+    init(center: CGPoint, size: CGSize, rotation: Angle = .zero) {
         let semiMajorAxis: Double = max(size.width, size.height) * 0.5
         let semiMinorAxis: Double = min(size.width, size.height) * 0.5
 
         var rotation = rotation
         if size.height > size.width {
-            rotation += degreesToRadians(90)
+            rotation += Angle(degrees: 90)
         }
 
         self.init(center: center, semiMajorAxis: semiMajorAxis, semiMinorAxis: semiMinorAxis, rotation: rotation)
     }
 
     init(frame: CGRect) {
-        self.init(center: frame.mid, size: frame.size, rotation: 0.0)
+        self.init(center: frame.mid, size: frame.size, rotation: .zero)
     }
 
     /// CGSize of ellipse if rotation were 0
@@ -112,7 +113,7 @@ public extension Ellipse {
     static let c: Double = 0.551_915_024_494
 
     func toBezierCurves(c: Double = Ellipse.c) -> (CubicBezierCurve, CubicBezierCurve, CubicBezierCurve, CubicBezierCurve) {
-        let t = CGAffineTransform.rotation(.radians(rotation))
+        let t = CGAffineTransform.rotation(rotation)
 
         let da = a * c
         let db = b * c
