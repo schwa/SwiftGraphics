@@ -3,7 +3,7 @@ import Shapes3D
 import Projection
 import SwiftUI
 
-struct MeshView: View {
+struct MeshView: View, DefaultInitializableView {
     enum Source: Hashable {
         case file(String)
         case extrusion(String)
@@ -62,16 +62,18 @@ struct MeshView: View {
                         }
                     }
                 case .vertices:
-                    Table(mesh.vertices.indices.map { Identified(id: $0, value: mesh.vertices[Int($0)]) }) {
-                        TableColumn("Position X") { Text(verbatim: "\($0.value.position.x)") }
-                        TableColumn("Position Y") { Text(verbatim: "\($0.value.position.y)") }
-                        TableColumn("Position Z") { Text(verbatim: "\($0.value.position.z)") }
-                        TableColumn("Normal X") { Text(verbatim: "\($0.value.normal.x)") }
-                        TableColumn("Normal Y") { Text(verbatim: "\($0.value.normal.y)") }
-                        TableColumn("Normal Z") { Text(verbatim: "\($0.value.normal.z)") }
-                        TableColumn("Texture X") { Text(verbatim: "\($0.value.textureCoordinate.x)") }
-                        TableColumn("Texture Y") { Text(verbatim: "\($0.value.textureCoordinate.y)") }
-                    }
+                    EmptyView()
+//                    Table(mesh.vertices.indices.map { Identified(id: $0, value: mesh.vertices[Int($0)]) }) {
+// TODO: FIXME
+                        //                        TableColumn("Position X") { Text(verbatim: "\($0.value.position.x)") }
+//                        TableColumn("Position Y") { Text(verbatim: "\($0.value.position.y)") }
+//                        TableColumn("Position Z") { Text(verbatim: "\($0.value.position.z)") }
+//                        TableColumn("Normal X") { Text(verbatim: "\($0.value.normal.x)") }
+//                        TableColumn("Normal Y") { Text(verbatim: "\($0.value.normal.y)") }
+//                        TableColumn("Normal Z") { Text(verbatim: "\($0.value.normal.z)") }
+//                        TableColumn("Texture X") { Text(verbatim: "\($0.value.textureCoordinate.x)") }
+//                        TableColumn("Texture Y") { Text(verbatim: "\($0.value.textureCoordinate.y)") }
+//                    }
                 case .source:
                     Text(mesh.toPLY())
                 }
@@ -191,11 +193,6 @@ extension Path3D {
             path.addLine(to: box.minXMaxYMaxZ)
         }
     }
-}
-
-struct Identified<ID, Value>: Identifiable where ID: Hashable {
-    var id: ID
-    var value: Value
 }
 
 extension TrivialMesh where Vertex == SimpleVertex {
