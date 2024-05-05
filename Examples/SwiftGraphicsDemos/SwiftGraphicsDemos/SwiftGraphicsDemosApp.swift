@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct VectorLaboratoryApp: App {
+struct SwiftGraphicsDemosApp: App {
 
     @Environment(\.openWindow)
     var openWindow

@@ -41,7 +41,7 @@
 		45B9D2802BCC28DF001F717E /* GraphicsContextProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B9D27C2BCC28DF001F717E /* GraphicsContextProtocol.swift */; };
 		45B9D2822BCC28DF001F717E /* QuartzContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B9D27E2BCC28DF001F717E /* QuartzContext.swift */; };
 		45C41A9D2BD76625006FBA7B /* Beziers2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45C41A9C2BD76625006FBA7B /* Beziers2.swift */; };
-		45E5B5E32A8EA04100B46CDC /* VectorLaboratoryApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E5B5E22A8EA04100B46CDC /* VectorLaboratoryApp.swift */; };
+		45E5B5E32A8EA04100B46CDC /* SwiftGraphicsDemosApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E5B5E22A8EA04100B46CDC /* SwiftGraphicsDemosApp.swift */; };
 		45E5B5E52A8EA04100B46CDC /* CustomStrokeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E5B5E42A8EA04100B46CDC /* CustomStrokeView.swift */; };
 		45E5B5E72A8EA04400B46CDC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 45E5B5E62A8EA04400B46CDC /* Assets.xcassets */; };
 		45E5B5EB2A8EA04400B46CDC /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 45E5B5EA2A8EA04400B46CDC /* Preview Assets.xcassets */; };
@@ -73,11 +73,11 @@
 		45B9D27C2BCC28DF001F717E /* GraphicsContextProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphicsContextProtocol.swift; sourceTree = "<group>"; };
 		45B9D27E2BCC28DF001F717E /* QuartzContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuartzContext.swift; sourceTree = "<group>"; };
 		45C41A9C2BD76625006FBA7B /* Beziers2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Beziers2.swift; sourceTree = "<group>"; };
-		45E5B5DF2A8EA04100B46CDC /* VectorLaboratory.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VectorLaboratory.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		45E5B5E22A8EA04100B46CDC /* VectorLaboratoryApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VectorLaboratoryApp.swift; sourceTree = "<group>"; };
+		45E5B5DF2A8EA04100B46CDC /* SwiftGraphicsDemos.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftGraphicsDemos.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		45E5B5E22A8EA04100B46CDC /* SwiftGraphicsDemosApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftGraphicsDemosApp.swift; sourceTree = "<group>"; };
 		45E5B5E42A8EA04100B46CDC /* CustomStrokeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomStrokeView.swift; sourceTree = "<group>"; };
 		45E5B5E62A8EA04400B46CDC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		45E5B5E82A8EA04400B46CDC /* VectorLaboratory.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = VectorLaboratory.entitlements; sourceTree = "<group>"; };
+		45E5B5E82A8EA04400B46CDC /* SwiftGraphicsDemos.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SwiftGraphicsDemos.entitlements; sourceTree = "<group>"; };
 		45E5B5EA2A8EA04400B46CDC /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -146,7 +146,7 @@
 		45E5B5D62A8EA04100B46CDC = {
 			isa = PBXGroup;
 			children = (
-				45E5B5E12A8EA04100B46CDC /* VectorLaboratory */,
+				45E5B5E12A8EA04100B46CDC /* SwiftGraphicsDemos */,
 				45462DBC2BBBBC6700CF5EF8 /* SwiftGraphics */,
 				45E5B5E02A8EA04100B46CDC /* Products */,
 				454CE1032BBCB16300ECB521 /* Frameworks */,
@@ -156,16 +156,16 @@
 		45E5B5E02A8EA04100B46CDC /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				45E5B5DF2A8EA04100B46CDC /* VectorLaboratory.app */,
+				45E5B5DF2A8EA04100B46CDC /* SwiftGraphicsDemos.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		45E5B5E12A8EA04100B46CDC /* VectorLaboratory */ = {
+		45E5B5E12A8EA04100B46CDC /* SwiftGraphicsDemos */ = {
 			isa = PBXGroup;
 			children = (
 				45B642022A9EC70500171EE0 /* Info.plist */,
-				45E5B5E22A8EA04100B46CDC /* VectorLaboratoryApp.swift */,
+				45E5B5E22A8EA04100B46CDC /* SwiftGraphicsDemosApp.swift */,
 				456A74312A95531B00E75A8E /* ContentView.swift */,
 				4530821D2BE692A500F3FBFF /* DemosView.swift */,
 				452D82C82BCA301C0054218F /* SketchView.swift */,
@@ -174,10 +174,10 @@
 				459DEFE62BCCE36700DE8245 /* Demos */,
 				459DEFE32BCC760400DE8245 /* Support */,
 				45E5B5E62A8EA04400B46CDC /* Assets.xcassets */,
-				45E5B5E82A8EA04400B46CDC /* VectorLaboratory.entitlements */,
+				45E5B5E82A8EA04400B46CDC /* SwiftGraphicsDemos.entitlements */,
 				45E5B5E92A8EA04400B46CDC /* Preview Content */,
 			);
-			path = VectorLaboratory;
+			path = SwiftGraphicsDemos;
 			sourceTree = "<group>";
 		};
 		45E5B5E92A8EA04400B46CDC /* Preview Content */ = {
@@ -191,9 +191,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		45E5B5DE2A8EA04100B46CDC /* VectorLaboratory */ = {
+		45E5B5DE2A8EA04100B46CDC /* SwiftGraphicsDemos */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 45E5B6042A8EA04400B46CDC /* Build configuration list for PBXNativeTarget "VectorLaboratory" */;
+			buildConfigurationList = 45E5B6042A8EA04400B46CDC /* Build configuration list for PBXNativeTarget "SwiftGraphicsDemos" */;
 			buildPhases = (
 				45E5B5DB2A8EA04100B46CDC /* Sources */,
 				45E5B5DC2A8EA04100B46CDC /* Frameworks */,
@@ -203,7 +203,7 @@
 			);
 			dependencies = (
 			);
-			name = VectorLaboratory;
+			name = SwiftGraphicsDemos;
 			packageProductDependencies = (
 				454597622A8EBDA800902922 /* Algorithms */,
 				451698BD2A97DC3A009DF247 /* SwiftFormats */,
@@ -218,7 +218,7 @@
 				458956942BE8109B00D5AF6E /* EverythingUnsafeConformances */,
 			);
 			productName = StairTest;
-			productReference = 45E5B5DF2A8EA04100B46CDC /* VectorLaboratory.app */;
+			productReference = 45E5B5DF2A8EA04100B46CDC /* SwiftGraphicsDemos.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -236,7 +236,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 45E5B5DA2A8EA04100B46CDC /* Build configuration list for PBXProject "VectorLaboratory" */;
+			buildConfigurationList = 45E5B5DA2A8EA04100B46CDC /* Build configuration list for PBXProject "SwiftGraphicsDemos" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -254,7 +254,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				45E5B5DE2A8EA04100B46CDC /* VectorLaboratory */,
+				45E5B5DE2A8EA04100B46CDC /* SwiftGraphicsDemos */,
 			);
 		};
 /* End PBXProject section */
@@ -297,7 +297,7 @@
 				459DEFE82BCCE45600DE8245 /* ShapesDemoView.swift in Sources */,
 				45E5B5E52A8EA04100B46CDC /* CustomStrokeView.swift in Sources */,
 				453777EB2BC096BB00E600A6 /* BeziersView.swift in Sources */,
-				45E5B5E32A8EA04100B46CDC /* VectorLaboratoryApp.swift in Sources */,
+				45E5B5E32A8EA04100B46CDC /* SwiftGraphicsDemosApp.swift in Sources */,
 				458956972BE8121F00D5AF6E /* Spline.swift in Sources */,
 				459DEFE52BCC761F00DE8245 /* MyShape.swift in Sources */,
 				4530821E2BE692A500F3FBFF /* DemosView.swift in Sources */,
@@ -428,16 +428,16 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = VectorLaboratory/VectorLaboratory.entitlements;
+				CODE_SIGN_ENTITLEMENTS = SwiftGraphicsDemos/SwiftGraphicsDemos.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_ASSET_PATHS = "\"VectorLaboratory/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"SwiftGraphicsDemos/Preview Content\"";
 				DEVELOPMENT_TEAM = 6E23EP94PG;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = VectorLaboratory/Info.plist;
+				INFOPLIST_FILE = SwiftGraphicsDemos/Info.plist;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -453,7 +453,7 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = io.schwa.VectorLaboratory;
+				PRODUCT_BUNDLE_IDENTIFIER = io.schwa.SwiftGraphicsDemos;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
@@ -468,16 +468,16 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = VectorLaboratory/VectorLaboratory.entitlements;
+				CODE_SIGN_ENTITLEMENTS = SwiftGraphicsDemos/SwiftGraphicsDemos.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_ASSET_PATHS = "\"VectorLaboratory/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"SwiftGraphicsDemos/Preview Content\"";
 				DEVELOPMENT_TEAM = 6E23EP94PG;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = VectorLaboratory/Info.plist;
+				INFOPLIST_FILE = SwiftGraphicsDemos/Info.plist;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -493,7 +493,7 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = io.schwa.VectorLaboratory;
+				PRODUCT_BUNDLE_IDENTIFIER = io.schwa.SwiftGraphicsDemos;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
@@ -506,7 +506,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		45E5B5DA2A8EA04100B46CDC /* Build configuration list for PBXProject "VectorLaboratory" */ = {
+		45E5B5DA2A8EA04100B46CDC /* Build configuration list for PBXProject "SwiftGraphicsDemos" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				45E5B6022A8EA04400B46CDC /* Debug */,
@@ -515,7 +515,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		45E5B6042A8EA04400B46CDC /* Build configuration list for PBXNativeTarget "VectorLaboratory" */ = {
+		45E5B6042A8EA04400B46CDC /* Build configuration list for PBXNativeTarget "SwiftGraphicsDemos" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				45E5B6052A8EA04400B46CDC /* Debug */,
