@@ -13,7 +13,7 @@
 		452D82C72BC9C6F00054218F /* SignedDistanceFields.metal in Sources */ = {isa = PBXBuildFile; fileRef = 452D82C62BC9C6F00054218F /* SignedDistanceFields.metal */; };
 		452D82C92BCA301C0054218F /* SketchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 452D82C82BCA301C0054218F /* SketchView.swift */; };
 		4530821A2BE6898300F3FBFF /* Hobby.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453082192BE6898300F3FBFF /* Hobby.swift */; };
-		4530821C2BE68E7D00F3FBFF /* HobbyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4530821B2BE68E7D00F3FBFF /* HobbyView.swift */; };
+		4530821C2BE68E7D00F3FBFF /* HobbyCurveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4530821B2BE68E7D00F3FBFF /* HobbyCurveView.swift */; };
 		4530821E2BE692A500F3FBFF /* DemosView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4530821D2BE692A500F3FBFF /* DemosView.swift */; };
 		453082202BE6954300F3FBFF /* SplineDemoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4530821F2BE6954300F3FBFF /* SplineDemoView.swift */; };
 		453082222BE6B09600F3FBFF /* Handles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453082212BE6B09600F3FBFF /* Handles.swift */; };
@@ -48,7 +48,7 @@
 		452D82C62BC9C6F00054218F /* SignedDistanceFields.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = SignedDistanceFields.metal; sourceTree = "<group>"; };
 		452D82C82BCA301C0054218F /* SketchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SketchView.swift; sourceTree = "<group>"; };
 		453082192BE6898300F3FBFF /* Hobby.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hobby.swift; sourceTree = "<group>"; };
-		4530821B2BE68E7D00F3FBFF /* HobbyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HobbyView.swift; sourceTree = "<group>"; };
+		4530821B2BE68E7D00F3FBFF /* HobbyCurveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HobbyCurveView.swift; sourceTree = "<group>"; };
 		4530821D2BE692A500F3FBFF /* DemosView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemosView.swift; sourceTree = "<group>"; };
 		4530821F2BE6954300F3FBFF /* SplineDemoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplineDemoView.swift; sourceTree = "<group>"; };
 		453082212BE6B09600F3FBFF /* Handles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Handles.swift; sourceTree = "<group>"; };
@@ -122,7 +122,7 @@
 				452D82C62BC9C6F00054218F /* SignedDistanceFields.metal */,
 				452586332BBCF8B8003E85B4 /* LineDemoView.swift */,
 				453777EA2BC096BB00E600A6 /* BeziersView.swift */,
-				4530821B2BE68E7D00F3FBFF /* HobbyView.swift */,
+				4530821B2BE68E7D00F3FBFF /* HobbyCurveView.swift */,
 				45C41A9C2BD76625006FBA7B /* Beziers2.swift */,
 				453082192BE6898300F3FBFF /* Hobby.swift */,
 				45E5B5E42A8EA04100B46CDC /* CustomStrokeView.swift */,
@@ -269,7 +269,7 @@
 				45B9D2822BCC28DF001F717E /* QuartzContext.swift in Sources */,
 				45C41A9D2BD76625006FBA7B /* Beziers2.swift in Sources */,
 				45B268AB2A8FDA000033A727 /* LegacyPathEditor.swift in Sources */,
-				4530821C2BE68E7D00F3FBFF /* HobbyView.swift in Sources */,
+				4530821C2BE68E7D00F3FBFF /* HobbyCurveView.swift in Sources */,
 				4530821A2BE6898300F3FBFF /* Hobby.swift in Sources */,
 				453082222BE6B09600F3FBFF /* Handles.swift in Sources */,
 				456A74322A95531B00E75A8E /* ContentView.swift in Sources */,

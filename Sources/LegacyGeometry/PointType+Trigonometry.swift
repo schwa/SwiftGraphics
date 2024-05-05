@@ -82,7 +82,7 @@ public extension PointType where Scalar: BinaryFloatingPoint {
 
 // and Many more...
 //
-// ﬁnd a projection of a vector over anotlqer vector ﬁnd work done by a force
+
 public func dotProduct<Point: PointType>(_ lhs: Point, _ rhs: Point) -> Point.Scalar {
     lhs.x * rhs.x + lhs.y * rhs.y
 }

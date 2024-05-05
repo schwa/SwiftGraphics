@@ -11,7 +11,7 @@ struct DemosView: View {
     var demos: [any DefaultInitializableView.Type] = [
         BeziersView.self,
         LineDemoView.self,
-        HobbyView.self,
+        HobbyCurveView.self,
         ShaderTestView.self,
         CustomStrokeEditor.self,
         SplineDemoView.self,
@@ -34,7 +34,7 @@ extension BeziersView: DefaultInitializableView {
 extension LineDemoView: DefaultInitializableView {
 }
 
-extension HobbyView: DefaultInitializableView {
+extension HobbyCurveView: DefaultInitializableView {
 }
 
 extension ShaderTestView: DefaultInitializableView {
