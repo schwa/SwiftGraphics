@@ -19,7 +19,6 @@ public extension CGPoint {
     }
 }
 
-
 public extension CGPoint {
     func map(_ f: (CGFloat) -> CGFloat) -> CGPoint {
         CGPoint(x: f(x), y: f(y))
@@ -206,8 +205,8 @@ public extension CGPoint {
     // Returns the angle between this vector and another vector 'vec'.
     // The result sign indicates the rotation direction from this vector to 'vec': positive for counter-clockwise, negative for clockwise.
     // TODO: Unit test
-    func angle(to other: Self) -> CGFloat { // [-M_PI, M_PI)
-        atan2(crossProduct(self, other), dotProduct(self, other))
+    func angle(to other: Self) -> Angle { // [-M_PI, M_PI)
+        .radians(atan2(crossProduct(self, other), dotProduct(self, other)))
     }
 
     // TODO: Unit test
@@ -215,17 +214,15 @@ public extension CGPoint {
         let d = rhs - lhs
         return d.angle
     }
-
 }
 
 // TODO: Misc 2
 
-// ﬁnd a projection of a vector over anotlqer vector ﬁnd work done by a force
+/// The dot product of two vectors is the sum of the products of the corresponding components of the two vectors.
 public func dotProduct(_ lhs: CGPoint, _ rhs: CGPoint) -> CGFloat {
     lhs.x * rhs.x + lhs.y * rhs.y
 }
 
-// swiftlint:disable:next line_length
 /// The sign of the 2D cross product tells you whether the second vector is on the left or right side of the first vector (the direction of the first vector being front). The absolute value of the 2D cross product is the sine of the angle in between the two vectors, so taking the arc sine of it would give you the angle in radians.
 public func crossProduct(_ lhs: CGPoint, _ rhs: CGPoint) -> CGFloat {
     lhs.x * rhs.y - lhs.y * rhs.x
@@ -234,10 +231,10 @@ public func crossProduct(_ lhs: CGPoint, _ rhs: CGPoint) -> CGFloat {
 // TODO: Deprecation zone
 
 /// Return the angle between vertex-p1 and vertex-vertex.x
-//@available(*, deprecated, message: "Do not use")
-public func angle(_ vertex: CGPoint, _ p1: CGPoint, _ p2: CGPoint) -> CGFloat {
+// @available(*, deprecated, message: "Do not use")
+public func angle(_ vertex: CGPoint, _ p1: CGPoint, _ p2: CGPoint) -> Angle {
     let a = (p1 - vertex).angle(to: p2 - vertex)
-    return a.magnitude
+    return .radians(a.magnitude)
 }
 
 public extension CGPoint {
@@ -245,4 +242,3 @@ public extension CGPoint {
         CGPoint(x: x, y: rect.height - y)
     }
 }
-

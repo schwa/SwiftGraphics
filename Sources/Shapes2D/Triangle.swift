@@ -59,10 +59,10 @@ public extension Triangle {
     }
 
     // TODO:
-    var angles: (Double, Double, Double) {
+    var angles: (Angle, Angle, Angle) {
         let a1 = angle(vertices.0, vertices.1, vertices.2)
         let a2 = angle(vertices.1, vertices.2, vertices.0)
-        let a3 = degreesToRadians(180) - a1 - a2
+        let a3 = .degrees(180) - a1 - a2
         return (a1, a2, a3)
     }
 

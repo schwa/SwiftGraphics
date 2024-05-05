@@ -1,7 +1,7 @@
 import Foundation
 import SwiftUI
 
-struct HobbyView: View {
+struct HobbyCurveView: View {
     @State
     var points: [CGPoint] = [[70,250], [20, 110], [220, 60], [270, 200]]
 
