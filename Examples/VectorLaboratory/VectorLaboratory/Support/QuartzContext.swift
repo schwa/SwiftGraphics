@@ -116,7 +116,8 @@ struct QuartzContext: GraphicsContextProtocol {
         guard let image = renderer.cgImage else {
             fatalError()
         }
-        fatalError() // TODO:
+        let rect = CGRect(x: point.x - image.size.width, y: point.y - image.size.height, width: image.size.width, height: image.size.height)
+        cgContext.draw(image, in: rect)
     }
 
     @MainActor

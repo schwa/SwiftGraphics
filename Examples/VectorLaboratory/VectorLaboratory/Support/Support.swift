@@ -1,7 +1,6 @@
 import CoreGraphics
 import CoreGraphicsSupport
 import Everything
-import LegacyGeometry
 import SwiftUI
 import Shapes2D
 import Everything
@@ -169,12 +168,6 @@ public extension Array {
         else {
             nil
         }
-    }
-}
-
-extension Angle: CustomStringConvertible {
-    public var description: String {
-        "\(degrees.formatted())°"
     }
 }
 
@@ -487,7 +480,7 @@ public extension Array where Element: Identifiable {
 
 extension LineSegment {
     var angle: Angle {
-        (CGPoint.angle(start, end) + .degrees(360 + 90)).truncatingRemainder(dividingBy: .degrees(360))
+        (Angle(from: start, to: end) + .degrees(360 + 90)).truncatingRemainder(dividingBy: .degrees(360))
     }
 
     var inverted: LineSegment {
@@ -495,8 +488,47 @@ extension LineSegment {
     }
 }
 
-extension Angle {
-    func truncatingRemainder(dividingBy d: Self) -> Self {
-        .radians(radians.truncatingRemainder(dividingBy: d.radians))
+extension Collection {
+    subscript(offset offset: Int) -> Element {
+        self[index(startIndex, offsetBy: offset)]
+    }
+}
+
+extension Int {
+    var isEven: Bool {
+        self % 2 == 0
+    }
+}
+
+extension View {
+    func onDragGesture(onChanged: @escaping (DragGesture.Value) -> Void, onEnded: @escaping (DragGesture.Value) -> Void) -> some View {
+        gesture(DragGesture().onChanged(onChanged).onEnded(onEnded))
+    }
+}
+
+extension View {
+    func onSpatialTapGesture(count: Int = 1, coordinateSpace: CoordinateSpace = .local, _ ended: @escaping (SpatialTapGesture.Value) -> Void) -> some View {
+        gesture(SpatialTapGesture(count: count, coordinateSpace: coordinateSpace).onEnded(ended))
+    }
+}
+
+extension Array {
+    subscript(relative index: Int) -> Element {
+        get {
+            if index >= 0 {
+                self[index]
+            }
+            else {
+                self[count + index]
+            }
+        }
+        set {
+            if index >= 0 {
+                self[index] = newValue
+            }
+            else {
+                self[count + index] = newValue
+            }
+        }
     }
 }

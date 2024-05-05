@@ -5,6 +5,10 @@ public extension CGPoint {
     init(_ x: CGFloat, _ y: CGFloat) {
         self.init(x: x, y: y)
     }
+
+    var isZero: Bool {
+        self == .zero
+    }
 }
 
 public extension CGPoint {
@@ -177,8 +181,7 @@ public extension CGPoint {
     }
 
     var normalized: Self {
-        let len = length
-        return len == 0 ? self : Self(x: x / len, y: y / len)
+        self.isZero ? self : self / length
     }
 
     var orthogonal: Self {
@@ -209,11 +212,6 @@ public extension CGPoint {
         .radians(atan2(crossProduct(self, other), dotProduct(self, other)))
     }
 
-    // TODO: Unit test
-    static func angle(_ lhs: CGPoint, _ rhs: CGPoint) -> Angle {
-        let d = rhs - lhs
-        return d.angle
-    }
 }
 
 // TODO: Misc 2
@@ -230,15 +228,10 @@ public func crossProduct(_ lhs: CGPoint, _ rhs: CGPoint) -> CGFloat {
 
 // TODO: Deprecation zone
 
-/// Return the angle between vertex-p1 and vertex-vertex.x
-// @available(*, deprecated, message: "Do not use")
-public func angle(_ vertex: CGPoint, _ p1: CGPoint, _ p2: CGPoint) -> Angle {
-    let a = (p1 - vertex).angle(to: p2 - vertex)
-    return .radians(a.magnitude)
-}
-
 public extension CGPoint {
     func flipVertically(within rect: CGRect) -> CGPoint {
         CGPoint(x: x, y: rect.height - y)
     }
 }
+
+

@@ -15,6 +15,7 @@ struct DemosView: View {
         ShaderTestView.self,
         CustomStrokeEditor.self,
         SplineDemoView.self,
+        AngleDemoView.self,
     ]
 
     var body: some View {

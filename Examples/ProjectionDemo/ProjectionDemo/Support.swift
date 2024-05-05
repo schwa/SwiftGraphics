@@ -37,9 +37,9 @@ extension Camera: Sendable {
 }
 
 public extension Camera {
-    var heading: SIMDSupport.Angle<Float> {
+    var heading: Angle {
         get {
-            let degrees = Angle(from: .zero, to: target.xz).degrees
+            let degrees = Angle(from: .zero, to: CGPoint(target.xz)).degrees
             return Angle(degrees: degrees)
         }
         set {
@@ -67,15 +67,6 @@ extension [LineSegment<CGPoint>] {
         return mesh
     }
 }
-
-// extension Path {
-//    func scaled(x: CGFloat, y: CGFloat) -> Path {
-//        let transform = CGAffineTransform(translationX: -boundingRect.midX, y: -boundingRect.midY)
-//            .concatenating(CGAffineTransform(scaleX: x, y: y))
-//            .concatenating(CGAffineTransform(translationX: boundingRect.midX, y: boundingRect.midY))
-//        return applying(transform)
-//    }
-// }
 
 // extension Array where Element == CGPoint {
 //    var rectangleAndAngle: (CGRect, Angle)? {
@@ -193,4 +184,10 @@ public extension SIMD3 where Scalar: BinaryFloatingPoint {
 
 extension UTType {
     static let plyFile = UTType(importedAs: "public.polygon-file-format")
+}
+
+extension SIMD2<Float> {
+    init(length: Float, angle: Angle) {
+        self = .init(x: cos(Float(angle.radians)) * length, y: sin(Float(angle.radians)) * length)
+    }
 }

@@ -1,28 +1,47 @@
-import CoreGraphicsSupport
-import Foundation
 import SwiftUI
+
+// Treating SwiftUI.Path as part of CoreGraphics
+
 
 public extension Path {
     init(lines: [CGPoint]) {
-        self = Path { path in
-            path.addLines(lines)
+        self.init()
+        addLines(lines)
+    }
+
+    // TODO: line segment
+    init(lineSegments: [(CGPoint, CGPoint)]) {
+        self.init()
+        lineSegments.forEach {
+            move(to: $0.0)
+            addLine(to: $0.1)
         }
     }
 
-    @available(*, deprecated, message: "REMOVE")
-    init(lineSegment: (CGPoint, CGPoint), width: Double, lineCap: CGLineCap) {
-        self = Path { path in
-            let radius = width / 2
-            let angle = CGPoint.angle(lineSegment.0, lineSegment.1)
-            //            path.move(to: line.0 + CGPoint(distance: radius, angle: angle - .degrees(90)))
-            path.addRelativeArc(center: lineSegment.0, radius: radius, startAngle: angle + .degrees(90), delta: .degrees(180))
-            path.addLine(to: lineSegment.1 + CGPoint(distance: radius, angle: angle - .degrees(90)))
-            path.addRelativeArc(center: lineSegment.1, radius: radius, startAngle: angle - .degrees(90), delta: .degrees(180))
-            path.addLine(to: lineSegment.0 + CGPoint(distance: radius, angle: angle + .degrees(90)))
-            path.closeSubpath()
+    init(vertices: [CGPoint], closed: Bool = false) {
+        self.init()
+
+        move(to: vertices[0])
+        for vertex in vertices[1 ..< vertices.count] {
+            addLine(to: vertex)
+        }
+        if closed {
+            closeSubpath()
         }
     }
 
+    // TODO: Rename strokedLineSegment
+    init(lineSegment: (CGPoint, CGPoint), width: Double, lineCap: CGLineCap = .butt) {
+        let path = Path { path in
+            path.move(to: lineSegment.0)
+            path.addLine(to: lineSegment.1)
+        }
+        self = path.strokedPath(StrokeStyle(lineWidth: width, lineCap: lineCap))
+    }
+
+}
+
+public extension Path {
     init(paths: [Path]) {
         self.init()
         for path in paths {
@@ -45,14 +64,35 @@ public extension Path {
         addLine(to: relative ? (currentPoint ?? .zero) + point : point)
     }
 
+    mutating func addLine(from: CGPoint, to: CGPoint) {
+        move(to: from)
+        addLine(to: to)
+    }
+
+    // TODO: Make into Path.sCurve()
+    mutating func addSCurve(from start: CGPoint, to end: CGPoint) {
+        let mid = (end + start) * 0.5
+
+        let c1 = CGPoint(x: mid.x, y: start.y)
+        let c2 = CGPoint(x: mid.x, y: end.y)
+
+        move(to: start)
+        addQuadCurve(to: mid, control: c1)
+        addQuadCurve(to: end, control: c2)
+    }
+}
+
+public extension Path {
     static func + (lhs: Path, rhs: Path) -> Path {
         var result = lhs
         result.addPath(rhs)
         return result
     }
+
+    static func += (lhs: inout Path, rhs: Path) {
+        lhs.addPath(rhs)
+    }
 }
-
-
 
 public extension Path {
     static func rect(x: Double = 0, y: Double = 0, w: Double, h: Double) -> Path {
@@ -64,15 +104,15 @@ public extension Path {
     static func rect(x: Double = 0, y: Double = 0, w: Double, h: Double, rx: Double, ry: Double, style: RoundedCornerStyle = .circular) -> Path {
         Path(roundedRect: CGRect(x: x, y: y, width: w, height: h), cornerSize: CGSize(width: rx, height: ry), style: style)
     }
-
+    
     static func circle(center: CGPoint, radius: Double) -> Path {
         Path(ellipseIn: CGRect(center: center, radius: radius))
     }
-
+    
     static func circle(cx: Double, cy: Double, r: Double) -> Path {
         Path(ellipseIn: CGRect(center: CGPoint(x: cx, y: cy), radius: r))
     }
-
+    
     static func ellipse(center: CGPoint, radius: CGSize) -> Path {
         Path(ellipseIn: CGRect(center: center, size: radius * 2))
     }
@@ -99,21 +139,21 @@ public extension Path {
             path.addLine(to: to)
         }
     }
-
+    
     static func horizontalLine(from: CGPoint, length: Double) -> Path {
         line(from: from, to: CGPoint(x: from.x + length, y: from.y))
     }
-
+    
     static func verticalLine(from: CGPoint, length: Double) -> Path {
         line(from: from, to: CGPoint(x: from.x, y: from.y + length))
     }
-
+    
     // curve
     // arc
     // regular polygon
     // star
     // cross
-
+    
     static func cross(_ rect: CGRect) -> Path {
         Path { path in
             path.moveTo(x: rect.minX, y: rect.midY)
@@ -122,7 +162,7 @@ public extension Path {
             path.addLineTo(x: rect.midX, y: rect.maxY)
         }
     }
-
+    
     static func saltire(_ rect: CGRect) -> Path {
         Path { path in
             path.moveTo(x: rect.minX, y: rect.minY)
@@ -132,14 +172,18 @@ public extension Path {
         }
     }
 
-    static func dots(_ dots: [CGPoint], radius: Double) -> Path {
+    static func dot(_ point: CGPoint, radius: Double = 4) -> Path {
+        Path.circle(center: point, radius: radius)
+    }
+
+    static func dots(_ dots: [CGPoint], radius: Double = 4) -> Path {
         Path { path in
             for dot in dots {
                 path.addEllipse(in: CGRect(center: dot, radius: radius))
             }
         }
     }
-
+    
     static func star(points: Int, innerRadius: Double, outerRadius: Double) -> Path {
         var path = Path()
         assert(points > 1, "Number of points should be greater than 1 for a star")
@@ -160,18 +204,18 @@ public extension Path {
     }
 }
 
-public extension Path {
-    var elements: [Path.Element] {
-        var elements: [Path.Element] = []
-        forEach { element in
-            elements.append(element)
-        }
-        return elements
+extension Path {
+    func scaled(x: CGFloat, y: CGFloat) -> Path {
+        let transform = CGAffineTransform(translationX: -boundingRect.midX, y: -boundingRect.midY)
+            .concatenating(CGAffineTransform(scaleX: x, y: y))
+            .concatenating(CGAffineTransform(translationX: boundingRect.midX, y: boundingRect.midY))
+        return applying(transform)
     }
 }
 
 public extension Path {
-    var polygonalChains: [PolygonalChain] {
+    // TODO: Replace with function that we can control how we handle curves...
+    var polygonalChains: [[CGPoint]] {
         var polygons: [[CGPoint]] = []
         var current: [CGPoint] = []
         var lastPoint: CGPoint?
@@ -201,7 +245,95 @@ public extension Path {
         if !current.isEmpty {
             polygons.append(current)
         }
-        return polygons.map { .init(vertices: $0) }
+        return polygons
+    }
+}
+
+
+public extension Path {
+    var elements: [Element] {
+        var elements: [Element] = []
+        forEach { elements.append($0) }
+        return elements
     }
 
+    init(elements: [Element]) {
+        self = Path { path in
+            elements.forEach { element in
+                switch element {
+                case .move(let point):
+                    path.move(to: point)
+                case .line(let point):
+                    path.addLine(to: point)
+                case .quadCurve(let to, let control):
+                    path.addQuadCurve(to: to, control: control)
+                case .curve(let to, let control1, let control2):
+                    path.addCurve(to: to, control1: control1, control2: control2)
+                case .closeSubpath:
+                    path.closeSubpath()
+                }
+            }
+        }
+    }
 }
+
+public extension Path {
+    struct Corners: OptionSet {
+        public let rawValue: UInt8
+
+        public static let topLeft = Corners(rawValue: 0b0001)
+        public static let topRight = Corners(rawValue: 0b0010)
+        public static let bottomLeft = Corners(rawValue: 0b0100)
+        public static let bottomRight = Corners(rawValue: 0b1000)
+
+        public static let all: Corners = [.topLeft, .topRight, .bottomLeft, .bottomRight]
+
+        public init(rawValue: UInt8) {
+            self.rawValue = rawValue
+        }
+    }
+
+    // swiftlint:disable:next cyclomatic_complexity
+    init(roundedRect rect: CGRect, cornerRadius: CGFloat, style: RoundedCornerStyle = .circular, corners: Corners) {
+        let elements = Path(roundedRect: rect, cornerRadius: cornerRadius, style: style).elements
+
+        assert(elements.count == 10)
+
+        self = Path(elements: elements
+            .enumerated()
+            // swiftlint:disable:next closure_body_length
+            .map { index, element in
+                let corner: Corners
+                switch (index, element) {
+                case (2, .curve):
+                    corner = .bottomRight
+                case (4, .curve):
+                    corner = .bottomLeft
+                case (6, .curve):
+                    corner = .topLeft
+                case (8, .curve):
+                    corner = .topRight
+                default:
+                    return element
+                }
+                if !corners.contains(corner) {
+                    switch corner {
+                    case .topLeft:
+                        return .line(to: rect.minXMinY)
+                    case .topRight:
+                        return .line(to: rect.maxXMinY)
+                    case .bottomLeft:
+                        return .line(to: rect.minXMaxY)
+                    case .bottomRight:
+                        return .line(to: rect.maxXMaxY)
+                    default:
+                        fatalError("Invalid corner.")
+                    }
+                }
+                else {
+                    return element
+                }
+            })
+    }
+}
+

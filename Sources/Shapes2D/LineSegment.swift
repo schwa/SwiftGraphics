@@ -58,7 +58,7 @@ public extension LineSegment {
     }
 
     func parallel(offset: Double) -> LineSegment {
-        let angle = CGPoint.angle(start, end) - .degrees(90)
+        let angle = Angle(from: start, to: end) - .degrees(90)
         let offset = CGPoint(distance: offset, angle: angle)
         return map { $0 + offset }
     }

@@ -60,8 +60,8 @@ public extension Triangle {
 
     // TODO:
     var angles: (Angle, Angle, Angle) {
-        let a1 = angle(vertices.0, vertices.1, vertices.2)
-        let a2 = angle(vertices.1, vertices.2, vertices.0)
+        let a1 = Angle(vertex: vertices.0, p1: vertices.1, p2: vertices.2)
+        let a2 = Angle(vertex: vertices.1, p1: vertices.2, p2: vertices.0)
         let a3 = .degrees(180) - a1 - a2
         return (a1, a2, a3)
     }
@@ -81,7 +81,7 @@ public extension Triangle {
     var isRightAngled: Bool {
         let a = angles
         let rightAngle = 0.5 * .pi
-        return isFuzzyEqual(a.0, rightAngle) || isFuzzyEqual(a.1, rightAngle) || isFuzzyEqual(a.2, rightAngle)
+        return isFuzzyEqual(a.0.radians, rightAngle) || isFuzzyEqual(a.1.radians, rightAngle) || isFuzzyEqual(a.2.radians, rightAngle)
     }
 
     var isOblique: Bool {
@@ -91,19 +91,19 @@ public extension Triangle {
     var isAcute: Bool {
         let a = angles
         let rightAngle = 0.5 * .pi
-        return a.0 < rightAngle && a.1 < rightAngle && a.2 < rightAngle
+        return a.0.radians < rightAngle && a.1.radians < rightAngle && a.2.radians < rightAngle
     }
 
     var isObtuse: Bool {
         let a = angles
         let rightAngle = 0.5 * .pi
-        return a.0 > rightAngle || a.1 > rightAngle || a.2 > rightAngle
+        return a.0.radians > rightAngle || a.1.radians > rightAngle || a.2.radians > rightAngle
     }
 
     var isDegenerate: Bool {
         let a = angles
         let r180 = Double.pi
-        return isFuzzyEqual(a.0, r180) || isFuzzyEqual(a.1, r180) || isFuzzyEqual(a.2, r180)
+        return isFuzzyEqual(a.0.radians, r180) || isFuzzyEqual(a.1.radians, r180) || isFuzzyEqual(a.2.radians, r180)
     }
 
     var signedArea: Double {
@@ -170,7 +170,7 @@ public extension Triangle {
 
         let r = 2 * area / (a + b + c)
         let k = 2 * area / (a * alpha + b * beta + c * gamma)
-        let C = angles.2
+        let C = angles.2.radians
 
         let x = (k * beta - r + (k * alpha - r) * cos(C)) / sin(C)
         let y = k * alpha - r

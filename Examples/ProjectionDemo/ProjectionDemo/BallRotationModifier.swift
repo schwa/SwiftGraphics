@@ -1,5 +1,5 @@
 import CoreGraphicsSupport
-import Everything
+//import Everything
 import simd
 import SwiftUI
 
@@ -107,6 +107,3 @@ public extension View {
     }
 }
 
-func abs(_ value: Angle) -> Angle {
-    .radians(Swift.abs(value.radians))
-}

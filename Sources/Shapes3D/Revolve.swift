@@ -1,18 +1,19 @@
 import Foundation
 import simd
 import SIMDSupport
+import SwiftUI
 
 // TODO: Experimental
 
-public func revolve(polygonalChain: PolygonalChain<SIMD3<Float>>, axis: Line<SIMD3<Float>>, range: ClosedRange<Angle<Float>>) -> TrivialMesh<SIMD3<Float>> {
+public func revolve(polygonalChain: PolygonalChain<SIMD3<Float>>, axis: Line<SIMD3<Float>>, range: ClosedRange<Angle>) -> TrivialMesh<SIMD3<Float>> {
     let quads = polygonalChain.segments.map {
         revolve(lineSegment: $0, axis: axis, range: range)
     }
     return TrivialMesh(quads: quads)
 }
 
-public func revolve(polygonalChain: PolygonalChain<SIMD3<Float>>, axis: Line<SIMD3<Float>>, range: ClosedRange<Angle<Float>>, segments: Int) -> TrivialMesh<SIMD3<Float>> {
-    let by = Angle<Float>(radians: (range.upperBound.radians - range.lowerBound.radians) / Float(segments))
+public func revolve(polygonalChain: PolygonalChain<SIMD3<Float>>, axis: Line<SIMD3<Float>>, range: ClosedRange<Angle>, segments: Int) -> TrivialMesh<SIMD3<Float>> {
+    let by = Angle(radians: (range.upperBound.radians - range.lowerBound.radians) / Double(segments))
     let quads = stride(from: range.lowerBound, to: range.upperBound, by: by).flatMap { start in
         let range = start ... start + by
         let quads = polygonalChain.segments.map {
@@ -23,13 +24,13 @@ public func revolve(polygonalChain: PolygonalChain<SIMD3<Float>>, axis: Line<SIM
     return TrivialMesh(quads: quads)
 }
 
-public func revolve(lineSegment: LineSegment<SIMD3<Float>>, axis: Line<SIMD3<Float>>, range: ClosedRange<Angle<Float>>) -> Quad<SIMD3<Float>> {
+public func revolve(lineSegment: LineSegment<SIMD3<Float>>, axis: Line<SIMD3<Float>>, range: ClosedRange<Angle>) -> Quad<SIMD3<Float>> {
     let p1 = revolve(point: lineSegment.start, axis: axis, range: range)
     let p2 = revolve(point: lineSegment.end, axis: axis, range: range)
     return .init(vertices: (p1.start, p1.end, p2.end, p2.start))
 }
 
-public func revolve(point: SIMD3<Float>, axis: Line<SIMD3<Float>>, range: ClosedRange<Angle<Float>>) -> LineSegment<SIMD3<Float>> {
+public func revolve(point: SIMD3<Float>, axis: Line<SIMD3<Float>>, range: ClosedRange<Angle>) -> LineSegment<SIMD3<Float>> {
     let center = axis.closest(to: point)
     let p1 = simd_quatf(angle: range.lowerBound, axis: axis.direction).act(point - center) + center
     let p2 = simd_quatf(angle: range.upperBound, axis: axis.direction).act(point - center) + center
