@@ -19,6 +19,11 @@ struct DemosView: View {
         BoxesView.self,
         HalfEdgeView.self,
         MeshView.self,
+        VolumetricView.self,
+        SimpleSceneView.self,
+        CSGDemoView.self,
+        SimulationView.self,
+        Particles2View.self,
     ]
 
     var body: some View {

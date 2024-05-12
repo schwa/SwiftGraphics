@@ -137,28 +137,35 @@ class MovementController: @unchecked Sendable {
             await withDiscardingTaskGroup { [weak self] group in
                 let notificationCenter = NotificationCenter.default
                 group.addTask { [weak self] in
-                    for await controller in notificationCenter.notifications(named: .GCControllerDidBecomeCurrent).compactMap(\.object).cast(to: GCController.self) {
-                        self?.controller = controller
-                    }
+                    // TODO: FIXME
+
+                    //                    for await controller in notificationCenter.notifications(named: .GCControllerDidBecomeCurrent).compactMap(\.object).cast(to: GCController.self) {
+//                        self?.controller = controller
+//                    }
                 }
                 group.addTask { [weak self] in
-                    for await controller in notificationCenter.notifications(named: .GCControllerDidDisconnect).compactMap(\.object).cast(to: GCController.self) {
-                        if self?.controller === controller {
-                            self?.controller = nil
-                        }
-                    }
+                    // TODO: FIXME
+//                    for await controller in notificationCenter.notifications(named: .GCControllerDidDisconnect).compactMap(\.object).cast(to: GCController.self) {
+//                        if self?.controller === controller {
+//                            self?.controller = nil
+//                        }
+//                    }
                 }
                 group.addTask { [weak self] in
-                    for await mouse in notificationCenter.notifications(named: .GCMouseDidConnect).compactMap(\.object).cast(to: GCMouse.self) {
-                        self?.mouse = mouse
-                    }
+                    // TODO: FIXME
+
+                    //                    for await mouse in notificationCenter.notifications(named: .GCMouseDidConnect).compactMap(\.object).cast(to: GCMouse.self) {
+//                        self?.mouse = mouse
+//                    }
                 }
                 group.addTask { [weak self] in
-                    for await mouse in notificationCenter.notifications(named: .GCMouseDidDisconnect).compactMap(\.object).cast(to: GCMouse.self) {
-                        if self?.mouse === mouse {
-                            self?.mouse = nil
-                        }
-                    }
+                    // TODO: FIXME
+
+                    //                    for await mouse in notificationCenter.notifications(named: .GCMouseDidDisconnect).compactMap(\.object).cast(to: GCMouse.self) {
+//                        if self?.mouse === mouse {
+//                            self?.mouse = nil
+//                        }
+//                    }
                 }
             }
         }
@@ -185,9 +192,11 @@ class MovementController: @unchecked Sendable {
                 fatalError()
             }
             // TODO: Move to MovementController
-            for await _ in NotificationCenter.default.notifications(named: .GCKeyboardDidConnect) {
-                break
-            }
+            // TODO: FIXME
+
+            //            for await _ in NotificationCenter.default.notifications(named: .GCKeyboardDidConnect) {
+//                break
+//            }
             guard let keyboard = GCKeyboard.coalesced, let keyboardInput = keyboard.keyboardInput else {
                 fatalError()
             }

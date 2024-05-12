@@ -13,7 +13,7 @@ import CoreGraphicsSupport
 
 // https://www.youtube.com/watch?v=y4KdxaMC69w&t=1761s
 
-public struct VolumetricView: View {
+public struct VolumetricView: View, DefaultInitializableView {
     @State
     var renderPass = VolumetricRenderPass()
 

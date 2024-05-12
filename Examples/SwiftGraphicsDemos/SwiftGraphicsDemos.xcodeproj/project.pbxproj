@@ -43,7 +43,6 @@
 		45B9D2802BCC28DF001F717E /* GraphicsContextProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B9D27C2BCC28DF001F717E /* GraphicsContextProtocol.swift */; };
 		45B9D2822BCC28DF001F717E /* QuartzContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B9D27E2BCC28DF001F717E /* QuartzContext.swift */; };
 		45C41A9D2BD76625006FBA7B /* Beziers2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45C41A9C2BD76625006FBA7B /* Beziers2.swift */; };
-		45DA90D02BF158380070FD0C /* BallRotationModifierX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA90482BF158380070FD0C /* BallRotationModifierX.swift */; };
 		45DA90D12BF158380070FD0C /* FirstPersonInteractiveViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA90492BF158380070FD0C /* FirstPersonInteractiveViewModifier.swift */; };
 		45DA90D22BF158380070FD0C /* GameControllerWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA904A2BF158380070FD0C /* GameControllerWidget.swift */; };
 		45DA90D32BF158380070FD0C /* MovementController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA904B2BF158380070FD0C /* MovementController.swift */; };
@@ -52,7 +51,6 @@
 		45DA90E42BF158380070FD0C /* ParticlesRenderJob.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA905F2BF158380070FD0C /* ParticlesRenderJob.swift */; };
 		45DA90E52BF158380070FD0C /* SimulationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA90602BF158380070FD0C /* SimulationView.swift */; };
 		45DA90E62BF158380070FD0C /* Particles2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA90622BF158380070FD0C /* Particles2.swift */; };
-		45DA90F52BF158380070FD0C /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 45DA90732BF158380070FD0C /* Preview Assets.xcassets */; };
 		45DA90F62BF158380070FD0C /* ShaderToy.metal in Sources */ = {isa = PBXBuildFile; fileRef = 45DA90752BF158380070FD0C /* ShaderToy.metal */; };
 		45DA90F72BF158380070FD0C /* ShaderToyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA90762BF158380070FD0C /* ShaderToyView.swift */; };
 		45DA90F82BF158380070FD0C /* BarramundiFish.glb in Resources */ = {isa = PBXBuildFile; fileRef = 45DA90782BF158380070FD0C /* BarramundiFish.glb */; };
@@ -80,7 +78,6 @@
 		45DA910E2BF158380070FD0C /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA908F2BF158380070FD0C /* Logging.swift */; };
 		45DA910F2BF158380070FD0C /* Names.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA90902BF158380070FD0C /* Names.swift */; };
 		45DA91102BF158380070FD0C /* nouns.txt in Resources */ = {isa = PBXBuildFile; fileRef = 45DA90912BF158380070FD0C /* nouns.txt */; };
-		45DA91112BF158380070FD0C /* ProjectionsX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA90922BF158380070FD0C /* ProjectionsX.swift */; };
 		45DA91122BF158380070FD0C /* Resources.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA90932BF158380070FD0C /* Resources.swift */; };
 		45DA91132BF158380070FD0C /* RKSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA90942BF158380070FD0C /* RKSupport.swift */; };
 		45DA91142BF158380070FD0C /* SwiftUI+Support.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA90952BF158380070FD0C /* SwiftUI+Support.swift */; };
@@ -162,7 +159,6 @@
 		45B9D27C2BCC28DF001F717E /* GraphicsContextProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphicsContextProtocol.swift; sourceTree = "<group>"; };
 		45B9D27E2BCC28DF001F717E /* QuartzContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuartzContext.swift; sourceTree = "<group>"; };
 		45C41A9C2BD76625006FBA7B /* Beziers2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Beziers2.swift; sourceTree = "<group>"; };
-		45DA90482BF158380070FD0C /* BallRotationModifierX.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BallRotationModifierX.swift; sourceTree = "<group>"; };
 		45DA90492BF158380070FD0C /* FirstPersonInteractiveViewModifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirstPersonInteractiveViewModifier.swift; sourceTree = "<group>"; };
 		45DA904A2BF158380070FD0C /* GameControllerWidget.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameControllerWidget.swift; sourceTree = "<group>"; };
 		45DA904B2BF158380070FD0C /* MovementController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MovementController.swift; sourceTree = "<group>"; };
@@ -171,7 +167,6 @@
 		45DA905F2BF158380070FD0C /* ParticlesRenderJob.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParticlesRenderJob.swift; sourceTree = "<group>"; };
 		45DA90602BF158380070FD0C /* SimulationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimulationView.swift; sourceTree = "<group>"; };
 		45DA90622BF158380070FD0C /* Particles2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Particles2.swift; sourceTree = "<group>"; };
-		45DA90732BF158380070FD0C /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		45DA90752BF158380070FD0C /* ShaderToy.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = ShaderToy.metal; sourceTree = "<group>"; };
 		45DA90762BF158380070FD0C /* ShaderToyView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShaderToyView.swift; sourceTree = "<group>"; };
 		45DA90782BF158380070FD0C /* BarramundiFish.glb */ = {isa = PBXFileReference; lastKnownFileType = file; path = BarramundiFish.glb; sourceTree = "<group>"; };
@@ -199,7 +194,6 @@
 		45DA908F2BF158380070FD0C /* Logging.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
 		45DA90902BF158380070FD0C /* Names.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Names.swift; sourceTree = "<group>"; };
 		45DA90912BF158380070FD0C /* nouns.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = nouns.txt; sourceTree = "<group>"; };
-		45DA90922BF158380070FD0C /* ProjectionsX.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProjectionsX.swift; sourceTree = "<group>"; };
 		45DA90932BF158380070FD0C /* Resources.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Resources.swift; sourceTree = "<group>"; };
 		45DA90942BF158380070FD0C /* RKSupport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RKSupport.swift; sourceTree = "<group>"; };
 		45DA90952BF158380070FD0C /* SwiftUI+Support.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SwiftUI+Support.swift"; sourceTree = "<group>"; };
@@ -344,7 +338,6 @@
 		45DA904C2BF158380070FD0C /* Interactive */ = {
 			isa = PBXGroup;
 			children = (
-				45DA90482BF158380070FD0C /* BallRotationModifierX.swift */,
 				45DA90492BF158380070FD0C /* FirstPersonInteractiveViewModifier.swift */,
 				45DA904A2BF158380070FD0C /* GameControllerWidget.swift */,
 				45DA904B2BF158380070FD0C /* MovementController.swift */,
@@ -376,14 +369,6 @@
 				45DA90622BF158380070FD0C /* Particles2.swift */,
 			);
 			path = Particles2;
-			sourceTree = "<group>";
-		};
-		45DA90742BF158380070FD0C /* Preview Content */ = {
-			isa = PBXGroup;
-			children = (
-				45DA90732BF158380070FD0C /* Preview Assets.xcassets */,
-			);
-			path = "Preview Content";
 			sourceTree = "<group>";
 		};
 		45DA90772BF158380070FD0C /* ShaderToy */ = {
@@ -430,7 +415,6 @@
 				45DA908F2BF158380070FD0C /* Logging.swift */,
 				45DA90902BF158380070FD0C /* Names.swift */,
 				45DA90912BF158380070FD0C /* nouns.txt */,
-				45DA90922BF158380070FD0C /* ProjectionsX.swift */,
 				45DA90932BF158380070FD0C /* Resources.swift */,
 				45DA90942BF158380070FD0C /* RKSupport.swift */,
 				45DA90952BF158380070FD0C /* SwiftUI+Support.swift */,
@@ -457,7 +441,6 @@
 				45DA904E2BF158380070FD0C /* MetalCanvas */,
 				45DA90612BF158380070FD0C /* Particles */,
 				45DA90632BF158380070FD0C /* Particles2 */,
-				45DA90742BF158380070FD0C /* Preview Content */,
 				45DA90772BF158380070FD0C /* ShaderToy */,
 				45DA90882BF158380070FD0C /* SimpleScene */,
 				45DA90972BF158380070FD0C /* Support */,
@@ -627,7 +610,6 @@
 				45E5B5EB2A8EA04400B46CDC /* Preview Assets.xcassets in Resources */,
 				4589EEFE2BE852D6001261B9 /* Square.ply in Resources */,
 				45DA90F92BF158380070FD0C /* Cube.glb in Resources */,
-				45DA90F52BF158380070FD0C /* Preview Assets.xcassets in Resources */,
 				45DA91262BF158380070FD0C /* Assets.xcassets in Resources */,
 				4589EEFB2BE852D6001261B9 /* Cube.ply in Resources */,
 				45DA91082BF158380070FD0C /* adjectives.txt in Resources */,
@@ -660,7 +642,6 @@
 				45C41A9D2BD76625006FBA7B /* Beziers2.swift in Sources */,
 				45B268AB2A8FDA000033A727 /* LegacyPathEditor.swift in Sources */,
 				45DA90FD2BF158380070FD0C /* SimpleJobsBasedRenderPass.swift in Sources */,
-				45DA91112BF158380070FD0C /* ProjectionsX.swift in Sources */,
 				452BF0462BE7DFF600F6E7D0 /* AngleDemoView.swift in Sources */,
 				45DA91142BF158380070FD0C /* SwiftUI+Support.swift in Sources */,
 				45DA912A2BF158380070FD0C /* DemosApp-VisionOS.swift in Sources */,
@@ -705,7 +686,6 @@
 				4589EEF62BE852D6001261B9 /* BoxesView.swift in Sources */,
 				45493BE62A8F140A0057FD00 /* my_color_effect.metal in Sources */,
 				459DEFE82BCCE45600DE8245 /* ShapesDemoView.swift in Sources */,
-				45DA90D02BF158380070FD0C /* BallRotationModifierX.swift in Sources */,
 				45DA91152BF158380070FD0C /* TarArchive.swift in Sources */,
 				45DA910A2BF158380070FD0C /* Cache.swift in Sources */,
 				45E5B5E52A8EA04100B46CDC /* CustomStrokeView.swift in Sources */,

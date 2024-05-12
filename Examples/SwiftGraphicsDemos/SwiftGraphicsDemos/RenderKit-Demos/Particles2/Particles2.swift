@@ -140,7 +140,7 @@ extension Solver {
     }
 }
 
-struct Particles2View: View {
+struct Particles2View: View, DefaultInitializableView {
     @State
     var solver = Solver()
 

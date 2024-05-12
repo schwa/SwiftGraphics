@@ -4,7 +4,12 @@ import RenderKitShaders
 import Everything
 import RenderKitScratch
 
-struct CSGDemoView: View {
+struct CSGDemoView: View, DefaultInitializableView {
+    var body: some View {
+        CSGDemoView_()
+    }
+}
+struct CSGDemoView_: View {
     let a: CSG<SimpleVertex>
     let b: CSG<SimpleVertex>
     let c: CSG<SimpleVertex>

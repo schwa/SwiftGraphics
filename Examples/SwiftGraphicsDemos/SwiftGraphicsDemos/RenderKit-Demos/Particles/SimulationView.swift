@@ -9,7 +9,7 @@ import Observation
 import Everything
 import SwiftFormats
 
-struct SimulationView: View {
+struct SimulationView: View, DefaultInitializableView {
     @State
     var simulation: Simulation<ArraySimulatorStorage>
 

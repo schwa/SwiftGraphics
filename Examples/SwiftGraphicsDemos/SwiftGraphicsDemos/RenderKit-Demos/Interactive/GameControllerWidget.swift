@@ -1,5 +1,6 @@
 import SwiftUI
 import GameController
+import Foundation
 
 struct GameControllerWidget: View {
     @Observable
@@ -39,34 +40,41 @@ struct GameControllerWidget: View {
                 await withDiscardingTaskGroup { [weak self] group in
                     let notificationCenter = NotificationCenter.default
                     group.addTask { [weak self] in
-                        for await device in notificationCenter.notifications(named: .GCControllerDidConnect).compactMap(\.object).cast(to: GCDevice.self) {
-                            self?.devices.insert(DeviceBox(device: device!))
-                        }
+                        // TODO: FIXME
+//                        for await device in notificationCenter.notifications(named: .GCControllerDidConnect).compactMap(\.object).cast(to: GCDevice.self) {
+//                            self?.devices.insert(DeviceBox(device: device!))
+//                        }
                     }
                     group.addTask { [weak self] in
-                        for await device in notificationCenter.notifications(named: .GCControllerDidDisconnect).compactMap(\.object).cast(to: GCDevice.self) {
-                            self?.devices.remove(DeviceBox(device: device!))
-                        }
+                        // TODO: FIXME
+//                        for await device in notificationCenter.notifications(named: .GCControllerDidDisconnect).compactMap(\.object).cast(to: GCDevice.self) {
+//                            self?.devices.remove(DeviceBox(device: device!))
+//                        }
                     }
                     group.addTask { [weak self] in
-                        for await device in notificationCenter.notifications(named: .GCKeyboardDidConnect).compactMap(\.object).cast(to: GCDevice.self) {
-                            self?.devices.insert(DeviceBox(device: device!))
-                        }
+                        // TODO: FIXME
+
+                        //                        for await device in notificationCenter.notifications(named: .GCKeyboardDidConnect).compactMap(\.object).cast(to: GCDevice.self) {
+//                            self?.devices.insert(DeviceBox(device: device!))
+//                        }
                     }
                     group.addTask { [weak self] in
-                        for await device in notificationCenter.notifications(named: .GCKeyboardDidDisconnect).compactMap(\.object).cast(to: GCDevice.self) {
-                            self?.devices.remove(DeviceBox(device: device!))
-                        }
+                        // TODO: FIXME
+//                        for await device in notificationCenter.notifications(named: .GCKeyboardDidDisconnect).compactMap(\.object).cast(to: GCDevice.self) {
+//                            self?.devices.remove(DeviceBox(device: device!))
+//                        }
                     }
                     group.addTask { [weak self] in
-                        for await device in notificationCenter.notifications(named: .GCMouseDidConnect).compactMap(\.object).cast(to: GCDevice.self) {
-                            self?.devices.insert(DeviceBox(device: device!))
-                        }
+                        // TODO: FIXME
+//                        for await device in notificationCenter.notifications(named: .GCMouseDidConnect).compactMap(\.object).cast(to: GCDevice.self) {
+//                            self?.devices.insert(DeviceBox(device: device!))
+//                        }
                     }
                     group.addTask { [weak self] in
-                        for await device in notificationCenter.notifications(named: .GCMouseDidDisconnect).compactMap(\.object).cast(to: GCDevice.self) {
-                            self?.devices.remove(DeviceBox(device: device!))
-                        }
+                        // TODO: FIXME
+//                        for await device in notificationCenter.notifications(named: .GCMouseDidDisconnect).compactMap(\.object).cast(to: GCDevice.self) {
+//                            self?.devices.remove(DeviceBox(device: device!))
+//                        }
                     }
                 }
             }
