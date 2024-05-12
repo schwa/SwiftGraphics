@@ -1,0 +1,69 @@
+@startuml Meshes
+
+package MetalKit {
+    class MTKMesh {
+        + submeshes: [MTKSubmesh]
+        + vertexBuffers: [MTKMeshBuffer]
+        + vertexDescriptor: MTLVertexDescriptor
+        + vertexCount: Int
+        + name: String
+        + init(mesh:,device:)
+        + class func newMeshes(asset:,device:)
+
+    }
+
+    class MTKSubmesh {
+        + indexBuffer: MTKMeshBuffer
+        + indexCount: Int
+        + indexType: MTLIndexType
+        + mesh: MTKMesh
+        + name: String
+        + primitiveType: MTLPrimitiveType
+    }
+
+    class MTKMeshBuffer {
+        + allocator: MTKMeshBufferAllocator
+        + buffer: MTLBuffer
+        + offset: Int
+        + length: Int
+        + type: MTKMeshBufferType
+    }
+
+    MTKMesh --> MTKSubmesh : submeshes
+    MTKMesh --> MTKMeshBuffer : vertexBuffers
+    MTKSubmesh --> MTKMeshBuffer : indexBuffer
+}
+
+package ModelIO {
+    class MDLMesh {
+        + submeshes: [MDLSubmesh]
+        + vertexBuffers: [MDLMeshBuffer]
+        + vertexDescriptor: MDLVertexDescriptor
+        + vertexCount: Int
+        + allocator: MDLMeshBufferAllocator
+        + boundingBox: MDLAxisAlignedBoundingBox
+    }
+
+    class MDLSubmesh {
+        + indexBuffer: MDLMeshBuffer
+        + indexCount: Int
+        + indexType: MDLIndexBitDepth
+        + geometryType: MDLGeometryType
+        + topology: MDLSubmeshTopology?
+        + material: MDLMaterial?
+        + name: String
+    }
+
+    class MDLMeshBuffer {
+        + allocator: MDLMeshBufferAllocator
+        + length: Int
+        + type: MDLMeshBufferType
+        + zone: MDLMeshBufferZone
+    }
+
+    MDLMesh --> MDLSubmesh : submeshes
+    MDLMesh --> MDLMeshBuffer : vertexBuffers
+    MDLSubmesh --> MDLMeshBuffer : indexBuffer
+
+}
+@enduml

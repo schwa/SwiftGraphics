@@ -3,7 +3,6 @@ import CoreGraphics
 import CoreGraphicsSupport
 import CoreText
 import Earcut
-import Everything
 import Shapes3D
 import ModelIO
 import Projection

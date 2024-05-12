@@ -10,6 +10,24 @@
       }
     },
     {
+      "identity" : "everything",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/schwa/Everything",
+      "state" : {
+        "branch" : "jwight/downsizing",
+        "revision" : "7bf3c08bc99005892e02ab48dc442c8bea54eeb7"
+      }
+    },
+    {
+      "identity" : "metalcompilerplugin",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/schwa/MetalCompilerPlugin",
+      "state" : {
+        "revision" : "435c493a6f1cd8846e44a24ce8b6b27f97084527",
+        "version" : "0.0.2"
+      }
+    },
+    {
       "identity" : "swift-algorithms",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-algorithms.git",
@@ -28,6 +46,24 @@
       }
     },
     {
+      "identity" : "swift-async-algorithms",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-async-algorithms",
+      "state" : {
+        "revision" : "9cfed92b026c524674ed869a4ff2dcfdeedf8a2a",
+        "version" : "0.1.0"
+      }
+    },
+    {
+      "identity" : "swift-collections",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-collections.git",
+      "state" : {
+        "revision" : "94cf62b3ba8d4bed62680a282d4c25f9c63c2efb",
+        "version" : "1.1.0"
+      }
+    },
+    {
       "identity" : "swift-numerics",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-numerics",
@@ -43,6 +79,15 @@
       "state" : {
         "revision" : "64889f0c732f210a935a0ad7cda38f77f876262d",
         "version" : "509.1.1"
+      }
+    },
+    {
+      "identity" : "swiftfields",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/schwa/swiftfields",
+      "state" : {
+        "revision" : "8a9715b88509c93557833018f335397153f194bb",
+        "version" : "0.1.3"
       }
     },
     {
