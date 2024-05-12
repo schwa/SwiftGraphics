@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 60;
+	objectVersion = 56;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -43,6 +43,22 @@
 		45B9D2802BCC28DF001F717E /* GraphicsContextProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B9D27C2BCC28DF001F717E /* GraphicsContextProtocol.swift */; };
 		45B9D2822BCC28DF001F717E /* QuartzContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B9D27E2BCC28DF001F717E /* QuartzContext.swift */; };
 		45C41A9D2BD76625006FBA7B /* Beziers2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45C41A9C2BD76625006FBA7B /* Beziers2.swift */; };
+		45DA8F2B2BF157840070FD0C /* Array2D in Frameworks */ = {isa = PBXBuildFile; productRef = 45DA8F2A2BF157840070FD0C /* Array2D */; };
+		45DA8F2D2BF157840070FD0C /* CoreGraphicsSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 45DA8F2C2BF157840070FD0C /* CoreGraphicsSupport */; };
+		45DA8F2F2BF157840070FD0C /* Earcut in Frameworks */ = {isa = PBXBuildFile; productRef = 45DA8F2E2BF157840070FD0C /* Earcut */; };
+		45DA8F312BF157840070FD0C /* LegacyGeometry in Frameworks */ = {isa = PBXBuildFile; productRef = 45DA8F302BF157840070FD0C /* LegacyGeometry */; };
+		45DA8F332BF157840070FD0C /* MetalSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 45DA8F322BF157840070FD0C /* MetalSupport */; };
+		45DA8F352BF157840070FD0C /* MetalSupportUnsafeConformances in Frameworks */ = {isa = PBXBuildFile; productRef = 45DA8F342BF157840070FD0C /* MetalSupportUnsafeConformances */; };
+		45DA8F372BF157840070FD0C /* Projection in Frameworks */ = {isa = PBXBuildFile; productRef = 45DA8F362BF157840070FD0C /* Projection */; };
+		45DA8F392BF157840070FD0C /* Raster in Frameworks */ = {isa = PBXBuildFile; productRef = 45DA8F382BF157840070FD0C /* Raster */; };
+		45DA8F3B2BF157840070FD0C /* RenderKit in Frameworks */ = {isa = PBXBuildFile; productRef = 45DA8F3A2BF157840070FD0C /* RenderKit */; };
+		45DA8F3D2BF157840070FD0C /* RenderKitScratch in Frameworks */ = {isa = PBXBuildFile; productRef = 45DA8F3C2BF157840070FD0C /* RenderKitScratch */; };
+		45DA8F3F2BF157840070FD0C /* RenderKitShaders in Frameworks */ = {isa = PBXBuildFile; productRef = 45DA8F3E2BF157840070FD0C /* RenderKitShaders */; };
+		45DA8F412BF157840070FD0C /* Shapes2D in Frameworks */ = {isa = PBXBuildFile; productRef = 45DA8F402BF157840070FD0C /* Shapes2D */; };
+		45DA8F432BF157840070FD0C /* Shapes3D in Frameworks */ = {isa = PBXBuildFile; productRef = 45DA8F422BF157840070FD0C /* Shapes3D */; };
+		45DA8F452BF157840070FD0C /* SIMDSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 45DA8F442BF157840070FD0C /* SIMDSupport */; };
+		45DA8F472BF157840070FD0C /* SIMDSupportUnsafeConformances in Frameworks */ = {isa = PBXBuildFile; productRef = 45DA8F462BF157840070FD0C /* SIMDSupportUnsafeConformances */; };
+		45DA8F492BF157840070FD0C /* Sketches in Frameworks */ = {isa = PBXBuildFile; productRef = 45DA8F482BF157840070FD0C /* Sketches */; };
 		45E5B5E32A8EA04100B46CDC /* SwiftGraphicsDemosApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E5B5E22A8EA04100B46CDC /* SwiftGraphicsDemosApp.swift */; };
 		45E5B5E52A8EA04100B46CDC /* CustomStrokeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E5B5E42A8EA04100B46CDC /* CustomStrokeView.swift */; };
 		45E5B5E72A8EA04400B46CDC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 45E5B5E62A8EA04400B46CDC /* Assets.xcassets */; };
@@ -87,7 +103,7 @@
 		45B9D27C2BCC28DF001F717E /* GraphicsContextProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphicsContextProtocol.swift; sourceTree = "<group>"; };
 		45B9D27E2BCC28DF001F717E /* QuartzContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuartzContext.swift; sourceTree = "<group>"; };
 		45C41A9C2BD76625006FBA7B /* Beziers2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Beziers2.swift; sourceTree = "<group>"; };
-		45DFB9072BF155C20083D842 /* SwiftGraphics */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = SwiftGraphics; path = ../../..; sourceTree = "<group>"; };
+		45DA8F282BF157710070FD0C /* SwiftGraphics */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = SwiftGraphics; path = ../../..; sourceTree = "<group>"; };
 		45E5B5DF2A8EA04100B46CDC /* SwiftGraphicsDemos.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftGraphicsDemos.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		45E5B5E22A8EA04100B46CDC /* SwiftGraphicsDemosApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftGraphicsDemosApp.swift; sourceTree = "<group>"; };
 		45E5B5E42A8EA04100B46CDC /* CustomStrokeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomStrokeView.swift; sourceTree = "<group>"; };
@@ -101,6 +117,22 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				45DA8F2F2BF157840070FD0C /* Earcut in Frameworks */,
+				45DA8F2D2BF157840070FD0C /* CoreGraphicsSupport in Frameworks */,
+				45DA8F492BF157840070FD0C /* Sketches in Frameworks */,
+				45DA8F332BF157840070FD0C /* MetalSupport in Frameworks */,
+				45DA8F372BF157840070FD0C /* Projection in Frameworks */,
+				45DA8F3F2BF157840070FD0C /* RenderKitShaders in Frameworks */,
+				45DA8F2B2BF157840070FD0C /* Array2D in Frameworks */,
+				45DA8F472BF157840070FD0C /* SIMDSupportUnsafeConformances in Frameworks */,
+				45DA8F412BF157840070FD0C /* Shapes2D in Frameworks */,
+				45DA8F352BF157840070FD0C /* MetalSupportUnsafeConformances in Frameworks */,
+				45DA8F432BF157840070FD0C /* Shapes3D in Frameworks */,
+				45DA8F452BF157840070FD0C /* SIMDSupport in Frameworks */,
+				45DA8F312BF157840070FD0C /* LegacyGeometry in Frameworks */,
+				45DA8F392BF157840070FD0C /* Raster in Frameworks */,
+				45DA8F3D2BF157840070FD0C /* RenderKitScratch in Frameworks */,
+				45DA8F3B2BF157840070FD0C /* RenderKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -176,10 +208,17 @@
 			path = Demos;
 			sourceTree = "<group>";
 		};
+		45DA8F292BF157840070FD0C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		45DFB9082BF155E70083D842 /* Packages */ = {
 			isa = PBXGroup;
 			children = (
-				45DFB9072BF155C20083D842 /* SwiftGraphics */,
+				45DA8F282BF157710070FD0C /* SwiftGraphics */,
 			);
 			path = Packages;
 			sourceTree = "<group>";
@@ -190,6 +229,7 @@
 				45E5B5E12A8EA04100B46CDC /* SwiftGraphicsDemos */,
 				45DFB9082BF155E70083D842 /* Packages */,
 				45E5B5E02A8EA04100B46CDC /* Products */,
+				45DA8F292BF157840070FD0C /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -246,6 +286,22 @@
 			);
 			name = SwiftGraphicsDemos;
 			packageProductDependencies = (
+				45DA8F2A2BF157840070FD0C /* Array2D */,
+				45DA8F2C2BF157840070FD0C /* CoreGraphicsSupport */,
+				45DA8F2E2BF157840070FD0C /* Earcut */,
+				45DA8F302BF157840070FD0C /* LegacyGeometry */,
+				45DA8F322BF157840070FD0C /* MetalSupport */,
+				45DA8F342BF157840070FD0C /* MetalSupportUnsafeConformances */,
+				45DA8F362BF157840070FD0C /* Projection */,
+				45DA8F382BF157840070FD0C /* Raster */,
+				45DA8F3A2BF157840070FD0C /* RenderKit */,
+				45DA8F3C2BF157840070FD0C /* RenderKitScratch */,
+				45DA8F3E2BF157840070FD0C /* RenderKitShaders */,
+				45DA8F402BF157840070FD0C /* Shapes2D */,
+				45DA8F422BF157840070FD0C /* Shapes3D */,
+				45DA8F442BF157840070FD0C /* SIMDSupport */,
+				45DA8F462BF157840070FD0C /* SIMDSupportUnsafeConformances */,
+				45DA8F482BF157840070FD0C /* Sketches */,
 			);
 			productName = StairTest;
 			productReference = 45E5B5DF2A8EA04100B46CDC /* SwiftGraphicsDemos.app */;
@@ -276,9 +332,6 @@
 			);
 			mainGroup = 45E5B5D62A8EA04100B46CDC;
 			packageReferences = (
-				454597612A8EBDA800902922 /* XCRemoteSwiftPackageReference "swift-algorithms" */,
-				451698BC2A97DC3A009DF247 /* XCRemoteSwiftPackageReference "SwiftFormats" */,
-				4589568F2BE8109B00D5AF6E /* XCLocalSwiftPackageReference "../../../Everything+Downsizing" */,
 			);
 			productRefGroup = 45E5B5E02A8EA04100B46CDC /* Products */;
 			projectDirPath = "";
@@ -571,31 +624,72 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCLocalSwiftPackageReference section */
-		4589568F2BE8109B00D5AF6E /* XCLocalSwiftPackageReference "../../../Everything+Downsizing" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = "../../../Everything+Downsizing";
+/* Begin XCSwiftPackageProductDependency section */
+		45DA8F2A2BF157840070FD0C /* Array2D */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Array2D;
 		};
-/* End XCLocalSwiftPackageReference section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		451698BC2A97DC3A009DF247 /* XCRemoteSwiftPackageReference "SwiftFormats" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "http://github.com/schwa/SwiftFormats";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.3.3;
-			};
+		45DA8F2C2BF157840070FD0C /* CoreGraphicsSupport */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = CoreGraphicsSupport;
 		};
-		454597612A8EBDA800902922 /* XCRemoteSwiftPackageReference "swift-algorithms" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/apple/swift-algorithms.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.0;
-			};
+		45DA8F2E2BF157840070FD0C /* Earcut */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Earcut;
 		};
-/* End XCRemoteSwiftPackageReference section */
+		45DA8F302BF157840070FD0C /* LegacyGeometry */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = LegacyGeometry;
+		};
+		45DA8F322BF157840070FD0C /* MetalSupport */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = MetalSupport;
+		};
+		45DA8F342BF157840070FD0C /* MetalSupportUnsafeConformances */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = MetalSupportUnsafeConformances;
+		};
+		45DA8F362BF157840070FD0C /* Projection */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Projection;
+		};
+		45DA8F382BF157840070FD0C /* Raster */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Raster;
+		};
+		45DA8F3A2BF157840070FD0C /* RenderKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = RenderKit;
+		};
+		45DA8F3C2BF157840070FD0C /* RenderKitScratch */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = RenderKitScratch;
+		};
+		45DA8F3E2BF157840070FD0C /* RenderKitShaders */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = RenderKitShaders;
+		};
+		45DA8F402BF157840070FD0C /* Shapes2D */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Shapes2D;
+		};
+		45DA8F422BF157840070FD0C /* Shapes3D */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Shapes3D;
+		};
+		45DA8F442BF157840070FD0C /* SIMDSupport */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SIMDSupport;
+		};
+		45DA8F462BF157840070FD0C /* SIMDSupportUnsafeConformances */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SIMDSupportUnsafeConformances;
+		};
+		45DA8F482BF157840070FD0C /* Sketches */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Sketches;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 45E5B5D72A8EA04100B46CDC /* Project object */;
 }
