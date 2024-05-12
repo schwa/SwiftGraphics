@@ -1,9 +1,9 @@
 import CoreGraphics
 
 public struct PolygonalChain {
-    var vertices: [CGPoint]
+    public var vertices: [CGPoint]
 
-    init(vertices: [CGPoint]) {
+    public init(vertices: [CGPoint]) {
         self.vertices = vertices
     }
 }

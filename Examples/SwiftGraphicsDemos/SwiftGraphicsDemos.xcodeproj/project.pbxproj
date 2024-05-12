@@ -3,108 +3,35 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 60;
+	objectVersion = 56;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		451698BE2A97DC3A009DF247 /* SwiftFormats in Frameworks */ = {isa = PBXBuildFile; productRef = 451698BD2A97DC3A009DF247 /* SwiftFormats */; };
-		4525862D2BBCBE5A003E85B4 /* Shapes2D in Frameworks */ = {isa = PBXBuildFile; productRef = 4525862C2BBCBE5A003E85B4 /* Shapes2D */; };
-		452586342BBCF8B8003E85B4 /* LineDemoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 452586332BBCF8B8003E85B4 /* LineDemoView.swift */; };
-		452BF0462BE7DFF600F6E7D0 /* AngleDemoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 452BF0452BE7DFF600F6E7D0 /* AngleDemoView.swift */; };
-		452D82C72BC9C6F00054218F /* SignedDistanceFields.metal in Sources */ = {isa = PBXBuildFile; fileRef = 452D82C62BC9C6F00054218F /* SignedDistanceFields.metal */; };
-		452D82C92BCA301C0054218F /* SketchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 452D82C82BCA301C0054218F /* SketchView.swift */; };
-		4530821A2BE6898300F3FBFF /* Hobby.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453082192BE6898300F3FBFF /* Hobby.swift */; };
-		4530821C2BE68E7D00F3FBFF /* HobbyCurveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4530821B2BE68E7D00F3FBFF /* HobbyCurveView.swift */; };
-		4530821E2BE692A500F3FBFF /* DemosView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4530821D2BE692A500F3FBFF /* DemosView.swift */; };
-		453082202BE6954300F3FBFF /* SplineDemoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4530821F2BE6954300F3FBFF /* SplineDemoView.swift */; };
-		453082222BE6B09600F3FBFF /* Handles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453082212BE6B09600F3FBFF /* Handles.swift */; };
-		453777EB2BC096BB00E600A6 /* BeziersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453777EA2BC096BB00E600A6 /* BeziersView.swift */; };
-		454597632A8EBDA800902922 /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 454597622A8EBDA800902922 /* Algorithms */; };
-		45493BE62A8F140A0057FD00 /* my_color_effect.metal in Sources */ = {isa = PBXBuildFile; fileRef = 45493BE52A8F140A0057FD00 /* my_color_effect.metal */; };
-		454CE1052BBCB16300ECB521 /* LegacyGeometry in Frameworks */ = {isa = PBXBuildFile; productRef = 454CE1042BBCB16300ECB521 /* LegacyGeometry */; };
-		455E61DD2BCD7A5000EAC5E0 /* Tools.swift in Sources */ = {isa = PBXBuildFile; fileRef = 455E61DC2BCD7A5000EAC5E0 /* Tools.swift */; };
 		456A74322A95531B00E75A8E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456A74312A95531B00E75A8E /* ContentView.swift */; };
-		457FC7F42AA2B01C00A27074 /* Sketches in Frameworks */ = {isa = PBXBuildFile; productRef = 457FC7F32AA2B01C00A27074 /* Sketches */; };
-		458956912BE8109B00D5AF6E /* Everything in Frameworks */ = {isa = PBXBuildFile; productRef = 458956902BE8109B00D5AF6E /* Everything */; };
-		458956932BE8109B00D5AF6E /* EverythingHelpers in Frameworks */ = {isa = PBXBuildFile; productRef = 458956922BE8109B00D5AF6E /* EverythingHelpers */; };
-		458956952BE8109B00D5AF6E /* EverythingUnsafeConformances in Frameworks */ = {isa = PBXBuildFile; productRef = 458956942BE8109B00D5AF6E /* EverythingUnsafeConformances */; };
-		458956972BE8121F00D5AF6E /* Spline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458956962BE8121F00D5AF6E /* Spline.swift */; };
-		4589EEF62BE852D6001261B9 /* BoxesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4589EEEA2BE852D6001261B9 /* BoxesView.swift */; };
-		4589EEF72BE852D6001261B9 /* HalfEdgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4589EEEB2BE852D6001261B9 /* HalfEdgeView.swift */; };
-		4589EEF82BE852D6001261B9 /* Inspectors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4589EEEC2BE852D6001261B9 /* Inspectors.swift */; };
-		4589EEF92BE852D6001261B9 /* MeshView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4589EEED2BE852D6001261B9 /* MeshView.swift */; };
-		4589EEFA2BE852D6001261B9 /* SoftwareRendererView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4589EEEE2BE852D6001261B9 /* SoftwareRendererView.swift */; };
-		4589EEFB2BE852D6001261B9 /* Cube.ply in Resources */ = {isa = PBXBuildFile; fileRef = 4589EEF02BE852D6001261B9 /* Cube.ply */; };
-		4589EEFC2BE852D6001261B9 /* Icosphere.ply in Resources */ = {isa = PBXBuildFile; fileRef = 4589EEF12BE852D6001261B9 /* Icosphere.ply */; };
-		4589EEFD2BE852D6001261B9 /* Monkey.ply in Resources */ = {isa = PBXBuildFile; fileRef = 4589EEF22BE852D6001261B9 /* Monkey.ply */; };
-		4589EEFE2BE852D6001261B9 /* Square.ply in Resources */ = {isa = PBXBuildFile; fileRef = 4589EEF32BE852D6001261B9 /* Square.ply */; };
-		4589EEFF2BE852D6001261B9 /* Teapot.ply in Resources */ = {isa = PBXBuildFile; fileRef = 4589EEF42BE852D6001261B9 /* Teapot.ply */; };
-		4589EF032BE85302001261B9 /* BallRotationModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4589EF002BE85302001261B9 /* BallRotationModifier.swift */; };
-		4589EF042BE85302001261B9 /* Projections.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4589EF012BE85302001261B9 /* Projections.swift */; };
-		4589EF082BE85328001261B9 /* ProjectionSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4589EF072BE85328001261B9 /* ProjectionSupport.swift */; };
-		459DEFE22BCC470F00DE8245 /* MetalFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459DEFE12BCC470F00DE8245 /* MetalFunctions.swift */; };
-		459DEFE52BCC761F00DE8245 /* MyShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459DEFE42BCC761F00DE8245 /* MyShape.swift */; };
-		459DEFE82BCCE45600DE8245 /* ShapesDemoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459DEFE72BCCE45600DE8245 /* ShapesDemoView.swift */; };
-		459DEFEA2BCCF18200DE8245 /* ShaderTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459DEFE92BCCF18200DE8245 /* ShaderTestView.swift */; };
-		45A4A0392BE84F8A00A0F450 /* Shapes3D in Frameworks */ = {isa = PBXBuildFile; productRef = 45A4A0382BE84F8A00A0F450 /* Shapes3D */; };
-		45A4A03B2BE8501300A0F450 /* Projection in Frameworks */ = {isa = PBXBuildFile; productRef = 45A4A03A2BE8501300A0F450 /* Projection */; };
-		45A82B0B2AB6D166006D6C59 /* Array2D in Frameworks */ = {isa = PBXBuildFile; productRef = 45A82B0A2AB6D166006D6C59 /* Array2D */; };
-		45A82B0D2AB6D166006D6C59 /* CoreGraphicsSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 45A82B0C2AB6D166006D6C59 /* CoreGraphicsSupport */; };
-		45A82B132AB6D166006D6C59 /* Raster in Frameworks */ = {isa = PBXBuildFile; productRef = 45A82B122AB6D166006D6C59 /* Raster */; };
-		45B268AB2A8FDA000033A727 /* LegacyPathEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B268AA2A8FDA000033A727 /* LegacyPathEditor.swift */; };
-		45B268AD2A8FDA060033A727 /* Support.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B268AC2A8FDA060033A727 /* Support.swift */; };
-		45B9D2802BCC28DF001F717E /* GraphicsContextProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B9D27C2BCC28DF001F717E /* GraphicsContextProtocol.swift */; };
-		45B9D2822BCC28DF001F717E /* QuartzContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B9D27E2BCC28DF001F717E /* QuartzContext.swift */; };
-		45C41A9D2BD76625006FBA7B /* Beziers2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45C41A9C2BD76625006FBA7B /* Beziers2.swift */; };
+		4587DE4B2BF316BE00E787F3 /* SwiftGraphicsDemosSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 4587DE4A2BF316BE00E787F3 /* SwiftGraphicsDemosSupport */; };
+		45CDB0442BF4025700096326 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 45CDB0432BF4025700096326 /* Assets.xcassets */; };
+		45DA912C2BF158380070FD0C /* Info-visionOS.plist in Resources */ = {isa = PBXBuildFile; fileRef = 45DA90B12BF158380070FD0C /* Info-visionOS.plist */; };
 		45E5B5E32A8EA04100B46CDC /* SwiftGraphicsDemosApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E5B5E22A8EA04100B46CDC /* SwiftGraphicsDemosApp.swift */; };
-		45E5B5E52A8EA04100B46CDC /* CustomStrokeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E5B5E42A8EA04100B46CDC /* CustomStrokeView.swift */; };
-		45E5B5E72A8EA04400B46CDC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 45E5B5E62A8EA04400B46CDC /* Assets.xcassets */; };
 		45E5B5EB2A8EA04400B46CDC /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 45E5B5EA2A8EA04400B46CDC /* Preview Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		452586332BBCF8B8003E85B4 /* LineDemoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineDemoView.swift; sourceTree = "<group>"; };
-		452BF0452BE7DFF600F6E7D0 /* AngleDemoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AngleDemoView.swift; sourceTree = "<group>"; };
-		452D82C62BC9C6F00054218F /* SignedDistanceFields.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = SignedDistanceFields.metal; sourceTree = "<group>"; };
-		452D82C82BCA301C0054218F /* SketchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SketchView.swift; sourceTree = "<group>"; };
-		453082192BE6898300F3FBFF /* Hobby.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hobby.swift; sourceTree = "<group>"; };
-		4530821B2BE68E7D00F3FBFF /* HobbyCurveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HobbyCurveView.swift; sourceTree = "<group>"; };
-		4530821D2BE692A500F3FBFF /* DemosView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemosView.swift; sourceTree = "<group>"; };
-		4530821F2BE6954300F3FBFF /* SplineDemoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplineDemoView.swift; sourceTree = "<group>"; };
-		453082212BE6B09600F3FBFF /* Handles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Handles.swift; sourceTree = "<group>"; };
-		453777EA2BC096BB00E600A6 /* BeziersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeziersView.swift; sourceTree = "<group>"; };
-		45462DBC2BBBBC6700CF5EF8 /* SwiftGraphics */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = SwiftGraphics; path = ../..; sourceTree = "<group>"; };
-		45493BE52A8F140A0057FD00 /* my_color_effect.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = my_color_effect.metal; sourceTree = "<group>"; };
-		455E61DC2BCD7A5000EAC5E0 /* Tools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tools.swift; sourceTree = "<group>"; };
 		456A74312A95531B00E75A8E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		458956962BE8121F00D5AF6E /* Spline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spline.swift; sourceTree = "<group>"; };
-		4589EEEA2BE852D6001261B9 /* BoxesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoxesView.swift; sourceTree = "<group>"; };
-		4589EEEB2BE852D6001261B9 /* HalfEdgeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HalfEdgeView.swift; sourceTree = "<group>"; };
-		4589EEEC2BE852D6001261B9 /* Inspectors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Inspectors.swift; sourceTree = "<group>"; };
-		4589EEED2BE852D6001261B9 /* MeshView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeshView.swift; sourceTree = "<group>"; };
-		4589EEEE2BE852D6001261B9 /* SoftwareRendererView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SoftwareRendererView.swift; sourceTree = "<group>"; };
-		4589EEF02BE852D6001261B9 /* Cube.ply */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Cube.ply; sourceTree = "<group>"; };
-		4589EEF12BE852D6001261B9 /* Icosphere.ply */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Icosphere.ply; sourceTree = "<group>"; };
-		4589EEF22BE852D6001261B9 /* Monkey.ply */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Monkey.ply; sourceTree = "<group>"; };
-		4589EEF32BE852D6001261B9 /* Square.ply */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Square.ply; sourceTree = "<group>"; };
-		4589EEF42BE852D6001261B9 /* Teapot.ply */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Teapot.ply; sourceTree = "<group>"; };
-		4589EF002BE85302001261B9 /* BallRotationModifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BallRotationModifier.swift; sourceTree = "<group>"; };
-		4589EF012BE85302001261B9 /* Projections.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Projections.swift; sourceTree = "<group>"; };
-		4589EF072BE85328001261B9 /* ProjectionSupport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProjectionSupport.swift; sourceTree = "<group>"; };
-		459DEFE12BCC470F00DE8245 /* MetalFunctions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalFunctions.swift; sourceTree = "<group>"; };
-		459DEFE42BCC761F00DE8245 /* MyShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyShape.swift; sourceTree = "<group>"; };
-		459DEFE72BCCE45600DE8245 /* ShapesDemoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShapesDemoView.swift; sourceTree = "<group>"; };
-		459DEFE92BCCF18200DE8245 /* ShaderTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShaderTestView.swift; sourceTree = "<group>"; };
-		45B268AA2A8FDA000033A727 /* LegacyPathEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyPathEditor.swift; sourceTree = "<group>"; };
-		45B268AC2A8FDA060033A727 /* Support.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Support.swift; sourceTree = "<group>"; };
+		459F58632BF311190021EBA1 /* SwiftGraphicsDemosSupport */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = SwiftGraphicsDemosSupport; path = Packages/SwiftGraphicsDemosSupport; sourceTree = "<group>"; };
+		459F58642BF311370021EBA1 /* Compute */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Compute; path = Packages/Compute; sourceTree = "<group>"; };
 		45B642022A9EC70500171EE0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		45B9D27C2BCC28DF001F717E /* GraphicsContextProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphicsContextProtocol.swift; sourceTree = "<group>"; };
-		45B9D27E2BCC28DF001F717E /* QuartzContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuartzContext.swift; sourceTree = "<group>"; };
-		45C41A9C2BD76625006FBA7B /* Beziers2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Beziers2.swift; sourceTree = "<group>"; };
+		45CDB0432BF4025700096326 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		45DA90B12BF158380070FD0C /* Info-visionOS.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info-visionOS.plist"; sourceTree = "<group>"; };
+		45DA91412BF15A020070FD0C /* DemosSupport */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = DemosSupport; path = Packages/DemosSupport; sourceTree = "<group>"; };
+		45DA91462BF15B070070FD0C /* Project-Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Project-Debug.xcconfig"; sourceTree = "<group>"; };
+		45DA91472BF15B070070FD0C /* Project-Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Project-Release.xcconfig"; sourceTree = "<group>"; };
+		45DA91482BF15B070070FD0C /* Project-Shared.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Project-Shared.xcconfig"; sourceTree = "<group>"; };
+		45DA91492BF15B070070FD0C /* SwiftGraphicsDemos-Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "SwiftGraphicsDemos-Debug.xcconfig"; sourceTree = "<group>"; };
+		45DA914A2BF15B070070FD0C /* SwiftGraphicsDemos-Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "SwiftGraphicsDemos-Release.xcconfig"; sourceTree = "<group>"; };
+		45DA914B2BF15B070070FD0C /* SwiftGraphicsDemos-Shared.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "SwiftGraphicsDemos-Shared.xcconfig"; sourceTree = "<group>"; };
+		45DA91582BF15D6B0070FD0C /* SwiftGraphics */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = SwiftGraphics; path = ../..; sourceTree = "<group>"; };
 		45E5B5DF2A8EA04100B46CDC /* SwiftGraphicsDemos.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftGraphicsDemos.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		45E5B5E22A8EA04100B46CDC /* SwiftGraphicsDemosApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftGraphicsDemosApp.swift; sourceTree = "<group>"; };
-		45E5B5E42A8EA04100B46CDC /* CustomStrokeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomStrokeView.swift; sourceTree = "<group>"; };
-		45E5B5E62A8EA04400B46CDC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		45E5B5E82A8EA04400B46CDC /* SwiftGraphicsDemos.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SwiftGraphicsDemos.entitlements; sourceTree = "<group>"; };
 		45E5B5EA2A8EA04400B46CDC /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -114,108 +41,52 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				454CE1052BBCB16300ECB521 /* LegacyGeometry in Frameworks */,
-				45A4A03B2BE8501300A0F450 /* Projection in Frameworks */,
-				45A82B132AB6D166006D6C59 /* Raster in Frameworks */,
-				454597632A8EBDA800902922 /* Algorithms in Frameworks */,
-				45A82B0D2AB6D166006D6C59 /* CoreGraphicsSupport in Frameworks */,
-				4525862D2BBCBE5A003E85B4 /* Shapes2D in Frameworks */,
-				45A82B0B2AB6D166006D6C59 /* Array2D in Frameworks */,
-				458956952BE8109B00D5AF6E /* EverythingUnsafeConformances in Frameworks */,
-				45A4A0392BE84F8A00A0F450 /* Shapes3D in Frameworks */,
-				458956912BE8109B00D5AF6E /* Everything in Frameworks */,
-				458956932BE8109B00D5AF6E /* EverythingHelpers in Frameworks */,
-				451698BE2A97DC3A009DF247 /* SwiftFormats in Frameworks */,
-				457FC7F42AA2B01C00A27074 /* Sketches in Frameworks */,
+				4587DE4B2BF316BE00E787F3 /* SwiftGraphicsDemosSupport in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		454CE1032BBCB16300ECB521 /* Frameworks */ = {
+		459F586B2BF311C50021EBA1 /* Packages */ = {
 			isa = PBXGroup;
 			children = (
+				459F58642BF311370021EBA1 /* Compute */,
+				459F58632BF311190021EBA1 /* SwiftGraphicsDemosSupport */,
+				45DA91582BF15D6B0070FD0C /* SwiftGraphics */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
+		45DA8F292BF157840070FD0C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				45DA91412BF15A020070FD0C /* DemosSupport */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		4589EEEF2BE852D6001261B9 /* DemoViews */ = {
+		45DA914C2BF15B070070FD0C /* xcconfig */ = {
 			isa = PBXGroup;
 			children = (
-				4589EEEA2BE852D6001261B9 /* BoxesView.swift */,
-				4589EEEB2BE852D6001261B9 /* HalfEdgeView.swift */,
-				4589EEEC2BE852D6001261B9 /* Inspectors.swift */,
-				4589EEED2BE852D6001261B9 /* MeshView.swift */,
-				4589EEEE2BE852D6001261B9 /* SoftwareRendererView.swift */,
+				45DA91462BF15B070070FD0C /* Project-Debug.xcconfig */,
+				45DA91472BF15B070070FD0C /* Project-Release.xcconfig */,
+				45DA91482BF15B070070FD0C /* Project-Shared.xcconfig */,
+				45DA91492BF15B070070FD0C /* SwiftGraphicsDemos-Debug.xcconfig */,
+				45DA914A2BF15B070070FD0C /* SwiftGraphicsDemos-Release.xcconfig */,
+				45DA914B2BF15B070070FD0C /* SwiftGraphicsDemos-Shared.xcconfig */,
 			);
-			path = DemoViews;
-			sourceTree = "<group>";
-		};
-		4589EEF52BE852D6001261B9 /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				4589EEF02BE852D6001261B9 /* Cube.ply */,
-				4589EEF12BE852D6001261B9 /* Icosphere.ply */,
-				4589EEF22BE852D6001261B9 /* Monkey.ply */,
-				4589EEF32BE852D6001261B9 /* Square.ply */,
-				4589EEF42BE852D6001261B9 /* Teapot.ply */,
-			);
-			path = Models;
-			sourceTree = "<group>";
-		};
-		4589EF062BE85309001261B9 /* Projections */ = {
-			isa = PBXGroup;
-			children = (
-				4589EF002BE85302001261B9 /* BallRotationModifier.swift */,
-				4589EF072BE85328001261B9 /* ProjectionSupport.swift */,
-				4589EF012BE85302001261B9 /* Projections.swift */,
-				4589EEEF2BE852D6001261B9 /* DemoViews */,
-				4589EEF52BE852D6001261B9 /* Models */,
-			);
-			path = Projections;
-			sourceTree = "<group>";
-		};
-		459DEFE32BCC760400DE8245 /* Support */ = {
-			isa = PBXGroup;
-			children = (
-				45B268AC2A8FDA060033A727 /* Support.swift */,
-				453082212BE6B09600F3FBFF /* Handles.swift */,
-				45493BE52A8F140A0057FD00 /* my_color_effect.metal */,
-				45B9D27C2BCC28DF001F717E /* GraphicsContextProtocol.swift */,
-				45B9D27E2BCC28DF001F717E /* QuartzContext.swift */,
-				459DEFE12BCC470F00DE8245 /* MetalFunctions.swift */,
-			);
-			path = Support;
-			sourceTree = "<group>";
-		};
-		459DEFE62BCCE36700DE8245 /* Demos */ = {
-			isa = PBXGroup;
-			children = (
-				45B268AA2A8FDA000033A727 /* LegacyPathEditor.swift */,
-				452D82C62BC9C6F00054218F /* SignedDistanceFields.metal */,
-				452586332BBCF8B8003E85B4 /* LineDemoView.swift */,
-				453777EA2BC096BB00E600A6 /* BeziersView.swift */,
-				4530821B2BE68E7D00F3FBFF /* HobbyCurveView.swift */,
-				45C41A9C2BD76625006FBA7B /* Beziers2.swift */,
-				453082192BE6898300F3FBFF /* Hobby.swift */,
-				45E5B5E42A8EA04100B46CDC /* CustomStrokeView.swift */,
-				459DEFE72BCCE45600DE8245 /* ShapesDemoView.swift */,
-				459DEFE92BCCF18200DE8245 /* ShaderTestView.swift */,
-				4530821F2BE6954300F3FBFF /* SplineDemoView.swift */,
-				458956962BE8121F00D5AF6E /* Spline.swift */,
-				452BF0452BE7DFF600F6E7D0 /* AngleDemoView.swift */,
-			);
-			path = Demos;
+			path = xcconfig;
 			sourceTree = "<group>";
 		};
 		45E5B5D62A8EA04100B46CDC = {
 			isa = PBXGroup;
 			children = (
+				459F586B2BF311C50021EBA1 /* Packages */,
+				45DA914C2BF15B070070FD0C /* xcconfig */,
 				45E5B5E12A8EA04100B46CDC /* SwiftGraphicsDemos */,
-				45462DBC2BBBBC6700CF5EF8 /* SwiftGraphics */,
 				45E5B5E02A8EA04100B46CDC /* Products */,
-				454CE1032BBCB16300ECB521 /* Frameworks */,
+				45DA8F292BF157840070FD0C /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -233,16 +104,10 @@
 				45B642022A9EC70500171EE0 /* Info.plist */,
 				45E5B5E22A8EA04100B46CDC /* SwiftGraphicsDemosApp.swift */,
 				456A74312A95531B00E75A8E /* ContentView.swift */,
-				4530821D2BE692A500F3FBFF /* DemosView.swift */,
-				452D82C82BCA301C0054218F /* SketchView.swift */,
-				455E61DC2BCD7A5000EAC5E0 /* Tools.swift */,
-				459DEFE42BCC761F00DE8245 /* MyShape.swift */,
-				4589EF062BE85309001261B9 /* Projections */,
-				459DEFE62BCCE36700DE8245 /* Demos */,
-				459DEFE32BCC760400DE8245 /* Support */,
-				45E5B5E62A8EA04400B46CDC /* Assets.xcassets */,
+				45DA90B12BF158380070FD0C /* Info-visionOS.plist */,
 				45E5B5E82A8EA04400B46CDC /* SwiftGraphicsDemos.entitlements */,
 				45E5B5E92A8EA04400B46CDC /* Preview Content */,
+				45CDB0432BF4025700096326 /* Assets.xcassets */,
 			);
 			path = SwiftGraphicsDemos;
 			sourceTree = "<group>";
@@ -272,19 +137,7 @@
 			);
 			name = SwiftGraphicsDemos;
 			packageProductDependencies = (
-				454597622A8EBDA800902922 /* Algorithms */,
-				451698BD2A97DC3A009DF247 /* SwiftFormats */,
-				457FC7F32AA2B01C00A27074 /* Sketches */,
-				45A82B0A2AB6D166006D6C59 /* Array2D */,
-				45A82B0C2AB6D166006D6C59 /* CoreGraphicsSupport */,
-				45A82B122AB6D166006D6C59 /* Raster */,
-				454CE1042BBCB16300ECB521 /* LegacyGeometry */,
-				4525862C2BBCBE5A003E85B4 /* Shapes2D */,
-				458956902BE8109B00D5AF6E /* Everything */,
-				458956922BE8109B00D5AF6E /* EverythingHelpers */,
-				458956942BE8109B00D5AF6E /* EverythingUnsafeConformances */,
-				45A4A0382BE84F8A00A0F450 /* Shapes3D */,
-				45A4A03A2BE8501300A0F450 /* Projection */,
+				4587DE4A2BF316BE00E787F3 /* SwiftGraphicsDemosSupport */,
 			);
 			productName = StairTest;
 			productReference = 45E5B5DF2A8EA04100B46CDC /* SwiftGraphicsDemos.app */;
@@ -315,9 +168,7 @@
 			);
 			mainGroup = 45E5B5D62A8EA04100B46CDC;
 			packageReferences = (
-				454597612A8EBDA800902922 /* XCRemoteSwiftPackageReference "swift-algorithms" */,
-				451698BC2A97DC3A009DF247 /* XCRemoteSwiftPackageReference "SwiftFormats" */,
-				4589568F2BE8109B00D5AF6E /* XCLocalSwiftPackageReference "../../../Everything+Downsizing" */,
+				45F30F4D2BF15EAC00446D45 /* XCRemoteSwiftPackageReference "SwiftGLTF" */,
 			);
 			productRefGroup = 45E5B5E02A8EA04100B46CDC /* Products */;
 			projectDirPath = "";
@@ -333,13 +184,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4589EEFD2BE852D6001261B9 /* Monkey.ply in Resources */,
+				45DA912C2BF158380070FD0C /* Info-visionOS.plist in Resources */,
+				45CDB0442BF4025700096326 /* Assets.xcassets in Resources */,
 				45E5B5EB2A8EA04400B46CDC /* Preview Assets.xcassets in Resources */,
-				4589EEFE2BE852D6001261B9 /* Square.ply in Resources */,
-				4589EEFB2BE852D6001261B9 /* Cube.ply in Resources */,
-				4589EEFC2BE852D6001261B9 /* Icosphere.ply in Resources */,
-				4589EEFF2BE852D6001261B9 /* Teapot.ply in Resources */,
-				45E5B5E72A8EA04400B46CDC /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -350,39 +197,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4589EF082BE85328001261B9 /* ProjectionSupport.swift in Sources */,
-				455E61DD2BCD7A5000EAC5E0 /* Tools.swift in Sources */,
-				45B268AD2A8FDA060033A727 /* Support.swift in Sources */,
-				45B9D2822BCC28DF001F717E /* QuartzContext.swift in Sources */,
-				45C41A9D2BD76625006FBA7B /* Beziers2.swift in Sources */,
-				45B268AB2A8FDA000033A727 /* LegacyPathEditor.swift in Sources */,
-				452BF0462BE7DFF600F6E7D0 /* AngleDemoView.swift in Sources */,
-				4530821C2BE68E7D00F3FBFF /* HobbyCurveView.swift in Sources */,
-				4530821A2BE6898300F3FBFF /* Hobby.swift in Sources */,
-				453082222BE6B09600F3FBFF /* Handles.swift in Sources */,
 				456A74322A95531B00E75A8E /* ContentView.swift in Sources */,
-				452D82C72BC9C6F00054218F /* SignedDistanceFields.metal in Sources */,
-				453082202BE6954300F3FBFF /* SplineDemoView.swift in Sources */,
-				4589EF042BE85302001261B9 /* Projections.swift in Sources */,
-				4589EEF82BE852D6001261B9 /* Inspectors.swift in Sources */,
-				459DEFEA2BCCF18200DE8245 /* ShaderTestView.swift in Sources */,
-				4589EF032BE85302001261B9 /* BallRotationModifier.swift in Sources */,
-				45B9D2802BCC28DF001F717E /* GraphicsContextProtocol.swift in Sources */,
-				4589EEF92BE852D6001261B9 /* MeshView.swift in Sources */,
-				452586342BBCF8B8003E85B4 /* LineDemoView.swift in Sources */,
-				459DEFE22BCC470F00DE8245 /* MetalFunctions.swift in Sources */,
-				4589EEFA2BE852D6001261B9 /* SoftwareRendererView.swift in Sources */,
-				452D82C92BCA301C0054218F /* SketchView.swift in Sources */,
-				4589EEF62BE852D6001261B9 /* BoxesView.swift in Sources */,
-				45493BE62A8F140A0057FD00 /* my_color_effect.metal in Sources */,
-				459DEFE82BCCE45600DE8245 /* ShapesDemoView.swift in Sources */,
-				45E5B5E52A8EA04100B46CDC /* CustomStrokeView.swift in Sources */,
-				4589EEF72BE852D6001261B9 /* HalfEdgeView.swift in Sources */,
-				453777EB2BC096BB00E600A6 /* BeziersView.swift in Sources */,
 				45E5B5E32A8EA04100B46CDC /* SwiftGraphicsDemosApp.swift in Sources */,
-				458956972BE8121F00D5AF6E /* Spline.swift in Sources */,
-				459DEFE52BCC761F00DE8245 /* MyShape.swift in Sources */,
-				4530821E2BE692A500F3FBFF /* DemosView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -391,199 +207,29 @@
 /* Begin XCBuildConfiguration section */
 		45E5B6022A8EA04400B46CDC /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 45DA91462BF15B070070FD0C /* Project-Debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				COPY_PHASE_STRIP = NO;
-				DEAD_CODE_STRIPPING = YES;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_TESTABILITY = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu17;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
-				ONLY_ACTIVE_ARCH = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
 		45E5B6032A8EA04400B46CDC /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 45DA91472BF15B070070FD0C /* Project-Release.xcconfig */;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				COPY_PHASE_STRIP = NO;
-				DEAD_CODE_STRIPPING = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu17;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				MTL_FAST_MATH = YES;
-				SWIFT_COMPILATION_MODE = wholemodule;
 			};
 			name = Release;
 		};
 		45E5B6052A8EA04400B46CDC /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 45DA91492BF15B070070FD0C /* SwiftGraphicsDemos-Debug.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = SwiftGraphicsDemos/SwiftGraphicsDemos.entitlements;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_ASSET_PATHS = "\"SwiftGraphicsDemos/Preview Content\"";
-				DEVELOPMENT_TEAM = 6E23EP94PG;
-				ENABLE_HARDENED_RUNTIME = YES;
-				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = SwiftGraphicsDemos/Info.plist;
-				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
-				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
-				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
-				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
-				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
-				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
-				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
-				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
-				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = io.schwa.SwiftGraphicsDemos;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_INTEROP_MODE = objcxx;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
 		45E5B6062A8EA04400B46CDC /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 45DA914A2BF15B070070FD0C /* SwiftGraphicsDemos-Release.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = SwiftGraphicsDemos/SwiftGraphicsDemos.entitlements;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_ASSET_PATHS = "\"SwiftGraphicsDemos/Preview Content\"";
-				DEVELOPMENT_TEAM = 6E23EP94PG;
-				ENABLE_HARDENED_RUNTIME = YES;
-				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = SwiftGraphicsDemos/Info.plist;
-				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
-				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
-				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
-				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
-				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
-				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
-				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
-				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
-				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = io.schwa.SwiftGraphicsDemos;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_INTEROP_MODE = objcxx;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
@@ -610,86 +256,21 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCLocalSwiftPackageReference section */
-		4589568F2BE8109B00D5AF6E /* XCLocalSwiftPackageReference "../../../Everything+Downsizing" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = "../../../Everything+Downsizing";
-		};
-/* End XCLocalSwiftPackageReference section */
-
 /* Begin XCRemoteSwiftPackageReference section */
-		451698BC2A97DC3A009DF247 /* XCRemoteSwiftPackageReference "SwiftFormats" */ = {
+		45F30F4D2BF15EAC00446D45 /* XCRemoteSwiftPackageReference "SwiftGLTF" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "http://github.com/schwa/SwiftFormats";
+			repositoryURL = "https://github.com/schwa/SwiftGLTF";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.3.3;
-			};
-		};
-		454597612A8EBDA800902922 /* XCRemoteSwiftPackageReference "swift-algorithms" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/apple/swift-algorithms.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.0;
+				branch = main;
+				kind = branch;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		451698BD2A97DC3A009DF247 /* SwiftFormats */ = {
+		4587DE4A2BF316BE00E787F3 /* SwiftGraphicsDemosSupport */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 451698BC2A97DC3A009DF247 /* XCRemoteSwiftPackageReference "SwiftFormats" */;
-			productName = SwiftFormats;
-		};
-		4525862C2BBCBE5A003E85B4 /* Shapes2D */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Shapes2D;
-		};
-		454597622A8EBDA800902922 /* Algorithms */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 454597612A8EBDA800902922 /* XCRemoteSwiftPackageReference "swift-algorithms" */;
-			productName = Algorithms;
-		};
-		454CE1042BBCB16300ECB521 /* LegacyGeometry */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = LegacyGeometry;
-		};
-		457FC7F32AA2B01C00A27074 /* Sketches */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Sketches;
-		};
-		458956902BE8109B00D5AF6E /* Everything */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Everything;
-		};
-		458956922BE8109B00D5AF6E /* EverythingHelpers */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = EverythingHelpers;
-		};
-		458956942BE8109B00D5AF6E /* EverythingUnsafeConformances */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = EverythingUnsafeConformances;
-		};
-		45A4A0382BE84F8A00A0F450 /* Shapes3D */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Shapes3D;
-		};
-		45A4A03A2BE8501300A0F450 /* Projection */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Projection;
-		};
-		45A82B0A2AB6D166006D6C59 /* Array2D */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Array2D;
-		};
-		45A82B0C2AB6D166006D6C59 /* CoreGraphicsSupport */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = CoreGraphicsSupport;
-		};
-		45A82B122AB6D166006D6C59 /* Raster */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Raster;
+			productName = SwiftGraphicsDemosSupport;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

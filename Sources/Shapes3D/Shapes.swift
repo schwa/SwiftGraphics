@@ -1,5 +1,8 @@
 import CoreGraphics
+import ModelIO
 import simd
+
+// TODO: This file needs a big makeover. See also MeshConvertable.
 
 // MARK: Platonic Solids
 
@@ -26,11 +29,11 @@ import simd
 
 // MARK: -
 
-public struct Box<Point: PointLike> {
-    public var min: Point
-    public var max: Point
+public struct Box3D<Vertex: VertexLike> {
+    public var min: Vertex
+    public var max: Vertex
 
-    public init(min: Point, max: Point) {
+    public init(min: Vertex, max: Vertex) {
         self.min = min
         self.max = max
     }
@@ -38,7 +41,7 @@ public struct Box<Point: PointLike> {
 
 // MARK: -
 
-public struct Cylinder {
+public struct Cylinder3D {
     public var radius: Float
     public var depth: Float
 
@@ -50,53 +53,53 @@ public struct Cylinder {
 
 // MARK: -
 
-public struct Line<Point: PointLike> {
-    public var point: Point
-    public var direction: Point // TODO: Vector not Point.
+public struct Line3D {
+    public var point: SIMD3<Float>
+    public var direction: SIMD3<Float>
 
-    public init(point: Point, direction: Point) {
+    public init(point: SIMD3<Float>, direction: SIMD3<Float>) {
         assert(direction != .zero)
         self.point = point
         self.direction = direction
     }
 }
 
-public extension Line {
-    init(_ segment: LineSegment<Point>) {
+public extension Line3D {
+    init(_ segment: LineSegment3D) {
         self.init(point: segment.start, direction: segment.direction)
     }
 }
 
 // MARK: -
 
-public struct LineSegment<Point: PointLike> {
-    public var start: Point
-    public var end: Point
+public struct LineSegment3D {
+    public var start: SIMD3<Float>
+    public var end: SIMD3<Float>
 
-    public init(start: Point, end: Point) {
+    public init(start: SIMD3<Float>, end: SIMD3<Float>) {
         self.start = start
         self.end = end
     }
 }
 
-public extension LineSegment {
-    var direction: Point {
+public extension LineSegment3D {
+    var direction: SIMD3<Float> {
         (end - start).normalized
     }
 
-    var length: Point.Scalar {
+    var length: Float {
         direction.length
     }
 
-    var lengthSquared: Point.Scalar {
+    var lengthSquared: Float {
         direction.lengthSquared
     }
 
-    var normalizedDirection: Point {
+    var normalizedDirection: SIMD3<Float> {
         direction / length
     }
 
-    func point(at t: Point.Scalar) -> Point {
+    func point(at t: Float) -> SIMD3<Float> {
         start + direction * t
     }
 }
@@ -104,7 +107,7 @@ public extension LineSegment {
 // MARK: -
 
 // TODO: Make generic so we can have floats & points
-public struct Plane<Scalar> where Scalar: SIMDScalar & FloatingPoint {
+public struct Plane3D<Scalar> where Scalar: SIMDScalar & FloatingPoint {
     public var normal: SIMD3<Scalar>
     public var w: Scalar
 
@@ -114,7 +117,7 @@ public struct Plane<Scalar> where Scalar: SIMDScalar & FloatingPoint {
     }
 }
 
-public extension Plane where Scalar == Float {
+public extension Plane3D where Scalar == Float {
     init(points: (SIMD3<Scalar>, SIMD3<Scalar>, SIMD3<Scalar>)) {
         let (a, b, c) = points
         let n = simd.cross(b - a, c - a).normalized
@@ -122,13 +125,13 @@ public extension Plane where Scalar == Float {
     }
 }
 
-public extension Plane {
+public extension Plane3D {
     mutating func flip() {
         normal = -normal
         w = -w
     }
 
-    func flipped() -> Plane {
+    func flipped() -> Plane3D {
         var plane = self
         plane.flip()
         return plane
@@ -137,7 +140,7 @@ public extension Plane {
 
 // MARK: -
 
-public struct Polygon<Vertex> {
+public struct Polygon3D<Vertex: VertexLike> {
     public var vertices: [Vertex]
 
     public init(vertices: [Vertex]) {
@@ -145,7 +148,7 @@ public struct Polygon<Vertex> {
     }
 }
 
-public extension Polygon where Vertex: VertexLike3 {
+public extension Polygon3D where Vertex: VertexLike3 {
     mutating func flip() {
         vertices = vertices.reversed().map { vertex in
             var vertex = vertex
@@ -161,45 +164,41 @@ public extension Polygon where Vertex: VertexLike3 {
     }
 }
 
-public extension Polygon where Vertex: VertexLike3, Vertex.Vector == SIMD3<Float> {
-    var plane: Plane<Float> {
-        Plane(points: (vertices[0].position, vertices[1].position, vertices[2].position))
+public extension Polygon3D where Vertex: VertexLike3, Vertex.Vector == SIMD3<Float> {
+    var plane: Plane3D<Float> {
+        Plane3D(points: (vertices[0].position, vertices[1].position, vertices[2].position))
     }
 }
 
-public extension Polygon where Vertex == SIMD3<Float> {
-    var plane: Plane<Float> {
-        Plane(points: (vertices[0], vertices[1], vertices[2]))
-    }
-}
+// public extension Polygon3D {
+//    var plane: Plane3D<Float> {
+//        Plane3D(points: (vertices[0], vertices[1], vertices[2]))
+//    }
+// }
 
-public extension Polygon where Vertex: PointLike {
-    init(polygonalChain: PolygonalChain<Vertex>) {
+public extension Polygon3D {
+    init(polygonalChain: PolygonalChain3D<Vertex>) {
         self.init(vertices: polygonalChain.isClosed ? polygonalChain.vertices.dropLast() : polygonalChain.vertices)
     }
 }
 
 // MARK: -
 
-public struct PolygonalChain<Point> {
-    public var vertices: [Point]
+public struct PolygonalChain3D<Vertex: VertexLike> {
+    public var vertices: [Vertex]
 
     public init() {
         vertices = []
     }
 
-    public init(vertices: [Point]) {
+    public init(vertices: [Vertex]) {
         self.vertices = vertices
     }
 }
 
-public extension PolygonalChain where Point: PointLike {
+public extension PolygonalChain3D {
     var isClosed: Bool {
         vertices.first == vertices.last
-    }
-
-    var segments: [LineSegment<Point>] {
-        zip(vertices, vertices.dropFirst()).map(LineSegment.init)
     }
 
     var isSelfIntersecting: Bool {
@@ -207,7 +206,13 @@ public extension PolygonalChain where Point: PointLike {
     }
 }
 
-public extension PolygonalChain where Point == SIMD3<Float> {
+public extension PolygonalChain3D where Vertex.Vector == SIMD3<Float> {
+    var segments: [LineSegment3D] {
+        zip(vertices, vertices.dropFirst()).map { LineSegment3D(start: $0.0.position, end: $0.1.position) }
+    }
+}
+
+public extension PolygonalChain3D where Vertex == SIMD3<Float> {
     var isCoplanar: Bool {
         if vertices.count <= 3 {
             return true
@@ -222,46 +227,46 @@ public extension PolygonalChain where Point == SIMD3<Float> {
     }
 }
 
-public extension PolygonalChain {
-    init(polygon: Polygon<Point>) {
+public extension PolygonalChain3D {
+    init(polygon: Polygon3D<Vertex>) {
         vertices = polygon.vertices + [polygon.vertices[0]]
     }
 }
 
 // MARK: -
 
-public struct Quad<Point: VertexLike> {
-    public var vertices: (Point, Point, Point, Point)
+public struct Quad<Vertex: VertexLike> {
+    public var vertices: (Vertex, Vertex, Vertex, Vertex)
 
-    public init(vertices: (Point, Point, Point, Point)) {
+    public init(vertices: (Vertex, Vertex, Vertex, Vertex)) {
         self.vertices = vertices
     }
 }
 
 public extension Quad {
-    init(vertices: [Point]) {
+    init(vertices: [Vertex]) {
         assert(vertices.count == 4)
         self.vertices = (vertices[0], vertices[1], vertices[2], vertices[3])
     }
 }
 
 public extension Quad {
-    func subdivide() -> (Triangle<Point>, Triangle<Point>) {
+    func subdivide() -> (Triangle3D<Vertex>, Triangle3D<Vertex>) {
         // 1---3
         // |\  |
         // | \ |
         // |  \|
         // 0---2
         (
-            Triangle(vertices: (vertices.0, vertices.1, vertices.2)),
-            Triangle(vertices: (vertices.1, vertices.3, vertices.2))
+            Triangle3D(vertices: (vertices.0, vertices.1, vertices.2)),
+            Triangle3D(vertices: (vertices.1, vertices.3, vertices.2))
         )
     }
 }
 
 // MARK: -
 
-public struct Ray {
+public struct Ray3D {
     public var origin: SIMD3<Float>
     public var direction: SIMD3<Float>
 
@@ -273,11 +278,11 @@ public struct Ray {
 
 // MARK: -
 
-public struct Sphere {
+public struct Sphere3D {
     public var center: SIMD3<Float>
     public var radius: Float
 
-    public init(center: SIMD3<Float>, radius: Float) {
+    public init(center: SIMD3<Float> = .zero, radius: Float = 0.5) {
         self.center = center
         self.radius = radius
     }
@@ -285,16 +290,174 @@ public struct Sphere {
 
 // MARK: -
 
-public struct Triangle<Point: VertexLike> {
-    public var vertices: (Point, Point, Point)
+public struct Triangle3D<Vertex: VertexLike> {
+    public var vertices: (Vertex, Vertex, Vertex)
 
-    public init(vertices: (Point, Point, Point)) {
+    public init(vertices: (Vertex, Vertex, Vertex)) {
         self.vertices = vertices
     }
 }
 
-public extension Triangle {
-    var reversed: Triangle {
+public extension Triangle3D {
+    var reversed: Triangle3D {
         .init(vertices: (vertices.2, vertices.1, vertices.0))
+    }
+}
+
+// MARK: -
+
+// TODO: Will deprecate
+// @available(*, deprecated, message: "Break into shape3d and a meshconvertable")
+public struct CubeX: Shape3D {
+    public var extent: SIMD3<Float>
+    public var segments: SIMD3<UInt32>
+    public var inwardNormals: Bool
+    public var geometryType: MDLGeometryType
+    public var flippedTextureCoordinates: Bool
+
+    public init(extent: SIMD3<Float> = [1, 1, 1], segments: SIMD3<UInt32> = [1, 1, 1], inwardNormals: Bool = false, geometryType: MDLGeometryType = .triangles, flippedTextureCoordinates: Bool = true) {
+        self.extent = extent
+        self.segments = segments
+        self.inwardNormals = inwardNormals
+        self.geometryType = geometryType
+        self.flippedTextureCoordinates = flippedTextureCoordinates
+    }
+
+    public func toMDLMesh(allocator: MDLMeshBufferAllocator?) -> MDLMesh {
+        let mesh = MDLMesh(boxWithExtent: extent, segments: segments, inwardNormals: inwardNormals, geometryType: geometryType, allocator: allocator)
+        if flippedTextureCoordinates {
+            mesh.flipTextureCoordinates(inAttributeNamed: "textureCoordinate")
+        }
+        return mesh
+    }
+}
+
+//
+
+// TODO: Will deprecate
+// @available(*, deprecated, message: "Break into shape3d and a meshconvertable")
+public struct PlaneX: Shape3D {
+    public var extent: SIMD3<Float>
+    public var segments: SIMD2<UInt32>
+    public var geometryType: MDLGeometryType
+    public var flippedTextureCoordinates: Bool
+
+    public init(extent: SIMD3<Float>, segments: SIMD2<UInt32> = [1, 1], geometryType: MDLGeometryType = .triangles, flippedTextureCoordinates: Bool = true) {
+        self.extent = extent
+        self.segments = segments
+        self.geometryType = geometryType
+        self.flippedTextureCoordinates = flippedTextureCoordinates
+    }
+
+    public func toMDLMesh(allocator: MDLMeshBufferAllocator?) -> MDLMesh {
+        let mesh = MDLMesh(planeWithExtent: extent, segments: segments, geometryType: geometryType, allocator: allocator)
+        if flippedTextureCoordinates {
+            mesh.flipTextureCoordinates(inAttributeNamed: "textureCoordinate")
+        }
+        return mesh
+    }
+}
+
+// TODO: Will deprecate
+// @available(*, deprecated, message: "Break into shape3d and a meshconvertable")
+public struct CircleX: Shape3D {
+    public var extent: SIMD3<Float>
+    public var segments: Float
+    public var geometryType: MDLGeometryType
+    public var flippedTextureCoordinates: Bool
+
+    public init(extent: SIMD3<Float>, segments: Float = 36, geometryType: MDLGeometryType = .triangles, flippedTextureCoordinates: Bool = true) {
+        self.extent = extent
+        self.segments = segments
+        self.geometryType = geometryType
+        self.flippedTextureCoordinates = flippedTextureCoordinates
+    }
+
+    public func toMDLMesh(allocator: MDLMeshBufferAllocator?) -> MDLMesh {
+        fatalError()
+    }
+}
+
+// TODO: Will deprecate
+// @available(*, deprecated, message: "Break into shape3d and a meshconvertable")
+public struct Sphere3DX: Shape3D {
+    public var extent: SIMD3<Float>
+    public var segments: SIMD2<UInt32>
+    public var inwardNormals: Bool
+    public var geometryType: MDLGeometryType
+    public var flippedTextureCoordinates: Bool
+
+    public init(extent: SIMD3<Float> = [1, 1, 1], segments: SIMD2<UInt32> = [36, 36], inwardNormals: Bool = false, geometryType: MDLGeometryType = .triangles, flippedTextureCoordinates: Bool = false) {
+        self.extent = extent
+        self.segments = segments
+        self.inwardNormals = inwardNormals
+        self.geometryType = geometryType
+        self.flippedTextureCoordinates = flippedTextureCoordinates
+    }
+
+    public func toMDLMesh(allocator: MDLMeshBufferAllocator?) -> MDLMesh {
+        let mesh = MDLMesh(sphereWithExtent: extent, segments: segments, inwardNormals: inwardNormals, geometryType: .triangles, allocator: allocator)
+        if flippedTextureCoordinates {
+            mesh.flipTextureCoordinates(inAttributeNamed: "textureCoordinate")
+        }
+        return mesh
+    }
+}
+
+// TODO: Will deprecate
+// @available(*, deprecated, message: "Break into shape3d and a meshconvertable")
+public struct Cone3D: Shape3D {
+    public var extent: SIMD3<Float>
+    public var segments: SIMD2<UInt32>
+    public var inwardNormals: Bool
+    public var cap: Bool
+    public var geometryType: MDLGeometryType
+    public var flippedTextureCoordinates: Bool
+
+    public init(extent: SIMD3<Float> = [1, 1, 1], segments: SIMD2<UInt32> = [36, 36], inwardNormals: Bool = false, cap: Bool = true, geometryType: MDLGeometryType = .triangles, flippedTextureCoordinates: Bool = true) {
+        self.extent = extent
+        self.segments = segments
+        self.inwardNormals = inwardNormals
+        self.cap = cap
+        self.geometryType = geometryType
+        self.flippedTextureCoordinates = flippedTextureCoordinates
+    }
+
+    public func toMDLMesh(allocator: MDLMeshBufferAllocator?) -> MDLMesh {
+        let mesh = MDLMesh(coneWithExtent: extent, segments: segments, inwardNormals: inwardNormals, cap: cap, geometryType: .triangles, allocator: allocator)
+        if flippedTextureCoordinates {
+            mesh.flipTextureCoordinates(inAttributeNamed: "textureCoordinate")
+        }
+        return mesh
+    }
+}
+
+// TODO: Will deprecate
+// @available(*, deprecated, message: "Break into shape3d and a meshconvertable")
+public struct Capsule3D: Shape3D {
+    public var extent: SIMD3<Float>
+    public var cylinderSegments: SIMD2<UInt32>
+    public var hemisphereSegments: Int32
+    public var inwardNormals: Bool
+    public var cap: Bool
+    public var geometryType: MDLGeometryType
+    public var flippedTextureCoordinates: Bool
+
+    public init(extent: SIMD3<Float> = [1, 1, 1], cylinderSegments: SIMD2<UInt32> = [36, 36], hemisphereSegments: Int32 = 18, inwardNormals: Bool = false, cap: Bool = true, geometryType: MDLGeometryType = .triangles, flippedTextureCoordinates: Bool = true) {
+        self.extent = extent
+        self.cylinderSegments = cylinderSegments
+        self.hemisphereSegments = hemisphereSegments
+        self.inwardNormals = inwardNormals
+        self.cap = cap
+        self.geometryType = geometryType
+        self.flippedTextureCoordinates = flippedTextureCoordinates
+    }
+
+    public func toMDLMesh(allocator: MDLMeshBufferAllocator?) -> MDLMesh {
+        let mesh = MDLMesh(capsuleWithExtent: extent, cylinderSegments: cylinderSegments, hemisphereSegments: hemisphereSegments, inwardNormals: inwardNormals, geometryType: .triangles, allocator: allocator)
+        if flippedTextureCoordinates {
+            mesh.flipTextureCoordinates(inAttributeNamed: "textureCoordinate")
+        }
+        return mesh
     }
 }

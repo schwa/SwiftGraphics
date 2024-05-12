@@ -29,9 +29,11 @@ public struct Rasterizer {
             clipSpaceVertices = modelSpaceVertices.map {
                 transform * SIMD4<Float>($0, 1.0)
             }
-            clipSpaceMin = clipSpaceVertices.reduce([.infinity, .infinity, .infinity]) { result, vertex in
-                SIMD3<Float>(min(result.x, vertex.x), min(result.y, vertex.y), min(result.z, vertex.z))
+
+            clipSpaceMin = clipSpaceVertices.reduce(into: [.infinity, .infinity, .infinity]) { result, vertex in
+                result = [min(result.x, vertex.x), min(result.y, vertex.y), min(result.z, vertex.z)]
             }
+
             let a = modelSpaceVertices[0]
             let b = modelSpaceVertices[1]
             let c = modelSpaceVertices[2]
@@ -96,6 +98,7 @@ public struct Rasterizer {
     }
 }
 
+// TODO: Move
 func compare<C>(_ lhs: C, _ rhs: C) -> ComparisonResult where C: Comparable {
     if lhs == rhs {
         return .orderedSame
@@ -108,6 +111,7 @@ func compare<C>(_ lhs: C, _ rhs: C) -> ComparisonResult where C: Comparable {
     }
 }
 
+// TODO: Move
 func compare<C>(_ lhs: (C, C), _ rhs: (C, C)) -> ComparisonResult where C: Comparable {
     let r = compare(lhs.0, rhs.0)
     if r == .orderedSame {
@@ -118,6 +122,7 @@ func compare<C>(_ lhs: (C, C), _ rhs: (C, C)) -> ComparisonResult where C: Compa
     }
 }
 
+// TODO: Move
 func compare<C>(_ lhs: (C, C, C), _ rhs: (C, C, C)) -> ComparisonResult where C: Comparable {
     let r = compare((lhs.0, lhs.1), (rhs.0, rhs.1))
     if r == .orderedSame {
@@ -128,7 +133,8 @@ func compare<C>(_ lhs: (C, C, C), _ rhs: (C, C, C)) -> ComparisonResult where C:
     }
 }
 
-extension SIMD3 {
+// TODO: Move
+public extension SIMD3 {
     var tuple: (Scalar, Scalar, Scalar) {
         (x, y, z)
     }

@@ -159,7 +159,7 @@ public extension SIMD2 where Scalar: FloatingPoint {
         area2(a, b, c) == 0
     }
 
-    /** Returns true iff ab properly intersects cd: they share a point interior to both segments.  The properness of the intersection is ensured by using strict leftness. */
+    /** Returns true iff ab properly intersects cd: they share a point interior to both segments. The properness of the intersection is ensured by using strict leftness. */
     static func intersectProp(_ a: Self, _ b: Self, _ c: Self, _ d: Self) -> Bool {
         func xor(_ x: Bool, _ y: Bool) -> Bool {
             switch (x, y) {

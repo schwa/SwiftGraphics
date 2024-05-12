@@ -1,4 +1,5 @@
 import Foundation
+import MetalSupport
 import simd
 
 public extension TrivialMesh where Vertex == SimpleVertex {

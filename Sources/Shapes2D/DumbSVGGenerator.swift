@@ -46,4 +46,3 @@ extension DumbSVGGenerator: CustomStringConvertible {
         return s
     }
 }
-

@@ -1,4 +1,5 @@
 import Algorithms
+import MetalSupport
 import ModelIO
 import SIMDSupport
 
@@ -34,7 +35,7 @@ public extension TrivialMesh where Vertex == SimpleVertex {
             Array(repeating: [0, 0, 0], count: positions.count)
         }
         let vertices = zip(positions, normals).map {
-            SimpleVertex(position: $0.0, normal: $0.1)
+            SimpleVertex(packedPosition: $0.0, packedNormal: $0.1)
         }
 
         // TODO: confirm that these are triangles.
@@ -67,7 +68,7 @@ extension MDLMesh {
     }
 
     var hasNormals: Bool {
-        guard vertexDescriptor.attributes.compactMap({ $0 as? MDLVertexAttribute }).first(where: { $0.name == MDLVertexAttributeNormal }) != nil else {
+        guard vertexDescriptor.attributes.compactMap({ $0 as? MDLVertexAttribute }).contains(where: { $0.name == MDLVertexAttributeNormal }) else {
             return false
         }
         return true
@@ -124,13 +125,13 @@ public extension MDLMesh {
             indexBuffer = indices.withUnsafeBytes { buffer in
                 MDLMeshBufferData(type: .index, data: Data(buffer))
             }
-        case 256 ..< 65536:
+        case 256 ..< 65_536:
             indexType = .uInt16
             let indices = mesh.indices.map({ UInt16($0) })
             indexBuffer = indices.withUnsafeBytes { buffer in
                 MDLMeshBufferData(type: .index, data: Data(buffer))
             }
-        case 65536 ..< 4_294_967_296:
+        case 65_536 ..< 4_294_967_296:
             indexType = .uInt32
             let indices = mesh.indices.map({ UInt32($0) })
             indexBuffer = indices.withUnsafeBytes { buffer in
@@ -152,17 +153,3 @@ public extension TrivialMesh where Vertex == SimpleVertex {
         try asset.export(to: url)
     }
 }
-
-// extension MDLAsset {
-//    convenience init(elements: [any MeshConvertable]) {
-//
-//        self.init()
-//
-//        elements.map {
-//            MDLMesh(trivialMesh: $0.toMesh())
-//        }
-//
-//
-//
-//    }
-// }

@@ -51,7 +51,6 @@ public extension Polygon {
         self.init(vertices)
     }
 
-    
     func toLineSegments() -> [LineSegment] {
         precondition(vertices.count >= 3)
         let segments = stride(from: 0, to: vertices.count - 1, by: 1)

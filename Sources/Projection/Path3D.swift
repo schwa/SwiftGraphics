@@ -12,8 +12,8 @@ public struct Path3D {
     public init() {
     }
 
-    public init(builder: (inout Path3D) -> Void) {
-        var path = Path3D()
+    public init(builder: (inout Self) -> Void) {
+        var path = Self()
         builder(&path)
         self = path
     }

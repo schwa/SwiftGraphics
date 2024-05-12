@@ -8,7 +8,7 @@ extension MDLMeshBufferType: CustomStringConvertible {
         case .vertex:
             "vertex"
         default:
-            fatal(error: MetalSupportError.illegalValue)
+            fatalError(MetalSupportError.illegalValue)
         }
     }
 }

@@ -1,7 +1,7 @@
 import CoreGraphics
 import CoreGraphicsSupport
 import Foundation
-import LegacyGeometry
+import GenericGeometryBase
 
 public extension Array2D {
     mutating func blit<SourceElement>(from source: Array2D<SourceElement>, frame: IntRect, to position: IntPoint, clip: IntRect? = nil, compositor: (_ source: SourceElement, _ destination: Element) -> Element) {
@@ -34,11 +34,6 @@ public extension Array2D {
     struct RectSlice: Sequence {
         let array: Array2D
         let rect: IntRect
-
-        init(array: Array2D, rect: IntRect) {
-            self.array = array
-            self.rect = rect
-        }
 
         __consuming public func makeIterator() -> RectIterator {
             RectIterator(array: array, rect: rect)

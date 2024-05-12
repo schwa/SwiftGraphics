@@ -181,7 +181,7 @@ public extension CGPoint {
     }
 
     var normalized: Self {
-        self.isZero ? self : self / length
+        isZero ? self : self / length
     }
 
     var orthogonal: Self {
@@ -211,7 +211,6 @@ public extension CGPoint {
     func angle(to other: Self) -> Angle { // [-M_PI, M_PI)
         .radians(atan2(crossProduct(self, other), dotProduct(self, other)))
     }
-
 }
 
 // TODO: Misc 2
@@ -233,5 +232,3 @@ public extension CGPoint {
         CGPoint(x: x, y: rect.height - y)
     }
 }
-
-

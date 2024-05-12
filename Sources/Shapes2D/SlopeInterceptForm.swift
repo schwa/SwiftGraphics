@@ -7,7 +7,7 @@ public struct SlopeInterceptForm: Equatable {
     }
 }
 
-//public extension SlopeInterceptForm {
+// public extension SlopeInterceptForm {
 //    var isHorizontal: Bool {
 //        m == 0
 //    }
@@ -27,7 +27,7 @@ public struct SlopeInterceptForm: Equatable {
 //    var slope: Double {
 //        m
 //    }
-//}
+// }
 
 // MARK: Conversion between SlopeIntercept and Standard Form
 
@@ -52,11 +52,11 @@ public extension Line {
     }
 }
 
-internal func slopeInterceptFormToStandardForm(m: Double, b: Double) -> (a: Double, b: Double, c: Double) {
-    return (a: -m, b: 1, c: b)
+func slopeInterceptFormToStandardForm(m: Double, b: Double) -> (a: Double, b: Double, c: Double) {
+    (a: -m, b: 1, c: b)
 }
 
-internal func standardFormSlopeInterceptFormTo(a: Double, b: Double, c: Double) -> (m: Double, b: Double)? {
+func standardFormSlopeInterceptFormTo(a: Double, b: Double, c: Double) -> (m: Double, b: Double)? {
     guard b != 0 else {
         return nil
     }
@@ -69,6 +69,6 @@ public extension SlopeInterceptForm {
     }
 
     var tuple: (m: Double, b: Double) {
-        return (m: m, b: b)
+        (m: m, b: b)
     }
 }

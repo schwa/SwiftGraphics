@@ -7,8 +7,8 @@ public protocol Lerpable {
     static func lerp(from v0: Self, to v1: Self, by t: Factor) -> Self
 }
 
-extension Lerpable where Self: FloatingPoint {
-    public static func lerp(from v0: Self, to v1: Self, by t: Self) -> Self {
+public extension Lerpable where Self: FloatingPoint {
+    static func lerp(from v0: Self, to v1: Self, by t: Self) -> Self {
         (1 - t) * v0 + t * v1
     }
 }
@@ -37,7 +37,7 @@ extension CGPoint: UnitLerpable {
 // MARK: CompositeLerpable
 
 public protocol CompositeLerpable: Lerpable {
-    //associatedtype Factor: FloatingPoint
+    // associatedtype Factor: FloatingPoint
     static func + (lhs: Self, rhs: Self) -> Self
     static func * (lhs: Factor, rhs: Self) -> Self
 }
@@ -60,10 +60,9 @@ extension CGSize: CompositeLerpable {
     public static let unit = CGSize(width: 1, height: 1)
 }
 
-
 // MARK: -
 
-extension Range where Bound: FloatingPoint {
+public extension Range where Bound: FloatingPoint {
     func lerp(by t: Bound) -> Bound {
         (1 - t) * lowerBound + t * upperBound
     }
@@ -79,25 +78,25 @@ public func lerp<T>(from v0: T, to v1: T, by t: T.Factor) -> T where T: Lerpable
     T.lerp(from: v0, to: v1, by: t)
 }
 
-//public func lerp<T>(from v0: T, to v1: T, by t: T) -> T where T: UnitLerpable {
+// public func lerp<T>(from v0: T, to v1: T, by t: T) -> T where T: UnitLerpable {
 //    T.lerp(from: v0, to: v1, by: t)
-//}
+// }
 
-//@available(*, deprecated, message: "Use static lerp")
-//public func lerp<V>(from v0: V, to v1: V, by t: V.Factor) -> V where V: CompositeLerpable, V.Factor: FloatingPoint {
+// @available(*, deprecated, message: "Use static lerp")
+// public func lerp<V>(from v0: V, to v1: V, by t: V.Factor) -> V where V: CompositeLerpable, V.Factor: FloatingPoint {
 //    (1 - t) * v0 + t * v1
-//}
+// }
 //
-//@available(*, deprecated, message: "Use static lerp")
-//public func lerp(from v0: CGRect, to v1: CGRect, by t: CGFloat) -> CGRect {
+// @available(*, deprecated, message: "Use static lerp")
+// public func lerp(from v0: CGRect, to v1: CGRect, by t: CGFloat) -> CGRect {
 //    CGRect(
 //        origin: lerp(from: v0.origin, to: v1.origin, by: t),
 //        size: lerp(from: v0.size, to: v1.size, by: t)
 //    )
-//}
+// }
 
-//@available(*, deprecated, message: "Use static lerp")
-//public func lerp(from: CGPoint, to: CGPoint, by t: CGFloat) -> CGPoint {
+// @available(*, deprecated, message: "Use static lerp")
+// public func lerp(from: CGPoint, to: CGPoint, by t: CGFloat) -> CGPoint {
 //    ((1.0 - t) * from) + (t * to)
-//}
+// }
 //

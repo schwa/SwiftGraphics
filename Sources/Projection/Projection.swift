@@ -24,7 +24,7 @@ public struct Projection3D {
     public func unproject(_ point: CGPoint, z: Float) -> SIMD3<Float> {
         // We have no model. Just use view.
         let modelView = viewTransform
-        return gluUnproject(win: SIMD3<Float>(Float(), Float(), z), modelView: modelView, proj: projectionTransform, viewOrigin: .zero, viewSize: SIMD2<Float>(size))
+        return gluUnproject(win: SIMD3<Float>(Float(point.x), Float(point.y), z), modelView: modelView, proj: projectionTransform, viewOrigin: .zero, viewSize: SIMD2<Float>(size))
     }
 }
 
@@ -41,7 +41,7 @@ public extension GraphicsContext {
 }
 
 // https://registry.khronos.org/OpenGL-Refpages/gl2.1/xhtml/gluUnProject.xml
-func gluUnproject(win: SIMD3<Float>, modelView: simd_float4x4, proj: simd_float4x4, viewOrigin: SIMD2<Float>, viewSize: SIMD2<Float>) -> SIMD3<Float> {
+public func gluUnproject(win: SIMD3<Float>, modelView: simd_float4x4, proj: simd_float4x4, viewOrigin: SIMD2<Float>, viewSize: SIMD2<Float>) -> SIMD3<Float> {
     let invPMV = (proj * modelView).inverse
     let v = SIMD4<Float>(
         (2 * (win.x * viewOrigin.x) / viewSize.x) - 1,
@@ -55,7 +55,7 @@ func gluUnproject(win: SIMD3<Float>, modelView: simd_float4x4, proj: simd_float4
 }
 
 // https://registry.khronos.org/OpenGL-Refpages/gl2.1/xhtml/gluProject.xml
-func gluProject(obj: SIMD3<Float>, modelView: simd_float4x4, proj: simd_float4x4, viewOrigin: SIMD2<Float>, viewSize: SIMD2<Float>) -> SIMD3<Float> {
+public func gluProject(obj: SIMD3<Float>, modelView: simd_float4x4, proj: simd_float4x4, viewOrigin: SIMD2<Float>, viewSize: SIMD2<Float>) -> SIMD3<Float> {
     let obj = SIMD4<Float>(obj, 1)
     let v = proj * modelView * obj
     let winX = viewOrigin.x + (viewSize.x * v.x + 1) / 2

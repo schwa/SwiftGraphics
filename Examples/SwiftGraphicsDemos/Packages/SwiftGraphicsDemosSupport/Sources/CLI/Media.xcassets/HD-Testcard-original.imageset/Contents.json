@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "HD-Testcard-original.jpg",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

@@ -12,7 +12,7 @@ public struct Transform: Codable, Hashable {
 
     public private(set) var storage: Storage
 
-    public static let identity = Transform()
+    public static let identity = Self()
 
     public init(scale: SIMD3<Float> = .unit, rotation: simd_quatf = .identity, translation: SIMD3<Float> = .zero) {
         storage = .srt(SRT(scale: scale, rotation: rotation, translation: translation))
