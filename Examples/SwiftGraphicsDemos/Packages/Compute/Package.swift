@@ -13,10 +13,10 @@ let package = Package(
     ],
     products: [
         .library(name: "Compute",
-            targets: ["Compute"]),
+                 targets: ["Compute"]),
     ],
     dependencies: [
-        .package(path: "../../.."),
+        .package(path: "/Users/schwa/Projects/SwiftGraphics"),
     ],
     targets: [
         .target(name: "Compute", dependencies: [

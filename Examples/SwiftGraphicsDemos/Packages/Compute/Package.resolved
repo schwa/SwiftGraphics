@@ -15,7 +15,7 @@
       "location" : "https://github.com/schwa/Everything",
       "state" : {
         "branch" : "jwight/downsizing",
-        "revision" : "18e9b2816111daa149097aa397235d31b2519628"
+        "revision" : "7bf3c08bc99005892e02ab48dc442c8bea54eeb7"
       }
     },
     {
@@ -23,8 +23,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-algorithms",
       "state" : {
-        "revision" : "bcd4f369ac962bc3e5244c9df778739f8f5bdbf1",
-        "version" : "1.1.0"
+        "revision" : "f6919dfc309e7f1b56224378b11e28bab5bccc42",
+        "version" : "1.2.0"
       }
     },
     {
@@ -41,8 +41,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-collections.git",
       "state" : {
-        "revision" : "a902f1823a7ff3c9ab2fba0f992396b948eda307",
-        "version" : "1.0.5"
+        "revision" : "94cf62b3ba8d4bed62680a282d4c25f9c63c2efb",
+        "version" : "1.1.0"
       }
     },
     {
@@ -59,8 +59,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-syntax.git",
       "state" : {
-        "revision" : "ffa3cd6fc2aa62adbedd31d3efaf7c0d86a9f029",
-        "version" : "509.0.1"
+        "revision" : "64889f0c732f210a935a0ad7cda38f77f876262d",
+        "version" : "509.1.1"
       }
     },
     {
@@ -77,17 +77,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/schwa/swiftformats",
       "state" : {
-        "revision" : "de0d13b019b9a0b68b1d6a83e1f48db3c4d06512",
-        "version" : "0.3.3"
-      }
-    },
-    {
-      "identity" : "swiftgraphics",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/schwa/SwiftGraphics",
-      "state" : {
-        "branch" : "jwight/develop",
-        "revision" : "f374684b5fd037bce0d57adbdf756e2d5630b8b3"
+        "revision" : "1cc4b51e9e4cead543979e85e5524e0282e7ff29",
+        "version" : "0.3.4"
       }
     }
   ],
