@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -59,9 +59,64 @@
 		45DA8F452BF157840070FD0C /* SIMDSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 45DA8F442BF157840070FD0C /* SIMDSupport */; };
 		45DA8F472BF157840070FD0C /* SIMDSupportUnsafeConformances in Frameworks */ = {isa = PBXBuildFile; productRef = 45DA8F462BF157840070FD0C /* SIMDSupportUnsafeConformances */; };
 		45DA8F492BF157840070FD0C /* Sketches in Frameworks */ = {isa = PBXBuildFile; productRef = 45DA8F482BF157840070FD0C /* Sketches */; };
+		45DA90D02BF158380070FD0C /* BallRotationModifierX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA90482BF158380070FD0C /* BallRotationModifierX.swift */; };
+		45DA90D12BF158380070FD0C /* FirstPersonInteractiveViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA90492BF158380070FD0C /* FirstPersonInteractiveViewModifier.swift */; };
+		45DA90D22BF158380070FD0C /* GameControllerWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA904A2BF158380070FD0C /* GameControllerWidget.swift */; };
+		45DA90D32BF158380070FD0C /* MovementController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA904B2BF158380070FD0C /* MovementController.swift */; };
+		45DA90D42BF158380070FD0C /* MetalCanvas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA904D2BF158380070FD0C /* MetalCanvas.swift */; };
+		45DA90E32BF158380070FD0C /* Particles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA905E2BF158380070FD0C /* Particles.swift */; };
+		45DA90E42BF158380070FD0C /* ParticlesRenderJob.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA905F2BF158380070FD0C /* ParticlesRenderJob.swift */; };
+		45DA90E52BF158380070FD0C /* SimulationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA90602BF158380070FD0C /* SimulationView.swift */; };
+		45DA90E62BF158380070FD0C /* Particles2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA90622BF158380070FD0C /* Particles2.swift */; };
+		45DA90F52BF158380070FD0C /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 45DA90732BF158380070FD0C /* Preview Assets.xcassets */; };
+		45DA90F62BF158380070FD0C /* ShaderToy.metal in Sources */ = {isa = PBXBuildFile; fileRef = 45DA90752BF158380070FD0C /* ShaderToy.metal */; };
+		45DA90F72BF158380070FD0C /* ShaderToyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA90762BF158380070FD0C /* ShaderToyView.swift */; };
+		45DA90F82BF158380070FD0C /* BarramundiFish.glb in Resources */ = {isa = PBXBuildFile; fileRef = 45DA90782BF158380070FD0C /* BarramundiFish.glb */; };
+		45DA90F92BF158380070FD0C /* Cube.glb in Resources */ = {isa = PBXBuildFile; fileRef = 45DA90792BF158380070FD0C /* Cube.glb */; };
+		45DA90FA2BF158380070FD0C /* FlatMaterial.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA907A2BF158380070FD0C /* FlatMaterial.swift */; };
+		45DA90FB2BF158380070FD0C /* GLTF+YAMesh.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA907B2BF158380070FD0C /* GLTF+YAMesh.swift */; };
+		45DA90FC2BF158380070FD0C /* PanoramaRenderJob.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA907C2BF158380070FD0C /* PanoramaRenderJob.swift */; };
+		45DA90FD2BF158380070FD0C /* SimpleJobsBasedRenderPass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA907D2BF158380070FD0C /* SimpleJobsBasedRenderPass.swift */; };
+		45DA90FE2BF158380070FD0C /* SimpleMesh.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA907E2BF158380070FD0C /* SimpleMesh.swift */; };
+		45DA90FF2BF158380070FD0C /* SimpleScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA907F2BF158380070FD0C /* SimpleScene.swift */; };
+		45DA91002BF158380070FD0C /* SimpleScene+Demo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA90802BF158380070FD0C /* SimpleScene+Demo.swift */; };
+		45DA91012BF158380070FD0C /* SimpleSceneInspector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA90812BF158380070FD0C /* SimpleSceneInspector.swift */; };
+		45DA91022BF158380070FD0C /* SimpleSceneMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA90822BF158380070FD0C /* SimpleSceneMapView.swift */; };
+		45DA91032BF158380070FD0C /* SimpleSceneRenderPass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA90832BF158380070FD0C /* SimpleSceneRenderPass.swift */; };
+		45DA91042BF158380070FD0C /* SimpleSceneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA90842BF158380070FD0C /* SimpleSceneView.swift */; };
+		45DA91052BF158380070FD0C /* TextureManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA90852BF158380070FD0C /* TextureManager.swift */; };
+		45DA91062BF158380070FD0C /* UnlitMaterial.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA90862BF158380070FD0C /* UnlitMaterial.swift */; };
+		45DA91072BF158380070FD0C /* YAMesh+Conversion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA90872BF158380070FD0C /* YAMesh+Conversion.swift */; };
+		45DA91082BF158380070FD0C /* adjectives.txt in Resources */ = {isa = PBXBuildFile; fileRef = 45DA90892BF158380070FD0C /* adjectives.txt */; };
+		45DA91092BF158380070FD0C /* Bindings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA908A2BF158380070FD0C /* Bindings.swift */; };
+		45DA910A2BF158380070FD0C /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA908B2BF158380070FD0C /* Cache.swift */; };
+		45DA910B2BF158380070FD0C /* Counters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA908C2BF158380070FD0C /* Counters.swift */; };
+		45DA910C2BF158380070FD0C /* DisplayLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA908D2BF158380070FD0C /* DisplayLink.swift */; };
+		45DA910D2BF158380070FD0C /* Gradient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA908E2BF158380070FD0C /* Gradient.swift */; };
+		45DA910E2BF158380070FD0C /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA908F2BF158380070FD0C /* Logging.swift */; };
+		45DA910F2BF158380070FD0C /* Names.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA90902BF158380070FD0C /* Names.swift */; };
+		45DA91102BF158380070FD0C /* nouns.txt in Resources */ = {isa = PBXBuildFile; fileRef = 45DA90912BF158380070FD0C /* nouns.txt */; };
+		45DA91112BF158380070FD0C /* ProjectionsX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA90922BF158380070FD0C /* ProjectionsX.swift */; };
+		45DA91122BF158380070FD0C /* Resources.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA90932BF158380070FD0C /* Resources.swift */; };
+		45DA91132BF158380070FD0C /* RKSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA90942BF158380070FD0C /* RKSupport.swift */; };
+		45DA91142BF158380070FD0C /* SwiftUI+Support.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA90952BF158380070FD0C /* SwiftUI+Support.swift */; };
+		45DA91152BF158380070FD0C /* TarArchive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA90962BF158380070FD0C /* TarArchive.swift */; };
+		45DA91222BF158380070FD0C /* StanfordVolumeData.tar in Resources */ = {isa = PBXBuildFile; fileRef = 45DA90A52BF158380070FD0C /* StanfordVolumeData.tar */; };
+		45DA91232BF158380070FD0C /* VolumeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA90A62BF158380070FD0C /* VolumeData.swift */; };
+		45DA91242BF158380070FD0C /* VolumetricRenderPass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA90A72BF158380070FD0C /* VolumetricRenderPass.swift */; };
+		45DA91252BF158380070FD0C /* VolumetricView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA90A82BF158380070FD0C /* VolumetricView.swift */; };
+		45DA91262BF158380070FD0C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 45DA90AA2BF158380070FD0C /* Assets.xcassets */; };
+		45DA91272BF158380070FD0C /* ContentView-VisionOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA90AB2BF158380070FD0C /* ContentView-VisionOS.swift */; };
+		45DA91292BF158380070FD0C /* CSGDemoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA90AD2BF158380070FD0C /* CSGDemoView.swift */; };
+		45DA912A2BF158380070FD0C /* DemosApp-VisionOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA90AF2BF158380070FD0C /* DemosApp-VisionOS.swift */; };
+		45DA912B2BF158380070FD0C /* DemosApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA90B02BF158380070FD0C /* DemosApp.swift */; };
+		45DA912C2BF158380070FD0C /* Info-visionOS.plist in Resources */ = {isa = PBXBuildFile; fileRef = 45DA90B12BF158380070FD0C /* Info-visionOS.plist */; };
+		45DA912E2BF158380070FD0C /* PixelFormatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA90B32BF158380070FD0C /* PixelFormatsView.swift */; };
+		45DA912F2BF158380070FD0C /* Scratch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA90B42BF158380070FD0C /* Scratch.swift */; };
+		45DA91302BF158380070FD0C /* ScreenSpaceDemoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA90B52BF158380070FD0C /* ScreenSpaceDemoView.swift */; };
+		45DA91322BF158380070FD0C /* TextureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA90B72BF158380070FD0C /* TextureView.swift */; };
 		45E5B5E32A8EA04100B46CDC /* SwiftGraphicsDemosApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E5B5E22A8EA04100B46CDC /* SwiftGraphicsDemosApp.swift */; };
 		45E5B5E52A8EA04100B46CDC /* CustomStrokeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E5B5E42A8EA04100B46CDC /* CustomStrokeView.swift */; };
-		45E5B5E72A8EA04400B46CDC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 45E5B5E62A8EA04400B46CDC /* Assets.xcassets */; };
 		45E5B5EB2A8EA04400B46CDC /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 45E5B5EA2A8EA04400B46CDC /* Preview Assets.xcassets */; };
 /* End PBXBuildFile section */
 
@@ -104,10 +159,66 @@
 		45B9D27E2BCC28DF001F717E /* QuartzContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuartzContext.swift; sourceTree = "<group>"; };
 		45C41A9C2BD76625006FBA7B /* Beziers2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Beziers2.swift; sourceTree = "<group>"; };
 		45DA8F282BF157710070FD0C /* SwiftGraphics */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = SwiftGraphics; path = ../../..; sourceTree = "<group>"; };
+		45DA90482BF158380070FD0C /* BallRotationModifierX.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BallRotationModifierX.swift; sourceTree = "<group>"; };
+		45DA90492BF158380070FD0C /* FirstPersonInteractiveViewModifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirstPersonInteractiveViewModifier.swift; sourceTree = "<group>"; };
+		45DA904A2BF158380070FD0C /* GameControllerWidget.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameControllerWidget.swift; sourceTree = "<group>"; };
+		45DA904B2BF158380070FD0C /* MovementController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MovementController.swift; sourceTree = "<group>"; };
+		45DA904D2BF158380070FD0C /* MetalCanvas.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetalCanvas.swift; sourceTree = "<group>"; };
+		45DA905E2BF158380070FD0C /* Particles.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Particles.swift; sourceTree = "<group>"; };
+		45DA905F2BF158380070FD0C /* ParticlesRenderJob.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParticlesRenderJob.swift; sourceTree = "<group>"; };
+		45DA90602BF158380070FD0C /* SimulationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimulationView.swift; sourceTree = "<group>"; };
+		45DA90622BF158380070FD0C /* Particles2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Particles2.swift; sourceTree = "<group>"; };
+		45DA90732BF158380070FD0C /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		45DA90752BF158380070FD0C /* ShaderToy.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = ShaderToy.metal; sourceTree = "<group>"; };
+		45DA90762BF158380070FD0C /* ShaderToyView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShaderToyView.swift; sourceTree = "<group>"; };
+		45DA90782BF158380070FD0C /* BarramundiFish.glb */ = {isa = PBXFileReference; lastKnownFileType = file; path = BarramundiFish.glb; sourceTree = "<group>"; };
+		45DA90792BF158380070FD0C /* Cube.glb */ = {isa = PBXFileReference; lastKnownFileType = file; path = Cube.glb; sourceTree = "<group>"; };
+		45DA907A2BF158380070FD0C /* FlatMaterial.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlatMaterial.swift; sourceTree = "<group>"; };
+		45DA907B2BF158380070FD0C /* GLTF+YAMesh.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "GLTF+YAMesh.swift"; sourceTree = "<group>"; };
+		45DA907C2BF158380070FD0C /* PanoramaRenderJob.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PanoramaRenderJob.swift; sourceTree = "<group>"; };
+		45DA907D2BF158380070FD0C /* SimpleJobsBasedRenderPass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimpleJobsBasedRenderPass.swift; sourceTree = "<group>"; };
+		45DA907E2BF158380070FD0C /* SimpleMesh.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimpleMesh.swift; sourceTree = "<group>"; };
+		45DA907F2BF158380070FD0C /* SimpleScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimpleScene.swift; sourceTree = "<group>"; };
+		45DA90802BF158380070FD0C /* SimpleScene+Demo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SimpleScene+Demo.swift"; sourceTree = "<group>"; };
+		45DA90812BF158380070FD0C /* SimpleSceneInspector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimpleSceneInspector.swift; sourceTree = "<group>"; };
+		45DA90822BF158380070FD0C /* SimpleSceneMapView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimpleSceneMapView.swift; sourceTree = "<group>"; };
+		45DA90832BF158380070FD0C /* SimpleSceneRenderPass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimpleSceneRenderPass.swift; sourceTree = "<group>"; };
+		45DA90842BF158380070FD0C /* SimpleSceneView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimpleSceneView.swift; sourceTree = "<group>"; };
+		45DA90852BF158380070FD0C /* TextureManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextureManager.swift; sourceTree = "<group>"; };
+		45DA90862BF158380070FD0C /* UnlitMaterial.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnlitMaterial.swift; sourceTree = "<group>"; };
+		45DA90872BF158380070FD0C /* YAMesh+Conversion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "YAMesh+Conversion.swift"; sourceTree = "<group>"; };
+		45DA90892BF158380070FD0C /* adjectives.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = adjectives.txt; sourceTree = "<group>"; };
+		45DA908A2BF158380070FD0C /* Bindings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bindings.swift; sourceTree = "<group>"; };
+		45DA908B2BF158380070FD0C /* Cache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cache.swift; sourceTree = "<group>"; };
+		45DA908C2BF158380070FD0C /* Counters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Counters.swift; sourceTree = "<group>"; };
+		45DA908D2BF158380070FD0C /* DisplayLink.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisplayLink.swift; sourceTree = "<group>"; };
+		45DA908E2BF158380070FD0C /* Gradient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Gradient.swift; sourceTree = "<group>"; };
+		45DA908F2BF158380070FD0C /* Logging.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
+		45DA90902BF158380070FD0C /* Names.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Names.swift; sourceTree = "<group>"; };
+		45DA90912BF158380070FD0C /* nouns.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = nouns.txt; sourceTree = "<group>"; };
+		45DA90922BF158380070FD0C /* ProjectionsX.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProjectionsX.swift; sourceTree = "<group>"; };
+		45DA90932BF158380070FD0C /* Resources.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Resources.swift; sourceTree = "<group>"; };
+		45DA90942BF158380070FD0C /* RKSupport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RKSupport.swift; sourceTree = "<group>"; };
+		45DA90952BF158380070FD0C /* SwiftUI+Support.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SwiftUI+Support.swift"; sourceTree = "<group>"; };
+		45DA90962BF158380070FD0C /* TarArchive.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TarArchive.swift; sourceTree = "<group>"; };
+		45DA90A52BF158380070FD0C /* StanfordVolumeData.tar */ = {isa = PBXFileReference; lastKnownFileType = archive.tar; path = StanfordVolumeData.tar; sourceTree = "<group>"; };
+		45DA90A62BF158380070FD0C /* VolumeData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VolumeData.swift; sourceTree = "<group>"; };
+		45DA90A72BF158380070FD0C /* VolumetricRenderPass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VolumetricRenderPass.swift; sourceTree = "<group>"; };
+		45DA90A82BF158380070FD0C /* VolumetricView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VolumetricView.swift; sourceTree = "<group>"; };
+		45DA90AA2BF158380070FD0C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = "RenderKit-Demos/Demos/Assets.xcassets"; sourceTree = "<group>"; };
+		45DA90AB2BF158380070FD0C /* ContentView-VisionOS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ContentView-VisionOS.swift"; sourceTree = "<group>"; };
+		45DA90AD2BF158380070FD0C /* CSGDemoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CSGDemoView.swift; sourceTree = "<group>"; };
+		45DA90AF2BF158380070FD0C /* DemosApp-VisionOS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DemosApp-VisionOS.swift"; sourceTree = "<group>"; };
+		45DA90B02BF158380070FD0C /* DemosApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemosApp.swift; sourceTree = "<group>"; };
+		45DA90B12BF158380070FD0C /* Info-visionOS.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info-visionOS.plist"; sourceTree = "<group>"; };
+		45DA90B32BF158380070FD0C /* PixelFormatsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PixelFormatsView.swift; sourceTree = "<group>"; };
+		45DA90B42BF158380070FD0C /* Scratch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Scratch.swift; sourceTree = "<group>"; };
+		45DA90B52BF158380070FD0C /* ScreenSpaceDemoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScreenSpaceDemoView.swift; sourceTree = "<group>"; };
+		45DA90B72BF158380070FD0C /* TextureView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextureView.swift; sourceTree = "<group>"; };
+		45DA91412BF15A020070FD0C /* DemosSupport */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = DemosSupport; path = Packages/DemosSupport; sourceTree = "<group>"; };
 		45E5B5DF2A8EA04100B46CDC /* SwiftGraphicsDemos.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftGraphicsDemos.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		45E5B5E22A8EA04100B46CDC /* SwiftGraphicsDemosApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftGraphicsDemosApp.swift; sourceTree = "<group>"; };
 		45E5B5E42A8EA04100B46CDC /* CustomStrokeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomStrokeView.swift; sourceTree = "<group>"; };
-		45E5B5E62A8EA04400B46CDC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		45E5B5E82A8EA04400B46CDC /* SwiftGraphicsDemos.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SwiftGraphicsDemos.entitlements; sourceTree = "<group>"; };
 		45E5B5EA2A8EA04400B46CDC /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -211,8 +322,142 @@
 		45DA8F292BF157840070FD0C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				45DA91412BF15A020070FD0C /* DemosSupport */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		45DA904C2BF158380070FD0C /* Interactive */ = {
+			isa = PBXGroup;
+			children = (
+				45DA90482BF158380070FD0C /* BallRotationModifierX.swift */,
+				45DA90492BF158380070FD0C /* FirstPersonInteractiveViewModifier.swift */,
+				45DA904A2BF158380070FD0C /* GameControllerWidget.swift */,
+				45DA904B2BF158380070FD0C /* MovementController.swift */,
+			);
+			path = Interactive;
+			sourceTree = "<group>";
+		};
+		45DA904E2BF158380070FD0C /* MetalCanvas */ = {
+			isa = PBXGroup;
+			children = (
+				45DA904D2BF158380070FD0C /* MetalCanvas.swift */,
+			);
+			path = MetalCanvas;
+			sourceTree = "<group>";
+		};
+		45DA90612BF158380070FD0C /* Particles */ = {
+			isa = PBXGroup;
+			children = (
+				45DA905E2BF158380070FD0C /* Particles.swift */,
+				45DA905F2BF158380070FD0C /* ParticlesRenderJob.swift */,
+				45DA90602BF158380070FD0C /* SimulationView.swift */,
+			);
+			path = Particles;
+			sourceTree = "<group>";
+		};
+		45DA90632BF158380070FD0C /* Particles2 */ = {
+			isa = PBXGroup;
+			children = (
+				45DA90622BF158380070FD0C /* Particles2.swift */,
+			);
+			path = Particles2;
+			sourceTree = "<group>";
+		};
+		45DA90742BF158380070FD0C /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				45DA90732BF158380070FD0C /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		45DA90772BF158380070FD0C /* ShaderToy */ = {
+			isa = PBXGroup;
+			children = (
+				45DA90752BF158380070FD0C /* ShaderToy.metal */,
+				45DA90762BF158380070FD0C /* ShaderToyView.swift */,
+			);
+			path = ShaderToy;
+			sourceTree = "<group>";
+		};
+		45DA90882BF158380070FD0C /* SimpleScene */ = {
+			isa = PBXGroup;
+			children = (
+				45DA90782BF158380070FD0C /* BarramundiFish.glb */,
+				45DA90792BF158380070FD0C /* Cube.glb */,
+				45DA907A2BF158380070FD0C /* FlatMaterial.swift */,
+				45DA907B2BF158380070FD0C /* GLTF+YAMesh.swift */,
+				45DA907C2BF158380070FD0C /* PanoramaRenderJob.swift */,
+				45DA907D2BF158380070FD0C /* SimpleJobsBasedRenderPass.swift */,
+				45DA907E2BF158380070FD0C /* SimpleMesh.swift */,
+				45DA907F2BF158380070FD0C /* SimpleScene.swift */,
+				45DA90802BF158380070FD0C /* SimpleScene+Demo.swift */,
+				45DA90812BF158380070FD0C /* SimpleSceneInspector.swift */,
+				45DA90822BF158380070FD0C /* SimpleSceneMapView.swift */,
+				45DA90832BF158380070FD0C /* SimpleSceneRenderPass.swift */,
+				45DA90842BF158380070FD0C /* SimpleSceneView.swift */,
+				45DA90852BF158380070FD0C /* TextureManager.swift */,
+				45DA90862BF158380070FD0C /* UnlitMaterial.swift */,
+				45DA90872BF158380070FD0C /* YAMesh+Conversion.swift */,
+			);
+			path = SimpleScene;
+			sourceTree = "<group>";
+		};
+		45DA90972BF158380070FD0C /* Support */ = {
+			isa = PBXGroup;
+			children = (
+				45DA90892BF158380070FD0C /* adjectives.txt */,
+				45DA908A2BF158380070FD0C /* Bindings.swift */,
+				45DA908B2BF158380070FD0C /* Cache.swift */,
+				45DA908C2BF158380070FD0C /* Counters.swift */,
+				45DA908D2BF158380070FD0C /* DisplayLink.swift */,
+				45DA908E2BF158380070FD0C /* Gradient.swift */,
+				45DA908F2BF158380070FD0C /* Logging.swift */,
+				45DA90902BF158380070FD0C /* Names.swift */,
+				45DA90912BF158380070FD0C /* nouns.txt */,
+				45DA90922BF158380070FD0C /* ProjectionsX.swift */,
+				45DA90932BF158380070FD0C /* Resources.swift */,
+				45DA90942BF158380070FD0C /* RKSupport.swift */,
+				45DA90952BF158380070FD0C /* SwiftUI+Support.swift */,
+				45DA90962BF158380070FD0C /* TarArchive.swift */,
+			);
+			path = Support;
+			sourceTree = "<group>";
+		};
+		45DA90A92BF158380070FD0C /* Volumetric */ = {
+			isa = PBXGroup;
+			children = (
+				45DA90A52BF158380070FD0C /* StanfordVolumeData.tar */,
+				45DA90A62BF158380070FD0C /* VolumeData.swift */,
+				45DA90A72BF158380070FD0C /* VolumetricRenderPass.swift */,
+				45DA90A82BF158380070FD0C /* VolumetricView.swift */,
+			);
+			path = Volumetric;
+			sourceTree = "<group>";
+		};
+		45DA90C72BF158380070FD0C /* RenderKit-Demos */ = {
+			isa = PBXGroup;
+			children = (
+				45DA904C2BF158380070FD0C /* Interactive */,
+				45DA904E2BF158380070FD0C /* MetalCanvas */,
+				45DA90612BF158380070FD0C /* Particles */,
+				45DA90632BF158380070FD0C /* Particles2 */,
+				45DA90742BF158380070FD0C /* Preview Content */,
+				45DA90772BF158380070FD0C /* ShaderToy */,
+				45DA90882BF158380070FD0C /* SimpleScene */,
+				45DA90972BF158380070FD0C /* Support */,
+				45DA90A92BF158380070FD0C /* Volumetric */,
+				45DA90AB2BF158380070FD0C /* ContentView-VisionOS.swift */,
+				45DA90AD2BF158380070FD0C /* CSGDemoView.swift */,
+				45DA90AF2BF158380070FD0C /* DemosApp-VisionOS.swift */,
+				45DA90B02BF158380070FD0C /* DemosApp.swift */,
+				45DA90B32BF158380070FD0C /* PixelFormatsView.swift */,
+				45DA90B42BF158380070FD0C /* Scratch.swift */,
+				45DA90B52BF158380070FD0C /* ScreenSpaceDemoView.swift */,
+				45DA90B72BF158380070FD0C /* TextureView.swift */,
+			);
+			path = "RenderKit-Demos";
 			sourceTree = "<group>";
 		};
 		45DFB9082BF155E70083D842 /* Packages */ = {
@@ -251,11 +496,13 @@
 				452D82C82BCA301C0054218F /* SketchView.swift */,
 				455E61DC2BCD7A5000EAC5E0 /* Tools.swift */,
 				459DEFE42BCC761F00DE8245 /* MyShape.swift */,
+				45DA90B12BF158380070FD0C /* Info-visionOS.plist */,
 				4589EF062BE85309001261B9 /* Projections */,
 				459DEFE62BCCE36700DE8245 /* Demos */,
 				459DEFE32BCC760400DE8245 /* Support */,
-				45E5B5E62A8EA04400B46CDC /* Assets.xcassets */,
+				45DA90AA2BF158380070FD0C /* Assets.xcassets */,
 				45E5B5E82A8EA04400B46CDC /* SwiftGraphicsDemos.entitlements */,
+				45DA90C72BF158380070FD0C /* RenderKit-Demos */,
 				45E5B5E92A8EA04400B46CDC /* Preview Content */,
 			);
 			path = SwiftGraphicsDemos;
@@ -332,6 +579,9 @@
 			);
 			mainGroup = 45E5B5D62A8EA04100B46CDC;
 			packageReferences = (
+				45DA91402BF159BC0070FD0C /* XCLocalSwiftPackageReference "Packages/Compute" */,
+				45DA91422BF15A130070FD0C /* XCRemoteSwiftPackageReference "SwiftGLTF" */,
+				45DA91432BF15A290070FD0C /* XCLocalSwiftPackageReference "Packages/DemosSupport" */,
 			);
 			productRefGroup = 45E5B5E02A8EA04100B46CDC /* Products */;
 			projectDirPath = "";
@@ -347,13 +597,20 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				45DA912C2BF158380070FD0C /* Info-visionOS.plist in Resources */,
+				45DA91102BF158380070FD0C /* nouns.txt in Resources */,
 				4589EEFD2BE852D6001261B9 /* Monkey.ply in Resources */,
 				45E5B5EB2A8EA04400B46CDC /* Preview Assets.xcassets in Resources */,
 				4589EEFE2BE852D6001261B9 /* Square.ply in Resources */,
+				45DA90F92BF158380070FD0C /* Cube.glb in Resources */,
+				45DA90F52BF158380070FD0C /* Preview Assets.xcassets in Resources */,
+				45DA91262BF158380070FD0C /* Assets.xcassets in Resources */,
 				4589EEFB2BE852D6001261B9 /* Cube.ply in Resources */,
+				45DA91082BF158380070FD0C /* adjectives.txt in Resources */,
 				4589EEFC2BE852D6001261B9 /* Icosphere.ply in Resources */,
+				45DA90F82BF158380070FD0C /* BarramundiFish.glb in Resources */,
 				4589EEFF2BE852D6001261B9 /* Teapot.ply in Resources */,
-				45E5B5E72A8EA04400B46CDC /* Assets.xcassets in Resources */,
+				45DA91222BF158380070FD0C /* StanfordVolumeData.tar in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -364,38 +621,86 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				45DA91092BF158380070FD0C /* Bindings.swift in Sources */,
 				4589EF082BE85328001261B9 /* ProjectionSupport.swift in Sources */,
+				45DA91232BF158380070FD0C /* VolumeData.swift in Sources */,
+				45DA90F62BF158380070FD0C /* ShaderToy.metal in Sources */,
+				45DA91022BF158380070FD0C /* SimpleSceneMapView.swift in Sources */,
+				45DA91012BF158380070FD0C /* SimpleSceneInspector.swift in Sources */,
+				45DA91272BF158380070FD0C /* ContentView-VisionOS.swift in Sources */,
+				45DA90E52BF158380070FD0C /* SimulationView.swift in Sources */,
+				45DA912E2BF158380070FD0C /* PixelFormatsView.swift in Sources */,
 				455E61DD2BCD7A5000EAC5E0 /* Tools.swift in Sources */,
 				45B268AD2A8FDA060033A727 /* Support.swift in Sources */,
 				45B9D2822BCC28DF001F717E /* QuartzContext.swift in Sources */,
 				45C41A9D2BD76625006FBA7B /* Beziers2.swift in Sources */,
 				45B268AB2A8FDA000033A727 /* LegacyPathEditor.swift in Sources */,
+				45DA90FD2BF158380070FD0C /* SimpleJobsBasedRenderPass.swift in Sources */,
+				45DA91112BF158380070FD0C /* ProjectionsX.swift in Sources */,
 				452BF0462BE7DFF600F6E7D0 /* AngleDemoView.swift in Sources */,
+				45DA91142BF158380070FD0C /* SwiftUI+Support.swift in Sources */,
+				45DA912A2BF158380070FD0C /* DemosApp-VisionOS.swift in Sources */,
+				45DA90E62BF158380070FD0C /* Particles2.swift in Sources */,
+				45DA91032BF158380070FD0C /* SimpleSceneRenderPass.swift in Sources */,
+				45DA90D32BF158380070FD0C /* MovementController.swift in Sources */,
+				45DA910C2BF158380070FD0C /* DisplayLink.swift in Sources */,
+				45DA90D22BF158380070FD0C /* GameControllerWidget.swift in Sources */,
+				45DA90F72BF158380070FD0C /* ShaderToyView.swift in Sources */,
 				4530821C2BE68E7D00F3FBFF /* HobbyCurveView.swift in Sources */,
+				45DA91132BF158380070FD0C /* RKSupport.swift in Sources */,
+				45DA91242BF158380070FD0C /* VolumetricRenderPass.swift in Sources */,
 				4530821A2BE6898300F3FBFF /* Hobby.swift in Sources */,
 				453082222BE6B09600F3FBFF /* Handles.swift in Sources */,
 				456A74322A95531B00E75A8E /* ContentView.swift in Sources */,
+				45DA91062BF158380070FD0C /* UnlitMaterial.swift in Sources */,
 				452D82C72BC9C6F00054218F /* SignedDistanceFields.metal in Sources */,
+				45DA910E2BF158380070FD0C /* Logging.swift in Sources */,
 				453082202BE6954300F3FBFF /* SplineDemoView.swift in Sources */,
+				45DA91052BF158380070FD0C /* TextureManager.swift in Sources */,
 				4589EF042BE85302001261B9 /* Projections.swift in Sources */,
+				45DA912F2BF158380070FD0C /* Scratch.swift in Sources */,
 				4589EEF82BE852D6001261B9 /* Inspectors.swift in Sources */,
+				45DA90E42BF158380070FD0C /* ParticlesRenderJob.swift in Sources */,
+				45DA910F2BF158380070FD0C /* Names.swift in Sources */,
+				45DA91042BF158380070FD0C /* SimpleSceneView.swift in Sources */,
+				45DA91292BF158380070FD0C /* CSGDemoView.swift in Sources */,
 				459DEFEA2BCCF18200DE8245 /* ShaderTestView.swift in Sources */,
+				45DA91302BF158380070FD0C /* ScreenSpaceDemoView.swift in Sources */,
+				45DA90FA2BF158380070FD0C /* FlatMaterial.swift in Sources */,
 				4589EF032BE85302001261B9 /* BallRotationModifier.swift in Sources */,
 				45B9D2802BCC28DF001F717E /* GraphicsContextProtocol.swift in Sources */,
 				4589EEF92BE852D6001261B9 /* MeshView.swift in Sources */,
 				452586342BBCF8B8003E85B4 /* LineDemoView.swift in Sources */,
 				459DEFE22BCC470F00DE8245 /* MetalFunctions.swift in Sources */,
+				45DA91002BF158380070FD0C /* SimpleScene+Demo.swift in Sources */,
+				45DA91072BF158380070FD0C /* YAMesh+Conversion.swift in Sources */,
+				45DA91252BF158380070FD0C /* VolumetricView.swift in Sources */,
+				45DA91322BF158380070FD0C /* TextureView.swift in Sources */,
 				4589EEFA2BE852D6001261B9 /* SoftwareRendererView.swift in Sources */,
 				452D82C92BCA301C0054218F /* SketchView.swift in Sources */,
 				4589EEF62BE852D6001261B9 /* BoxesView.swift in Sources */,
 				45493BE62A8F140A0057FD00 /* my_color_effect.metal in Sources */,
 				459DEFE82BCCE45600DE8245 /* ShapesDemoView.swift in Sources */,
+				45DA90D02BF158380070FD0C /* BallRotationModifierX.swift in Sources */,
+				45DA91152BF158380070FD0C /* TarArchive.swift in Sources */,
+				45DA910A2BF158380070FD0C /* Cache.swift in Sources */,
 				45E5B5E52A8EA04100B46CDC /* CustomStrokeView.swift in Sources */,
 				4589EEF72BE852D6001261B9 /* HalfEdgeView.swift in Sources */,
+				45DA910D2BF158380070FD0C /* Gradient.swift in Sources */,
+				45DA90D12BF158380070FD0C /* FirstPersonInteractiveViewModifier.swift in Sources */,
 				453777EB2BC096BB00E600A6 /* BeziersView.swift in Sources */,
+				45DA912B2BF158380070FD0C /* DemosApp.swift in Sources */,
 				45E5B5E32A8EA04100B46CDC /* SwiftGraphicsDemosApp.swift in Sources */,
+				45DA910B2BF158380070FD0C /* Counters.swift in Sources */,
+				45DA90D42BF158380070FD0C /* MetalCanvas.swift in Sources */,
 				458956972BE8121F00D5AF6E /* Spline.swift in Sources */,
+				45DA91122BF158380070FD0C /* Resources.swift in Sources */,
+				45DA90FF2BF158380070FD0C /* SimpleScene.swift in Sources */,
+				45DA90FB2BF158380070FD0C /* GLTF+YAMesh.swift in Sources */,
+				45DA90E32BF158380070FD0C /* Particles.swift in Sources */,
 				459DEFE52BCC761F00DE8245 /* MyShape.swift in Sources */,
+				45DA90FE2BF158380070FD0C /* SimpleMesh.swift in Sources */,
+				45DA90FC2BF158380070FD0C /* PanoramaRenderJob.swift in Sources */,
 				4530821E2BE692A500F3FBFF /* DemosView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -623,6 +928,28 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		45DA91402BF159BC0070FD0C /* XCLocalSwiftPackageReference "Packages/Compute" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/Compute;
+		};
+		45DA91432BF15A290070FD0C /* XCLocalSwiftPackageReference "Packages/DemosSupport" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/DemosSupport;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		45DA91422BF15A130070FD0C /* XCRemoteSwiftPackageReference "SwiftGLTF" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/schwa/SwiftGLTF";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
 		45DA8F2A2BF157840070FD0C /* Array2D */ = {
