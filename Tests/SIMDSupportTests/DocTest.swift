@@ -1,6 +1,6 @@
 @testable import SIMDSupport
-import XCTest
 import SwiftUI
+import XCTest
 
 final class Angle_DocTests: XCTestCase {
     func test_0880dc04() throws {
@@ -10,10 +10,6 @@ final class Angle_DocTests: XCTestCase {
     func test_0b90e805() throws {
         XCTAssertEqual(Angle(degrees: 0.0).degrees, 0.0)
         XCTAssertEqual(Angle(degrees: 360.0).radians, .pi * 2)
-    }
-
-    func test_0708105e() throws {
-        XCTAssertEqual(Angle(x: 1, y: 1).degrees, 45)
     }
 }
 

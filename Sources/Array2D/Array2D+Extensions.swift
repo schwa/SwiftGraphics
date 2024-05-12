@@ -1,6 +1,6 @@
 import Algorithms
 import Foundation
-import LegacyGeometry
+import GenericGeometryBase
 
 public extension Array2D {
     var rows: [[Element]] {

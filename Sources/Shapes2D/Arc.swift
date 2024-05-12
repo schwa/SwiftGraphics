@@ -89,5 +89,4 @@ public extension Arc {
     func toBezierCurves(maximumArcs: Int = 4) -> [CubicBezierCurve] {
         Arc.arcToBezierCurves(center: center, radius: radius, alpha: phi, beta: phi + theta, maximumArcs: maximumArcs)
     }
-
 }

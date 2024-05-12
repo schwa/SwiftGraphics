@@ -1,3 +1,4 @@
+import MetalSupport
 import ModelIO
 import RealityKit
 

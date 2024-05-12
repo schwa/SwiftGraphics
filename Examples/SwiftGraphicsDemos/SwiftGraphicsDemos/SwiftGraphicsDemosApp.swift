@@ -1,8 +1,8 @@
+import SwiftGraphicsDemosSupport
 import SwiftUI
 
 @main
 struct SwiftGraphicsDemosApp: App {
-
     @Environment(\.openWindow)
     var openWindow
 
@@ -25,9 +25,6 @@ struct SwiftGraphicsDemosApp: App {
 //            }
         }
 
-        Window("Demos", id: "demos") {
-            DemosView()
-        }
+        DemosScene()
     }
 }
-

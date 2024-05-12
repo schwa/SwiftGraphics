@@ -6,7 +6,6 @@ import simd
 // swiftlint:disable function_body_length
 // swiftlint:disable cyclomatic_complexity
 // swiftlint:disable file_length
-// swiftlint:disable function_parameter_count
 
 public extension MTLArgumentDescriptor {
     @available(iOS 17, macOS 14, *)
@@ -134,7 +133,7 @@ public extension MTLIndexType {
         case .uint32:
             MemoryLayout<UInt32>.size
         default:
-            fatal(error: MetalSupportError.illegalValue)
+            fatalError(MetalSupportError.illegalValue)
         }
     }
 }
@@ -206,7 +205,7 @@ public extension MTLPrimitiveType {
         case .triangle:
             3
         default:
-            fatal(error: MetalSupportError.illegalValue)
+            fatalError(MetalSupportError.illegalValue)
         }
     }
 }
@@ -315,27 +314,27 @@ public extension MTLVertexFormat {
             return 4 * MemoryLayout<Int16>.size
         case .half:
             #if arch(arm64)
-                return MemoryLayout<Float16>.size
+            return MemoryLayout<Float16>.size
             #else
-                return MemoryLayout<Int16>.size
+            return MemoryLayout<Int16>.size
             #endif
         case .half2:
             #if arch(arm64)
-                return 2 * MemoryLayout<Float16>.size
+            return 2 * MemoryLayout<Float16>.size
             #else
-                return 2 * MemoryLayout<Int16>.size
+            return 2 * MemoryLayout<Int16>.size
             #endif
         case .half3:
             #if arch(arm64)
-                return 3 * MemoryLayout<Float16>.size
+            return 3 * MemoryLayout<Float16>.size
             #else
-                return 3 * MemoryLayout<Int16>.size
+            return 3 * MemoryLayout<Int16>.size
             #endif
         case .half4:
             #if arch(arm64)
-                return MemoryLayout<Float16>.size
+            return MemoryLayout<Float16>.size
             #else
-                return MemoryLayout<Int16>.size
+            return MemoryLayout<Int16>.size
             #endif
         case .float:
             return MemoryLayout<Float>.size
@@ -437,5 +436,11 @@ public extension MTLVertexFormat {
         default:
             fatalError("Unsupported or unknown MTLDataType.")
         }
+    }
+}
+
+public extension MTLTextureDescriptor {
+    var bytesPerRow: Int? {
+        pixelFormat.size.map { $0 * width }
     }
 }

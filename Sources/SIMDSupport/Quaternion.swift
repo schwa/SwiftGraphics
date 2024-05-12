@@ -36,4 +36,3 @@ public extension simd_quatd {
         self = simd_quatd(real: Double(quaternion.real), imag: SIMD3<Double>(quaternion.imag))
     }
 }
-

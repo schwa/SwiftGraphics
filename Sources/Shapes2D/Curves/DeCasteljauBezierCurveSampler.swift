@@ -2,7 +2,6 @@ import CoreGraphics
 import CoreGraphicsSupport
 
 public struct DeCasteljauBezierCurveSampler {
-
     public init() {
     }
 
@@ -27,7 +26,7 @@ public struct DeCasteljauBezierCurveSampler {
         var points = controlPoints
         while points.count > 1 {
             points = points.windows(ofCount: 2).map { points in
-                return lerp(from: points.first!, to: points.last!, by: t)
+                lerp(from: points.first!, to: points.last!, by: t)
             }
         }
         return points[0]

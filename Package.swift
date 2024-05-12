@@ -1,4 +1,4 @@
-// swift-tools-version: 5.9
+// swift-tools-version: 5.10
 
 import PackageDescription
 
@@ -15,113 +15,173 @@ let package = Package(
         .library(name: "Array2D", targets: ["Array2D"]),
         .library(name: "CoreGraphicsSupport", targets: ["CoreGraphicsSupport"]),
         .library(name: "Earcut", targets: ["Earcut"]),
-        .library(name: "LegacyGeometry", targets: ["LegacyGeometry"]),
+        .library(name: "GenericGeometryBase", targets: ["GenericGeometryBase"]),
         .library(name: "MetalSupport", targets: ["MetalSupport"]),
         .library(name: "MetalSupportUnsafeConformances", targets: ["MetalSupportUnsafeConformances"]),
+        .library(name: "Projection", targets: ["Projection"]),
         .library(name: "Raster", targets: ["Raster"]),
-        .library(name: "SIMDSupport", targets: ["SIMDSupport"]),
-        .library(name: "SIMDSupportUnsafeConformances", targets: ["SIMDSupportUnsafeConformances"]),
-        .library(name: "Sketches", targets: ["Sketches"]),
+        .library(name: "RenderKit", targets: ["RenderKit"]),
+        .library(name: "RenderKitShaders", targets: ["RenderKitShaders"]),
         .library(name: "Shapes2D", targets: ["Shapes2D"]),
         .library(name: "Shapes3D", targets: ["Shapes3D"]),
-
-        .library(name: "Projection", targets: ["Projection"]),
+        .library(name: "SIMDSupport", targets: ["SIMDSupport"]),
+        .library(name: "SIMDSupportUnsafeConformances", targets: ["SIMDSupportUnsafeConformances"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-algorithms", from: "1.0.0"),
-        .package(url: "https://github.com/schwa/ApproximateEquality", from: "0.2.1"),
+        .package(url: "https://github.com/apple/swift-algorithms", from: "1.1.0"),
         .package(url: "https://github.com/apple/swift-argument-parser", from: "1.3.0"),
-//        .package(url: "https://github.com/ordo-one/package-benchmark", .upToNextMajor(from: "1.4.0")),
+        .package(url: "https://github.com/apple/swift-async-algorithms", from: "0.1.0"),
+        .package(url: "https://github.com/schwa/ApproximateEquality", from: "0.2.1"),
+        .package(url: "https://github.com/schwa/Everything", branch: "jwight/downsizing"),
+        .package(url: "https://github.com/schwa/MetalCompilerPlugin", from: "0.0.2"),
+        .package(url: "https://github.com/schwa/swiftfields", from: "0.1.3"),
+        .package(url: "https://github.com/schwa/swiftformats", from: "0.3.3"),
+        //        .package(url: "https://github.com/ordo-one/package-benchmark", .upToNextMajor(from: "1.4.0")),
     ],
     targets: [
-        .target(name: "Array2D",
+        // MARK: Array2D
+        .target(
+            name: "Array2D",
             dependencies: [
-                "CoreGraphicsSupport",
-                "LegacyGeometry",
                 .product(name: "Algorithms", package: "swift-algorithms"),
+                "CoreGraphicsSupport",
+                "GenericGeometryBase",
             ]
         ),
+
+        // MARK: CoreGraphicsSupport
         .target(name: "CoreGraphicsSupport"),
-        .target(name: "Earcut",
-            dependencies: ["earcut_cpp"],
-            swiftSettings: [.interoperabilityMode(.Cxx)]
+
+        // MARK: Earcut
+        .target(
+            name: "Earcut", dependencies: [
+                "earcut_cpp",
+            ], swiftSettings: [.interoperabilityMode(.Cxx)]
         ),
         .target(name: "earcut_cpp", exclude: ["earcut.hpp/test", "earcut.hpp/glfw"]),
-        .target(name: "LegacyGeometry", dependencies: [
-            "ApproximateEquality",
-            "CoreGraphicsSupport",
+        .target(
+            name: "GenericGeometryBase",
+            dependencies: [
+                "ApproximateEquality",
+                "CoreGraphicsSupport",
+            ]
+        ),
+        .testTarget(
+            name: "EarcutTests", dependencies: [
+                "Earcut",
+            ], swiftSettings: [.interoperabilityMode(.Cxx)]
+        ),
+
+        // MARK: MetalSupport
+        .target(name: "MetalSupport", dependencies: [
+            "SIMDSupport",
         ]),
-        .target(name: "MetalSupport"),
         .target(name: "MetalSupportUnsafeConformances"),
-        .target(name: "Raster",
+        .target(
+            name: "Raster",
             dependencies: [
                 .product(name: "Algorithms", package: "swift-algorithms"),
-                "LegacyGeometry",
                 "CoreGraphicsSupport",
+                "GenericGeometryBase",
                 "Shapes2D",
             ]
         ),
-        .target(name: "SIMDSupport",
+
+        // MARK: Projection
+        .target(name: "Projection", dependencies: [
+            "SIMDSupport",
+        ]),
+
+        // MARK: RenderKit
+        .target(
+            name: "RenderKit",
+            dependencies: [
+                .product(name: "Algorithms", package: "swift-algorithms"),
+                .product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
+                .product(name: "Everything", package: "Everything"),
+                .product(name: "SwiftFields", package: "swiftfields"),
+                .product(name: "SwiftFormats", package: "swiftformats"),
+                "CoreGraphicsSupport",
+                "MetalSupport",
+                "MetalSupportUnsafeConformances",
+                "RenderKitShaders",
+                "Shapes2D",
+                "Shapes3D",
+                "SIMDSupport",
+            ],
+            resources: [
+                .process("VisionOS/Assets.xcassets"),
+            ],
+            swiftSettings: [
+                .enableExperimentalFeature("VariadicGenerics"),
+                .enableUpcomingFeature("StrictConcurrency"),
+                .interoperabilityMode(.Cxx),
+            ]
+        ),
+        .target(
+            name: "RenderKitShaders",
+            plugins: [
+                // .plugin(name: "MetalCompilerPlugin", package: "MetalCompilerPlugin")
+            ]
+        ),
+        .testTarget(
+            name: "RenderKitTests",
+            dependencies: [
+                "RenderKit",
+            ],
+            swiftSettings: [.interoperabilityMode(.Cxx)]
+        ),
+
+        // MARK: Shapes2D
+        .target(
+            name: "Shapes2D",
+            dependencies: [
+                .product(name: "Algorithms", package: "swift-algorithms"),
+                .product(name: "ApproximateEquality", package: "ApproximateEquality"),
+                .product(name: "ApproximateEqualityMacros", package: "ApproximateEquality"),
+                "CoreGraphicsSupport",
+                "GenericGeometryBase",
+                "SIMDSupport",
+            ]
+        ),
+        .testTarget(name: "Shapes2DTests", dependencies: [
+            "Shapes2D",
+        ]),
+
+        // MARK: Shapes3D
+        .target(
+            name: "Shapes3D",
+            dependencies: [
+                .product(name: "Algorithms", package: "swift-algorithms"),
+                "CoreGraphicsSupport",
+                "Earcut",
+                "MetalSupport",
+                "Shapes2D",
+                "SIMDSupport",
+            ],
+            swiftSettings: [.interoperabilityMode(.Cxx)]
+        ),
+
+        // MARK: SIMDSupport
+        .target(
+            name: "SIMDSupport",
             dependencies: [
                 .product(name: "ApproximateEquality", package: "ApproximateEquality"),
             ]
         ),
         .target(name: "SIMDSupportUnsafeConformances"),
-        .target(name: "Sketches",
-            dependencies: [
-                .product(name: "ApproximateEquality", package: "ApproximateEquality"),
-                "CoreGraphicsSupport",
-                "LegacyGeometry",
-                "SIMDSupport",
-                "Shapes2D",
-            ]
-        ),
-        .target(name: "Shapes2D",
-            dependencies: [
-                .product(name: "ApproximateEquality", package: "ApproximateEquality"),
-                .product(name: "ApproximateEqualityMacros", package: "ApproximateEquality"),
-                "CoreGraphicsSupport",
-                "SIMDSupport",
-                "LegacyGeometry",
-                .product(name: "Algorithms", package: "swift-algorithms"),
-            ]
-        ),
+        .testTarget(name: "SIMDSupportTests", dependencies: [
+            "SIMDSupport",
+        ]),
 
-        .testTarget(name: "EarcutTests", dependencies: ["Earcut"], swiftSettings: [.interoperabilityMode(.Cxx)]),
-        .testTarget(name: "SIMDSupportTests", dependencies: ["SIMDSupport"]),
-        .testTarget(name: "SketchesTests", dependencies: ["Sketches"]),
-        .testTarget(name: "Shapes2DTests", dependencies: ["Shapes2D"]),
-
-        .target(name: "Projection", dependencies: ["SIMDSupport"]),
-        .target(name: "Shapes3D",
+        // MARK: TrivialMeshCLI
+        .executableTarget(
+            name: "TrivialMeshCLI",
             dependencies: [
-                "Earcut",
-                "SIMDSupport",
-                "CoreGraphicsSupport",
-                .product(name: "Algorithms", package: "swift-algorithms"),
-            ],
-            swiftSettings: [.interoperabilityMode(.Cxx)]
-        ),
-        .executableTarget(name: "TrivialMeshCLI",
-            dependencies: [
+                .product(name: "ArgumentParser", package: "swift-argument-parser"),
                 "Shapes3D",
-                .product(name: "ArgumentParser", package: "swift-argument-parser")
             ],
             swiftSettings: [.interoperabilityMode(.Cxx)]
         ),
-//        .executableTarget(
-//            name: "Shapes2DBenchmarkTarget",
-//            dependencies: [
-//                "Shapes2D",
-//                "CoreGraphicsSupport",
-//                .product(name: "Benchmark", package: "package-benchmark"),
-//            ],
-//            path: "Benchmarks/Shapes2DBenchmarkTarget",
-//            plugins: [
-//                .plugin(name: "BenchmarkPlugin", package: "package-benchmark")
-//            ]
-//        ),
-
     ]
 )
-

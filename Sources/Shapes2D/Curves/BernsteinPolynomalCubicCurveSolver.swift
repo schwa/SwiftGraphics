@@ -10,7 +10,8 @@ public struct BernsteinPolynomalCubicCurveSolver {
         [1, 0, 0, 0],
         [-3, 3, 0, 0],
         [3, -6, 3, 0],
-        [-1, 3, -3, 1])
+        [-1, 3, -3, 1]
+    )
     )
 
     // Use tf = 1/2
@@ -18,7 +19,8 @@ public struct BernsteinPolynomalCubicCurveSolver {
         [0, 2, 0, 0],
         [-1, 0, 1, 0],
         [2, -5, 4, -1],
-        [-1, 3, -3, 1])
+        [-1, 3, -3, 1]
+    )
     )
 
     // Use tf = 1/6
@@ -26,7 +28,8 @@ public struct BernsteinPolynomalCubicCurveSolver {
         [1, 4, 1, 0],
         [-3, 0, 3, 0],
         [3, -6, 3, 0],
-        [-1, 3, -3, 1])
+        [-1, 3, -3, 1]
+    )
     )
 
     public init(controlPoints: (Double, Double, Double, Double), m: simd_double4x4 = Self.bezier, tf: Double = 1) {
@@ -38,7 +41,7 @@ public struct BernsteinPolynomalCubicCurveSolver {
     }
 
     public func sample_cubic_matrix(t: Double) -> Double {
-        let t = SIMD4<Double>(1, t, t*t, t*t*t) * tf
+        let t = SIMD4<Double>(1, t, t * t, t * t * t) * tf
         return (cm * t).sum()
     }
 
@@ -47,9 +50,9 @@ public struct BernsteinPolynomalCubicCurveSolver {
         let t² = t * t
         let t³ = t² * t
         let P = P₀ * (-t³ + 3 * t² - 3 * t + 1)
-        + P₁ * (3 * t³ - 6 * t² + 3 * t)
-        + P₂ * (-3 * t³ + 3 * t²)
-        + P₃ * t³
+            + P₁ * (3 * t³ - 6 * t² + 3 * t)
+            + P₂ * (-3 * t³ + 3 * t²)
+            + P₃ * t³
         return P
     }
 }

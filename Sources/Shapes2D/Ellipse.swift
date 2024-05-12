@@ -107,10 +107,10 @@ public extension Ellipse {
     }
 }
 
-// TODO: 
+// TODO:
 public extension Ellipse {
     // From http://spencermortensen.com/articles/bezier-circle/ (via @iamdavidhart)
-    static let c: Double = 0.551_915_024_494
+    static let c: Double = 0.551915024494
 
     func toBezierCurves(c: Double = Ellipse.c) -> (CubicBezierCurve, CubicBezierCurve, CubicBezierCurve, CubicBezierCurve) {
         let t = CGAffineTransform.rotation(rotation)

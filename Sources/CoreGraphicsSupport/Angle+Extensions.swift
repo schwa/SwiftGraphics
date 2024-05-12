@@ -98,12 +98,11 @@ extension Angle: Strideable {
 }
 
 public extension Angle {
-
-    public static func / (lhs: Self, rhs: Self) -> Self {
+    static func / (lhs: Self, rhs: Self) -> Self {
         .init(radians: lhs.radians / rhs.radians)
     }
 
-    public static func /= (lhs: inout Self, rhs: Self) {
+    static func /= (lhs: inout Self, rhs: Self) {
         lhs.radians /= rhs.radians
     }
 
@@ -114,6 +113,6 @@ public extension Angle {
 
 // MARK: -
 
-func abs(_ value: Angle) -> Angle {
+public func abs(_ value: Angle) -> Angle {
     .radians(Swift.abs(value.radians))
 }

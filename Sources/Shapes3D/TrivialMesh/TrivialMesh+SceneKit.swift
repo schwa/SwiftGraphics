@@ -1,4 +1,5 @@
 import Foundation
+import MetalSupport
 import SceneKit
 
 public extension SCNNode {

@@ -6,17 +6,17 @@ import simd
 // https://math.stackexchange.com/questions/237369/given-this-transformation-matrix-how-do-i-decompose-it-into-translation-rotati
 // https://github.com/g-truc/glm/blob/b3f87720261d623986f164b2a7f6a0a938430271/glm/gtx/matrix_decompose.inl
 
-func isApproximatelyEqual(_ lhs: SIMD3<Float>, _ rhs: SIMD3<Float>, epsilon: Float) -> Bool {
+public func isApproximatelyEqual(_ lhs: SIMD3<Float>, _ rhs: SIMD3<Float>, epsilon: Float) -> Bool {
     let difference = abs(lhs - rhs)
     return (0 ..< 3).allSatisfy({ difference[$0] < epsilon })
 }
 
-func isApproximatelyEqual(_ lhs: simd_float3x3, _ rhs: simd_float3x3, epsilon: Float) -> Bool {
-    zip(lhs.scalars, lhs.scalars).allSatisfy({ abs($0 - $1) < epsilon })
+public func isApproximatelyEqual(_ lhs: simd_float3x3, _ rhs: simd_float3x3, epsilon: Float) -> Bool {
+    zip(lhs.scalars, rhs.scalars).allSatisfy({ abs($0 - $1) < epsilon })
 }
 
-func isApproximatelyEqual(_ lhs: simd_float4x4, _ rhs: simd_float4x4, epsilon: Float) -> Bool {
-    zip(lhs.scalars, lhs.scalars).allSatisfy({ abs($0 - $1) < epsilon })
+public func isApproximatelyEqual(_ lhs: simd_float4x4, _ rhs: simd_float4x4, epsilon: Float) -> Bool {
+    zip(lhs.scalars, rhs.scalars).allSatisfy({ abs($0 - $1) < epsilon })
 }
 
 public extension simd_float4x4 {

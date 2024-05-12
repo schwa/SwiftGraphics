@@ -7,14 +7,12 @@ build-package:
     swift build --configuration release
     swift test
 
-build-ProjectionDemo:
-    xcodebuild -scheme ProjectionDemo -project Examples/ProjectionDemo/ProjectionDemo.xcodeproj -destination 'platform=OS X,arch=x86_64' clean build
-    xcodebuild -scheme ProjectionDemo -project Examples/ProjectionDemo/ProjectionDemo.xcodeproj -destination 'generic/platform=iOS' clean build
+build-examples:
+    xcodebuild -scheme SwiftGraphicsDemos -project Examples/SwiftGraphicsDemos/SwiftGraphicsDemos.xcodeproj clean
+    xcodebuild -scheme SwiftGraphicsDemos -project Examples/SwiftGraphicsDemos/SwiftGraphicsDemos.xcodeproj -destination 'platform=OS X' -skipPackagePluginValidation build
+    xcodebuild -scheme SwiftGraphicsDemos -project Examples/SwiftGraphicsDemos/SwiftGraphicsDemos.xcodeproj -destination 'generic/platform=iOS' -skipPackagePluginValidation  build
 
-build-VectorLaboratory:
-    xcodebuild -scheme VectorLaboratory -project Examples/VectorLaboratory/VectorLaboratory.xcodeproj build
-
-build-all: build-package build-ProjectionDemo build-VectorLaboratory
+build-all: build-package build-examples
 
 lint-fix:
     swiftlint lint --fix

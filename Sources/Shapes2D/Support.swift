@@ -1,9 +1,9 @@
-import Foundation
+import ApproximateEquality
 import CoreGraphics
 import CoreGraphicsSupport
-import ApproximateEquality
+import Foundation
 
-internal extension ComparisonResult {
+extension ComparisonResult {
     static func compare<T: Comparable>(_ lhs: T, _ rhs: T) -> ComparisonResult {
         if lhs == rhs {
             .orderedSame

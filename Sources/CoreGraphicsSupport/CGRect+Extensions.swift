@@ -3,7 +3,6 @@ import CoreGraphics
 // MARK: CGRect
 
 public extension CGRect {
-
     init(size: CGSize) {
         self.init(origin: .zero, size: size)
     }
@@ -123,10 +122,8 @@ public extension CGRect {
     }
 }
 
-
 // TODO: Validate all of these.
 public extension CGRect {
-
     init(_ origin: CGPoint) {
         self = CGRect(origin: origin, size: .zero)
     }
