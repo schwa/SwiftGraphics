@@ -16,12 +16,6 @@ public enum RenderKitError: Error {
     case generic(String)
 }
 
-extension CGSize {
-    static func / (lhs: CGFloat, rhs: CGSize) -> CGSize {
-        return CGSize(width: lhs / rhs.width, height: lhs / rhs.height)
-    }
-}
-
 public protocol Labeled {
     var label: String? { get }
 }
@@ -331,14 +325,23 @@ public extension PixelFormat {
     }
 }
 
-public extension MTLTextureDescriptor {
-    var bytesPerRow: Int? {
-        return pixelFormat.size.map { $0 * width }
-    }
-}
-
 public func align(_ value: Int, alignment: Int) -> Int {
     return (value + alignment - 1) / alignment * alignment
+}
+
+
+public extension MTLPixelFormat {
+    init?(from pixelFormat: PixelFormat) {
+        let colorSpaceName = pixelFormat.colorSpace!.name! as String
+        let bitmapInfo = CGBitmapInfo(rawValue: pixelFormat.bitmapInfo.rawValue & CGBitmapInfo.byteOrderMask.rawValue)
+        switch (pixelFormat.numberOfComponents, pixelFormat.bitsPerComponent, pixelFormat.useFloatComponents, bitmapInfo, pixelFormat.alphaInfo, colorSpaceName) {
+        case (3, 8, false, .byteOrder32Little, .premultipliedLast, "kCGColorSpaceDeviceRGB"):
+            self = .bgra8Unorm
+        default:
+            print("NO MATCH")
+            return nil
+        }
+    }
 }
 
 public extension MTLTexture {
@@ -375,42 +378,5 @@ public extension MTLDevice {
         }
         texture.replace(region: MTLRegion(origin: .zero, size: MTLSize(image.width, image.height, 1)), mipmapLevel: 0, slice: 0, withBytes: data, bytesPerRow: bitmapDefinition.bytesPerRow, bytesPerImage: bitmapDefinition.bytesPerRow * image.height)
         return texture
-    }
-}
-
-public extension BitmapDefinition {
-    init?(from image: CGImage) {
-        guard let colorSpace = image.colorSpace else {
-            return nil
-        }
-        let pixelFormat = PixelFormat(bitsPerComponent: image.bitsPerComponent, numberOfComponents: colorSpace.numberOfComponents, alphaInfo: image.alphaInfo, byteOrder: image.byteOrderInfo, colorSpace: colorSpace)
-        self = .init(width: image.width, height: image.height, bytesPerRow: image.bytesPerRow, pixelFormat: pixelFormat)
-    }
-}
-
-public extension MTLPixelFormat {
-    init?(from pixelFormat: PixelFormat) {
-        let colorSpaceName = pixelFormat.colorSpace!.name! as String
-        let bitmapInfo = CGBitmapInfo(rawValue: pixelFormat.bitmapInfo.rawValue & CGBitmapInfo.byteOrderMask.rawValue)
-        switch (pixelFormat.numberOfComponents, pixelFormat.bitsPerComponent, pixelFormat.useFloatComponents, bitmapInfo, pixelFormat.alphaInfo, colorSpaceName) {
-        case (3, 8, false, .byteOrder32Little, .premultipliedLast, "kCGColorSpaceDeviceRGB"):
-            self = .bgra8Unorm
-        default:
-            print("NO MATCH")
-            return nil
-        }
-    }
-}
-
-public extension CGContext {
-    static func bitmapContext(with image: CGImage) -> CGContext? {
-        guard let bitmapDefinition = BitmapDefinition(from: image) else {
-            return nil
-        }
-        guard let context = CGContext.bitmapContext(definition: bitmapDefinition) else {
-            return nil
-        }
-        context.draw(image, in: CGRect(origin: .zero, size: image.size))
-        return context
     }
 }

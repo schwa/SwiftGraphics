@@ -45,3 +45,26 @@ public extension CGContext {
         return context
     }
 }
+
+public extension CGContext {
+    static func bitmapContext(with image: CGImage) -> CGContext? {
+        guard let bitmapDefinition = BitmapDefinition(from: image) else {
+            return nil
+        }
+        guard let context = CGContext.bitmapContext(definition: bitmapDefinition) else {
+            return nil
+        }
+        context.draw(image, in: CGRect(origin: .zero, size: image.size))
+        return context
+    }
+}
+
+public extension BitmapDefinition {
+    init?(from image: CGImage) {
+        guard let colorSpace = image.colorSpace else {
+            return nil
+        }
+        let pixelFormat = PixelFormat(bitsPerComponent: image.bitsPerComponent, numberOfComponents: colorSpace.numberOfComponents, alphaInfo: image.alphaInfo, byteOrder: image.byteOrderInfo, colorSpace: colorSpace)
+        self = .init(width: image.width, height: image.height, bytesPerRow: image.bytesPerRow, pixelFormat: pixelFormat)
+    }
+}

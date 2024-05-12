@@ -43,7 +43,7 @@ struct GameControllerWidget: View {
                         // TODO: FIXME
 //                        for await device in notificationCenter.notifications(named: .GCControllerDidConnect).compactMap(\.object).cast(to: GCDevice.self) {
 //                            self?.devices.insert(DeviceBox(device: device!))
-//                        }
+////                        }
                     }
                     group.addTask { [weak self] in
                         // TODO: FIXME
