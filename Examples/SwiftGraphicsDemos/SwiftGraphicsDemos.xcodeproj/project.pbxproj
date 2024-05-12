@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 60;
+	objectVersion = 56;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -216,6 +216,8 @@
 		45DA90B52BF158380070FD0C /* ScreenSpaceDemoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScreenSpaceDemoView.swift; sourceTree = "<group>"; };
 		45DA90B72BF158380070FD0C /* TextureView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextureView.swift; sourceTree = "<group>"; };
 		45DA91412BF15A020070FD0C /* DemosSupport */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = DemosSupport; path = Packages/DemosSupport; sourceTree = "<group>"; };
+		45DA91442BF15A850070FD0C /* Compute */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Compute; sourceTree = "<group>"; };
+		45DA91452BF15A850070FD0C /* DemosSupport */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = DemosSupport; sourceTree = "<group>"; };
 		45E5B5DF2A8EA04100B46CDC /* SwiftGraphicsDemos.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftGraphicsDemos.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		45E5B5E22A8EA04100B46CDC /* SwiftGraphicsDemosApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftGraphicsDemosApp.swift; sourceTree = "<group>"; };
 		45E5B5E42A8EA04100B46CDC /* CustomStrokeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomStrokeView.swift; sourceTree = "<group>"; };
@@ -463,6 +465,8 @@
 		45DFB9082BF155E70083D842 /* Packages */ = {
 			isa = PBXGroup;
 			children = (
+				45DA91442BF15A850070FD0C /* Compute */,
+				45DA91452BF15A850070FD0C /* DemosSupport */,
 				45DA8F282BF157710070FD0C /* SwiftGraphics */,
 			);
 			path = Packages;
@@ -579,9 +583,7 @@
 			);
 			mainGroup = 45E5B5D62A8EA04100B46CDC;
 			packageReferences = (
-				45DA91402BF159BC0070FD0C /* XCLocalSwiftPackageReference "Packages/Compute" */,
 				45DA91422BF15A130070FD0C /* XCRemoteSwiftPackageReference "SwiftGLTF" */,
-				45DA91432BF15A290070FD0C /* XCLocalSwiftPackageReference "Packages/DemosSupport" */,
 			);
 			productRefGroup = 45E5B5E02A8EA04100B46CDC /* Products */;
 			projectDirPath = "";
@@ -928,17 +930,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCLocalSwiftPackageReference section */
-		45DA91402BF159BC0070FD0C /* XCLocalSwiftPackageReference "Packages/Compute" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = Packages/Compute;
-		};
-		45DA91432BF15A290070FD0C /* XCLocalSwiftPackageReference "Packages/DemosSupport" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = Packages/DemosSupport;
-		};
-/* End XCLocalSwiftPackageReference section */
 
 /* Begin XCRemoteSwiftPackageReference section */
 		45DA91422BF15A130070FD0C /* XCRemoteSwiftPackageReference "SwiftGLTF" */ = {

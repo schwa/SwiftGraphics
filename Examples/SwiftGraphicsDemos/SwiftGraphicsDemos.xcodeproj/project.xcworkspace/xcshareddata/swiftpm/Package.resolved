@@ -28,6 +28,15 @@
       }
     },
     {
+      "identity" : "simd-support",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/schwa/SIMD-Support",
+      "state" : {
+        "revision" : "b163c8951dca3089d69f4bcc3febe60d178965ac",
+        "version" : "0.2.1"
+      }
+    },
+    {
       "identity" : "swift-algorithms",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-algorithms.git",
@@ -97,6 +106,15 @@
       "state" : {
         "revision" : "1cc4b51e9e4cead543979e85e5524e0282e7ff29",
         "version" : "0.3.4"
+      }
+    },
+    {
+      "identity" : "swiftgltf",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/schwa/SwiftGLTF",
+      "state" : {
+        "revision" : "ba0e399892493418c35afb7a77da8bd61d089888",
+        "version" : "1.0.0"
       }
     }
   ],
