@@ -2,6 +2,8 @@
 
 import PackageDescription
 
+// TODO: This is a mess :-)
+
 let package = Package(
     name: "SwiftGraphics",
     platforms: [

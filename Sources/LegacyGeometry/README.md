@@ -1,0 +1,3 @@
+Rename to "GenericGeometry" / "GenericGeometryBase"
+
+
