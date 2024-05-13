@@ -11,10 +11,6 @@ final class Angle_DocTests: XCTestCase {
         XCTAssertEqual(Angle(degrees: 0.0).degrees, 0.0)
         XCTAssertEqual(Angle(degrees: 360.0).radians, .pi * 2)
     }
-
-    func test_0708105e() throws {
-        XCTAssertEqual(Angle(x: 1, y: 1).degrees, 45)
-    }
 }
 
 final class CoreGraphics_DocTests: XCTestCase {

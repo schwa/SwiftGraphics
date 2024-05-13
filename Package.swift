@@ -43,8 +43,6 @@ let package = Package(
         .package(url: "https://github.com/schwa/swiftfields", from: "0.1.3"),
         .package(url: "https://github.com/schwa/swiftformats", from: "0.3.3"),
         //        .package(url: "https://github.com/ordo-one/package-benchmark", .upToNextMajor(from: "1.4.0")),
-        // .package(url: "https://github.com/schwa/StreamBuilder", branch: "main"),
-
     ],
     targets: [
         .target(name: "Array2D",
@@ -132,10 +130,8 @@ let package = Package(
                 .product(name: "SwiftFormats", package: "swiftformats"),
                 .product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
                 "RenderKitShaders",
-                //                .product(name: "StreamBuilder", package: "StreamBuilder"),
             ],
             resources: [
-                //                .process("Media.xcassets"),
                 .process("VisionOS/Assets.xcassets"),
             ],
             swiftSettings: [
@@ -147,7 +143,7 @@ let package = Package(
         .target(
             name: "RenderKitShaders",
             plugins: [
-                //                .plugin(name: "MetalCompilerPlugin", package: "MetalCompilerPlugin")
+                // .plugin(name: "MetalCompilerPlugin", package: "MetalCompilerPlugin")
             ]
         ),
         .target(
@@ -160,20 +156,8 @@ let package = Package(
         ),
         .testTarget(
             name: "RenderKitTests",
-            dependencies: ["RenderKit", "RenderKitScratch"]
+            dependencies: ["RenderKit", "RenderKitScratch"],
+            swiftSettings: [.interoperabilityMode(.Cxx)]
         ),
-
-        //        .executableTarget(
-        //            name: "Shapes2DBenchmarkTarget",
-        //            dependencies: [
-        //                "Shapes2D",
-        //                "CoreGraphicsSupport",
-        //                .product(name: "Benchmark", package: "package-benchmark"),
-        //            ],
-        //            path: "Benchmarks/Shapes2DBenchmarkTarget",
-        //            plugins: [
-        //                .plugin(name: "BenchmarkPlugin", package: "package-benchmark")
-        //            ]
-        //        ),
     ]
 )
