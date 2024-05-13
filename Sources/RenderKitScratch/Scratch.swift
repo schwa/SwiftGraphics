@@ -3,11 +3,7 @@ import RenderKitShaders
 import simd
 import SIMDSupport
 
-extension SimpleVertex {
-    init(position: SIMD3<Float>, normal: SIMD3<Float>) {
-        self.init(position: position, normal: normal, textureCoordinate: .zero)
-    }
-}
+
 
 extension Plane: CustomStringConvertible {
     public var description: String {

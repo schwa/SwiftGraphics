@@ -1,5 +1,6 @@
 import Foundation
 import SceneKit
+import MetalSupport
 
 public extension SCNNode {
     convenience init(trivialMesh mesh: TrivialMesh<SimpleVertex>, color: CGColor) throws {

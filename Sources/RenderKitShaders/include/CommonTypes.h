@@ -8,17 +8,6 @@ struct SimpleVertex {
     float2 textureCoordinate [[attribute(2)]];
 };
 #else
-typedef struct {
-    float x;
-    float y;
-    float z;
-} PackedFloat3;
-
-struct SimpleVertex {
-    PackedFloat3 packedPosition;
-    PackedFloat3 packedNormal;
-    float2 textureCoordinate;
-};
 #endif
 
 struct ModelTransforms {

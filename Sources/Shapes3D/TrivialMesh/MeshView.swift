@@ -21,7 +21,7 @@
     }
 
     #Preview {
-        MeshView(mesh: TrivialMesh(cylinder: Cylinder(radius: 0.1, depth: 0.01), segments: 24))
+        MeshView(mesh: TrivialMesh(cylinder: Cylinder3D(radius: 0.1, depth: 0.01), segments: 24))
         // MeshView(mesh: TrivialMesh(circleRadius: 1, segments: 24))
     }
 #endif

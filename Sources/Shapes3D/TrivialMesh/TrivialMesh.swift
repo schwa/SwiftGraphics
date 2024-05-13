@@ -1,5 +1,6 @@
 import Algorithms
 import simd
+import MetalSupport
 
 // TODO: Rename to "TriangleMesh"
 public struct TrivialMesh<Vertex> where Vertex: Equatable {
@@ -60,7 +61,7 @@ public extension TrivialMesh where Vertex: VertexLike {
         self.init(triangles: triangles, optimizing: optimizing)
     }
 
-    init(triangles: [Triangle<Vertex>], optimizing: Bool = true) {
+    init(triangles: [Triangle3D<Vertex>], optimizing: Bool = true) {
         self.init()
         for triangle in triangles {
             append(vertex: triangle.vertices.0, optimizing: optimizing)
@@ -74,9 +75,9 @@ public extension TrivialMesh where Vertex: VertexLike {
 
 public extension TrivialMesh where Vertex == SIMD3<Float> {
     // TODO: We can replace this with an extension.
-    var boundingBox: Box<SIMD3<Float>> {
+    var boundingBox: Box3D<SIMD3<Float>> {
         guard let first = vertices.first else {
-            return Box(min: .zero, max: .zero)
+            return Box3D(min: .zero, max: .zero)
         }
         let min = vertices.dropFirst().reduce(into: first) { result, vertex in
             result.x = Swift.min(result.x, vertex.x)
@@ -88,7 +89,7 @@ public extension TrivialMesh where Vertex == SIMD3<Float> {
             result.y = Swift.max(result.y, vertex.y)
             result.z = Swift.max(result.z, vertex.z)
         }
-        return Box(min: min, max: max)
+        return Box3D(min: min, max: max)
     }
 
     func flipped() -> Self {
@@ -106,9 +107,9 @@ public extension TrivialMesh where Vertex == SIMD3<Float> {
 }
 
 public extension TrivialMesh where Vertex == SimpleVertex {
-    var boundingBox: Box<SIMD3<Float>> {
+    var boundingBox: Box3D<SIMD3<Float>> {
         guard let first = vertices.first?.position else {
-            return Box(min: .zero, max: .zero)
+            return Box3D(min: .zero, max: .zero)
         }
         let min = vertices.dropFirst().reduce(into: first) { result, vertex in
             result.x = Swift.min(result.x, vertex.position.x)
@@ -120,7 +121,7 @@ public extension TrivialMesh where Vertex == SimpleVertex {
             result.y = Swift.max(result.y, vertex.position.y)
             result.z = Swift.max(result.z, vertex.position.z)
         }
-        return Box(min: min, max: max)
+        return Box3D(min: min, max: max)
     }
 
     func flipped() -> Self {
@@ -177,13 +178,13 @@ public extension TrivialMesh where Vertex == SimpleVertex {
         return true
     }
 
-    var triangles: [Triangle<SimpleVertex>] {
+    var triangles: [Triangle3D<SimpleVertex>] {
         indices.chunks(ofCount: 3).map { indices in
             let indices = indices.map { Int($0) }
             let p0 = vertices[indices[0]]
             let p1 = vertices[indices[1]]
             let p2 = vertices[indices[2]]
-            return Triangle(vertices: (p0, p1, p2))
+            return Triangle3D(vertices: (p0, p1, p2))
         }
     }
 

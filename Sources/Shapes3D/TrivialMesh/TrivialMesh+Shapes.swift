@@ -1,8 +1,9 @@
 import Foundation
 import simd
+import MetalSupport
 
 public extension TrivialMesh where Vertex == SimpleVertex {
-    init(cylinder: Cylinder, segments: Int) {
+    init(cylinder: Cylinder3D, segments: Int) {
         let halfDepth = cylinder.depth / 2
         let circle = TrivialMesh(circleRadius: cylinder.radius, segments: segments)
         let top = circle.offset(by: [0, 0, halfDepth])

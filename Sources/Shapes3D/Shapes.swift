@@ -26,7 +26,7 @@ import simd
 
 // MARK: -
 
-public struct Box<Point: PointLike> {
+public struct Box3D<Point: PointLike> {
     public var min: Point
     public var max: Point
 
@@ -38,7 +38,7 @@ public struct Box<Point: PointLike> {
 
 // MARK: -
 
-public struct Cylinder {
+public struct Cylinder3D {
     public var radius: Float
     public var depth: Float
 
@@ -50,7 +50,7 @@ public struct Cylinder {
 
 // MARK: -
 
-public struct Line<Point: PointLike> {
+public struct Line3D<Point: PointLike> {
     public var point: Point
     public var direction: Point // TODO: Vector not Point.
 
@@ -61,15 +61,15 @@ public struct Line<Point: PointLike> {
     }
 }
 
-public extension Line {
-    init(_ segment: LineSegment<Point>) {
+public extension Line3D {
+    init(_ segment: LineSegment3D<Point>) {
         self.init(point: segment.start, direction: segment.direction)
     }
 }
 
 // MARK: -
 
-public struct LineSegment<Point: PointLike> {
+public struct LineSegment3D<Point: PointLike> {
     public var start: Point
     public var end: Point
 
@@ -79,7 +79,7 @@ public struct LineSegment<Point: PointLike> {
     }
 }
 
-public extension LineSegment {
+public extension LineSegment3D {
     var direction: Point {
         (end - start).normalized
     }
@@ -104,7 +104,7 @@ public extension LineSegment {
 // MARK: -
 
 // TODO: Make generic so we can have floats & points
-public struct Plane<Scalar> where Scalar: SIMDScalar & FloatingPoint {
+public struct Plane3D<Scalar> where Scalar: SIMDScalar & FloatingPoint {
     public var normal: SIMD3<Scalar>
     public var w: Scalar
 
@@ -114,7 +114,7 @@ public struct Plane<Scalar> where Scalar: SIMDScalar & FloatingPoint {
     }
 }
 
-public extension Plane where Scalar == Float {
+public extension Plane3D where Scalar == Float {
     init(points: (SIMD3<Scalar>, SIMD3<Scalar>, SIMD3<Scalar>)) {
         let (a, b, c) = points
         let n = simd.cross(b - a, c - a).normalized
@@ -122,13 +122,13 @@ public extension Plane where Scalar == Float {
     }
 }
 
-public extension Plane {
+public extension Plane3D {
     mutating func flip() {
         normal = -normal
         w = -w
     }
 
-    func flipped() -> Plane {
+    func flipped() -> Plane3D {
         var plane = self
         plane.flip()
         return plane
@@ -137,7 +137,7 @@ public extension Plane {
 
 // MARK: -
 
-public struct Polygon<Vertex> {
+public struct Polygon3D<Vertex> {
     public var vertices: [Vertex]
 
     public init(vertices: [Vertex]) {
@@ -145,7 +145,7 @@ public struct Polygon<Vertex> {
     }
 }
 
-public extension Polygon where Vertex: VertexLike3 {
+public extension Polygon3D where Vertex: VertexLike3 {
     mutating func flip() {
         vertices = vertices.reversed().map { vertex in
             var vertex = vertex
@@ -161,27 +161,27 @@ public extension Polygon where Vertex: VertexLike3 {
     }
 }
 
-public extension Polygon where Vertex: VertexLike3, Vertex.Vector == SIMD3<Float> {
-    var plane: Plane<Float> {
-        Plane(points: (vertices[0].position, vertices[1].position, vertices[2].position))
+public extension Polygon3D where Vertex: VertexLike3, Vertex.Vector == SIMD3<Float> {
+    var plane: Plane3D<Float> {
+        Plane3D(points: (vertices[0].position, vertices[1].position, vertices[2].position))
     }
 }
 
-public extension Polygon where Vertex == SIMD3<Float> {
-    var plane: Plane<Float> {
-        Plane(points: (vertices[0], vertices[1], vertices[2]))
+public extension Polygon3D where Vertex == SIMD3<Float> {
+    var plane: Plane3D<Float> {
+        Plane3D(points: (vertices[0], vertices[1], vertices[2]))
     }
 }
 
-public extension Polygon where Vertex: PointLike {
-    init(polygonalChain: PolygonalChain<Vertex>) {
+public extension Polygon3D where Vertex: PointLike {
+    init(polygonalChain: PolygonalChain3D<Vertex>) {
         self.init(vertices: polygonalChain.isClosed ? polygonalChain.vertices.dropLast() : polygonalChain.vertices)
     }
 }
 
 // MARK: -
 
-public struct PolygonalChain<Point> {
+public struct PolygonalChain3D<Point> {
     public var vertices: [Point]
 
     public init() {
@@ -193,13 +193,13 @@ public struct PolygonalChain<Point> {
     }
 }
 
-public extension PolygonalChain where Point: PointLike {
+public extension PolygonalChain3D where Point: PointLike {
     var isClosed: Bool {
         vertices.first == vertices.last
     }
 
-    var segments: [LineSegment<Point>] {
-        zip(vertices, vertices.dropFirst()).map(LineSegment.init)
+    var segments: [LineSegment3D<Point>] {
+        zip(vertices, vertices.dropFirst()).map(LineSegment3D.init)
     }
 
     var isSelfIntersecting: Bool {
@@ -207,7 +207,7 @@ public extension PolygonalChain where Point: PointLike {
     }
 }
 
-public extension PolygonalChain where Point == SIMD3<Float> {
+public extension PolygonalChain3D where Point == SIMD3<Float> {
     var isCoplanar: Bool {
         if vertices.count <= 3 {
             return true
@@ -222,8 +222,8 @@ public extension PolygonalChain where Point == SIMD3<Float> {
     }
 }
 
-public extension PolygonalChain {
-    init(polygon: Polygon<Point>) {
+public extension PolygonalChain3D {
+    init(polygon: Polygon3D<Point>) {
         vertices = polygon.vertices + [polygon.vertices[0]]
     }
 }
@@ -246,22 +246,22 @@ public extension Quad {
 }
 
 public extension Quad {
-    func subdivide() -> (Triangle<Point>, Triangle<Point>) {
+    func subdivide() -> (Triangle3D<Point>, Triangle3D<Point>) {
         // 1---3
         // |\  |
         // | \ |
         // |  \|
         // 0---2
         (
-            Triangle(vertices: (vertices.0, vertices.1, vertices.2)),
-            Triangle(vertices: (vertices.1, vertices.3, vertices.2))
+            Triangle3D(vertices: (vertices.0, vertices.1, vertices.2)),
+            Triangle3D(vertices: (vertices.1, vertices.3, vertices.2))
         )
     }
 }
 
 // MARK: -
 
-public struct Ray {
+public struct Ray3D {
     public var origin: SIMD3<Float>
     public var direction: SIMD3<Float>
 
@@ -273,7 +273,7 @@ public struct Ray {
 
 // MARK: -
 
-public struct Sphere {
+public struct Sphere3D {
     public var center: SIMD3<Float>
     public var radius: Float
 
@@ -285,7 +285,7 @@ public struct Sphere {
 
 // MARK: -
 
-public struct Triangle<Point: VertexLike> {
+public struct Triangle3D<Point: VertexLike> {
     public var vertices: (Point, Point, Point)
 
     public init(vertices: (Point, Point, Point)) {
@@ -293,8 +293,8 @@ public struct Triangle<Point: VertexLike> {
     }
 }
 
-public extension Triangle {
-    var reversed: Triangle {
+public extension Triangle3D {
+    var reversed: Triangle3D {
         .init(vertices: (vertices.2, vertices.1, vertices.0))
     }
 }

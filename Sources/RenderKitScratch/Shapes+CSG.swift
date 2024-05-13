@@ -1,6 +1,7 @@
 import RenderKitShaders
 import SIMDSupport
 import SwiftUI
+import Shapes3D
 
 public protocol PolygonConvertable {
     func toPolygons() -> [Polygon3D<SimpleVertex>]
@@ -12,7 +13,7 @@ public extension PolygonConvertable {
     }
 }
 
-extension Box: PolygonConvertable {
+extension Box3D: PolygonConvertable {
     public func toPolygons() -> [Polygon3D<SimpleVertex>] {
         let polygons = [
             Polygon3D(vertices: [
@@ -57,7 +58,7 @@ extension Box: PolygonConvertable {
     }
 }
 
-extension Sphere: PolygonConvertable {
+extension Sphere3D: PolygonConvertable {
     public func toPolygons() -> [Polygon3D<SimpleVertex>] {
         let slices = 12
         let stacks = 12

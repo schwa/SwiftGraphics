@@ -8,9 +8,9 @@ struct BoxesView: View, DefaultInitializableView {
 
     init() {
         models = [
-            Box(min: [-1, -0.5, -0.5], max: [-2.0, 0.5, 0.5]),
-            Sphere(center: .zero, radius: 0.5),
-            Box(min: [1, -0.5, -0.5], max: [2.0, 0.5, 0.5]),
+            Box3D(min: [-1, -0.5, -0.5], max: [-2.0, 0.5, 0.5]),
+            Sphere3D(center: .zero, radius: 0.5),
+            Box3D(min: [1, -0.5, -0.5], max: [2.0, 0.5, 0.5]),
         ]
     }
 

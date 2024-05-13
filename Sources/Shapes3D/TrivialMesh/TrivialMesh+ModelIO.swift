@@ -1,6 +1,7 @@
 import Algorithms
 import ModelIO
 import SIMDSupport
+import MetalSupport
 
 enum TrivialMeshError: Error {
     case generic(String)

@@ -133,18 +133,18 @@ struct MeshView: View, DefaultInitializableView {
                 default:
                     fatalError()
                 }
-                let polygons = path.polygonalChains.map { Polygon(polygonalChain: PolygonalChain(vertices: $0)) }//.filter(\.isClosed) // TODO: TODO
+                let polygons = path.polygonalChains.map { Polygon3D(polygonalChain: PolygonalChain3D(vertices: $0)) }//.filter(\.isClosed) // TODO: TODO
                 var mesh = TrivialMesh(merging: polygons.map { $0.extrude(min: 0, max: 3, topCap: true, bottomCap: true) })
                 mesh = mesh.offset(by: -mesh.boundingBox.min)
                 self.mesh = mesh
             case .revolve:
-                let polygonalChain = PolygonalChain<SIMD3<Float>>(vertices: [
+                let polygonalChain = PolygonalChain3D<SIMD3<Float>>(vertices: [
                     [0, 0, 0],
                     [-1, 0, 0],
                     [-1, 2.5, 0],
                     [0, 2.5, 0],
                 ])
-                let axis = Line<SIMD3<Float>>(point: [0, 0, 0], direction: [0, 1, 0])
+                let axis = Line3D<SIMD3<Float>>(point: [0, 0, 0], direction: [0, 1, 0])
                 let mesh = revolve(polygonalChain: polygonalChain, axis: axis, range: .degrees(0) ... .degrees(360), segments: 12)
                 self.mesh = TrivialMesh(other: mesh)
             default:
@@ -154,7 +154,7 @@ struct MeshView: View, DefaultInitializableView {
     }
 }
 
-extension Box where Point == SIMD3<Float> {
+extension Box3D where Point == SIMD3<Float> {
     var minXMinYMinZ: SIMD3<Float> { [min.x, min.y, min.z] }
     var minXMinYMaxZ: SIMD3<Float> { [min.x, min.y, max.z] }
     var minXMaxYMinZ: SIMD3<Float> { [min.x, max.y, min.z] }
@@ -166,7 +166,7 @@ extension Box where Point == SIMD3<Float> {
 }
 
 extension Path3D {
-    init(box: Box<SIMD3<Float>>) {
+    init(box: Box3D<SIMD3<Float>>) {
         self = Path3D { path in
             path.move(to: box.minXMinYMinZ)
             path.addLine(to: box.maxXMinYMinZ)

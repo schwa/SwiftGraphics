@@ -1,9 +1,11 @@
+import Shapes3D
+
 public protocol ShapeScriptEncodable {
     func encodeToShapeScript() throws -> String
 }
 
 // https://shapescript.info/mac/
-extension Sphere: ShapeScriptEncodable {
+extension Sphere3D: ShapeScriptEncodable {
     public func encodeToShapeScript() throws -> String {
         """
         sphere {

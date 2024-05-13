@@ -1,4 +1,5 @@
 import simd
+import Shapes3D
 
 public extension LineSegment3D {
     func intersection(with other: LineSegment3D) -> LineSegment3D? {
@@ -30,7 +31,7 @@ public extension Line3D {
         case twice(SIMD3<Float>, SIMD3<Float>)
     }
 
-    func intersects(sphere: Sphere) -> LineSphereIntersection? {
+    func intersects(sphere: Sphere3D) -> LineSphereIntersection? {
         fatalError()
     }
 }

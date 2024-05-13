@@ -4,6 +4,7 @@ import RenderKit
 import RenderKitShaders
 import simd
 import SIMDSupport
+import Shapes3D
 
 public struct CSG<Vertex> where Vertex: VertexLike {
     public typealias Polygon = Polygon3D<Vertex>

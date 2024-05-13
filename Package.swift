@@ -103,6 +103,7 @@ let package = Package(
                     "Earcut",
                     "SIMDSupport",
                     "CoreGraphicsSupport",
+                    "MetalSupport",
                     .product(name: "Algorithms", package: "swift-algorithms"),
                 ],
                 swiftSettings: [.interoperabilityMode(.Cxx)]),
@@ -149,7 +150,8 @@ let package = Package(
             dependencies: [
                 "Everything",
                 "RenderKit",
-            ]
+            ],
+            swiftSettings: [.interoperabilityMode(.Cxx)]
         ),
         .testTarget(
             name: "RenderKitTests",

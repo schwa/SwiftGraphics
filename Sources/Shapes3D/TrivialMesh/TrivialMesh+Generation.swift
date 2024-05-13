@@ -1,5 +1,6 @@
 import Foundation
 import simd
+import MetalSupport
 
 public extension TrivialMesh where Vertex == SimpleVertex {
     static func generatePlane(extent: SIMD2<Float>, segments: SIMD2<Int>) -> Self {

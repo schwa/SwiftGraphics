@@ -48,7 +48,7 @@ public extension Camera {
     }
 }
 
-extension [LineSegment<CGPoint>] {
+extension [LineSegment3D<CGPoint>] {
     func extrude(minY: Float, maxY: Float) -> TrivialMesh<SIMD3<Float>> {
         var quads: [Quad<SIMD3<Float>>] = []
         forEach { segment in
@@ -128,7 +128,7 @@ extension [LineSegment<CGPoint>] {
 ////    }
 // }
 
-extension [LineSegment<CGPoint>] {
+extension [LineSegment3D<CGPoint>] {
     var polygon: [CGPoint] {
         guard let first else {
             return []

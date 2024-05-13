@@ -71,7 +71,7 @@ extension HalfEdgeMesh {
         return mesh
     }
 
-    var polygons: [Shapes3D.Polygon<SIMD3<Float>>] {
+    var polygons: [Shapes3D.Polygon3D<SIMD3<Float>>] {
         faces.map { face in
             var vertices: [SIMD3<Float>] = []
             var halfEdge: HalfEdge! = face.halfEdge

@@ -1,5 +1,6 @@
 import ModelIO
 import RealityKit
+import MetalSupport
 
 public extension MeshDescriptor {
     init(trivialMesh mesh: TrivialMesh<SimpleVertex>) {
