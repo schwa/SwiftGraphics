@@ -1,5 +1,5 @@
 #if !os(visionOS)
-@preconcurrency import Metal
+import Metal
 import RenderKit
 import SwiftUI
 import MetalKit

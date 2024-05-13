@@ -2,6 +2,8 @@ import CoreGraphics
 import simd
 import ModelIO
 
+// TODO: This file needs a big makeover. See also MeshConvertable.
+
 // MARK: Platonic Solids
 
 // Tetrahedron
@@ -282,7 +284,7 @@ public struct Sphere3D {
     public var center: SIMD3<Float>
     public var radius: Float
 
-    public init(center: SIMD3<Float>, radius: Float) {
+    public init(center: SIMD3<Float> = .zero, radius: Float = 0.5) {
         self.center = center
         self.radius = radius
     }

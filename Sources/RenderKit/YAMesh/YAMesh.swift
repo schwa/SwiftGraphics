@@ -46,6 +46,7 @@ extension BufferView: CustomStringConvertible {
 
 // MARK: -
 
+@available(*, deprecated, message: "Use TrivialMesh")
 public struct YAMesh: Identifiable, Labeled {
     public typealias ID = LOLID2
 

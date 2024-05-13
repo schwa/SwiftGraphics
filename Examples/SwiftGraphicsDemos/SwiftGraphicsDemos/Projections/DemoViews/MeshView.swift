@@ -2,6 +2,7 @@ import CoreGraphicsSupport
 import Shapes3D
 import Projection
 import SwiftUI
+import Shapes2D
 import MetalSupport
 
 struct MeshView: View, DefaultInitializableView {
@@ -134,11 +135,10 @@ struct MeshView: View, DefaultInitializableView {
                 default:
                     fatalError()
                 }
-                fatalError()
-//                let polygons = path.polygonalChains.map { Polygon3D(polygonalChain: PolygonalChain3D(vertices: $0)) }//.filter(\.isClosed) // TODO: TODO
-//                var mesh = TrivialMesh(merging: polygons.map { $0.extrude(min: 0, max: 3, topCap: true, bottomCap: true) })
-//                mesh = mesh.offset(by: -mesh.boundingBox.min)
-//                self.mesh = mesh
+                let polygons = path.polygonalChains.map { vertices in Shapes2D.Polygon(vertices) }//.filter(\.isClosed) // TODO: TODO
+                var mesh = TrivialMesh(merging: polygons.map { $0.extrude(min: 0, max: 3, topCap: true, bottomCap: true) })
+                mesh = mesh.offset(by: -mesh.boundingBox.min)
+                self.mesh = mesh
             case .revolve:
                 let polygonalChain = PolygonalChain3D<SIMD3<Float>>(vertices: [
                     [0, 0, 0],

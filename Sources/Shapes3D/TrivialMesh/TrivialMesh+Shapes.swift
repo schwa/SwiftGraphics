@@ -3,6 +3,7 @@ import simd
 import MetalSupport
 
 public extension TrivialMesh where Vertex == SimpleVertex {
+    @available(*, deprecated, message: "Move to MeshConvertable")
     init(cylinder: Cylinder3D, segments: Int) {
         let halfDepth = cylinder.depth / 2
         let circle = TrivialMesh(circleRadius: cylinder.radius, segments: segments)
@@ -33,6 +34,7 @@ public extension TrivialMesh where Vertex == SimpleVertex {
         assert(isValid)
     }
 
+    @available(*, deprecated, message: "Move to MeshConvertable")
     init(circleRadius radius: Float, segments: Int) {
         let segmentAngle = Float.pi * 2 / Float(segments)
         let vertices2D = [
