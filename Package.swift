@@ -100,6 +100,7 @@ let package = Package(
         .target(name: "Projection", dependencies: ["SIMDSupport"]),
         .target(name: "Shapes3D",
                 dependencies: [
+                    "Shapes2D",
                     "MetalSupport",
                     "Earcut",
                     "SIMDSupport",

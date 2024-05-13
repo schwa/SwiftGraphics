@@ -6,7 +6,7 @@ public protocol PolygonConvertable {
     func toPolygons() -> [Polygon3D<SimpleVertex>]
 }
 
-extension Box3D: PolygonConvertable where Point == SIMD3<Float> {
+extension Box3D: PolygonConvertable where Vertex == SIMD3<Float> {
     public func toPolygons() -> [Polygon3D<SimpleVertex>] {
         let polygons = [
             Polygon3D(vertices: [

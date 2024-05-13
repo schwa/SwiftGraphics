@@ -17,7 +17,7 @@ extension Sphere3D: ShapeScriptEncodable {
     }
 }
 
-extension LineSegment3D: ShapeScriptEncodable where Point: PointLike3 {
+extension LineSegment3D: ShapeScriptEncodable {
     public func encodeToShapeScript() throws -> String {
         """
         path {
@@ -28,7 +28,7 @@ extension LineSegment3D: ShapeScriptEncodable where Point: PointLike3 {
     }
 }
 
-extension Line3D: ShapeScriptEncodable where Point: PointLike3 {
+extension Line3D: ShapeScriptEncodable {
     public func encodeToShapeScript() throws -> String {
         let segment = LineSegment3D(start: point + -direction * 1000, end: point + direction * 1000)
         return try segment.encodeToShapeScript()

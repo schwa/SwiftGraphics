@@ -153,17 +153,3 @@ public extension TrivialMesh where Vertex == SimpleVertex {
         try asset.export(to: url)
     }
 }
-
-// extension MDLAsset {
-//    convenience init(elements: [any MeshConvertable]) {
-//
-//        self.init()
-//
-//        elements.map {
-//            MDLMesh(trivialMesh: $0.toMesh())
-//        }
-//
-//
-//
-//    }
-// }

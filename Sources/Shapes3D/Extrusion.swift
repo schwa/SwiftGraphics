@@ -3,6 +3,7 @@ import CoreGraphics
 import Earcut
 import simd
 import MetalSupport
+import Shapes2D
 
 // swiftlint:disable force_unwrapping
 
@@ -25,7 +26,7 @@ public extension ExtrusionAxis {
     }
 }
 
-public extension PolygonalChain3D where Point == CGPoint {
+public extension PolygonalChain {
     func extrude(min: Float, max: Float, axis: ExtrusionAxis = .z) -> TrivialMesh<SimpleVertex> {
         let quads: [Quad<SimpleVertex>] = vertices.windows(ofCount: 2).reduce(into: []) { result, window in
             let from = SIMD2<Float>(x: Float(window.first!.x), y: Float(window.first!.y))
@@ -62,9 +63,9 @@ extension Quad {
     }
 }
 
-public extension Polygon3D where Vertex == CGPoint {
+public extension Polygon {
     func extrude(min: Float, max: Float, axis: ExtrusionAxis = .z, walls: Bool = true, topCap: Bool, bottomCap: Bool) -> TrivialMesh<SimpleVertex> {
-        let walls = walls ? PolygonalChain3D(polygon: self).extrude(min: min, max: max, axis: axis) : nil
+        let walls = walls ? PolygonalChain(vertices: self.vertices).extrude(min: min, max: max, axis: axis) : nil
         let topCap = topCap ? triangulate(z: max, transform: axis.transform) : nil
         let bottomCap = bottomCap ? triangulate(z: min, transform: axis.transform).flipped() : nil
         return TrivialMesh(merging: Array([walls, topCap, bottomCap].compacted()))

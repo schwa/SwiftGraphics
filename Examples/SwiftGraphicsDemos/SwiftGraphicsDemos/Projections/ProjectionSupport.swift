@@ -48,24 +48,24 @@ public extension Camera {
     }
 }
 
-extension [LineSegment3D<CGPoint>] {
-    func extrude(minY: Float, maxY: Float) -> TrivialMesh<SIMD3<Float>> {
-        var quads: [Quad<SIMD3<Float>>] = []
-        forEach { segment in
-            let from = SIMD2<Float>(segment.start)
-            let to = SIMD2<Float>(segment.end)
-            let quad = Quad(vertices: (
-                SIMD3<Float>(from, minY),
-                SIMD3<Float>(from, maxY),
-                SIMD3<Float>(to, minY),
-                SIMD3<Float>(to, maxY)
-            ))
-            quads.append(quad)
-        }
-        let mesh = TrivialMesh<SIMD3<Float>>(quads: quads)
-        return mesh
-    }
-}
+//extension Array<LineSegment3D> {
+//    func extrude(minY: Float, maxY: Float) -> TrivialMesh<SIMD3<Float>> {
+//        var quads: [Quad<SIMD3<Float>>] = []
+//        forEach { segment in
+//            let from = SIMD2<Float>(segment.start.xy)
+//            let to = SIMD2<Float>(segment.end.xy)
+//            let quad = Quad(vertices: (
+//                SIMD3<Float>(from, minY),
+//                SIMD3<Float>(from, maxY),
+//                SIMD3<Float>(to, minY),
+//                SIMD3<Float>(to, maxY)
+//            ))
+//            quads.append(quad)
+//        }
+//        let mesh = TrivialMesh<SIMD3<Float>>(quads: quads)
+//        return mesh
+//    }
+//}
 
 // extension Array where Element == CGPoint {
 //    var rectangleAndAngle: (CGRect, Angle)? {
@@ -127,15 +127,6 @@ extension [LineSegment3D<CGPoint>] {
 ////        }
 ////    }
 // }
-
-extension [LineSegment3D<CGPoint>] {
-    var polygon: [CGPoint] {
-        guard let first else {
-            return []
-        }
-        return [first.start] + dropFirst().map(\.end)
-    }
-}
 
 extension Array {
     var mutableLast: Element? {
