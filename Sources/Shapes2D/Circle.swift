@@ -59,7 +59,7 @@ public extension Circle {
         Ellipse(center: center, size: CGSize(width: diameter, height: diameter))
     }
 
-// TODO:
+    // TODO:
 //    func toBezierChain() -> BezierCurveChain {
 //        toEllipse().toBezierChain()
 //    }

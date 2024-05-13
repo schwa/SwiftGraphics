@@ -1,11 +1,11 @@
-import SwiftUI
+import CoreGraphics
+import Metal
 import MetalKit
+import MetalSupport
 import ModelIO
 import simd
-import MetalSupport
 import SIMDSupport
-import Metal
-import CoreGraphics
+import SwiftUI
 
 public struct OffscreenRenderPassConfiguration: MetalConfiguration {
     public let size: CGSize
@@ -17,9 +17,9 @@ public struct OffscreenRenderPassConfiguration: MetalConfiguration {
     public var depthStencilStorageMode: MTLStorageMode = .shared
     public var clearDepth: Double = 1.0
 
-    internal var currentDrawable: CAMetalDrawable?
-    internal var depthStencilAttachmentTextureUsage: MTLTextureUsage = .renderTarget
-    internal var depthStencilTexture: MTLTexture?
+    var currentDrawable: CAMetalDrawable?
+    var depthStencilAttachmentTextureUsage: MTLTextureUsage = .renderTarget
+    var depthStencilTexture: MTLTexture?
 
     public var currentRenderPassDescriptor: MTLRenderPassDescriptor?
     public var targetTexture: MTLTexture?

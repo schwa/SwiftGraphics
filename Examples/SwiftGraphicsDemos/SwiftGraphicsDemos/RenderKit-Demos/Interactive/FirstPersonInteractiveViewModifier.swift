@@ -1,7 +1,7 @@
-import SwiftUI
-import SIMDSupport
 import GameController
 import simd
+import SIMDSupport
+import SwiftUI
 
 public struct FirstPersonInteractiveViewModifier: ViewModifier, @unchecked Sendable {
     @Environment(\.displayLink)
@@ -14,86 +14,86 @@ public struct FirstPersonInteractiveViewModifier: ViewModifier, @unchecked Senda
     var renderViewFocused: Bool
 
     @State
-    var movementConsumerTask: Task<(), Never>?
+    var movementConsumerTask: Task<Void, Never>?
 
     @Binding
     var camera: Camera
 
     public func body(content: Content) -> some View {
         content
-        .task() {
-            guard let displayLink else {
-                return
-            }
-            let movementController = MovementController(displayLink: displayLink)
-            movementController.focused = renderViewFocused
-            self.movementController = movementController
-#if os(macOS)
-            movementController.disableUIKeys()
-            #endif
-            movementConsumerTask = Task.detached { [movementController] in
-                for await event in movementController.events() {
-                    Counters.shared.increment(counter: "Consumption")
-                    switch event.payload {
-                    case .movement(let movement):
-                        let target = camera.target
-                        let angle = atan2(target.z, target.x) - .pi / 2
-                        let rotation = simd_quaternion(angle, [0, -1, 0])
-                        Task {
-                            await MainActor.run {
-                                camera.transform.translation += simd_act(rotation, movement * 0.1)
+            .task() {
+                guard let displayLink else {
+                    return
+                }
+                let movementController = MovementController(displayLink: displayLink)
+                movementController.focused = renderViewFocused
+                self.movementController = movementController
+                #if os(macOS)
+                    movementController.disableUIKeys()
+                #endif
+                movementConsumerTask = Task.detached { [movementController] in
+                    for await event in movementController.events() {
+                        Counters.shared.increment(counter: "Consumption")
+                        switch event.payload {
+                        case .movement(let movement):
+                            let target = camera.target
+                            let angle = atan2(target.z, target.x) - .pi / 2
+                            let rotation = simd_quaternion(angle, [0, -1, 0])
+                            Task {
+                                await MainActor.run {
+                                    camera.transform.translation += simd_act(rotation, movement * 0.1)
+                                }
                             }
-                        }
-                    case .rotation(let rotation):
-                        Task {
-                            await MainActor.run {
-                                camera.heading.degrees += Double(rotation * 2)
+                        case .rotation(let rotation):
+                            Task {
+                                await MainActor.run {
+                                    camera.heading.degrees += Double(rotation * 2)
+                                }
                             }
                         }
                     }
                 }
             }
-        }
-        .onChange(of: renderViewFocused) {
-            movementController?.focused = renderViewFocused
-        }
-        .onDisappear {
-            movementConsumerTask?.cancel()
-            movementConsumerTask = nil
-        }
-        .focusable(interactions: .automatic)
-        .focused($renderViewFocused)
-        .focusEffectDisabled()
-        .defaultFocus($renderViewFocused, true)
-        .onKeyPress(.escape, action: {
-            renderViewFocused = false
-            return .handled
-        })
-        .overlay(alignment: .topTrailing) {
-            Group {
+            .onChange(of: renderViewFocused) {
+                movementController?.focused = renderViewFocused
+            }
+            .onDisappear {
+                movementConsumerTask?.cancel()
+                movementConsumerTask = nil
+            }
+            .focusable(interactions: .automatic)
+            .focused($renderViewFocused)
+            .focusEffectDisabled()
+            .defaultFocus($renderViewFocused, true)
+            .onKeyPress(.escape, action: {
+                renderViewFocused = false
+                return .handled
+            })
+            .overlay(alignment: .topTrailing) {
                 Group {
-                    if renderViewFocused {
-                        //Image(systemName: "dot.square.fill").foregroundStyle(.selection)
-                        Text("Focused")
+                    Group {
+                        if renderViewFocused {
+                            // Image(systemName: "dot.square.fill").foregroundStyle(.selection)
+                            Text("Focused")
+                        }
+                        else {
+                            Text("Unfocused")
+                            // Image(systemName: "dot.square").foregroundStyle(.selection)
+                        }
                     }
-                    else {
-                        Text("Unfocused")
-                        //Image(systemName: "dot.square").foregroundStyle(.selection)
-                    }
+                    .padding()
+                    .background(.regularMaterial)
                 }
                 .padding()
-                .background(.regularMaterial)
             }
-            .padding()
-        }
-        .overlay(alignment: .bottomLeading) {
-            GameControllerWidget()
-                .padding()
-        }
-        .overlay(alignment: .bottomLeading) {
-            GameControllerWidget()
-                .padding()
-        }
+            .overlay(alignment: .bottomLeading) {
+                GameControllerWidget()
+                    .padding()
+            }
+            .overlay(alignment: .bottomLeading) {
+                GameControllerWidget()
+                    .padding()
+            }
     }
 }
 

@@ -1,7 +1,7 @@
 @testable import RenderKitScratch
 import XCTest
 
-//class CSGTests: XCTestCase {
+// class CSGTests: XCTestCase {
 //    func test1() {
 //        let sphere = Sphere(center: .zero, radius: 10)
 //        let plane = Plane(normal: [0, 0, 1], w: 0)
@@ -11,4 +11,4 @@ import XCTest
 //        print(a.polygons.count)
 //        print(b.polygons.count)
 //    }
-//}
+// }

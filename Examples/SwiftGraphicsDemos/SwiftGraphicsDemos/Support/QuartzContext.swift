@@ -5,6 +5,7 @@ struct QuartzContext: GraphicsContextProtocol {
         enum Value {
             case color(Color)
         }
+
         var value: Value
     }
 
@@ -17,11 +18,13 @@ struct QuartzContext: GraphicsContextProtocol {
             cgContext.setBlendMode(CGBlendMode(rawValue: blendMode.rawValue)!)
         }
     }
+
     var opacity: Double {
         didSet {
             cgContext.setAlpha(opacity)
         }
     }
+
     var transform: CGAffineTransform {
         didSet {
             // TODO: There has to be a better way
@@ -30,6 +33,7 @@ struct QuartzContext: GraphicsContextProtocol {
             cgContext.concatenate(transform)
         }
     }
+
     var environment: EnvironmentValues
 
     init(cgContext: CGContext, size: CGSize, environment: EnvironmentValues = .init()) {
@@ -140,14 +144,13 @@ struct QuartzContext: GraphicsContextProtocol {
 
 extension QuartzContext.Shading: ShadingProtocol {
     static func color(_ color: Color) -> Self {
-        return .init(value: .color(color))
+        .init(value: .color(color))
     }
 }
 
 // MARK: -
 
 struct QuartzCanvas: View {
-
     let renderer: (inout QuartzContext, CGSize) -> Void
 
     init(renderer: @escaping (inout QuartzContext, CGSize) -> Void) {

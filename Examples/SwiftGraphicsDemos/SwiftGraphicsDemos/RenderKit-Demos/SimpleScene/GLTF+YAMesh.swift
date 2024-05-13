@@ -1,21 +1,21 @@
-import SwiftUI
-import MetalKit
 import Foundation
-import SwiftGLTF
+import MetalKit
 import RenderKit
 import SwiftFormats
+import SwiftGLTF
+import SwiftUI
 
 extension SwiftGLTF.Accessor {
     var vertexFormat: MTLVertexFormat? {
         switch (componentType, type) {
         case (.FLOAT, .SCALAR):
-            return .float
+            .float
         case (.FLOAT, .VEC2):
-            return .float2
+            .float2
         case (.FLOAT, .VEC3):
-            return .float3
+            .float3
         case (.FLOAT, .VEC4):
-            return .float4
+            .float4
         default:
             fatalError() // MORE TO DO
         }
@@ -24,9 +24,9 @@ extension SwiftGLTF.Accessor {
     var indexType: MTLIndexType {
         switch (componentType, type) {
         case (.UNSIGNED_SHORT, .SCALAR), (.SHORT, .SCALAR):
-            return .uint16
+            .uint16
         case (.UNSIGNED_INT, .SCALAR):
-            return .uint32
+            .uint32
         default:
             fatalError()
         }
@@ -35,8 +35,8 @@ extension SwiftGLTF.Accessor {
 
 extension MTLDevice {
     func makeBuffer(data: Data, options: MTLResourceOptions) -> MTLBuffer? {
-        return data.withUnsafeBytes { buffer in
-            return makeBuffer(bytes: buffer.baseAddress!, length: buffer.count, options: options)
+        data.withUnsafeBytes { buffer in
+            makeBuffer(bytes: buffer.baseAddress!, length: buffer.count, options: options)
         }
     }
 }
@@ -82,7 +82,7 @@ extension YAMesh {
             bufferViews.append(BufferView(buffer: mtlBuffer, offset: 0))
 
             descriptor.layouts.append(.init(label: nil, bufferIndex: index, stride: 0, stepFunction: .perVertex, stepRate: 1, attributes: [
-                .init(semantic: semantic, format: accessor.vertexFormat!, offset: 0)
+                .init(semantic: semantic, format: accessor.vertexFormat!, offset: 0),
             ]))
         }
         descriptor.setPackedOffsets()

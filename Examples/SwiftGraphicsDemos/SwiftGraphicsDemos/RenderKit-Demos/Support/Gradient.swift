@@ -1,12 +1,12 @@
+import Everything
 import simd
 import SwiftUI
-import Everything
 
 struct MyGradient {
     public struct Stop {
         public var color: SIMD4<Float>
         public var location: Float
-        internal var controls: (Float, Float, Float) = (0, 0, 0)
+        var controls: (Float, Float, Float) = (0, 0, 0)
     }
 
     var stops: [Stop]
@@ -28,7 +28,7 @@ struct MyGradient {
             }
             var stop = stop
             stop.controls = handle
-            return(stop)
+            return (stop)
         }
 //        print(color(at: 0.5))
     }
@@ -64,11 +64,11 @@ extension MyGradient {
     }
 }
 
-//func clamp<T: Comparable>(_ value: T, _ lower: T, _ upper: T) -> T {
+// func clamp<T: Comparable>(_ value: T, _ lower: T, _ upper: T) -> T {
 //    let max_ = max(value, lower)
 //    let min_ = min(max_, upper)
 //    return min_
-//}
+// }
 
 func inverseLerp(value: Float, startValue: Float, endValue: Float) -> Float {
     let result: Float
@@ -79,7 +79,7 @@ func inverseLerp(value: Float, startValue: Float, endValue: Float) -> Float {
 //        result = 0
 //    }
 //    else {
-        result = (value - startValue) / (endValue - startValue)
+    result = (value - startValue) / (endValue - startValue)
 //    }
     return result
 }

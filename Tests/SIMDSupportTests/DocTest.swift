@@ -1,6 +1,6 @@
 @testable import SIMDSupport
-import XCTest
 import SwiftUI
+import XCTest
 
 final class Angle_DocTests: XCTestCase {
     func test_0880dc04() throws {

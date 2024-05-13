@@ -15,4 +15,3 @@ public extension SIMD3 where Scalar == Float {
         simd_dot(self, other)
     }
 }
-

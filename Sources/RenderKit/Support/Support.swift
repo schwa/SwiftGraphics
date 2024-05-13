@@ -1,16 +1,16 @@
+import CoreGraphicsSupport
 import Everything
 import Foundation
-import MetalKit
-import os
-import SwiftUI
-import MetalSupportUnsafeConformances
-import simd
 import Metal
-import ModelIO
+import MetalKit
 import MetalPerformanceShaders
+import MetalSupportUnsafeConformances
+import ModelIO
+import os
+import simd
 import SIMDSupport
-import CoreGraphicsSupport
 import SwiftFormats
+import SwiftUI
 
 public enum RenderKitError: Error {
     case generic(String)
@@ -326,7 +326,7 @@ public extension PixelFormat {
 }
 
 public func align(_ value: Int, alignment: Int) -> Int {
-    return (value + alignment - 1) / alignment * alignment
+    (value + alignment - 1) / alignment * alignment
 }
 
 public extension MTLPixelFormat {
@@ -354,7 +354,7 @@ public extension MTLTexture {
         guard let pixelBytes = context.data else {
             return nil
         }
-        self.getBytes(pixelBytes, bytesPerRow: context.bytesPerRow, from: MTLRegion(origin: .zero, size: MTLSize(width, height, 1)), mipmapLevel: 0)
+        getBytes(pixelBytes, bytesPerRow: context.bytesPerRow, from: MTLRegion(origin: .zero, size: MTLSize(width, height, 1)), mipmapLevel: 0)
         let image = context.makeImage()
         return image
     }

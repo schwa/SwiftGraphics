@@ -1,6 +1,6 @@
 import Algorithms
-import simd
 import MetalSupport
+import simd
 
 // TODO: Rename to "TriangleMesh"
 public struct TrivialMesh<Vertex> where Vertex: Equatable {

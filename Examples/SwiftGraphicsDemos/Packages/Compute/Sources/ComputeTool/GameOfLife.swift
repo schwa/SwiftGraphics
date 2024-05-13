@@ -1,7 +1,7 @@
-import Metal
-import Foundation
-import Compute
 import AVFoundation
+import Compute
+import Foundation
+import Metal
 
 struct GameOfLife {
     let width = 16
@@ -43,7 +43,7 @@ struct GameOfLife {
             kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA,
             kCVPixelBufferWidthKey as String: width,
             kCVPixelBufferHeightKey as String: height,
-            kCVPixelBufferMetalCompatibilityKey as String: true
+            kCVPixelBufferMetalCompatibilityKey as String: true,
         ])
 
         assetWriter.startWriting()
@@ -60,7 +60,7 @@ struct GameOfLife {
             }
         }
 
-        for _ in 0..<10 {
+        for _ in 0 ..< 10 {
             try compute.task { task in
                 try task { dispatch in
                     try dispatch(pass: gameOfLifePassA, threadgroupsPerGrid: MTLSize(width: width, height: height, depth: 1), threadsPerThreadgroup: MTLSize(width: 1, height: 1, depth: 1))

@@ -1,6 +1,6 @@
+import CoreGraphics
 import Foundation
 import Shapes2D
-import CoreGraphics
 import SwiftUI
 
 enum MyShape: Codable {
@@ -23,6 +23,7 @@ extension MyShape {
     func contains(_ point: CGPoint) -> Bool {
         Path(self).contains(point)
     }
+
     func contains(_ point: CGPoint, lineWidth: Double) -> Bool {
         Path(self).strokedPath(.init(lineWidth: lineWidth)).contains(point)
     }
@@ -33,9 +34,9 @@ extension MyShape {
         get {
             switch self {
             case .line(let shape):
-                return [shape.start, shape.end]
+                [shape.start, shape.end]
             case .circle(let shape):
-                return [shape.center]
+                [shape.center]
             }
         }
         set {
@@ -45,7 +46,6 @@ extension MyShape {
             case .circle(let shape):
                 self = .circle(.init(center: newValue[0], radius: shape.radius))
             }
-
         }
     }
 }

@@ -1,5 +1,6 @@
 import CoreGraphicsSupport
-//import Everything
+
+// import Everything
 import simd
 import SwiftUI
 
@@ -106,4 +107,3 @@ public extension View {
         modifier(BallRotationModifier(rotation: rotation, pitchLimit: pitchLimit, yawLimit: yawLimit, interactionScale: interactionScale))
     }
 }
-

@@ -1,12 +1,12 @@
-import SwiftUI
-import ModelIO
+import Everything
 import Metal
 import MetalKit
-import SIMDSupport
-import RenderKitShaders
-import RenderKit
+import ModelIO
 import Observation
-import Everything
+import RenderKit
+import RenderKitShaders
+import SIMDSupport
+import SwiftUI
 
 class PanoramaRenderJob: SceneRenderJob {
     var renderPipelineState: MTLRenderPipelineState?
@@ -24,7 +24,7 @@ class PanoramaRenderJob: SceneRenderJob {
         self.panorama = panorama
     }
 
-    func setup<Configuration: MetalConfiguration>(device: MTLDevice, configuration: inout Configuration) throws {
+    func setup(device: MTLDevice, configuration: inout some MetalConfiguration) throws {
         let library = try! device.makeDefaultLibrary(bundle: .shadersBundle)
         let vertexFunction = library.makeFunction(name: "panoramicVertexShader")!
         let constantValues = MTLFunctionConstantValues()
@@ -61,8 +61,8 @@ class PanoramaRenderJob: SceneRenderJob {
             encoder.setVertexBytes(of: modelViewMatrix, index: 2)
             let uniforms = PanoramaFragmentUniforms(gridSize: panorama.tilesSize, colorFactor: [1, 1, 1, 1])
             encoder.setFragmentBytes(of: uniforms, index: 0)
-            encoder.setFragmentTextures(textures, range: 0..<textures.count)
-            //encoder.setTriangleFillMode(.fill)
+            encoder.setFragmentTextures(textures, range: 0 ..< textures.count)
+            // encoder.setTriangleFillMode(.fill)
             encoder.draw(mesh)
         }
     }

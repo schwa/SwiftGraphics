@@ -1,5 +1,5 @@
-import RenderKit
 import Metal
+import RenderKit
 
 public final class SimpleJobsBasedRenderPass: RenderPass {
     public var jobs: [any RenderJob]
@@ -8,7 +8,7 @@ public final class SimpleJobsBasedRenderPass: RenderPass {
         self.jobs = jobs
     }
 
-    public func setup<Configuration: MetalConfiguration>(device: MTLDevice, configuration: inout Configuration) throws {
+    public func setup(device: MTLDevice, configuration: inout some MetalConfiguration) throws {
         try jobs.forEach { job in
             try job.setup(device: device, configuration: &configuration)
         }

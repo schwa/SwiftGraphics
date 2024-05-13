@@ -13,9 +13,9 @@ public struct LOLID2: Hashable, Sendable {
         }
     }
 
-    internal let rawValue: String
+    let rawValue: String
 
-    internal init(rawValue: String) {
+    init(rawValue: String) {
         self.rawValue = rawValue
     }
 
@@ -26,6 +26,6 @@ public struct LOLID2: Hashable, Sendable {
 
 extension LOLID2: CustomStringConvertible {
     public var description: String {
-        return rawValue
+        rawValue
     }
 }

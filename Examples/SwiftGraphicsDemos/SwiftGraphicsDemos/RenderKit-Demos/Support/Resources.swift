@@ -24,7 +24,7 @@ public protocol SynchronousLoadable: ResourceProtocol {
 
 public extension SynchronousLoadable where Parameter == () {
     func load() throws -> Content {
-        return try load(())
+        try load(())
     }
 }
 
@@ -36,7 +36,7 @@ public protocol AsynchronousLoadable: ResourceProtocol {
 
 public extension AsynchronousLoadable where Parameter == () {
     func load() async throws -> Content {
-        return try await load(())
+        try await load(())
     }
 }
 
@@ -56,11 +56,11 @@ public extension BundleReference {
     var exists: Bool {
         switch self {
         case .main:
-            return true
+            true
         case .byURL(let url):
-            return Bundle(url: url) != nil
+            Bundle(url: url) != nil
         case .byIdentifier(let identifier):
-            return Bundle(identifier: identifier) != nil
+            Bundle(identifier: identifier) != nil
         }
     }
 
@@ -91,10 +91,10 @@ public struct BundleResourceReference {
     public var name: String
     public var `extension`: String?
 
-    public init(bundle: BundleReference, name: String, `extension`: String? = nil) {
+    public init(bundle: BundleReference, name: String, extension: String? = nil) {
         self.bundle = bundle
         self.name = name
-        self.`extension` = `extension`
+        self.extension = `extension`
     }
 
     enum Error: Swift.Error {
@@ -102,7 +102,7 @@ public struct BundleResourceReference {
     }
 
     public var exists: Bool {
-        return (try? bundle.bundle.url(forResource: name, withExtension: `extension`)) != nil
+        (try? bundle.bundle.url(forResource: name, withExtension: `extension`)) != nil
     }
 
     public var url: URL {
@@ -116,8 +116,8 @@ public struct BundleResourceReference {
 }
 
 public extension BundleReference {
-    func resource(named name: String, withExtension `extension`: String?) -> BundleResourceReference {
-        return BundleResourceReference(bundle: self, name: name, extension: `extension`)
+    func resource(named name: String, withExtension extension: String?) -> BundleResourceReference {
+        BundleResourceReference(bundle: self, name: name, extension: `extension`)
     }
 }
 

@@ -1,9 +1,9 @@
 import CoreGraphicsSupport
-import Shapes3D
-import Projection
-import SwiftUI
-import Shapes2D
 import MetalSupport
+import Projection
+import Shapes2D
+import Shapes3D
+import SwiftUI
 
 struct MeshView: View, DefaultInitializableView {
     enum Source: Hashable {
@@ -66,8 +66,8 @@ struct MeshView: View, DefaultInitializableView {
                 case .vertices:
                     EmptyView()
 //                    Table(mesh.vertices.indices.map { Identified(id: $0, value: mesh.vertices[Int($0)]) }) {
-// TODO: FIXME
-                        //                        TableColumn("Position X") { Text(verbatim: "\($0.value.position.x)") }
+                // TODO: FIXME
+                //                        TableColumn("Position X") { Text(verbatim: "\($0.value.position.x)") }
 //                        TableColumn("Position Y") { Text(verbatim: "\($0.value.position.y)") }
 //                        TableColumn("Position Z") { Text(verbatim: "\($0.value.position.z)") }
 //                        TableColumn("Normal X") { Text(verbatim: "\($0.value.normal.x)") }
@@ -135,7 +135,7 @@ struct MeshView: View, DefaultInitializableView {
                 default:
                     fatalError()
                 }
-                let polygons = path.polygonalChains.map { vertices in Shapes2D.Polygon(vertices) }//.filter(\.isClosed) // TODO: TODO
+                let polygons = path.polygonalChains.map { vertices in Shapes2D.Polygon(vertices) } // .filter(\.isClosed) // TODO: TODO
                 var mesh = TrivialMesh(merging: polygons.map { $0.extrude(min: 0, max: 3, topCap: true, bottomCap: true) })
                 mesh = mesh.offset(by: -mesh.boundingBox.min)
                 self.mesh = mesh

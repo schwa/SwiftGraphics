@@ -11,9 +11,9 @@ public extension Path {
     // TODO: line segment
     init(lineSegments: [(CGPoint, CGPoint)]) {
         self.init()
-        lineSegments.forEach {
-            move(to: $0.0)
-            addLine(to: $0.1)
+        for lineSegment in lineSegments {
+            move(to: lineSegment.0)
+            addLine(to: lineSegment.1)
         }
     }
 
@@ -43,7 +43,7 @@ public extension Path {
     init(paths: [Path]) {
         self.init()
         for path in paths {
-            self.addPath(path)
+            addPath(path)
         }
     }
 }
@@ -96,9 +96,11 @@ public extension Path {
     static func rect(x: Double = 0, y: Double = 0, w: Double, h: Double) -> Path {
         Path(CGRect(x: x, y: y, width: w, height: h))
     }
+
     static func rect(x: Double = 0, y: Double = 0, w: Double, h: Double, r: Double, style: RoundedCornerStyle = .circular) -> Path {
         Path(roundedRect: CGRect(x: x, y: y, width: w, height: h), cornerSize: CGSize(width: r, height: r), style: style)
     }
+
     static func rect(x: Double = 0, y: Double = 0, w: Double, h: Double, rx: Double, ry: Double, style: RoundedCornerStyle = .circular) -> Path {
         Path(roundedRect: CGRect(x: x, y: y, width: w, height: h), cornerSize: CGSize(width: rx, height: ry), style: style)
     }
@@ -114,15 +116,19 @@ public extension Path {
     static func ellipse(center: CGPoint, radius: CGSize) -> Path {
         Path(ellipseIn: CGRect(center: center, size: radius * 2))
     }
+
     static func ellipse(center: CGPoint, rx: Double, ry: Double) -> Path {
         ellipse(center: center, radius: CGSize(width: rx, height: ry))
     }
+
     static func ellipse(cx: Double, cy: Double, rx: Double, ry: Double) -> Path {
         ellipse(center: CGPoint(x: cx, y: cy), radius: CGSize(width: rx, height: ry))
     }
+
     static func ellipse(cx: Double, cy: Double, r: Double) -> Path {
         ellipse(center: CGPoint(x: cx, y: cy), radius: CGSize(width: r, height: r))
     }
+
     static func lines(_ lines: [CGPoint], closed: Bool = false) -> Path {
         Path { path in
             path.addLines(lines)
@@ -131,6 +137,7 @@ public extension Path {
             }
         }
     }
+
     static func line(from: CGPoint, to: CGPoint) -> Path {
         Path { path in
             path.move(to: from)
@@ -256,7 +263,7 @@ public extension Path {
 
     init(elements: [Element]) {
         self = Path { path in
-            elements.forEach { element in
+            for element in elements {
                 switch element {
                 case .move(let point):
                     path.move(to: point)
@@ -333,4 +340,3 @@ public extension Path {
             })
     }
 }
-

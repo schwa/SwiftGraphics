@@ -32,11 +32,11 @@ extension Polygon: PathConvertible {
     }
 }
 
-//extension RegularPolygon: PathConvertible {
+// extension RegularPolygon: PathConvertible {
 //    public var path: Path {
 //        Path.lines(vertices, closed: true)
 //    }
-//}
+// }
 
 extension Triangle: PathConvertible {
     public var path: Path {

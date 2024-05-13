@@ -1,11 +1,11 @@
-import SwiftUI
-import MetalKit
-import ModelIO
-import simd
 import Everything
+import MetalKit
 import MetalSupport
-import SIMDSupport
+import ModelIO
 import RenderKit
+import simd
+import SIMDSupport
+import SwiftUI
 
 public class OffscreenRenderPass: RenderPass {
     public typealias Configuration = OffscreenRenderPassConfiguration
@@ -22,7 +22,7 @@ public class OffscreenRenderPass: RenderPass {
     public init() {
     }
 
-    public func setup<Configuration: MetalConfiguration>(device: MTLDevice, configuration: inout Configuration) throws {
+    public func setup(device: MTLDevice, configuration: inout some MetalConfiguration) throws {
         let library = try! device.makeDefaultLibrary(bundle: .shadersBundle)
         let constants = MTLFunctionConstantValues()
 
@@ -79,31 +79,31 @@ public class OffscreenRenderPass: RenderPass {
 }
 
 #if os(macOS)
-public struct OffscreenDemo {
-    public static func main() async throws {
-        let device = MTLCreateSystemDefaultDevice()!
-        var configuration = OffscreenRenderPassConfiguration(device: device, size: [1024, 769])
-        configuration.colorPixelFormat = .bgra10_xr_srgb
-        configuration.update()
-        let offscreen = OffscreenRenderPass()
-        try offscreen.setup(device: device, configuration: &configuration)
+    public enum OffscreenDemo {
+        public static func main() async throws {
+            let device = MTLCreateSystemDefaultDevice()!
+            var configuration = OffscreenRenderPassConfiguration(device: device, size: [1024, 769])
+            configuration.colorPixelFormat = .bgra10_xr_srgb
+            configuration.update()
+            let offscreen = OffscreenRenderPass()
+            try offscreen.setup(device: device, configuration: &configuration)
 
-        guard let commandQueue = device.makeCommandQueue() else {
-            fatalError()
-        }
-        try commandQueue.withCommandBuffer(waitAfterCommit: true) { commandBuffer in
-            try offscreen.draw(device: device, size: configuration.size, renderPassDescriptor: configuration.currentRenderPassDescriptor!, commandBuffer: commandBuffer)
-        }
+            guard let commandQueue = device.makeCommandQueue() else {
+                fatalError()
+            }
+            try commandQueue.withCommandBuffer(waitAfterCommit: true) { commandBuffer in
+                try offscreen.draw(device: device, size: configuration.size, renderPassDescriptor: configuration.currentRenderPassDescriptor!, commandBuffer: commandBuffer)
+            }
 
 //        let histogram = configuration.targetTexture!.histogram()
 //        histogram.withEx(type: UInt32.self, count: 4 * 256) { pointer in
 //        }
-        let image = await configuration.targetTexture!.cgImage(colorSpace: CGColorSpace(name: CGColorSpace.displayP3))
-        let url = URL(filePath: "/tmp/test.jpg")
-        try image.write(to: URL(filePath: "/tmp/test.jpg"))
-        let openConfiguration = NSWorkspace.OpenConfiguration()
-        openConfiguration.activates = true
-        _ = try await NSWorkspace.shared.open(url, configuration: openConfiguration)
+            let image = await configuration.targetTexture!.cgImage(colorSpace: CGColorSpace(name: CGColorSpace.displayP3))
+            let url = URL(filePath: "/tmp/test.jpg")
+            try image.write(to: URL(filePath: "/tmp/test.jpg"))
+            let openConfiguration = NSWorkspace.OpenConfiguration()
+            openConfiguration.activates = true
+            _ = try await NSWorkspace.shared.open(url, configuration: openConfiguration)
+        }
     }
-}
 #endif

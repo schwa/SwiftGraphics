@@ -1,11 +1,11 @@
 // from https://github.com/evanw/csg.js/blob/master/csg.js
 
+import MetalSupport
 import RenderKit
 import RenderKitShaders
+import Shapes3D
 import simd
 import SIMDSupport
-import Shapes3D
-import MetalSupport
 
 public struct CSG<Vertex> where Vertex: VertexLike {
     public typealias Polygon = Polygon3D<Vertex>
@@ -17,9 +17,9 @@ public struct CSG<Vertex> where Vertex: VertexLike {
     }
 }
 
-internal extension CSG {
+extension CSG {
     init(node: Node<Vertex>) {
-        self.polygons = node.allPolygons
+        polygons = node.allPolygons
     }
 }
 
@@ -108,7 +108,7 @@ public extension CSG where Vertex == SimpleVertex {
     }
 
     func inverted() -> Self {
-        return Self(polygons: polygons.map { $0.flipped() })
+        Self(polygons: polygons.map { $0.flipped() })
     }
 
     func split(plane: Plane3D<Float>) -> (Self, Self) {
@@ -131,7 +131,7 @@ public extension CSG where Vertex == SimpleVertex {
 
 // MARK: -
 
-public class Node <Vertex> where Vertex: VertexLike {
+public class Node<Vertex> where Vertex: VertexLike {
     public typealias Polygon = Polygon3D<Vertex>
 
     public var plane: Plane3D<Float>?
@@ -192,7 +192,7 @@ public class Node <Vertex> where Vertex: VertexLike {
 
     // Convert solid space to empty space and empty space to solid space.
     func invert() {
-fatalError()
+        fatalError()
         //        polygons = polygons.map { $0.flipped() }
 //        plane!.flip()
 //        front?.invert()
@@ -271,8 +271,9 @@ private enum SplitType: Int {
 
 extension SplitType {
     static func | (lhs: Self, rhs: Self) -> Self {
-        return SplitType(rawValue: lhs.rawValue | rhs.rawValue)!
+        SplitType(rawValue: lhs.rawValue | rhs.rawValue)!
     }
+
     static func |= (lhs: inout Self, rhs: Self) {
         lhs = lhs | rhs
     }

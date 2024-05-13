@@ -1,9 +1,9 @@
-import Foundation
-import SwiftUI
-import Observation
-import Everything
-import Charts
 import Algorithms
+import Charts
+import Everything
+import Foundation
+import Observation
+import SwiftUI
 
 actor Counters {
     static let shared = Counters()
@@ -24,7 +24,7 @@ actor Counters {
 
     func _increment(counter key: String) {
         let now = Date.now.timeIntervalSinceReferenceDate
-        if var record = self.records[key] {
+        if var record = records[key] {
             record.count += 1
             let last = record.last
             record.last = now
@@ -34,10 +34,10 @@ actor Counters {
             record.history = Array((record.history + [now]).drop { time in
                 now - time > 10
             })
-            self.records[key] = record
+            records[key] = record
         }
         else {
-            self.records[key] = Record(id: key, first: now, last: now, history: [now])
+            records[key] = Record(id: key, first: now, last: now, history: [now])
         }
     }
 

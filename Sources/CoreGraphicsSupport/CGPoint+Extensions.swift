@@ -181,7 +181,7 @@ public extension CGPoint {
     }
 
     var normalized: Self {
-        self.isZero ? self : self / length
+        isZero ? self : self / length
     }
 
     var orthogonal: Self {
@@ -232,4 +232,3 @@ public extension CGPoint {
         CGPoint(x: x, y: rect.height - y)
     }
 }
-

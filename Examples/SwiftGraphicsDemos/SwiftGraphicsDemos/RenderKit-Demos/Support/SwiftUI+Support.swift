@@ -11,74 +11,74 @@ extension Path {
 }
 
 #if !os(tvOS)
-struct MyDisclosureGroupStyle: DisclosureGroupStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        HStack {
-            Button {
-                withAnimation {
-                    configuration.isExpanded.toggle()
+    struct MyDisclosureGroupStyle: DisclosureGroupStyle {
+        func makeBody(configuration: Configuration) -> some View {
+            HStack {
+                Button {
+                    withAnimation {
+                        configuration.isExpanded.toggle()
+                    }
+                } label: {
+                    configuration.label
                 }
-            } label: {
-                configuration.label
+                .buttonStyle(.borderless)
+                if configuration.isExpanded {
+                    configuration.content
+                }
+            }
+            .padding(4)
+        }
+    }
+
+    struct SliderPopoverButton<Label, ValueLabel>: View where Label: View, ValueLabel: View {
+        @Binding
+        var value: Double
+
+        var bounds: ClosedRange<Double>
+
+        var label: Label
+        var minimumValueLabel: ValueLabel
+        var maximumValueLabel: ValueLabel
+        var onEditingChanged: (Bool) -> Void
+
+        @State
+        var isPresented = false
+
+        var body: some View {
+            Button(systemImage: "slider.horizontal.2.square") {
+                isPresented = true
             }
             .buttonStyle(.borderless)
-            if configuration.isExpanded {
-                configuration.content
-            }
+            .tint(.accentColor)
+            .popover(isPresented: $isPresented, content: {
+                Slider(value: $value, in: bounds, label: { label }, minimumValueLabel: { minimumValueLabel }, maximumValueLabel: { maximumValueLabel }, onEditingChanged: onEditingChanged)
+                    .controlSize(.mini)
+                    .frame(minWidth: 100)
+                    .padding()
+            })
         }
-        .padding(4)
-    }
-}
 
-struct SliderPopoverButton<Label, ValueLabel>: View where Label: View, ValueLabel: View {
-    @Binding
-    var value: Double
-
-    var bounds: ClosedRange<Double>
-
-    var label: Label
-    var minimumValueLabel: ValueLabel
-    var maximumValueLabel: ValueLabel
-    var onEditingChanged: (Bool) -> Void
-
-    @State
-    var isPresented = false
-
-    var body: some View {
-        Button(systemImage: "slider.horizontal.2.square") {
-            isPresented = true
+        init<V>(value: Binding<V>, in bounds: ClosedRange<V> = 0 ... 1, @ViewBuilder label: () -> Label, @ViewBuilder minimumValueLabel: () -> ValueLabel, @ViewBuilder maximumValueLabel: () -> ValueLabel, onEditingChanged: @escaping (Bool) -> Void = { _ in }) where V: BinaryFloatingPoint, V.Stride: BinaryFloatingPoint {
+            _value = Binding<Double>(value)
+            self.bounds = Double(bounds.lowerBound) ... Double(bounds.upperBound)
+            self.label = label()
+            self.minimumValueLabel = minimumValueLabel()
+            self.maximumValueLabel = maximumValueLabel()
+            self.onEditingChanged = onEditingChanged
         }
-        .buttonStyle(.borderless)
-        .tint(.accentColor)
-        .popover(isPresented: $isPresented, content: {
-            Slider(value: $value, in: bounds, label: { label }, minimumValueLabel: { minimumValueLabel }, maximumValueLabel: { maximumValueLabel }, onEditingChanged: onEditingChanged)
-                .controlSize(.mini)
-                .frame(minWidth: 100)
-                .padding()
-        })
     }
 
-    init<V>(value: Binding<V>, in bounds: ClosedRange<V> = 0...1, @ViewBuilder label: () -> Label, @ViewBuilder minimumValueLabel: () -> ValueLabel, @ViewBuilder maximumValueLabel: () -> ValueLabel, onEditingChanged: @escaping (Bool) -> Void = { _ in }) where V: BinaryFloatingPoint, V.Stride: BinaryFloatingPoint {
-        self._value = Binding<Double>(value)
-        self.bounds = Double(bounds.lowerBound) ... Double(bounds.upperBound)
-        self.label = label()
-        self.minimumValueLabel = minimumValueLabel()
-        self.maximumValueLabel = maximumValueLabel()
-        self.onEditingChanged = onEditingChanged
+    extension SliderPopoverButton where Label == EmptyView, ValueLabel == EmptyView {
+        init<V>(value: Binding<V>, in bounds: ClosedRange<V> = 0 ... 1, onEditingChanged: @escaping (Bool) -> Void = { _ in }) where V: BinaryFloatingPoint, V.Stride: BinaryFloatingPoint {
+            self = .init(value: value, in: bounds, label: { EmptyView() }, minimumValueLabel: { EmptyView() }, maximumValueLabel: { EmptyView() }, onEditingChanged: onEditingChanged)
+        }
     }
-}
 
-extension SliderPopoverButton where Label == EmptyView, ValueLabel == EmptyView {
-    init<V>(value: Binding<V>, in bounds: ClosedRange<V> = 0...1, onEditingChanged: @escaping (Bool) -> Void = { _ in }) where V: BinaryFloatingPoint, V.Stride: BinaryFloatingPoint {
-        self = .init(value: value, in: bounds, label: { EmptyView() }, minimumValueLabel: { EmptyView() }, maximumValueLabel: { EmptyView() }, onEditingChanged: onEditingChanged)
+    extension SliderPopoverButton where Label == EmptyView {
+        init<V>(value: Binding<V>, in bounds: ClosedRange<V> = 0 ... 1, @ViewBuilder minimumValueLabel: () -> ValueLabel, @ViewBuilder maximumValueLabel: () -> ValueLabel, onEditingChanged: @escaping (Bool) -> Void = { _ in }) where V: BinaryFloatingPoint, V.Stride: BinaryFloatingPoint {
+            self = .init(value: value, in: bounds, label: { EmptyView() }, minimumValueLabel: minimumValueLabel, maximumValueLabel: maximumValueLabel, onEditingChanged: onEditingChanged)
+        }
     }
-}
-
-extension SliderPopoverButton where Label == EmptyView {
-    init<V>(value: Binding<V>, in bounds: ClosedRange<V> = 0...1, @ViewBuilder minimumValueLabel: () -> ValueLabel, @ViewBuilder maximumValueLabel: () -> ValueLabel, onEditingChanged: @escaping (Bool) -> Void = { _ in }) where V: BinaryFloatingPoint, V.Stride: BinaryFloatingPoint {
-        self = .init(value: value, in: bounds, label: { EmptyView() }, minimumValueLabel: minimumValueLabel, maximumValueLabel: maximumValueLabel, onEditingChanged: onEditingChanged)
-    }
-}
 #endif
 
 struct FrameEditorModifier: ViewModifier {

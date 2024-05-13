@@ -1,10 +1,9 @@
 import Algorithms
 import CoreGraphicsSupport
-import SwiftUI
 import Shapes2D
+import SwiftUI
 
 struct LegacyPathEditor: View {
-
     @Binding
     var points: [CGPoint]
 

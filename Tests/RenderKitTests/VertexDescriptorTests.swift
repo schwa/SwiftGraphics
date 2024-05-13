@@ -1,5 +1,5 @@
-import XCTest
 @testable import RenderKit
+import XCTest
 
 final class VertexDescriptorTests: XCTestCase {
     func testVertexDescriptor() throws {
@@ -34,20 +34,20 @@ final class VertexDescriptorTests: XCTestCase {
         d2.layouts[0].attributes[2].semantic = .textureCoordinate
         XCTAssertEqual(d, d2)
 
-/*
- <MTLVertexDescriptorInternal: 0x6000037d9140>
-     Buffer 0:
-         stepFunction = MTLVertexStepFunctionPerVertex
-         stride = 32
-         Attribute 0:
-             offset = 0
-             format = MTLAttributeFormatFloat3
-         Attribute 1:
-             offset = 12
-             format = MTLAttributeFormatFloat3
-         Attribute 2:
-             offset = 24
-             format = MTLAttributeFormatFloat2
-*/
+        /*
+         <MTLVertexDescriptorInternal: 0x6000037d9140>
+             Buffer 0:
+                 stepFunction = MTLVertexStepFunctionPerVertex
+                 stride = 32
+                 Attribute 0:
+                     offset = 0
+                     format = MTLAttributeFormatFloat3
+                 Attribute 1:
+                     offset = 12
+                     format = MTLAttributeFormatFloat3
+                 Attribute 2:
+                     offset = 24
+                     format = MTLAttributeFormatFloat2
+         */
     }
 }

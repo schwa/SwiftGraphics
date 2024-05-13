@@ -1,26 +1,26 @@
 import Metal
 import MetalKit
+import MetalSupport
 import ModelIO
 import RenderKitShaders
-import MetalSupport
 import Shapes3D
 
 // TODO: -> Semantics
-//struct Semantic: OptionSet, Hashable, Sendable {
+// struct Semantic: OptionSet, Hashable, Sendable {
 //    let rawValue: Int
 //
 //    static let position          = Self(rawValue: 1 << 0)
 //    static let normal            = Self(rawValue: 1 << 1)
 //    static let textureCoordinate = Self(rawValue: 1 << 2)
-//}
+// }
 
-//typealias SemanticSet = Set<Semantic> // TODO: Use BitSet<UIntX>
+// typealias SemanticSet = Set<Semantic> // TODO: Use BitSet<UIntX>
 //
-//enum BufferRole: Hashable, Sendable {
+// enum BufferRole: Hashable, Sendable {
 //    case indices
 //    case vertices(SemanticSet)
 //    case other
-//}
+// }
 
 // MARK: -
 
@@ -40,7 +40,7 @@ public struct BufferView: Labeled {
 
 extension BufferView: CustomStringConvertible {
     public var description: String {
-        return "BufferView(label: \"\(label ?? "")\", buffer: \(buffer.gpuAddress, format: .hex), offset: \(offset))"
+        "BufferView(label: \"\(label ?? "")\", buffer: \(buffer.gpuAddress, format: .hex), offset: \(offset))"
     }
 }
 
@@ -171,7 +171,7 @@ public extension YAMesh {
 
 public extension Shape3D {
     func toYAMesh(allocator: MDLMeshBufferAllocator?, device: MTLDevice) throws -> YAMesh {
-        let mdlMesh = self.toMDLMesh(allocator: allocator)
+        let mdlMesh = toMDLMesh(allocator: allocator)
         return try YAMesh(label: "\(type(of: self))", mdlMesh: mdlMesh, device: device)
     }
 }

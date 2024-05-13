@@ -1,12 +1,12 @@
-import SwiftUI
-import ModelIO
+import Everything
 import Metal
 import MetalKit
-import SIMDSupport
-import RenderKitShaders
-import RenderKit
+import ModelIO
 import Observation
-import Everything
+import RenderKit
+import RenderKitShaders
+import SIMDSupport
+import SwiftUI
 
 public struct FlatMaterial: Material {
     public var label: String?
@@ -22,6 +22,7 @@ class FlatMaterialRenderJob: SceneRenderJob {
         var fragmentLightingIndex: Int = -1
         var fragmentMaterialsIndex: Int = -1
     }
+
     struct DrawState {
         var renderPipelineState: MTLRenderPipelineState
         var depthStencilState: MTLDepthStencilState
@@ -39,7 +40,7 @@ class FlatMaterialRenderJob: SceneRenderJob {
         self.textureManager = textureManager
     }
 
-    func setup<Configuration: MetalConfiguration>(device: MTLDevice, configuration: inout Configuration) throws {
+    func setup(device: MTLDevice, configuration: inout some MetalConfiguration) throws {
         let library = try! device.makeDefaultLibrary(bundle: .shadersBundle)
         bucketedDrawStates = try models.reduce(into: [:]) { partialResult, model in
             let key = Pair(model.mesh.id, model.mesh.vertexDescriptor.encodedDescription)
@@ -104,7 +105,7 @@ class FlatMaterialRenderJob: SceneRenderJob {
                     }
                     return try textureManager.texture(for: texture.resource, options: texture.options)
                 }
-                encoder.setFragmentTextures(textures, range: 0..<textures.count)
+                encoder.setFragmentTextures(textures, range: 0 ..< textures.count)
 
                 let materials = models.enumerated().map { _, model in
                     let color = (model.material as! FlatMaterial).baseColorFactor

@@ -107,7 +107,7 @@ public extension Ellipse {
     }
 }
 
-// TODO: 
+// TODO:
 public extension Ellipse {
     // From http://spencermortensen.com/articles/bezier-circle/ (via @iamdavidhart)
     static let c: Double = 0.551_915_024_494

@@ -1,5 +1,5 @@
-import Metal
 import Compute
+import Metal
 
 public struct BitonicSortDemo {
     public init() {
@@ -9,7 +9,7 @@ public struct BitonicSortDemo {
         let stopWatch = StopWatch()
 
         print("Creating random buffer", stopWatch)
-        var entries: [UInt32] = (0..<100_000).shuffled()
+        var entries: [UInt32] = (0 ..< 100_000).shuffled()
 
         print("Copying buffer to GPU.", stopWatch)
         let device = MTLCreateSystemDefaultDevice()!
@@ -40,7 +40,7 @@ public struct BitonicSortDemo {
 
         try compute.task { task in
             try task { dispatch in
-                for stageIndex in 0..<numStages {
+                for stageIndex in 0 ..< numStages {
                     for stepIndex in 0 ..< (stageIndex + 1) {
                         let groupWidth = 1 << (stageIndex - stepIndex)
                         let groupHeight = 2 * groupWidth - 1

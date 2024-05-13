@@ -1,5 +1,5 @@
-import SwiftUI
 import Shapes2D
+import SwiftUI
 
 enum Tool {
     case select
@@ -8,7 +8,6 @@ enum Tool {
 }
 
 struct SelectTool: ViewModifier {
-
     @Binding
     var selection: Set<UUID>
 
@@ -18,9 +17,9 @@ struct SelectTool: ViewModifier {
     func body(content: Content) -> some View {
         content.gesture(SpatialTapGesture(coordinateSpace: NamedCoordinateSpace.canvas).onEnded({ value in
             let hits = shapes.filter { shape in
-                return shape.content.contains(value.location, lineWidth: 8)
+                shape.content.contains(value.location, lineWidth: 8)
             }
-                .map(\.id)
+            .map(\.id)
             selection = Set(hits)
         }))
         .overlay {
@@ -49,7 +48,6 @@ struct SelectTool: ViewModifier {
 }
 
 struct LineTool: ViewModifier {
-
     @State
     var lastPoint: CGPoint?
 
@@ -71,7 +69,7 @@ struct LineTool: ViewModifier {
             .gesture(SpatialTapGesture(coordinateSpace: NamedCoordinateSpace.canvas).onEnded({ value in
                 if lastPoint != nil {
                     onCommit()
-                    self.lastPoint = nil
+                    lastPoint = nil
                 }
                 else {
                     lastPoint = value.location
@@ -114,7 +112,7 @@ struct CircleTool: ViewModifier {
             .gesture(SpatialTapGesture(coordinateSpace: NamedCoordinateSpace.canvas).onEnded({ value in
                 if center != nil {
                     onCommit()
-                    self.center = nil
+                    center = nil
                 }
                 else {
                     center = value.location
@@ -135,7 +133,6 @@ struct CircleTool: ViewModifier {
 }
 
 struct ShapeEditor: View {
-
     @Binding
     var shape: MyShape
 

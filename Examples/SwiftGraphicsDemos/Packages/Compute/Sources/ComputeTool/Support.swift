@@ -1,10 +1,10 @@
-import Metal
-import Foundation
-import Compute
-import MetalSupport
-import CoreGraphicsSupport
-import CoreGraphics
 import AppKit
+import Compute
+import CoreGraphics
+import CoreGraphicsSupport
+import Foundation
+import Metal
+import MetalSupport
 import RenderKit
 
 class StopWatch: CustomStringConvertible {
@@ -19,7 +19,7 @@ class StopWatch: CustomStringConvertible {
     }
 
     var description: String {
-        return "\(time)"
+        "\(time)"
     }
 }
 
@@ -37,12 +37,12 @@ public func nextPowerOfTwo(_ value: Double) -> Double {
 }
 
 public func nextPowerOfTwo(_ value: Int) -> Int {
-    return Int(nextPowerOfTwo(Double(value)))
+    Int(nextPowerOfTwo(Double(value)))
 }
 
 extension Collection where Element: Comparable {
     var isSorted: Bool {
-        return zip(self, sorted()).allSatisfy { lhs, rhs in
+        zip(self, sorted()).allSatisfy { lhs, rhs in
             lhs == rhs
         }
     }
@@ -69,7 +69,7 @@ extension MTLTexture {
         }
 
         var s = ""
-        for row in 0..<height {
+        for row in 0 ..< height {
             let chunk = buffer[row * width ..< (row + 1) * width]
             s += chunk.map { String($0) }.joined()
             s += "\n"

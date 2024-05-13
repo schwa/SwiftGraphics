@@ -1,13 +1,13 @@
 import Foundation
 import Metal
 
-//Description:    CT study of a cadaver head
-//Dimensions:    113 slices of 256 x 256 pixels,
+// Description:    CT study of a cadaver head
+// Dimensions:    113 slices of 256 x 256 pixels,
 //        voxel grid is rectangular, and
 //        X:Y:Z shape of each voxel is 1:1:2
-//Files:        113 binary files, one file per slice
-//File format:    16-bit integers (Mac byte ordering), file contains no header
-//Data source:    acquired on a General Electric CT Scanner and provided
+// Files:        113 binary files, one file per slice
+// File format:    16-bit integers (Mac byte ordering), file contains no header
+// Data source:    acquired on a General Electric CT Scanner and provided
 //                courtesy of North Carolina Memorial Hospital
 
 public struct VolumeData {
@@ -17,7 +17,7 @@ public struct VolumeData {
 
     public init(named name: String, size: MTLSize) throws {
         self.name = name
-        self.archive = try TarArchive(named: "StanfordVolumeData")
+        archive = try TarArchive(named: "StanfordVolumeData")
         self.size = size
     }
 
@@ -25,8 +25,8 @@ public struct VolumeData {
         let records = try archive.records.values
             .filter { try $0.filename.hasPrefix("StanfordVolumeData/\(name)/") && $0.fileType == .normalFile }
             .sorted { lhs, rhs in
-                let lhs = Int(URL(filePath: try lhs.filename).pathExtension)!
-                let rhs = Int(URL(filePath: try rhs.filename).pathExtension)!
+                let lhs = try Int(URL(filePath: lhs.filename).pathExtension)!
+                let rhs = try Int(URL(filePath: rhs.filename).pathExtension)!
                 return lhs < rhs
             }
         let slices = try records.map {
@@ -34,16 +34,16 @@ public struct VolumeData {
             assert(!data.isEmpty)
             return data
         }
-            .map {
-                let data = $0.withUnsafeBytes { buffer in
-                    buffer.bindMemory(to: UInt16.self).map {
-                        UInt16(bigEndian: $0)
-                    }
+        .map {
+            let data = $0.withUnsafeBytes { buffer in
+                buffer.bindMemory(to: UInt16.self).map {
+                    UInt16(bigEndian: $0)
                 }
-                // TODO: align data to device.minimumLinearTextureAlignment(for: .r16UInt)
-                assert(data.count == size.width * size.height)
-                return data
             }
+            // TODO: align data to device.minimumLinearTextureAlignment(for: .r16UInt)
+            assert(data.count == size.width * size.height)
+            return data
+        }
         assert(slices.count == size.depth)
         return slices
     }
@@ -52,7 +52,7 @@ public struct VolumeData {
         var counts = Array(repeating: 0, count: Int(UInt16.max))
         let slices = try slices()
         let values = slices.flatMap { $0 }
-        values.forEach { value in
+        for value in values {
             counts[Int(value)] += 1
         }
 
@@ -60,7 +60,7 @@ public struct VolumeData {
     }
 
     public func load() throws -> (MTLDevice) throws -> MTLTexture {
-        return { device in
+        { device in
             let slices = try slices()
             let textureDescriptor = MTLTextureDescriptor()
             textureDescriptor.textureType = .type3D
@@ -73,7 +73,7 @@ public struct VolumeData {
             guard let texture = device.makeTexture(descriptor: textureDescriptor) else {
                 fatalError()
             }
-            //texture.label = directoryURL.lastPathComponent
+            // texture.label = directoryURL.lastPathComponent
             let bytesPerRow = size.width * 2
             let bytesPerImage = size.width * size.height * 2
             for (index, slice) in slices.enumerated() {

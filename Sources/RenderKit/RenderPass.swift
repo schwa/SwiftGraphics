@@ -12,9 +12,9 @@ public protocol MetalConfiguration {
 // MARK: -
 
 public protocol RenderPass: AnyObject {
-    func setup <Configuration: MetalConfiguration>(device: MTLDevice, configuration: inout Configuration) throws
+    func setup<Configuration: MetalConfiguration>(device: MTLDevice, configuration: inout Configuration) throws
     func drawableSizeWillChange(device: MTLDevice, size: CGSize) throws
-    func draw (device: MTLDevice, size: CGSize, renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) throws
+    func draw(device: MTLDevice, size: CGSize, renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) throws
 }
 
 public extension RenderPass {

@@ -1,20 +1,21 @@
-import Foundation
 import CoreGraphics
-import simd
+import CoreGraphicsSupport
 import Everything
-import SwiftUI
+import Foundation
 import MetalKit
+import MetalSupport
 import RenderKit
 import RenderKitShaders
 import Shapes2D
-import CoreGraphicsSupport
-import MetalSupport
+import simd
+import SwiftUI
 
 // TODO: Move
 extension CGVector {
     init(_ dx: CGFloat, _ dy: CGFloat) {
         self = CGVector(dx: dx, dy: dy)
     }
+
     init(_ size: CGSize) {
         self = CGVector(dx: size.width, dy: size.height)
     }
@@ -23,7 +24,7 @@ extension CGVector {
 extension SIMD3 where Scalar == Float {
     var h: Float {
         get {
-            return x
+            x
         }
         set {
             x = newValue
@@ -32,7 +33,7 @@ extension SIMD3 where Scalar == Float {
 
     var s: Float {
         get {
-            return y
+            y
         }
         set {
             y = newValue
@@ -41,7 +42,7 @@ extension SIMD3 where Scalar == Float {
 
     var v: Float {
         get {
-            return z
+            z
         }
         set {
             z = newValue
@@ -129,7 +130,7 @@ extension MTLBuffer {
         UnsafeMutableRawBufferPointer(start: contents(), count: length)
     }
 
-    func contentsBuffer <T>(of type: T.Type) -> UnsafeMutableBufferPointer <T> {
+    func contentsBuffer<T>(of type: T.Type) -> UnsafeMutableBufferPointer<T> {
         contentsBuffer().bindMemory(to: type)
     }
 }
@@ -192,7 +193,7 @@ func printOnce(_ items: Any..., separator: String = " ", terminator: String = "\
     print(s, terminator: "")
 }
 
-struct Pair <LHS, RHS> {
+struct Pair<LHS, RHS> {
     var lhs: LHS
     var rhs: RHS
 
@@ -202,8 +203,8 @@ struct Pair <LHS, RHS> {
     }
 
     init(_ value: (LHS, RHS)) {
-        self.lhs = value.0
-        self.rhs = value.1
+        lhs = value.0
+        rhs = value.1
     }
 }
 

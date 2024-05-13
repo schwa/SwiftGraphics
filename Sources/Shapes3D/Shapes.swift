@@ -1,6 +1,6 @@
 import CoreGraphics
-import simd
 import ModelIO
+import simd
 
 // TODO: This file needs a big makeover. See also MeshConvertable.
 
@@ -170,11 +170,11 @@ public extension Polygon3D where Vertex: VertexLike3, Vertex.Vector == SIMD3<Flo
     }
 }
 
-//public extension Polygon3D {
+// public extension Polygon3D {
 //    var plane: Plane3D<Float> {
 //        Plane3D(points: (vertices[0], vertices[1], vertices[2]))
 //    }
-//}
+// }
 
 public extension Polygon3D {
     init(polygonalChain: PolygonalChain3D<Vertex>) {
@@ -330,6 +330,7 @@ public struct CubeX: Shape3D {
         return mesh
     }
 }
+
 //
 
 @available(*, deprecated, message: "Break into shape3d and a meshconvertable")

@@ -1,12 +1,11 @@
 import Algorithms
 import CoreGraphicsSupport
 import Observation
+import Shapes2D
 import Sketches
 import SwiftUI
-import Shapes2D
 
 struct ContentView: View {
-
     @Environment(\.openWindow)
     var openWindow
 
@@ -22,5 +21,3 @@ struct ContentView: View {
             }
     }
 }
-
-

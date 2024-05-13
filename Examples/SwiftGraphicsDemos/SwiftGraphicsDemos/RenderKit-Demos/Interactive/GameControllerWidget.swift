@@ -1,6 +1,6 @@
-import SwiftUI
-import GameController
 import Foundation
+import GameController
+import SwiftUI
 
 struct GameControllerWidget: View {
     @Observable
@@ -9,7 +9,7 @@ struct GameControllerWidget: View {
 
         struct DeviceBox: Hashable, Identifiable {
             var id: ObjectIdentifier {
-                return ObjectIdentifier(device)
+                ObjectIdentifier(device)
             }
 
             static func == (lhs: GameControllerWidget.GameControllerWidgetModel.DeviceBox, rhs: GameControllerWidget.GameControllerWidgetModel.DeviceBox) -> Bool {
@@ -25,13 +25,13 @@ struct GameControllerWidget: View {
 
         var devices: Set<DeviceBox> = []
 
-#if os(iOS)
-        var virtualController: GCVirtualController?
-        // Temporary workaround for FB12509166
-#endif
+        #if os(iOS)
+            var virtualController: GCVirtualController?
+            // Temporary workaround for FB12509166
+        #endif
 
         @ObservationIgnored
-        var monitorTask: Task<(), Never>?
+        var monitorTask: Task<Void, Never>?
 
         init() {
             devices.formUnion(GCController.controllers().map(DeviceBox.init))
@@ -43,7 +43,7 @@ struct GameControllerWidget: View {
                         // TODO: FIXME
 //                        for await device in notificationCenter.notifications(named: .GCControllerDidConnect).compactMap(\.object).cast(to: GCDevice.self) {
 //                            self?.devices.insert(DeviceBox(device: device!))
-////                        }
+                        ////                        }
                     }
                     group.addTask { [weak self] in
                         // TODO: FIXME
@@ -121,35 +121,35 @@ struct GameControllerWidget: View {
                         model.stopDiscovery()
                     }
                 }
-#if os(iOS)
-                Divider()
-                if model.virtualController != nil {
-                    Button("Disable Touch Controller") {
-                        model.virtualController?.disconnect()
-                        model.virtualController = nil
-                    }
-                }
-                else {
-                    Button("Enable Touch Controller") {
-                        Task {
-                            let configuration = GCVirtualController.Configuration()
-                            configuration.elements = [
-                                GCInputLeftThumbstick, GCInputRightThumbstick, GCInputLeftShoulder, GCInputRightShoulder,
-                                //                        GCInputButtonA,
-                                //                        GCInputButtonB,
-                                //                        GCInputButtonX,
-                                //                        GCInputButtonY,
-                                //GCInputDirectionPad,
-                                //                        GCInputLeftTrigger,
-                                //                        GCInputRightTrigger
-                            ]
-                            let virtualController = GCVirtualController(configuration: configuration)
-                            try! await virtualController.connect()
-                            model.virtualController = virtualController
+                #if os(iOS)
+                    Divider()
+                    if model.virtualController != nil {
+                        Button("Disable Touch Controller") {
+                            model.virtualController?.disconnect()
+                            model.virtualController = nil
                         }
                     }
-                }
-#endif
+                    else {
+                        Button("Enable Touch Controller") {
+                            Task {
+                                let configuration = GCVirtualController.Configuration()
+                                configuration.elements = [
+                                    GCInputLeftThumbstick, GCInputRightThumbstick, GCInputLeftShoulder, GCInputRightShoulder,
+                                    //                        GCInputButtonA,
+                                    //                        GCInputButtonB,
+                                    //                        GCInputButtonX,
+                                    //                        GCInputButtonY,
+                                    // GCInputDirectionPad,
+                                    //                        GCInputLeftTrigger,
+                                    //                        GCInputRightTrigger
+                                ]
+                                let virtualController = GCVirtualController(configuration: configuration)
+                                try! await virtualController.connect()
+                                model.virtualController = virtualController
+                            }
+                        }
+                    }
+                #endif
                 if !model.devices.isEmpty {
                     Divider()
                     ForEach(Array(model.devices), id: \.self) { box in
@@ -166,22 +166,22 @@ struct GameControllerWidget: View {
                 //                    Image(systemName: "gamecontroller").symbolEffect(.pulse.byLayer)
                 //                })
             }
-        label: {
-            Label(
-                title: { Text("Game Controller") },
-                icon: {
-                    if model.devices.isEmpty {
-                        Image(systemName: "gamecontroller")
+            label: {
+                Label(
+                    title: { Text("Game Controller") },
+                    icon: {
+                        if model.devices.isEmpty {
+                            Image(systemName: "gamecontroller")
+                        }
+                        else {
+                            Image(systemName: "gamecontroller.fill")
+                        }
                     }
-                    else {
-                        Image(systemName: "gamecontroller.fill")
-                    }
-                }
-            )
-            .labelStyle(.iconOnly)
+                )
+                .labelStyle(.iconOnly)
             }
-        .fixedSize()
-        .backgroundStyle(Color.yellow)
+            .fixedSize()
+            .backgroundStyle(Color.yellow)
         }
     }
 }
@@ -190,13 +190,13 @@ extension GCDevice {
     var sfSymbolName: String? {
         switch self {
         case _ as GCController:
-            return "gamecontroller"
+            "gamecontroller"
         case _ as GCKeyboard:
-            return "keyboard"
+            "keyboard"
         case _ as GCMouse:
-            return "mouse"
+            "mouse"
         default:
-            return nil
+            nil
         }
     }
 }

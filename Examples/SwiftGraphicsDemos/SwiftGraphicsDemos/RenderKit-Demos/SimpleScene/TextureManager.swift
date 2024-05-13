@@ -22,13 +22,13 @@ public class TextureManager {
 
     public init(device: MTLDevice) {
         self.device = device
-        self.textureLoader = MTKTextureLoader(device: device)
-        self.cache = Cache()
+        textureLoader = MTKTextureLoader(device: device)
+        cache = Cache()
     }
 
     public func texture(for resource: some ResourceProtocol, options: Options = Options()) throws -> MTLTexture {
-        return try cache.get(key: resource) {
-            return try textureLoader.newTexture(resource: resource, options: .init(options))
+        try cache.get(key: resource) {
+            try textureLoader.newTexture(resource: resource, options: .init(options))
         }
     }
 }
@@ -47,7 +47,7 @@ extension TextureManager.Options: Hashable {
     }
 }
 
-extension Dictionary where Key == MTKTextureLoader.Option, Value == Any {
+extension [MTKTextureLoader.Option: Any] {
     init(_ options: TextureManager.Options) {
         self = [:]
         self[.allocateMipmaps] = options.allocateMipMaps
@@ -85,7 +85,7 @@ public extension MTKTextureLoader {
 
     func newTexture(resource: BundleResourceReference, options: [Option: Any]? = nil) throws -> MTLTexture {
         // TODO: Scale factor.
-        return try newTexture(name: resource.name, scaleFactor: 1.0, bundle: resource.bundle.bundle, options: options)
+        try newTexture(name: resource.name, scaleFactor: 1.0, bundle: resource.bundle.bundle, options: options)
     }
 
     func newTexture(resource: some URLProviding, options: [Option: Any]? = nil) throws -> MTLTexture {
@@ -98,13 +98,13 @@ public extension MTKTextureLoader {
         return try await newTexture(URL: url, options: options)
     }
 
-    func newTexture <Resource>(resource: Resource, options: [Option: Any]? = nil) throws -> MTLTexture where Resource: SynchronousLoadable, Resource.Parameter == (), Resource.Content == Data {
-        let data = Data(try resource.load())
+    func newTexture<Resource>(resource: Resource, options: [Option: Any]? = nil) throws -> MTLTexture where Resource: SynchronousLoadable, Resource.Parameter == (), Resource.Content == Data {
+        let data = try Data(resource.load())
         return try newTexture(data: data, options: options)
     }
 
-    func newTexture <Resource>(resource: Resource, options: [Option: Any]? = nil) async throws -> MTLTexture where Resource: AsynchronousLoadable, Resource.Parameter == (), Resource.Content == Data {
-        let data = Data(try await resource.load())
+    func newTexture<Resource>(resource: Resource, options: [Option: Any]? = nil) async throws -> MTLTexture where Resource: AsynchronousLoadable, Resource.Parameter == (), Resource.Content == Data {
+        let data = try await Data(resource.load())
         return try await newTexture(data: data, options: options)
     }
 }

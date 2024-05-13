@@ -1,7 +1,7 @@
-import Metal
-import RenderKit
-import MetalKit
 import Algorithms
+import Metal
+import MetalKit
+import RenderKit
 import Shapes3D
 
 public extension SimpleScene {
@@ -22,37 +22,38 @@ public extension SimpleScene {
             tilesSize = [6, 2]
             tileTextures = (1 ... 12).map { index in
                 BundleResourceReference(bundle: .main, name: "perseverance_\(index.formatted(.number.precision(.integerLength(2))))", extension: "ktx")
-                //ResourceReference.bundle(.main, name: "Testcard_\(index.formatted(.number.precision(.integerLength(2))))", extension: "ktx")
+                // ResourceReference.bundle(.main, name: "Testcard_\(index.formatted(.number.precision(.integerLength(2))))", extension: "ktx")
             }
             .map { resource -> ((MTKTextureLoader) throws -> MTLTexture) in
-                return { loader in
+                { loader in
                     try loader.newTexture(resource: resource, options: [.textureStorageMode: MTLStorageMode.private.rawValue])
                 }
             }
         }
         else {
             tilesSize = [1, 1]
-            tileTextures = [ { loader in
+            tileTextures = [
+                { loader in
                     try loader.newTexture(name: "BlueSkySkybox", scaleFactor: 1, bundle: .main, options: [
                         .textureStorageMode: MTLStorageMode.private.rawValue,
                         .SRGB: true,
                     ])
-                }
+                },
             ]
         }
 
         var models: [Model] = []
         models += product(xRange, zRange).map { x, z in
-            let hsv: SIMD3<Float> = [Float.random(in: 0...1), 1, 1]
+            let hsv: SIMD3<Float> = [Float.random(in: 0 ... 1), 1, 1]
             let rgba = SIMD4<Float>(hsv.hsv2rgb(), 1.0)
             let material = FlatMaterial(baseColorFactor: rgba, baseColorTexture: .init(resource: BundleResourceReference(bundle: .main, name: "Checkerboard")))
             return Model(transform: .translation([x, 0, z]), material: material, mesh: meshes.randomElement()!)
         }
 
-        let fishModel = Model(
+        let fishModel = try Model(
             transform: .translation([0, 1, 0]).rotated(angle: .degrees(90), axis: [0, 1, 0]),
             material: UnlitMaterial(baseColorFactor: [1, 0, 1, 1], baseColorTexture: .init(resource: BundleResourceReference(bundle: .main, name: "seamless-foods-mixed-0020"))),
-            mesh: try YAMesh(gltf: "BarramundiFish", device: device)
+            mesh: YAMesh(gltf: "BarramundiFish", device: device)
         )
         models.append(fishModel)
 

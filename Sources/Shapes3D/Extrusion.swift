@@ -1,9 +1,9 @@
 import Algorithms
 import CoreGraphics
 import Earcut
-import simd
 import MetalSupport
 import Shapes2D
+import simd
 
 // swiftlint:disable force_unwrapping
 
@@ -65,7 +65,7 @@ extension Quad {
 
 public extension Polygon {
     func extrude(min: Float, max: Float, axis: ExtrusionAxis = .z, walls: Bool = true, topCap: Bool, bottomCap: Bool) -> TrivialMesh<SimpleVertex> {
-        let walls = walls ? PolygonalChain(vertices: self.vertices).extrude(min: min, max: max, axis: axis) : nil
+        let walls = walls ? PolygonalChain(vertices: vertices).extrude(min: min, max: max, axis: axis) : nil
         let topCap = topCap ? triangulate(z: max, transform: axis.transform) : nil
         let bottomCap = bottomCap ? triangulate(z: min, transform: axis.transform).flipped() : nil
         return TrivialMesh(merging: Array([walls, topCap, bottomCap].compacted()))

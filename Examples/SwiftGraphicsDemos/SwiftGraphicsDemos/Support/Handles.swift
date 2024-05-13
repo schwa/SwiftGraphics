@@ -1,8 +1,7 @@
-import SwiftUI
 import CoreGraphicsSupport
+import SwiftUI
 
 struct Handle: View {
-
     @Binding
     var location: CGPoint
 
@@ -20,7 +19,7 @@ struct Handle: View {
     var dragDelta: CGPoint?
 
     init(_ location: Binding<CGPoint>, coordinateSpace: CoordinateSpace = .local, constraining: @escaping (_ current: CGPoint, _ suggested: CGPoint) -> CGPoint = { $1 }) {
-        self._location = location
+        _location = location
         self.coordinateSpace = coordinateSpace
         self.constraining = constraining
     }
@@ -33,17 +32,17 @@ struct Handle: View {
 
     var drag: some Gesture {
         DragGesture(minimumDistance: 0, coordinateSpace: coordinateSpace)
-        .onChanged { value in
-            self.isPressed = true
-            if dragDelta == nil {
-                dragDelta = value.location - location
+            .onChanged { value in
+                isPressed = true
+                if dragDelta == nil {
+                    dragDelta = value.location - location
+                }
+                location = constraining(location, value.location - dragDelta!)
             }
-            self.location = constraining(self.location, value.location - dragDelta!)
-        }
-        .onEnded { _ in
-            self.isPressed = false
-            self.dragDelta = nil
-        }
+            .onEnded { _ in
+                isPressed = false
+                dragDelta = nil
+            }
     }
 }
 
@@ -52,7 +51,7 @@ struct HandleConfiguration {
 }
 
 protocol HandleStyle {
-    associatedtype Body : View
+    associatedtype Body: View
     typealias Configuration = HandleConfiguration
     @ViewBuilder func makeBody(configuration: Configuration) -> Self.Body
 }
@@ -60,11 +59,11 @@ protocol HandleStyle {
 struct SimpleHandleStyle: HandleStyle {
     func makeBody(configuration: Configuration) -> some View {
         Circle()
-        .foregroundColor(configuration.isPressed ? .accentColor : nil)
-        .frame(width: 8, height: 8)
-        .padding(2)
-        .background(Color.clear)
-        .contentShape(Circle())
+            .foregroundColor(configuration.isPressed ? .accentColor : nil)
+            .frame(width: 8, height: 8)
+            .padding(2)
+            .background(Color.clear)
+            .contentShape(Circle())
     }
 }
 

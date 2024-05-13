@@ -1,8 +1,10 @@
-import SwiftUI
 import CoreGraphicsSupport
-//import Algorithms
-import simd
+import SwiftUI
+
 import Shapes2D
+
+// import Algorithms
+import simd
 
 // https://pomax.github.io/bezierinfo/
 // https://www.youtube.com/watch?v=aVwxzDHniEw
@@ -10,7 +12,7 @@ import Shapes2D
 
 struct BeziersView: View {
     @State
-    var points: [CGPoint] = [[70,250], [20, 110], [220, 60], [270, 200]]
+    var points: [CGPoint] = [[70, 250], [20, 110], [220, 60], [270, 200]]
 
     var body: some View {
         ZStack {

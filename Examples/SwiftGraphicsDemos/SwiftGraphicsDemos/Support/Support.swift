@@ -1,9 +1,8 @@
 import CoreGraphics
 import CoreGraphicsSupport
 import Everything
-import SwiftUI
 import Shapes2D
-import Everything
+import SwiftUI
 
 #if os(macOS)
     struct LastRightMouseDownLocationModifier: ViewModifier {
@@ -83,7 +82,7 @@ public struct Identified<ID, Content>: Identifiable where ID: Hashable {
 
 public extension Identified where ID == UUID {
     init(_ content: Content) {
-        self.id = .init()
+        id = .init()
         self.content = content
     }
 }
@@ -102,7 +101,6 @@ extension Identified: Encodable where ID: Encodable, Content: Encodable {
 
 extension Identified: Decodable where ID: Decodable, Content: Decodable {
 }
-
 
 public extension Array {
     func identifiedByIndex() -> [Identified<Int, Element>] {
@@ -132,7 +130,6 @@ public struct JSONCodingTransferable<Element>: Transferable where Element: Codab
 }
 
 // MARK: -
-
 
 public struct RelativeTimelineView<Schedule, Content>: View where Schedule: TimelineSchedule, Content: View {
     let schedule: Schedule
@@ -301,16 +298,14 @@ struct MarkingsView: View {
     }
 }
 
-
 extension GraphicsContext {
     func drawMarkers(at positions: [CGPoint], size: CGSize) {
-        positions.forEach {
+        for position in positions {
             let image = Image(systemName: "circle.fill")
-            draw(image, in: CGRect(center: $0, size: size))
+            draw(image, in: CGRect(center: position, size: size))
         }
     }
 }
-
 
 extension Binding where Value == CGPoint {
     func transformed(_ transform: CGAffineTransform) -> Binding {
@@ -323,7 +318,7 @@ extension Binding where Value == CGPoint {
     }
 
     func transformed(_ modify: @escaping (CGFloat) -> CGFloat) -> Binding {
-        return Binding {
+        Binding {
             wrappedValue
         } set: { newValue in
             wrappedValue = newValue.map(modify)
@@ -352,7 +347,7 @@ extension Color: Codable {
 
     public func encode(to encoder: any Encoder) throws {
         var container = encoder.singleValueContainer()
-        guard let components = self.resolve(in: .init()).cgColor.converted(to: CGColorSpace(name: CGColorSpace.sRGB)!, intent: .defaultIntent, options: nil)?.components else {
+        guard let components = resolve(in: .init()).cgColor.converted(to: CGColorSpace(name: CGColorSpace.sRGB)!, intent: .defaultIntent, options: nil)?.components else {
             fatalError()
         }
         try container.encode(components)
@@ -368,7 +363,7 @@ struct CodableAppStorage<Value: Codable>: DynamicProperty {
 
     var wrappedValue: Value {
         get {
-            return storage
+            storage
         }
         nonmutating set {
             storage = newValue
@@ -383,55 +378,52 @@ struct CodableAppStorage<Value: Codable>: DynamicProperty {
         if let string = UserDefaults.standard.string(forKey: key) {
             let data = string.data(using: .utf8)!
             let value = try! JSONDecoder().decode(Value.self, from: data)
-            self._storage = .init(initialValue: value)
+            _storage = .init(initialValue: value)
         }
         else {
-            self._storage = .init(initialValue: wrappedValue)
+            _storage = .init(initialValue: wrappedValue)
         }
     }
 }
 
-extension CodableAppStorage where Value : ExpressibleByNilLiteral {
+extension CodableAppStorage where Value: ExpressibleByNilLiteral {
     init(_ key: String) {
         self.key = key
         if let string = UserDefaults.standard.string(forKey: key) {
             let data = string.data(using: .utf8)!
             let value = try! JSONDecoder().decode(Value.self, from: data)
-            self._storage = .init(initialValue: value)
+            _storage = .init(initialValue: value)
         }
         else {
-            self._storage = .init(initialValue: nil)
+            _storage = .init(initialValue: nil)
         }
     }
-
-
 }
-
 
 @resultBuilder
 struct ViewModifierBuilder {
     static func buildExpression<Content>(_ content: Content) -> Content where Content: ViewModifier {
         content
     }
+
     static func buildBlock() -> EmptyViewModifier {
-        return EmptyViewModifier()
+        EmptyViewModifier()
     }
 
     static func buildBlock<Content>(_ content: Content) -> Content where Content: ViewModifier {
         content
     }
 
-    static func buildEither<TrueContent, FalseContent>(first: TrueContent) -> ConditionalViewModifier<TrueContent, FalseContent> where TrueContent : ViewModifier, FalseContent : ViewModifier {
+    static func buildEither<TrueContent, FalseContent>(first: TrueContent) -> ConditionalViewModifier<TrueContent, FalseContent> where TrueContent: ViewModifier, FalseContent: ViewModifier {
         .init(trueModifier: first)
     }
 
-    static func buildEither<TrueContent, FalseContent>(second: FalseContent) -> ConditionalViewModifier<TrueContent, FalseContent> where TrueContent : ViewModifier, FalseContent : ViewModifier {
+    static func buildEither<TrueContent, FalseContent>(second: FalseContent) -> ConditionalViewModifier<TrueContent, FalseContent> where TrueContent: ViewModifier, FalseContent: ViewModifier {
         .init(falseModifier: second)
     }
 }
 
-struct ConditionalViewModifier <TrueModifier, FalseModifier>: ViewModifier where TrueModifier: ViewModifier, FalseModifier: ViewModifier {
-
+struct ConditionalViewModifier<TrueModifier, FalseModifier>: ViewModifier where TrueModifier: ViewModifier, FalseModifier: ViewModifier {
     var trueModifier: TrueModifier?
     var falseModifier: FalseModifier?
 
@@ -454,7 +446,6 @@ struct ConditionalViewModifier <TrueModifier, FalseModifier>: ViewModifier where
             fatalError()
         }
     }
-
 }
 
 /// A view modifier that does nothing.
@@ -468,15 +459,13 @@ public extension Array where Element: Identifiable {
     @discardableResult
     mutating func remove(identifiedBy id: Element.ID) -> Element {
         if let index = firstIndex(identifiedBy: id) {
-            return remove(at: index)
+            remove(at: index)
         }
         else {
             fatalError()
         }
     }
 }
-
-
 
 extension LineSegment {
     var angle: Angle {

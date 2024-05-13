@@ -1,54 +1,54 @@
+import CoreGraphicsSupport
 import Everything
 import Foundation
-import MetalKit
-import os
-import SwiftUI
-import MetalSupportUnsafeConformances
-import simd
 import Metal
-import ModelIO
+import MetalKit
 import MetalPerformanceShaders
+import MetalSupportUnsafeConformances
+import ModelIO
+import os
+import simd
 import SIMDSupport
-import CoreGraphicsSupport
 import SwiftFormats
+import SwiftUI
 
 #if !os(visionOS)
-public extension MTKView {
-    var betterDebugDescription: String {
-        let attributes: [(String, String?)] = [
-            ("delegate", delegate.map { String(describing: $0) }),
-            ("device", device?.name ),
-            ("currentDrawable", currentDrawable.map { String(describing: $0) }),
-            ("framebufferOnly", framebufferOnly.formatted()),
-            ("depthStencilAttachmentTextureUsage", String(describing: depthStencilAttachmentTextureUsage)),
-            ("multisampleColorAttachmentTextureUsage", String(describing: multisampleColorAttachmentTextureUsage)),
-            ("presentsWithTransaction", presentsWithTransaction.formatted()),
-            ("colorPixelFormat", String(describing: colorPixelFormat)),
-            ("depthStencilPixelFormat", String(describing: depthStencilPixelFormat)),
-            ("depthStencilStorageMode", String(describing: depthStencilStorageMode)),
-            ("sampleCount", sampleCount.formatted()),
-            ("clearColor", String(describing: clearColor)),
-            ("clearDepth", clearDepth.formatted()),
-            ("clearStencil", clearStencil.formatted()),
-            //            ("depthStencilTexture", String(describing: depthStencilTexture)),
-            ("multisampleColorTexture", String(describing: multisampleColorTexture)),
-            ("currentRenderPassDescriptor", String(describing: currentRenderPassDescriptor)),
-            ("preferredFramesPerSecond", String(describing: preferredFramesPerSecond)),
-            ("enableSetNeedsDisplay", String(describing: enableSetNeedsDisplay)),
-            ("autoResizeDrawable", autoResizeDrawable.formatted()),
-            ("drawableSize", String(describing: drawableSize)),
-            ("preferredDrawableSize", String(describing: preferredDrawableSize)),
-            ("preferredDevice", preferredDevice?.name),
-            ("isPaused", isPaused.formatted()),
+    public extension MTKView {
+        var betterDebugDescription: String {
+            let attributes: [(String, String?)] = [
+                ("delegate", delegate.map { String(describing: $0) }),
+                ("device", device?.name),
+                ("currentDrawable", currentDrawable.map { String(describing: $0) }),
+                ("framebufferOnly", framebufferOnly.formatted()),
+                ("depthStencilAttachmentTextureUsage", String(describing: depthStencilAttachmentTextureUsage)),
+                ("multisampleColorAttachmentTextureUsage", String(describing: multisampleColorAttachmentTextureUsage)),
+                ("presentsWithTransaction", presentsWithTransaction.formatted()),
+                ("colorPixelFormat", String(describing: colorPixelFormat)),
+                ("depthStencilPixelFormat", String(describing: depthStencilPixelFormat)),
+                ("depthStencilStorageMode", String(describing: depthStencilStorageMode)),
+                ("sampleCount", sampleCount.formatted()),
+                ("clearColor", String(describing: clearColor)),
+                ("clearDepth", clearDepth.formatted()),
+                ("clearStencil", clearStencil.formatted()),
+                //            ("depthStencilTexture", String(describing: depthStencilTexture)),
+                ("multisampleColorTexture", String(describing: multisampleColorTexture)),
+                ("currentRenderPassDescriptor", String(describing: currentRenderPassDescriptor)),
+                ("preferredFramesPerSecond", String(describing: preferredFramesPerSecond)),
+                ("enableSetNeedsDisplay", String(describing: enableSetNeedsDisplay)),
+                ("autoResizeDrawable", autoResizeDrawable.formatted()),
+                ("drawableSize", String(describing: drawableSize)),
+                ("preferredDrawableSize", String(describing: preferredDrawableSize)),
+                ("preferredDevice", preferredDevice?.name),
+                ("isPaused", isPaused.formatted()),
 //            ("colorspace", String(describing: colorspace)),
-        ]
-        let formattedAttributes = attributes.compactMap { key, value in
-            value.map { value in "\t\(key): \(value)" }
+            ]
+            let formattedAttributes = attributes.compactMap { key, value in
+                value.map { value in "\t\(key): \(value)" }
+            }
+            .joined(separator: ",\n")
+            return "\(self) (\n\(formattedAttributes)\n)"
         }
-        .joined(separator: ",\n")
-        return "\(self) (\n\(formattedAttributes)\n)"
     }
-}
 #endif
 
 public extension MTLTexture {
@@ -438,26 +438,26 @@ public extension PixelFormat {
     var bitsPerPixel: Int {
         switch formatInfo {
         case .packed:
-            return (bitsPerComponent * numberOfComponents)
+            (bitsPerComponent * numberOfComponents)
         case .RGB555:
             // Only for RGB 16 bits per pixel, alpha != alpha none
-            return 16
+            16
         case .RGB565:
             // Only for RGB 16 bits per pixel, alpha none
-            return 16
+            16
         case .RGB101010:
             // Only for RGB 32 bits per pixel, alpha != none
-            return 32
+            32
         case .RGBCIF10:
             // Only for RGB 32 bits per pixel,
-            return 32
+            32
         default:
             fatalError("Unknown case")
         }
     }
 
     var bytesPerPixel: Int {
-        return bitsPerPixel / 8
+        bitsPerPixel / 8
     }
 }
 

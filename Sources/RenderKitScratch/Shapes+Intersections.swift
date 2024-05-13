@@ -1,5 +1,5 @@
-import simd
 import Shapes3D
+import simd
 
 public extension LineSegment3D {
     func intersection(with other: LineSegment3D) -> LineSegment3D? {

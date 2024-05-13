@@ -2,16 +2,16 @@ import Foundation
 import os
 
 #if os(iOS)
-import UIKit
+    import UIKit
 #endif
 
-public class Cache <Key, Value> where Key: Hashable {
+public class Cache<Key, Value> where Key: Hashable {
     public let label: String?
 
-    internal var lock = OSAllocatedUnfairLock()
-    internal var storage = [Key: Value]()
+    var lock = OSAllocatedUnfairLock()
+    var storage = [Key: Value]()
 //    var task: Task<(), Never>?
-    internal var logger: Logger?
+    var logger: Logger?
 
     public init(label: String? = nil) {
         self.label = label
@@ -51,7 +51,7 @@ public class Cache <Key, Value> where Key: Hashable {
     }
 
     public func get(key: Key, default: () throws -> Value) rethrows -> Value {
-        return try lock.withUnsafeLock {
+        try lock.withUnsafeLock {
             if let value = storage[key] {
                 return value
             }
@@ -100,7 +100,7 @@ public class Cache <Key, Value> where Key: Hashable {
 public extension Cache {
     func get(key: Key, default: () async throws -> Value) async rethrows -> Value {
         let value = lock.withUnsafeLock {
-            return storage[key]
+            storage[key]
         }
         if let value {
             return value
@@ -137,8 +137,8 @@ public extension Cache where Value == Any {
     }
 }
 
-internal extension OSAllocatedUnfairLock where State == () {
-    func withUnsafeLock <R>(_ block: () throws -> R) rethrows -> R {
+extension OSAllocatedUnfairLock where State == () {
+    func withUnsafeLock<R>(_ block: () throws -> R) rethrows -> R {
         lock()
         defer {
             unlock()
@@ -150,7 +150,7 @@ internal extension OSAllocatedUnfairLock where State == () {
 // MARK: -
 
 // TODO: not sure if this is a good idea but idea is for factory functions to return Cachable objects so that the key is separate from the value. Useful for returning objects with no key as part of the value (e.g. raw Data, Meshes etc).
-public struct Cachable <Key, Value> where Key: Hashable & Sendable {
+public struct Cachable<Key, Value> where Key: Hashable & Sendable {
     public var key: Key
     public var value: Value
 
@@ -162,20 +162,20 @@ public struct Cachable <Key, Value> where Key: Hashable & Sendable {
 
 extension Cachable: Identifiable {
     public var id: Key {
-        return key
+        key
     }
 }
 
 public extension Cache {
     @discardableResult
-    func insert(_ cachable: Cachable <Key, Value>) -> Value? {
-        return insert(key: cachable.key, value: cachable.value)
+    func insert(_ cachable: Cachable<Key, Value>) -> Value? {
+        insert(key: cachable.key, value: cachable.value)
     }
 }
 
 public extension Cache where Value == Any {
     @discardableResult
-    func insert <V>(_ cachable: Cachable <Key, V>) -> V? {
-        return insert(key: cachable.key, value: cachable.value) as? V
+    func insert<V>(_ cachable: Cachable<Key, V>) -> V? {
+        insert(key: cachable.key, value: cachable.value) as? V
     }
 }

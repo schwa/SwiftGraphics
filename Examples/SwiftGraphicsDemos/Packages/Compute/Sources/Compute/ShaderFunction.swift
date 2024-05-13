@@ -5,7 +5,7 @@ public struct ShaderLibrary {
     public static var `default` = ShaderLibrary.bundle(.main)
 
     public static func bundle(_ bundle: Bundle) -> Self {
-        return Self(bundle: bundle)
+        Self(bundle: bundle)
     }
 
     var bundle: Bundle
@@ -15,13 +15,13 @@ public struct ShaderLibrary {
     }
 
     public subscript(dynamicMember name: String) -> ShaderFunction {
-        return ShaderFunction(library: self, name: name)
+        ShaderFunction(library: self, name: name)
     }
 }
 
 public extension MTLDevice {
     func makeLibrary(_ library: ShaderLibrary) throws -> MTLLibrary {
-        return try makeDefaultLibrary(bundle: library.bundle)
+        try makeDefaultLibrary(bundle: library.bundle)
     }
 }
 
@@ -47,7 +47,7 @@ public struct ShaderConstant {
     var dataType: MTLDataType
     var accessor: ((UnsafeRawPointer) -> Void) -> Void
 
-    public init<T>(dataType: MTLDataType, value: [T]) {
+    public init(dataType: MTLDataType, value: [some Any]) {
         self.dataType = dataType
         accessor = { (callback: (UnsafeRawPointer) -> Void) in
             value.withUnsafeBytes { pointer in
@@ -56,7 +56,7 @@ public struct ShaderConstant {
         }
     }
 
-    public init<T>(dataType: MTLDataType, value: T) {
+    public init(dataType: MTLDataType, value: some Any) {
         self.dataType = dataType
         accessor = { (callback: (UnsafeRawPointer) -> Void) in
             withUnsafeBytes(of: value) { pointer in

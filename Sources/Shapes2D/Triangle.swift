@@ -1,8 +1,8 @@
 // swiftlint:disable identifier_name
 
+import ApproximateEquality
 import CoreGraphics
 import CoreGraphicsSupport
-import ApproximateEquality
 import SwiftUI
 
 public struct Triangle {
@@ -44,8 +44,8 @@ public extension Triangle {
 }
 
 // TODO: This is a hack
-internal func isFuzzyEqual(_ lhs: CGFloat, _ rhs: CGFloat) -> Bool {
-    return lhs.isApproximatelyEqual(to: rhs, absoluteTolerance: 0.0001)
+func isFuzzyEqual(_ lhs: CGFloat, _ rhs: CGFloat) -> Bool {
+    lhs.isApproximatelyEqual(to: rhs, absoluteTolerance: 0.0001)
 }
 
 public extension Triangle {
@@ -153,7 +153,7 @@ public extension Triangle {
     }
 
     var incircle: Circle {
-        return Circle(center: incenter, radius: inradius)
+        Circle(center: incenter, radius: inradius)
     }
 }
 

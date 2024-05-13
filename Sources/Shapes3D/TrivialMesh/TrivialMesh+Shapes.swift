@@ -1,6 +1,6 @@
 import Foundation
-import simd
 import MetalSupport
+import simd
 
 public extension TrivialMesh where Vertex == SimpleVertex {
     @available(*, deprecated, message: "Move to MeshConvertable")

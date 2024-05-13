@@ -1,9 +1,9 @@
 import Algorithms
 import Metal
+import MetalSupport
 import RenderKit
 import RenderKitShaders
 import simd
-import MetalSupport
 
 public struct WingedEdgeCollection {
     public struct Face {
@@ -169,7 +169,7 @@ extension WingedEdgeCollection {
         let vertices: [SimpleVertex] = faces.flatMap { face in
             let vertices = self.vertices(of: face)
             return vertices.map { vertex in
-                return SimpleVertex(position: vertex.position, normal: .zero, textureCoordinate: .zero)
+                SimpleVertex(position: vertex.position, normal: .zero, textureCoordinate: .zero)
             }
         }
         return try YAMesh.simpleMesh(indices: indices, vertices: vertices, device: device)

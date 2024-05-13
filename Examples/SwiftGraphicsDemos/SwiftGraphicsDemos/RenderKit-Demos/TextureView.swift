@@ -1,9 +1,9 @@
-import SwiftUI
-import RenderKit
 import MetalKit
-import RenderKitShaders
-import ModelIO
 import MetalSupport
+import ModelIO
+import RenderKit
+import RenderKitShaders
+import SwiftUI
 
 public struct TextureView: View {
     struct Bindings {
@@ -100,7 +100,7 @@ public struct TextureView: View {
                     view *= simd_float4x4.scaled([1 / size2.x, -1 / size2.y, 1])
                     view *= simd_float4x4.translation([-min(size.x, size.y) / 2, -min(size.x, size.y) / 2, 1])
                     view *= simd_float4x4.scaled([min(size.x, size.y), min(size.x, size.y), 1])
-                    //view *= simd_float4x4.translation([-size2.x, -size2.y, 0])
+                    // view *= simd_float4x4.translation([-size2.x, -size2.y, 0])
 //                    view *= simd_float4x4.translation([-Float(texture.width) / 2, -Float(texture.height) / 2, 0])
                     let cameraUniforms = CameraUniforms(projectionMatrix: view)
 
@@ -111,9 +111,9 @@ public struct TextureView: View {
 
                     let material = RenderKitShaders.UnlitMaterial(color: [1, 0, 0, 1], textureIndex: 0)
                     renderCommandEncoder.setFragmentBytes(of: [material], index: renderState.bindings.fragmentMaterialsIndex)
-                    renderCommandEncoder.setFragmentTextures([texture], range: 0..<1)
+                    renderCommandEncoder.setFragmentTextures([texture], range: 0 ..< 1)
 
-                    //renderCommandEncoder.setTriangleFillMode(.fill)
+                    // renderCommandEncoder.setTriangleFillMode(.fill)
 
                     renderCommandEncoder.draw(renderState.mesh, instanceCount: 1)
                 }
@@ -200,16 +200,16 @@ extension MTLTextureUsage: CustomStringConvertible {
         if self == .unknown {
             return "unknown"
         }
-        else if self.contains(.shaderRead) {
+        else if contains(.shaderRead) {
             atoms.append("shaderRead")
         }
-        else if self.contains(.shaderWrite) {
+        else if contains(.shaderWrite) {
             atoms.append("shaderWrite")
         }
-        else if self.contains(.renderTarget) {
+        else if contains(.renderTarget) {
             atoms.append("renderTarget")
         }
-        else if self.contains(.pixelFormatView) {
+        else if contains(.pixelFormatView) {
             atoms.append("pixelFormatView")
         }
         return atoms.joined(separator: ", ")

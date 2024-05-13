@@ -1,5 +1,5 @@
-import Foundation
 import CoreGraphicsSupport
+import Foundation
 import SwiftUI
 
 // From: https://www.jakelow.com/blog/hobby-curves
@@ -138,7 +138,7 @@ func hobby(points: [CGPoint], omega: Double = 0.0) -> [CGPoint] {
 // the function from Jackowski formula 28, due to its simplicity. For other
 // choices see Jackowski, section 5.
 func rho(_ alpha: Double, _ beta: Double) -> Double {
-    let c: Double = 2/3
+    let c: Double = 2 / 3
     return 2 / (1 + c * cos(beta) + (1 - c) * cos(alpha))
 }
 
@@ -146,7 +146,7 @@ func rho(_ alpha: Double, _ beta: Double) -> Double {
 // tridiagonal matrix.
 //
 // https://en.wikipedia.org/wiki/Tridiagonal_matrix_algorithm
-func thomas(_ A: [Double], _ B: [Double], _ C: [Double], _ D: [Double]) -> [Double]{
+func thomas(_ A: [Double], _ B: [Double], _ C: [Double], _ D: [Double]) -> [Double] {
     // A, B, and C are diagonals of the matrix. B is the main diagonal.
     // D is the vector on the right-hand-side of the equation.
 
@@ -162,8 +162,8 @@ func thomas(_ A: [Double], _ B: [Double], _ C: [Double], _ D: [Double]) -> [Doub
 
     // allocate arrays for modified C and D coefficients
     // (p stands for prime)
-    var Cp = Array<Double>(repeating: 0.0, count: n + 1)
-    var Dp = Array<Double>(repeating: 0.0, count: n + 1)
+    var Cp = [Double](repeating: 0.0, count: n + 1)
+    var Dp = [Double](repeating: 0.0, count: n + 1)
 
     Cp[0] = C[0] / B[0]
     Dp[0] = D[0] / B[0]
@@ -176,7 +176,7 @@ func thomas(_ A: [Double], _ B: [Double], _ C: [Double], _ D: [Double]) -> [Doub
 
     // Step 2: back substitution to solve for X
 
-    var X = Array<Double>(repeating: 0.0, count: n + 1)
+    var X = [Double](repeating: 0.0, count: n + 1)
     // start at the end, then work backwards to solve for each X[i]
     X[n] = Dp[n]
     for i in stride(from: n - 1, through: 0, by: -1) {
@@ -189,6 +189,7 @@ func thomas(_ A: [Double], _ B: [Double], _ C: [Double], _ D: [Double]) -> [Doub
 func vAdd(_ lhs: CGPoint, _ rhs: CGPoint) -> CGPoint {
     lhs + rhs
 }
+
 func vSub(_ lhs: CGPoint, _ rhs: CGPoint) -> CGPoint {
     lhs - rhs
 }

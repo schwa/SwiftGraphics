@@ -1,6 +1,6 @@
-import SwiftUI
-import Shapes2D
 import CoreGraphicsSupport
+import Shapes2D
+import SwiftUI
 
 struct ShapesDemoView: View {
     let triangle = Triangle([0, 150], [125, 0], [250, 150])
@@ -46,4 +46,3 @@ struct ShapesDemoView: View {
 #Preview {
     ShapesDemoView()
 }
-

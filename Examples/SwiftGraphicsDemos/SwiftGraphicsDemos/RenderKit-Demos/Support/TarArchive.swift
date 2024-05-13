@@ -6,8 +6,8 @@ public struct TarArchive {
         case generic(String)
     }
 
-    public struct Header <Buffer> where Buffer: DataProtocol, Buffer.Index == Int {
-        internal var buffer: Buffer
+    public struct Header<Buffer> where Buffer: DataProtocol, Buffer.Index == Int {
+        var buffer: Buffer
     }
 
     public private(set) var records: [String: Header<Data>]
@@ -27,7 +27,7 @@ public struct TarArchive {
             let length = try header.totalLength
             header = Header(buffer: data[remainingRange])
             remainingRange = remainingRange.startIndex + length ..< data.endIndex
-            records[try header.filename] = header
+            try records[header.filename] = header
         }
         self.records = records
     }
@@ -36,7 +36,7 @@ public struct TarArchive {
 extension TarArchive.Header: CustomStringConvertible {
     public var description: String {
         do {
-            return "Header(buffer: \(buffer.startIndex)..<\(buffer.endIndex), filename: \(try filename), filesize: \(try fileSize)"
+            return try "Header(buffer: \(buffer.startIndex)..<\(buffer.endIndex), filename: \(filename), filesize: \(fileSize)"
         }
         catch {
             return "Header(buffer: \(buffer.startIndex)..<\(buffer.endIndex), invalid!)"
@@ -89,13 +89,13 @@ public extension TarArchive.Header {
 
     var content: Buffer.SubSequence {
         get throws {
-            buffer.sub(offset: 512, count: try fileSize)
+            try buffer.sub(offset: 512, count: fileSize)
         }
     }
 
     internal var totalLength: Int {
         get throws {
-            return try align(fileSize + 512, alignment: 512)
+            try align(fileSize + 512, alignment: 512)
         }
     }
 }
@@ -112,13 +112,13 @@ extension TarArchive {
 // MARK: -
 
 private func align(_ value: Int, alignment: Int) -> Int {
-    return (value + alignment - 1) / alignment * alignment
+    (value + alignment - 1) / alignment * alignment
 }
 
 private extension DataProtocol where Index == Int {
     func sub(offset: Int, count: Int) -> SubSequence {
         let start = startIndex.advanced(by: offset)
         let end = start.advanced(by: count)
-        return self[start..<end]
+        return self[start ..< end]
     }
 }

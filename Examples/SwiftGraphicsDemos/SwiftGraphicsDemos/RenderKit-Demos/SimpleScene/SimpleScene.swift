@@ -1,12 +1,12 @@
-import Metal
-import MetalSupport
-import SIMDSupport
-import simd
-import ModelIO
-import MetalKit
-import SwiftUI
-import RenderKit
 import CoreGraphicsSupport
+import Metal
+import MetalKit
+import MetalSupport
+import ModelIO
+import RenderKit
+import simd
+import SIMDSupport
+import SwiftUI
 
 public struct SimpleScene {
     public var camera: Camera
@@ -26,7 +26,7 @@ public struct SimpleScene {
 
 // MARK: -
 
-//public struct Camera {
+// public struct Camera {
 //    public var transform: Transform
 //    public var target: SIMD3<Float> {
 //        didSet {
@@ -41,15 +41,15 @@ public struct SimpleScene {
 //        self.target = target
 //        self.projection = projection
 //    }
-//}
+// }
 //
-//extension Camera: Equatable {
-//}
+// extension Camera: Equatable {
+// }
 //
-//extension Camera: Sendable {
-//}
+// extension Camera: Sendable {
+// }
 //
-//public extension Camera {
+// public extension Camera {
 //    var heading: Angle {
 //        get {
 //            Angle(from: .zero, to: CGPoint(target.xz))
@@ -58,7 +58,7 @@ public struct SimpleScene {
 //            target = SIMD3<Float>(xz: SIMD2<Float>(CGPoint(distance: Double(target.length), angle: newValue)))
 //        }
 //    }
-//}
+// }
 
 // MARK: -
 
@@ -118,7 +118,7 @@ public struct BlinnPhongMaterial: Material {
     public var baseColorTexture: Texture?
 }
 
-//struct PBRMaterial: Material {
+// struct PBRMaterial: Material {
 //    var label: String?
 //    var baseColorFactor: SIMD4<Float> = .one
 //    var baseColorTexture: Texture?
@@ -127,14 +127,14 @@ public struct BlinnPhongMaterial: Material {
 //    var metallicRoughnessTexture: Texture?
 //    var normalTexture: Texture?
 //    var occlusionTexture: Texture?
-//}
+// }
 
-//struct CustomMaterial: Material {
+// struct CustomMaterial: Material {
 //    var label: String?
 //
 //    var vertexShader: String
 //    var fragmentShader: String
-//}
+// }
 
 public struct Texture: Labeled {
     public var label: String?

@@ -5,7 +5,6 @@ public protocol ShadingProtocol {
 }
 
 public protocol GraphicsContextProtocol {
-
     associatedtype Shading: ShadingProtocol
 
     typealias BlendMode = GraphicsContext.BlendMode
@@ -100,12 +99,15 @@ extension GraphicsContextProtocol {
     mutating func scaleBy(x: CGFloat, y: CGFloat) {
         transform = transform.concatenating(.init(scaleX: x, y: y))
     }
+
     mutating func translateBy(x: CGFloat, y: CGFloat) {
         transform = transform.concatenating(.init(translationX: x, y: y))
     }
+
     mutating func rotate(by angle: Angle) {
         transform = transform.concatenating(.init(rotationAngle: angle.radians))
     }
+
     mutating func concatenate(_ matrix: CGAffineTransform) {
         transform = transform.concatenating(matrix)
     }
@@ -118,4 +120,3 @@ extension GraphicsContext: GraphicsContextProtocol {
 
 extension GraphicsContext.Shading: ShadingProtocol {
 }
-

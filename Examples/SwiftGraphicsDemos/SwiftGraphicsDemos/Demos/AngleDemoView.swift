@@ -1,9 +1,8 @@
-import SwiftUI
 import CoreGraphicsSupport
 import SwiftFormats
+import SwiftUI
 
 struct AngleDemoView: View, DefaultInitializableView {
-
     @State
     var p0 = CGPoint(x: 100, y: 400)
 
@@ -36,11 +35,8 @@ struct AngleDemoView: View, DefaultInitializableView {
 
                 path.move(to: p1)
                 path.addLine(to: p1 + c * 50)
-
             }
             .stroke(Color.red, style: .init(lineWidth: 2))
-
-
 
             Handle($p0)
             Handle($p1)
@@ -55,7 +51,6 @@ struct AngleDemoView: View, DefaultInitializableView {
             }
         }
     }
-
 }
 
 func abs(_ point: CGPoint) -> CGPoint {

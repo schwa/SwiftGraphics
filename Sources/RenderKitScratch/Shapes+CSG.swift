@@ -1,8 +1,8 @@
+import MetalSupport
 import RenderKitShaders
+import Shapes3D
 import SIMDSupport
 import SwiftUI
-import Shapes3D
-import MetalSupport
 
 public protocol PolygonConvertable {
     func toPolygons() -> [Polygon3D<SimpleVertex>]
@@ -10,7 +10,7 @@ public protocol PolygonConvertable {
 
 public extension PolygonConvertable {
     func toCSG() -> CSG<SimpleVertex> {
-        return CSG(polygons: toPolygons())
+        CSG(polygons: toPolygons())
     }
 }
 
@@ -93,9 +93,9 @@ extension Triangle3D {
 
 public extension CSG where Vertex == SimpleVertex {
     func toPLY() -> String {
-        let vertices = polygons.flatMap { $0.vertices }
+        let vertices = polygons.flatMap(\.vertices)
         let faces: [[Int]] = polygons.reduce(into: []) { partialResult, polygon in
-            let nextIndex = partialResult.map { $0.count }.reduce(0, +)
+            let nextIndex = partialResult.map(\.count).reduce(0, +)
             partialResult.append(Array(nextIndex ..< nextIndex + polygon.vertices.count))
         }
         var s = ""
@@ -108,7 +108,7 @@ public extension CSG where Vertex == SimpleVertex {
             (.uchar, "red"), (.uchar, "green"), (.uchar, "blue"),
         ], to: &s)
         encoder.encodeElementDefinition(name: "face", count: faces.count, properties: [
-            (.list(count: .uchar, element: .int), "vertex_indices")
+            (.list(count: .uchar, element: .int), "vertex_indices"),
         ], to: &s)
         encoder.encodeEndHeader(to: &s)
 
@@ -116,7 +116,7 @@ public extension CSG where Vertex == SimpleVertex {
             encoder.encodeElement([
                 .float(vertex.position.x), .float(vertex.position.y), .float(vertex.position.z),
                 .float(vertex.normal.x), .float(vertex.normal.y), .float(vertex.normal.z),
-                .uchar(128), .uchar(128), .uchar(128)
+                .uchar(128), .uchar(128), .uchar(128),
             ], to: &s)
         }
         for face in faces {

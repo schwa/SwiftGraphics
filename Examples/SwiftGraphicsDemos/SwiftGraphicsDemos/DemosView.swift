@@ -21,14 +21,14 @@ struct DemosView: View {
         MeshView.self,
         VolumetricView.self,
         SimpleSceneView.self,
-        //CSGDemoView.self,
+        // CSGDemoView.self,
         SimulationView.self,
         Particles2View.self,
     ]
 
     var body: some View {
         NavigationView {
-            List(demos.indexed(), id: \.index) { (index, element) in
+            List(demos.indexed(), id: \.index) { (_, element) in
                 NavigationLink(String(describing: element)) {
                     AnyView(element.init())
                 }

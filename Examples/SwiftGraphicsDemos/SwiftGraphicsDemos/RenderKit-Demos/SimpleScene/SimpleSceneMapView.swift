@@ -1,7 +1,7 @@
-import SwiftUI
-import simd
 import CoreGraphicsSupport
+import simd
 import SIMDSupport
+import SwiftUI
 
 struct SimpleSceneMapView: View {
     @Binding
@@ -20,7 +20,7 @@ struct SimpleSceneMapView: View {
             }
             let cameraPosition = CGPoint(scene.camera.transform.translation.xz)
 
-            if case let .perspective(perspective) = scene.camera.projection {
+            if case .perspective(let perspective) = scene.camera.projection {
                 // TODO: This is showing fovY but it should be fovX
                 let viewCone = Path.arc(center: cameraPosition * scale, radius: 4 * scale, midAngle: .radians(Double(scene.camera.heading.radians)), width: .radians(Double(perspective.fovy.radians)))
 //                context.fill(viewCone, with: .radialGradient(Gradient(colors: [.white.opacity(0.5), .white.opacity(0.0)]), center: cameraPosition * scale, startRadius: 0, endRadius: 4 * scale))

@@ -1,6 +1,6 @@
+import MetalSupport
 import SIMDSupport
 import SwiftUI
-import MetalSupport
 
 public protocol PolygonConvertable {
     func toPolygons() -> [Polygon3D<SimpleVertex>]

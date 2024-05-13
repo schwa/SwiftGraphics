@@ -1,6 +1,7 @@
 import CoreGraphics
 import CoreGraphicsSupport
-//import Algorithms
+
+// import Algorithms
 
 // https://pomax.github.io/bezierinfo/
 // https://www.youtube.com/watch?v=aVwxzDHniEw
@@ -40,7 +41,7 @@ public extension CubicBezierCurve {
 
 public extension CubicBezierCurve {
     init(curve: QuadraticBezierCurve) {
-        self.controlPoints = (
+        controlPoints = (
             curve.controlPoints.0,
             curve.controlPoints.0 + (2.0 / 3.0 * (curve.controlPoints.1 - curve.controlPoints.0)),
             curve.controlPoints.2 + (2.0 / 3.0 * (curve.controlPoints.1 - curve.controlPoints.2)),

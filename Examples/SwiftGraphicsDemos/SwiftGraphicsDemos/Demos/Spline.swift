@@ -7,9 +7,10 @@ struct Spline {
         var position: CGPoint
         enum ControlPoint {
             case split(CGPoint, CGPoint)
-            //case aligned(CGPoint, CGPoint)
+            // case aligned(CGPoint, CGPoint)
             case mirrored(CGPoint)
         }
+
         var controlPoint: ControlPoint
 
         init(position: CGPoint, controlPoint: ControlPoint = .mirrored(.zero)) {
@@ -23,7 +24,6 @@ struct Spline {
     init(knots: [Knot] = []) {
         self.knots = knots
     }
-
 }
 
 extension Spline {
@@ -42,76 +42,76 @@ extension Spline {
 extension Spline.Knot {
     var controlPointA: CGPoint {
         get {
-            switch self.controlPoint {
+            switch controlPoint {
             case .mirrored(let position):
-                return position
+                position
             case .split(let positionA, _):
-                return positionA
+                positionA
             }
         }
         set {
-            switch self.controlPoint {
+            switch controlPoint {
             case .mirrored:
-                self.controlPoint = .mirrored(newValue)
+                controlPoint = .mirrored(newValue)
             case .split(_, let positionB):
-                self.controlPoint = .split(newValue, positionB)
+                controlPoint = .split(newValue, positionB)
             }
         }
     }
 
     var controlPointB: CGPoint {
         get {
-            switch self.controlPoint {
+            switch controlPoint {
             case .mirrored(let position):
-                return -position
+                -position
             case .split(_, let positionB):
-                return positionB
+                positionB
             }
         }
         set {
-            switch self.controlPoint {
+            switch controlPoint {
             case .mirrored:
-                self.controlPoint = .mirrored(-newValue)
+                controlPoint = .mirrored(-newValue)
             case .split(let positionA, _):
-                self.controlPoint = .split(positionA, -newValue)
+                controlPoint = .split(positionA, -newValue)
             }
         }
     }
 
     var absoluteControlPointA: CGPoint {
         get {
-            switch self.controlPoint {
+            switch controlPoint {
             case .mirrored(let position):
-                return self.position + position
+                self.position + position
             case .split(let positionA, _):
-                return self.position + positionA
+                position + positionA
             }
         }
         set {
-            switch self.controlPoint {
+            switch controlPoint {
             case .mirrored:
-                self.controlPoint = .mirrored(newValue - self.position)
+                controlPoint = .mirrored(newValue - position)
             case .split(_, let positionB):
-                self.controlPoint = .split(newValue - self.position, positionB)
+                controlPoint = .split(newValue - position, positionB)
             }
         }
     }
 
     var absoluteControlPointB: CGPoint {
         get {
-            switch self.controlPoint {
+            switch controlPoint {
             case .mirrored(let position):
-                return self.position - position
+                self.position - position
             case .split(_, let positionB):
-                return self.position - positionB
+                position - positionB
             }
         }
         set {
-            switch self.controlPoint {
+            switch controlPoint {
             case .mirrored:
-                self.controlPoint = .mirrored(-(newValue - self.position))
+                controlPoint = .mirrored(-(newValue - position))
             case .split(let positionA, _):
-                self.controlPoint = .split(positionA, -(newValue - self.position))
+                controlPoint = .split(positionA, -(newValue - position))
             }
         }
     }
@@ -144,7 +144,6 @@ extension Spline {
         return Spline(knots: Array(knots[..<index]) + [knot] + Array(knots[index...]))
     }
 }
-
 
 extension Spline {
     var comb: [LineSegment] {
@@ -180,4 +179,3 @@ extension CubicBezierCurve {
         Path(self).contains(point)
     }
 }
-

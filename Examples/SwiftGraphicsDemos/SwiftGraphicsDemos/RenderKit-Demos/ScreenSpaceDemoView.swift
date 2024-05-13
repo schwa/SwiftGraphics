@@ -1,13 +1,13 @@
-//import SwiftUI
-//import Everything
-//import CoreGraphicsSupport
-//import Geometry
-//import RenderKit
-//import simd
-//import RenderKitShaders
-//import ModelIO
+// import SwiftUI
+// import Everything
+// import CoreGraphicsSupport
+// import Geometry
+// import RenderKit
+// import simd
+// import RenderKitShaders
+// import ModelIO
 //
-//struct ScreenSpaceDemoView: View {
+// struct ScreenSpaceDemoView: View {
 //    @Environment(\.displayScale)
 //    var displayScale
 //
@@ -163,4 +163,4 @@
 //        func draw(device: MTLDevice, size: CGSize, renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) throws {
 //        }
 //    }
-//}
+// }

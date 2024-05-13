@@ -1,6 +1,6 @@
+import MetalSupport
 import simd
 import SIMDSupport
-import MetalSupport
 
 public protocol VertexLike: Equatable {
     associatedtype Vector: PointLike

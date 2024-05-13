@@ -16,7 +16,7 @@ public struct SimpleVertex {
 public extension SimpleVertex {
     var position: SIMD3<Float> {
         get {
-            return SIMD3<Float>(packedPosition)
+            SIMD3<Float>(packedPosition)
         }
         set {
             packedPosition = PackedFloat3(newValue)
@@ -25,7 +25,7 @@ public extension SimpleVertex {
 
     var normal: SIMD3<Float> {
         get {
-            return SIMD3<Float>(packedNormal)
+            SIMD3<Float>(packedNormal)
         }
         set {
             packedNormal = PackedFloat3(newValue)
@@ -45,4 +45,3 @@ extension SimpleVertex: Equatable {
 
 extension SimpleVertex: Hashable {
 }
-

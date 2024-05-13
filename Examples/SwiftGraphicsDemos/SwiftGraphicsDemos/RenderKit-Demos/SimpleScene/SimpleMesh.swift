@@ -1,14 +1,14 @@
-import SwiftUI
-import ModelIO
+import Everything
 import Metal
 import MetalKit
-import SIMDSupport
-import RenderKitShaders
-import Everything
 import MetalSupport
+import ModelIO
 import os
 import RenderKit
+import RenderKitShaders
 import Shapes2D
+import SIMDSupport
+import SwiftUI
 
 protocol MTLBufferProviding {
     var buffer: MTLBuffer { get }
@@ -21,10 +21,10 @@ extension YAMesh {
             triangle.vertices.1,
             triangle.vertices.2,
         ]
-            .map {
-                // TODO; Normal not impacted by transform. It should be.
-                SimpleVertex(position: SIMD2<Float>($0) * transform, normal: [0, 0, 1], textureCoordinate: textureCoordinate($0))
-            }
+        .map {
+            // TODO; Normal not impacted by transform. It should be.
+            SimpleVertex(position: SIMD2<Float>($0) * transform, normal: [0, 0, 1], textureCoordinate: textureCoordinate($0))
+        }
         return try YAMesh.simpleMesh(label: label, indices: [0, 1, 2], vertices: vertices, device: device)
     }
 }

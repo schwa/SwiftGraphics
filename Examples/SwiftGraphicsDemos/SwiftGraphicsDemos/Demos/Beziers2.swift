@@ -1,25 +1,25 @@
-import Foundation
 import CoreGraphics
+import Foundation
 
 //// Representation of a quadratic BÃ©zier curve. p0 is the start point, p1 is the control point, p2 is the end point.
-//let quadBezControlPoints = {
+// let quadBezControlPoints = {
 //  p0: { x: 10, y: 10 },
 //  p1: { x: 50, y: 90 },
 //  p2: { x: 90, y: 10 },
-//};
+// };
 
 // https://minus-ze.ro/posts/flattening-bezier-curves-and-arcs/
 
 // The integral functions that compute how many segments are needed for flattening and all the t values at each subdivision point.
 // They are explained here: https://raphlinus.github.io/graphics/curves/2019/12/23/flatten-quadbez.html
 func approxIntegral(_ x: Double) -> Double {
-    let d = 0.67;
-    return x / (1 - d + pow(pow(d, 4) + 0.25 * x * x, 0.25));
+    let d = 0.67
+    return x / (1 - d + pow(pow(d, 4) + 0.25 * x * x, 0.25))
 }
 
 func approxInvIntegral(_ x: Double) -> Double {
-    let b = 0.39;
-    return x * (1 - b + sqrt(b * b + 0.25 * x * x));
+    let b = 0.39
+    return x * (1 - b + sqrt(b * b + 0.25 * x * x))
 }
 
 struct QuadraticBezierCurve {
@@ -30,9 +30,9 @@ struct QuadraticBezierCurve {
 
 // Evaluating a quadratic curve q at the point t. Returns the (x, y) coordinate at that point.
 func evalQuadBez(_ q: QuadraticBezierCurve, _ t: Double) -> CGPoint {
-    let mt = 1 - t;
-    let x = q.p0.x * mt * mt + 2 * q.p1.x * t * mt + q.p2.x * t * t;
-    let y = q.p0.y * mt * mt + 2 * q.p1.y * t * mt + q.p2.y * t * t;
+    let mt = 1 - t
+    let x = q.p0.x * mt * mt + 2 * q.p1.x * t * mt + q.p2.x * t * t
+    let y = q.p0.y * mt * mt + 2 * q.p1.y * t * mt + q.p2.y * t * t
     return .init(x: x, y: y)
 }
 
@@ -45,20 +45,20 @@ struct MySegment {
 
 //// Mapping the quadratic curve q to a segment of the x^2 parabola. Also explained in the blog post.
 func quadBezMapToBasic(_ q: QuadraticBezierCurve) -> MySegment {
-    let ddx = 2 * q.p1.x - q.p0.x - q.p2.x;
-    let ddy = 2 * q.p1.y - q.p0.y - q.p2.y;
-    let u0 = (q.p1.x - q.p0.x) * ddx + (q.p1.y - q.p0.y) * ddy;
-    let u2 = (q.p2.x - q.p1.x) * ddx + (q.p2.y - q.p1.y) * ddy;
-    let cross = (q.p2.x - q.p0.x) * ddy - (q.p2.y - q.p0.y) * ddx;
-    let x0 = u0 / cross;
-    let x2 = u2 / cross;
-    let scale = abs(cross) / (hypot(ddx, ddy) * abs(x2 - x0));
+    let ddx = 2 * q.p1.x - q.p0.x - q.p2.x
+    let ddy = 2 * q.p1.y - q.p0.y - q.p2.y
+    let u0 = (q.p1.x - q.p0.x) * ddx + (q.p1.y - q.p0.y) * ddy
+    let u2 = (q.p2.x - q.p1.x) * ddx + (q.p2.y - q.p1.y) * ddy
+    let cross = (q.p2.x - q.p0.x) * ddy - (q.p2.y - q.p0.y) * ddx
+    let x0 = u0 / cross
+    let x2 = u2 / cross
+    let scale = abs(cross) / (hypot(ddx, ddy) * abs(x2 - x0))
     return .init(
         x0: x0,
         x2: x2,
         scale: scale,
         cross: cross
-    );
+    )
 }
 
 // This is the function that actually converts the curve to a sequence of lines. More precisely, it returns an array
@@ -71,41 +71,41 @@ func quadBezMapToBasic(_ q: QuadraticBezierCurve) -> MySegment {
 //         // Now you can draw line between each of these points and you will render your curve.
 //     }
 func quadBezFlatten(_ q: QuadraticBezierCurve, tolerance: Double) -> [CGPoint] {
-    let params = quadBezMapToBasic(q);
-    let a0 = approxIntegral(params.x0);
-    let a2 = approxIntegral(params.x2);
-    let count: Double = 0.5 * Swift.abs(a2 - a0) * sqrt(params.scale / tolerance)
-    let n = ceil(count);
+    let params = quadBezMapToBasic(q)
+    let a0 = approxIntegral(params.x0)
+    let a2 = approxIntegral(params.x2)
+    let count = 0.5 * Swift.abs(a2 - a0) * sqrt(params.scale / tolerance)
+    let n = ceil(count)
     // Handle case where all the points are collinear and the end point is between the start point and the control point
     if !n.isFinite || n == 0 || n == 1 {
         // Find t values where the derivative is 0
-        let divx = q.p0.x + q.p2.x - 2 * q.p1.x;
-        let divy = q.p0.y + q.p2.y - 2 * q.p1.y;
-        let tx = (q.p0.x - q.p1.x) / divx;
-        let ty = (q.p0.y - q.p1.y) / divy;
-        var ts: [Double] = [];
+        let divx = q.p0.x + q.p2.x - 2 * q.p1.x
+        let divy = q.p0.y + q.p2.y - 2 * q.p1.y
+        let tx = (q.p0.x - q.p1.x) / divx
+        let ty = (q.p0.y - q.p1.y) / divy
+        var ts: [Double] = []
         if (tx.isFinite && tx > 0 && tx < 1) {
-            ts.append(tx);
+            ts.append(tx)
         }
         if (ty.isFinite && ty > 0 && ty < 1) {
             if (ty > ts[ts.count - 1]) {
-                ts.append(  ty)
+                ts.append(ty)
             }
         }
-        ts.append(1.0);
+        ts.append(1.0)
 //        quadBezState.numberOfSegments = ts.length;
 //        return ts;
         fatalError()
     }
-    let u0 = approxInvIntegral(a0);
-    let u2 = approxInvIntegral(a2);
-    var result: [Double] = [];
+    let u0 = approxInvIntegral(a0)
+    let u2 = approxInvIntegral(a2)
+    var result: [Double] = []
     for i in stride(from: 1, to: n, by: 1) {
-        let u = approxInvIntegral(a0 + ((a2 - a0) * i) / n);
-        let t = (u - u0) / (u2 - u0);
-        result.append(t);
+        let u = approxInvIntegral(a0 + ((a2 - a0) * i) / n)
+        let t = (u - u0) / (u2 - u0)
+        result.append(t)
     }
-    result.append(1);
+    result.append(1)
     return result.adjacentPairs().map { CGPoint($0.0, $0.1) }
 }
 

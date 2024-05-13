@@ -3,9 +3,9 @@ import CoreGraphics
 import CoreGraphicsSupport
 import CoreText
 import Earcut
-import Shapes3D
 import ModelIO
 import Projection
+import Shapes3D
 import simd
 import SIMDSupport
 import SwiftUI
@@ -48,7 +48,7 @@ public extension Camera {
     }
 }
 
-//extension Array<LineSegment3D> {
+// extension Array<LineSegment3D> {
 //    func extrude(minY: Float, maxY: Float) -> TrivialMesh<SIMD3<Float>> {
 //        var quads: [Quad<SIMD3<Float>>] = []
 //        forEach { segment in
@@ -65,7 +65,7 @@ public extension Camera {
 //        let mesh = TrivialMesh<SIMD3<Float>>(quads: quads)
 //        return mesh
 //    }
-//}
+// }
 
 // extension Array where Element == CGPoint {
 //    var rectangleAndAngle: (CGRect, Angle)? {
@@ -164,7 +164,6 @@ extension Path3D {
         }
     }
 }
-
 
 public extension SIMD3 where Scalar: BinaryFloatingPoint {
     init(xy: SIMD2<Scalar>) {

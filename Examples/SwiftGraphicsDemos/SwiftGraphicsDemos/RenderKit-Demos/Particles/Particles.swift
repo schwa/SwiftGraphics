@@ -1,14 +1,14 @@
-import SwiftUI
-import ModelIO
+import DemosSupport
+import Everything
 import Metal
 import MetalKit
-import SIMDSupport
-import RenderKitShaders
-import RenderKit
+import ModelIO
 import Observation
-import Everything
+import RenderKit
+import RenderKitShaders
+import SIMDSupport
 import SwiftFormats
-import DemosSupport
+import SwiftUI
 
 // https://www.youtube.com/watch?v=rSKMYc1CQHE&t=1746s
 
@@ -18,11 +18,11 @@ protocol SimulationStorage {
     associatedtype Densities: MutableCollection, RandomAccessCollection where Densities.Element == Float, Densities.Index == Int, Densities.Index.Stride == Int
 
     var positions: Positions { get set }
-    var velocities: Velocities { get set}
+    var velocities: Velocities { get set }
     var densities: Densities { get set }
 }
 
-class Simulation <Storage>: Observable where Storage: SimulationStorage {
+class Simulation<Storage>: Observable where Storage: SimulationStorage {
 //    struct Parameters {
 //        var count: Int
 //        var gravity: SIMD2<Float> = [0, 100]
@@ -77,7 +77,7 @@ class Simulation <Storage>: Observable where Storage: SimulationStorage {
         self.count = count
         self.storage = storage
         self.size = size
-        self.table = .init(size: SIMD2<Float>(size))
+        table = .init(size: SIMD2<Float>(size))
     }
 
     func populate() {
@@ -86,12 +86,12 @@ class Simulation <Storage>: Observable where Storage: SimulationStorage {
             storage.positions[index].y = Float.random(in: 0 ..< Float(size.height))
         }
         for index in storage.velocities.startIndex ..< storage.velocities.endIndex {
-            storage.velocities[index] = (SIMD2<Float>.random(in: 0..<2) - [1, 1]) * 0
+            storage.velocities[index] = (SIMD2<Float>.random(in: 0 ..< 2) - [1, 1]) * 0
         }
         for index in storage.densities.startIndex ..< storage.densities.endIndex {
             storage.densities[index] = Float(0.0)
         }
-        self.table = .init(size: SIMD2<Float>(size))
+        table = .init(size: SIMD2<Float>(size))
     }
 
     func step(time: TimeInterval) {
@@ -99,7 +99,7 @@ class Simulation <Storage>: Observable where Storage: SimulationStorage {
             self.lastTime = time
             return
         }
-        self.step += 1
+        step += 1
 
         let deltaTime = Float(time - lastTime) * speed
         self.lastTime = time
@@ -124,14 +124,14 @@ class Simulation <Storage>: Observable where Storage: SimulationStorage {
             resolveCollisions(index: index)
         }
 
-        self.statistics.maxDensity = storage.densities.reduce(Float.zero, max)
-        self.statistics.minDensity = storage.densities.reduce(Float.zero, min)
-        self.statistics.averageDensity = storage.densities.reduce(Float.zero, +) / Float(storage.densities.count)
+        statistics.maxDensity = storage.densities.reduce(Float.zero, max)
+        statistics.minDensity = storage.densities.reduce(Float.zero, min)
+        statistics.averageDensity = storage.densities.reduce(Float.zero, +) / Float(storage.densities.count)
 
         let speeds = storage.velocities.map(\.magnitude)
-        self.statistics.maxSpeed = speeds.reduce(Float.zero, max)
-        self.statistics.minSpeed = speeds.reduce(Float.zero, min)
-        self.statistics.averageSpeed = speeds.reduce(Float.zero, +) / Float(speeds.count)
+        statistics.maxSpeed = speeds.reduce(Float.zero, max)
+        statistics.minSpeed = speeds.reduce(Float.zero, min)
+        statistics.averageSpeed = speeds.reduce(Float.zero, +) / Float(speeds.count)
     }
 
     private func resolveCollisions(index: Int) {
@@ -161,7 +161,7 @@ class Simulation <Storage>: Observable where Storage: SimulationStorage {
         let mass: Float = 1
         // Loop over all particle positions
         // TODO: optimize to only look at particles inside the smoothing radius
-        storage.positions.forEach { position in
+        for position in storage.positions {
             let dst = (position - samplePoint).magnitude
             let influence = smoothingKernel(radius: smoothingRadius, dst: dst)
             density += mass * influence
@@ -236,15 +236,19 @@ extension SIMD2 where Scalar == Float {
     var magnitude: Scalar {
         simd_length(self)
     }
+
     var sqrMagnitude: Scalar {
         simd_length_squared(self)
     }
+
     static var right: Self {
-        return [1, 0]
+        [1, 0]
     }
+
     static var up: Self {
-        return [0, 1]
+        [0, 1]
     }
+
     static var randomDirection: Self {
         let angle = Float.random(in: 0 ... .pi * 2)
         return [cos(angle), sin(angle)]

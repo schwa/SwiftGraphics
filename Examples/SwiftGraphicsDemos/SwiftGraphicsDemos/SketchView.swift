@@ -1,11 +1,10 @@
-import SwiftUI
-import Shapes2D
 import Observation
+import Shapes2D
 import SwiftFormats
+import SwiftUI
 
 @Observable
 class SketchModel {
-
 //    @ObservationIgnored
 //    @CodableAppStorage("SHAPES")
     var shapes: [Identified<UUID, MyShape>] = []
@@ -36,7 +35,7 @@ struct SketchView: View {
                 Color.white
                 ScrollView([.horizontal, .vertical]) {
                     ZStack {
-                        Canvas { context, size in
+                        Canvas { context, _ in
                             for shape in model.shapes {
                                 let path = Path(shape.content)
 //                                if model.selection.contains(shape.id) {
@@ -95,7 +94,7 @@ struct SketchView: View {
             .customizationBehavior(.default)
         }
         .toolbarTitleDisplayMode(.automatic)
-}
+    }
 
     @ViewModifierBuilder
     var currentToolModifier: some ViewModifier {
@@ -119,4 +118,3 @@ struct SketchView: View {
         }
     }
 }
-

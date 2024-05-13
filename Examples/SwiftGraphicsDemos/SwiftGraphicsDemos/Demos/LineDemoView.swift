@@ -1,10 +1,9 @@
-import SwiftUI
+import CoreGraphicsSupport
 import Shapes2D
 import SwiftFormats
-import CoreGraphicsSupport
+import SwiftUI
 
 struct LineDemoView: View {
-
     struct Element: Identifiable, Codable {
         var id: String = UUID().uuidString
         var lineSegment: LineSegment
@@ -78,7 +77,7 @@ struct LineDemoView: View {
                     Handle(end.transformed(transform))
                         .simultaneousGesture(TapGesture().onEnded({ selectedElement = element.id }))
                 }
-                Canvas { context, size in
+                Canvas { context, _ in
                     for (index, lhs) in elements.enumerated() {
                         let lhsLine = Line(points: (lhs.lineSegment.start, lhs.lineSegment.end))
 
@@ -96,7 +95,7 @@ struct LineDemoView: View {
                         if showIntersections {
                             for rhs in elements.dropFirst(index + 1) {
                                 let rhsLine = Line(points: (rhs.lineSegment.start, rhs.lineSegment.end))
-                                if case let .point(point) = Line.intersection(lhsLine, rhsLine) {
+                                if case .point(let point) = Line.intersection(lhsLine, rhsLine) {
                                     context.fill(Path.circle(center: point, radius: 0.06), with: .color(.white), transform: transform)
                                     context.fill(Path.circle(center: point, radius: 0.05), with: .color(.blue), transform: transform)
                                 }
@@ -118,9 +117,7 @@ struct LineDemoView: View {
                         ColorPicker("Color", selection: binding.color)
                         LineSegmentInfoView(lineSegment: binding.lineSegment)
                     }
-
                 }
-
             }
         }
         .toolbar {
@@ -136,7 +133,6 @@ struct LineDemoView: View {
                 elements.remove(at: index)
             }
             .disabled(selectedElement == nil)
-
         }
     }
 }
@@ -144,7 +140,6 @@ struct LineDemoView: View {
 // MARK: -
 
 struct AxisView: View {
-
     var transform: CGAffineTransform
 
     var body: some View {
@@ -179,7 +174,6 @@ struct AxisView: View {
 }
 
 // MARK: -
-
 
 struct LineSegmentInfoView: View {
     @Binding

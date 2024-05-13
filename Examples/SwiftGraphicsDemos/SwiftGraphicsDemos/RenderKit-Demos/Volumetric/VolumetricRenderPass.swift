@@ -1,14 +1,14 @@
-import SwiftUI
-import ModelIO
+import Everything
 import Metal
 import MetalKit
-import SIMDSupport
-import RenderKitShaders
-import Everything
 import MetalSupport
+import ModelIO
 import os
 import RenderKit
+import RenderKitShaders
 import Shapes2D
+import SIMDSupport
+import SwiftUI
 
 class VolumetricRenderPass: RenderPass {
     let id = LOLID2(prefix: "VolumeRenderPass")
@@ -44,7 +44,7 @@ class VolumetricRenderPass: RenderPass {
         transferFunctionTexture = texture
     }
 
-    func setup<Configuration: MetalConfiguration>(device: MTLDevice, configuration: inout Configuration) throws {
+    func setup(device: MTLDevice, configuration: inout some MetalConfiguration) throws {
         if renderPipelineState == nil {
             let library = try! device.makeDebugLibrary(bundle: .shadersBundle)
             let vertexFunction = library.makeFunction(name: "volumeVertexShader")!
@@ -86,7 +86,7 @@ class VolumetricRenderPass: RenderPass {
                 encoder.setRenderPipelineState(renderPipelineState)
                 encoder.setDepthStencilState(depthStencilState)
 
-                let camera = Camera(transform: .init( translation: [0, 0, 2]), target: .zero, projection: .perspective(PerspectiveProjection(fovy: .degrees(90), zClip: 0.01 ... 10)))
+                let camera = Camera(transform: .init(translation: [0, 0, 2]), target: .zero, projection: .perspective(PerspectiveProjection(fovy: .degrees(90), zClip: 0.01 ... 10)))
 
                 let modelTransform = Transform(scale: [2, 2, 2], rotation: rotation.quaternion)
 
@@ -119,7 +119,7 @@ class VolumetricRenderPass: RenderPass {
                 let instanceCount = 256 // TODO: Random - numbers as low as 32 - but you will see layering in the image.
 
                 let instances = cache.get(key: "instance_data", of: MTLBuffer.self) {
-                    let instances = (0..<instanceCount).map { slice in
+                    let instances = (0 ..< instanceCount).map { slice in
                         let z = Float(slice) / Float(instanceCount - 1)
                         return VolumeInstance(offsetZ: z - 0.5, textureZ: 1 - z)
                     }

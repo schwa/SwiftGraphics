@@ -23,7 +23,7 @@ struct Names {
         let noun = nouns.randomElement()!
         if let pad {
             let max = Int(pow(10, Double(pad)))
-            let pad = Int.random(in: 1..<max)
+            let pad = Int.random(in: 1 ..< max)
             return "\(adjective)-\(noun)-\(pad)"
         }
         else {
@@ -31,7 +31,7 @@ struct Names {
         }
     }
 
-    func hashed<Value>(hashable value: Value, pad: Int? = nil) -> String where Value: Hashable {
+    func hashed(hashable value: some Hashable, pad: Int? = nil) -> String {
         var value = abs(value.hashValue)
         let adjective = adjectives[value % adjectives.count]
         value /= adjectives.count

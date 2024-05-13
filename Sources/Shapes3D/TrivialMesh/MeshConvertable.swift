@@ -1,6 +1,6 @@
-import ModelIO
 import MetalKit
 import MetalSupport
+import ModelIO
 
 @available(*, deprecated, message: "Removed")
 public protocol Shape3D: Hashable, Sendable {
@@ -45,10 +45,10 @@ extension Sphere3D: MDLMeshConvertable {
         public var allocator: MDLMeshBufferAllocator?
 
         public init(allocator: MDLMeshBufferAllocator?) {
-            self.segments = [36, 36]
-            self.inwardNormals = false
-            self.geometryType = .triangles
-            self.flippedTextureCoordinates = false
+            segments = [36, 36]
+            inwardNormals = false
+            geometryType = .triangles
+            flippedTextureCoordinates = false
             self.allocator = allocator
         }
 

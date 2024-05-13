@@ -1,6 +1,6 @@
 import simd
 
-public struct SpatialLookupTable <Positions> where Positions: Collection, Positions.Element == SIMD2<Float>, Positions.Index == Int {
+public struct SpatialLookupTable<Positions> where Positions: Collection, Positions.Element == SIMD2<Float>, Positions.Index == Int {
     public private(set) var size: SIMD2<Float>
     public private(set) var radius: Float = 0
     public private(set) var points: Positions!
@@ -53,12 +53,12 @@ public struct SpatialLookupTable <Positions> where Positions: Collection, Positi
     }
 
     private func positionToCellCoord(_ position: SIMD2<Float>, _ radius: Float) -> SIMD2<Int> {
-        return SIMD2<Int>(position / [radius, radius])
+        SIMD2<Int>(position / [radius, radius])
     }
 
     private func key(for cell: SIMD2<Int>) -> Int {
         // TODO: overflow
-        let n = (cell.x * 15823 + cell.y * 9737333)
+        let n = (cell.x * 15823 + cell.y * 9_737_333)
         precondition(n >= 0)
         return n % spatialLookup.count
     }
@@ -101,8 +101,8 @@ public struct SpatialLookupTable <Positions> where Positions: Collection, Positi
     }
 }
 
-extension SpatialLookupTable {
-    public func indicesNear(point: SIMD2<Float>) -> Set<Int> {
+public extension SpatialLookupTable {
+    func indicesNear(point: SIMD2<Float>) -> Set<Int> {
         var indices: Set<Int> = []
         indicesNear(point: point, hits: {
             indices.insert($0)
@@ -110,11 +110,12 @@ extension SpatialLookupTable {
         return indices
     }
 
-    public func indicesNear(index: Int, hits: (Int) -> Void) {
+    func indicesNear(index: Int, hits: (Int) -> Void) {
         let point = points[index]
         indicesNear(point: point, hits: hits)
     }
-    public func indicesNear(index: Int) -> Set<Int> {
+
+    func indicesNear(index: Int) -> Set<Int> {
         let point = points[index]
         return indicesNear(point: point)
     }

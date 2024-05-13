@@ -26,6 +26,6 @@ extension YAMesh {
 
 extension VertexDescriptor {
     var isPacked: Bool {
-        return layouts.count == 1
+        layouts.count == 1
     }
 }

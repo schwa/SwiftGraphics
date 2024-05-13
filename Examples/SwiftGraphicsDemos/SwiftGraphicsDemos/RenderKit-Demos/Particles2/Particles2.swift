@@ -1,7 +1,7 @@
-import simd
-import SwiftUI
 import CoreGraphicsSupport
 import DemosSupport
+import simd
+import SwiftUI
 
 struct VerletObject {
     var id: Int
@@ -10,22 +10,24 @@ struct VerletObject {
             precondition(position_current.x.isNaN == false && position_current.y.isNaN == false)
         }
     }
+
     var position_old: SIMD2<Float>
     var acceleration: SIMD2<Float> {
         didSet {
             precondition(acceleration.x.isNaN == false && acceleration.y.isNaN == false)
         }
     }
+
     var color: SIMD3<Float>
     var radius: Float
 
     init(id: Int, position_current: SIMD2<Float>) {
         self.id = id
         self.position_current = position_current
-        self.position_old = position_current
-        self.acceleration = .zero
-        self.color = [Float.random(in: 0...1), Float.random(in: 0...1), Float.random(in: 0...1)]
-        self.radius = Float.random(in: 3...10)
+        position_old = position_current
+        acceleration = .zero
+        color = [Float.random(in: 0 ... 1), Float.random(in: 0 ... 1), Float.random(in: 0 ... 1)]
+        radius = Float.random(in: 3 ... 10)
     }
 
     mutating func updatePosition(_ dt: Float) {
@@ -130,7 +132,7 @@ extension MutableCollection where Self.Index: Strideable, Self.Index.Stride: Sig
 
 extension Solver {
     func draw(context: GraphicsContext) {
-        objects.forEach { object in
+        for object in objects {
             let path = Path { path in
                 path.addEllipse(in: CGRect(center: CGPoint(object.position_current), radius: Double(object.radius)))
             }
@@ -180,7 +182,7 @@ struct Particles2View: View, DefaultInitializableView {
                 }
                 let delta = now - lastTime!
                 lastTime = now
-                self.dt = delta
+                dt = delta
 
                 if solver.objects.count < 2 && frame % 27 == 0 {
                     solver.objects.append(VerletObject(id: solver.objects.count, position_current: [300, 500]))
@@ -192,7 +194,8 @@ struct Particles2View: View, DefaultInitializableView {
                 solver.update(Float(delta))
                 try? await Task.sleep(for: .seconds(1.0 / 60.0))
                 frame += 1
-            } while (!Task.isCancelled)
+            }
+            while (!Task.isCancelled)
         }
     }
 }

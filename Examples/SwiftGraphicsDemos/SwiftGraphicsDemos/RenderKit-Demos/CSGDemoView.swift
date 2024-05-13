@@ -1,15 +1,15 @@
-//import SwiftUI
-//import RenderKit
-//import RenderKitShaders
-//import Everything
-//import RenderKitScratch
+// import SwiftUI
+// import RenderKit
+// import RenderKitShaders
+// import Everything
+// import RenderKitScratch
 //
-//struct CSGDemoView: View, DefaultInitializableView {
+// struct CSGDemoView: View, DefaultInitializableView {
 //    var body: some View {
 //        CSGDemoView_()
 //    }
-//}
-//struct CSGDemoView_: View {
+// }
+// struct CSGDemoView_: View {
 //    let a: CSG<SimpleVertex>
 //    let b: CSG<SimpleVertex>
 //    let c: CSG<SimpleVertex>
@@ -57,9 +57,9 @@
 //            context.draw(node: node, transform: transform)
 //        }
 //    }
-//}
+// }
 //
-//extension GraphicsContext {
+// extension GraphicsContext {
 //    func draw <V>(csg: CSG<V>, transform: CGAffineTransform = .identity, with shading: Shading) where V: VertexLike {
 //        for polygon in csg.polygons {
 //            let a = polygon.vertices[0].position
@@ -106,12 +106,12 @@
 //            draw(node: back, transform: transform)
 //        }
 //    }
-//}
+// }
 //
-//extension URL {
+// extension URL {
 //    func reveal() {
-//#if os(macOS)
+// #if os(macOS)
 //        NSWorkspace.shared.selectFile(path, inFileViewerRootedAtPath: "")
-//#endif
+// #endif
 //    }
-//}
+// }

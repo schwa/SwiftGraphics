@@ -1,8 +1,8 @@
 import Algorithms
 import CoreGraphicsSupport
-import Shapes3D
 import ModelIO
 import Projection
+import Shapes3D
 import SIMDSupport
 import SwiftFormats
 import SwiftUI

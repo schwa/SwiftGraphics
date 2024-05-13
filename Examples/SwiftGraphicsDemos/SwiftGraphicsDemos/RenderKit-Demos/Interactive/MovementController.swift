@@ -1,9 +1,9 @@
+import AsyncAlgorithms
+import Everything
 import Foundation
+@preconcurrency import GameController
 import Observation
 import SwiftUI
-@preconcurrency import GameController
-import Everything
-import AsyncAlgorithms
 
 // TODO: This needs to be massively cleaned-up and turned into an actor.
 // TODO: We need good support for pausing/resuming inputs
@@ -18,15 +18,16 @@ class MovementController: @unchecked Sendable {
             case movement(SIMD3<Float>)
             case rotation(Float)
         }
+
         var payload: Payload
         var created = CFAbsoluteTimeGetCurrent()
 
         static func movement(_ movement: SIMD3<Float>) -> Event {
-            return .init(payload: .movement(movement))
+            .init(payload: .movement(movement))
         }
 
         static func rotation(_ rotation: Float) -> Event {
-            return .init(payload: .rotation(rotation))
+            .init(payload: .rotation(rotation))
         }
     }
 
@@ -42,6 +43,7 @@ class MovementController: @unchecked Sendable {
             capturedControllerProfile = controller?.physicalInputProfile.capture()
         }
     }
+
     @ObservationIgnored
     var capturedControllerProfile: GCPhysicalInputProfile? {
         didSet {
@@ -65,27 +67,27 @@ class MovementController: @unchecked Sendable {
 
     func disableUIKeys() {
         #if os(macOS)
-        logger?.debug("NSEvent.addLocalMonitorForEvents(matching: .keyDown) …")
-        NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
-            // If we're not focused return everything.
-            guard self?.focused == true else {
-                logger?.debug("Ignoring event, not focused.")
-                return event
+            logger?.debug("NSEvent.addLocalMonitorForEvents(matching: .keyDown) …")
+            NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
+                // If we're not focused return everything.
+                guard self?.focused == true else {
+                    logger?.debug("Ignoring event, not focused.")
+                    return event
+                }
+                // If a modifier is down
+                guard event.modifierFlags.intersection([.command, .shift, .control, .option]).isEmpty else {
+                    logger?.debug("Ignoring event, modifier down.")
+                    return event
+                }
+                // If we're not a WASD key
+                guard ["w", "a", "s", "d"].contains(event.characters) else {
+                    logger?.debug("Ignoring key that wasn't a movement key.")
+                    return event
+                }
+                logger?.debug("Got movement key.")
+                // Consume the key
+                return nil
             }
-            // If a modifier is down
-            guard event.modifierFlags.intersection([.command, .shift, .control, .option]).isEmpty else {
-                logger?.debug("Ignoring event, modifier down.")
-                return event
-            }
-            // If we're not a WASD key
-            guard ["w", "a", "s", "d"].contains(event.characters) else {
-                logger?.debug("Ignoring key that wasn't a movement key.")
-                return event
-            }
-            logger?.debug("Got movement key.")
-            // Consume the key
-            return nil
-        }
         #endif
     }
 
@@ -119,13 +121,13 @@ class MovementController: @unchecked Sendable {
     }
 
     @ObservationIgnored
-    var keyboardTask: Task<(), Never>?
+    var keyboardTask: Task<Void, Never>?
 
     @ObservationIgnored
-    var relayTask: Task<(), Never>?
+    var relayTask: Task<Void, Never>?
 
     @ObservationIgnored
-    var controllerNotificationsTask: Task<(), Never>?
+    var controllerNotificationsTask: Task<Void, Never>?
 
     init(displayLink: DisplayLink2) {
         self.displayLink = displayLink
@@ -187,7 +189,7 @@ class MovementController: @unchecked Sendable {
     }
 
     func keyboard() {
-        self.keyboardTask = Task { [weak self] in
+        keyboardTask = Task { [weak self] in
             guard let displayLink = self?.displayLink else {
                 fatalError()
             }
@@ -242,7 +244,7 @@ class MovementController: @unchecked Sendable {
             let rotation = turn.value
             let events = [
                 movement != .zero ? Event.movement(movement) : nil,
-                rotation != .zero ? Event.rotation(rotation) : nil
+                rotation != .zero ? Event.rotation(rotation) : nil,
             ].compacted()
 
             Counters.shared.increment(counter: "Poll: GC")
@@ -270,7 +272,7 @@ actor MouseMonitor {
 
 extension GCMouseInput {
     func events() -> AsyncStream<SIMD2<Float>> {
-        return AsyncStream { continuation in
+        AsyncStream { continuation in
             self.mouseMovedHandler = { _, x, y in
                 continuation.yield([x, y])
             }

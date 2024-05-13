@@ -2,7 +2,6 @@ import SwiftUI
 
 @main
 struct SwiftGraphicsDemosApp: App {
-
     @Environment(\.openWindow)
     var openWindow
 
@@ -30,4 +29,3 @@ struct SwiftGraphicsDemosApp: App {
         }
     }
 }
-

@@ -1,9 +1,9 @@
-//import CoreGraphics
-//import RenderKit
-//import Metal
-//import SwiftUI
+// import CoreGraphics
+// import RenderKit
+// import Metal
+// import SwiftUI
 //
-//struct MetalGraphicsContext {
+// struct MetalGraphicsContext {
 //    enum Command {
 //        case stroke(Path)
 //    }
@@ -13,9 +13,9 @@
 //    mutating func stroke(path: Path) {
 //        commands.append(.stroke(path))
 //    }
-//}
+// }
 //
-//struct MetalGraphicsCanvas {
+// struct MetalGraphicsCanvas {
 //    typealias Configuration = OffscreenRenderPassConfiguration
 //
 //    var size: CGSize
@@ -50,4 +50,4 @@
 //    func render(_ context: [MetalGraphicsContext.Command]) throws {
 //        fatalError()
 //    }
-//}
+// }

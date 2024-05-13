@@ -1,9 +1,9 @@
-//#if !os(visionOS)
-//import SwiftUI
-//import RenderKit
+// #if !os(visionOS)
+// import SwiftUI
+// import RenderKit
 //
-//@main
-//struct DemosApp: App {
+// @main
+// struct DemosApp: App {
 //    var body: some Scene {
 //        WindowGroup {
 //            ContentView()
@@ -28,10 +28,10 @@
 //        }
 //        #endif
 //    }
-//}
+// }
 //
-//#if os(macOS)
-//extension FileManager.SearchPathDirectory: CaseIterable {
+// #if os(macOS)
+// extension FileManager.SearchPathDirectory: CaseIterable {
 //    public static var allCases: [FileManager.SearchPathDirectory] {
 //        return [
 //            .applicationDirectory,
@@ -63,9 +63,9 @@
 //            .trashDirectory,
 //        ]
 //    }
-//}
+// }
 //
-//extension FileManager.SearchPathDirectory: CustomStringConvertible {
+// extension FileManager.SearchPathDirectory: CustomStringConvertible {
 //    public var description: String {
 //        switch self {
 //        case .applicationDirectory: return "applicationDirectory"
@@ -99,6 +99,6 @@
 //            fatalError()
 //        }
 //    }
-//}
-//#endif
-//#endif
+// }
+// #endif
+// #endif

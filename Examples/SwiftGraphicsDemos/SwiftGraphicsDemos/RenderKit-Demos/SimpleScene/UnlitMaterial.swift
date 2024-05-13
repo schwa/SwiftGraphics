@@ -1,12 +1,12 @@
-import SwiftUI
-import ModelIO
+import Everything
 import Metal
 import MetalKit
-import SIMDSupport
-import RenderKitShaders
-import RenderKit
+import ModelIO
 import Observation
-import Everything
+import RenderKit
+import RenderKitShaders
+import SIMDSupport
+import SwiftUI
 
 public struct UnlitMaterial: Material {
     public var label: String?
@@ -24,6 +24,7 @@ class UnlitMaterialRenderJob: SceneRenderJob {
         var fragmentMaterialsIndex: Int = -1
         var fragmentTexturesIndex: Int = -1
     }
+
     struct DrawState {
         var renderPipelineState: MTLRenderPipelineState
         var depthStencilState: MTLDepthStencilState
@@ -41,7 +42,7 @@ class UnlitMaterialRenderJob: SceneRenderJob {
         self.textureManager = textureManager
     }
 
-    func setup<Configuration: MetalConfiguration>(device: MTLDevice, configuration: inout Configuration) throws {
+    func setup(device: MTLDevice, configuration: inout some MetalConfiguration) throws {
         let library = try! device.makeDefaultLibrary(bundle: .shadersBundle)
         bucketedDrawStates = try models.reduce(into: [:]) { partialResult, model in
             let key = Pair(model.mesh.id, model.mesh.vertexDescriptor.encodedDescription)
@@ -116,7 +117,7 @@ class UnlitMaterialRenderJob: SceneRenderJob {
                         }
                         return try textureManager.texture(for: texture.resource, options: texture.options)
                     }
-                    encoder.setFragmentTextures(textures.extended(with: nil, count: 128 - textures.count), range: 0..<textures.count)
+                    encoder.setFragmentTextures(textures.extended(with: nil, count: 128 - textures.count), range: 0 ..< textures.count)
 
                     let materials = models.enumerated().map { index, model in
                         let color = (model.material as! UnlitMaterial).baseColorFactor

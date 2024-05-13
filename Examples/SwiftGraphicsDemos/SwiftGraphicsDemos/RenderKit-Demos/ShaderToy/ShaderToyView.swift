@@ -1,11 +1,11 @@
-//import SwiftUI
-//import MetalKit
-//import ModelIO
-//import simd
-//import Everything
-//import MetalSupport
+// import SwiftUI
+// import MetalKit
+// import ModelIO
+// import simd
+// import Everything
+// import MetalSupport
 //
-//public struct ShaderToyView: View {
+// public struct ShaderToyView: View {
 //    @State
 //    var offscreen = ShaderToyRenderPass()
 //
@@ -39,9 +39,9 @@
 //            .padding()
 //        }
 //    }
-//}
+// }
 //
-//struct ShaderToyRenderPass <UpdateConfiguration, DrawConfiguration>: RenderPass where UpdateConfiguration: RenderKitUpdateConfiguration, DrawConfiguration: RenderKitDrawConfiguration {
+// struct ShaderToyRenderPass <UpdateConfiguration, DrawConfiguration>: RenderPass where UpdateConfiguration: RenderKitUpdateConfiguration, DrawConfiguration: RenderKitDrawConfiguration {
 //
 //    var shaderToyRenderPipelineState: MTLRenderPipelineState?
 //    var plane: MTKMesh?
@@ -97,4 +97,4 @@
 //    }
 //
 //
-//}
+// }

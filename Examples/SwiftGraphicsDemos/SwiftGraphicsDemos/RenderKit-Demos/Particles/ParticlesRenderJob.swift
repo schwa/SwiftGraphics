@@ -1,13 +1,13 @@
-import SwiftUI
-import ModelIO
+import Everything
 import Metal
 import MetalKit
-import SIMDSupport
-import RenderKitShaders
-import RenderKit
+import ModelIO
 import Observation
-import Everything
+import RenderKit
+import RenderKitShaders
+import SIMDSupport
 import SwiftFormats
+import SwiftUI
 
 class ParticlesRenderJob: RenderJob {
     var renderPipelineState: MTLRenderPipelineState?
@@ -19,7 +19,7 @@ class ParticlesRenderJob: RenderJob {
     var colors: [Float] = []
     var simulation: Simulation<UnsafeBufferSimulationStorage>?
 
-    func setup<Configuration: MetalConfiguration>(device: MTLDevice, configuration: inout Configuration) throws {
+    func setup(device: MTLDevice, configuration: inout some MetalConfiguration) throws {
         let count = 500
 
         positions = device.makeBuffer(length: count * MemoryLayout<SIMD2<Float>>.stride, options: .storageModeShared)!.labelled("positions")

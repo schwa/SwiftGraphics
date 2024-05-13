@@ -58,13 +58,13 @@ struct SplineDemoView: View, DefaultInitializableView {
                             }
                         }
                 }
-                ForEach(points.indexed(), id: \.index) { (index, point) in
+                ForEach(points.indexed(), id: \.index) { (index, _) in
                     Handle($points[index])
                 }
                 ForEach(lines.indexed(), id: \.index) { (index, line) in
                     if let segment = line.lineSegment(bounds: proxy.frame(in: .local)) {
                         Path(segment).stroke()
-                        .lineManipulator(line: $lines[index])
+                            .lineManipulator(line: $lines[index])
                     }
                 }
             }
@@ -101,7 +101,6 @@ struct SplineDemoView: View, DefaultInitializableView {
     }
 }
 
-
 struct SplineToolModifier: ViewModifier {
     @Binding
     var spline: Spline
@@ -134,7 +133,6 @@ extension View {
         modifier(SplineToolModifier(spline: spline))
     }
 }
-
 
 struct LineManipulatorModifier: ViewModifier {
     @Binding
@@ -204,7 +202,7 @@ extension View {
     }
 }
 
-extension Array<LineSegment>: PathConvertible {
+extension [LineSegment]: PathConvertible {
     public var path: Path {
         Path(lineSegments: map { ($0.start, $0.end) })
     }

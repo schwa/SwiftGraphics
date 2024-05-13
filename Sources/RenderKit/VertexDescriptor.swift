@@ -1,7 +1,7 @@
+import Everything
 import Metal
 import MetalKit
 import ModelIO
-import Everything
 
 public enum Semantic: Hashable, Sendable {
     case position
@@ -262,12 +262,11 @@ public extension VertexDescriptor {
     /// Convenience method for creating packed descriptors with common attribute types/sizes...
     static func packed(label: String? = nil, semantics: [Semantic]) -> VertexDescriptor {
         let attributes: [Attribute] = semantics.map { semantic in
-            let format: MTLVertexFormat
-            switch semantic {
+            let format: MTLVertexFormat = switch semantic {
             case .position, .normal:
-                format = .float3
+                .float3
             case .textureCoordinate:
-                format = .float2
+                .float2
             }
             return .init(semantic: semantic, format: format, offset: 0)
         }

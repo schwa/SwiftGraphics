@@ -1,11 +1,11 @@
+import Everything
 import Metal
 import SwiftUI
-import Everything
 
 @resultBuilder
 struct StageBuilder {
     static func buildBlock(_ function: Function, _ components: Parameter...) -> ConcreteStage {
-        return ConcreteStage(function: function, parameters: components)
+        ConcreteStage(function: function, parameters: components)
     }
 }
 
@@ -14,7 +14,7 @@ struct ConcreteStage: VertexStage, FragmentStage {
     let parameters: [any Parameter]
 }
 
-//-enable-experimental-feature VariadicGenerics
+// -enable-experimental-feature VariadicGenerics
 
 protocol Parameter {
 }
@@ -36,7 +36,7 @@ struct ParameterIndex: RawRepresentable, Equatable {
 
 extension ParameterIndex: ExpressibleByIntegerLiteral {
     init(integerLiteral value: Int) {
-        self.rawValue = value
+        rawValue = value
     }
 }
 
@@ -57,6 +57,7 @@ struct TextureReference: Parameter {
         case keyPath(PartialKeyPath<RenderEnvironment>)
         case texture(MTLTexture)
     }
+
     let texture: Value
 
     init<T>(index: T, texture: PartialKeyPath<RenderEnvironment>) where T: RawRepresentable, T.RawValue == ParameterIndex {
@@ -130,45 +131,45 @@ public struct Argument: Equatable, Sendable {
         self.bytes = bytes
     }
 
-    public static func float<T>(_ x: T) -> Self where T: BinaryFloatingPoint {
-        return withUnsafeBytes(of: x) {
-            return Argument(bytes: Array($0))
+    public static func float(_ x: some BinaryFloatingPoint) -> Self {
+        withUnsafeBytes(of: x) {
+            Argument(bytes: Array($0))
         }
     }
 
     public static func float2<T>(_ x: T, _ y: T) -> Self where T: BinaryFloatingPoint {
-        return withUnsafeBytes(of: (x, y)) {
-            return Argument(bytes: Array($0))
+        withUnsafeBytes(of: (x, y)) {
+            Argument(bytes: Array($0))
         }
     }
 
     public static func float3<T>(_ x: T, _ y: T, _ z: T) -> Self where T: BinaryFloatingPoint {
-        return withUnsafeBytes(of: (x, y, z)) {
-            return Argument(bytes: Array($0))
+        withUnsafeBytes(of: (x, y, z)) {
+            Argument(bytes: Array($0))
         }
     }
 
     public static func float4<T>(_ x: T, _ y: T, _ z: T, _ w: T) -> Self where T: BinaryFloatingPoint {
-        return withUnsafeBytes(of: (x, y, z, w)) {
-            return Argument(bytes: Array($0))
+        withUnsafeBytes(of: (x, y, z, w)) {
+            Argument(bytes: Array($0))
         }
     }
 
     public static func float2(_ point: CGPoint) -> Self {
-        return .float2(Float(point.x), Float(point.y))
+        .float2(Float(point.x), Float(point.y))
     }
 
     public static func float2(_ size: CGSize) -> Self {
-        return .float2(Float(size.width), Float(size.height))
+        .float2(Float(size.width), Float(size.height))
     }
 
     public static func float2(_ vector: CGVector) -> Self {
-        return .float2(Float(vector.dx), Float(vector.dy))
+        .float2(Float(vector.dx), Float(vector.dy))
     }
 
     public static func floatArray(_ array: [Float]) -> Self {
         array.withUnsafeBytes {
-            return Argument(bytes: Array($0))
+            Argument(bytes: Array($0))
         }
     }
 

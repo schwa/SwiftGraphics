@@ -1,8 +1,8 @@
-import RenderKit
 import Foundation
 import Metal
 import MetalKit
 import ModelIO
+import RenderKit
 
 @main
 struct Main {
@@ -19,7 +19,7 @@ struct Main {
 extension YAMesh {
     func toMDLMesh() throws -> MDLMesh {
         let vertexBuffers = vertexBufferViews.map { bufferView in
-            return MDLMeshBufferData(type: .vertex, data: Data(bufferView))
+            MDLMeshBufferData(type: .vertex, data: Data(bufferView))
         }
         let vertexDescriptor = MDLVertexDescriptor(vertexDescriptor)
         let submeshes = submeshes.map { submesh in

@@ -1,7 +1,7 @@
 import Foundation
-import SwiftUI
 import SIMDSupport
 import SwiftFormats
+import SwiftUI
 
 struct SimpleSceneInspector: View {
     @Binding
@@ -27,7 +27,6 @@ struct SimpleSceneInspector: View {
     }
 }
 
-
 struct LightInspector: View {
     @Binding
     var light: Light
@@ -43,7 +42,7 @@ struct LightInspector: View {
             }
         }
         ColorPicker("Color", selection: Binding<CGColor>(simd: $light.color, colorSpace: colorSpace), supportsOpacity: false)
-        //TextField("Position", value: $light.position, format: .vector)
+        // TextField("Position", value: $light.position, format: .vector)
         TransformEditor(transform: $light.position, options: [.hideScale])
     }
 }

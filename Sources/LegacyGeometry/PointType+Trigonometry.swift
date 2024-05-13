@@ -1,10 +1,10 @@
 //// swiftlint:disable identifier_name
 //
-//import ApproximateEquality
-//import CoreGraphics
-//import SwiftUI
+// import ApproximateEquality
+// import CoreGraphics
+// import SwiftUI
 //
-//public extension PointType where Scalar: BinaryFloatingPoint {
+// public extension PointType where Scalar: BinaryFloatingPoint {
 //    init(length: Scalar, angle: Scalar) {
 //        self = Self(x: cos(angle) * length, y: sin(angle) * length)
 //    }
@@ -55,48 +55,52 @@
 //    var transposed: Self {
 //        Self(x: y, y: x)
 //    }
-//}
+// }
 //
+
 // MARK: -
+
 //
-//public func dotProduct<Point: PointType>(_ lhs: Point, _ rhs: Point) -> Point.Scalar {
+// public func dotProduct<Point: PointType>(_ lhs: Point, _ rhs: Point) -> Point.Scalar {
 //    lhs.x * rhs.x + lhs.y * rhs.y
-//}
+// }
 //
-//public func crossProduct<Point: PointType>(_ lhs: Point, _ rhs: Point) -> Point.Scalar {
+// public func crossProduct<Point: PointType>(_ lhs: Point, _ rhs: Point) -> Point.Scalar {
 //    lhs.x * rhs.y - lhs.y * rhs.x
-//}
+// }
 //
 ///// https://mathworld.wolfram.com/PerpDotProduct.html
 ///// ⟘
 ///// http://geomalgorithms.com/vector_products.html#2D-Perp-Product
-//@available(*, deprecated, message: "This is just cross product???")
-//public func perpProduct<Point: PointType>(_ lhs: Point, _ rhs: Point) -> Point.Scalar {
+// @available(*, deprecated, message: "This is just cross product???")
+// public func perpProduct<Point: PointType>(_ lhs: Point, _ rhs: Point) -> Point.Scalar {
 //    // TODO: This looks like crossProduct
 //    lhs.x * rhs.y - lhs.y * rhs.x
-//}
+// }
 //
 ///// Return true if a, b, and c all lie on the same line.
-//public func collinear<T>(_ a: T, _ b: T, _ c: T, absoluteTolerance: T.Scalar.Magnitude) -> Bool where T: PointType, T.Scalar: ApproximateEquality {
+// public func collinear<T>(_ a: T, _ b: T, _ c: T, absoluteTolerance: T.Scalar.Magnitude) -> Bool where T: PointType, T.Scalar: ApproximateEquality {
 //    let lhs = (b.x - a.x) * (c.y - a.y)
 //    let rhs = (c.x - a.x) * (b.y - a.y)
 //    return lhs.isApproximatelyEqual(to: rhs, absoluteTolerance: absoluteTolerance)
-//}
+// }
 //
+
 // MARK: -
+
 //
-//private func cos<T>(_ a: T) -> T where T: BinaryFloatingPoint {
+// private func cos<T>(_ a: T) -> T where T: BinaryFloatingPoint {
 //    T(Darwin.cos(Float(a)))
-//}
+// }
 //
-//private func sin<T>(_ a: T) -> T where T: BinaryFloatingPoint {
+// private func sin<T>(_ a: T) -> T where T: BinaryFloatingPoint {
 //    T(Darwin.sin(Float(a)))
-//}
+// }
 //
-//private func pow<T>(_ a: T, _ b: T) -> T where T: BinaryFloatingPoint {
+// private func pow<T>(_ a: T, _ b: T) -> T where T: BinaryFloatingPoint {
 //    T(Darwin.pow(Float(a), Float(b)))
-//}
+// }
 //
-//private func atan2<T>(_ a: T, _ b: T) -> T where T: BinaryFloatingPoint {
+// private func atan2<T>(_ a: T, _ b: T) -> T where T: BinaryFloatingPoint {
 //    T(Darwin.atan2(Float(a), Float(b)))
-//}
+// }

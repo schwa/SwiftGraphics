@@ -49,7 +49,7 @@ public extension Compute {
             computePipelineDescriptor.computeFunction = function
             let (computePipelineState, reflection) = try device.makeComputePipelineState(descriptor: computePipelineDescriptor, options: [.argumentInfo])
             bindings = Dictionary(uniqueKeysWithValues: reflection!.bindings.map { binding in
-                return (binding.name, binding.index)
+                (binding.name, binding.index)
             })
 
             self.computePipelineState = computePipelineState
@@ -78,7 +78,7 @@ public extension Compute {
 
         public subscript(dynamicMember name: String) -> Argument? {
             get {
-                return arguments[name]
+                arguments[name]
             }
             set {
                 arguments[name] = newValue
@@ -87,13 +87,13 @@ public extension Compute {
     }
 
     struct Argument {
-        //var bindingType: MTLBindingType
+        // var bindingType: MTLBindingType
 
         var encode: (MTLComputeCommandEncoder, Int) -> Void
         var constantValue: (MTLFunctionConstantValues, String) -> Void
 
-        public static func int<T>(_ value: T) -> Self where T: BinaryInteger {
-            return Argument { encoder, index in
+        public static func int(_ value: some BinaryInteger) -> Self {
+            Argument { encoder, index in
                 withUnsafeBytes(of: value) { buffer in
                     encoder.setBytes(buffer.baseAddress!, length: buffer.count, index: index)
                 }
@@ -107,7 +107,7 @@ public extension Compute {
         }
 
         public static func bool(_ value: Bool) -> Self {
-            return Argument { encoder, index in
+            Argument { encoder, index in
                 withUnsafeBytes(of: value) { buffer in
                     encoder.setBytes(buffer.baseAddress!, length: buffer.count, index: index)
                 }
@@ -120,7 +120,7 @@ public extension Compute {
         }
 
         public static func buffer(_ buffer: MTLBuffer, offset: Int = 0) -> Self {
-            return Argument { encoder, index in
+            Argument { encoder, index in
                 encoder.setBuffer(buffer, offset: offset, index: index)
             }
             constantValue: { _, _ in
@@ -129,7 +129,7 @@ public extension Compute {
         }
 
         public static func texture(_ texture: MTLTexture) -> Self {
-            return Argument { encoder, index in
+            Argument { encoder, index in
                 encoder.setTexture(texture, index: index)
             }
             constantValue: { _, _ in
@@ -145,7 +145,7 @@ public extension Compute {
             try run(block)
         }
 
-        public func run <R>(_ block: (Dispatcher) throws -> R) rethrows -> R {
+        public func run<R>(_ block: (Dispatcher) throws -> R) rethrows -> R {
             let commandEncoder = commandBuffer.makeComputeCommandEncoder()!
             defer {
                 commandEncoder.endEncoding()
@@ -172,6 +172,6 @@ public extension Compute {
 
 extension Compute.Pass: CustomStringConvertible {
     public var description: String {
-        return "Compute.Pass(function: \(function), arguments: \(arguments)"
+        "Compute.Pass(function: \(function), arguments: \(arguments)"
     }
 }
