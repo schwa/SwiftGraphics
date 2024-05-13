@@ -92,7 +92,9 @@ struct SplineDemoView: View, DefaultInitializableView {
                     spline = Spline()
                 }
             }
+            #if os(macOS)
             .lastRightMouseDownLocation($lastRightMouseDownLocation, coordinateSpace: coordinateSpace)
+            #endif
             .coordinateSpace(name: coordinateSpace)
         }
         .toolbar {

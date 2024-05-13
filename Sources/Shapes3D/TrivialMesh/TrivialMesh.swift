@@ -2,7 +2,7 @@ import Algorithms
 import MetalSupport
 import simd
 
-// TODO: Rename to "TriangleMesh"
+// TODO: Rename to "SimpleMesh"
 public struct TrivialMesh<Vertex> where Vertex: Equatable {
     public var label: String?
     public var indices: [Int]
