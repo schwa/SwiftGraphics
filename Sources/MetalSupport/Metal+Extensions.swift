@@ -6,7 +6,6 @@ import simd
 // swiftlint:disable function_body_length
 // swiftlint:disable cyclomatic_complexity
 // swiftlint:disable file_length
-// swiftlint:disable function_parameter_count
 
 public extension MTLArgumentDescriptor {
     @available(iOS 17, macOS 14, *)

@@ -84,11 +84,11 @@ func quadBezFlatten(_ q: QuadraticBezierCurve, tolerance: Double) -> [CGPoint] {
         let tx = (q.p0.x - q.p1.x) / divx
         let ty = (q.p0.y - q.p1.y) / divy
         var ts: [Double] = []
-        if (tx.isFinite && tx > 0 && tx < 1) {
+        if tx.isFinite && tx > 0 && tx < 1 {
             ts.append(tx)
         }
-        if (ty.isFinite && ty > 0 && ty < 1) {
-            if (ty > ts[ts.count - 1]) {
+        if ty.isFinite && ty > 0 && ty < 1 {
+            if ty > ts[ts.count - 1] {
                 ts.append(ty)
             }
         }

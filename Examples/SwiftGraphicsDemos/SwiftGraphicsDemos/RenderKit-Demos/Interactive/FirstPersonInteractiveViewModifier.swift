@@ -21,7 +21,7 @@ public struct FirstPersonInteractiveViewModifier: ViewModifier, @unchecked Senda
 
     public func body(content: Content) -> some View {
         content
-            .task() {
+            .task {
                 guard let displayLink else {
                     return
                 }

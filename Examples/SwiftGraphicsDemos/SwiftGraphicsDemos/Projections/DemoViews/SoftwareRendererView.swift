@@ -94,7 +94,7 @@ struct SoftwareRendererView: View {
             }
         }
         .ballRotation($ballConstraint.rotation, pitchLimit: pitchLimit, yawLimit: yawLimit)
-        .onAppear() {
+        .onAppear {
             camera.transform.matrix = ballConstraint.transform
         }
         .onChange(of: ballConstraint.transform) {

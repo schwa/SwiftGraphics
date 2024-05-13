@@ -47,7 +47,7 @@ struct Handle: View {
 }
 
 struct HandleConfiguration {
-    public let isPressed: Bool
+    let isPressed: Bool
 }
 
 protocol HandleStyle {

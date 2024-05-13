@@ -58,7 +58,9 @@
             depthState = device.makeDepthStencilState(descriptor: depthStateDescriptor)!
             mesh = try Renderer.buildMesh(device: device, mtlVertexDescriptor: mtlVertexDescriptor)
             colorMap = try MTKTextureLoader(device: device).newTexture(name: "ColorMap", scaleFactor: 1.0, bundle: Bundle.module, options: [
+                // swiftlint:disable:next legacy_objc_type
                 .textureUsage: NSNumber(value: MTLTextureUsage.shaderRead.rawValue),
+                // swiftlint:disable:next legacy_objc_type
                 .textureStorageMode: NSNumber(value: MTLStorageMode.private.rawValue),
             ])
             worldTracking = WorldTrackingProvider()
@@ -82,7 +84,7 @@
         }
 
         private func updateGameState(drawable: LayerRenderer.Drawable, deviceAnchor: DeviceAnchor?) {
-            /// Update any game state before rendering
+            // Update any game state before rendering
             let modelRotationMatrix = simd_float4x4(rotationAngle: rotation, axis: [1, 1, 0])
             let modelTranslationMatrix = simd_float4x4(translate: [0, 0, -8])
             let modelMatrix = modelTranslationMatrix * modelRotationMatrix
@@ -101,7 +103,7 @@
         }
 
         private func renderFrame() {
-            /// Per frame updates hare
+            // Per frame updates hare
             guard let frame = layerRenderer.queryNextFrame() else {
                 return
             }

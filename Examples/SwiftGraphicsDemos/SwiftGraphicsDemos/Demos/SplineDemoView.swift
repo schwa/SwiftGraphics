@@ -168,7 +168,7 @@ struct LineManipulatorModifier: ViewModifier {
                         isHovering = false
                     }
                 }
-                .onAppear() {
+                .onAppear {
                     p1 = lerp(from: segment.start, to: segment.end, by: 1 / 3)
                     p2 = lerp(from: segment.start, to: segment.end, by: 2 / 3)
                 }

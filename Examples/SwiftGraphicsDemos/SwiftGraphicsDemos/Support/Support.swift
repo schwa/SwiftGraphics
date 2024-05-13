@@ -401,7 +401,7 @@ extension CodableAppStorage where Value: ExpressibleByNilLiteral {
 }
 
 @resultBuilder
-struct ViewModifierBuilder {
+enum ViewModifierBuilder {
     static func buildExpression<Content>(_ content: Content) -> Content where Content: ViewModifier {
         content
     }

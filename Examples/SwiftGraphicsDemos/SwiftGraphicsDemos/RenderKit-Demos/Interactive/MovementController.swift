@@ -75,7 +75,7 @@ class MovementController: @unchecked Sendable {
                     return event
                 }
                 // If a modifier is down
-                guard event.modifierFlags.intersection([.command, .shift, .control, .option]).isEmpty else {
+                guard event.modifierFlags.isDisjoint([.command, .shift, .control, .option]) else {
                     logger?.debug("Ignoring event, modifier down.")
                     return event
                 }
@@ -172,7 +172,7 @@ class MovementController: @unchecked Sendable {
             }
         }
 
-        relayTask = Task() { [weak self] in
+        relayTask = Task { [weak self] in
             let events = self?.displayLink.events().flatMap { [weak self] _ in
                 Counters.shared.increment(counter: "DisplayLink")
                 return (self?.makeEvent() ?? []).async

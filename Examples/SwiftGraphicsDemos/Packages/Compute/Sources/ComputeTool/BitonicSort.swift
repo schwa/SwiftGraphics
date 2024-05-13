@@ -63,7 +63,7 @@ public struct BitonicSortDemo {
         print("GPU", current - start, 1 / (current - start))
 
         print("Running on CPU for comparison", stopWatch)
-        let cpuTime = time() {
+        let cpuTime = time {
             entries.sort()
         }
         print("CPU", cpuTime)

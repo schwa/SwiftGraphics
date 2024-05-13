@@ -68,7 +68,7 @@ extension MDLMesh {
     }
 
     var hasNormals: Bool {
-        guard vertexDescriptor.attributes.compactMap({ $0 as? MDLVertexAttribute }).first(where: { $0.name == MDLVertexAttributeNormal }) != nil else {
+        guard vertexDescriptor.attributes.compactMap({ $0 as? MDLVertexAttribute }).contains(where: { $0.name == MDLVertexAttributeNormal }) else {
             return false
         }
         return true

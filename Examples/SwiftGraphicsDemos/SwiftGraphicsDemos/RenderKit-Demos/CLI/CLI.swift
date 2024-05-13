@@ -5,7 +5,7 @@ import ModelIO
 import RenderKit
 
 @main
-struct Main {
+enum Main {
     static func main() async throws {
 //        try await OffscreenDemo.main()
 

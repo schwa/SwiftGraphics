@@ -9,7 +9,7 @@
 import CoreGraphics
 import SwiftUI
 
-// /** This class represents an elliptical arc on a 2D plane.
+// /* This class represents an elliptical arc on a 2D plane.
 //
 //  * <p>It is designed as an implementation of the
 //  * <code>java.awt.Shape</code> interface and can therefore be drawn
@@ -125,72 +125,72 @@ public class EllipticalArc {
         0.001, 4.98, 0.207, 0.006_7,
     ]
 
-    /** Abscissa of the center of the ellipse. */
+    /* Abscissa of the center of the ellipse. */
     let cx: Double
 
-    /** Ordinate of the center of the ellipse. */
+    /* Ordinate of the center of the ellipse. */
     let cy: Double
 
-    /** Semi-major axis. */
+    /* Semi-major axis. */
     let a: Double
 
-    /** Semi-minor axis. */
+    /* Semi-minor axis. */
     let b: Double
 
-    /** Orientation of the major axis with respect to the x axis. */
+    /* Orientation of the major axis with respect to the x axis. */
     let theta: Double
     private let cosTheta: Double
     private let sinTheta: Double
 
-    /** Start angle of the arc. */
+    /* Start angle of the arc. */
     let eta1: Double
 
-    /** End angle of the arc. */
+    /* End angle of the arc. */
     var eta2: Double
 
-    /** Abscissa of the start point. */
+    /* Abscissa of the start point. */
     var x1: Double!
 
-    /** Ordinate of the start point. */
+    /* Ordinate of the start point. */
     var y1: Double!
 
-    /** Abscissa of the end point. */
+    /* Abscissa of the end point. */
     var x2: Double!
 
-    /** Ordinate of the end point. */
+    /* Ordinate of the end point. */
     var y2: Double!
 
-    /** Abscissa of the first focus. */
+    /* Abscissa of the first focus. */
     var xF1: Double!
 
-    /** Ordinate of the first focus. */
+    /* Ordinate of the first focus. */
     var yF1: Double!
 
-    /** Abscissa of the second focus. */
+    /* Abscissa of the second focus. */
     var xF2: Double!
 
-    /** Ordinate of the second focus. */
+    /* Ordinate of the second focus. */
     var yF2: Double!
 
-    /** Abscissa of the leftmost point of the arc. */
+    /* Abscissa of the leftmost point of the arc. */
     private var xLeft: Double!
 
-    /** Ordinate of the highest point of the arc. */
+    /* Ordinate of the highest point of the arc. */
     private var yUp: Double!
 
-    /** Horizontal width of the arc. */
+    /* Horizontal width of the arc. */
     private var width: Double!
 
-    /** Vertical height of the arc. */
+    /* Vertical height of the arc. */
     private var height: Double!
 
-    /** Indicator for center to endpoints line inclusion. */
+    /* Indicator for center to endpoints line inclusion. */
     let isPieSlice: Bool
 
-    /** Maximal degree for Bézier curve approximation. */
+    /* Maximal degree for Bézier curve approximation. */
     private let maxDegree: Int
 
-    /** Default flatness for Bézier curve approximation. */
+    /* Default flatness for Bézier curve approximation. */
     private let defaultFlatness: Double
 
     var f: Double!
@@ -218,7 +218,7 @@ public class EllipticalArc {
         computeDerivedFlatnessParameters()
     }
 
-    /** Build an elliptical arc from its canonical geometrical elements.
+    /* Build an elliptical arc from its canonical geometrical elements.
      * @param center center of the ellipse
      * @param a semi-major axis
      * @param b semi-minor axis
@@ -234,7 +234,7 @@ public class EllipticalArc {
         self.init(cx: Double(center.x), cy: Double(center.y), a: a, b: b, theta: theta, lambda1: lambda1, lambda2: lambda2, isPieSlice: isPieSlice)
     }
 
-    /** Build an elliptical arc from its canonical geometrical elements.
+    /* Build an elliptical arc from its canonical geometrical elements.
      * @param cx abscissa of the center of the ellipse
      * @param cy ordinate of the center of the ellipse
      * @param a semi-major axis
@@ -279,7 +279,7 @@ public class EllipticalArc {
         computeDerivedFlatnessParameters()
     }
 
-    /** Build a full ellipse from its canonical geometrical elements.
+    /* Build a full ellipse from its canonical geometrical elements.
      * @param center center of the ellipse
      * @param a semi-major axis
      * @param b semi-minor axis
@@ -289,7 +289,7 @@ public class EllipticalArc {
         self.init(cx: Double(center.x), cy: Double(center.y), a: a, b: b, theta: theta)
     }
 
-    /** Build a full ellipse from its canonical geometrical elements.
+    /* Build a full ellipse from its canonical geometrical elements.
      * @param cx abscissa of the center of the ellipse
      * @param cy ordinate of the center of the ellipse
      * @param a semi-major axis
@@ -328,7 +328,7 @@ public class EllipticalArc {
     //     this.maxDegree = maxDegree
     //   }
 
-    //   /** Set the default flatness for Bézier curve approximation.
+    //   /* Set the default flatness for Bézier curve approximation.
     //    * @param defaultFlatness default flatness (must be greater than 1.0e-10)
     //    * @exception IllegalArgumentException if defaultFlatness is lower
     //    * than 1.0e-10
@@ -341,7 +341,7 @@ public class EllipticalArc {
     //     this.defaultFlatness = defaultFlatness
     //   }
 
-    /** Compute the locations of the focii. */
+    /* Compute the locations of the focii. */
     private func computeFocii() {
         let d = sqrt(a * a - b * b)
         let dx = d * cosTheta
@@ -353,7 +353,7 @@ public class EllipticalArc {
         yF2 = cy + dy
     }
 
-    /** Compute the locations of the endpoints. */
+    /* Compute the locations of the endpoints. */
     private func computeEndPoints() {
         // start point
         let aCosEta1 = a * cos(eta1)
@@ -368,7 +368,7 @@ public class EllipticalArc {
         y2 = cy + aCosEta2 * sinTheta + bSinEta2 * cosTheta
     }
 
-    /** Compute the bounding box. */
+    /* Compute the bounding box. */
     // swiftlint:disable:next function_body_length
     private func computeBounds() {
         let bOnA = b / a
@@ -430,7 +430,7 @@ public class EllipticalArc {
         g2 = g * g
     }
 
-    /** Compute the value of a rational function.
+    /* Compute the value of a rational function.
      * This method handles rational functions where the numerator is
      * quadratic and the denominator is linear
      * @param x absissa for which the value should be computed
@@ -440,7 +440,7 @@ public class EllipticalArc {
         (x * (x * c[0] + c[1]) + c[2]) / (x + c[3])
     }
 
-    /** Estimate the approximation error for a sub-arc of the instance.
+    /* Estimate the approximation error for a sub-arc of the instance.
      * @param degree degree of the Bézier curve to use (1, 2 or 3)
      * @param tA start angle of the sub-arc
      * @param tB end angle of the sub-arc
@@ -510,7 +510,7 @@ public class EllipticalArc {
         }
     }
 
-    /** Get the elliptical arc point for a given angular parameter.
+    /* Get the elliptical arc point for a given angular parameter.
      * @param lambda angular parameter for which point is desired
      * @param p placeholder where to put the point, if null a new Point
      * well be allocated
@@ -526,7 +526,7 @@ public class EllipticalArc {
                        y: cy + aCosEta * sinTheta + bSinEta * cosTheta)
     }
 
-    /** Tests if the specified coordinates are inside the boundary of the Shape.
+    /* Tests if the specified coordinates are inside the boundary of the Shape.
      * @param x abscissa of the test point
      * @param y ordinate of the test point
      * @return true if the specified coordinates are inside the Shape
@@ -567,7 +567,7 @@ public class EllipticalArc {
         }
     }
 
-    /** Tests if a line segment intersects the arc.
+    /* Tests if a line segment intersects the arc.
      * @param xA abscissa of the first point of the line segment
      * @param yA ordinate of the first point of the line segment
      * @param xB abscissa of the second point of the line segment
@@ -639,7 +639,7 @@ public class EllipticalArc {
         return false
     }
 
-    /** Tests if two line segments intersect.
+    /* Tests if two line segments intersect.
      * @param x1 abscissa of the first point of the first line segment
      * @param y1 ordinate of the first point of the first line segment
      * @param x2 abscissa of the second point of the first line segment
@@ -673,7 +673,7 @@ public class EllipticalArc {
         return (pAvs12 * pBvs12 <= 0) && (p1vsAB * p2vsAB <= 0)
     }
 
-    /** Tests if a line segment intersects the outline.
+    /* Tests if a line segment intersects the outline.
      * @param xA abscissa of the first point of the line segment
      * @param yA ordinate of the first point of the line segment
      * @param xB abscissa of the second point of the line segment
@@ -695,7 +695,7 @@ public class EllipticalArc {
         }
     }
 
-    /** Tests if the interior of the Shape entirely contains the
+    /* Tests if the interior of the Shape entirely contains the
      * specified rectangular area.
      * @param x abscissa of the upper-left corner of the test rectangle
      * @param y ordinate of the upper-left corner of the test rectangle
@@ -717,7 +717,7 @@ public class EllipticalArc {
             && (!intersectOutline(x, yPlusH, x, y)))
     }
 
-    /** Tests if a specified Point2D is inside the boundary of the Shape.
+    /* Tests if a specified Point2D is inside the boundary of the Shape.
      * @param p test point
      * @return true if the specified point is inside the Shape
      * boundary; false otherwise
@@ -726,7 +726,7 @@ public class EllipticalArc {
         contains(Double(p.x), Double(p.y))
     }
 
-    /** Tests if the interior of the Shape entirely contains the
+    /* Tests if the interior of the Shape entirely contains the
      * specified Rectangle2D.
      * @param r test rectangle
      * @return true if the interior of the Shape entirely contains the
@@ -736,7 +736,7 @@ public class EllipticalArc {
         contains(Double(r.minX), Double(r.minY), Double(r.width), Double(r.height))
     }
 
-    /** Returns an integer Rectangle that completely encloses the Shape.
+    /* Returns an integer Rectangle that completely encloses the Shape.
      */
     public func getBounds() -> CGRect {
         let xMin = round(xLeft - 0.5)
@@ -746,14 +746,14 @@ public class EllipticalArc {
         return CGRect(x: xMin, y: yMin, width: xMax - xMin, height: yMax - yMin)
     }
 
-    /** Returns a high precision and more accurate bounding box of the
+    /* Returns a high precision and more accurate bounding box of the
      * Shape than the getBounds method.
      */
     public func getBounds2D() -> CGRect {
         CGRect(x: xLeft, y: yUp, width: width, height: height)
     }
 
-    /** Build an approximation of the instance outline.
+    /* Build an approximation of the instance outline.
      * @param degree degree of the Bézier curve to use
      * @param threshold acceptable error
      * @return a path iterator
@@ -847,7 +847,7 @@ public class EllipticalArc {
         return path
     }
 
-    //   /** Returns an iterator object that iterates along the Shape
+    //   /* Returns an iterator object that iterates along the Shape
     //    * boundary and provides access to the geometry of the Shape
     //    * outline.
     //    */
