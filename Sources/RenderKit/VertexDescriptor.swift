@@ -3,6 +3,8 @@ import Metal
 import MetalKit
 import ModelIO
 
+// swiftlint:disable switch_case_on_newline
+
 public enum Semantic: Hashable, Sendable {
     case position
     case normal

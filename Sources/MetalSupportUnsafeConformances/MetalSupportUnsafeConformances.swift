@@ -3,6 +3,7 @@ import Metal
 extension MTLPixelFormat: CustomStringConvertible {
     public var description: String {
         switch self {
+        // swiftlint:disable switch_case_on_newline
         case .invalid: return "invalid"
         case .a8Unorm: return "a8Unorm"
         case .r8Unorm: return "r8Unorm"
@@ -142,6 +143,7 @@ extension MTLPixelFormat: CustomStringConvertible {
         case .depth32Float_stencil8: return "depth32Float_stencil8"
         case .x32_stencil8: return "x32_stencil8"
         case .x24_stencil8: return "x24_stencil8"
+        // swiftlint:enable switch_case_on_newline
         @unknown default:
             fatalError("Unknown case \(self)")
         }
