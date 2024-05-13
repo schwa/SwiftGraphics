@@ -2,6 +2,7 @@ import CoreGraphicsSupport
 import Shapes3D
 import Projection
 import SwiftUI
+import MetalSupport
 
 struct MeshView: View, DefaultInitializableView {
     enum Source: Hashable {

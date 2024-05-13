@@ -3,6 +3,7 @@ import RenderKit
 import MetalKit
 import RenderKitShaders
 import ModelIO
+import MetalSupport
 
 public struct TextureView: View {
     struct Bindings {

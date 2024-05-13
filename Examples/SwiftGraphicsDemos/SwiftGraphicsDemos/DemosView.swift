@@ -21,7 +21,7 @@ struct DemosView: View {
         MeshView.self,
         VolumetricView.self,
         SimpleSceneView.self,
-        CSGDemoView.self,
+        //CSGDemoView.self,
         SimulationView.self,
         Particles2View.self,
     ]

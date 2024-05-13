@@ -8,6 +8,7 @@ import RenderKit
 import RenderKitShaders
 import Shapes2D
 import CoreGraphicsSupport
+import MetalSupport
 
 // TODO: Move
 extension CGVector {

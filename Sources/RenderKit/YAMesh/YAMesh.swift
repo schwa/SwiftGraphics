@@ -3,6 +3,7 @@ import MetalKit
 import ModelIO
 import RenderKitShaders
 import MetalSupport
+import Shapes3D
 
 // TODO: -> Semantics
 //struct Semantic: OptionSet, Hashable, Sendable {

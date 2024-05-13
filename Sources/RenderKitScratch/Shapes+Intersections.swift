@@ -1,7 +1,7 @@
 import simd
 import Shapes3D
 
-public extension LineSegment3D {
+public extension LineSegment3D where Point == SIMD3<Float> {
     func intersection(with other: LineSegment3D) -> LineSegment3D? {
         // https://stackoverflow.com/a/565282/273118
         let p = start

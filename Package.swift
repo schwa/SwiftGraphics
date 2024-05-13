@@ -121,6 +121,7 @@ let package = Package(
                 "MetalSupport",
                 "MetalSupportUnsafeConformances",
                 "Shapes2D",
+                "Shapes3D",
                 "SIMDSupport",
                 .product(name: "Everything", package: "Everything"),
                 .product(name: "Algorithms", package: "swift-algorithms"),
@@ -137,6 +138,7 @@ let package = Package(
             swiftSettings: [
                 .enableExperimentalFeature("VariadicGenerics"),
                 .enableUpcomingFeature("StrictConcurrency"),
+                .interoperabilityMode(.Cxx),
             ]
         ),
         .target(
