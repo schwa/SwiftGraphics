@@ -24,5 +24,4 @@ extension SIMD3<Float>: VertexLike {
 }
 
 extension SimpleVertex: VertexLike3 {
-    
 }

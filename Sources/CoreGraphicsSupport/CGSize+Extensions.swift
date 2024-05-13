@@ -22,7 +22,6 @@ public extension CGSize {
 
 // MARK: ExpressibleByArrayLiteral
 
-
 extension CGSize: ExpressibleByArrayLiteral {
     public init(arrayLiteral elements: CGFloat...) {
         self.init(elements)
@@ -51,8 +50,6 @@ public extension CGSize {
 }
 
 // MARK: Math with Self types
-
-
 
 public extension CGSize {
     static prefix func - (rhs: Self) -> Self {
@@ -94,11 +91,9 @@ public extension CGSize {
     static func * (lhs: CGFloat, rhs: Self) -> Self {
         Self(width: lhs * rhs.width, height: lhs * rhs.height)
     }
-
 }
 
 // MARK: Math with Scalars
-
 
 public extension CGSize {
     static func * (lhs: Self, rhs: CGFloat) -> Self {

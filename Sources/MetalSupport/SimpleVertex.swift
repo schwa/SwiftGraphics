@@ -11,7 +11,7 @@ public struct SimpleVertex {
         self.packedNormal = packedNormal
         self.textureCoordinate = textureCoordinate
     }
-};
+}
 
 public extension SimpleVertex {
     var position: SIMD3<Float> {
@@ -35,9 +35,7 @@ public extension SimpleVertex {
     init(position: SIMD3<Float>, normal: SIMD3<Float>, textureCoordinate: SIMD2<Float> = .zero) {
         self = .init(packedPosition: PackedFloat3(position), packedNormal: PackedFloat3(normal), textureCoordinate: textureCoordinate)
     }
-
 }
-
 
 extension SimpleVertex: @unchecked Sendable {
 }

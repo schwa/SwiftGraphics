@@ -49,7 +49,6 @@ internal func isFuzzyEqual(_ lhs: CGFloat, _ rhs: CGFloat) -> Bool {
 }
 
 public extension Triangle {
-
     var lengths: (Double, Double, Double) {
         (
             (vertices.0 - vertices.1).length,
@@ -160,7 +159,6 @@ public extension Triangle {
 
 //// Cartesian coordinates
 public extension Triangle {
-
     // TODO:
     // converts trilinear coordinates to Cartesian coordinates relative
     // to the incenter; thus, the incenter has coordinates (0.0, 0.0)

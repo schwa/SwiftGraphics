@@ -2,7 +2,6 @@ import CoreGraphics
 import CoreGraphicsSupport
 
 public struct DeCasteljauBezierCurveSampler {
-
     public init() {
     }
 

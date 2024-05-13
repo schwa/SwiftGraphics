@@ -38,7 +38,7 @@ public struct BernsteinPolynomalCubicCurveSolver {
     }
 
     public func sample_cubic_matrix(t: Double) -> Double {
-        let t = SIMD4<Double>(1, t, t*t, t*t*t) * tf
+        let t = SIMD4<Double>(1, t, t * t, t * t * t) * tf
         return (cm * t).sum()
     }
 

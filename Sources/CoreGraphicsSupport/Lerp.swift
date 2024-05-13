@@ -60,7 +60,6 @@ extension CGSize: CompositeLerpable {
     public static let unit = CGSize(width: 1, height: 1)
 }
 
-
 // MARK: -
 
 extension Range where Bound: FloatingPoint {

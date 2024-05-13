@@ -2,7 +2,6 @@ import ModelIO
 import MetalKit
 import MetalSupport
 
-
 @available(*, deprecated, message: "Removed")
 public protocol Shape3D: Hashable, Sendable {
     func toMDLMesh(allocator: MDLMeshBufferAllocator?) -> MDLMesh

@@ -98,7 +98,6 @@ extension Angle: Strideable {
 }
 
 public extension Angle {
-
     static func / (lhs: Self, rhs: Self) -> Self {
         .init(radians: lhs.radians / rhs.radians)
     }

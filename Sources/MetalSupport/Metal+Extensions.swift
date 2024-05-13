@@ -440,7 +440,6 @@ public extension MTLVertexFormat {
     }
 }
 
-
 public extension MTLTextureDescriptor {
     var bytesPerRow: Int? {
         return pixelFormat.size.map { $0 * width }

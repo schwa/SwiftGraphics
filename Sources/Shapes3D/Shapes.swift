@@ -206,12 +206,10 @@ public extension PolygonalChain3D {
     }
 }
 
-
 public extension PolygonalChain3D where Vertex.Vector == SIMD3<Float> {
     var segments: [LineSegment3D] {
-        zip(vertices, vertices.dropFirst()).map { LineSegment3D(start: $0.0.position, end: $0.1.position)}
+        zip(vertices, vertices.dropFirst()).map { LineSegment3D(start: $0.0.position, end: $0.1.position) }
     }
-
 }
 
 public extension PolygonalChain3D where Vertex == SIMD3<Float> {
@@ -400,7 +398,6 @@ public struct Sphere3DX: Shape3D {
         return mesh
     }
 }
-
 
 @available(*, deprecated, message: "Break into shape3d and a meshconvertable")
 public struct Cone3D: Shape3D {

@@ -329,7 +329,6 @@ public func align(_ value: Int, alignment: Int) -> Int {
     return (value + alignment - 1) / alignment * alignment
 }
 
-
 public extension MTLPixelFormat {
     init?(from pixelFormat: PixelFormat) {
         let colorSpaceName = pixelFormat.colorSpace!.name! as String

@@ -26,9 +26,7 @@ let package = Package(
         .library(name: "Sketches", targets: ["Sketches"]),
         .library(name: "Shapes2D", targets: ["Shapes2D"]),
         .library(name: "Shapes3D", targets: ["Shapes3D"]),
-
         .library(name: "Projection", targets: ["Projection"]),
-
         .library(name: "RenderKit", targets: ["RenderKit"]),
         .library(name: "RenderKitScratch", targets: ["RenderKitScratch"]),
         .library(name: "RenderKitShaders", targets: ["RenderKitShaders"]),
@@ -46,15 +44,14 @@ let package = Package(
     ],
     targets: [
         .target(name: "Array2D",
-                dependencies: [
-                    "CoreGraphicsSupport",
-                    "LegacyGeometry",
-                    .product(name: "Algorithms", package: "swift-algorithms"),
-                ]),
+            dependencies: [
+                "CoreGraphicsSupport",
+                "LegacyGeometry",
+                .product(name: "Algorithms", package: "swift-algorithms"),
+            ]
+        ),
         .target(name: "CoreGraphicsSupport"),
-        .target(name: "Earcut",
-                dependencies: ["earcut_cpp"],
-                swiftSettings: [.interoperabilityMode(.Cxx)]),
+        .target(name: "Earcut", dependencies: ["earcut_cpp"], swiftSettings: [.interoperabilityMode(.Cxx)]),
         .target(name: "earcut_cpp", exclude: ["earcut.hpp/test", "earcut.hpp/glfw"]),
         .target(name: "LegacyGeometry", dependencies: [
             "ApproximateEquality",
@@ -62,12 +59,11 @@ let package = Package(
         ]),
         .target(name: "MetalSupport", dependencies: ["SIMDSupport"]),
         .target(name: "MetalSupportUnsafeConformances"),
-        .target(name: "Raster",
-                dependencies: [
-                    .product(name: "Algorithms", package: "swift-algorithms"),
-                    "LegacyGeometry",
-                    "CoreGraphicsSupport",
-                    "Shapes2D",
+        .target(name: "Raster", dependencies: [
+            .product(name: "Algorithms", package: "swift-algorithms"),
+            "LegacyGeometry",
+            "CoreGraphicsSupport",
+            "Shapes2D",
                 ]),
         .target(name: "SIMDSupport",
                 dependencies: [
@@ -92,11 +88,10 @@ let package = Package(
                     .product(name: "Algorithms", package: "swift-algorithms"),
                 ]),
 
-        .testTarget(name: "EarcutTests", dependencies: ["Earcut"], swiftSettings: [.interoperabilityMode(.Cxx)]),
+            .testTarget(name: "EarcutTests", dependencies: ["Earcut"], swiftSettings: [.interoperabilityMode(.Cxx)]),
         .testTarget(name: "SIMDSupportTests", dependencies: ["SIMDSupport"]),
         .testTarget(name: "SketchesTests", dependencies: ["Sketches"]),
         .testTarget(name: "Shapes2DTests", dependencies: ["Shapes2D"]),
-
         .target(name: "Projection", dependencies: ["SIMDSupport"]),
         .target(name: "Shapes3D",
                 dependencies: [
@@ -107,39 +102,41 @@ let package = Package(
                     "CoreGraphicsSupport",
                     .product(name: "Algorithms", package: "swift-algorithms"),
                 ],
-                swiftSettings: [.interoperabilityMode(.Cxx)]),
+                swiftSettings: [.interoperabilityMode(.Cxx)]
+               ),
         .executableTarget(name: "TrivialMeshCLI",
                           dependencies: [
-                              "Shapes3D",
-                              .product(name: "ArgumentParser", package: "swift-argument-parser"),
+                            "Shapes3D",
+                            .product(name: "ArgumentParser", package: "swift-argument-parser"),
                           ],
-                          swiftSettings: [.interoperabilityMode(.Cxx)]),
+                          swiftSettings: [.interoperabilityMode(.Cxx)]
+                         ),
 
-        .target(
-            name: "RenderKit",
-            dependencies: [
-                "CoreGraphicsSupport",
-                "MetalSupport",
-                "MetalSupportUnsafeConformances",
-                "Shapes2D",
-                "Shapes3D",
-                "SIMDSupport",
-                .product(name: "Everything", package: "Everything"),
-                .product(name: "Algorithms", package: "swift-algorithms"),
-                .product(name: "SwiftFields", package: "swiftfields"),
-                .product(name: "SwiftFormats", package: "swiftformats"),
-                .product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
-                "RenderKitShaders",
-            ],
-            resources: [
-                .process("VisionOS/Assets.xcassets"),
-            ],
-            swiftSettings: [
-                .enableExperimentalFeature("VariadicGenerics"),
-                .enableUpcomingFeature("StrictConcurrency"),
-                .interoperabilityMode(.Cxx),
-            ]
-        ),
+            .target(
+                name: "RenderKit",
+                dependencies: [
+                    "CoreGraphicsSupport",
+                    "MetalSupport",
+                    "MetalSupportUnsafeConformances",
+                    "Shapes2D",
+                    "Shapes3D",
+                    "SIMDSupport",
+                    .product(name: "Everything", package: "Everything"),
+                    .product(name: "Algorithms", package: "swift-algorithms"),
+                    .product(name: "SwiftFields", package: "swiftfields"),
+                    .product(name: "SwiftFormats", package: "swiftformats"),
+                    .product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
+                    "RenderKitShaders",
+                ],
+                resources: [
+                    .process("VisionOS/Assets.xcassets"),
+                ],
+                swiftSettings: [
+                    .enableExperimentalFeature("VariadicGenerics"),
+                    .enableUpcomingFeature("StrictConcurrency"),
+                    .interoperabilityMode(.Cxx),
+                ]
+            ),
         .target(
             name: "RenderKitShaders",
             plugins: [

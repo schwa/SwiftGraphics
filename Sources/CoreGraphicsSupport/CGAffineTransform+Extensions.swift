@@ -18,7 +18,6 @@ public extension CGAffineTransform {
 }
 
 public extension CGAffineTransform {
-
     static func translation(_ translation: CGPoint) -> Self {
         CGAffineTransform(translationX: translation.x, y: translation.y)
     }

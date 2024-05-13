@@ -2,7 +2,6 @@ import SwiftUI
 
 // Treating SwiftUI.Path as part of CoreGraphics
 
-
 public extension Path {
     init(lines: [CGPoint]) {
         self.init()
@@ -38,7 +37,6 @@ public extension Path {
         }
         self = path.strokedPath(StrokeStyle(lineWidth: width, lineCap: lineCap))
     }
-
 }
 
 public extension Path {
@@ -104,15 +102,15 @@ public extension Path {
     static func rect(x: Double = 0, y: Double = 0, w: Double, h: Double, rx: Double, ry: Double, style: RoundedCornerStyle = .circular) -> Path {
         Path(roundedRect: CGRect(x: x, y: y, width: w, height: h), cornerSize: CGSize(width: rx, height: ry), style: style)
     }
-    
+
     static func circle(center: CGPoint, radius: Double) -> Path {
         Path(ellipseIn: CGRect(center: center, radius: radius))
     }
-    
+
     static func circle(cx: Double, cy: Double, r: Double) -> Path {
         Path(ellipseIn: CGRect(center: CGPoint(x: cx, y: cy), radius: r))
     }
-    
+
     static func ellipse(center: CGPoint, radius: CGSize) -> Path {
         Path(ellipseIn: CGRect(center: center, size: radius * 2))
     }
@@ -139,21 +137,21 @@ public extension Path {
             path.addLine(to: to)
         }
     }
-    
+
     static func horizontalLine(from: CGPoint, length: Double) -> Path {
         line(from: from, to: CGPoint(x: from.x + length, y: from.y))
     }
-    
+
     static func verticalLine(from: CGPoint, length: Double) -> Path {
         line(from: from, to: CGPoint(x: from.x, y: from.y + length))
     }
-    
+
     // curve
     // arc
     // regular polygon
     // star
     // cross
-    
+
     static func cross(_ rect: CGRect) -> Path {
         Path { path in
             path.moveTo(x: rect.minX, y: rect.midY)
@@ -162,7 +160,7 @@ public extension Path {
             path.addLineTo(x: rect.midX, y: rect.maxY)
         }
     }
-    
+
     static func saltire(_ rect: CGRect) -> Path {
         Path { path in
             path.moveTo(x: rect.minX, y: rect.minY)
@@ -183,7 +181,7 @@ public extension Path {
             }
         }
     }
-    
+
     static func star(points: Int, innerRadius: Double, outerRadius: Double) -> Path {
         var path = Path()
         assert(points > 1, "Number of points should be greater than 1 for a star")
@@ -248,7 +246,6 @@ public extension Path {
         return polygons
     }
 }
-
 
 public extension Path {
     var elements: [Element] {

@@ -57,7 +57,7 @@
 //    }
 //}
 //
-//// MARK: -
+// MARK: -
 //
 //public func dotProduct<Point: PointType>(_ lhs: Point, _ rhs: Point) -> Point.Scalar {
 //    lhs.x * rhs.x + lhs.y * rhs.y
@@ -83,7 +83,7 @@
 //    return lhs.isApproximatelyEqual(to: rhs, absoluteTolerance: absoluteTolerance)
 //}
 //
-//// MARK: -
+// MARK: -
 //
 //private func cos<T>(_ a: T) -> T where T: BinaryFloatingPoint {
 //    T(Darwin.cos(Float(a)))
