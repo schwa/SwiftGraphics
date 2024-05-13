@@ -3,6 +3,7 @@ import Metal
 import RenderKit
 import RenderKitShaders
 import simd
+import MetalSupport
 
 public struct WingedEdgeCollection {
     public struct Face {

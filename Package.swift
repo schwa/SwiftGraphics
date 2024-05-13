@@ -60,7 +60,7 @@ let package = Package(
             "ApproximateEquality",
             "CoreGraphicsSupport",
         ]),
-        .target(name: "MetalSupport"),
+        .target(name: "MetalSupport", dependencies: ["SIMDSupport"]),
         .target(name: "MetalSupportUnsafeConformances"),
         .target(name: "Raster",
                 dependencies: [
@@ -100,10 +100,10 @@ let package = Package(
         .target(name: "Projection", dependencies: ["SIMDSupport"]),
         .target(name: "Shapes3D",
                 dependencies: [
+                    "MetalSupport",
                     "Earcut",
                     "SIMDSupport",
                     "CoreGraphicsSupport",
-                    "MetalSupport",
                     .product(name: "Algorithms", package: "swift-algorithms"),
                 ],
                 swiftSettings: [.interoperabilityMode(.Cxx)]),

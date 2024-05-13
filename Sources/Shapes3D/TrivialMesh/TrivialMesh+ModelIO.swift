@@ -35,7 +35,7 @@ public extension TrivialMesh where Vertex == SimpleVertex {
             Array(repeating: [0, 0, 0], count: positions.count)
         }
         let vertices = zip(positions, normals).map {
-            SimpleVertex(position: $0.0, normal: $0.1)
+            SimpleVertex(packedPosition: $0.0, packedNormal: $0.1)
         }
 
         // TODO: confirm that these are triangles.

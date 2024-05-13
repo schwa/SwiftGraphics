@@ -1,9 +1,16 @@
 import simd
+import SIMDSupport
 
 public struct SimpleVertex {
     public var packedPosition: PackedFloat3
     public var packedNormal: PackedFloat3
     public var textureCoordinate: SIMD2<Float>
+
+    public init(packedPosition: PackedFloat3, packedNormal: PackedFloat3, textureCoordinate: SIMD2<Float> = .zero) {
+        self.packedPosition = packedPosition
+        self.packedNormal = packedNormal
+        self.textureCoordinate = textureCoordinate
+    }
 };
 
 public extension SimpleVertex {
@@ -25,15 +32,10 @@ public extension SimpleVertex {
         }
     }
 
-    init(position: SIMD3<Float>, normal: SIMD3<Float>, textureCoordinate: SIMD2<Float>) {
+    init(position: SIMD3<Float>, normal: SIMD3<Float>, textureCoordinate: SIMD2<Float> = .zero) {
         self = .init(packedPosition: PackedFloat3(position), packedNormal: PackedFloat3(normal), textureCoordinate: textureCoordinate)
     }
 
-    init(position: PackedFloat3, normal: PackedFloat3, textureCoordinate: SIMD2<Float> = .zero) {
-        packedPosition = position
-        packedNormal = normal
-        self.textureCoordinate = textureCoordinate
-    }
 }
 
 

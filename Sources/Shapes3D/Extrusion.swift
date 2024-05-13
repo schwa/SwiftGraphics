@@ -2,6 +2,7 @@ import Algorithms
 import CoreGraphics
 import Earcut
 import simd
+import MetalSupport
 
 // swiftlint:disable force_unwrapping
 

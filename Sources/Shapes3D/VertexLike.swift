@@ -12,6 +12,8 @@ public protocol VertexLike3: VertexLike where Vector: PointLike3 {
     var normal: Vector { get set }
 }
 
+
+
 //public struct SimpleVertex: VertexLike3 {
 //    // Note: Order can be important when interacting with Metal APIs etc.
 //    public var packedPosition: PackedFloat3
@@ -30,4 +32,8 @@ extension SIMD3<Float>: VertexLike {
             self = newValue
         }
     }
+}
+
+extension SimpleVertex: VertexLike3 {
+    
 }

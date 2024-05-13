@@ -1,5 +1,6 @@
 import simd
 import RenderKitShaders
+import SIMDSupport
 
 public extension PackedFloat3 {
     init(_ value: SIMD3<Float>) {

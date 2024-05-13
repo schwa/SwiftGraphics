@@ -2,6 +2,7 @@ import RenderKitShaders
 import SIMDSupport
 import SwiftUI
 import Shapes3D
+import MetalSupport
 
 public protocol PolygonConvertable {
     func toPolygons() -> [Polygon3D<SimpleVertex>]
