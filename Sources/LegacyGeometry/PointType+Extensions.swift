@@ -1,4 +1,3 @@
-// swiftlint:disable shorthand_operator
 
 public extension PointType {
     static var zero: Self {

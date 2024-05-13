@@ -75,7 +75,7 @@ class MovementController: @unchecked Sendable {
                     return event
                 }
                 // If a modifier is down
-                guard event.modifierFlags.isDisjoint([.command, .shift, .control, .option]) else {
+                guard event.modifierFlags.isDisjoint(with: [.command, .shift, .control, .option]) else {
                     logger?.debug("Ignoring event, modifier down.")
                     return event
                 }

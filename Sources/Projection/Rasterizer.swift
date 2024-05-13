@@ -29,9 +29,11 @@ public struct Rasterizer {
             clipSpaceVertices = modelSpaceVertices.map {
                 transform * SIMD4<Float>($0, 1.0)
             }
-            clipSpaceMin = clipSpaceVertices.reduce([.infinity, .infinity, .infinity]) { result, vertex in
-                SIMD3<Float>(min(result.x, vertex.x), min(result.y, vertex.y), min(result.z, vertex.z))
+
+            clipSpaceMin = clipSpaceVertices.reduce(into: [.infinity, .infinity, .infinity]) { result, vertex in
+                result = [min(result.x, vertex.x), min(result.y, vertex.y), min(result.z, vertex.z)]
             }
+
             let a = modelSpaceVertices[0]
             let b = modelSpaceVertices[1]
             let c = modelSpaceVertices[2]
