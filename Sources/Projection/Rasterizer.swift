@@ -96,6 +96,7 @@ public struct Rasterizer {
     }
 }
 
+// TODO: Move
 func compare<C>(_ lhs: C, _ rhs: C) -> ComparisonResult where C: Comparable {
     if lhs == rhs {
         return .orderedSame
@@ -108,6 +109,7 @@ func compare<C>(_ lhs: C, _ rhs: C) -> ComparisonResult where C: Comparable {
     }
 }
 
+// TODO: Move
 func compare<C>(_ lhs: (C, C), _ rhs: (C, C)) -> ComparisonResult where C: Comparable {
     let r = compare(lhs.0, rhs.0)
     if r == .orderedSame {
@@ -118,6 +120,7 @@ func compare<C>(_ lhs: (C, C), _ rhs: (C, C)) -> ComparisonResult where C: Compa
     }
 }
 
+// TODO: Move
 func compare<C>(_ lhs: (C, C, C), _ rhs: (C, C, C)) -> ComparisonResult where C: Comparable {
     let r = compare((lhs.0, lhs.1), (rhs.0, rhs.1))
     if r == .orderedSame {
@@ -128,7 +131,8 @@ func compare<C>(_ lhs: (C, C, C), _ rhs: (C, C, C)) -> ComparisonResult where C:
     }
 }
 
-extension SIMD3 {
+// TODO: Move
+public extension SIMD3 {
     var tuple: (Scalar, Scalar, Scalar) {
         (x, y, z)
     }

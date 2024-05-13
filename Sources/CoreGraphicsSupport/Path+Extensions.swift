@@ -209,7 +209,7 @@ public extension Path {
     }
 }
 
-extension Path {
+public extension Path {
     func scaled(x: CGFloat, y: CGFloat) -> Path {
         let transform = CGAffineTransform(translationX: -boundingRect.midX, y: -boundingRect.midY)
             .concatenating(CGAffineTransform(scaleX: x, y: y))

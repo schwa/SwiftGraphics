@@ -12,7 +12,7 @@ public struct ImageDestination {
     private var destination: CGImageDestination
 
     public init(url: URL, type: UTType? = nil, count: Int = 1) throws {
-        let type = try ImageDestination.type(for: url)
+        let type = try type ?? ImageDestination.type(for: url)
 
         guard let destination = CGImageDestinationCreateWithURL(url as CFURL, type.identifier as CFString, count, nil) else {
             fatalError("CGImageDestinationCreateWithURL() failed.")

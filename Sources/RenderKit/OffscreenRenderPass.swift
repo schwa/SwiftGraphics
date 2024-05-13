@@ -17,10 +17,6 @@ public struct OffscreenRenderPassConfiguration: MetalConfiguration {
     public var depthStencilStorageMode: MTLStorageMode = .shared
     public var clearDepth: Double = 1.0
 
-    var currentDrawable: CAMetalDrawable?
-    var depthStencilAttachmentTextureUsage: MTLTextureUsage = .renderTarget
-    var depthStencilTexture: MTLTexture?
-
     public var currentRenderPassDescriptor: MTLRenderPassDescriptor?
     public var targetTexture: MTLTexture?
 
@@ -54,7 +50,6 @@ public struct OffscreenRenderPassConfiguration: MetalConfiguration {
             currentRenderPassDescriptor.depthAttachment.texture = depthStencilTexture
             currentRenderPassDescriptor.depthAttachment.loadAction = .clear
             currentRenderPassDescriptor.depthAttachment.storeAction = .store
-            self.depthStencilTexture = depthStencilTexture
         }
 
         self.currentRenderPassDescriptor = currentRenderPassDescriptor

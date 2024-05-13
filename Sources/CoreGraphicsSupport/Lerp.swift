@@ -62,7 +62,7 @@ extension CGSize: CompositeLerpable {
 
 // MARK: -
 
-extension Range where Bound: FloatingPoint {
+public extension Range where Bound: FloatingPoint {
     func lerp(by t: Bound) -> Bound {
         (1 - t) * lowerBound + t * upperBound
     }

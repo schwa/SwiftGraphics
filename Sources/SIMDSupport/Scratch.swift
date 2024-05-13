@@ -21,11 +21,11 @@ public func atan2<F>(_ y: F, _ x: F) -> F where F: BinaryFloatingPoint {
     F(atan2(Double(y), Double(x)))
 }
 
-protocol AltHashable {
+public protocol AltHashable {
     func altHash(into hasher: inout Hasher)
 }
 
-extension AltHashable where Self: Hashable {
+public extension AltHashable where Self: Hashable {
     func altHash(into hasher: inout Hasher) {
         hash(into: &hasher)
     }

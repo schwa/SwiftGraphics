@@ -12,8 +12,6 @@ public struct Array2D<Element> {
     public private(set) var size: IntSize
     public var flatStorage: [Element]
 
-    var debugLabel: String?
-
     public init(repeating: Element, size: IntSize) {
         self.size = size
         let flatCount = size.width * size.height

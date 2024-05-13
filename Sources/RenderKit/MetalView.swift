@@ -27,9 +27,6 @@
         var model = MetalViewModel()
 
         @State
-        var issetup = false
-
-        @State
         var error: Error?
 
         let setup: MetalView.Setup

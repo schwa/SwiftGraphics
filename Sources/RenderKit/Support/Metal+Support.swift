@@ -499,7 +499,7 @@ public extension MTLRenderCommandEncoder {
     }
 }
 
-extension Transform {
+public extension Transform {
     func scaled(_ scale: SIMD3<Float>) -> Transform {
         var copy = self
         copy.scale *= scale
@@ -523,7 +523,7 @@ public extension MTLDevice {
     }
 }
 
-extension MTLRenderCommandEncoder {
+public extension MTLRenderCommandEncoder {
     func setVertexBuffersFrom(mesh: MTKMesh) {
         for (index, element) in mesh.vertexDescriptor.layouts.enumerated() {
             guard let layout = element as? MDLVertexBufferLayout else {

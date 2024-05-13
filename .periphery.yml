@@ -1,13 +1,1 @@
 retain_public: true
-targets:
-- Array2D
-- CoreGraphicsSupport
-- Geometry
-- LegacyGraphics
-- MetalSupport
-- MetalSupportUnsafeConformances
-- Raster
-- SIMDSupport
-- SIMDSupportUnsafeConformances
-- Sketches
-- VectorSupport

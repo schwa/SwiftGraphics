@@ -113,6 +113,6 @@ public extension Angle {
 
 // MARK: -
 
-func abs(_ value: Angle) -> Angle {
+public func abs(_ value: Angle) -> Angle {
     .radians(Swift.abs(value.radians))
 }
