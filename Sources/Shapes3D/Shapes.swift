@@ -306,7 +306,8 @@ public extension Triangle3D {
 
 // MARK: -
 
-@available(*, deprecated, message: "Break into shape3d and a meshconvertable")
+// TODO: Will deprecate
+//@available(*, deprecated, message: "Break into shape3d and a meshconvertable")
 public struct CubeX: Shape3D {
     public var extent: SIMD3<Float>
     public var segments: SIMD3<UInt32>
@@ -333,7 +334,8 @@ public struct CubeX: Shape3D {
 
 //
 
-@available(*, deprecated, message: "Break into shape3d and a meshconvertable")
+// TODO: Will deprecate
+//@available(*, deprecated, message: "Break into shape3d and a meshconvertable")
 public struct PlaneX: Shape3D {
     public var extent: SIMD3<Float>
     public var segments: SIMD2<UInt32>
@@ -356,7 +358,8 @@ public struct PlaneX: Shape3D {
     }
 }
 
-@available(*, deprecated, message: "Break into shape3d and a meshconvertable")
+// TODO: Will deprecate
+//@available(*, deprecated, message: "Break into shape3d and a meshconvertable")
 public struct CircleX: Shape3D {
     public var extent: SIMD3<Float>
     public var segments: Float
@@ -375,7 +378,8 @@ public struct CircleX: Shape3D {
     }
 }
 
-@available(*, deprecated, message: "Break into shape3d and a meshconvertable")
+// TODO: Will deprecate
+//@available(*, deprecated, message: "Break into shape3d and a meshconvertable")
 public struct Sphere3DX: Shape3D {
     public var extent: SIMD3<Float>
     public var segments: SIMD2<UInt32>
@@ -400,7 +404,8 @@ public struct Sphere3DX: Shape3D {
     }
 }
 
-@available(*, deprecated, message: "Break into shape3d and a meshconvertable")
+// TODO: Will deprecate
+//@available(*, deprecated, message: "Break into shape3d and a meshconvertable")
 public struct Cone3D: Shape3D {
     public var extent: SIMD3<Float>
     public var segments: SIMD2<UInt32>
@@ -427,7 +432,8 @@ public struct Cone3D: Shape3D {
     }
 }
 
-@available(*, deprecated, message: "Break into shape3d and a meshconvertable")
+// TODO: Will deprecate
+//@available(*, deprecated, message: "Break into shape3d and a meshconvertable")
 public struct Capsule3D: Shape3D {
     public var extent: SIMD3<Float>
     public var cylinderSegments: SIMD2<UInt32>

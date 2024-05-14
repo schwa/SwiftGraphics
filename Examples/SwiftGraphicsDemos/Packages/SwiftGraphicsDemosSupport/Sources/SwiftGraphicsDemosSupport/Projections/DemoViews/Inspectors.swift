@@ -54,7 +54,7 @@ struct ProjectionInspector: View {
             }
         }
         switch projection {
-        case .matrix(let projection):
+        case .matrix:
 //            let projection = Binding {
 //                projection
 //            } set: { newValue in

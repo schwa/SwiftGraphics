@@ -5,7 +5,7 @@ import RenderKit
 import Shapes3D
 
 extension SimpleScene {
-    static func demo(device: MTLDevice) throws -> SimpleScene {
+    static func demo(device: MTLDevice, singlePanoramaTexture: Bool = true) throws -> SimpleScene {
         let allocator = MTKMeshBufferAllocator(device: device)
         let cone = try Cone3D(extent: [0.5, 1, 0.5], segments: [20, 10]).toYAMesh(allocator: allocator, device: device)
         let sphere = try Sphere3DX(extent: [0.5, 0.5, 0.5], segments: [20, 10]).toYAMesh(allocator: allocator, device: device)
@@ -18,7 +18,7 @@ extension SimpleScene {
 
         let tilesSize: SIMD2<UInt16>
         let tileTextures: [(MTKTextureLoader) throws -> MTLTexture]
-        if false {
+        if singlePanoramaTexture {
             tilesSize = [6, 2]
             tileTextures = (1 ... 12).map { index in
                 BundleResourceReference(bundle: .bundle(.module), name: "perseverance_\(index.formatted(.number.precision(.integerLength(2))))", extension: "ktx")

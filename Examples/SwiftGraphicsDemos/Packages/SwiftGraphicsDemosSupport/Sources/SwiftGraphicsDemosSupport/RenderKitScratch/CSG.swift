@@ -208,12 +208,14 @@ class Node<Vertex> where Vertex: VertexLike {
 
         var front: [Polygon] = []
         var back: [Polygon] = []
+        // TODO: FIX ME
         fatalError()
-//        for polygon in polygons {
+        for polygon in polygons {
+
 //            let result = polygon.split(plane: plane)
 //            front += result.front + result.coplanarFront
 //            back += result.back + result.coplanarBack
-//        }
+        }
 
         if self.front != nil {
             front = self.front!.clip(polygons: front)

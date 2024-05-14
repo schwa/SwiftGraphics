@@ -14,7 +14,8 @@ import UniformTypeIdentifiers
 struct Camera {
     var transform: Transform
 
-    @available(*, deprecated, message: "We can't generate this from any transform. Maybe move target into transform rotation?")
+    // TODO: Deprecate
+    //@available(*, deprecated, message: "We can't generate this from any transform. Maybe move target into transform rotation?")
     var target: SIMD3<Float> {
         didSet {
             let position = transform.translation // TODO: Scale?
