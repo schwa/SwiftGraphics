@@ -168,7 +168,7 @@ struct Particles2View: View, DefaultInitializableView {
                 else {
                     LabeledContent("FPS", value: "0")
                 }
-                LabeledContent("#0", value: "\(solver.objects.first)")
+                LabeledContent("#0", value: "\(String(describing: solver.objects.first))")
             }
             .padding()
             .background(.regularMaterial)

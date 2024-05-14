@@ -2,6 +2,22 @@ import Foundation
 import GameController
 import SwiftUI
 
+// Working for C++ Interop caused problem. https://github.com/apple/swift/issues/69914
+extension Notification.Name {
+    static let GCControllerDidConnect = Self(rawValue: "GCControllerDidConnectNotification")
+    static let GCControllerDidDisconnect = Self(rawValue: "GCControllerDidDisconnectNotification")
+    static let GCControllerDidBecomeCurrent = Self(rawValue: "GCControllerDidBecomeCurrentNotification")
+    static let GCControllerDidStopBeingCurrent = Self(rawValue: "GCControllerDidStopBeingCurrentNotification")
+    static let GCControllerUserCustomizationsDidChange = Self(rawValue: "GCControllerUserCustomizationsDidChangeNotification")
+
+    static let GCKeyboardDidConnect = Self(rawValue: "GCKeyboardDidConnectNotification")
+    static let GCKeyboardDidDisconnect = Self(rawValue: "GCKeyboardDidDisconnectNotification")
+
+    static let GCMouseDidConnect = Self(rawValue: "GCMouseDidConnectNotification")
+    static let GCMouseDidDisconnect = Self(rawValue: "GCMouseDidDisconnectNotification")
+}
+
+
 struct GameControllerWidget: View {
     @Observable
     class GameControllerWidgetModel: @unchecked Sendable {
@@ -40,41 +56,34 @@ struct GameControllerWidget: View {
                 await withDiscardingTaskGroup { [weak self] group in
                     let notificationCenter = NotificationCenter.default
                     group.addTask { [weak self] in
-                        // TODO: FIXME
-//                        for await device in notificationCenter.notifications(named: .GCControllerDidConnect).compactMap(\.object).cast(to: GCDevice.self) {
-//                            self?.devices.insert(DeviceBox(device: device!))
-                        ////                        }
+                        for await device in notificationCenter.notifications(named: .GCControllerDidConnect).compactMap(\.object).cast(to: GCDevice.self) {
+                            self?.devices.insert(DeviceBox(device: device!))
+                        }
                     }
                     group.addTask { [weak self] in
-                        // TODO: FIXME
-//                        for await device in notificationCenter.notifications(named: .GCControllerDidDisconnect).compactMap(\.object).cast(to: GCDevice.self) {
-//                            self?.devices.remove(DeviceBox(device: device!))
-//                        }
+                        for await device in notificationCenter.notifications(named: .GCControllerDidDisconnect).compactMap(\.object).cast(to: GCDevice.self) {
+                            self?.devices.remove(DeviceBox(device: device!))
+                        }
                     }
                     group.addTask { [weak self] in
-                        // TODO: FIXME
-
-                        //                        for await device in notificationCenter.notifications(named: .GCKeyboardDidConnect).compactMap(\.object).cast(to: GCDevice.self) {
-//                            self?.devices.insert(DeviceBox(device: device!))
-//                        }
+                        for await device in notificationCenter.notifications(named: .GCKeyboardDidConnect).compactMap(\.object).cast(to: GCDevice.self) {
+                            self?.devices.insert(DeviceBox(device: device!))
+                        }
                     }
                     group.addTask { [weak self] in
-                        // TODO: FIXME
-//                        for await device in notificationCenter.notifications(named: .GCKeyboardDidDisconnect).compactMap(\.object).cast(to: GCDevice.self) {
-//                            self?.devices.remove(DeviceBox(device: device!))
-//                        }
+                        for await device in notificationCenter.notifications(named: .GCKeyboardDidDisconnect).compactMap(\.object).cast(to: GCDevice.self) {
+                            self?.devices.remove(DeviceBox(device: device!))
+                        }
                     }
                     group.addTask { [weak self] in
-                        // TODO: FIXME
-//                        for await device in notificationCenter.notifications(named: .GCMouseDidConnect).compactMap(\.object).cast(to: GCDevice.self) {
-//                            self?.devices.insert(DeviceBox(device: device!))
-//                        }
+                        for await device in notificationCenter.notifications(named: .GCMouseDidConnect).compactMap(\.object).cast(to: GCDevice.self) {
+                            self?.devices.insert(DeviceBox(device: device!))
+                        }
                     }
                     group.addTask { [weak self] in
-                        // TODO: FIXME
-//                        for await device in notificationCenter.notifications(named: .GCMouseDidDisconnect).compactMap(\.object).cast(to: GCDevice.self) {
-//                            self?.devices.remove(DeviceBox(device: device!))
-//                        }
+                        for await device in notificationCenter.notifications(named: .GCMouseDidDisconnect).compactMap(\.object).cast(to: GCDevice.self) {
+                            self?.devices.remove(DeviceBox(device: device!))
+                        }
                     }
                 }
             }
