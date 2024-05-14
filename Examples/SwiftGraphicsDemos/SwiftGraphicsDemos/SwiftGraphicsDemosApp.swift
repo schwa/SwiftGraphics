@@ -1,4 +1,5 @@
 import SwiftUI
+import SwiftGraphicsDemosSupport
 
 @main
 struct SwiftGraphicsDemosApp: App {
@@ -24,10 +25,6 @@ struct SwiftGraphicsDemosApp: App {
 //            }
         }
 
-        #if os(macOS)
-        Window("Demos", id: "demos") {
-            DemosView()
-        }
-        #endif
+        DemosScene()
     }
 }

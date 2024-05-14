@@ -1,9 +1,5 @@
-import Algorithms
-import CoreGraphicsSupport
-import Observation
-import Shapes2D
-import Sketches
 import SwiftUI
+import SwiftGraphicsDemosSupport
 
 struct ContentView: View {
     @Environment(\.openWindow)

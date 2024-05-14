@@ -26,7 +26,6 @@ let package = Package(
         .library(name: "Shapes3D", targets: ["Shapes3D"]),
         .library(name: "SIMDSupport", targets: ["SIMDSupport"]),
         .library(name: "SIMDSupportUnsafeConformances", targets: ["SIMDSupportUnsafeConformances"]),
-        .library(name: "Sketches", targets: ["Sketches"]),
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-algorithms", from: "1.1.0"),
@@ -173,21 +172,6 @@ let package = Package(
         .target(name: "SIMDSupportUnsafeConformances"),
         .testTarget(name: "SIMDSupportTests", dependencies: [
             "SIMDSupport",
-        ]),
-
-        // MARK: Sketches
-        .target(
-            name: "Sketches",
-            dependencies: [
-                .product(name: "ApproximateEquality", package: "ApproximateEquality"),
-                "CoreGraphicsSupport",
-                "GenericGeometryBase",
-                "Shapes2D",
-                "SIMDSupport",
-            ]
-        ),
-        .testTarget(name: "SketchesTests", dependencies: [
-            "Sketches",
         ]),
 
         // MARK: TrivialMeshCLI

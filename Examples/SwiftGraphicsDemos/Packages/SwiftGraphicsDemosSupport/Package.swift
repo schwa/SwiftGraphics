@@ -1,23 +1,55 @@
 // swift-tools-version: 5.10
-// The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
 
 let package = Package(
     name: "SwiftGraphicsDemosSupport",
+    platforms: [
+        .iOS(.v17),
+        .macOS(.v14),
+        .macCatalyst(.v17),
+        .tvOS(.v17),
+        .visionOS(.v1),
+    ],
     products: [
-        // Products define the executables and libraries a package produces, making them visible to other packages.
-        .library(
-            name: "SwiftGraphicsDemosSupport",
-            targets: ["SwiftGraphicsDemosSupport"]),
+        .library(name: "SwiftGraphicsDemosSupport", targets: ["SwiftGraphicsDemosSupport"]),
+    ],
+    dependencies: [
+//        .package(path: "../../../../../SwiftGraphics"),
+        .package(path: "/Users/schwa/Projects/SwiftGraphics"),
+        .package(url: "https://github.com/schwa/SwiftGLTF", branch: "main")
     ],
     targets: [
-        // Targets are the basic building blocks of a package, defining a module or a test suite.
-        // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "SwiftGraphicsDemosSupport"),
-        .testTarget(
-            name: "SwiftGraphicsDemosSupportTests",
-            dependencies: ["SwiftGraphicsDemosSupport"]),
+            name: "SwiftGraphicsDemosSupport",
+            dependencies: [
+                .product(name: "Array2D", package: "SwiftGraphics"),
+                .product(name: "CoreGraphicsSupport", package: "SwiftGraphics"),
+                .product(name: "Earcut", package: "SwiftGraphics"),
+                .product(name: "GenericGeometryBase", package: "SwiftGraphics"),
+                .product(name: "MetalSupport", package: "SwiftGraphics"),
+                .product(name: "MetalSupportUnsafeConformances", package: "SwiftGraphics"),
+                .product(name: "Projection", package: "SwiftGraphics"),
+                .product(name: "Raster", package: "SwiftGraphics"),
+                .product(name: "RenderKit", package: "SwiftGraphics"),
+                .product(name: "RenderKitShaders", package: "SwiftGraphics"),
+                .product(name: "Shapes2D", package: "SwiftGraphics"),
+                .product(name: "Shapes3D", package: "SwiftGraphics"),
+                .product(name: "SIMDSupport", package: "SwiftGraphics"),
+                .product(name: "SIMDSupportUnsafeConformances", package: "SwiftGraphics"),
+                "SwiftGLTF",
+            ],
+            resources: [
+                .process("Assets.xcassets"),
+                .copy("Output"),
+                .copy("PerseveranceTiles"),
+                .copy("Models"),
+
+            ],
+            swiftSettings: [
+                .interoperabilityMode(.Cxx)
+            ]
+        ),
+        .testTarget(name: "SwiftGraphicsDemosSupportTests", dependencies: ["SwiftGraphicsDemosSupport"]),
     ]
 )
