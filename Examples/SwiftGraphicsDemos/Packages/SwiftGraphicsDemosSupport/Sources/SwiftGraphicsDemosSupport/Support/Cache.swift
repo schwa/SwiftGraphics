@@ -153,11 +153,6 @@ extension OSAllocatedUnfairLock where State == () {
 struct Cachable<Key, Value> where Key: Hashable & Sendable {
     var key: Key
     var value: Value
-
-    init(key: Key, value: Value) {
-        self.key = key
-        self.value = value
-    }
 }
 
 extension Cachable: Identifiable {

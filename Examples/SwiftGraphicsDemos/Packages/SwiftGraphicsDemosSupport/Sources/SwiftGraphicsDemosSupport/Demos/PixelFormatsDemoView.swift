@@ -18,7 +18,6 @@ struct PixelFormatsDemoView: View, DemoView {
         List {
             ForEach(MTLPixelFormat.allCases, id: \.self) { pixelFormat in
                 Text("\(pixelFormat.description) \(convertedTextures[pixelFormat] != nil)")
-
             }
         }
         .task {

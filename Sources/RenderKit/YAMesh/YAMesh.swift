@@ -46,7 +46,7 @@ extension BufferView: CustomStringConvertible {
 
 // MARK: -
 
-//@available(*, deprecated, message: "Use TrivialMesh")
+// @available(*, deprecated, message: "Use TrivialMesh")
 public struct YAMesh: Identifiable, Labeled {
     public typealias ID = LOLID2
 
@@ -95,7 +95,6 @@ public extension YAMesh {
 }
 
 public extension YAMesh {
-
     @available(*, deprecated, message: "Use TrivialMesh?")
     static func simpleMesh(label: String? = nil, indices: [UInt16], vertices: [SimpleVertex], primitiveType: MTLPrimitiveType = .triangle, device: MTLDevice) throws -> YAMesh {
         guard let indexBuffer = device.makeBuffer(bytesOf: indices, options: .storageModeShared) else {

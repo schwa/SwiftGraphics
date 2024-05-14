@@ -1,13 +1,12 @@
+import CoreGraphicsSupport
 import MetalKit
 import MetalSupport
 import ModelIO
 import RenderKit
 import RenderKitShaders
 import SwiftUI
-import CoreGraphicsSupport
 
 struct TextureDemoView: View, DemoView {
-
     @State
     var showDebugView = false
 
@@ -31,7 +30,6 @@ struct TextureDemoView: View, DemoView {
     }
 }
 
-
 struct TextureView: View {
     struct Bindings {
         var vertexBufferIndex: Int = -1
@@ -51,7 +49,7 @@ struct TextureView: View {
     struct Options: OptionSet {
         let rawValue: Int
 
-        static let showInfo = Options(rawValue: 1 << 0)
+        static let showInfo = Self(rawValue: 1 << 0)
     }
 
     let texture: MTLTexture

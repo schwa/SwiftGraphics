@@ -41,9 +41,6 @@ struct HalfEdgeMesh {
 
     var faces: [Face] = []
     var halfEdges: [HalfEdge] = []
-
-    init() {
-    }
 }
 
 extension HalfEdgeMesh {

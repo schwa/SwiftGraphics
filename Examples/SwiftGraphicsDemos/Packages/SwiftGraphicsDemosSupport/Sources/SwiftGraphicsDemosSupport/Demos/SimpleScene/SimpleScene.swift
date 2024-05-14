@@ -66,12 +66,6 @@ struct Light {
     var position: Transform
     var color: SIMD3<Float>
     var power: Float
-
-    init(position: Transform, color: SIMD3<Float>, power: Float) {
-        self.position = position
-        self.color = color
-        self.power = power
-    }
 }
 
 extension Light: Equatable {

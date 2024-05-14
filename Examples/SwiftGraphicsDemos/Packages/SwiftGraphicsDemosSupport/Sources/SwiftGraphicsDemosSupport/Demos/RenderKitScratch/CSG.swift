@@ -11,10 +11,6 @@ struct CSG<Vertex> where Vertex: VertexLike {
     typealias Polygon = Polygon3D<Vertex>
 
     var polygons: [Polygon]
-
-    init(polygons: [Polygon]) {
-        self.polygons = polygons
-    }
 }
 
 extension CSG {
@@ -211,7 +207,6 @@ class Node<Vertex> where Vertex: VertexLike {
         // TODO: FIX ME
         fatalError()
         for polygon in polygons {
-
 //            let result = polygon.split(plane: plane)
 //            front += result.front + result.coplanarFront
 //            back += result.back + result.coplanarBack

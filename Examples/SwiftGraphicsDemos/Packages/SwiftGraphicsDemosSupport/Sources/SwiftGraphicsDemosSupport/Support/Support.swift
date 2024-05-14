@@ -273,9 +273,6 @@ extension Composite: Hashable where Root: Hashable, Stem: Hashable {
 // MARK: -
 
 struct EmptyShape: Shape {
-    init() {
-    }
-
     func path(in rect: CGRect) -> Path {
         Path()
     }
@@ -322,10 +319,6 @@ extension Array {
 
 struct JSONCodingTransferable<Element>: Transferable where Element: Codable {
     let element: Element
-
-    init(element: Element) {
-        self.element = element
-    }
 
     static var transferRepresentation: some TransferRepresentation {
         DataRepresentation(contentType: .json) { layer in

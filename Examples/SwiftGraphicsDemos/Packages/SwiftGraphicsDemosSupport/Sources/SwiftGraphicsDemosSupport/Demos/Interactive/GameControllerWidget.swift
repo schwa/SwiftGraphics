@@ -17,7 +17,6 @@ public extension Notification.Name {
     static let GCMouseDidDisconnect = Self(rawValue: "GCMouseDidDisconnectNotification")
 }
 
-
 struct GameControllerWidget: View {
     @Observable
     class GameControllerWidgetModel: @unchecked Sendable {

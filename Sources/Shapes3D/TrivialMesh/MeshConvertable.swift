@@ -3,7 +3,7 @@ import MetalSupport
 import ModelIO
 
 // TODO: will deprecate
-//@available(*, deprecated, message: "Removed")
+// @available(*, deprecated, message: "Removed")
 public protocol Shape3D: Hashable, Sendable {
     func toMDLMesh(allocator: MDLMeshBufferAllocator?) -> MDLMesh
 }

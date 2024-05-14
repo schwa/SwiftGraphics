@@ -15,7 +15,7 @@ struct Camera {
     var transform: Transform
 
     // TODO: Deprecate
-    //@available(*, deprecated, message: "We can't generate this from any transform. Maybe move target into transform rotation?")
+    // @available(*, deprecated, message: "We can't generate this from any transform. Maybe move target into transform rotation?")
     var target: SIMD3<Float> {
         didSet {
             let position = transform.translation // TODO: Scale?
@@ -24,12 +24,6 @@ struct Camera {
     }
 
     var projection: Projection
-
-    init(transform: Transform, target: SIMD3<Float>, projection: Projection) {
-        self.transform = transform
-        self.target = target
-        self.projection = projection
-    }
 }
 
 extension Camera: Equatable {

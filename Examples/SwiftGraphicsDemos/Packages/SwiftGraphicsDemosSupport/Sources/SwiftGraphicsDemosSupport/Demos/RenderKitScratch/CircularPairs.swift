@@ -8,10 +8,6 @@ extension Sequence {
 
 struct CircularPairsSequence<Base: Sequence> {
     var base: Base
-
-    init(base: Base) {
-        self.base = base
-    }
 }
 
 extension CircularPairsSequence: Sequence {
