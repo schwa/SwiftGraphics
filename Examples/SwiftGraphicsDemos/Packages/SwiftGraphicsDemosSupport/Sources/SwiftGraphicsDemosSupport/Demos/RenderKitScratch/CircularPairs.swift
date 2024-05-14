@@ -41,7 +41,7 @@ extension CircularPairsSequence: Sequence {
             case (_, _, _, true):
                 return nil
             default:
-                fatalError()
+                unreachable()
             }
         }
     }

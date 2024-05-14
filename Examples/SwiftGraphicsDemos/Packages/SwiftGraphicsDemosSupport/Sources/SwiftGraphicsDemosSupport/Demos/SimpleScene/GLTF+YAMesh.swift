@@ -17,7 +17,7 @@ extension SwiftGLTF.Accessor {
         case (.FLOAT, .VEC4):
             .float4
         default:
-            fatalError() // MORE TO DO
+            unimplemented() // MORE TO DO
         }
     }
 
@@ -28,7 +28,7 @@ extension SwiftGLTF.Accessor {
         case (.UNSIGNED_INT, .SCALAR):
             .uint32
         default:
-            fatalError()
+            unreachable()
         }
     }
 }
@@ -96,7 +96,7 @@ extension YAMesh {
         let indexType: MTLIndexType = accessor.indexType
         let indexCount = accessor.count
         guard let primitiveType = MTLPrimitiveType(primitive.mode) else {
-            fatalError()
+            fatalError("Unknown primitive type")
         }
         self = YAMesh(label: container.url.lastPathComponent, indexType: indexType, indexBufferView: indexBufferView, indexCount: indexCount, vertexDescriptor: descriptor, vertexBufferViews: bufferViews, primitiveType: primitiveType)
     }
@@ -131,7 +131,7 @@ extension MTLStepFunction: CustomStringConvertible {
         case .perInstance:
             "perInstance"
         default:
-            fatalError()
+            unimplemented()
         }
     }
 }

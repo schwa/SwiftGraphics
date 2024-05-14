@@ -42,7 +42,7 @@ struct CustomStrokeView: View {
                         return point
                     }
                     else {
-                        fatalError()
+                        unreachable()
                     }
                 }
                     + [segments.last!.parallel(offset: offset).end]

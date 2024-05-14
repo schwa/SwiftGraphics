@@ -91,7 +91,7 @@ struct BallRotationModifier: ViewModifier {
             initialGestureRotation = rotation
         }
         guard let initialGestureRotation else {
-            fatalError()
+            unreachable()
         }
         var rotation = initialGestureRotation
         rotation.pitch = clamp(rotation.pitch + .degrees(translation.dy * interactionScale.dy), in: pitchLimit)

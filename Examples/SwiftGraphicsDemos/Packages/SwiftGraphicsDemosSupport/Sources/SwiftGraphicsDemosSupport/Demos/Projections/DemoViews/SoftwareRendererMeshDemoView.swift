@@ -136,7 +136,7 @@ struct SoftwareRendererMeshDemoView: View, DemoView {
                 case "square":
                     path = Path(CGRect(center: .zero, radius: 1))
                 default:
-                    fatalError()
+                    fatalError("Unknown name.")
                 }
                 let polygons = path.polygonalChains.map { vertices in Shapes2D.Polygon(vertices) } // .filter(\.isClosed) // TODO: TODO
                 var mesh = TrivialMesh(merging: polygons.map { $0.extrude(min: 0, max: 3, topCap: true, bottomCap: true) })

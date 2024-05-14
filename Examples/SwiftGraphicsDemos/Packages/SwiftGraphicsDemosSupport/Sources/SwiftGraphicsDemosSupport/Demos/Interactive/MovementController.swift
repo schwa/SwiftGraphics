@@ -170,7 +170,7 @@ class MovementController: @unchecked Sendable {
                 return (self?.makeEvent() ?? []).async
             }
             guard let events else {
-                fatalError()
+                return
             }
             for await event in events {
                 Counters.shared.increment(counter: "Relay")
@@ -183,7 +183,7 @@ class MovementController: @unchecked Sendable {
     func keyboard() {
         keyboardTask = Task { [weak self] in
             guard let displayLink = self?.displayLink else {
-                fatalError()
+                return
             }
             // TODO: Move to MovementController
             // TODO: FIXME
@@ -192,7 +192,7 @@ class MovementController: @unchecked Sendable {
             //                break
             //            }
             guard let keyboard = GCKeyboard.coalesced, let keyboardInput = keyboard.keyboardInput else {
-                fatalError()
+                return
             }
             let capturedInput = keyboardInput.capture()
             let leftGUI = capturedInput.button(forKeyCode: .leftGUI)!

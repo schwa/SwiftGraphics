@@ -246,7 +246,7 @@ extension GraphicsContext.BlendMode: CustomStringConvertible {
         case .plusDarker: "plusDarker"
         case .plusLighter: "plusLighter"
         default:
-            fatalError()
+            fatalError("Unknown blend mode \(self)")
         }
     }
 }

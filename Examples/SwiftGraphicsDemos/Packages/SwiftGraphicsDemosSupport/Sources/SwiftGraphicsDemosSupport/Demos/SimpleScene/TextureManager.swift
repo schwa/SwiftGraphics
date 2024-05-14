@@ -79,7 +79,7 @@ extension MTKTextureLoader {
             return try newTexture(resource: resource, options: options)
         }
         else {
-            fatalError()
+            fatalError("Unable to load texture.")
         }
     }
 

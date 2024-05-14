@@ -48,7 +48,7 @@ class PanoramaRenderJob: SceneRenderJob {
         }
         encoder.withDebugGroup("Panorama") {
             guard let mesh else {
-                fatalError()
+                fatalError("No mesh")
             }
             encoder.setRenderPipelineState(renderPipelineState)
             encoder.setDepthStencilState(depthStencilState)

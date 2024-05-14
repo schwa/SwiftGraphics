@@ -12,7 +12,7 @@ func resolveBindings<Bindable>(reflection: MTLRenderPipelineReflection, bindable
             let binding = reflection.fragmentBindings.first(where: { $0.name == name })!
             bindable[keyPath: keyPath] = binding.index
         default:
-            fatalError()
+            unimplemented()
         }
     }
 }

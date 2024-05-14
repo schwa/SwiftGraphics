@@ -80,7 +80,7 @@ extension SketchShapeEnum {
         case let shape as Sketch.Rectangle:
             self = .rectangle(shape)
         default:
-            fatalError()
+            fatalError("Unknown shape")
         }
     }
 

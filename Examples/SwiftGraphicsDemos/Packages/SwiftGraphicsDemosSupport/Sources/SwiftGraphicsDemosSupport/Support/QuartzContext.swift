@@ -107,7 +107,7 @@ struct QuartzContext: GraphicsContextProtocol {
         let renderer = ImageRenderer(content: image)
         renderer.scale = 4 // TODO: Picked at random
         guard let image = renderer.cgImage else {
-            fatalError()
+            fatalError("Could not create cgImage.")
         }
         cgContext.draw(image, in: rect)
     }
@@ -118,7 +118,7 @@ struct QuartzContext: GraphicsContextProtocol {
         let renderer = ImageRenderer(content: image)
         renderer.scale = 4 // TODO: Picked at random
         guard let image = renderer.cgImage else {
-            fatalError()
+            fatalError("Could not create cgImage.")
         }
         let rect = CGRect(x: point.x - image.size.width, y: point.y - image.size.height, width: image.size.width, height: image.size.height)
         cgContext.draw(image, in: rect)
@@ -130,7 +130,7 @@ struct QuartzContext: GraphicsContextProtocol {
         let renderer = ImageRenderer(content: image)
         renderer.scale = 4 // TODO: Picked at random
         guard let image = renderer.cgImage else {
-            fatalError()
+            fatalError("Could not create cgImage.")
         }
 
         // TODO: Flip

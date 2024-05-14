@@ -218,7 +218,7 @@ extension MTLTextureType: CustomStringConvertible {
         case .typeTextureBuffer:
             return "TextureBuffer"
         @unknown default:
-            fatalError()
+            fatalError("Unknown texture type: \(self)")
         }
     }
 }
@@ -253,7 +253,7 @@ extension MTLTextureCompressionType: CustomStringConvertible {
         case .lossy:
             return "lossy"
         @unknown default:
-            fatalError()
+            fatalError("Unknown texture compression type: \(self)")
         }
     }
 }

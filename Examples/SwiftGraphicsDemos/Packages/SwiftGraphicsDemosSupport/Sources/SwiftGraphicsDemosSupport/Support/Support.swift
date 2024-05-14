@@ -10,6 +10,18 @@ import Shapes2D
 import simd
 import SwiftUI
 
+internal func unimplemented(_ message: @autoclosure () -> String = String(), file: StaticString = #file, line: UInt = #line) -> Never {
+    fatalError(message(), file: file, line: line)
+}
+
+internal func temporarilyDisabled(_ message: @autoclosure () -> String = String(), file: StaticString = #file, line: UInt = #line) -> Never {
+    fatalError(message(), file: file, line: line)
+}
+
+internal func unreachable(_ message: @autoclosure () -> String = String(), file: StaticString = #file, line: UInt = #line) -> Never {
+    fatalError(message(), file: file, line: line)
+}
+
 // swiftlint:disable identifier_name
 
 // TODO: Move
@@ -405,7 +417,7 @@ struct PeekingWindowIterator<I>: IteratorProtocol where I: IteratorProtocol {
         }
         else {
             guard let previous = element else {
-                fatalError()
+                fatalError("No previous element.")
             }
             guard let next = previous.next else {
                 return nil
@@ -484,7 +496,7 @@ struct MarkingsView: View {
                             context.stroke(path, with: .color(Color.black), lineWidth: 1 / 4)
                         }
                     default:
-                        fatalError()
+                        unimplemented()
                     }
                 }
             }
@@ -549,7 +561,7 @@ extension Color: Codable {
     public func encode(to encoder: any Encoder) throws {
         var container = encoder.singleValueContainer()
         guard let components = resolve(in: .init()).cgColor.converted(to: CGColorSpace(name: CGColorSpace.sRGB)!, intent: .defaultIntent, options: nil)?.components else {
-            fatalError()
+            fatalError("Could not resolve color")
         }
         try container.encode(components)
     }
@@ -644,7 +656,7 @@ struct ConditionalViewModifier<TrueModifier, FalseModifier>: ViewModifier where 
             content.modifier(falseModifier)
         }
         else {
-            fatalError()
+            fatalError("Either trueModifier or falseModifier must be non-nil.")
         }
     }
 }
@@ -663,7 +675,7 @@ extension Array where Element: Identifiable {
             remove(at: index)
         }
         else {
-            fatalError()
+            fatalError("No element identified by \(id)")
         }
     }
 }

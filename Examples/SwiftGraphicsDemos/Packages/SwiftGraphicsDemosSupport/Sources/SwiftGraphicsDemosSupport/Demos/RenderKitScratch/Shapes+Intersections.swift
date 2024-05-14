@@ -32,6 +32,6 @@ extension Line3D {
     }
 
     func intersects(sphere: Sphere3D) -> LineSphereIntersection? {
-        fatalError()
+        temporarilyDisabled()
     }
 }

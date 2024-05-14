@@ -15,7 +15,7 @@ import SwiftUI
 
 struct VolumetricRendererDemoView: View, DemoView {
     @State
-    var renderPass = VolumetricRenderPass()
+    var renderPass = try! VolumetricRenderPass()
 
     @State
     var rotation = Rotation.zero

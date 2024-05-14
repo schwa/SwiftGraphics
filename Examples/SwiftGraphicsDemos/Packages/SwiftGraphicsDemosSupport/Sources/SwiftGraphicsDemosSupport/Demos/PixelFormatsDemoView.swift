@@ -217,7 +217,7 @@ extension PixelFormatMetadata {
             includesAlpha = false
         }
         else {
-            fatalError()
+            unimplemented()
         }
 
         let extendedRange: Bool = format.contains("xr")

@@ -70,7 +70,7 @@ only_rules:
     # - explicit_type_interface # NOPE
     - extension_access_modifier
     # - fallthrough # NOPE
-    # - fatal_error_message # TODO:
+    - fatal_error_message
     - file_header
     - file_length
     # - file_name # NOPE: Too silly.

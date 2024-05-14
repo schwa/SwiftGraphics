@@ -1,3 +1,4 @@
+import Everything
 import Metal
 import MetalKit
 import MetalSupport
@@ -20,7 +21,7 @@ class VolumetricRenderPass: RenderPass {
     var transferFunctionTexture: MTLTexture
     var logger: Logger?
 
-    init() {
+    init() throws {
         let device = MTLCreateSystemDefaultDevice()! // TODO: Naughty
         let volumeData = try! VolumeData(named: "CThead", in: Bundle.module, size: [256, 256, 113]) // TODO: Hardcoded
 //        let volumeData = VolumeData(named: "MRBrain", size: [256, 256, 109])
@@ -36,9 +37,7 @@ class VolumetricRenderPass: RenderPass {
         textureDescriptor.depth = 1
         textureDescriptor.pixelFormat = .rgba8Unorm
         textureDescriptor.storageMode = .shared
-        guard let texture = device.makeTexture(descriptor: textureDescriptor) else {
-            fatalError()
-        }
+        let texture = try device.makeTexture(descriptor: textureDescriptor).safelyUnwrap(GeneralError.generic("Could not create texture"))
         texture.label = "transfer function"
         transferFunctionTexture = texture
     }

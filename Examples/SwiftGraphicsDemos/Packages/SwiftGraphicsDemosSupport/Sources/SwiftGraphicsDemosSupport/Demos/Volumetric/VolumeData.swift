@@ -1,3 +1,4 @@
+import Everything
 import Foundation
 import Metal
 
@@ -70,9 +71,7 @@ struct VolumeData {
             textureDescriptor.width = size.width
             textureDescriptor.height = size.height
             textureDescriptor.depth = size.depth
-            guard let texture = device.makeTexture(descriptor: textureDescriptor) else {
-                fatalError()
-            }
+            let texture = try device.makeTexture(descriptor: textureDescriptor).safelyUnwrap(GeneralError.generic("Could not create texture"))
             // texture.label = directoryURL.lastPathComponent
             let bytesPerRow = size.width * 2
             let bytesPerImage = size.width * size.height * 2
@@ -80,14 +79,14 @@ struct VolumeData {
                 let region = MTLRegionMake3D(0, 0, index, size.width, size.height, 1)
                 texture.replace(region: region, mipmapLevel: 0, slice: 0, withBytes: slice, bytesPerRow: bytesPerRow, bytesPerImage: bytesPerImage)
             }
-            return device.makePrivateCopy(of: texture)
+            return try device.makePrivateCopy(of: texture)
         }
     }
 }
 
 extension MTLDevice {
     /// "To copy your data to a private texture, copy your data to a temporary texture with non-private storage, and then use an MTLBlitCommandEncoder to copy the data to the private texture for GPU use."
-    func makePrivateCopy(of source: MTLTexture) -> MTLTexture {
+    func makePrivateCopy(of source: MTLTexture) throws -> MTLTexture {
         let textureDescriptor = MTLTextureDescriptor()
         textureDescriptor.textureType = source.textureType
         textureDescriptor.pixelFormat = source.pixelFormat
@@ -96,18 +95,12 @@ extension MTLDevice {
         textureDescriptor.width = source.width
         textureDescriptor.height = source.height
         textureDescriptor.depth = source.depth
-        guard let destination = makeTexture(descriptor: textureDescriptor) else {
-            fatalError()
-        }
+        let destination = try makeTexture(descriptor: textureDescriptor).safelyUnwrap(GeneralError.generic("Could not create texture"))
         destination.label = source.label.map { "\($0)-private-copy" }
 
-        guard let commandQueue = makeCommandQueue() else {
-            fatalError()
-        }
-        commandQueue.withCommandBuffer(waitAfterCommit: true) { commandBuffer in
-            guard let encoder = commandBuffer.makeBlitCommandEncoder() else {
-                fatalError()
-            }
+        let commandQueue = try makeCommandQueue().safelyUnwrap(GeneralError.generic("Could not create command queue"))
+        try commandQueue.withCommandBuffer(waitAfterCommit: true) { commandBuffer in
+            let encoder = try commandBuffer.makeBlitCommandEncoder().safelyUnwrap(GeneralError.generic("Could not create blit command encoder"))
             encoder.copy(from: source, to: destination)
             encoder.endEncoding()
         }
