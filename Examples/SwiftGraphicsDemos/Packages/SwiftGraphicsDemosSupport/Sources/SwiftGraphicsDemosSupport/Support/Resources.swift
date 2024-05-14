@@ -62,7 +62,7 @@ extension BundleReference {
             Bundle(url: url) != nil
         case .byIdentifier(let identifier):
             Bundle(identifier: identifier) != nil
-        case .bundle(let bundle):
+        case .bundle:
             true
         }
     }

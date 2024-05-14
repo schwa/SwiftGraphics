@@ -2,6 +2,7 @@ import simd
 
 // NOTE: Too much duplication here. Deprecate what isn't used.
 
+@available(*, deprecated, message: "Move into Projection")
 public extension simd_float4x4 {
     // swiftlint:disable:next function_parameter_count
     static func orthographic(left: Float, right: Float, bottom: Float, top: Float, near: Float, far: Float) -> simd_float4x4 {
@@ -14,6 +15,7 @@ public extension simd_float4x4 {
     }
 }
 
+@available(*, deprecated, message: "Move into Projection")
 public extension simd_float4x4 {
     static func perspective(aspect: Float, fovy: Float, near: Float, far: Float) -> Self {
         let yScale = 1 / tan(fovy * 0.5)
@@ -31,6 +33,7 @@ public extension simd_float4x4 {
     }
 }
 
+@available(*, deprecated, message: "Move into Projection")
 public extension simd_float4x4 {
     static func viewport(x: Float, y: Float, w: Float, h: Float, depth: Float) -> simd_float4x4 {
         var m = simd_float4x4.identity
@@ -46,6 +49,7 @@ public extension simd_float4x4 {
 }
 
 // https://www.khronos.org/opengl/wiki/GluLookAt_code
+@available(*, deprecated, message: "Move into Projection")
 public func look(at target: SIMD3<Float>, from eye: SIMD3<Float>, up: SIMD3<Float>) -> simd_float4x4 {
     let forward: SIMD3<Float> = (target - eye).normalized
 
@@ -67,6 +71,7 @@ public func look(at target: SIMD3<Float>, from eye: SIMD3<Float>, up: SIMD3<Floa
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/direct3d9/d3dxmatrixlookatlh
+@available(*, deprecated, message: "Move into Projection")
 public func dx_look(at target: SIMD3<Float>, from eye: SIMD3<Float>, up: SIMD3<Float>) -> simd_float4x4 {
     let zaxis = simd_normalize(target - eye)
     let xaxis = simd_normalize(simd_cross(up, zaxis))
