@@ -106,7 +106,7 @@ class MovementController: @unchecked Sendable {
                     logger?.debug("Ignoring event, no movement.")
                     return
                 }
-                guard strongSelf.focused == true else {
+                guard self.focused == true else {
                     logger?.debug("Ignoring event, not focused.")
                     return
                 }
@@ -114,7 +114,7 @@ class MovementController: @unchecked Sendable {
 //                Counters.shared.increment(counter: "Mouse (Delta)")
                 Task {
                     Counters.shared.increment(counter: "Mouse Moved")
-                    await strongSelf.channel.send(.rotation(x))
+                    await self.channel.send(.rotation(x))
                 }
             }
         }
