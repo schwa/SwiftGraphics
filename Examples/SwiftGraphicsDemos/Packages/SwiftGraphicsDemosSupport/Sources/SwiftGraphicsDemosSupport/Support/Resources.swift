@@ -50,6 +50,7 @@ public enum BundleReference: Hashable, Sendable {
     case main
     case byURL(URL)
     case byIdentifier(String)
+    case bundle(Bundle)
 }
 
 public extension BundleReference {
@@ -61,6 +62,8 @@ public extension BundleReference {
             Bundle(url: url) != nil
         case .byIdentifier(let identifier):
             Bundle(identifier: identifier) != nil
+        case .bundle(let bundle):
+            true
         }
     }
 
@@ -78,6 +81,8 @@ public extension BundleReference {
                 guard let bundle = Bundle(identifier: identifier) else {
                     throw Error.missingBundle
                 }
+                return bundle
+            case .bundle(let bundle):
                 return bundle
             }
         }

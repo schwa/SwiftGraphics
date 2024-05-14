@@ -15,9 +15,9 @@ public struct VolumeData {
     public var archive: TarArchive
     public var size: MTLSize
 
-    public init(named name: String, size: MTLSize) throws {
+    public init(named name: String, in bundle: Bundle = .main, size: MTLSize) throws {
         self.name = name
-        archive = try TarArchive(named: "StanfordVolumeData")
+        archive = try TarArchive(named: "StanfordVolumeData", in: bundle)
         self.size = size
     }
 

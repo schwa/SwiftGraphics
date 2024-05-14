@@ -13,11 +13,11 @@ public struct MeshView: View, DefaultInitializableView {
     }
 
     static let sources: [Source] = [
-        .file("Teapot"),
-        .file("Monkey"),
-        .file("Cube"),
-        .file("Square"),
-        .file("Icosphere"),
+        .file("Models/Teapot"),
+        .file("Models/Monkey"),
+        .file("Models/Cube"),
+        .file("Models/Square"),
+        .file("Models/Icosphere"),
         .extrusion("star"),
         .extrusion("square"),
         .revolve("?"),
@@ -126,7 +126,7 @@ public struct MeshView: View, DefaultInitializableView {
         .onChange(of: source) {
             switch source {
             case .file(let name):
-                let url = Bundle.main.url(forResource: name, withExtension: "ply")!
+                let url = Bundle.module.url(forResource: name, withExtension: "ply")!
                 mesh = try! TrivialMesh(url: url)
             case .extrusion(let name):
                 let path: Path

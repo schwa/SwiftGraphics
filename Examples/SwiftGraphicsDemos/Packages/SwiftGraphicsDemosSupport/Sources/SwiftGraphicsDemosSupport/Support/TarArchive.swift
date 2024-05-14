@@ -103,7 +103,7 @@ public extension TarArchive.Header {
 extension TarArchive {
     init(named name: String, in bundle: Bundle = .main) throws {
         guard let url = bundle.url(forResource: name, withExtension: "tar") else {
-            throw Error.generic("Could not construct url for \(name).")
+            throw Error.generic("Could not construct url for \(name) in \(bundle).")
         }
         self = try TarArchive(url: url)
     }

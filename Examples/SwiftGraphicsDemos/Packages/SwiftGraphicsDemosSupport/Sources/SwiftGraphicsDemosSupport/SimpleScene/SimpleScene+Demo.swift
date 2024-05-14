@@ -21,7 +21,7 @@ public extension SimpleScene {
         if false {
             tilesSize = [6, 2]
             tileTextures = (1 ... 12).map { index in
-                BundleResourceReference(bundle: .main, name: "perseverance_\(index.formatted(.number.precision(.integerLength(2))))", extension: "ktx")
+                BundleResourceReference(bundle: .bundle(.module), name: "perseverance_\(index.formatted(.number.precision(.integerLength(2))))", extension: "ktx")
                 // ResourceReference.bundle(.main, name: "Testcard_\(index.formatted(.number.precision(.integerLength(2))))", extension: "ktx")
             }
             .map { resource -> ((MTKTextureLoader) throws -> MTLTexture) in
@@ -35,7 +35,7 @@ public extension SimpleScene {
             tilesSize = [1, 1]
             // swiftlint:disable:next multiline_literal_brackets opening_brace
             tileTextures = [{ loader in
-                try loader.newTexture(name: "BlueSkySkybox", scaleFactor: 1, bundle: .main, options: [
+                try loader.newTexture(name: "BlueSkySkybox", scaleFactor: 1, bundle: .module, options: [
                     .textureStorageMode: MTLStorageMode.private.rawValue,
                     .SRGB: true,
                 ])
@@ -47,14 +47,14 @@ public extension SimpleScene {
         models += product(xRange, zRange).map { x, z in
             let hsv: SIMD3<Float> = [Float.random(in: 0 ... 1), 1, 1]
             let rgba = SIMD4<Float>(hsv.hsv2rgb(), 1.0)
-            let material = FlatMaterial(baseColorFactor: rgba, baseColorTexture: .init(resource: BundleResourceReference(bundle: .main, name: "Checkerboard")))
+            let material = FlatMaterial(baseColorFactor: rgba, baseColorTexture: .init(resource: BundleResourceReference(bundle: .bundle(.module), name: "Checkerboard")))
             return Model(transform: .translation([x, 0, z]), material: material, mesh: meshes.randomElement()!)
         }
 
         let fishModel = try Model(
             transform: .translation([0, 1, 0]).rotated(angle: .degrees(90), axis: [0, 1, 0]),
-            material: UnlitMaterial(baseColorFactor: [1, 0, 1, 1], baseColorTexture: .init(resource: BundleResourceReference(bundle: .main, name: "seamless-foods-mixed-0020"))),
-            mesh: YAMesh(gltf: "BarramundiFish", device: device)
+            material: UnlitMaterial(baseColorFactor: [1, 0, 1, 1], baseColorTexture: .init(resource: BundleResourceReference(bundle: .bundle(.module), name: "seamless-foods-mixed-0020"))),
+            mesh: YAMesh(gltf: "Models/BarramundiFish", in: Bundle.module, device: device)
         )
         models.append(fishModel)
 

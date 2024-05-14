@@ -15,8 +15,8 @@ let package = Package(
         .library(name: "SwiftGraphicsDemosSupport", targets: ["SwiftGraphicsDemosSupport"]),
     ],
     dependencies: [
-//        .package(path: "../../../../../SwiftGraphics"),
-        .package(path: "/Users/schwa/Projects/SwiftGraphics"),
+        .package(path: "../../../../../SwiftGraphics"),
+//        .package(path: "/Users/schwa/Projects/SwiftGraphics"),
         .package(url: "https://github.com/schwa/SwiftGLTF", branch: "main")
     ],
     targets: [
@@ -40,10 +40,14 @@ let package = Package(
                 "SwiftGLTF",
             ],
             resources: [
-                .process("Assets.xcassets"),
-                .copy("Output"),
-                .copy("PerseveranceTiles"),
-                .copy("Models"),
+                .process("Resources/Assets.xcassets"),
+                .copy("Resources/Output"),
+                .copy("Resources/PerseveranceTiles"),
+                .copy("Resources/Models"),
+                .copy("Resources/TestcardTiles"),
+                .copy("Resources/adjectives.txt"),
+                .copy("Resources/nouns.txt"),
+                .copy("Resources/StanfordVolumeData.tar"),
 
             ],
             swiftSettings: [

@@ -10,8 +10,8 @@ struct Names {
 
     init() {
         do {
-            adjectives = try String(contentsOf: Bundle.main.url(forResource: "adjectives", withExtension: "txt")!).split(whereSeparator: \.isNewline)
-            nouns = try String(contentsOf: Bundle.main.url(forResource: "nouns", withExtension: "txt")!).split(whereSeparator: \.isNewline)
+            adjectives = try String(contentsOf: Bundle.module.url(forResource: "adjectives", withExtension: "txt")!).split(whereSeparator: \.isNewline)
+            nouns = try String(contentsOf: Bundle.module.url(forResource: "nouns", withExtension: "txt")!).split(whereSeparator: \.isNewline)
         }
         catch {
             fatalError("\(error)")

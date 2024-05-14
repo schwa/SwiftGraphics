@@ -42,8 +42,8 @@ extension MTLDevice {
 }
 
 extension YAMesh {
-    init(gltf name: String, device: MTLDevice) throws {
-        let url = Bundle.main.url(forResource: name, withExtension: "glb")!
+    init(gltf name: String, in bundle: Bundle = .main, device: MTLDevice) throws {
+        let url = bundle.url(forResource: name, withExtension: "glb")!
         let container = try Container(url: url)
 //        dump(container)
         let node = try container.document.scenes[0].nodes[0].resolve(in: container.document)
