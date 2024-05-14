@@ -48,7 +48,6 @@ let package = Package(
                 .copy("Resources/adjectives.txt"),
                 .copy("Resources/nouns.txt"),
                 .copy("Resources/StanfordVolumeData.tar"),
-
             ],
             swiftSettings: [
                 .interoperabilityMode(.Cxx)

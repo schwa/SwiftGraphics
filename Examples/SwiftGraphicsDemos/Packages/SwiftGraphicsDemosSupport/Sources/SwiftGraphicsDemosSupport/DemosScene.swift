@@ -1,11 +1,8 @@
 import SwiftUI
 
 public struct DemosScene: Scene {
-
     public init() {
-
         print(Bundle.module)
-
     }
 
     public var body: some Scene {
@@ -19,5 +16,4 @@ public struct DemosScene: Scene {
         }
 #endif
     }
-
 }

@@ -1,5 +1,5 @@
-import SwiftUI
 import SwiftGraphicsDemosSupport
+import SwiftUI
 
 @main
 struct SwiftGraphicsDemosApp: App {

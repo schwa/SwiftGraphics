@@ -156,13 +156,13 @@ public class Node<Vertex> where Vertex: VertexLike {
     // nodes there. Each set of polygons is partitioned using the first polygon
     // (no heuristic is used to pick a good split).
     func insert(polygons: [Polygon]) {
-        fatalError()
-        //        if polygons.isEmpty {
+        fatalError() // TODO: FIXME
+//        if polygons.isEmpty {
 //            return
 //        }
 //
 //        if plane == nil {
-//            plane = Plane3D(points: polygons[0])
+//            plane = Plane3D(points: polygons[0].vertices)
 //        }
 //
 //        var front: [Polygon] = []
@@ -192,7 +192,7 @@ public class Node<Vertex> where Vertex: VertexLike {
 
     // Convert solid space to empty space and empty space to solid space.
     func invert() {
-        fatalError()
+        fatalError() // TODO: FIXME
         //        polygons = polygons.map { $0.flipped() }
 //        plane!.flip()
 //        front?.invert()

@@ -8,9 +8,9 @@ public struct BoxesView: View, DefaultInitializableView {
 
     public init() {
         models = [
-            Box3D(min: [-1, -0.5, -0.5], max: [-2.0, 0.5, 0.5]),
+            Box3D<SIMD3<Float>>(min: [-1, -0.5, -0.5], max: [-2.0, 0.5, 0.5]),
             Sphere3D(center: .zero, radius: 0.5),
-            Box3D(min: [1, -0.5, -0.5], max: [2.0, 0.5, 0.5]),
+            Box3D<SIMD3<Float>>(min: [1, -0.5, -0.5], max: [2.0, 0.5, 0.5]),
         ]
     }
 

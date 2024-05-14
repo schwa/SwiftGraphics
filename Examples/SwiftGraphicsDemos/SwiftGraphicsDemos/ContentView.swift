@@ -1,5 +1,5 @@
-import SwiftUI
 import SwiftGraphicsDemosSupport
+import SwiftUI
 
 struct ContentView: View {
     @Environment(\.openWindow)
