@@ -3,35 +3,35 @@ import Foundation
 import simd
 
 // https://cs184.eecs.berkeley.edu/sp20/lecture/8-22/meshes-and-geometry-processing
-public struct HalfEdgeMesh {
-    public class Vertex {
-        public var position: SIMD3<Float>
-        public weak var halfEdge: HalfEdge?
+struct HalfEdgeMesh {
+    class Vertex {
+        var position: SIMD3<Float>
+        weak var halfEdge: HalfEdge?
 
-        public init(position: SIMD3<Float>) {
+        init(position: SIMD3<Float>) {
             self.position = position
         }
     }
 
-    public class Face {
-        public weak var halfEdge: HalfEdge?
+    class Face {
+        weak var halfEdge: HalfEdge?
 
-        public init() {
+        init() {
         }
     }
 
-    public class Edge {
-        public var halfEdge: HalfEdge?
+    class Edge {
+        var halfEdge: HalfEdge?
     }
 
-    public class HalfEdge {
-        public var vertex: Vertex
-        public var next: HalfEdge?
-        public var twin: HalfEdge?
-        public var face: Face?
-        public var edge: Edge?
+    class HalfEdge {
+        var vertex: Vertex
+        var next: HalfEdge?
+        var twin: HalfEdge?
+        var face: Face?
+        var edge: Edge?
 
-        public init(vertex: Vertex, nextEdge: HalfEdge?, twinEdge: HalfEdge?, face: Face?) {
+        init(vertex: Vertex, nextEdge: HalfEdge?, twinEdge: HalfEdge?, face: Face?) {
             self.vertex = vertex
             next = nextEdge
             twin = twinEdge
@@ -39,14 +39,14 @@ public struct HalfEdgeMesh {
         }
     }
 
-    public var faces: [Face] = []
-    public var halfEdges: [HalfEdge] = []
+    var faces: [Face] = []
+    var halfEdges: [HalfEdge] = []
 
-    public init() {
+    init() {
     }
 }
 
-public extension HalfEdgeMesh {
+extension HalfEdgeMesh {
     mutating func addFace(positions: [SIMD3<Float>]) {
         let face = Face()
         let vertices = positions.map { Vertex(position: $0) }

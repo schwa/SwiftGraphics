@@ -3,38 +3,38 @@ import MetalKit
 
 // TODO: all this is very experimental.
 
-public protocol ResourceProtocol: Hashable, Sendable {
+protocol ResourceProtocol: Hashable, Sendable {
 }
 
-public extension ResourceProtocol {
+extension ResourceProtocol {
     func `as`(_ type: any URLProviding.Type) -> (any URLProviding)? {
         self as? any URLProviding
     }
 }
 
-public protocol URLProviding: ResourceProtocol {
+protocol URLProviding: ResourceProtocol {
     var url: URL { get throws }
 }
 
-public protocol SynchronousLoadable: ResourceProtocol {
+protocol SynchronousLoadable: ResourceProtocol {
     associatedtype Content
     associatedtype Parameter
     func load(_ parameter: Parameter) throws -> Content
 }
 
-public extension SynchronousLoadable where Parameter == () {
+extension SynchronousLoadable where Parameter == () {
     func load() throws -> Content {
         try load(())
     }
 }
 
-public protocol AsynchronousLoadable: ResourceProtocol {
+protocol AsynchronousLoadable: ResourceProtocol {
     associatedtype Content // TODO: Sendable?
     associatedtype Parameter
     func load(_ parameter: Parameter) async throws -> Content
 }
 
-public extension AsynchronousLoadable where Parameter == () {
+extension AsynchronousLoadable where Parameter == () {
     func load() async throws -> Content {
         try await load(())
     }
@@ -42,7 +42,7 @@ public extension AsynchronousLoadable where Parameter == () {
 
 // MARK: -
 
-public enum BundleReference: Hashable, Sendable {
+enum BundleReference: Hashable, Sendable {
     enum Error: Swift.Error {
         case missingBundle
     }
@@ -53,7 +53,7 @@ public enum BundleReference: Hashable, Sendable {
     case bundle(Bundle)
 }
 
-public extension BundleReference {
+extension BundleReference {
     var exists: Bool {
         switch self {
         case .main:
@@ -91,12 +91,12 @@ public extension BundleReference {
 
 // MARK: -
 
-public struct BundleResourceReference {
-    public var bundle: BundleReference
-    public var name: String
-    public var `extension`: String?
+struct BundleResourceReference {
+    var bundle: BundleReference
+    var name: String
+    var `extension`: String?
 
-    public init(bundle: BundleReference, name: String, extension: String? = nil) {
+    init(bundle: BundleReference, name: String, extension: String? = nil) {
         self.bundle = bundle
         self.name = name
         self.extension = `extension`
@@ -106,11 +106,11 @@ public struct BundleResourceReference {
         case missingResource
     }
 
-    public var exists: Bool {
+    var exists: Bool {
         (try? bundle.bundle.url(forResource: name, withExtension: `extension`)) != nil
     }
 
-    public var url: URL {
+    var url: URL {
         get throws {
             guard let url = try bundle.bundle.url(forResource: name, withExtension: `extension`) else {
                 throw Error.missingResource
@@ -120,7 +120,7 @@ public struct BundleResourceReference {
     }
 }
 
-public extension BundleReference {
+extension BundleReference {
     func resource(named name: String, withExtension extension: String?) -> BundleResourceReference {
         BundleResourceReference(bundle: self, name: name, extension: `extension`)
     }

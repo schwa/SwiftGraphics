@@ -7,10 +7,10 @@ import UIKit
 import SwiftUI
 
 @available(macOS 14, iOS 15, tvOS 16, *)
-public class DisplayLink2 {
-    public struct Event {
-        public var timestamp: CFTimeInterval
-        public var duration: CFTimeInterval
+class DisplayLink2 {
+    struct Event {
+        var timestamp: CFTimeInterval
+        var duration: CFTimeInterval
     }
 
     private class Helper: NSObject, @unchecked Sendable {
@@ -34,7 +34,7 @@ public class DisplayLink2 {
     private let helper: Helper
     private let displayLink: CADisplayLink
 
-    public var isPaused: Bool {
+    var isPaused: Bool {
         get {
             displayLink.isPaused
         }
@@ -55,7 +55,7 @@ public class DisplayLink2 {
         self.displayLink.invalidate()
     }
 
-    public convenience init(runloop: RunLoop = .current, mode: RunLoop.Mode = .default) {
+    convenience init(runloop: RunLoop = .current, mode: RunLoop.Mode = .default) {
 #if os(macOS)
         self.init(runloop: runloop, mode: mode, source: NSScreen.screens[0])
 #else
@@ -65,7 +65,7 @@ public class DisplayLink2 {
 #endif
     }
 
-    public func events() -> AsyncStream<Event> {
+    func events() -> AsyncStream<Event> {
         let (stream, continuation) = AsyncStream.makeStream(of: Event.self)
         let id = UUID()
         helper.continuations[id] = continuation
@@ -78,7 +78,7 @@ public class DisplayLink2 {
 
 #if os(macOS)
     @available(macOS 14, iOS 15, tvOS 16, *)
-    public extension DisplayLink2 {
+    extension DisplayLink2 {
         convenience init(runloop: RunLoop = .current, mode: RunLoop.Mode = .default, source: NSScreen) {
             self.init(runloop: runloop, mode: mode) {
                 source.displayLink(target: $0, selector: #selector(Helper.callCallback))
@@ -102,12 +102,12 @@ public class DisplayLink2 {
 #endif
 
 @available(macOS 14, iOS 15, tvOS 16, *)
-public struct DisplayLinkKey: EnvironmentKey {
-    public static var defaultValue: DisplayLink2?
+struct DisplayLinkKey: EnvironmentKey {
+    static var defaultValue: DisplayLink2?
 }
 
 @available(macOS 14, iOS 15, tvOS 16, *)
-public extension EnvironmentValues {
+extension EnvironmentValues {
     var displayLink: DisplayLink2? {
         get {
             self[DisplayLinkKey.self]
@@ -119,7 +119,7 @@ public extension EnvironmentValues {
 }
 
 @available(macOS 14, iOS 15, tvOS 16, *)
-public extension View {
+extension View {
     func displayLink(_ displayLink: DisplayLink2) -> some View {
         environment(\.displayLink, displayLink)
     }

@@ -8,7 +8,7 @@ import SIMDSupport
 import SwiftFormats
 import SwiftUI
 
-public struct SimulationView: View, DefaultInitializableView {
+struct SimulationView: View, DefaultInitializableView {
     @State
     var simulation: Simulation<ArraySimulatorStorage>
 
@@ -32,13 +32,13 @@ public struct SimulationView: View, DefaultInitializableView {
     @State
     var blendMode: GraphicsContext.BlendMode = .screen
 
-    public init() {
+    init() {
         let count = 500
         let storage = ArraySimulatorStorage(positions: Array(repeating: .zero, count: count), velocities: Array(repeating: .zero, count: count), densities: Array(repeating: .zero, count: count))
         simulation = Simulation(count: count, storage: storage, size: .zero)
     }
 
-    public var body: some View {
+    var body: some View {
         VStack {
             GeometryReader { proxy in
                 TimelineView(.animation) { context in

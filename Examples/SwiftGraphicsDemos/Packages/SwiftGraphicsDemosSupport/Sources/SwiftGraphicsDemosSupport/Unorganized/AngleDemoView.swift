@@ -2,7 +2,7 @@ import CoreGraphicsSupport
 import SwiftFormats
 import SwiftUI
 
-public struct AngleDemoView: View, DefaultInitializableView {
+struct AngleDemoView: View, DefaultInitializableView {
     @State
     var p0 = CGPoint(x: 100, y: 400)
 
@@ -12,10 +12,10 @@ public struct AngleDemoView: View, DefaultInitializableView {
     @State
     var p2 = CGPoint(x: 300, y: 400)
 
-    public init() {
+    init() {
     }
 
-    public var body: some View {
+    var body: some View {
         ZStack {
             Path { path in
                 path.move(to: p0)

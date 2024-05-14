@@ -2,11 +2,11 @@ import CoreGraphicsSupport
 import Shapes3D
 import SwiftUI
 
-public struct BoxesView: View, DefaultInitializableView {
+struct BoxesView: View, DefaultInitializableView {
     @State
     var models: [any PolygonConvertable]
 
-    public init() {
+    init() {
         models = [
             Box3D<SIMD3<Float>>(min: [-1, -0.5, -0.5], max: [-2.0, 0.5, 0.5]),
             Sphere3D(center: .zero, radius: 0.5),
@@ -14,7 +14,7 @@ public struct BoxesView: View, DefaultInitializableView {
         ]
     }
 
-    public var body: some View {
+    var body: some View {
         SoftwareRendererView { projection, _, context3D in
             var rasterizer = context3D.rasterizer
             for model in models {

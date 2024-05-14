@@ -7,44 +7,44 @@ import simd
 
 // swiftlint:disable conditional_returns_on_newline
 
-public struct WingedEdgeCollection {
-    public struct Face {
-        public typealias Index = [Self].Index
+struct WingedEdgeCollection {
+    struct Face {
+        typealias Index = [Self].Index
 
-        public var edge: Edge.Index
+        var edge: Edge.Index
     }
 
-    public struct Edge {
-        public typealias Index = [Self].Index
+    struct Edge {
+        typealias Index = [Self].Index
 
-        public var originVertex: Vertex.Index
-        public var destinationVertex: Vertex.Index
-        public var edgeLeftClockwise: Self.Index?
-        public var edgeLeftCounterClockwise: Self.Index?
-        public var edgeRightClockwise: Self.Index?
-        public var edgeRightCounterClockwise: Self.Index?
-        public var faceLeft: Face.Index?
-        public var faceRight: Face.Index?
+        var originVertex: Vertex.Index
+        var destinationVertex: Vertex.Index
+        var edgeLeftClockwise: Self.Index?
+        var edgeLeftCounterClockwise: Self.Index?
+        var edgeRightClockwise: Self.Index?
+        var edgeRightCounterClockwise: Self.Index?
+        var faceLeft: Face.Index?
+        var faceRight: Face.Index?
     }
 
-    public struct Vertex {
-        public typealias Index = [Self].Index
+    struct Vertex {
+        typealias Index = [Self].Index
 
-        public var position: SIMD3<Float>
-        public var edge: Edge.Index
+        var position: SIMD3<Float>
+        var edge: Edge.Index
     }
 
-    public var faces: [Face]
-    public var edges: [Edge]
-    public var vertices: [Vertex]
+    var faces: [Face]
+    var edges: [Edge]
+    var vertices: [Vertex]
 
-    public init() {
+    init() {
         faces = []
         edges = []
         vertices = []
     }
 
-    public init(faces: [Face], edges: [Edge], vertices: [Vertex]) {
+    init(faces: [Face], edges: [Edge], vertices: [Vertex]) {
         self.faces = faces
         self.edges = edges
         self.vertices = vertices

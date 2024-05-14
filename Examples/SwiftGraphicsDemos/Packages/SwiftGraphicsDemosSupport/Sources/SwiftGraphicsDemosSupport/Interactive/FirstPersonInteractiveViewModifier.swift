@@ -3,7 +3,7 @@ import simd
 import SIMDSupport
 import SwiftUI
 
-public struct FirstPersonInteractiveViewModifier: ViewModifier, @unchecked Sendable {
+struct FirstPersonInteractiveViewModifier: ViewModifier, @unchecked Sendable {
     @Environment(\.displayLink)
     var displayLink
 
@@ -19,7 +19,7 @@ public struct FirstPersonInteractiveViewModifier: ViewModifier, @unchecked Senda
     @Binding
     var camera: Camera
 
-    public func body(content: Content) -> some View {
+    func body(content: Content) -> some View {
         content
             .task {
                 guard let displayLink else {
@@ -97,7 +97,7 @@ public struct FirstPersonInteractiveViewModifier: ViewModifier, @unchecked Senda
     }
 }
 
-public extension View {
+extension View {
     func firstPersonInteractive(camera: Binding<Camera>) -> some View {
         modifier(FirstPersonInteractiveViewModifier(camera: camera))
     }

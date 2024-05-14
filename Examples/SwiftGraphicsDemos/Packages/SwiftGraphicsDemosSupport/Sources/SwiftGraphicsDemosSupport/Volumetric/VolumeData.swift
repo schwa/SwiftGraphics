@@ -10,12 +10,12 @@ import Metal
 // Data source:    acquired on a General Electric CT Scanner and provided
 //                courtesy of North Carolina Memorial Hospital
 
-public struct VolumeData {
-    public var name: String
-    public var archive: TarArchive
-    public var size: MTLSize
+struct VolumeData {
+    var name: String
+    var archive: TarArchive
+    var size: MTLSize
 
-    public init(named name: String, in bundle: Bundle = .main, size: MTLSize) throws {
+    init(named name: String, in bundle: Bundle = .main, size: MTLSize) throws {
         self.name = name
         archive = try TarArchive(named: "StanfordVolumeData", in: bundle)
         self.size = size
@@ -59,7 +59,7 @@ public struct VolumeData {
         return (histogram: counts, min: values.min()!, max: values.max()!)
     }
 
-    public func load() throws -> (MTLDevice) throws -> MTLTexture {
+    func load() throws -> (MTLDevice) throws -> MTLTexture {
         { device in
             let slices = try slices()
             let textureDescriptor = MTLTextureDescriptor()

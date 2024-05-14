@@ -5,7 +5,7 @@ import Shapes2D
 import Shapes3D
 import SwiftUI
 
-public struct MeshView: View, DefaultInitializableView {
+struct MeshView: View, DefaultInitializableView {
     enum Source: Hashable {
         case file(String)
         case extrusion(String)
@@ -41,10 +41,10 @@ public struct MeshView: View, DefaultInitializableView {
     @State
     var mode: Mode = .model
 
-    public init() {
+    init() {
     }
 
-    public var body: some View {
+    var body: some View {
         ZStack {
             if let mesh {
                 switch mode {

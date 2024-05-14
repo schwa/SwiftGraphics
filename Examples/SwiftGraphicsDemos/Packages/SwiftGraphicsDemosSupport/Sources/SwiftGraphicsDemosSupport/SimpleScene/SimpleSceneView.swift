@@ -47,7 +47,7 @@ struct CoreSimpleSceneView: View {
 
 // MARK: -
 
-public struct SimpleSceneView: View, DefaultInitializableView {
+struct SimpleSceneView: View, DefaultInitializableView {
     @Environment(\.metalDevice)
     var device
 
@@ -65,12 +65,12 @@ public struct SimpleSceneView: View, DefaultInitializableView {
     @State
     var exportImage: Image?
 
-    public init() {
+    init() {
         let device = MTLCreateSystemDefaultDevice()!
         scene = try! SimpleScene.demo(device: device)
     }
 
-    public var body: some View {
+    var body: some View {
         CoreSimpleSceneView(scene: $scene)
         #if os(macOS)
             .firstPersonInteractive(camera: $scene.camera)

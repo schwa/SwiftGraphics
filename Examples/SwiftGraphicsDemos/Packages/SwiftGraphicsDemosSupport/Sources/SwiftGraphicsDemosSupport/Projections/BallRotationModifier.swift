@@ -3,12 +3,12 @@ import simd
 import SwiftUI
 
 // TODO: Move/Rename
-public struct Rotation: Hashable {
-    public var pitch: Angle
-    public var yaw: Angle
-    public var roll: Angle
+struct Rotation: Hashable {
+    var pitch: Angle
+    var yaw: Angle
+    var roll: Angle
 
-    public init(pitch: Angle = .zero, yaw: Angle = .zero, roll: Angle = .zero) {
+    init(pitch: Angle = .zero, yaw: Angle = .zero, roll: Angle = .zero) {
         self.pitch = pitch
         self.yaw = yaw
         self.roll = roll
@@ -17,7 +17,7 @@ public struct Rotation: Hashable {
     static let zero = Self(pitch: .zero, yaw: .zero, roll: .zero)
 }
 
-public extension Rotation {
+extension Rotation {
     var quaternion: simd_quatf {
         let pitch = simd_quatf(angle: Float(pitch.radians), axis: [1, 0, 0])
         let yaw = simd_quatf(angle: Float(yaw.radians), axis: [0, 1, 0])
@@ -30,13 +30,13 @@ public extension Rotation {
     }
 }
 
-public extension Rotation {
+extension Rotation {
     static func + (lhs: Rotation, rhs: Rotation) -> Rotation {
         Rotation(pitch: lhs.pitch + rhs.pitch, yaw: lhs.yaw + rhs.yaw, roll: lhs.roll + rhs.roll)
     }
 }
 
-public struct BallRotationModifier: ViewModifier {
+struct BallRotationModifier: ViewModifier {
     @Binding
     var rotation: Rotation
 
@@ -45,7 +45,7 @@ public struct BallRotationModifier: ViewModifier {
     let interactionScale: CGVector
     let coordinateSpace = ObjectIdentifier(Self.self)
 
-    public static let defaultInteractionScale = CGVector(1 / .pi, 1 / .pi)
+    static let defaultInteractionScale = CGVector(1 / .pi, 1 / .pi)
 
     @State
     var initialGestureRotation: Rotation?
@@ -53,14 +53,14 @@ public struct BallRotationModifier: ViewModifier {
     @State
     var cameraMoved = false
 
-    public init(rotation: Binding<Rotation>, pitchLimit: ClosedRange<Angle> = .degrees(-90) ... .degrees(90), yawLimit: ClosedRange<Angle> = .degrees(-.infinity) ... .degrees(.infinity), interactionScale: CGVector = Self.defaultInteractionScale) {
+    init(rotation: Binding<Rotation>, pitchLimit: ClosedRange<Angle> = .degrees(-90) ... .degrees(90), yawLimit: ClosedRange<Angle> = .degrees(-.infinity) ... .degrees(.infinity), interactionScale: CGVector = Self.defaultInteractionScale) {
         _rotation = rotation
         self.pitchLimit = pitchLimit
         self.yawLimit = yawLimit
         self.interactionScale = interactionScale
     }
 
-    public func body(content: Content) -> some View {
+    func body(content: Content) -> some View {
         content
             .coordinateSpace(name: coordinateSpace)
             .simultaneousGesture(dragGesture())
@@ -100,7 +100,7 @@ public struct BallRotationModifier: ViewModifier {
     }
 }
 
-public extension View {
+extension View {
     func ballRotation(_ rotation: Binding<Rotation>, pitchLimit: ClosedRange<Angle> = .degrees(-90) ... .degrees(90), yawLimit: ClosedRange<Angle> = .degrees(-.infinity) ... .degrees(.infinity), interactionScale: CGVector = BallRotationModifier.defaultInteractionScale) -> some View {
         modifier(BallRotationModifier(rotation: rotation, pitchLimit: pitchLimit, yawLimit: yawLimit, interactionScale: interactionScale))
     }

@@ -11,18 +11,18 @@ import SIMDSupport
 import SwiftUI
 import UniformTypeIdentifiers
 
-public struct Camera {
-    public var transform: Transform
-    public var target: SIMD3<Float> {
+struct Camera {
+    var transform: Transform
+    var target: SIMD3<Float> {
         didSet {
             let position = transform.translation // TODO: Scale?
             transform = Transform(look(at: position + target, from: position, up: [0, 1, 0]))
         }
     }
 
-    public var projection: Projection
+    var projection: Projection
 
-    public init(transform: Transform, target: SIMD3<Float>, projection: Projection) {
+    init(transform: Transform, target: SIMD3<Float>, projection: Projection) {
         self.transform = transform
         self.target = target
         self.projection = projection
@@ -35,7 +35,7 @@ extension Camera: Equatable {
 extension Camera: Sendable {
 }
 
-public extension Camera {
+extension Camera {
     var heading: Angle {
         get {
             let degrees = Angle(from: .zero, to: CGPoint(target.xz)).degrees
@@ -165,7 +165,7 @@ extension Path3D {
     }
 }
 
-public extension SIMD3 where Scalar: BinaryFloatingPoint {
+extension SIMD3 where Scalar: BinaryFloatingPoint {
     init(xy: SIMD2<Scalar>) {
         self = SIMD3(xy[0], xy[1], 0)
     }

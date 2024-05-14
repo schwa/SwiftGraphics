@@ -13,7 +13,7 @@ import SwiftUI
 
 // https://www.youtube.com/watch?v=y4KdxaMC69w&t=1761s
 
-public struct VolumetricView: View, DefaultInitializableView {
+struct VolumetricView: View, DefaultInitializableView {
     @State
     var renderPass = VolumetricRenderPass()
 
@@ -35,10 +35,10 @@ public struct VolumetricView: View, DefaultInitializableView {
     @Environment(\.metalDevice)
     var device
 
-    public init() {
+    init() {
     }
 
-    public var body: some View {
+    var body: some View {
         RendererView(renderPass: $renderPass)
             .ballRotation($rotation, pitchLimit: .degrees(-.infinity) ... .degrees(.infinity), yawLimit: .degrees(-.infinity) ... .degrees(.infinity))
             .onAppear {

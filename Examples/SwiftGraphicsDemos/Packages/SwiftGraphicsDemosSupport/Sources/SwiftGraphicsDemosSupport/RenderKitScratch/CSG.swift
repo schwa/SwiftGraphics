@@ -7,12 +7,12 @@ import Shapes3D
 import simd
 import SIMDSupport
 
-public struct CSG<Vertex> where Vertex: VertexLike {
-    public typealias Polygon = Polygon3D<Vertex>
+struct CSG<Vertex> where Vertex: VertexLike {
+    typealias Polygon = Polygon3D<Vertex>
 
-    public var polygons: [Polygon]
+    var polygons: [Polygon]
 
-    public init(polygons: [Polygon]) {
+    init(polygons: [Polygon]) {
         self.polygons = polygons
     }
 }
@@ -23,7 +23,7 @@ extension CSG {
     }
 }
 
-public extension CSG where Vertex == SimpleVertex {
+extension CSG where Vertex == SimpleVertex {
     // Return a new CSG solid representing space in either this solid or in the
     // solid `csg`. Neither this solid nor the solid `csg` are modified.
     //
@@ -131,22 +131,22 @@ public extension CSG where Vertex == SimpleVertex {
 
 // MARK: -
 
-public class Node<Vertex> where Vertex: VertexLike {
-    public typealias Polygon = Polygon3D<Vertex>
+class Node<Vertex> where Vertex: VertexLike {
+    typealias Polygon = Polygon3D<Vertex>
 
-    public var plane: Plane3D<Float>?
-    public var front: Node?
-    public var back: Node?
-    public var polygons: [Polygon]
+    var plane: Plane3D<Float>?
+    var front: Node?
+    var back: Node?
+    var polygons: [Polygon]
 
-    public init(plane: Plane3D<Float>? = nil, front: Node? = nil, back: Node? = nil, polygons: [Polygon] = []) {
+    init(plane: Plane3D<Float>? = nil, front: Node? = nil, back: Node? = nil, polygons: [Polygon] = []) {
         self.plane = plane
         self.front = front
         self.back = back
         self.polygons = polygons
     }
 
-    public convenience init(polygons: [Polygon]) {
+    convenience init(polygons: [Polygon]) {
         self.init()
         insert(polygons: polygons)
     }
@@ -225,7 +225,7 @@ public class Node<Vertex> where Vertex: VertexLike {
     }
 
     // Remove all polygons in this BSP tree that are inside the other BSP tree.
-    public func clip(to node: Node) {
+    func clip(to node: Node) {
         polygons = node.clip(polygons: polygons)
         if let front {
             front.clip(to: node)

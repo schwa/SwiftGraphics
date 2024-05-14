@@ -4,7 +4,7 @@ import MetalKit
 import RenderKit
 import Shapes3D
 
-public extension SimpleScene {
+extension SimpleScene {
     static func demo(device: MTLDevice) throws -> SimpleScene {
         let allocator = MTKMeshBufferAllocator(device: device)
         let cone = try Cone3D(extent: [0.5, 1, 0.5], segments: [20, 10]).toYAMesh(allocator: allocator, device: device)

@@ -1,18 +1,18 @@
 import MetalKit
 
-public class TextureManager {
-    public struct Options {
-        public var allocateMipMaps = false
-        public var generateMipmaps = false
-        public var SRGB = false
-        public var textureUsage: MTLTextureUsage = .shaderRead
-        public var textureCPUCacheMode: MTLCPUCacheMode = .defaultCache
-        public var textureStorageMode: MTLStorageMode = .shared
-        public var cubeLayout: MTKTextureLoader.CubeLayout?
-        public var origin: MTKTextureLoader.Origin?
-        public var loadAsArray = false
+class TextureManager {
+    struct Options {
+        var allocateMipMaps = false
+        var generateMipmaps = false
+        var SRGB = false
+        var textureUsage: MTLTextureUsage = .shaderRead
+        var textureCPUCacheMode: MTLCPUCacheMode = .defaultCache
+        var textureStorageMode: MTLStorageMode = .shared
+        var cubeLayout: MTKTextureLoader.CubeLayout?
+        var origin: MTKTextureLoader.Origin?
+        var loadAsArray = false
 
-        public init() {
+        init() {
         }
     }
 
@@ -20,13 +20,13 @@ public class TextureManager {
     private let textureLoader: MTKTextureLoader
     private let cache: Cache<AnyHashable, MTLTexture>
 
-    public init(device: MTLDevice) {
+    init(device: MTLDevice) {
         self.device = device
         textureLoader = MTKTextureLoader(device: device)
         cache = Cache()
     }
 
-    public func texture(for resource: some ResourceProtocol, options: Options = Options()) throws -> MTLTexture {
+    func texture(for resource: some ResourceProtocol, options: Options = Options()) throws -> MTLTexture {
         try cache.get(key: resource) {
             try textureLoader.newTexture(resource: resource, options: .init(options))
         }
@@ -34,7 +34,7 @@ public class TextureManager {
 }
 
 extension TextureManager.Options: Hashable {
-    public func hash(into hasher: inout Hasher) {
+    func hash(into hasher: inout Hasher) {
         allocateMipMaps.hash(into: &hasher)
         generateMipmaps.hash(into: &hasher)
         SRGB.hash(into: &hasher)
@@ -66,7 +66,7 @@ extension [MTKTextureLoader.Option: Any] {
     }
 }
 
-public extension MTKTextureLoader {
+extension MTKTextureLoader {
     func newTexture(resource: some ResourceProtocol, options: [Option: Any]? = nil) throws -> MTLTexture {
         if let resource = resource as? BundleResourceReference {
             return try newTexture(resource: resource, options: options)

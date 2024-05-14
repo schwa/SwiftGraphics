@@ -141,7 +141,7 @@ extension Solver {
     }
 }
 
-public struct Particles2View: View, DefaultInitializableView {
+struct Particles2View: View, DefaultInitializableView {
     @State
     var solver = Solver()
 
@@ -151,10 +151,10 @@ public struct Particles2View: View, DefaultInitializableView {
     @State
     var dt: TimeInterval?
 
-    public init() {
+    init() {
     }
 
-    public var body: some View {
+    var body: some View {
         Canvas(rendersAsynchronously: true) { context, _ in
             solver.draw(context: context)
         }

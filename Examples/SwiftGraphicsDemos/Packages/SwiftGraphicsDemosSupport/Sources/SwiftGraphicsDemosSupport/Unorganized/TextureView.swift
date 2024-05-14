@@ -5,7 +5,7 @@ import RenderKit
 import RenderKitShaders
 import SwiftUI
 
-public struct TextureView: View {
+struct TextureView: View {
     struct Bindings {
         var vertexBufferIndex: Int = -1
         var vertexCameraIndex: Int = -1
@@ -32,11 +32,11 @@ public struct TextureView: View {
     @State
     var size: CGSize?
 
-    public init(texture: MTLTexture) {
+    init(texture: MTLTexture) {
         self.texture = texture
     }
 
-    public var body: some View {
+    var body: some View {
         MetalView { device, configuration in
             configuration.colorPixelFormat = .bgra8Unorm_srgb
             configuration.clearColor = MTLClearColor(red: 0, green: 0, blue: 0, alpha: 0)

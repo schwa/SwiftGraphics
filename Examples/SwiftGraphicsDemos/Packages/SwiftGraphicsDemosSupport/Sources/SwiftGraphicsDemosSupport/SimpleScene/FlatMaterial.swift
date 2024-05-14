@@ -7,10 +7,10 @@ import RenderKitShaders
 import SIMDSupport
 import SwiftUI
 
-public struct FlatMaterial: Material {
-    public var label: String?
-    public var baseColorFactor: SIMD4<Float> = .one
-    public var baseColorTexture: Texture?
+struct FlatMaterial: Material {
+    var label: String?
+    var baseColorFactor: SIMD4<Float> = .one
+    var baseColorTexture: Texture?
 }
 
 class FlatMaterialRenderJob: SceneRenderJob {

@@ -1,18 +1,18 @@
 import Foundation
 
 // https://en.wikipedia.org/wiki/Tar_(computing)
-public struct TarArchive {
+struct TarArchive {
     enum Error: Swift.Error {
         case generic(String)
     }
 
-    public struct Header<Buffer> where Buffer: DataProtocol, Buffer.Index == Int {
+    struct Header<Buffer> where Buffer: DataProtocol, Buffer.Index == Int {
         var buffer: Buffer
     }
 
-    public private(set) var records: [String: Header<Data>]
+    private(set) var records: [String: Header<Data>]
 
-    public init(url: URL) throws {
+    init(url: URL) throws {
         let data = try Data(contentsOf: url, options: .mappedIfSafe)
         guard data.count >= 2_048 else {
             throw Error.generic("Tar archives need to be at least 2048 bytes.")
@@ -34,7 +34,7 @@ public struct TarArchive {
 }
 
 extension TarArchive.Header: CustomStringConvertible {
-    public var description: String {
+    var description: String {
         do {
             return try "Header(buffer: \(buffer.startIndex)..<\(buffer.endIndex), filename: \(filename), filesize: \(fileSize)"
         }
@@ -44,7 +44,7 @@ extension TarArchive.Header: CustomStringConvertible {
     }
 }
 
-public extension TarArchive.Header {
+extension TarArchive.Header {
     var filename: String {
         get throws {
             let bytes = buffer.sub(offset: 0, count: 100)

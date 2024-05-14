@@ -2,9 +2,9 @@ import simd
 import SwiftUI
 
 struct MyGradient {
-    public struct Stop {
-        public var color: SIMD4<Float>
-        public var location: Float
+    struct Stop {
+        var color: SIMD4<Float>
+        var location: Float
         var controls: (Float, Float, Float) = (0, 0, 0)
     }
 

@@ -1,26 +1,26 @@
 import Metal
 import RenderKit
 
-public final class SimpleJobsBasedRenderPass: RenderPass {
-    public var jobs: [any RenderJob]
+final class SimpleJobsBasedRenderPass: RenderPass {
+    var jobs: [any RenderJob]
 
-    public init(jobs: [any RenderJob]) {
+    init(jobs: [any RenderJob]) {
         self.jobs = jobs
     }
 
-    public func setup(device: MTLDevice, configuration: inout some MetalConfiguration) throws {
+    func setup(device: MTLDevice, configuration: inout some MetalConfiguration) throws {
         try jobs.forEach { job in
             try job.setup(device: device, configuration: &configuration)
         }
     }
 
-    public func drawableSizeWillChange(device: MTLDevice, size: CGSize) throws {
+    func drawableSizeWillChange(device: MTLDevice, size: CGSize) throws {
         try jobs.forEach { job in
             try job.drawableSizeWillChange(device: device, size: size)
         }
     }
 
-    public func draw(device: MTLDevice, size: CGSize, renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) throws {
+    func draw(device: MTLDevice, size: CGSize, renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) throws {
         try commandBuffer.withRenderCommandEncoder(descriptor: renderPassDescriptor) { encoder in
             encoder.label = "SimpleJobsBasedRenderPass-RenderCommandEncoder"
             try jobs.forEach { job in

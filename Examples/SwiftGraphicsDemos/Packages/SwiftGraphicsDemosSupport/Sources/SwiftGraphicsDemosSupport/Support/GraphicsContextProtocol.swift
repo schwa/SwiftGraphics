@@ -1,10 +1,10 @@
 import SwiftUI
 
-public protocol ShadingProtocol {
+protocol ShadingProtocol {
     static func color(_ color: Color) -> Self
 }
 
-public protocol GraphicsContextProtocol {
+protocol GraphicsContextProtocol {
     associatedtype Shading: ShadingProtocol
 
     typealias BlendMode = GraphicsContext.BlendMode

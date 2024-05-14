@@ -118,7 +118,7 @@ extension Spline.Knot {
 }
 
 extension Spline: PathConvertible {
-    public var path: Path {
+    var path: Path {
         Path(paths: curves.map(\.path))
     }
 }

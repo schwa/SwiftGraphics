@@ -4,16 +4,16 @@ import Shapes3D
 import simd
 import SwiftUI
 
-public struct HalfEdgeView: View, DefaultInitializableView {
+struct HalfEdgeView: View, DefaultInitializableView {
     var mesh: HalfEdgeMesh = .demo()
 
     @State
     var camera = Camera(transform: .translation([0, 0, -5]), target: [0, 0, 0], projection: .perspective(.init(fovy: .degrees(90), zClip: 0.01 ... 1_000.0)))
 
-    public init() {
+    init() {
     }
 
-    public var body: some View {
+    var body: some View {
         GeometryReader { proxy in
             Canvas { context, size in
                 var projection = Projection3D(size: size)

@@ -10,14 +10,14 @@ import simd
 // https://www.youtube.com/watch?v=aVwxzDHniEw
 // https://www.youtube.com/watch?v=jvPPXbo87ds
 
-public struct BeziersView: View, DefaultInitializableView {
+struct BeziersView: View, DefaultInitializableView {
     @State
     var points: [CGPoint] = [[70, 250], [20, 110], [220, 60], [270, 200]]
 
-    public init() {
+    init() {
     }
 
-    public var body: some View {
+    var body: some View {
         ZStack {
             LegacyPathEditor(points: $points)
             let curve = CubicBezierCurve(controlPoints: points)

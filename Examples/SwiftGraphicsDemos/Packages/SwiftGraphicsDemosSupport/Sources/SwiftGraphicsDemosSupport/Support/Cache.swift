@@ -5,15 +5,15 @@ import os
     import UIKit
 #endif
 
-public class Cache<Key, Value> where Key: Hashable {
-    public let label: String?
+class Cache<Key, Value> where Key: Hashable {
+    let label: String?
 
     var lock = OSAllocatedUnfairLock()
     var storage = [Key: Value]()
 //    var task: Task<(), Never>?
     var logger: Logger?
 
-    public init(label: String? = nil) {
+    init(label: String? = nil) {
         self.label = label
 //        let q = DispatchQueue.init(label: "test")
 //        q.async {
@@ -44,13 +44,13 @@ public class Cache<Key, Value> where Key: Hashable {
 //        #endif
     }
 
-    public func get(key: Key) -> Value? {
+    func get(key: Key) -> Value? {
         lock.withUnsafeLock {
             storage[key]
         }
     }
 
-    public func get(key: Key, default: () throws -> Value) rethrows -> Value {
+    func get(key: Key, default: () throws -> Value) rethrows -> Value {
         try lock.withUnsafeLock {
             if let value = storage[key] {
                 return value
@@ -65,7 +65,7 @@ public class Cache<Key, Value> where Key: Hashable {
     }
 
     @discardableResult
-    public func insert(key: Key, value: Value) -> Value? {
+    func insert(key: Key, value: Value) -> Value? {
         lock.withUnsafeLock {
             let old = storage[key]
             storage[key] = value
@@ -74,7 +74,7 @@ public class Cache<Key, Value> where Key: Hashable {
     }
 
     @discardableResult
-    public func remove(key: Key) -> Value? {
+    func remove(key: Key) -> Value? {
         lock.withUnsafeLock {
             let old = storage[key]
             storage[key] = nil
@@ -82,13 +82,13 @@ public class Cache<Key, Value> where Key: Hashable {
         }
     }
 
-    public func contains(key: Key) -> Bool {
+    func contains(key: Key) -> Bool {
         lock.withUnsafeLock {
             storage[key] != nil
         }
     }
 
-    public var allKeys: [Key] {
+    var allKeys: [Key] {
         lock.withUnsafeLock {
             Array(storage.keys)
         }
@@ -97,7 +97,7 @@ public class Cache<Key, Value> where Key: Hashable {
 
 // MARK: -
 
-public extension Cache {
+extension Cache {
     func get(key: Key, default: () async throws -> Value) async rethrows -> Value {
         let value = lock.withUnsafeLock {
             storage[key]
@@ -119,7 +119,7 @@ public extension Cache {
 
 // MARK: -
 
-public extension Cache where Key == String {
+extension Cache where Key == String {
     func remove(matching pattern: Regex<String>) throws {
         try lock.withUnsafeLock {
             for key in storage.keys {
@@ -131,7 +131,7 @@ public extension Cache where Key == String {
     }
 }
 
-public extension Cache where Value == Any {
+extension Cache where Value == Any {
     func get<T>(key: Key, of: T.Type, default: () throws -> T) rethrows -> T {
         try get(key: key, default: `default`) as! T
     }
@@ -150,30 +150,30 @@ extension OSAllocatedUnfairLock where State == () {
 // MARK: -
 
 // TODO: not sure if this is a good idea but idea is for factory functions to return Cachable objects so that the key is separate from the value. Useful for returning objects with no key as part of the value (e.g. raw Data, Meshes etc).
-public struct Cachable<Key, Value> where Key: Hashable & Sendable {
-    public var key: Key
-    public var value: Value
+struct Cachable<Key, Value> where Key: Hashable & Sendable {
+    var key: Key
+    var value: Value
 
-    public init(key: Key, value: Value) {
+    init(key: Key, value: Value) {
         self.key = key
         self.value = value
     }
 }
 
 extension Cachable: Identifiable {
-    public var id: Key {
+    var id: Key {
         key
     }
 }
 
-public extension Cache {
+extension Cache {
     @discardableResult
     func insert(_ cachable: Cachable<Key, Value>) -> Value? {
         insert(key: cachable.key, value: cachable.value)
     }
 }
 
-public extension Cache where Value == Any {
+extension Cache where Value == Any {
     @discardableResult
     func insert<V>(_ cachable: Cachable<Key, V>) -> V? {
         insert(key: cachable.key, value: cachable.value) as? V

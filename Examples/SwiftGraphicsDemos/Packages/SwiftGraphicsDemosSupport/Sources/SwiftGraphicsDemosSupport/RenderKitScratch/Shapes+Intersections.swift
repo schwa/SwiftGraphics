@@ -1,7 +1,7 @@
 import Shapes3D
 import simd
 
-public extension LineSegment3D {
+extension LineSegment3D {
     func intersection(with other: LineSegment3D) -> LineSegment3D? {
         // https://stackoverflow.com/a/565282/273118
         let p = start
@@ -25,7 +25,7 @@ public extension LineSegment3D {
     }
 }
 
-public extension Line3D {
+extension Line3D {
     enum LineSphereIntersection {
         case once(SIMD3<Float>)
         case twice(SIMD3<Float>, SIMD3<Float>)

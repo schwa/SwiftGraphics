@@ -1,9 +1,9 @@
 import Foundation
 import SwiftUI
 
-public protocol DefaultInitializable {
+protocol DefaultInitializable {
     init()
 }
 
-public protocol DefaultInitializableView: DefaultInitializable, View {
+protocol DefaultInitializableView: DefaultInitializable, View {
 }

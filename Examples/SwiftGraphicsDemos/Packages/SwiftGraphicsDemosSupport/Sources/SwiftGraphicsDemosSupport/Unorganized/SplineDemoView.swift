@@ -2,7 +2,7 @@ import CoreGraphicsSupport
 import Shapes2D
 import SwiftUI
 
-public struct SplineDemoView: View, DefaultInitializableView {
+struct SplineDemoView: View, DefaultInitializableView {
     @State
     var points: [CGPoint] = []
 
@@ -20,10 +20,10 @@ public struct SplineDemoView: View, DefaultInitializableView {
 
     var coordinateSpace = CoordinateSpace.named("canvas")
 
-    public init() {
+    init() {
     }
 
-    public var body: some View {
+    var body: some View {
         GeometryReader { proxy in
             ZStack {
                 Color.white

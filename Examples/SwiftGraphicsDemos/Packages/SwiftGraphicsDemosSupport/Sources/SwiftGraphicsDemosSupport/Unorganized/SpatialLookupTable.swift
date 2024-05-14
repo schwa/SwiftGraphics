@@ -1,9 +1,9 @@
 import simd
 
-public struct SpatialLookupTable<Positions> where Positions: Collection, Positions.Element == SIMD2<Float>, Positions.Index == Int {
-    public private(set) var size: SIMD2<Float>
-    public private(set) var radius: Float = 0
-    public private(set) var points: Positions!
+struct SpatialLookupTable<Positions> where Positions: Collection, Positions.Element == SIMD2<Float>, Positions.Index == Int {
+    private(set) var size: SIMD2<Float>
+    private(set) var radius: Float = 0
+    private(set) var points: Positions!
     private var spatialLookup: [(index: Int, cellKey: Int)] = []
     private var startIndices: [Int] = []
     private let cellOffsets: [SIMD2<Int>] = [
@@ -18,11 +18,11 @@ public struct SpatialLookupTable<Positions> where Positions: Collection, Positio
         [1, 1],
     ]
 
-    public init(size: SIMD2<Float>) {
+    init(size: SIMD2<Float>) {
         self.size = size
     }
 
-    public mutating func update(points: Positions, radius: Float) {
+    mutating func update(points: Positions, radius: Float) {
         self.points = points
         self.radius = radius
         // TODO: Combine this with later loop
@@ -63,7 +63,7 @@ public struct SpatialLookupTable<Positions> where Positions: Collection, Positio
         return n % spatialLookup.count
     }
 
-    public func indicesNear(point: SIMD2<Float>, hits: (Int) -> Void) {
+    func indicesNear(point: SIMD2<Float>, hits: (Int) -> Void) {
         if radius == 0 {
             return
         }
@@ -101,7 +101,7 @@ public struct SpatialLookupTable<Positions> where Positions: Collection, Positio
     }
 }
 
-public extension SpatialLookupTable {
+extension SpatialLookupTable {
     func indicesNear(point: SIMD2<Float>) -> Set<Int> {
         var indices: Set<Int> = []
         indicesNear(point: point, hits: {

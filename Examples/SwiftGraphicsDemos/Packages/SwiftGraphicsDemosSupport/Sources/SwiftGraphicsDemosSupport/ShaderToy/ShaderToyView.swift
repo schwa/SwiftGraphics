@@ -4,14 +4,14 @@
 // import simd
 // // import MetalSupport
 //
-// public struct ShaderToyView: View {
+// struct ShaderToyView: View {
 //    @State
 //    var offscreen = ShaderToyRenderPass()
 //
-//    public init() {
+//    init() {
 //    }
 //
-//    public var body: some View {
+//    var body: some View {
 //        MetalView { configuration in
 //            configuration.preferredFramesPerSecond = 120
 //            configuration.colorPixelFormat = .bgra10_xr_srgb

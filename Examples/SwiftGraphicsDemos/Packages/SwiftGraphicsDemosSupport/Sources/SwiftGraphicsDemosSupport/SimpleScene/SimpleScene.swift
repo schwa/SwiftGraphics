@@ -8,14 +8,14 @@ import simd
 import SIMDSupport
 import SwiftUI
 
-public struct SimpleScene {
-    public var camera: Camera
-    public var light: Light
-    public var ambientLightColor: SIMD3<Float>
-    public var models: [Model]
-    public var panorama: Panorama?
+struct SimpleScene {
+    var camera: Camera
+    var light: Light
+    var ambientLightColor: SIMD3<Float>
+    var models: [Model]
+    var panorama: Panorama?
 
-    public init(camera: Camera, light: Light, ambientLightColor: SIMD3<Float>, models: [Model], panorama: Panorama? = nil) {
+    init(camera: Camera, light: Light, ambientLightColor: SIMD3<Float>, models: [Model], panorama: Panorama? = nil) {
         self.camera = camera
         self.light = light
         self.ambientLightColor = ambientLightColor
@@ -26,17 +26,17 @@ public struct SimpleScene {
 
 // MARK: -
 
-// public struct Camera {
-//    public var transform: Transform
-//    public var target: SIMD3<Float> {
+// struct Camera {
+//    var transform: Transform
+//    var target: SIMD3<Float> {
 //        didSet {
 //            let position = transform.translation // TODO: Scale?
 //            transform = Transform(look(at: position + target, from: position, up: [0, 1, 0]))
 //        }
 //    }
-//    public var projection: Projection
+//    var projection: Projection
 //
-//    public init(transform: Transform, target: SIMD3<Float>, projection: Projection) {
+//    init(transform: Transform, target: SIMD3<Float>, projection: Projection) {
 //        self.transform = transform
 //        self.target = target
 //        self.projection = projection
@@ -49,7 +49,7 @@ public struct SimpleScene {
 // extension Camera: Sendable {
 // }
 //
-// public extension Camera {
+// extension Camera {
 //    var heading: Angle {
 //        get {
 //            Angle(from: .zero, to: CGPoint(target.xz))
@@ -62,12 +62,12 @@ public struct SimpleScene {
 
 // MARK: -
 
-public struct Light {
-    public var position: Transform
-    public var color: SIMD3<Float>
-    public var power: Float
+struct Light {
+    var position: Transform
+    var color: SIMD3<Float>
+    var power: Float
 
-    public init(position: Transform, color: SIMD3<Float>, power: Float) {
+    init(position: Transform, color: SIMD3<Float>, power: Float) {
         self.position = position
         self.color = color
         self.power = power
@@ -82,24 +82,24 @@ extension Light: Sendable {
 
 // MARK: -
 
-public struct Model: Identifiable {
-    public var id = LOLID2(prefix: "Model")
-    public var transform: Transform
-    public var material: any Material
-    public var mesh: YAMesh
+struct Model: Identifiable {
+    var id = LOLID2(prefix: "Model")
+    var transform: Transform
+    var material: any Material
+    var mesh: YAMesh
 
-    public init(transform: Transform, material: any Material, mesh: YAMesh) {
+    init(transform: Transform, material: any Material, mesh: YAMesh) {
         self.transform = transform
         self.material = material
         self.mesh = mesh
     }
 }
 
-public struct Panorama: Identifiable {
-    public var id = LOLID2(prefix: "Model")
-    public var tilesSize: SIMD2<UInt16>
-    public var tileTextures: [(MTKTextureLoader) throws -> MTLTexture]
-    public var mesh: (MTLDevice) throws -> YAMesh
+struct Panorama: Identifiable {
+    var id = LOLID2(prefix: "Model")
+    var tilesSize: SIMD2<UInt16>
+    var tileTextures: [(MTKTextureLoader) throws -> MTLTexture]
+    var mesh: (MTLDevice) throws -> YAMesh
 
     init(tilesSize: SIMD2<UInt16>, tileTextures: [(MTKTextureLoader) throws -> MTLTexture], mesh: @escaping (MTLDevice) throws -> YAMesh) {
         assert(tileTextures.count == Int(tilesSize.x) * Int(tilesSize.y))
@@ -109,13 +109,13 @@ public struct Panorama: Identifiable {
     }
 }
 
-public protocol Material: Labeled {
+protocol Material: Labeled {
 }
 
-public struct BlinnPhongMaterial: Material {
-    public var label: String?
-    public var baseColorFactor: SIMD4<Float> = .one
-    public var baseColorTexture: Texture?
+struct BlinnPhongMaterial: Material {
+    var label: String?
+    var baseColorFactor: SIMD4<Float> = .one
+    var baseColorTexture: Texture?
 }
 
 // struct PBRMaterial: Material {
@@ -136,12 +136,12 @@ public struct BlinnPhongMaterial: Material {
 //    var fragmentShader: String
 // }
 
-public struct Texture: Labeled {
-    public var label: String?
-    public var resource: any ResourceProtocol
-    public var options: TextureManager.Options
+struct Texture: Labeled {
+    var label: String?
+    var resource: any ResourceProtocol
+    var options: TextureManager.Options
 
-    public init(label: String? = nil, resource: any ResourceProtocol, options: TextureManager.Options = .init()) {
+    init(label: String? = nil, resource: any ResourceProtocol, options: TextureManager.Options = .init()) {
         self.label = label
         self.resource = resource
         self.options = options

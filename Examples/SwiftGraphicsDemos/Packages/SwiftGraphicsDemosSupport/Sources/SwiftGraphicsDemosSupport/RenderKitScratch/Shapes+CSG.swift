@@ -4,18 +4,18 @@ import Shapes3D
 import SIMDSupport
 import SwiftUI
 
-public protocol PolygonConvertable {
+protocol PolygonConvertable {
     func toPolygons() -> [Polygon3D<SimpleVertex>]
 }
 
-public extension PolygonConvertable {
+extension PolygonConvertable {
     func toCSG() -> CSG<SimpleVertex> {
         CSG(polygons: toPolygons())
     }
 }
 
 extension Box3D: PolygonConvertable where Vertex: PointLike3, Vertex.Scalar == Float {
-    public func toPolygons() -> [Polygon3D<SimpleVertex>] {
+    func toPolygons() -> [Polygon3D<SimpleVertex>] {
         let polygons = [
             Polygon3D(vertices: [
                 SimpleVertex(position: SIMD3<Float>(min.x, min.y, min.z), normal: .init(x: -1, y: 0, z: 0)),
@@ -60,7 +60,7 @@ extension Box3D: PolygonConvertable where Vertex: PointLike3, Vertex.Scalar == F
 }
 
 extension Sphere3D: PolygonConvertable {
-    public func toPolygons() -> [Polygon3D<SimpleVertex>] {
+    func toPolygons() -> [Polygon3D<SimpleVertex>] {
         let slices = 12
         let stacks = 12
         var polygons: [Polygon3D<SimpleVertex>] = []
@@ -91,7 +91,7 @@ extension Triangle3D {
     }
 }
 
-public extension CSG where Vertex == SimpleVertex {
+extension CSG where Vertex == SimpleVertex {
     func toPLY() -> String {
         let vertices = polygons.flatMap(\.vertices)
         let faces: [[Int]] = polygons.reduce(into: []) { partialResult, polygon in
@@ -128,7 +128,7 @@ public extension CSG where Vertex == SimpleVertex {
     }
 }
 
-public extension CGRect {
+extension CGRect {
     func toCSG() -> CSG<SimpleVertex> {
         let vertices = [minXMinY, maxXMinY, maxXMaxY, minXMaxY]
             .map {

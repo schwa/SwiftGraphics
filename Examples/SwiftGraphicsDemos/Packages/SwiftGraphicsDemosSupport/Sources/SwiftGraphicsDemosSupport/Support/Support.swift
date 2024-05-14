@@ -272,23 +272,23 @@ extension Composite: Hashable where Root: Hashable, Stem: Hashable {
 
 // MARK: -
 
-public struct EmptyShape: Shape {
-    public init() {
+struct EmptyShape: Shape {
+    init() {
     }
 
-    public func path(in rect: CGRect) -> Path {
+    func path(in rect: CGRect) -> Path {
         Path()
     }
 }
 
 // MARK: -
 
-public struct Identified<ID, Content>: Identifiable where ID: Hashable {
-    public var id: ID
-    public var content: Content
+struct Identified<ID, Content>: Identifiable where ID: Hashable {
+    var id: ID
+    var content: Content
 }
 
-public extension Identified where ID == UUID {
+extension Identified where ID == UUID {
     init(_ content: Content) {
         id = .init()
         self.content = content
@@ -299,7 +299,7 @@ extension Identified: Equatable where Content: Equatable {
 }
 
 extension Identified: Comparable where Content: Comparable {
-    public static func < (lhs: Identified<ID, Content>, rhs: Identified<ID, Content>) -> Bool {
+    static func < (lhs: Identified<ID, Content>, rhs: Identified<ID, Content>) -> Bool {
         lhs.content < rhs.content
     }
 }
@@ -310,7 +310,7 @@ extension Identified: Encodable where ID: Encodable, Content: Encodable {
 extension Identified: Decodable where ID: Decodable, Content: Decodable {
 }
 
-public extension Array {
+extension Array {
     func identifiedByIndex() -> [Identified<Int, Element>] {
         enumerated().map {
             Identified(id: $0.offset, content: $0.element)
@@ -320,14 +320,14 @@ public extension Array {
 
 // MARK: -
 
-public struct JSONCodingTransferable<Element>: Transferable where Element: Codable {
+struct JSONCodingTransferable<Element>: Transferable where Element: Codable {
     let element: Element
 
-    public init(element: Element) {
+    init(element: Element) {
         self.element = element
     }
 
-    public static var transferRepresentation: some TransferRepresentation {
+    static var transferRepresentation: some TransferRepresentation {
         DataRepresentation(contentType: .json) { layer in
             try JSONEncoder().encode(layer.element)
         } importing: { data in
@@ -339,33 +339,33 @@ public struct JSONCodingTransferable<Element>: Transferable where Element: Codab
 
 // MARK: -
 
-public struct RelativeTimelineView<Schedule, Content>: View where Schedule: TimelineSchedule, Content: View {
+struct RelativeTimelineView<Schedule, Content>: View where Schedule: TimelineSchedule, Content: View {
     let schedule: Schedule
     let content: (TimelineViewDefaultContext, TimeInterval) -> Content
 
     @State
     var start: Date = .init()
 
-    public init(schedule: Schedule, @ViewBuilder content: @escaping (TimelineViewDefaultContext, TimeInterval) -> Content, start: Date = Date()) {
+    init(schedule: Schedule, @ViewBuilder content: @escaping (TimelineViewDefaultContext, TimeInterval) -> Content, start: Date = Date()) {
         self.schedule = schedule
         self.content = content
         self.start = start
     }
 
-    public var body: some View {
+    var body: some View {
         TimelineView(schedule) { context in content(context, Date().timeIntervalSince(start)) }
     }
 }
 
 // MARK: -
 
-public extension GraphicsContext {
+extension GraphicsContext {
     func drawDot(at position: CGPoint) {
         fill(Path.circle(center: position, radius: 2), with: .color(.black))
     }
 }
 
-public extension Array {
+extension Array {
     func get(index: Index) -> Element? {
         if (startIndex ..< endIndex).contains(index) {
             self[index]
@@ -376,7 +376,7 @@ public extension Array {
     }
 }
 
-public extension Sequence {
+extension Sequence {
     // TODO: Deprecate do not use in production.
     var tuple: (Element, Element) {
         let array = Array(self)
@@ -391,17 +391,17 @@ public extension Sequence {
     }
 }
 
-public struct PeekingWindowIterator<I>: IteratorProtocol where I: IteratorProtocol {
-    public typealias Element = (previous: I.Element?, current: I.Element, next: I.Element?)
+struct PeekingWindowIterator<I>: IteratorProtocol where I: IteratorProtocol {
+    typealias Element = (previous: I.Element?, current: I.Element, next: I.Element?)
 
     var iterator: I
     var element: Element?
 
-    public init(iterator: I) {
+    init(iterator: I) {
         self.iterator = iterator
     }
 
-    public mutating func next() -> Element? {
+    mutating func next() -> Element? {
         if element == nil {
             guard let current = iterator.next() else {
                 return nil
@@ -423,13 +423,13 @@ public struct PeekingWindowIterator<I>: IteratorProtocol where I: IteratorProtoc
     }
 }
 
-public extension Sequence {
+extension Sequence {
     func peekingWindow() -> PeekingWindowIterator<Iterator> {
         PeekingWindowIterator(iterator: makeIterator())
     }
 }
 
-public extension GraphicsContext {
+extension GraphicsContext {
     mutating func translateBy(_ size: CGSize) {
         translateBy(x: size.width, y: size.height)
     }
@@ -663,7 +663,7 @@ struct EmptyViewModifier: ViewModifier {
     }
 }
 
-public extension Array where Element: Identifiable {
+extension Array where Element: Identifiable {
     @discardableResult
     mutating func remove(identifiedBy id: Element.ID) -> Element {
         if let index = firstIndex(identifiedBy: id) {
