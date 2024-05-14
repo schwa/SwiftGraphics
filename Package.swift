@@ -1,8 +1,6 @@
-// swift-tools-version: 5.9
+// swift-tools-version: 5.10
 
 import PackageDescription
-
-// TODO: This is a mess :-)
 
 let package = Package(
     name: "SwiftGraphics",
