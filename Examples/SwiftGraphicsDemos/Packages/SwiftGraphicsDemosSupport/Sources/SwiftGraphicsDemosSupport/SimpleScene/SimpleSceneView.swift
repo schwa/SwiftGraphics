@@ -73,17 +73,12 @@ struct SimpleSceneView: View, DefaultInitializableView {
     var body: some View {
         CoreSimpleSceneView(scene: $scene)
         #if os(macOS)
-            .firstPersonInteractive(camera: $scene.camera)
-            .displayLink(DisplayLink2())
-            .showFrameEditor()
+        .firstPersonInteractive(camera: $scene.camera)
+        .displayLink(DisplayLink2())
+        .showFrameEditor()
         #endif
-            .overlay(alignment: .bottomTrailing, content: mapView)
-            .inspector(isPresented: $isInspectorPresented, content: inspector)
-            .toolbar {
-                ToolbarItem(placement: .secondaryAction) {
-                    snapshot()
-                }
-            }
+        .overlay(alignment: .bottomTrailing, content: mapView)
+        .inspector(isPresented: $isInspectorPresented, content: inspector)
     }
 
     func mapView() -> some View {
@@ -103,23 +98,6 @@ struct SimpleSceneView: View, DefaultInitializableView {
                     }
                 }
             }
-    }
-
-    func snapshot() -> some View {
-        ValueView(value: false) { isPresentedBinding in
-            Button(title: "Snapshot", systemImage: "camera") {
-                let scene = scene
-                Task {
-                    fatalError()
-//                    let renderPass = SimpleJobsBasedRenderPass<OffscreenRenderPassConfiguration>(scene: scene)
-//                    self.exportImage = Image(cgImage: try await renderPass.snapshot(device: device, size: [1024, 768]))
-                }
-            }
-            .fileExporter(isPresented: isPresentedBinding, item: exportImage, contentTypes: [.png, .jpeg]) { _ in
-                exportImage = nil
-            }
-            .fileExporterFilenameLabel("Snapshot")
-        }
     }
 }
 

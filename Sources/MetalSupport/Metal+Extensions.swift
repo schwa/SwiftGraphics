@@ -133,7 +133,7 @@ public extension MTLIndexType {
         case .uint32:
             MemoryLayout<UInt32>.size
         default:
-            fatal(error: MetalSupportError.illegalValue)
+            fatalError(MetalSupportError.illegalValue)
         }
     }
 }
@@ -205,7 +205,7 @@ public extension MTLPrimitiveType {
         case .triangle:
             3
         default:
-            fatal(error: MetalSupportError.illegalValue)
+            fatalError(MetalSupportError.illegalValue)
         }
     }
 }

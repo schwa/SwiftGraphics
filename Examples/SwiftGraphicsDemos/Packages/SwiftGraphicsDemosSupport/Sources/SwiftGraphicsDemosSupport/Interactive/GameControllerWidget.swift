@@ -3,7 +3,7 @@ import GameController
 import SwiftUI
 
 // Working for C++ Interop caused problem. https://github.com/apple/swift/issues/69914
-extension Notification.Name {
+public extension Notification.Name {
     static let GCControllerDidConnect = Self(rawValue: "GCControllerDidConnectNotification")
     static let GCControllerDidDisconnect = Self(rawValue: "GCControllerDidDisconnectNotification")
     static let GCControllerDidBecomeCurrent = Self(rawValue: "GCControllerDidBecomeCurrentNotification")

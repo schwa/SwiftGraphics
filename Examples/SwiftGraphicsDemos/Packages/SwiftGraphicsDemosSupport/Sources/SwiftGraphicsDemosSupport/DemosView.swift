@@ -17,6 +17,7 @@ struct DemosView: View {
         CSGDemoView.self,
         SimulationView.self,
         Particles2View.self,
+        PixelFormatsView.self,
     ]
 
     var body: some View {

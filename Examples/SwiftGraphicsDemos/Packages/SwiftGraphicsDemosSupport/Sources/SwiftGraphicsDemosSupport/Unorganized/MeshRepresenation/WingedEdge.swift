@@ -55,7 +55,6 @@ extension WingedEdgeCollection {
     mutating func add(face positions: [SIMD3<Float>]) {
         let nextFaceIndex = faces.count
         let nextEdgeIndex = edges.count
-        let nextVertexIndex = vertices.count
         // Create vertices
         let vertexIndices = positions.map { position in
             vertices.append(.init(position: position, edge: nextEdgeIndex))

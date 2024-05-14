@@ -62,7 +62,7 @@ class MovementController: @unchecked Sendable {
     @ObservationIgnored
     let channel = AsyncChannel<Event>()
 
-//    var lastMouseUpdate: TimeInterval = 0
+    //    var lastMouseUpdate: TimeInterval = 0
 
     func disableUIKeys() {
 #if os(macOS)
@@ -109,8 +109,8 @@ class MovementController: @unchecked Sendable {
                     logger?.debug("Ignoring event, not focused.")
                     return
                 }
-//                strongSelf.mouseMovement += SIMD2(x, y)
-//                Counters.shared.increment(counter: "Mouse (Delta)")
+                //                strongSelf.mouseMovement += SIMD2(x, y)
+                //                Counters.shared.increment(counter: "Mouse (Delta)")
                 Task {
                     Counters.shared.increment(counter: "Mouse Moved")
                     await self.channel.send(.rotation(x))
@@ -138,35 +138,28 @@ class MovementController: @unchecked Sendable {
             await withDiscardingTaskGroup { [weak self] group in
                 let notificationCenter = NotificationCenter.default
                 group.addTask { [weak self] in
-                    // TODO: FIXME
-
-                    //                    for await controller in notificationCenter.notifications(named: .GCControllerDidBecomeCurrent).compactMap(\.object).cast(to: GCController.self) {
-//                        self?.controller = controller
-//                    }
+                    for await controller in notificationCenter.notifications(named: .GCControllerDidBecomeCurrent).compactMap(\.object).cast(to: GCController.self) {
+                        self?.controller = controller
+                    }
                 }
                 group.addTask { [weak self] in
-                    // TODO: FIXME
-//                    for await controller in notificationCenter.notifications(named: .GCControllerDidDisconnect).compactMap(\.object).cast(to: GCController.self) {
-//                        if self?.controller === controller {
-//                            self?.controller = nil
-//                        }
-//                    }
+                    for await controller in notificationCenter.notifications(named: .GCControllerDidDisconnect).compactMap(\.object).cast(to: GCController.self) {
+                        if self?.controller === controller {
+                            self?.controller = nil
+                        }
+                    }
                 }
                 group.addTask { [weak self] in
-                    // TODO: FIXME
-
-                    //                    for await mouse in notificationCenter.notifications(named: .GCMouseDidConnect).compactMap(\.object).cast(to: GCMouse.self) {
-//                        self?.mouse = mouse
-//                    }
+                    for await mouse in notificationCenter.notifications(named: .GCMouseDidConnect).compactMap(\.object).cast(to: GCMouse.self) {
+                        self?.mouse = mouse
+                    }
                 }
                 group.addTask { [weak self] in
-                    // TODO: FIXME
-
-                    //                    for await mouse in notificationCenter.notifications(named: .GCMouseDidDisconnect).compactMap(\.object).cast(to: GCMouse.self) {
-//                        if self?.mouse === mouse {
-//                            self?.mouse = nil
-//                        }
-//                    }
+                    for await mouse in notificationCenter.notifications(named: .GCMouseDidDisconnect).compactMap(\.object).cast(to: GCMouse.self) {
+                        if self?.mouse === mouse {
+                            self?.mouse = nil
+                        }
+                    }
                 }
             }
         }
@@ -196,8 +189,8 @@ class MovementController: @unchecked Sendable {
             // TODO: FIXME
 
             //            for await _ in NotificationCenter.default.notifications(named: .GCKeyboardDidConnect) {
-//                break
-//            }
+            //                break
+            //            }
             guard let keyboard = GCKeyboard.coalesced, let keyboardInput = keyboard.keyboardInput else {
                 fatalError()
             }

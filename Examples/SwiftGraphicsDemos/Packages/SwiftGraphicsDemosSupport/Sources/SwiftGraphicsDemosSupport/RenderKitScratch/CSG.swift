@@ -321,6 +321,7 @@ extension Polygon3D where Vertex == SimpleVertex {
                     b.append(vi)
                 }
                 fatalError()
+                // TODO: FIXME
 //                if ti | tj == .spanning {
 //                    let t = (splitter.w - splitter.normal.dot(vi.position)) / splitter.normal.dot(vj.position - vi.position)
 //                    let v = vi.interpolate(vj, t)

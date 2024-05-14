@@ -55,11 +55,11 @@ struct ProjectionInspector: View {
         }
         switch projection {
         case .matrix(let projection):
-            let projection = Binding {
-                projection
-            } set: { newValue in
-                self.projection = .matrix(newValue)
-            }
+//            let projection = Binding {
+//                projection
+//            } set: { newValue in
+//                self.projection = .matrix(newValue)
+//            }
             Text("UNIMPLEMENTED")
         case .perspective(let projection):
             let projection = Binding {

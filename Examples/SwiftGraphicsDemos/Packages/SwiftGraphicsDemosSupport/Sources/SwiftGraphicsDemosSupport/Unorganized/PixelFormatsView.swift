@@ -4,7 +4,7 @@ import MetalSupport
 import RenderKit
 import SwiftUI
 
-struct PixelFormatsView: View {
+struct PixelFormatsView: View, DefaultInitializableView {
     @Environment(\.metalDevice)
     var device
 
@@ -17,22 +17,22 @@ struct PixelFormatsView: View {
     var body: some View {
         List {
             ForEach(MTLPixelFormat.allCases, id: \.self) { pixelFormat in
-                Text("\(pixelFormat.description)")
+                Text("\(pixelFormat.description) \(convertedTextures[pixelFormat] != nil)")
+
             }
         }
         .task {
             let device = MTLCreateSystemDefaultDevice()!
             let loader = MTKTextureLoader(device: device)
-            let texture = try! await loader.newTexture(name: "seamless-foods-mixed-0020", scaleFactor: 1.0, bundle: .main)
+            let texture = try! await loader.newTexture(name: "seamless-foods-mixed-0020", scaleFactor: 1.0, bundle: .module)
             await MainActor.run {
                 self.texture = texture
             }
             for pixelFormat in MTLPixelFormat.allCases {
                 guard let converted = texture.converted(to: pixelFormat) else {
-//                    print("Failed to convert: \(pixelFormat)")
                     continue
                 }
-                print("**** Success: (\(pixelFormat))")
+                convertedTextures[pixelFormat] = converted
             }
         }
     }
@@ -48,14 +48,10 @@ extension MTLTexture {
             print("Skipping. Destination pixel format invalid.")
             return nil
         }
-
-        let x = PixelFormatMetadata(parsing: pixelFormat.description)
-
         guard let metadata = self.pixelFormat.metadata else {
             print("Skipping. No metadata for source pixel format (\(self.pixelFormat)).")
             return nil
         }
-
         guard let otherMetadata = pixelFormat.metadata else {
             print("Skipping. No metadata for destination pixel format (\(pixelFormat)).")
             return nil
@@ -386,27 +382,5 @@ extension MTLPixelFormat: CaseIterable {
         #else
             return baseCases
         #endif
-    }
-}
-
-extension MTLTextureDescriptor {
-    convenience init(_ texture: MTLTexture) {
-        self.init()
-        textureType = texture.textureType
-        pixelFormat = texture.pixelFormat
-        width = texture.width
-        height = texture.height
-        depth = texture.depth
-        mipmapLevelCount = texture.mipmapLevelCount
-        sampleCount = texture.sampleCount
-        arrayLength = texture.arrayLength
-        resourceOptions = texture.resourceOptions
-        cpuCacheMode = texture.cpuCacheMode
-        storageMode = texture.storageMode
-        hazardTrackingMode = texture.hazardTrackingMode
-        usage = texture.usage
-        allowGPUOptimizedContents = texture.allowGPUOptimizedContents
-        compressionType = texture.compressionType
-        swizzle = texture.swizzle
     }
 }
