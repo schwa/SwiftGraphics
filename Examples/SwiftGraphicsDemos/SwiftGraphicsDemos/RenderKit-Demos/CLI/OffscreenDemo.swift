@@ -82,7 +82,7 @@ public class OffscreenRenderPass: RenderPass {
     public enum OffscreenDemo {
         public static func main() async throws {
             let device = MTLCreateSystemDefaultDevice()!
-            var configuration = OffscreenRenderPassConfiguration(device: device, size: [1024, 769])
+            var configuration = OffscreenRenderPassConfiguration(device: device, size: [1_024, 769])
             configuration.colorPixelFormat = .bgra10_xr_srgb
             configuration.update()
             let offscreen = OffscreenRenderPass()

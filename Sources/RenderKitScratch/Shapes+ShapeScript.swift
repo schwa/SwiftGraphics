@@ -30,7 +30,7 @@ extension LineSegment3D: ShapeScriptEncodable {
 
 extension Line3D: ShapeScriptEncodable {
     public func encodeToShapeScript() throws -> String {
-        let segment = LineSegment3D(start: point + -direction * 1000, end: point + direction * 1000)
+        let segment = LineSegment3D(start: point + -direction * 1_000, end: point + direction * 1_000)
         return try segment.encodeToShapeScript()
     }
 }

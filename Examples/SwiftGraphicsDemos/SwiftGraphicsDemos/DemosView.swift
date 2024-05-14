@@ -28,7 +28,7 @@ struct DemosView: View {
 
     var body: some View {
         NavigationView {
-            List(demos.indexed(), id: \.index) { (_, element) in
+            List(demos.indexed(), id: \.index) { _, element in
                 NavigationLink(String(describing: element)) {
                     AnyView(element.init())
                 }

@@ -28,7 +28,7 @@ only_rules:
     - colon
     - comma
     - comma_inheritance
-    # - comment_spacing # TODO:
+    - comment_spacing
     - compiler_protocol_init
     - computed_accessors_order
     # - conditional_returns_on_newline # TODO:
@@ -63,16 +63,16 @@ only_rules:
     - empty_xctest_method
     - enum_case_associated_values_count
     - expiring_todo
-    # - explicit_acl  # TODO:
-    # - explicit_enum_raw_value
+    # - explicit_acl # TODO: Nice to have but too many violations.
+    # - explicit_enum_raw_value: NOPE
     - explicit_init
-    # - explicit_top_level_acl  # TODO:
+    # - explicit_top_level_acl # TODO: Nice to have but too many violations.
     # - explicit_type_interface # NOPE
     - extension_access_modifier
-    # - fallthrough  # TODO:
-    # - fatal_error_message  # TODO:
+    # - fallthrough # NOPE
+    # - fatal_error_message # TODO:
     # - file_header  # TODO:
-    # - file_length  # TODO:
+    - file_length  # TODO:
     # - file_name  # TODO:
     - file_name_no_space
     # - file_types_order # NOPE (MAYBE)
@@ -81,19 +81,19 @@ only_rules:
     - for_where
     # - force_cast  # TODO:
     # - force_try  # TODO:
-    # - force_unwrapping # TODO:
-    # - function_body_length  # TODO:
-    # - function_default_parameter_at_end  # MAYBE
+    #- force_unwrapping # TODO:
+    - function_body_length  # TODO:
+    # - function_default_parameter_at_end # NOPE
     - function_parameter_count
     - generic_type_name
     - ibinspectable_in_extension
     - identical_operands
-    # - identifier_name  # TODO:
+    #- identifier_name # NOPE
     - implicit_getter
     - implicit_return
     # - implicitly_unwrapped_optional  # TODO:
     - inclusive_language
-    # - indentation_width  # TODO:
+    # - indentation_width
     # - inert_defer # NOPE
     - invalid_swiftlint_command
     - is_disjoint
@@ -109,8 +109,8 @@ only_rules:
     - legacy_nsgeometry_functions
     - legacy_objc_type
     - legacy_random
-    # - let_var_whitespace  # TODO:
-    # - line_length  # TODO:
+    # - let_var_whitespace # NOPE
+    - line_length
     - literal_expression_end_indentation
     - local_doc_comment
     - lower_acl_than_parent
@@ -137,7 +137,7 @@ only_rules:
     - nslocalizedstring_key
     - nslocalizedstring_require_bundle
     - nsobject_prefer_isequal
-    # - number_separator  # TODO:
+    - number_separator
     - object_literal
     - opening_brace
     - operator_usage_whitespace
@@ -148,7 +148,7 @@ only_rules:
     - override_in_extension
     # - pattern_matching_keywords # NOPE
     - period_spacing
-    # - prefer_nimble # MAYBE
+    # - prefer_nimble # TODO: MAYBE
     - prefer_self_in_static_references
     - prefer_self_type_over_type_of_self
     - prefer_zero_over_explicit_init
@@ -157,7 +157,7 @@ only_rules:
     - private_outlet
     - private_over_fileprivate
     - private_subject
-    - private_swiftui_state  # TODO:
+    # - private_swiftui_state  # TODO:
     - private_unit_test
     - prohibited_interface_builder
     - prohibited_super_call
@@ -177,7 +177,7 @@ only_rules:
     - redundant_string_enum_value
     - redundant_type_annotation
     - redundant_void_return
-    # - required_deinit  # TODO:
+    # - required_deinit # NOPE
     - required_enum_case
     - return_arrow_whitespace
     - return_value_from_void_function
@@ -191,12 +191,12 @@ only_rules:
     - sorted_imports
     # - statement_position # NOPE
     - static_operator
-    # - strict_fileprivate  # TODO:
+    # - strict_fileprivate  # NOPE
     - strong_iboutlet
-    # - superfluous_disable_command
-    # - superfluous_else  # TODO:
-    # - switch_case_alignment  # TODO:
-    # - switch_case_on_newline  # TODO:
+    # - superfluous_disable_command # TODO
+    # - superfluous_else # Nice to have. Too many offenders.
+    - switch_case_alignment
+    - switch_case_on_newline
     - syntactic_sugar
     - test_case_accessibility
     # - todo  # TODO:
@@ -206,31 +206,31 @@ only_rules:
     - trailing_newline
     - trailing_semicolon
     - trailing_whitespace
-    # - type_body_length  # TODO:
-    # - type_contents_order  # TODO:
-    # - type_name  # TODO:
+    - type_body_length
+    # - type_contents_order  # NOPE (Maybe)
+    - type_name
     - unavailable_condition
     # - unavailable_function # TODO:
     - unhandled_throwing_task
     - unneeded_break_in_switch
     - unneeded_override
-    # - unneeded_parentheses_in_closure_argument  # TODO:
-    # - unneeded_synthesized_initializer  # TODO:
+    - unneeded_parentheses_in_closure_argument
+    - unneeded_synthesized_initializer
     - unowned_variable_capture
     # - untyped_error_in_catch  # TODO:
     # - unused_capture_list  # TODO:
     - unused_closure_parameter
     - unused_control_flow_label
     - unused_enumerated
-    # - unused_optional_binding  # TODO:
-    # - unused_setter_value  # TODO:
+    - unused_optional_binding
+    - unused_setter_value
     - valid_ibinspectable
     - vertical_parameter_alignment
-    # - vertical_parameter_alignment_on_call  # TODO:
+    - vertical_parameter_alignment_on_call
     - vertical_whitespace
-    # - vertical_whitespace_between_cases  # TODO:
-    # - vertical_whitespace_closing_braces  # TODO:
-    # - vertical_whitespace_opening_braces  # TODO:
+    #- vertical_whitespace_between_cases  # NOPE
+    - vertical_whitespace_closing_braces
+    - vertical_whitespace_opening_braces
     - void_function_in_ternary
     - void_return
     - weak_delegate
@@ -241,3 +241,23 @@ only_rules:
 cyclomatic_complexity:
     warning: 20
     error: 20
+
+type_name:
+    excluded: ["ID"]
+    allowed_symbols: ["_"]
+
+function_body_length:
+    warning: 300 # TODO: Reduce. Default is 50.
+    error: 300
+
+line_length:
+    warning: 300 # TODO: Reduce.
+    error: 300
+    ignores_urls: true
+    ignores_function_declarations: true
+    ignores_comments: true
+    ignores_interpolated_strings: true
+
+file_length:
+    warning: 1000 # TODO: Reduce.
+    error: 1000

@@ -1,6 +1,8 @@
 import CoreGraphics
 import Foundation
 
+// swiftlint:disable identifier_name
+
 //// Representation of a quadratic BÃ©zier curve. p0 is the start point, p1 is the control point, p2 is the end point.
 // let quadBezControlPoints = {
 //  p0: { x: 10, y: 10 },
@@ -111,25 +113,25 @@ func quadBezFlatten(_ q: QuadraticBezierCurve, tolerance: Double) -> [CGPoint] {
 
 ////
 ////// This is the curve used for the blossoming example. It's a cubic BÃ©zier curve.
-////const blossomControlPoints = {
+//// const blossomControlPoints = {
 ////  p0: { x: 5, y: 95 },
 ////  p1: { x: 5, y: 5 },
 ////  p2: { x: 95, y: 5 },
 ////  p3: { x: 95, y: 95 },
-////};
+//// };
 ////
 ////// Linear interpolation at t between two points. Will come in very handy for blossoming.
-////function lerp(v0, v1, t) {
+//// function lerp(v0, v1, t) {
 ////  return (1 - t) * v0 + t * v1;
-////}
+//// }
 ////
 ////// Get the (x, y) point at t for the line [p0, p1].
-////function lineAt(p0, p1, t) {
+//// function lineAt(p0, p1, t) {
 ////  return { x: lerp(p0.x, p1.x, t), y: lerp(p0.y, p1.y, t) };
-////}
+//// }
 ////
 ////// Returns the three cubic curves split between t0 and t1 for the curve c:
-////function blossom(c, t0, t1) {
+//// function blossom(c, t0, t1) {
 ////  const { p0, p1, p2, p3 } = c;
 ////
 ////  // Two De Casteljau subdivision simultaneously. After we have the two expansions, we can use the intermediate
@@ -174,18 +176,18 @@ func quadBezFlatten(_ q: QuadraticBezierCurve, tolerance: Double) -> [CGPoint] {
 ////    middle: middle,
 ////    ending: ending,
 ////  };
-////}
+//// }
 ////
 ////// Representation of the cubic BÃ©zier curve. p0 is the start point, p1 and p2 are the control points, p3 is the end point.
-////let cubicBezControlPoints = {
+//// let cubicBezControlPoints = {
 ////  p0: { x: 5, y: 95 },
 ////  p1: { x: 35, y: 5 },
 ////  p2: { x: 65, y: 95 },
 ////  p3: { x: 95, y: 5 },
-////};
+//// };
 ////
 ////// Evaluating the cubic curve c at parameter t. Returns the (x, y) coordinate at that point.
-////function evalCubicBez(c, t) {
+//// function evalCubicBez(c, t) {
 ////  const t2 = t * t;
 ////  const t3 = t2 * t;
 ////  const mt = 1.0 - t;
@@ -198,11 +200,11 @@ func quadBezFlatten(_ q: QuadraticBezierCurve, tolerance: Double) -> [CGPoint] {
 ////    c.p0.y * mt3 + c.p1.y * 3 * mt2 * t + c.p2.y * 3 * mt * t2 + c.p3.y * t3;
 ////
 ////  return { x: x, y: y };
-////}
+//// }
 ////
 ////// Effectively gives the same result as blossom(c).middle, but is easier to implement.
 ////// Stole it from lyon2d_geom: https://github.com/nical/lyon/blob/2407b7f5e326b2a8f66bfae81fe02d850d8b0acc/crates/geom/src/cubic_bezier.rs#L153
-////function cubicBezSplitRange(c, t0, t1) {
+//// function cubicBezSplitRange(c, t0, t1) {
 ////  const from = evalCubicBez(c, t0);
 ////  const to = evalCubicBez(c, t1);
 ////  const dxFrom = c.p1.x - c.p0.x;
@@ -228,13 +230,13 @@ func quadBezFlatten(_ q: QuadraticBezierCurve, tolerance: Double) -> [CGPoint] {
 ////    p2: { x: xCtrl2, y: yCtrl2 },
 ////    p3: to,
 ////  };
-////}
+//// }
 ////
 ////// Approximate a cubic to a single quadratic
 ////// Works by getting the intersection between the lines [p0, p1] and [p3, p2], and using that as the control point for the
 ////// resulting quadratic. Terrible as a general approximation, but great when the cubic is sufficiently close to a quadratic.
 ////// We only call this in the subdivision steps so that is okay.
-////function cubicBezToQuadratic(c) {
+//// function cubicBezToQuadratic(c) {
 ////  const c1x = (c.p1.x * 3 - c.p0.x) * 0.5;
 ////  const c1y = (c.p1.y * 3 - c.p0.y) * 0.5;
 ////  const c2x = (c.p2.x * 3 - c.p3.x) * 0.5;
@@ -247,21 +249,21 @@ func quadBezFlatten(_ q: QuadraticBezierCurve, tolerance: Double) -> [CGPoint] {
 ////    p1: { x: cx, y: cy },
 ////    p2: c.p3,
 ////  };
-////}
+//// }
 ////
 ////// Returns the number of quadratics needed to approximate the cubic c, given the specified tolerance.
-////function cubicBezNumQuadratics(c, tolerance) {
+//// function cubicBezNumQuadratics(c, tolerance) {
 ////  const x = c.p0.x - 3 * c.p1.x + 3 * c.p2.x - c.p3.x;
 ////  const y = c.p0.y - 3 * c.p1.y + 3 * c.p2.y - c.p3.y;
 ////  const err = x * x + y * y;
 ////
 ////  let result = err / (432.0 * tolerance * tolerance);
 ////  return Math.max(Math.ceil(Math.pow(result, 1.0 / 6.0)), 1.0);
-////}
+//// }
 ////
 ////// Converting the cubic c to a sequence of quadratics, with the specified tolerance.
 ////// Returns an array that contains these quadratics.
-////function cubicBezToQuadratics(c, tolerance) {
+//// function cubicBezToQuadratics(c, tolerance) {
 ////  const numQuads = cubicBezNumQuadratics(c, tolerance);
 ////  const step = 1.0 / numQuads;
 ////  const n = Math.trunc(numQuads);
@@ -279,36 +281,36 @@ func quadBezFlatten(_ q: QuadraticBezierCurve, tolerance: Double) -> [CGPoint] {
 ////  result.push(cubicBezToQuadratic(quad));
 ////
 ////  return result;
-////}
+//// }
 ////
 ////// Representation of the elliptical arc, just like in the SVG notation: https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths#arcs
-////let arcControlPoints = {
+//// let arcControlPoints = {
 ////  p0: { x: 20, y: 50 },
 ////  p1: { x: 80, y: 50 },
 ////  radius: { x: 50, y: 100 },
 ////  theta: 0,
 ////  largeArc: 0,
 ////  sweep: 0,
-////};
+//// };
 ////
 ////// Converts the angle given by the user to radians.
-////function toRadians(angle) {
+//// function toRadians(angle) {
 ////  return (angle * 2 * Math.PI) / 360;
-////}
+//// }
 ////
 ////// Returns the angle between u and v, where u and v are unit vectors.
-////function unitVectorAngle(u, v) {
+//// function unitVectorAngle(u, v) {
 ////  const sign = u.x * v.y - u.y * v.x < 0 ? -1 : 1;
 ////  const dot = u.x * v.x + u.y * v.y;
 ////  const dotClamped = Math.min(Math.max(dot, -1.0), 1.0);
 ////
 ////  return sign * Math.acos(dotClamped);
-////}
+//// }
 ////
 ////// Converts the arc notation to the center parametrization.
 ////// With this, we now have a center (cx, cy), a theta and a deltaTheta which tell us exactly where to start drawing the ellipse,
 ////// and where to stop. We start at theta, and stop at theta + deltaTheta.
-////function arcCenterParametrization(
+//// function arcCenterParametrization(
 ////  p1,
 ////  p2,
 ////  largeArc,
@@ -316,7 +318,7 @@ func quadBezFlatten(_ q: QuadraticBezierCurve, tolerance: Double) -> [CGPoint] {
 ////  radius,
 ////  sinTheta,
 ////  cosTheta
-////) {
+//// ) {
 ////  const x1p = (cosTheta * (p1.x - p2.x)) / 2 + (sinTheta * (p1.y - p2.y)) / 2;
 ////  const y1p = (-sinTheta * (p1.x - p2.x)) / 2 + (cosTheta * (p1.y - p2.y)) / 2;
 ////
@@ -355,10 +357,10 @@ func quadBezFlatten(_ q: QuadraticBezierCurve, tolerance: Double) -> [CGPoint] {
 ////    theta: theta1,
 ////    deltaTheta: deltaTheta,
 ////  };
-////}
+//// }
 ////
 ////// Approximates a circular arc on the unit circle between theta and deltaTheta.
-////function approximateUnitArc(theta, deltaTheta) {
+//// function approximateUnitArc(theta, deltaTheta) {
 ////  const alpha = (4 / 3) * Math.tan(deltaTheta / 4);
 ////
 ////  let x1 = Math.cos(theta);
@@ -372,10 +374,10 @@ func quadBezFlatten(_ q: QuadraticBezierCurve, tolerance: Double) -> [CGPoint] {
 ////    p2: { x: x2 + y2 * alpha, y: y2 - x2 * alpha },
 ////    p3: { x: x2, y: y2 },
 ////  };
-////}
+//// }
 ////
 ////// After we have the approximation for an arc on the unit circle, we use this function to scale it back to the original ellipse.
-////function applyArcPointTransform(p, centerP, radius, sinTheta, cosTheta) {
+//// function applyArcPointTransform(p, centerP, radius, sinTheta, cosTheta) {
 ////  let x = p.x;
 ////  let y = p.y;
 ////
@@ -386,11 +388,11 @@ func quadBezFlatten(_ q: QuadraticBezierCurve, tolerance: Double) -> [CGPoint] {
 ////  const yp = sinTheta * x + cosTheta * y;
 ////
 ////  return { x: xp + centerP.center.x, y: yp + centerP.center.y };
-////}
+//// }
 ////
 ////// Converts the elliptical arc to a sequence of cubic BÃ©zier curves. Returns an array with these cubics.
 ////// It won't try to approximate arcs longer that pi/4 with a single cubic, for great quality output.
-////function arcToCubicBez(p1, p2, largeArc, sweep, radius, theta) {
+//// function arcToCubicBez(p1, p2, largeArc, sweep, radius, theta) {
 ////  const sinTheta = Math.sin(toRadians(theta));
 ////  const cosTheta = Math.cos(toRadians(theta));
 ////
@@ -472,4 +474,4 @@ func quadBezFlatten(_ q: QuadraticBezierCurve, tolerance: Double) -> [CGPoint] {
 ////  }
 ////
 ////  return result;
-////}
+//// }

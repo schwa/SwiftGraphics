@@ -35,7 +35,7 @@ struct SoftwareRendererView: View {
     var renderer: (Projection3D, inout GraphicsContext, inout GraphicsContext3D) -> Void
 
     init(renderer: @escaping (Projection3D, inout GraphicsContext, inout GraphicsContext3D) -> Void) {
-        camera = Camera(transform: .translation([0, 0, -5]), target: [0, 0, 0], projection: .perspective(.init(fovy: .degrees(90), zClip: 0.01 ... 1000.0)))
+        camera = Camera(transform: .translation([0, 0, -5]), target: [0, 0, 0], projection: .perspective(.init(fovy: .degrees(90), zClip: 0.01 ... 1_000.0)))
         modelTransform = .init(rotation: .init(angle: .degrees(0), axis: [0, 1, 0]))
         ballConstraint = BallConstraint()
         self.renderer = renderer

@@ -10,6 +10,8 @@ import Shapes2D
 import simd
 import SwiftUI
 
+// swiftlint:disable identifier_name
+
 // TODO: Move
 extension CGVector {
     init(_ dx: CGFloat, _ dy: CGFloat) {
@@ -56,6 +58,7 @@ extension SIMD3 where Scalar == Float {
         let q = v * (1 - f * s)
         let t = v * (1 - (1 - f) * s)
 
+        // swiftlint:disable switch_case_on_newline
         switch h_i {
         case 0: return [v, t, p]
         case 1: return [q, v, p]

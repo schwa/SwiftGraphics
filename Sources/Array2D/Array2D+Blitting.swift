@@ -35,11 +35,6 @@ public extension Array2D {
         let array: Array2D
         let rect: IntRect
 
-        init(array: Array2D, rect: IntRect) {
-            self.array = array
-            self.rect = rect
-        }
-
         __consuming public func makeIterator() -> RectIterator {
             RectIterator(array: array, rect: rect)
         }

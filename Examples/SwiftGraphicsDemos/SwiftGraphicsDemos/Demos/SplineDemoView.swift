@@ -41,7 +41,7 @@ struct SplineDemoView: View, DefaultInitializableView {
                     Path(spline.comb).stroke()
                 }
 
-                ForEach(spline.knots.indexed(), id: \.index) { (index, knot) in
+                ForEach(spline.knots.indexed(), id: \.index) { index, knot in
                     Path.line(from: knot.position, to: knot.absoluteControlPointA).stroke(Color.red, style: .init(dash: [5, 5]))
                     Path.line(from: knot.position, to: knot.absoluteControlPointB).stroke(Color.green, style: .init(dash: [5, 5]))
                     if !knot.controlPointA.isZero {
@@ -58,10 +58,10 @@ struct SplineDemoView: View, DefaultInitializableView {
                             }
                         }
                 }
-                ForEach(points.indexed(), id: \.index) { (index, _) in
+                ForEach(points.indexed(), id: \.index) { index, _ in
                     Handle($points[index])
                 }
-                ForEach(lines.indexed(), id: \.index) { (index, line) in
+                ForEach(lines.indexed(), id: \.index) { index, line in
                     if let segment = line.lineSegment(bounds: proxy.frame(in: .local)) {
                         Path(segment).stroke()
                             .lineManipulator(line: $lines[index])

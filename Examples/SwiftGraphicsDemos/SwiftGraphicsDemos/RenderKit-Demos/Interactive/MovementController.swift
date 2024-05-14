@@ -99,7 +99,7 @@ class MovementController: @unchecked Sendable {
         didSet {
             mouse?.handlerQueue = DispatchQueue(label: "Mouse", qos: .userInteractive)
             mouse?.mouseInput?.mouseMovedHandler = { [weak self] _, x, y in
-                guard let strongSelf = self else {
+                guard let self else {
                     return
                 }
                 guard x != 0 || y != 0 else {

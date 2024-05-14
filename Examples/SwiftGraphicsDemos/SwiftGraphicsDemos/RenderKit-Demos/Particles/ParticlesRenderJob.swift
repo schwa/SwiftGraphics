@@ -33,7 +33,7 @@ class ParticlesRenderJob: RenderJob {
                 velocities: velocities!.contentsBuffer(of: SIMD2<Float>.self),
                 densities: densities!.contentsBuffer(of: Float.self)
             ),
-            size: [1000, 1000]
+            size: [1_000, 1_000]
         )
 
         let library = try! device.makeDefaultLibrary(bundle: .shadersBundle)

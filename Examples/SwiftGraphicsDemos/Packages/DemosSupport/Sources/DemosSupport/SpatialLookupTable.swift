@@ -58,7 +58,7 @@ public struct SpatialLookupTable<Positions> where Positions: Collection, Positio
 
     private func key(for cell: SIMD2<Int>) -> Int {
         // TODO: overflow
-        let n = (cell.x * 15823 + cell.y * 9_737_333)
+        let n = (cell.x * 15_823 + cell.y * 9_737_333)
         precondition(n >= 0)
         return n % spatialLookup.count
     }

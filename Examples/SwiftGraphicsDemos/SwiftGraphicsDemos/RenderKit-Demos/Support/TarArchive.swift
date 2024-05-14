@@ -14,12 +14,12 @@ public struct TarArchive {
 
     public init(url: URL) throws {
         let data = try Data(contentsOf: url, options: .mappedIfSafe)
-        guard data.count >= 2048 else {
+        guard data.count >= 2_048 else {
             throw Error.generic("Tar archives need to be at least 2048 bytes.")
         }
         var remainingRange = data.startIndex ..< data.endIndex
         var records: [String: Header<Data>] = [:]
-        while remainingRange.count > 1024 {
+        while remainingRange.count > 1_024 {
             if remainingRange.count < 512 {
                 throw Error.generic("Not enough data remaining to read a header record.")
             }

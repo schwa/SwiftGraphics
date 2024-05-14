@@ -73,11 +73,6 @@ public struct EmptyShape: Shape {
 public struct Identified<ID, Content>: Identifiable where ID: Hashable {
     public var id: ID
     public var content: Content
-
-    init(id: ID, content: Content) {
-        self.id = id
-        self.content = content
-    }
 }
 
 public extension Identified where ID == UUID {

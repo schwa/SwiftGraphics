@@ -2,6 +2,8 @@ import CoreGraphicsSupport
 import Foundation
 import SwiftUI
 
+// swiftlint:disable identifier_name
+
 // From: https://www.jakelow.com/blog/hobby-curves
 // https://www.jakelow.com/blog/hobby-curves/hobby.js
 

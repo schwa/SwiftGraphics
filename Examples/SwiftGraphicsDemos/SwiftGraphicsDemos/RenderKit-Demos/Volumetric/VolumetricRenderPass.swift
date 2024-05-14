@@ -134,7 +134,7 @@ class VolumetricRenderPass: RenderPass {
                 encoder.setFragmentTexture(transferFunctionTexture, index: 1)
 
                 // TODO: Hard coded
-                let fragmentUniforms = VolumeFragmentUniforms(instanceCount: UInt16(instanceCount), maxValue: 3272, alpha: 10.0)
+                let fragmentUniforms = VolumeFragmentUniforms(instanceCount: UInt16(instanceCount), maxValue: 3_272, alpha: 10.0)
                 encoder.setFragmentBytes(of: fragmentUniforms, index: 0)
 
                 encoder.draw(mesh2, instanceCount: instanceCount)

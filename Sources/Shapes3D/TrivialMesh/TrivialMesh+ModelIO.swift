@@ -125,13 +125,13 @@ public extension MDLMesh {
             indexBuffer = indices.withUnsafeBytes { buffer in
                 MDLMeshBufferData(type: .index, data: Data(buffer))
             }
-        case 256 ..< 65536:
+        case 256 ..< 65_536:
             indexType = .uInt16
             let indices = mesh.indices.map({ UInt16($0) })
             indexBuffer = indices.withUnsafeBytes { buffer in
                 MDLMeshBufferData(type: .index, data: Data(buffer))
             }
-        case 65536 ..< 4_294_967_296:
+        case 65_536 ..< 4_294_967_296:
             indexType = .uInt32
             let indices = mesh.indices.map({ UInt32($0) })
             indexBuffer = indices.withUnsafeBytes { buffer in

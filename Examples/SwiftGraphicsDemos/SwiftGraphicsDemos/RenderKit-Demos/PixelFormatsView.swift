@@ -126,17 +126,6 @@ struct PixelFormatMetadata {
     var includesAlpha: Bool
     var extendedRange: Bool
 
-    init(usage: Usage, channels: Int, channelType: ChannelType, convertsSRGB: Bool, compressed: Bool, endianness: Endianness, includesAlpha: Bool, extendedRange: Bool) {
-        self.usage = usage
-        self.channels = channels
-        self.channelType = channelType
-        self.convertsSRGB = convertsSRGB
-        self.compressed = compressed
-        self.endianness = endianness
-        self.includesAlpha = includesAlpha
-        self.extendedRange = extendedRange
-    }
-
     static func color(channels: Int, channelType: ChannelType, compressed: Bool = false, endianness: Endianness, includesAlpha: Bool = false, extendedRange: Bool = false) -> Self {
         .init(usage: .color, channels: channels, channelType: channelType, convertsSRGB: false, compressed: compressed, endianness: endianness, includesAlpha: includesAlpha, extendedRange: extendedRange)
     }

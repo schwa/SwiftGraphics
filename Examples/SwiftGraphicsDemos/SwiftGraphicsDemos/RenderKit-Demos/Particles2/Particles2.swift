@@ -53,9 +53,9 @@ extension VerletObject: CustomStringConvertible {
 
 struct Solver {
     var objects: [VerletObject] = []
-    var gravity: SIMD2<Float> = [0.0, 1000.0]
+    var gravity: SIMD2<Float> = [0.0, 1_000.0]
 
-    var lookup: SpatialLookupTable<[SIMD2<Float>]> = .init(size: [1000, 1000])
+    var lookup: SpatialLookupTable<[SIMD2<Float>]> = .init(size: [1_000, 1_000])
 
     mutating func update(_ dt: Float) {
         let sub_steps = 8

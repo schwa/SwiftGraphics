@@ -92,7 +92,14 @@
             func uniforms(forViewIndex viewIndex: Int) -> Uniforms {
                 let view = drawable.views[viewIndex]
                 let viewMatrix = (simdDeviceAnchor * view.transform).inverse
-                let projection = ProjectiveTransform3D(leftTangent: Double(view.tangents[0]), rightTangent: Double(view.tangents[1]), topTangent: Double(view.tangents[2]), bottomTangent: Double(view.tangents[3]), nearZ: Double(drawable.depthRange.y), farZ: Double(drawable.depthRange.x), reverseZ: true)
+                let projection = ProjectiveTransform3D(
+                    leftTangent: Double(view.tangents[0]),
+                    rightTangent: Double(view.tangents[1]),
+                    topTangent: Double(view.tangents[2]),
+                    bottomTangent: Double(view.tangents[3]),
+                    nearZ: Double(drawable.depthRange.y),
+                    farZ: Double(drawable.depthRange.x), reverseZ: true
+                )
                 return Uniforms(projectionMatrix: .init(projection), modelViewMatrix: viewMatrix * modelMatrix)
             }
             self.uniforms[uniformsBufferIndex].uniforms.0 = uniforms(forViewIndex: 0)

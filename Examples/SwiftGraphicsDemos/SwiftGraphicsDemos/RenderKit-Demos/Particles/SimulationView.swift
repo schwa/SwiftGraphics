@@ -75,7 +75,7 @@ struct SimulationView: View, DefaultInitializableView {
                     simulation.populate()
                 }
             }
-            .frame(width: 1000, height: 500)
+            .frame(width: 1_000, height: 500)
             .padding()
             HStack {
                 config()
@@ -216,6 +216,7 @@ extension GraphicsContext.BlendMode: CaseIterable {
 
 extension GraphicsContext.BlendMode: CustomStringConvertible {
     public var description: String {
+        // swiftlint:disable switch_case_on_newline
         switch self {
         case .normal: "normal"
         case .multiply: "multiply"

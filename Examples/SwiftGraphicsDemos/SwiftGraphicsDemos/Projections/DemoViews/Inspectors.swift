@@ -48,7 +48,7 @@ struct ProjectionInspector: View {
             case .matrix:
                 projection = .matrix(.identity)
             case .perspective:
-                projection = .perspective(.init(fovy: .degrees(90), zClip: 0.001 ... 1000))
+                projection = .perspective(.init(fovy: .degrees(90), zClip: 0.001 ... 1_000))
             case .orthographic:
                 projection = .orthographic(.init(left: -1, right: 1, bottom: -1, top: 1, near: -1, far: 1))
             }

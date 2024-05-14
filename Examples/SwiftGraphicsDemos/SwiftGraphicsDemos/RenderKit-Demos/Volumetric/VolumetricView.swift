@@ -61,13 +61,13 @@
                 }
                 .overlay(alignment: .bottom) {
                     VStack {
-                        TransferFunctionEditor(width: 1024, values: $redTransferFunction, color: .red)
+                        TransferFunctionEditor(width: 1_024, values: $redTransferFunction, color: .red)
                             .frame(maxHeight: 20)
-                        TransferFunctionEditor(width: 1024, values: $greenTransferFunction, color: .green)
+                        TransferFunctionEditor(width: 1_024, values: $greenTransferFunction, color: .green)
                             .frame(maxHeight: 20)
-                        TransferFunctionEditor(width: 1024, values: $blueTransferFunction, color: .blue)
+                        TransferFunctionEditor(width: 1_024, values: $blueTransferFunction, color: .blue)
                             .frame(maxHeight: 20)
-                        TransferFunctionEditor(width: 1024, values: $alphaTransferFunction, color: .white)
+                        TransferFunctionEditor(width: 1_024, values: $alphaTransferFunction, color: .white)
                             .frame(maxHeight: 20)
                     }
                     .background(.ultraThinMaterial)
@@ -121,7 +121,7 @@
                         for (index, value) in values.enumerated() {
                             path.addLine(to: CGPoint(Double(index), Double(value) * size.height))
                         }
-                        path.addLine(to: CGPoint(x: 1023, y: 0))
+                        path.addLine(to: CGPoint(x: 1_023, y: 0))
                         path.closeSubpath()
                     }
                     context.fill(path, with: .color(color))

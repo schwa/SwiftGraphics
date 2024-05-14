@@ -60,7 +60,7 @@ struct SketchView: View {
                         }
                     }
                     .coordinateSpace(.canvas)
-                    .frame(width: 4096, height: 4096)
+                    .frame(width: 4_096, height: 4_096)
                     .modifier(currentToolModifier)
                 }
             }

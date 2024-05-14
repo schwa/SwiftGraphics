@@ -28,7 +28,7 @@ struct Spline {
 
 extension Spline {
     var curves: [CubicBezierCurve] {
-        knots.adjacentPairs().enumerated().map { (index, knots) in
+        knots.adjacentPairs().enumerated().map { index, knots in
             CubicBezierCurve(controlPoints: (
                 knots.0.position,
                 index.isEven ? knots.0.position + knots.0.controlPointA : knots.0.position - knots.0.controlPointB,
