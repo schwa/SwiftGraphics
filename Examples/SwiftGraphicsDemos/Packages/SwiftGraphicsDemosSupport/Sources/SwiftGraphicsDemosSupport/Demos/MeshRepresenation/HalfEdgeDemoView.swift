@@ -4,7 +4,7 @@ import Shapes3D
 import simd
 import SwiftUI
 
-struct HalfEdgeView: View, DefaultInitializableView {
+struct HalfEdgeDemoView: View, DemoView {
     var mesh: HalfEdgeMesh = .demo()
 
     @State

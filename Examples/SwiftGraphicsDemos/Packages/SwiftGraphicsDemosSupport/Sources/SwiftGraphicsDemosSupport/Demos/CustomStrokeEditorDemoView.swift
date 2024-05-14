@@ -5,7 +5,7 @@ import SwiftUI
 
 // https://dl.acm.org/doi/abs/10.1145/3386569.3392392
 
-struct CustomStrokeEditor: View, DefaultInitializableView {
+struct CustomStrokeEditorDemoView: View, DemoView {
     @State
     var points: [CGPoint] = [[50, 50], [250, 50], [300, 100]]
 

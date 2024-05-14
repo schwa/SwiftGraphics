@@ -5,7 +5,7 @@ import Shapes2D
 import Shapes3D
 import SwiftUI
 
-struct MeshView: View, DefaultInitializableView {
+struct SoftwareRendererMeshDemoView: View, DemoView {
     enum Source: Hashable {
         case file(String)
         case extrusion(String)

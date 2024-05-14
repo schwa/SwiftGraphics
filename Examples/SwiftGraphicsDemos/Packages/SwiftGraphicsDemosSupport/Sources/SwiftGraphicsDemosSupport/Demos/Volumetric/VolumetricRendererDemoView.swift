@@ -13,7 +13,7 @@ import SwiftUI
 
 // https://www.youtube.com/watch?v=y4KdxaMC69w&t=1761s
 
-struct VolumetricView: View, DefaultInitializableView {
+struct VolumetricRendererDemoView: View, DemoView {
     @State
     var renderPass = VolumetricRenderPass()
 

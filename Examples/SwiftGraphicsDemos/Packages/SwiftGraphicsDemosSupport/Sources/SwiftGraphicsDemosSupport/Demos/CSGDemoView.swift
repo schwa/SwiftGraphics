@@ -6,7 +6,7 @@ import Shapes3D
 import simd
 import SwiftUI
 
-struct CSGDemoView: View, DefaultInitializableView {
+struct CSGDemoView: View, DemoView {
     var body: some View {
         CSGDemoView_()
     }

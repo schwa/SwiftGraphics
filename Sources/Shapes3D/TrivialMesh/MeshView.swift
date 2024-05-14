@@ -3,7 +3,7 @@ import Foundation
 import RealityKit
 import SwiftUI
 
-public struct MeshView: View {
+public struct SoftwareRendererMeshDemoView: View {
     let mesh: TrivialMesh<SimpleVertex>
 
     public init(mesh: TrivialMesh<SimpleVertex>) {
@@ -21,7 +21,7 @@ public struct MeshView: View {
 }
 
 #Preview {
-    MeshView(mesh: TrivialMesh(cylinder: Cylinder3D(radius: 0.1, depth: 0.01), segments: 24))
+    SoftwareRendererMeshDemoView(mesh: TrivialMesh(cylinder: Cylinder3D(radius: 0.1, depth: 0.01), segments: 24))
     // MeshView(mesh: TrivialMesh(circleRadius: 1, segments: 24))
 }
 #endif

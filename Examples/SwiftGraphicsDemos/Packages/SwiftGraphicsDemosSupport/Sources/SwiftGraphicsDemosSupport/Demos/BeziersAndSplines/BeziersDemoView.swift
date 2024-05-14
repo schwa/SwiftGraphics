@@ -10,7 +10,7 @@ import simd
 // https://www.youtube.com/watch?v=aVwxzDHniEw
 // https://www.youtube.com/watch?v=jvPPXbo87ds
 
-struct BeziersView: View, DefaultInitializableView {
+struct BeziersDemoView: View, DemoView {
     @State
     var points: [CGPoint] = [[70, 250], [20, 110], [220, 60], [270, 200]]
 

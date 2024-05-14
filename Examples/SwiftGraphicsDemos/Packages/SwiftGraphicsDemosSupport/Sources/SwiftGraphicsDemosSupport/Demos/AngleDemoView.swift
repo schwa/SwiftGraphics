@@ -2,7 +2,7 @@ import CoreGraphicsSupport
 import SwiftFormats
 import SwiftUI
 
-struct AngleDemoView: View, DefaultInitializableView {
+struct AngleDemoView: View, DemoView {
     @State
     var p0 = CGPoint(x: 100, y: 400)
 

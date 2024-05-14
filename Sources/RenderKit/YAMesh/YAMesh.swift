@@ -95,6 +95,8 @@ public extension YAMesh {
 }
 
 public extension YAMesh {
+
+    @available(*, deprecated, message: "Use TrivialMesh?")
     static func simpleMesh(label: String? = nil, indices: [UInt16], vertices: [SimpleVertex], primitiveType: MTLPrimitiveType = .triangle, device: MTLDevice) throws -> YAMesh {
         guard let indexBuffer = device.makeBuffer(bytesOf: indices, options: .storageModeShared) else {
             fatalError()
@@ -111,6 +113,7 @@ public extension YAMesh {
         return YAMesh(indexType: .uint16, indexBufferView: indexBufferView, indexCount: indices.count, vertexDescriptor: vertexDescriptor, vertexBufferViews: [vertexBufferView], primitiveType: primitiveType)
     }
 
+    @available(*, deprecated, message: "Use Shape3D")
     static func plane(label: String? = nil, rectangle: CGRect, transform: simd_float3x2 = simd_float3x2([1, 0], [0, 1], [0, 0]), device: MTLDevice, textureCoordinate: (CGPoint) -> SIMD2<Float>) throws -> YAMesh {
         // Transforms:
         // [1, 0], [0, 1], [0, 0]: XY aligned plane

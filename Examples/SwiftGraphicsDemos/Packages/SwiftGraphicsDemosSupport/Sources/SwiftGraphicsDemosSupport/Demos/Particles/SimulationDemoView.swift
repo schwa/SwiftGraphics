@@ -8,7 +8,7 @@ import SIMDSupport
 import SwiftFormats
 import SwiftUI
 
-struct SimulationView: View, DefaultInitializableView {
+struct SimulationDemoView: View, DemoView {
     @State
     var simulation: Simulation<ArraySimulatorStorage>
 

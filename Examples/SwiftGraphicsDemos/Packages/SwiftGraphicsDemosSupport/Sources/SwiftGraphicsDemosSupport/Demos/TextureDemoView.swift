@@ -4,6 +4,33 @@ import ModelIO
 import RenderKit
 import RenderKitShaders
 import SwiftUI
+import CoreGraphicsSupport
+
+struct TextureDemoView: View, DemoView {
+
+    @State
+    var showDebugView = false
+
+    init() {
+    }
+
+    var body: some View {
+        TextureView(named: "seamless-foods-mixed-0020", bundle: .module, options: showDebugView ? [.showInfo] : [])
+        .overlay(alignment: .bottomTrailing) {
+            Image(systemName: "contextualmenu.and.cursorarrow")
+            .foregroundColor(.white)
+            .padding()
+            .background(Circle().fill(.regularMaterial))
+            .padding()
+        }
+        .contextMenu {
+            Button("Show Info") {
+                showDebugView.toggle()
+            }
+        }
+    }
+}
+
 
 struct TextureView: View {
     struct Bindings {
@@ -21,19 +48,25 @@ struct TextureView: View {
         var renderPipelineState: MTLRenderPipelineState
     }
 
+    struct Options: OptionSet {
+        let rawValue: Int
+
+        static let showInfo = Options(rawValue: 1 << 0)
+    }
+
     let texture: MTLTexture
 
     @State
     var renderState: RenderState?
 
     @State
-    var showDebugView = false
-
-    @State
     var size: CGSize?
 
-    init(texture: MTLTexture) {
+    var options: Options
+
+    init(texture: MTLTexture, options: Options = []) {
         self.texture = texture
+        self.options = options
     }
 
     var body: some View {
@@ -119,14 +152,9 @@ struct TextureView: View {
                 }
             })
         }
-        .contextMenu {
-            Button("Show Info") {
-                showDebugView.toggle()
-            }
-        }
         .aspectRatio(Double(texture.height) / Double(texture.width), contentMode: .fit)
         .overlay(alignment: .topTrailing) {
-            if showDebugView {
+            if options.contains(.showInfo) {
                 Form {
                     LabeledContent("Label", value: "\(texture.label ?? "")")
                     LabeledContent("Type", value: "\(texture.textureType)")
@@ -143,7 +171,10 @@ struct TextureView: View {
                     LabeledContent("Is Sparse?", value: texture.isSparse ?? false, format: .bool)
                     LabeledContent("Has Parent?", value: texture.parent != nil, format: .bool)
                     LabeledContent("Has Buffer?", value: texture.buffer != nil, format: .bool)
-                    LabeledContent("View Size", value: "\(size ?? .zero)")
+                    if let size {
+                        LabeledContent("View Size", value: size, format: .size)
+                        LabeledContent("Texels per Pixel", value: CGSize(width: Double(texture.width), height: Double(texture.height)) / size, format: .size)
+                    }
                 }
                 .monospacedDigit()
                 .font(.caption)
@@ -157,11 +188,11 @@ struct TextureView: View {
 }
 
 extension TextureView {
-    init(named name: String, bundle: Bundle = .main) {
+    init(named name: String, bundle: Bundle = .main, options: Options = []) {
         let device = MTLCreateSystemDefaultDevice()!
         let loader = MTKTextureLoader(device: device)
         let texture = try! loader.newTexture(name: name, scaleFactor: 1.0, bundle: bundle)
-        self.init(texture: texture)
+        self.init(texture: texture, options: options)
     }
 }
 

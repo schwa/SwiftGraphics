@@ -47,7 +47,7 @@ struct CoreSimpleSceneView: View {
 
 // MARK: -
 
-struct SimpleSceneView: View, DefaultInitializableView {
+struct SimpleSceneDemoView: View, DemoView {
     @Environment(\.metalDevice)
     var device
 

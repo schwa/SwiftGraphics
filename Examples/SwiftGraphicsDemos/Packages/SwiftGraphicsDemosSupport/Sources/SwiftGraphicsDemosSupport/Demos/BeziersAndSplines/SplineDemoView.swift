@@ -2,7 +2,7 @@ import CoreGraphicsSupport
 import Shapes2D
 import SwiftUI
 
-struct SplineDemoView: View, DefaultInitializableView {
+struct SplineDemoView: View, DemoView {
     @State
     var points: [CGPoint] = []
 

@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct ShaderTestView: View, DefaultInitializableView {
+struct ShaderTestDemoView: View, DemoView {
     var body: some View {
         RelativeTimelineView(schedule: .animation) { _, time in
             let function = ShaderLibrary.signed_distance_field_2

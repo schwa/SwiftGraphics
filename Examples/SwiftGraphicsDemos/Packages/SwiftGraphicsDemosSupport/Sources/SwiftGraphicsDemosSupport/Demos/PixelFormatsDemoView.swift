@@ -4,7 +4,7 @@ import MetalSupport
 import RenderKit
 import SwiftUI
 
-struct PixelFormatsView: View, DefaultInitializableView {
+struct PixelFormatsDemoView: View, DemoView {
     @Environment(\.metalDevice)
     var device
 

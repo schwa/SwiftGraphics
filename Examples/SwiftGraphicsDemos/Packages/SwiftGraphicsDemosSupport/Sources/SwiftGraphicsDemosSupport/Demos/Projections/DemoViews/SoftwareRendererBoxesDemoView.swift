@@ -2,7 +2,7 @@ import CoreGraphicsSupport
 import Shapes3D
 import SwiftUI
 
-struct BoxesView: View, DefaultInitializableView {
+struct SoftwareRendererBoxesDemoView: View, DemoView {
     @State
     var models: [any PolygonConvertable]
 

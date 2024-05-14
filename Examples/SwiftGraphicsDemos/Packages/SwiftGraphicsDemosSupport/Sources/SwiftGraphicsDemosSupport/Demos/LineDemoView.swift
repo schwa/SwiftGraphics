@@ -3,7 +3,7 @@ import Shapes2D
 import SwiftFormats
 import SwiftUI
 
-struct LineDemoView: View, DefaultInitializableView {
+struct LineDemoView: View, DemoView {
     struct Element: Identifiable, Codable {
         var id: String = UUID().uuidString
         var lineSegment: LineSegment

@@ -18,7 +18,7 @@ extension SimpleScene {
 
         let tilesSize: SIMD2<UInt16>
         let tileTextures: [(MTKTextureLoader) throws -> MTLTexture]
-        if singlePanoramaTexture {
+        if !singlePanoramaTexture {
             tilesSize = [6, 2]
             tileTextures = (1 ... 12).map { index in
                 BundleResourceReference(bundle: .bundle(.module), name: "perseverance_\(index.formatted(.number.precision(.integerLength(2))))", extension: "ktx")
