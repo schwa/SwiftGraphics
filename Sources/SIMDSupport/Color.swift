@@ -34,9 +34,9 @@ public extension SIMD3 where Scalar: BinaryFloatingPoint {
     var cgColor: CGColor {
         // TODO: Use linear color space. Piggy back of SIMD4
         #if os(macOS)
-            return CGColor(red: CGFloat(self[0]), green: CGFloat(self[1]), blue: CGFloat(self[2]), alpha: 1)
+        return CGColor(red: CGFloat(self[0]), green: CGFloat(self[1]), blue: CGFloat(self[2]), alpha: 1)
         #else
-            fatalError("Unimplemented")
+        fatalError("Unimplemented")
         #endif
     }
 }
@@ -46,9 +46,9 @@ public extension SIMD4 where Scalar: BinaryFloatingPoint {
     var cgColor: CGColor {
         // TODO: use linear color space
         #if os(macOS)
-            return CGColor(red: CGFloat(self[0]), green: CGFloat(self[1]), blue: CGFloat(self[2]), alpha: CGFloat(self[3]))
+        return CGColor(red: CGFloat(self[0]), green: CGFloat(self[1]), blue: CGFloat(self[2]), alpha: CGFloat(self[3]))
         #else
-            fatalError("Unimplemented")
+        fatalError("Unimplemented")
         #endif
     }
 }

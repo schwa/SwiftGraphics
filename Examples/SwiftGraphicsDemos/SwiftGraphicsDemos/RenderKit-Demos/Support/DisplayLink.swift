@@ -1,8 +1,8 @@
 #if os(macOS)
-    import AppKit
-    import QuartzCore
+import AppKit
+import QuartzCore
 #else
-    import UIKit
+import UIKit
 #endif
 import SwiftUI
 
@@ -56,13 +56,13 @@ public class DisplayLink2 {
     }
 
     public convenience init(runloop: RunLoop = .current, mode: RunLoop.Mode = .default) {
-        #if os(macOS)
-            self.init(runloop: runloop, mode: mode, source: NSScreen.screens[0])
-        #else
-            self.init(runloop: runloop, mode: mode) {
-                CADisplayLink(target: $0, selector: #selector(Helper.callCallback))
-            }
-        #endif
+#if os(macOS)
+        self.init(runloop: runloop, mode: mode, source: NSScreen.screens[0])
+#else
+        self.init(runloop: runloop, mode: mode) {
+            CADisplayLink(target: $0, selector: #selector(Helper.callCallback))
+        }
+#endif
     }
 
     public func events() -> AsyncStream<Event> {

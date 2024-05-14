@@ -1,4 +1,3 @@
-
 public extension PointType {
     static var zero: Self {
         self.init(x: Scalar(0), y: Scalar(0))

@@ -12,7 +12,7 @@ analyzer_rules:
 only_rules:
     # - accessibility_label_for_image # TODO:
     # - accessibility_trait_for_button # TODO:
-    # - anonymous_argument_in_multiline_closure  # TODO:
+    # - anonymous_argument_in_multiline_closure # TODO:
     # - anyobject_protocol # NOPE
     - array_init
     - balanced_xctest_lifecycle
@@ -31,7 +31,7 @@ only_rules:
     - comment_spacing
     - compiler_protocol_init
     - computed_accessors_order
-    # - conditional_returns_on_newline # TODO:
+    - conditional_returns_on_newline
     - contains_over_filter_count
     - contains_over_filter_is_empty
     - contains_over_first_not_nil
@@ -71,18 +71,18 @@ only_rules:
     - extension_access_modifier
     # - fallthrough # NOPE
     # - fatal_error_message # TODO:
-    # - file_header  # TODO:
-    - file_length  # TODO:
-    # - file_name  # TODO:
+    - file_header
+    - file_length
+    # - file_name # NOPE: Too silly.
     - file_name_no_space
-    # - file_types_order # NOPE (MAYBE)
+    # - file_types_order # TODO: Too many violations.
     - first_where
     - flatmap_over_map_reduce
     - for_where
-    # - force_cast  # TODO:
-    # - force_try  # TODO:
-    #- force_unwrapping # TODO:
-    - function_body_length  # TODO:
+    # - force_cast # TODO:
+    # - force_try # TODO:
+    # - force_unwrapping # TODO:
+    - function_body_length
     # - function_default_parameter_at_end # NOPE
     - function_parameter_count
     - generic_type_name
@@ -91,21 +91,21 @@ only_rules:
     #- identifier_name # NOPE
     - implicit_getter
     - implicit_return
-    # - implicitly_unwrapped_optional  # TODO:
+    # - implicitly_unwrapped_optional # TODO:
     - inclusive_language
-    # - indentation_width
+    - indentation_width
     # - inert_defer # NOPE
     - invalid_swiftlint_command
     - is_disjoint
     - joined_default_parameter
     # - large_tuple # NOPE
     - last_where
-    # - leading_whitespace  # TODO:
+    - leading_whitespace
     - legacy_cggeometry_functions
     - legacy_constant
     - legacy_constructor
     - legacy_hashing
-    # - legacy_multiple  # TODO:
+    # - legacy_multiple # TODO:
     - legacy_nsgeometry_functions
     - legacy_objc_type
     - legacy_random
@@ -115,18 +115,18 @@ only_rules:
     - local_doc_comment
     - lower_acl_than_parent
     - mark
-    # - missing_docs  # TODO:
+    # - missing_docs # TODO:
     - modifier_order
     # - multiline_arguments # NOPE
     # - multiline_arguments_brackets # NOPE
-    # - multiline_function_chains  # TODO:
+    # - multiline_function_chains # TODO:
     - multiline_literal_brackets
     - multiline_parameters
     # - multiline_parameters_brackets # NOPE
     - multiple_closures_with_trailing_closure
     # - nesting # NOPE
     - nimble_operator
-    # - no_extension_access_modifier  # TODO:
+    # - no_extension_access_modifier # TODO:
     - no_fallthrough_only
     # - no_grouping_extension # NOPE
     # - no_magic_numbers # NOPE
@@ -157,7 +157,7 @@ only_rules:
     - private_outlet
     - private_over_fileprivate
     - private_subject
-    # - private_swiftui_state  # TODO:
+    # - private_swiftui_state # TODO:
     - private_unit_test
     - prohibited_interface_builder
     - prohibited_super_call
@@ -199,9 +199,9 @@ only_rules:
     - switch_case_on_newline
     - syntactic_sugar
     - test_case_accessibility
-    # - todo  # TODO:
+    # - todo # TODO:
     - toggle_bool
-    # - trailing_closure  # TODO:
+    # - trailing_closure # TODO:
     # - trailing_comma # NOPE
     - trailing_newline
     - trailing_semicolon
@@ -217,8 +217,8 @@ only_rules:
     - unneeded_parentheses_in_closure_argument
     - unneeded_synthesized_initializer
     - unowned_variable_capture
-    # - untyped_error_in_catch  # TODO:
-    # - unused_capture_list  # TODO:
+    - untyped_error_in_catch
+    # - unused_capture_list # TODO:
     - unused_closure_parameter
     - unused_control_flow_label
     - unused_enumerated
@@ -261,3 +261,8 @@ line_length:
 file_length:
     warning: 1000 # TODO: Reduce.
     error: 1000
+
+indentation_width:
+    indentation_width: 4
+    include_comments: false
+    include_compiler_directives: false

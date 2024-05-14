@@ -24,18 +24,21 @@ public extension SimpleScene {
                 BundleResourceReference(bundle: .main, name: "perseverance_\(index.formatted(.number.precision(.integerLength(2))))", extension: "ktx")
                 // ResourceReference.bundle(.main, name: "Testcard_\(index.formatted(.number.precision(.integerLength(2))))", extension: "ktx")
             }
-            .map { resource -> ((MTKTextureLoader) throws -> MTLTexture) in { loader in
+            .map { resource -> ((MTKTextureLoader) throws -> MTLTexture) in
+                // swiftlint:disable:next opening_brace
+                { loader in
                     try loader.newTexture(resource: resource, options: [.textureStorageMode: MTLStorageMode.private.rawValue])
                 }
             }
         }
         else {
             tilesSize = [1, 1]
-            tileTextures = [ { loader in
-                    try loader.newTexture(name: "BlueSkySkybox", scaleFactor: 1, bundle: .main, options: [
-                        .textureStorageMode: MTLStorageMode.private.rawValue,
-                        .SRGB: true,
-                    ])
+            // swiftlint:disable:next multiline_literal_brackets opening_brace
+            tileTextures = [{ loader in
+                try loader.newTexture(name: "BlueSkySkybox", scaleFactor: 1, bundle: .main, options: [
+                    .textureStorageMode: MTLStorageMode.private.rawValue,
+                    .SRGB: true,
+                ])
                 },
             ]
         }

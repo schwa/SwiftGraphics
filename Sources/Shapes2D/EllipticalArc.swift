@@ -5,6 +5,7 @@
 // swiftlint:disable file_length
 // swiftlint:disable multiline_parameters
 // swiftlint:disable indentation_width
+// swiftlint:disable implicitly_unwrapped_optional
 
 import CoreGraphics
 import SwiftUI

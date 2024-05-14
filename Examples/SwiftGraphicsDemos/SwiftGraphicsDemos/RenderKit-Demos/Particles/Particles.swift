@@ -170,13 +170,17 @@ class Simulation<Storage>: Observable where Storage: SimulationStorage {
     }
 
     private func smoothingKernel(radius: Float, dst: Float) -> Float {
-        if dst >= radius { return 0 }
+        if dst >= radius {
+            return 0
+        }
         let volume = (.pi * pow(radius, 4)) / 6
         return (radius - dst) * (radius - dst) / volume
     }
 
     private func smoothingKernelDerivative(dst: Float, radius: Float) -> Float {
-        if dst >= radius { return 0 }
+        if dst >= radius {
+            return 0
+        }
         let scale = 12 / (pow(radius, 4) * .pi)
         return (dst - radius) * scale
     }

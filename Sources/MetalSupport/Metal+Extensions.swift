@@ -314,27 +314,27 @@ public extension MTLVertexFormat {
             return 4 * MemoryLayout<Int16>.size
         case .half:
             #if arch(arm64)
-                return MemoryLayout<Float16>.size
+            return MemoryLayout<Float16>.size
             #else
-                return MemoryLayout<Int16>.size
+            return MemoryLayout<Int16>.size
             #endif
         case .half2:
             #if arch(arm64)
-                return 2 * MemoryLayout<Float16>.size
+            return 2 * MemoryLayout<Float16>.size
             #else
-                return 2 * MemoryLayout<Int16>.size
+            return 2 * MemoryLayout<Int16>.size
             #endif
         case .half3:
             #if arch(arm64)
-                return 3 * MemoryLayout<Float16>.size
+            return 3 * MemoryLayout<Float16>.size
             #else
-                return 3 * MemoryLayout<Int16>.size
+            return 3 * MemoryLayout<Int16>.size
             #endif
         case .half4:
             #if arch(arm64)
-                return MemoryLayout<Float16>.size
+            return MemoryLayout<Float16>.size
             #else
-                return MemoryLayout<Int16>.size
+            return MemoryLayout<Int16>.size
             #endif
         case .float:
             return MemoryLayout<Float>.size

@@ -5,6 +5,8 @@ import RenderKit
 import RenderKitShaders
 import simd
 
+// swiftlint:disable conditional_returns_on_newline
+
 public struct WingedEdgeCollection {
     public struct Face {
         public typealias Index = [Self].Index

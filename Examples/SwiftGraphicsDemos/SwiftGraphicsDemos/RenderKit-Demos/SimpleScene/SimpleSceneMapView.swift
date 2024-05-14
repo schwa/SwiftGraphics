@@ -23,7 +23,7 @@ struct SimpleSceneMapView: View {
             if case .perspective(let perspective) = scene.camera.projection {
                 // TODO: This is showing fovY but it should be fovX
                 let viewCone = Path.arc(center: cameraPosition * scale, radius: 4 * scale, midAngle: .radians(Double(scene.camera.heading.radians)), width: .radians(Double(perspective.fovy.radians)))
-//                context.fill(viewCone, with: .radialGradient(Gradient(colors: [.white.opacity(0.5), .white.opacity(0.0)]), center: cameraPosition * scale, startRadius: 0, endRadius: 4 * scale))
+                    // context.fill(viewCone, with: .radialGradient(Gradient(colors: [.white.opacity(0.5), .white.opacity(0.0)]), center: cameraPosition * scale, startRadius: 0, endRadius: 4 * scale))
                 context.stroke(viewCone, with: .color(.white))
             }
 

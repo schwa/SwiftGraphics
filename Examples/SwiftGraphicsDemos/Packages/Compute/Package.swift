@@ -12,8 +12,7 @@ let package = Package(
         .visionOS(.v1),
     ],
     products: [
-        .library(name: "Compute",
-                 targets: ["Compute"]),
+        .library(name: "Compute", targets: ["Compute"]),
     ],
     dependencies: [
         .package(path: "/Users/schwa/Projects/SwiftGraphics"),

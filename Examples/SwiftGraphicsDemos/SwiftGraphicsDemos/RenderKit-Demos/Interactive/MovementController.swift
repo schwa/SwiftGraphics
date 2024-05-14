@@ -66,29 +66,29 @@ class MovementController: @unchecked Sendable {
 //    var lastMouseUpdate: TimeInterval = 0
 
     func disableUIKeys() {
-        #if os(macOS)
-            logger?.debug("NSEvent.addLocalMonitorForEvents(matching: .keyDown) …")
-            NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
-                // If we're not focused return everything.
-                guard self?.focused == true else {
-                    logger?.debug("Ignoring event, not focused.")
-                    return event
-                }
-                // If a modifier is down
-                guard event.modifierFlags.isDisjoint(with: [.command, .shift, .control, .option]) else {
-                    logger?.debug("Ignoring event, modifier down.")
-                    return event
-                }
-                // If we're not a WASD key
-                guard ["w", "a", "s", "d"].contains(event.characters) else {
-                    logger?.debug("Ignoring key that wasn't a movement key.")
-                    return event
-                }
-                logger?.debug("Got movement key.")
-                // Consume the key
-                return nil
+#if os(macOS)
+        logger?.debug("NSEvent.addLocalMonitorForEvents(matching: .keyDown) …")
+        NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
+            // If we're not focused return everything.
+            guard self?.focused == true else {
+                logger?.debug("Ignoring event, not focused.")
+                return event
             }
-        #endif
+            // If a modifier is down
+            guard event.modifierFlags.isDisjoint(with: [.command, .shift, .control, .option]) else {
+                logger?.debug("Ignoring event, modifier down.")
+                return event
+            }
+            // If we're not a WASD key
+            guard ["w", "a", "s", "d"].contains(event.characters) else {
+                logger?.debug("Ignoring key that wasn't a movement key.")
+                return event
+            }
+            logger?.debug("Got movement key.")
+            // Consume the key
+            return nil
+        }
+#endif
     }
 
     @ObservationIgnored
