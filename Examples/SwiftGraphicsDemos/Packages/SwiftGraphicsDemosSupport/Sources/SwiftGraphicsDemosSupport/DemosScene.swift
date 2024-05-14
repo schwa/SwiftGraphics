@@ -42,6 +42,7 @@ struct DemosView: View {
         Particles2DemoView.self,
         PixelFormatsDemoView.self,
         TextureDemoView.self,
+        ShapesDemoView.self,
     ]
 
     var body: some View {

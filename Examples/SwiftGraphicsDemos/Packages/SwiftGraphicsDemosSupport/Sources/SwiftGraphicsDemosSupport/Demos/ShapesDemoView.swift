@@ -2,7 +2,7 @@ import CoreGraphicsSupport
 import Shapes2D
 import SwiftUI
 
-struct ShapesDemoView: View {
+struct ShapesDemoView: View, DemoView {
     let triangle = Triangle([0, 150], [125, 0], [250, 150])
 
     var body: some View {
