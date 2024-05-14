@@ -1,5 +1,4 @@
 import CoreGraphicsSupport
-import Everything
 import Foundation
 import Metal
 import MetalKit

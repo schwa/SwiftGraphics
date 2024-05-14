@@ -1,6 +1,4 @@
 import CoreGraphicsSupport
-
-// import Everything
 import simd
 import SwiftUI
 

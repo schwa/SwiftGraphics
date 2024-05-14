@@ -1,4 +1,3 @@
-import Everything
 import MetalKit
 import MetalSupport
 import ModelIO

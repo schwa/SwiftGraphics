@@ -1,5 +1,4 @@
 import CoreGraphicsSupport
-import Everything
 import MetalSupport
 import RenderKit
 import RenderKitShaders
