@@ -38,6 +38,7 @@
 		459DEFE52BCC761F00DE8245 /* MyShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459DEFE42BCC761F00DE8245 /* MyShape.swift */; };
 		459DEFE82BCCE45600DE8245 /* ShapesDemoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459DEFE72BCCE45600DE8245 /* ShapesDemoView.swift */; };
 		459DEFEA2BCCF18200DE8245 /* ShaderTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459DEFE92BCCF18200DE8245 /* ShaderTestView.swift */; };
+		459F585E2BF30E140021EBA1 /* GenericGeometryBase in Frameworks */ = {isa = PBXBuildFile; productRef = 459F585D2BF30E140021EBA1 /* GenericGeometryBase */; };
 		45B268AB2A8FDA000033A727 /* LegacyPathEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B268AA2A8FDA000033A727 /* LegacyPathEditor.swift */; };
 		45B268AD2A8FDA060033A727 /* Support.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B268AC2A8FDA060033A727 /* Support.swift */; };
 		45B9D2802BCC28DF001F717E /* GraphicsContextProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B9D27C2BCC28DF001F717E /* GraphicsContextProtocol.swift */; };
@@ -105,7 +106,6 @@
 		45F30F2E2BF15DBC00446D45 /* Array2D in Frameworks */ = {isa = PBXBuildFile; productRef = 45F30F2D2BF15DBC00446D45 /* Array2D */; };
 		45F30F302BF15DBC00446D45 /* CoreGraphicsSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 45F30F2F2BF15DBC00446D45 /* CoreGraphicsSupport */; };
 		45F30F322BF15DBC00446D45 /* Earcut in Frameworks */ = {isa = PBXBuildFile; productRef = 45F30F312BF15DBC00446D45 /* Earcut */; };
-		45F30F342BF15DBC00446D45 /* LegacyGeometry in Frameworks */ = {isa = PBXBuildFile; productRef = 45F30F332BF15DBC00446D45 /* LegacyGeometry */; };
 		45F30F362BF15DBC00446D45 /* MetalSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 45F30F352BF15DBC00446D45 /* MetalSupport */; };
 		45F30F382BF15DBC00446D45 /* MetalSupportUnsafeConformances in Frameworks */ = {isa = PBXBuildFile; productRef = 45F30F372BF15DBC00446D45 /* MetalSupportUnsafeConformances */; };
 		45F30F3A2BF15DBC00446D45 /* Projection in Frameworks */ = {isa = PBXBuildFile; productRef = 45F30F392BF15DBC00446D45 /* Projection */; };
@@ -245,13 +245,13 @@
 				45F30F3A2BF15DBC00446D45 /* Projection in Frameworks */,
 				45DA91572BF15D2B0070FD0C /* DemosSupport in Frameworks */,
 				45F30F482BF15DBC00446D45 /* SIMDSupport in Frameworks */,
-				45F30F342BF15DBC00446D45 /* LegacyGeometry in Frameworks */,
 				45F30F382BF15DBC00446D45 /* MetalSupportUnsafeConformances in Frameworks */,
 				45F30F2C2BF15DA500446D45 /* DemosSupport in Frameworks */,
 				45F30F402BF15DBC00446D45 /* RenderKitScratch in Frameworks */,
 				45F30F4A2BF15DBC00446D45 /* SIMDSupportUnsafeConformances in Frameworks */,
 				45F30F422BF15DBC00446D45 /* RenderKitShaders in Frameworks */,
 				45F30F3C2BF15DBC00446D45 /* Raster in Frameworks */,
+				459F585E2BF30E140021EBA1 /* GenericGeometryBase in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -542,7 +542,6 @@
 				45F30F2D2BF15DBC00446D45 /* Array2D */,
 				45F30F2F2BF15DBC00446D45 /* CoreGraphicsSupport */,
 				45F30F312BF15DBC00446D45 /* Earcut */,
-				45F30F332BF15DBC00446D45 /* LegacyGeometry */,
 				45F30F352BF15DBC00446D45 /* MetalSupport */,
 				45F30F372BF15DBC00446D45 /* MetalSupportUnsafeConformances */,
 				45F30F392BF15DBC00446D45 /* Projection */,
@@ -556,6 +555,7 @@
 				45F30F492BF15DBC00446D45 /* SIMDSupportUnsafeConformances */,
 				45F30F4B2BF15DBC00446D45 /* Sketches */,
 				45F30F4E2BF15EAC00446D45 /* SwiftGLTF */,
+				459F585D2BF30E140021EBA1 /* GenericGeometryBase */,
 			);
 			productName = StairTest;
 			productReference = 45E5B5DF2A8EA04100B46CDC /* SwiftGraphicsDemos.app */;
@@ -786,6 +786,10 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		459F585D2BF30E140021EBA1 /* GenericGeometryBase */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = GenericGeometryBase;
+		};
 		45DA91532BF15D1A0070FD0C /* Compute */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Compute;
@@ -809,10 +813,6 @@
 		45F30F312BF15DBC00446D45 /* Earcut */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Earcut;
-		};
-		45F30F332BF15DBC00446D45 /* LegacyGeometry */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = LegacyGeometry;
 		};
 		45F30F352BF15DBC00446D45 /* MetalSupport */ = {
 			isa = XCSwiftPackageProductDependency;

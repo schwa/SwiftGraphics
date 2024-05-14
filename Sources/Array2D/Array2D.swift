@@ -1,5 +1,5 @@
 import Foundation
-import LegacyGeometry
+import GenericGeometryBase
 
 public struct Array2D<Element> {
 //    public enum Order {

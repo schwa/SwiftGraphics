@@ -1,14 +1,7 @@
 import Algorithms
 import CoreGraphics
 import CoreGraphicsSupport
-import LegacyGeometry
-
-// protocol CGImageConvertable {
-//    init(cgImage: CGImage)
-//    var cgImage: CGImage { get }
-// }
-
-// MARK: -
+import GenericGeometryBase
 
 private extension Array2D {
     mutating func draw(image: CGImage, definition: BitmapDefinition) {

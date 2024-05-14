@@ -1,7 +1,7 @@
 import CoreGraphics
 import CoreGraphicsSupport
 import Foundation
-import LegacyGeometry
+import GenericGeometryBase
 
 public extension Array2D {
     mutating func blit<SourceElement>(from source: Array2D<SourceElement>, frame: IntRect, to position: IntPoint, clip: IntRect? = nil, compositor: (_ source: SourceElement, _ destination: Element) -> Element) {

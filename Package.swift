@@ -17,7 +17,7 @@ let package = Package(
         .library(name: "Array2D", targets: ["Array2D"]),
         .library(name: "CoreGraphicsSupport", targets: ["CoreGraphicsSupport"]),
         .library(name: "Earcut", targets: ["Earcut"]),
-        .library(name: "LegacyGeometry", targets: ["LegacyGeometry"]),
+        .library(name: "GenericGeometryBase", targets: ["GenericGeometryBase"]),
         .library(name: "MetalSupport", targets: ["MetalSupport"]),
         .library(name: "MetalSupportUnsafeConformances", targets: ["MetalSupportUnsafeConformances"]),
         .library(name: "Projection", targets: ["Projection"]),
@@ -49,7 +49,7 @@ let package = Package(
             dependencies: [
                 .product(name: "Algorithms", package: "swift-algorithms"),
                 "CoreGraphicsSupport",
-                "LegacyGeometry",
+                "GenericGeometryBase",
             ]
         ),
 
@@ -64,7 +64,7 @@ let package = Package(
         ),
         .target(name: "earcut_cpp", exclude: ["earcut.hpp/test", "earcut.hpp/glfw"]),
         .target(
-            name: "LegacyGeometry",
+            name: "GenericGeometryBase",
             dependencies: [
                 "ApproximateEquality",
                 "CoreGraphicsSupport",
@@ -86,7 +86,7 @@ let package = Package(
             dependencies: [
                 .product(name: "Algorithms", package: "swift-algorithms"),
                 "CoreGraphicsSupport",
-                "LegacyGeometry",
+                "GenericGeometryBase",
                 "Shapes2D",
             ]
         ),
@@ -152,7 +152,7 @@ let package = Package(
                 .product(name: "ApproximateEquality", package: "ApproximateEquality"),
                 .product(name: "ApproximateEqualityMacros", package: "ApproximateEquality"),
                 "CoreGraphicsSupport",
-                "LegacyGeometry",
+                "GenericGeometryBase",
                 "SIMDSupport",
             ]
         ),
@@ -192,7 +192,7 @@ let package = Package(
             dependencies: [
                 .product(name: "ApproximateEquality", package: "ApproximateEquality"),
                 "CoreGraphicsSupport",
-                "LegacyGeometry",
+                "GenericGeometryBase",
                 "Shapes2D",
                 "SIMDSupport",
             ]
