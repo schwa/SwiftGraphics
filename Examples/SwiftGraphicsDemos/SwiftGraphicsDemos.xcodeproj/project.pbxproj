@@ -22,7 +22,6 @@
 		456A74322A95531B00E75A8E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456A74312A95531B00E75A8E /* ContentView.swift */; };
 		458956972BE8121F00D5AF6E /* Spline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458956962BE8121F00D5AF6E /* Spline.swift */; };
 		4589EEF62BE852D6001261B9 /* BoxesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4589EEEA2BE852D6001261B9 /* BoxesView.swift */; };
-		4589EEF72BE852D6001261B9 /* HalfEdgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4589EEEB2BE852D6001261B9 /* HalfEdgeView.swift */; };
 		4589EEF82BE852D6001261B9 /* Inspectors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4589EEEC2BE852D6001261B9 /* Inspectors.swift */; };
 		4589EEF92BE852D6001261B9 /* MeshView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4589EEED2BE852D6001261B9 /* MeshView.swift */; };
 		4589EEFA2BE852D6001261B9 /* SoftwareRendererView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4589EEEE2BE852D6001261B9 /* SoftwareRendererView.swift */; };
@@ -39,6 +38,8 @@
 		459DEFE82BCCE45600DE8245 /* ShapesDemoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459DEFE72BCCE45600DE8245 /* ShapesDemoView.swift */; };
 		459DEFEA2BCCF18200DE8245 /* ShaderTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459DEFE92BCCF18200DE8245 /* ShaderTestView.swift */; };
 		459F585E2BF30E140021EBA1 /* GenericGeometryBase in Frameworks */ = {isa = PBXBuildFile; productRef = 459F585D2BF30E140021EBA1 /* GenericGeometryBase */; };
+		459F58602BF30FB90021EBA1 /* HalfEdgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459F585F2BF30FB90021EBA1 /* HalfEdgeView.swift */; };
+		459F58622BF30FC00021EBA1 /* HalfEdge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459F58612BF30FC00021EBA1 /* HalfEdge.swift */; };
 		45B268AB2A8FDA000033A727 /* LegacyPathEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B268AA2A8FDA000033A727 /* LegacyPathEditor.swift */; };
 		45B268AD2A8FDA060033A727 /* Support.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B268AC2A8FDA060033A727 /* Support.swift */; };
 		45B9D2802BCC28DF001F717E /* GraphicsContextProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B9D27C2BCC28DF001F717E /* GraphicsContextProtocol.swift */; };
@@ -152,6 +153,8 @@
 		459DEFE42BCC761F00DE8245 /* MyShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyShape.swift; sourceTree = "<group>"; };
 		459DEFE72BCCE45600DE8245 /* ShapesDemoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShapesDemoView.swift; sourceTree = "<group>"; };
 		459DEFE92BCCF18200DE8245 /* ShaderTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShaderTestView.swift; sourceTree = "<group>"; };
+		459F585F2BF30FB90021EBA1 /* HalfEdgeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HalfEdgeView.swift; sourceTree = "<group>"; };
+		459F58612BF30FC00021EBA1 /* HalfEdge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HalfEdge.swift; sourceTree = "<group>"; };
 		45B268AA2A8FDA000033A727 /* LegacyPathEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyPathEditor.swift; sourceTree = "<group>"; };
 		45B268AC2A8FDA060033A727 /* Support.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Support.swift; sourceTree = "<group>"; };
 		45B642022A9EC70500171EE0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -312,6 +315,11 @@
 				452D82C62BC9C6F00054218F /* SignedDistanceFields.metal */,
 				452586332BBCF8B8003E85B4 /* LineDemoView.swift */,
 				453777EA2BC096BB00E600A6 /* BeziersView.swift */,
+				459F58612BF30FC00021EBA1 /* HalfEdge.swift */,
+				459F585F2BF30FB90021EBA1 /* HalfEdgeView.swift */,
+				452D82C82BCA301C0054218F /* SketchView.swift */,
+				459DEFE42BCC761F00DE8245 /* MyShape.swift */,
+				455E61DC2BCD7A5000EAC5E0 /* Tools.swift */,
 				4530821B2BE68E7D00F3FBFF /* HobbyCurveView.swift */,
 				45C41A9C2BD76625006FBA7B /* Beziers2.swift */,
 				453082192BE6898300F3FBFF /* Hobby.swift */,
@@ -494,9 +502,6 @@
 				45E5B5E22A8EA04100B46CDC /* SwiftGraphicsDemosApp.swift */,
 				456A74312A95531B00E75A8E /* ContentView.swift */,
 				4530821D2BE692A500F3FBFF /* DemosView.swift */,
-				452D82C82BCA301C0054218F /* SketchView.swift */,
-				455E61DC2BCD7A5000EAC5E0 /* Tools.swift */,
-				459DEFE42BCC761F00DE8245 /* MyShape.swift */,
 				45DA90B12BF158380070FD0C /* Info-visionOS.plist */,
 				4589EF062BE85309001261B9 /* Projections */,
 				459DEFE62BCCE36700DE8245 /* Demos */,
@@ -648,6 +653,7 @@
 				45DA910C2BF158380070FD0C /* DisplayLink.swift in Sources */,
 				45DA90D22BF158380070FD0C /* GameControllerWidget.swift in Sources */,
 				45DA90F72BF158380070FD0C /* ShaderToyView.swift in Sources */,
+				459F58602BF30FB90021EBA1 /* HalfEdgeView.swift in Sources */,
 				4530821C2BE68E7D00F3FBFF /* HobbyCurveView.swift in Sources */,
 				45DA91132BF158380070FD0C /* RKSupport.swift in Sources */,
 				45DA91242BF158380070FD0C /* VolumetricRenderPass.swift in Sources */,
@@ -680,13 +686,13 @@
 				45DA91322BF158380070FD0C /* TextureView.swift in Sources */,
 				4589EEFA2BE852D6001261B9 /* SoftwareRendererView.swift in Sources */,
 				452D82C92BCA301C0054218F /* SketchView.swift in Sources */,
+				459F58622BF30FC00021EBA1 /* HalfEdge.swift in Sources */,
 				4589EEF62BE852D6001261B9 /* BoxesView.swift in Sources */,
 				45493BE62A8F140A0057FD00 /* my_color_effect.metal in Sources */,
 				459DEFE82BCCE45600DE8245 /* ShapesDemoView.swift in Sources */,
 				45DA91152BF158380070FD0C /* TarArchive.swift in Sources */,
 				45DA910A2BF158380070FD0C /* Cache.swift in Sources */,
 				45E5B5E52A8EA04100B46CDC /* CustomStrokeView.swift in Sources */,
-				4589EEF72BE852D6001261B9 /* HalfEdgeView.swift in Sources */,
 				45DA910D2BF158380070FD0C /* Gradient.swift in Sources */,
 				45DA90D12BF158380070FD0C /* FirstPersonInteractiveViewModifier.swift in Sources */,
 				453777EB2BC096BB00E600A6 /* BeziersView.swift in Sources */,
