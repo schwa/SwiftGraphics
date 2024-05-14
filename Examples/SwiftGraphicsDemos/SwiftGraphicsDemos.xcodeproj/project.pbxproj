@@ -111,7 +111,6 @@
 		45F30F3A2BF15DBC00446D45 /* Projection in Frameworks */ = {isa = PBXBuildFile; productRef = 45F30F392BF15DBC00446D45 /* Projection */; };
 		45F30F3C2BF15DBC00446D45 /* Raster in Frameworks */ = {isa = PBXBuildFile; productRef = 45F30F3B2BF15DBC00446D45 /* Raster */; };
 		45F30F3E2BF15DBC00446D45 /* RenderKit in Frameworks */ = {isa = PBXBuildFile; productRef = 45F30F3D2BF15DBC00446D45 /* RenderKit */; };
-		45F30F402BF15DBC00446D45 /* RenderKitScratch in Frameworks */ = {isa = PBXBuildFile; productRef = 45F30F3F2BF15DBC00446D45 /* RenderKitScratch */; };
 		45F30F422BF15DBC00446D45 /* RenderKitShaders in Frameworks */ = {isa = PBXBuildFile; productRef = 45F30F412BF15DBC00446D45 /* RenderKitShaders */; };
 		45F30F442BF15DBC00446D45 /* Shapes2D in Frameworks */ = {isa = PBXBuildFile; productRef = 45F30F432BF15DBC00446D45 /* Shapes2D */; };
 		45F30F462BF15DBC00446D45 /* Shapes3D in Frameworks */ = {isa = PBXBuildFile; productRef = 45F30F452BF15DBC00446D45 /* Shapes3D */; };
@@ -247,7 +246,6 @@
 				45F30F482BF15DBC00446D45 /* SIMDSupport in Frameworks */,
 				45F30F382BF15DBC00446D45 /* MetalSupportUnsafeConformances in Frameworks */,
 				45F30F2C2BF15DA500446D45 /* DemosSupport in Frameworks */,
-				45F30F402BF15DBC00446D45 /* RenderKitScratch in Frameworks */,
 				45F30F4A2BF15DBC00446D45 /* SIMDSupportUnsafeConformances in Frameworks */,
 				45F30F422BF15DBC00446D45 /* RenderKitShaders in Frameworks */,
 				45F30F3C2BF15DBC00446D45 /* Raster in Frameworks */,
@@ -547,7 +545,6 @@
 				45F30F392BF15DBC00446D45 /* Projection */,
 				45F30F3B2BF15DBC00446D45 /* Raster */,
 				45F30F3D2BF15DBC00446D45 /* RenderKit */,
-				45F30F3F2BF15DBC00446D45 /* RenderKitScratch */,
 				45F30F412BF15DBC00446D45 /* RenderKitShaders */,
 				45F30F432BF15DBC00446D45 /* Shapes2D */,
 				45F30F452BF15DBC00446D45 /* Shapes3D */,
@@ -833,10 +830,6 @@
 		45F30F3D2BF15DBC00446D45 /* RenderKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = RenderKit;
-		};
-		45F30F3F2BF15DBC00446D45 /* RenderKitScratch */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = RenderKitScratch;
 		};
 		45F30F412BF15DBC00446D45 /* RenderKitShaders */ = {
 			isa = XCSwiftPackageProductDependency;

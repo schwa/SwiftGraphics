@@ -23,7 +23,6 @@ let package = Package(
         .library(name: "Projection", targets: ["Projection"]),
         .library(name: "Raster", targets: ["Raster"]),
         .library(name: "RenderKit", targets: ["RenderKit"]),
-        .library(name: "RenderKitScratch", targets: ["RenderKitScratch"]),
         .library(name: "RenderKitShaders", targets: ["RenderKitShaders"]),
         .library(name: "Shapes2D", targets: ["Shapes2D"]),
         .library(name: "Shapes3D", targets: ["Shapes3D"]),
@@ -123,14 +122,6 @@ let package = Package(
             ]
         ),
         .target(
-            name: "RenderKitScratch",
-            dependencies: [
-                "Everything",
-                "RenderKit",
-            ],
-            swiftSettings: [.interoperabilityMode(.Cxx)]
-        ),
-        .target(
             name: "RenderKitShaders",
             plugins: [
                 // .plugin(name: "MetalCompilerPlugin", package: "MetalCompilerPlugin")
@@ -139,7 +130,7 @@ let package = Package(
         .testTarget(
             name: "RenderKitTests",
             dependencies: [
-                "RenderKit", "RenderKitScratch",
+                "RenderKit",
             ],
             swiftSettings: [.interoperabilityMode(.Cxx)]
         ),
