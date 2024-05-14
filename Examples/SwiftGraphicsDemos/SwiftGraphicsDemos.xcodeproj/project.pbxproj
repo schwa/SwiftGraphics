@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 60;
+	objectVersion = 56;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -40,6 +40,8 @@
 		459F585E2BF30E140021EBA1 /* GenericGeometryBase in Frameworks */ = {isa = PBXBuildFile; productRef = 459F585D2BF30E140021EBA1 /* GenericGeometryBase */; };
 		459F58602BF30FB90021EBA1 /* HalfEdgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459F585F2BF30FB90021EBA1 /* HalfEdgeView.swift */; };
 		459F58622BF30FC00021EBA1 /* HalfEdge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459F58612BF30FC00021EBA1 /* HalfEdge.swift */; };
+		459F58682BF311640021EBA1 /* SpatialLookupTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459F58672BF311640021EBA1 /* SpatialLookupTable.swift */; };
+		459F586A2BF3117D0021EBA1 /* SwiftGraphicsDemosSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 459F58692BF3117D0021EBA1 /* SwiftGraphicsDemosSupport */; };
 		45B268AB2A8FDA000033A727 /* LegacyPathEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B268AA2A8FDA000033A727 /* LegacyPathEditor.swift */; };
 		45B268AD2A8FDA060033A727 /* Support.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B268AC2A8FDA060033A727 /* Support.swift */; };
 		45B9D2802BCC28DF001F717E /* GraphicsContextProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B9D27C2BCC28DF001F717E /* GraphicsContextProtocol.swift */; };
@@ -99,11 +101,9 @@
 		45DA91302BF158380070FD0C /* ScreenSpaceDemoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA90B52BF158380070FD0C /* ScreenSpaceDemoView.swift */; };
 		45DA91322BF158380070FD0C /* TextureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DA90B72BF158380070FD0C /* TextureView.swift */; };
 		45DA91542BF15D1A0070FD0C /* Compute in Frameworks */ = {isa = PBXBuildFile; productRef = 45DA91532BF15D1A0070FD0C /* Compute */; };
-		45DA91572BF15D2B0070FD0C /* DemosSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 45DA91562BF15D2B0070FD0C /* DemosSupport */; };
 		45E5B5E32A8EA04100B46CDC /* SwiftGraphicsDemosApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E5B5E22A8EA04100B46CDC /* SwiftGraphicsDemosApp.swift */; };
 		45E5B5E52A8EA04100B46CDC /* CustomStrokeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E5B5E42A8EA04100B46CDC /* CustomStrokeView.swift */; };
 		45E5B5EB2A8EA04400B46CDC /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 45E5B5EA2A8EA04400B46CDC /* Preview Assets.xcassets */; };
-		45F30F2C2BF15DA500446D45 /* DemosSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 45F30F2B2BF15DA500446D45 /* DemosSupport */; };
 		45F30F2E2BF15DBC00446D45 /* Array2D in Frameworks */ = {isa = PBXBuildFile; productRef = 45F30F2D2BF15DBC00446D45 /* Array2D */; };
 		45F30F302BF15DBC00446D45 /* CoreGraphicsSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 45F30F2F2BF15DBC00446D45 /* CoreGraphicsSupport */; };
 		45F30F322BF15DBC00446D45 /* Earcut in Frameworks */ = {isa = PBXBuildFile; productRef = 45F30F312BF15DBC00446D45 /* Earcut */; };
@@ -155,6 +155,9 @@
 		459DEFE92BCCF18200DE8245 /* ShaderTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShaderTestView.swift; sourceTree = "<group>"; };
 		459F585F2BF30FB90021EBA1 /* HalfEdgeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HalfEdgeView.swift; sourceTree = "<group>"; };
 		459F58612BF30FC00021EBA1 /* HalfEdge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HalfEdge.swift; sourceTree = "<group>"; };
+		459F58632BF311190021EBA1 /* SwiftGraphicsDemosSupport */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = SwiftGraphicsDemosSupport; path = Packages/SwiftGraphicsDemosSupport; sourceTree = "<group>"; };
+		459F58642BF311370021EBA1 /* Compute */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Compute; path = Packages/Compute; sourceTree = "<group>"; };
+		459F58672BF311640021EBA1 /* SpatialLookupTable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpatialLookupTable.swift; sourceTree = "<group>"; };
 		45B268AA2A8FDA000033A727 /* LegacyPathEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyPathEditor.swift; sourceTree = "<group>"; };
 		45B268AC2A8FDA060033A727 /* Support.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Support.swift; sourceTree = "<group>"; };
 		45B642022A9EC70500171EE0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -245,14 +248,13 @@
 				45F30F3E2BF15DBC00446D45 /* RenderKit in Frameworks */,
 				45F30F442BF15DBC00446D45 /* Shapes2D in Frameworks */,
 				45F30F3A2BF15DBC00446D45 /* Projection in Frameworks */,
-				45DA91572BF15D2B0070FD0C /* DemosSupport in Frameworks */,
 				45F30F482BF15DBC00446D45 /* SIMDSupport in Frameworks */,
 				45F30F382BF15DBC00446D45 /* MetalSupportUnsafeConformances in Frameworks */,
-				45F30F2C2BF15DA500446D45 /* DemosSupport in Frameworks */,
 				45F30F4A2BF15DBC00446D45 /* SIMDSupportUnsafeConformances in Frameworks */,
 				45F30F422BF15DBC00446D45 /* RenderKitShaders in Frameworks */,
 				45F30F3C2BF15DBC00446D45 /* Raster in Frameworks */,
 				459F585E2BF30E140021EBA1 /* GenericGeometryBase in Frameworks */,
+				459F586A2BF3117D0021EBA1 /* SwiftGraphicsDemosSupport in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -311,6 +313,7 @@
 		459DEFE62BCCE36700DE8245 /* Demos */ = {
 			isa = PBXGroup;
 			children = (
+				459F58672BF311640021EBA1 /* SpatialLookupTable.swift */,
 				45B268AA2A8FDA000033A727 /* LegacyPathEditor.swift */,
 				452D82C62BC9C6F00054218F /* SignedDistanceFields.metal */,
 				452586332BBCF8B8003E85B4 /* LineDemoView.swift */,
@@ -479,6 +482,8 @@
 		45E5B5D62A8EA04100B46CDC = {
 			isa = PBXGroup;
 			children = (
+				459F58642BF311370021EBA1 /* Compute */,
+				459F58632BF311190021EBA1 /* SwiftGraphicsDemosSupport */,
 				45DA91582BF15D6B0070FD0C /* SwiftGraphics */,
 				45DA914C2BF15B070070FD0C /* xcconfig */,
 				45E5B5E12A8EA04100B46CDC /* SwiftGraphicsDemos */,
@@ -540,8 +545,6 @@
 			name = SwiftGraphicsDemos;
 			packageProductDependencies = (
 				45DA91532BF15D1A0070FD0C /* Compute */,
-				45DA91562BF15D2B0070FD0C /* DemosSupport */,
-				45F30F2B2BF15DA500446D45 /* DemosSupport */,
 				45F30F2D2BF15DBC00446D45 /* Array2D */,
 				45F30F2F2BF15DBC00446D45 /* CoreGraphicsSupport */,
 				45F30F312BF15DBC00446D45 /* Earcut */,
@@ -558,6 +561,7 @@
 				45F30F4B2BF15DBC00446D45 /* Sketches */,
 				45F30F4E2BF15EAC00446D45 /* SwiftGLTF */,
 				459F585D2BF30E140021EBA1 /* GenericGeometryBase */,
+				459F58692BF3117D0021EBA1 /* SwiftGraphicsDemosSupport */,
 			);
 			productName = StairTest;
 			productReference = 45E5B5DF2A8EA04100B46CDC /* SwiftGraphicsDemos.app */;
@@ -588,8 +592,6 @@
 			);
 			mainGroup = 45E5B5D62A8EA04100B46CDC;
 			packageReferences = (
-				45DA91522BF15D1A0070FD0C /* XCLocalSwiftPackageReference "Packages/Compute" */,
-				45F30F2A2BF15DA500446D45 /* XCLocalSwiftPackageReference "Packages/DemosSupport" */,
 				45F30F4D2BF15EAC00446D45 /* XCRemoteSwiftPackageReference "SwiftGLTF" */,
 			);
 			productRefGroup = 45E5B5E02A8EA04100B46CDC /* Products */;
@@ -694,6 +696,7 @@
 				45DA910A2BF158380070FD0C /* Cache.swift in Sources */,
 				45E5B5E52A8EA04100B46CDC /* CustomStrokeView.swift in Sources */,
 				45DA910D2BF158380070FD0C /* Gradient.swift in Sources */,
+				459F58682BF311640021EBA1 /* SpatialLookupTable.swift in Sources */,
 				45DA90D12BF158380070FD0C /* FirstPersonInteractiveViewModifier.swift in Sources */,
 				453777EB2BC096BB00E600A6 /* BeziersView.swift in Sources */,
 				45DA912B2BF158380070FD0C /* DemosApp.swift in Sources */,
@@ -766,17 +769,6 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCLocalSwiftPackageReference section */
-		45DA91522BF15D1A0070FD0C /* XCLocalSwiftPackageReference "Packages/Compute" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = Packages/Compute;
-		};
-		45F30F2A2BF15DA500446D45 /* XCLocalSwiftPackageReference "Packages/DemosSupport" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = Packages/DemosSupport;
-		};
-/* End XCLocalSwiftPackageReference section */
-
 /* Begin XCRemoteSwiftPackageReference section */
 		45F30F4D2BF15EAC00446D45 /* XCRemoteSwiftPackageReference "SwiftGLTF" */ = {
 			isa = XCRemoteSwiftPackageReference;
@@ -793,17 +785,13 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = GenericGeometryBase;
 		};
+		459F58692BF3117D0021EBA1 /* SwiftGraphicsDemosSupport */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SwiftGraphicsDemosSupport;
+		};
 		45DA91532BF15D1A0070FD0C /* Compute */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Compute;
-		};
-		45DA91562BF15D2B0070FD0C /* DemosSupport */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = DemosSupport;
-		};
-		45F30F2B2BF15DA500446D45 /* DemosSupport */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = DemosSupport;
 		};
 		45F30F2D2BF15DBC00446D45 /* Array2D */ = {
 			isa = XCSwiftPackageProductDependency;
