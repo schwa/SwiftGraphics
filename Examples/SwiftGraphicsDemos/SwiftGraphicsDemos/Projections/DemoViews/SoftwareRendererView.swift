@@ -27,10 +27,10 @@ struct SoftwareRendererView: View {
     var rasterizerOptions: Rasterizer.Options = .default
 
     @State
-    var axisRules: Bool = true
+    var axisRules = true
 
     @State
-    var isInspectorPresented: Bool = true
+    var isInspectorPresented = true
 
     var renderer: (Projection3D, inout GraphicsContext, inout GraphicsContext3D) -> Void
 

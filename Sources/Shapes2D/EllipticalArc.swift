@@ -488,12 +488,12 @@ public class EllipticalArc {
             // swiftlint:enable syntactic_sugar
             let safety: [Double]
             if degree == 2 {
-                coeffs = (x < 0.25) ? EllipticalArc.coeffs2Low : EllipticalArc.coeffs2High
-                safety = EllipticalArc.safety2
+                coeffs = (x < 0.25) ? Self.coeffs2Low : Self.coeffs2High
+                safety = Self.safety2
             }
             else {
-                coeffs = (x < 0.25) ? EllipticalArc.coeffs3Low : EllipticalArc.coeffs3High
-                safety = EllipticalArc.safety3
+                coeffs = (x < 0.25) ? Self.coeffs3Low : Self.coeffs3High
+                safety = Self.safety3
             }
 
             let c0 = rationalFunction(x, coeffs[0][0])
@@ -687,11 +687,11 @@ public class EllipticalArc {
         }
 
         if isPieSlice {
-            return (EllipticalArc.intersect(cx, cy, x1, y1, xA, yA, xB, yB)
-                || EllipticalArc.intersect(cx, cy, x2, y2, xA, yA, xB, yB))
+            return (Self.intersect(cx, cy, x1, y1, xA, yA, xB, yB)
+                || Self.intersect(cx, cy, x2, y2, xA, yA, xB, yB))
         }
         else {
-            return EllipticalArc.intersect(x1, y1, x2, y2, xA, yA, xB, yB)
+            return Self.intersect(x1, y1, x2, y2, xA, yA, xB, yB)
         }
     }
 

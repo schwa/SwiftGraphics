@@ -17,10 +17,10 @@ public struct WingedEdgeCollection {
 
         public var originVertex: Vertex.Index
         public var destinationVertex: Vertex.Index
-        public var edgeLeftClockwise: Edge.Index?
-        public var edgeLeftCounterClockwise: Edge.Index?
-        public var edgeRightClockwise: Edge.Index?
-        public var edgeRightCounterClockwise: Edge.Index?
+        public var edgeLeftClockwise: Self.Index?
+        public var edgeLeftCounterClockwise: Self.Index?
+        public var edgeRightClockwise: Self.Index?
+        public var edgeRightCounterClockwise: Self.Index?
         public var faceLeft: Face.Index?
         public var faceRight: Face.Index?
     }

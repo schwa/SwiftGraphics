@@ -22,11 +22,11 @@ class MovementController: @unchecked Sendable {
         var payload: Payload
         var created = CFAbsoluteTimeGetCurrent()
 
-        static func movement(_ movement: SIMD3<Float>) -> Event {
+        static func movement(_ movement: SIMD3<Float>) -> Self {
             .init(payload: .movement(movement))
         }
 
-        static func rotation(_ rotation: Float) -> Event {
+        static func rotation(_ rotation: Float) -> Self {
             .init(payload: .rotation(rotation))
         }
     }

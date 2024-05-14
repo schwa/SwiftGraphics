@@ -29,9 +29,9 @@
         @State
         var error: Error?
 
-        let setup: MetalView.Setup
-        let drawableSizeWillChange: MetalView.DrawableSizeWillChange
-        let draw: MetalView.Draw
+        let setup: Self.Setup
+        let drawableSizeWillChange: Self.DrawableSizeWillChange
+        let draw: Self.Draw
 
         public init(setup: @escaping Setup, drawableSizeWillChange: @escaping DrawableSizeWillChange, draw: @escaping Draw) {
             self.setup = setup

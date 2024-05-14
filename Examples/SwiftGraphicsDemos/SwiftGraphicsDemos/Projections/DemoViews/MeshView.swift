@@ -30,7 +30,7 @@ struct MeshView: View, DefaultInitializableView {
     var mesh: TrivialMesh<SimpleVertex>?
 
     @State
-    var vertexNormals: Bool = false
+    var vertexNormals = false
 
     enum Mode {
         case model

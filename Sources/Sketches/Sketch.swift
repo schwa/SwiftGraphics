@@ -139,13 +139,13 @@ public extension Sketch {
             var start: CGPoint
             var end: CGPoint
 
-            public var positions: [WritableKeyPath<Handle, CGPoint>: CGPoint] {
+            public var positions: [WritableKeyPath<Self, CGPoint>: CGPoint] {
                 get {
-                    [\Handle.start: start, \Handle.end: end]
+                    [\Self.start: start, \Self.end: end]
                 }
                 set {
-                    start = newValue[\Handle.start]!
-                    end = newValue[\Handle.end]!
+                    start = newValue[\Self.start]!
+                    end = newValue[\Self.end]!
                 }
             }
         }
@@ -177,13 +177,13 @@ public extension Sketch {
             var start: CGPoint
             var end: CGPoint
 
-            public var positions: [WritableKeyPath<Handle, CGPoint>: CGPoint] {
+            public var positions: [WritableKeyPath<Self, CGPoint>: CGPoint] {
                 get {
-                    [\Handle.start: start, \Handle.end: end]
+                    [\Self.start: start, \Self.end: end]
                 }
                 set {
-                    start = newValue[\Handle.start]!
-                    end = newValue[\Handle.end]!
+                    start = newValue[\Self.start]!
+                    end = newValue[\Self.end]!
                 }
             }
         }

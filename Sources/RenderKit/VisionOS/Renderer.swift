@@ -52,11 +52,11 @@
             dynamicUniformBuffer = device.makeBuffer(length: uniformBufferSize, options: [MTLResourceOptions.storageModeShared])!
             dynamicUniformBuffer.label = "UniformBuffer"
             uniforms = UnsafeMutableRawBufferPointer(start: dynamicUniformBuffer.contents(), count: uniformBufferSize).bindMemory(to: UniformsArray.self)
-            let mtlVertexDescriptor = Renderer.buildMetalVertexDescriptor()
-            pipelineState = try Renderer.buildRenderPipelineWithDevice(device: device, layerRenderer: layerRenderer, mtlVertexDescriptor: mtlVertexDescriptor)
+            let mtlVertexDescriptor = Self.buildMetalVertexDescriptor()
+            pipelineState = try Self.buildRenderPipelineWithDevice(device: device, layerRenderer: layerRenderer, mtlVertexDescriptor: mtlVertexDescriptor)
             let depthStateDescriptor = MTLDepthStencilDescriptor(depthCompareFunction: .greater, isDepthWriteEnabled: true)
             depthState = device.makeDepthStencilState(descriptor: depthStateDescriptor)!
-            mesh = try Renderer.buildMesh(device: device, mtlVertexDescriptor: mtlVertexDescriptor)
+            mesh = try Self.buildMesh(device: device, mtlVertexDescriptor: mtlVertexDescriptor)
             colorMap = try MTKTextureLoader(device: device).newTexture(name: "ColorMap", scaleFactor: 1.0, bundle: Bundle.module, options: [
                 // swiftlint:disable:next legacy_objc_type
                 .textureUsage: NSNumber(value: MTLTextureUsage.shaderRead.rawValue),

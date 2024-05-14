@@ -7,7 +7,7 @@ public struct LOLID2: Hashable, Sendable {
     public static func generate(prefix: String) -> Self {
         nextIndexByPrefix.withLock { nextIndexByPrefix in
             let index = nextIndexByPrefix[prefix, default: 0]
-            let id = LOLID2(rawValue: "\(prefix)-\(index)")
+            let id = Self(rawValue: "\(prefix)-\(index)")
             nextIndexByPrefix[prefix] = index + 1
             return id
         }
@@ -20,7 +20,7 @@ public struct LOLID2: Hashable, Sendable {
     }
 
     public init(prefix: String) {
-        self = LOLID2.generate(prefix: prefix)
+        self = Self.generate(prefix: prefix)
     }
 }
 

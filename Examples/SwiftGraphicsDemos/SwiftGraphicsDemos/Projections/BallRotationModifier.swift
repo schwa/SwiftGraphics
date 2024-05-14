@@ -16,7 +16,7 @@ public struct Rotation: Hashable {
         self.roll = roll
     }
 
-    static let zero = Rotation(pitch: .zero, yaw: .zero, roll: .zero)
+    static let zero = Self(pitch: .zero, yaw: .zero, roll: .zero)
 }
 
 public extension Rotation {

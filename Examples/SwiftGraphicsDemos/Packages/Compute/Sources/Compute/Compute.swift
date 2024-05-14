@@ -93,7 +93,7 @@ public extension Compute {
         var constantValue: (MTLFunctionConstantValues, String) -> Void
 
         public static func int(_ value: some BinaryInteger) -> Self {
-            Argument { encoder, index in
+            Self { encoder, index in
                 withUnsafeBytes(of: value) { buffer in
                     encoder.setBytes(buffer.baseAddress!, length: buffer.count, index: index)
                 }
@@ -107,7 +107,7 @@ public extension Compute {
         }
 
         public static func bool(_ value: Bool) -> Self {
-            Argument { encoder, index in
+            Self { encoder, index in
                 withUnsafeBytes(of: value) { buffer in
                     encoder.setBytes(buffer.baseAddress!, length: buffer.count, index: index)
                 }
@@ -120,7 +120,7 @@ public extension Compute {
         }
 
         public static func buffer(_ buffer: MTLBuffer, offset: Int = 0) -> Self {
-            Argument { encoder, index in
+            Self { encoder, index in
                 encoder.setBuffer(buffer, offset: offset, index: index)
             }
             constantValue: { _, _ in
@@ -129,7 +129,7 @@ public extension Compute {
         }
 
         public static func texture(_ texture: MTLTexture) -> Self {
-            Argument { encoder, index in
+            Self { encoder, index in
                 encoder.setTexture(texture, index: index)
             }
             constantValue: { _, _ in

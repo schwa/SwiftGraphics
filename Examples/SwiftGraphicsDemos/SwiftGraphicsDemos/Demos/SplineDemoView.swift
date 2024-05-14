@@ -16,7 +16,7 @@ struct SplineDemoView: View, DefaultInitializableView {
     var lastRightMouseDownLocation: CGPoint?
 
     @State
-    var showComb: Bool = false
+    var showComb = false
 
     var coordinateSpace = CoordinateSpace.named("canvas")
 
@@ -141,7 +141,7 @@ struct LineManipulatorModifier: ViewModifier {
     var line: Line
 
     @State
-    var isHovering: Bool = false
+    var isHovering = false
 
     @State
     var p1: CGPoint?

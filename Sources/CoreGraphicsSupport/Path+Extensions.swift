@@ -285,10 +285,10 @@ public extension Path {
     struct Corners: OptionSet {
         public let rawValue: UInt8
 
-        public static let topLeft = Corners(rawValue: 0b0001)
-        public static let topRight = Corners(rawValue: 0b0010)
-        public static let bottomLeft = Corners(rawValue: 0b0100)
-        public static let bottomRight = Corners(rawValue: 0b1000)
+        public static let topLeft = Self(rawValue: 0b0001)
+        public static let topRight = Self(rawValue: 0b0010)
+        public static let bottomLeft = Self(rawValue: 0b0100)
+        public static let bottomRight = Self(rawValue: 0b1000)
 
         public static let all: Corners = [.topLeft, .topRight, .bottomLeft, .bottomRight]
 

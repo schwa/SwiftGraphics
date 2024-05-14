@@ -91,7 +91,7 @@ struct QuartzContext: GraphicsContextProtocol {
         fatalError("Unimplemented") // TODO: Unimplemented
     }
 
-    func drawLayer(content: (inout QuartzContext) throws -> Void) rethrows {
+    func drawLayer(content: (inout Self) throws -> Void) rethrows {
         // TODO: Untested
         cgContext.saveGState()
         defer {

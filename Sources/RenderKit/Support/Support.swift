@@ -22,6 +22,7 @@ public protocol Labeled {
 
 public extension PixelFormat {
     // TODO: Test endianness.
+    // swiftlint:disable:next cyclomatic_complexity
     init?(_ pixelFormat: MTLPixelFormat) {
         switch pixelFormat {
         case .invalid:

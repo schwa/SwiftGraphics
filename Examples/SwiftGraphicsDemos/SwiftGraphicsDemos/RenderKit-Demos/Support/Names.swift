@@ -3,7 +3,7 @@ import Foundation
 // https://github.com/fnichol/names
 
 struct Names {
-    static let shared = Names()
+    static let shared = Self()
 
     let adjectives: [String.SubSequence]
     let nouns: [String.SubSequence]
