@@ -99,7 +99,7 @@ struct SoftwareRendererView: View {
                 Text(value).tag(value).font(.caption).background(.white.opacity(0.5))
             }
         }
-        .ballRotation($ballConstraint.rotation, pitchLimit: pitchLimit, yawLimit: yawLimit)
+        .ballRotation($ballConstraint.rollPitchYaw, pitchLimit: pitchLimit, yawLimit: yawLimit)
         .onAppear {
             camera.transform.matrix = ballConstraint.transform
         }
@@ -152,10 +152,10 @@ struct SoftwareRendererView: View {
 struct BallConstraint: Equatable {
     var radius: Float = -5
     var lookAt: SIMD3<Float> = .zero
-    var rotation: Rotation = .zero
+    var rollPitchYaw: RollPitchYaw = .zero
 
     var transform: simd_float4x4 {
-        rotation.matrix * simd_float4x4(translate: [0, 0, radius])
+        rollPitchYaw.matrix * simd_float4x4(translate: [0, 0, radius])
     }
 }
 
@@ -166,8 +166,8 @@ struct BallConstraintEditor: View {
     var body: some View {
         TextField("Radius", value: $ballConstraint.radius, format: .number)
         TextField("Look AT", value: $ballConstraint.lookAt, format: .vector)
-        TextField("Pitch", value: $ballConstraint.rotation.pitch, format: .angle)
-        TextField("Yaw", value: $ballConstraint.rotation.yaw, format: .angle)
+        TextField("Pitch", value: $ballConstraint.rollPitchYaw.pitch, format: .angle)
+        TextField("Yaw", value: $ballConstraint.rollPitchYaw.yaw, format: .angle)
     }
 }
 
@@ -241,7 +241,7 @@ extension TrivialMesh {
 
                 ForEach(Axis.allCases, id: \.self) { axis in
                     Button("-\(axis)") {
-                        ballConstraint.rotation.setAxis(axis.vector * -1)
+                        ballConstraint.rollPitchYaw.setAxis(axis.vector * -1)
                     }
                     .buttonStyle(CameraWidgetButtonStyle())
                     .backgroundStyle(axis.color)
@@ -249,7 +249,7 @@ extension TrivialMesh {
                     .zIndex(Double(projection.worldSpaceToClipSpace(axis.vector * length).z))
 
                     Button("+\(axis)") {
-                        ballConstraint.rotation.setAxis(axis.vector)
+                        ballConstraint.rollPitchYaw.setAxis(axis.vector)
                     }
                     .buttonStyle(CameraWidgetButtonStyle())
                     .backgroundStyle(axis.color)
@@ -261,7 +261,7 @@ extension TrivialMesh {
             .onChange(of: ballConstraint, initial: true) {
                 camera.transform.matrix = ballConstraint.transform
             }
-            .ballRotation($ballConstraint.rotation)
+            .ballRotation($ballConstraint.rollPitchYaw)
             .background(isHovering ? .white.opacity(0.5) : .clear)
             .onHover { isHovering = $0 }
         }
@@ -310,21 +310,21 @@ struct CameraWidgetButtonStyle: ButtonStyle {
     }
 }
 
-extension Rotation {
+extension RollPitchYaw {
     mutating func setAxis(_ vector: SIMD3<Float>) {
         switch vector {
         case [-1, 0, 0]:
-            self = .init(pitch: .degrees(0), yaw: .degrees(90), roll: .degrees(0))
+            self = .init(roll: .degrees(0), pitch: .degrees(0), yaw: .degrees(90))
         case [1, 0, 0]:
-            self = .init(pitch: .degrees(0), yaw: .degrees(270), roll: .degrees(0))
+            self = .init(roll: .degrees(0), pitch: .degrees(0), yaw: .degrees(270))
         case [0, -1, 0]:
-            self = .init(pitch: .degrees(90), yaw: .degrees(0), roll: .degrees(0))
+            self = .init(roll: .degrees(0), pitch: .degrees(90), yaw: .degrees(0))
         case [0, 1, 0]:
-            self = .init(pitch: .degrees(270), yaw: .degrees(0), roll: .degrees(0))
+            self = .init(roll: .degrees(0), pitch: .degrees(270), yaw: .degrees(0))
         case [0, 0, -1]:
-            self = .init(pitch: .degrees(180), yaw: .degrees(0), roll: .degrees(0))
+            self = .init(roll: .degrees(0), pitch: .degrees(180), yaw: .degrees(0))
         case [0, 0, 1]:
-            self = .init(pitch: .degrees(0), yaw: .degrees(0), roll: .degrees(0))
+            self = .init(roll: .degrees(0), pitch: .degrees(0), yaw: .degrees(0))
         default:
             break
         }

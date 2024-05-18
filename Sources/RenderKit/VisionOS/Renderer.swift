@@ -39,7 +39,7 @@ public class Renderer {
     let colorMap: MTLTexture
 
     var uniformsBufferIndex = 0
-    var rotation: Float = 0
+    var rollPitchYaw: Float = 0
     let arSession: ARKitSession
     let worldTracking: WorldTrackingProvider
 
@@ -85,7 +85,7 @@ public class Renderer {
 
     private func updateGameState(drawable: LayerRenderer.Drawable, deviceAnchor: DeviceAnchor?) {
         // Update any game state before rendering
-        let modelRotationMatrix = simd_float4x4(rotationAngle: rotation, axis: [1, 1, 0])
+        let modelRotationMatrix = simd_float4x4(rotationAngle: rollPitchYaw, axis: [1, 1, 0])
         let modelTranslationMatrix = simd_float4x4(translate: [0, 0, -8])
         let modelMatrix = modelTranslationMatrix * modelRotationMatrix
         let simdDeviceAnchor = deviceAnchor?.originFromAnchorTransform ?? matrix_identity_float4x4
@@ -106,7 +106,7 @@ public class Renderer {
         if drawable.views.count > 1 {
             self.uniforms[uniformsBufferIndex].uniforms.1 = uniforms(forViewIndex: 1)
         }
-        rotation += 0.01
+        rollPitchYaw += 0.01
     }
 
     private func renderFrame() {
