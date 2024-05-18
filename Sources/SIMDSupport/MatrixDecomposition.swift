@@ -45,10 +45,10 @@ public extension simd_float4x4 {
         let invTop3x3Matrix = top3x3Matrix.inverse
         let inv3x3Translation = -(invTop3x3Matrix * translation)
         // Make sure we adhere to the conditions of a 4x4 invertible affine transform matrix
-        if !SIMDSupport.isApproximatelyEqual(inv4x4Top3x3, invTop3x3Matrix, epsilon: .ulpOfOne) {
+        if !SIMDSupport.isApproximatelyEqual(inv4x4Top3x3, invTop3x3Matrix, epsilon: 1e-06) {
             return false
         }
-        if !SIMDSupport.isApproximatelyEqual(inv4x4Translation, inv3x3Translation, epsilon: .ulpOfOne) {
+        if !SIMDSupport.isApproximatelyEqual(inv4x4Translation, inv3x3Translation, epsilon: 1e-06) {
             return false
         }
         return true

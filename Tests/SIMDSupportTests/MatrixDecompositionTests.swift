@@ -26,11 +26,12 @@ class MatrixDecompositionTests: XCTestCase {
 
     func testRotation() {
         let rotation = simd_float4x4(simd_quatf(angle: .degrees(90), axis: [0, 1, 0]))
+        XCTAssertTrue(rotation.isAffine)
         let srt = SRT(rotation: rotation)
         let matrix = srt.matrix
         XCTAssertTrue(matrix.isAffine)
         let decomposed = matrix.decompose
-        XCTAssertEqual(simd_float4x4(srt.rotation), decomposed.rotation, accuracy: .ulpOfOne)
+        XCTAssertEqual(srt.rotation.matrix, decomposed.rotation, accuracy: .ulpOfOne)
     }
 
     func testTranslation() {
@@ -42,10 +43,11 @@ class MatrixDecompositionTests: XCTestCase {
         XCTAssertEqual(srt, decomposed)
     }
 
-//    // TODO: This matrix SHOULD be decomposable but is failing due to floating point issues.
-//    func testProblematic() {
-//        let matrix = simd_float4x4([[0.23499937, 0.010335696, 0.97194064, 0.0], [-8.403711e-11, 0.9999435, -0.010633481, 0.0], [-0.9719956, 0.0024988612, 0.23498604, 0.0], [0.0, 0.0, 0.0, 1.0]])
-//        XCTAssertTrue(matrix.isAffine)
-//        XCTAssertNil(matrix.decompose)
-//    }
+    // TODO: This matrix SHOULD be decomposable but is failing due to floating point issues.
+    func testProblematic() throws {
+        throw XCTSkip("Skipping.")
+        let matrix = simd_float4x4([[0.23499937, 0.010335696, 0.97194064, 0.0], [-8.403711e-11, 0.9999435, -0.010633481, 0.0], [-0.9719956, 0.0024988612, 0.23498604, 0.0], [0.0, 0.0, 0.0, 1.0]])
+        XCTAssertTrue(matrix.isAffine)
+        XCTAssertNil(matrix.decompose)
+    }
 }
