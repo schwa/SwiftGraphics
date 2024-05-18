@@ -17,7 +17,7 @@ class VolumetricRenderPass: RenderPass {
     var depthStencilState: MTLDepthStencilState?
     var texture: MTLTexture
     var cache = Cache<String, Any>()
-    var rotation: Rotation = .zero
+    var rollPitchYaw: RollPitchYaw = .zero
     var transferFunctionTexture: MTLTexture
     var logger: Logger?
 
@@ -86,7 +86,7 @@ class VolumetricRenderPass: RenderPass {
 
                 let camera = Camera(transform: .init(translation: [0, 0, 2]), target: .zero, projection: .perspective(PerspectiveProjection(fovy: .degrees(90), zClip: 0.01 ... 10)))
 
-                let modelTransform = Transform(scale: [2, 2, 2], rotation: rotation.quaternion)
+                let modelTransform = Transform(scale: [2, 2, 2], rotation: rollPitchYaw.quaternion)
 
                 let mesh2 = try cache.get(key: "mesh2", of: YAMesh.self) {
                     let rect = CGRect(center: .zero, radius: 0.5)
@@ -108,7 +108,7 @@ class VolumetricRenderPass: RenderPass {
                 // Vertex Buffer Index 2
                 let modelUniforms = VolumeTransforms(
                     modelViewMatrix: camera.transform.matrix.inverse * modelTransform.matrix,
-                    textureMatrix: simd_float4x4(translate: [0.5, 0.5, 0.5]) * rotation.matrix * simd_float4x4(translate: [-0.5, -0.5, -0.5])
+                    textureMatrix: simd_float4x4(translate: [0.5, 0.5, 0.5]) * rollPitchYaw.matrix * simd_float4x4(translate: [-0.5, -0.5, -0.5])
                 )
                 encoder.setVertexBytes(of: modelUniforms, index: 2)
 

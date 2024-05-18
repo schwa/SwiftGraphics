@@ -18,7 +18,7 @@ struct VolumetricRendererDemoView: View, DemoView {
     var renderPass = try! VolumetricRenderPass()
 
     @State
-    var rotation = Rotation.zero
+    var rollPitchYaw = RollPitchYaw.zero
 
     @State
     var volumeData = try! VolumeData(named: "CThead", in: Bundle.module, size: [256, 256, 113])
@@ -40,12 +40,12 @@ struct VolumetricRendererDemoView: View, DemoView {
 
     var body: some View {
         RendererView(renderPass: $renderPass)
-            .ballRotation($rotation, pitchLimit: .degrees(-.infinity) ... .degrees(.infinity), yawLimit: .degrees(-.infinity) ... .degrees(.infinity))
+            .ballRotation($rollPitchYaw, pitchLimit: .degrees(-.infinity) ... .degrees(.infinity), yawLimit: .degrees(-.infinity) ... .degrees(.infinity))
             .onAppear {
                 updateTransferFunctionTexture()
             }
-            .onChange(of: rotation) {
-                renderPass.rotation = rotation
+            .onChange(of: rollPitchYaw) {
+                renderPass.rollPitchYaw = rollPitchYaw
             }
             .onChange(of: redTransferFunction) {
                 updateTransferFunctionTexture()

@@ -3,25 +3,25 @@ import simd
 import SwiftUI
 
 // TODO: Move/Rename
-struct Rotation: Hashable {
+struct RollPitchYaw: Hashable {
+    var roll: Angle
     var pitch: Angle
     var yaw: Angle
-    var roll: Angle
 
-    init(pitch: Angle = .zero, yaw: Angle = .zero, roll: Angle = .zero) {
+    init(roll: Angle = .zero, pitch: Angle = .zero, yaw: Angle = .zero) {
+        self.roll = roll
         self.pitch = pitch
         self.yaw = yaw
-        self.roll = roll
     }
 
-    static let zero = Self(pitch: .zero, yaw: .zero, roll: .zero)
+    static let zero = Self(roll: .zero, pitch: .zero, yaw: .zero)
 }
 
-extension Rotation {
+extension RollPitchYaw {
     var quaternion: simd_quatf {
+        let roll = simd_quatf(angle: Float(roll.radians), axis: [0, 0, 1])
         let pitch = simd_quatf(angle: Float(pitch.radians), axis: [1, 0, 0])
         let yaw = simd_quatf(angle: Float(yaw.radians), axis: [0, 1, 0])
-        let roll = simd_quatf(angle: Float(roll.radians), axis: [0, 0, 1])
         return yaw * pitch * roll // TODO: Order matters
     }
 
@@ -30,15 +30,15 @@ extension Rotation {
     }
 }
 
-extension Rotation {
-    static func + (lhs: Rotation, rhs: Rotation) -> Rotation {
-        Rotation(pitch: lhs.pitch + rhs.pitch, yaw: lhs.yaw + rhs.yaw, roll: lhs.roll + rhs.roll)
+extension RollPitchYaw {
+    static func + (lhs: RollPitchYaw, rhs: RollPitchYaw) -> RollPitchYaw {
+        RollPitchYaw(roll: lhs.roll + rhs.roll, pitch: lhs.pitch + rhs.pitch, yaw: lhs.yaw + rhs.yaw)
     }
 }
 
 struct BallRotationModifier: ViewModifier {
     @Binding
-    var rotation: Rotation
+    var rollPitchYaw: RollPitchYaw
 
     let pitchLimit: ClosedRange<Angle>
     let yawLimit: ClosedRange<Angle>
@@ -48,13 +48,13 @@ struct BallRotationModifier: ViewModifier {
     static let defaultInteractionScale = CGVector(1 / .pi, 1 / .pi)
 
     @State
-    var initialGestureRotation: Rotation?
+    var initialGestureRollPitchYaw: RollPitchYaw?
 
     @State
     var cameraMoved = false
 
-    init(rotation: Binding<Rotation>, pitchLimit: ClosedRange<Angle> = .degrees(-90) ... .degrees(90), yawLimit: ClosedRange<Angle> = .degrees(-.infinity) ... .degrees(.infinity), interactionScale: CGVector = Self.defaultInteractionScale) {
-        _rotation = rotation
+    init(rollPitchYaw: Binding<RollPitchYaw>, pitchLimit: ClosedRange<Angle> = .degrees(-90) ... .degrees(90), yawLimit: ClosedRange<Angle> = .degrees(-.infinity) ... .degrees(.infinity), interactionScale: CGVector = Self.defaultInteractionScale) {
+        _rollPitchYaw = rollPitchYaw
         self.pitchLimit = pitchLimit
         self.yawLimit = yawLimit
         self.interactionScale = interactionScale
@@ -65,43 +65,43 @@ struct BallRotationModifier: ViewModifier {
             .coordinateSpace(name: coordinateSpace)
             .simultaneousGesture(dragGesture())
             .onChange(of: pitchLimit) {
-                rotation.pitch = clamp(rotation.pitch, in: pitchLimit)
+                rollPitchYaw.pitch = clamp(rollPitchYaw.pitch, in: pitchLimit)
             }
             .onChange(of: yawLimit) {
-                rotation.yaw = clamp(rotation.yaw, in: yawLimit)
+                rollPitchYaw.yaw = clamp(rollPitchYaw.yaw, in: yawLimit)
             }
     }
 
     func dragGesture() -> some Gesture {
         DragGesture(coordinateSpace: .named(coordinateSpace))
             .onChanged { value in
-                rotation = convert(translation: CGVector(value.translation))
+                rollPitchYaw = convert(translation: CGVector(value.translation))
             }
             .onEnded { value in
                 withAnimation(.easeOut) {
-                    rotation = convert(translation: CGVector(value.predictedEndTranslation))
+                    rollPitchYaw = convert(translation: CGVector(value.predictedEndTranslation))
                 }
-                initialGestureRotation = nil
+                initialGestureRollPitchYaw = nil
                 cameraMoved = false
             }
     }
 
-    func convert(translation: CGVector) -> Rotation {
-        if initialGestureRotation == nil {
-            initialGestureRotation = rotation
+    func convert(translation: CGVector) -> RollPitchYaw {
+        if initialGestureRollPitchYaw == nil {
+            initialGestureRollPitchYaw = rollPitchYaw
         }
-        guard let initialGestureRotation else {
+        guard let initialGestureRollPitchYaw else {
             unreachable()
         }
-        var rotation = initialGestureRotation
-        rotation.pitch = clamp(rotation.pitch + .degrees(translation.dy * interactionScale.dy), in: pitchLimit)
-        rotation.yaw = clamp(rotation.yaw + .degrees(translation.dx * interactionScale.dx), in: yawLimit)
-        return rotation
+        var rollPitchYaw = initialGestureRollPitchYaw
+        rollPitchYaw.pitch = clamp(rollPitchYaw.pitch + .degrees(translation.dy * interactionScale.dy), in: pitchLimit)
+        rollPitchYaw.yaw = clamp(rollPitchYaw.yaw + .degrees(translation.dx * interactionScale.dx), in: yawLimit)
+        return rollPitchYaw
     }
 }
 
 extension View {
-    func ballRotation(_ rotation: Binding<Rotation>, pitchLimit: ClosedRange<Angle> = .degrees(-90) ... .degrees(90), yawLimit: ClosedRange<Angle> = .degrees(-.infinity) ... .degrees(.infinity), interactionScale: CGVector = BallRotationModifier.defaultInteractionScale) -> some View {
-        modifier(BallRotationModifier(rotation: rotation, pitchLimit: pitchLimit, yawLimit: yawLimit, interactionScale: interactionScale))
+    func ballRotation(_ rollPitchYaw: Binding<RollPitchYaw>, pitchLimit: ClosedRange<Angle> = .degrees(-90) ... .degrees(90), yawLimit: ClosedRange<Angle> = .degrees(-.infinity) ... .degrees(.infinity), interactionScale: CGVector = BallRotationModifier.defaultInteractionScale) -> some View {
+        modifier(BallRotationModifier(rollPitchYaw: rollPitchYaw, pitchLimit: pitchLimit, yawLimit: yawLimit, interactionScale: interactionScale))
     }
 }
