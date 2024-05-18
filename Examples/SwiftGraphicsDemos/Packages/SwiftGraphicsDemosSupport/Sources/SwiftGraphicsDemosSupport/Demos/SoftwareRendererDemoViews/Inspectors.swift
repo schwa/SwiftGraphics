@@ -112,7 +112,8 @@ struct TransformEditor: View {
         if !options.contains(.hideScale) {
             TextField("Scale", value: $transform.scale, format: .vector)
         }
-        TextField("Rotation", value: $transform.rotation, format: .quaternion)
+        // TODO: FIXME
+        //TextField("Rotation", value: $transform.rotation, format: .quaternion)
         TextField("Translation", value: $transform.translation, format: .vector)
     }
 }

@@ -86,7 +86,7 @@ class VolumetricRenderPass: RenderPass {
 
                 let camera = Camera(transform: .init(translation: [0, 0, 2]), target: .zero, projection: .perspective(PerspectiveProjection(fovy: .degrees(90), zClip: 0.01 ... 10)))
 
-                let modelTransform = Transform(scale: [2, 2, 2], rotation: rollPitchYaw.quaternion)
+                let modelTransform = Transform(scale: [2, 2, 2], rotation: .rollPitchYaw(rollPitchYaw))
 
                 let mesh2 = try cache.get(key: "mesh2", of: YAMesh.self) {
                     let rect = CGRect(center: .zero, radius: 0.5)

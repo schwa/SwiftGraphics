@@ -148,10 +148,3 @@ public extension simd_float4x4 {
         return (scale: scale, rotation: rotation, translation: translation)
     }
 }
-
-public extension SRT {
-    init(scale: SIMD3<Float> = .unit, rotation: simd_float4x4, translation: SIMD3<Float> = .zero) {
-        let rotation = simd_quatf(rotation)
-        self = SRT(scale: scale, rotation: rotation, translation: translation)
-    }
-}
