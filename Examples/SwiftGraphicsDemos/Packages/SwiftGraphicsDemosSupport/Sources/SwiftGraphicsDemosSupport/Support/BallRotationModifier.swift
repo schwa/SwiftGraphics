@@ -1,40 +1,7 @@
 import CoreGraphicsSupport
 import simd
 import SwiftUI
-
-// TODO: Move/Rename
-struct RollPitchYaw: Hashable {
-    var roll: Angle
-    var pitch: Angle
-    var yaw: Angle
-
-    init(roll: Angle = .zero, pitch: Angle = .zero, yaw: Angle = .zero) {
-        self.roll = roll
-        self.pitch = pitch
-        self.yaw = yaw
-    }
-
-    static let zero = Self(roll: .zero, pitch: .zero, yaw: .zero)
-}
-
-extension RollPitchYaw {
-    var quaternion: simd_quatf {
-        let roll = simd_quatf(angle: Float(roll.radians), axis: [0, 0, 1])
-        let pitch = simd_quatf(angle: Float(pitch.radians), axis: [1, 0, 0])
-        let yaw = simd_quatf(angle: Float(yaw.radians), axis: [0, 1, 0])
-        return yaw * pitch * roll // TODO: Order matters
-    }
-
-    var matrix: simd_float4x4 {
-        simd_float4x4(quaternion)
-    }
-}
-
-extension RollPitchYaw {
-    static func + (lhs: RollPitchYaw, rhs: RollPitchYaw) -> RollPitchYaw {
-        RollPitchYaw(roll: lhs.roll + rhs.roll, pitch: lhs.pitch + rhs.pitch, yaw: lhs.yaw + rhs.yaw)
-    }
-}
+import SIMDSupport
 
 struct BallRotationModifier: ViewModifier {
     @Binding
