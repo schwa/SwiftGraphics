@@ -38,24 +38,24 @@ public func XCTAssertEqual(_ expression1: @escaping @autoclosure () throws -> si
     XCTAssertEqual(try expression1().scalars, try expression2().scalars, accuracy: accuracy, message(), file: file, line: line)
 }
 
-public func XCTAssertEqual<Scalar>(
-    _ expression1: @escaping @autoclosure () throws -> Euler<Scalar>,
-    _ expression2: @escaping @autoclosure () throws -> Euler<Scalar>,
-    accuracy: Scalar,
+public func XCTAssertEqual(
+    _ expression1: @escaping @autoclosure () throws -> simd_quatf,
+    _ expression2: @escaping @autoclosure () throws -> simd_quatf,
+    accuracy: Float,
     _ message: @escaping @autoclosure () -> String = "",
     file: StaticString = #filePath,
     line: UInt = #line
-) where Scalar: SIMDScalar & BinaryFloatingPoint {
-    XCTAssertEqual(try expression1().scalars, try expression2().scalars, accuracy: accuracy, message(), file: file, line: line)
+) {
+    XCTAssertEqual(try expression1().vector.scalars, try expression2().vector.scalars, accuracy: accuracy, message(), file: file, line: line)
 }
 
-public func XCTAssertNotEqual<Scalar>(
-    _ expression1: @escaping @autoclosure () throws -> Euler<Scalar>,
-    _ expression2: @escaping @autoclosure () throws -> Euler<Scalar>,
-    accuracy: Scalar,
-    _ message: @escaping @autoclosure () -> String = "",
-    file: StaticString = #filePath,
-    line: UInt = #line
-) where Scalar: SIMDScalar & BinaryFloatingPoint {
-    XCTAssertNotEqual(try expression1().scalars, try expression2().scalars, accuracy: accuracy, message(), file: file, line: line)
-}
+//public func XCTAssertNotEqual<Scalar>(
+//    _ expression1: @escaping @autoclosure () throws -> Euler<Scalar>,
+//    _ expression2: @escaping @autoclosure () throws -> Euler<Scalar>,
+//    accuracy: Scalar,
+//    _ message: @escaping @autoclosure () -> String = "",
+//    file: StaticString = #filePath,
+//    line: UInt = #line
+//) where Scalar: SIMDScalar & BinaryFloatingPoint {
+//    XCTAssertNotEqual(try expression1().scalars, try expression2().scalars, accuracy: accuracy, message(), file: file, line: line)
+//}

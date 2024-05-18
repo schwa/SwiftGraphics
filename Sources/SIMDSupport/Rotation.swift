@@ -1,7 +1,7 @@
 import simd
 import SwiftUI
 
-public struct Rotation: Equatable {
+public struct Rotation {
     public enum Storage: Equatable {
         case matrix(simd_float4x4)
         case quaternion(simd_quatf)
@@ -11,6 +11,12 @@ public struct Rotation: Equatable {
     public var storage: Storage
 
     public static let identity = Rotation.quaternion(.identity)
+}
+
+extension Rotation: Equatable {
+    public static func ==(lhs: Self, rhs: Self) -> Bool {
+        return lhs.matrix == rhs.matrix
+    }
 }
 
 public extension Rotation {
@@ -77,8 +83,8 @@ public extension Rotation {
             switch storage {
             case .matrix:
                 fatalError("Unimplemented")
-            case .quaternion:
-                fatalError("Unimplemented")
+            case .quaternion(let quaternion):
+                return RollPitchYaw(quaternion: quaternion)
             case .rollPitchYaw(let rollPitchYaw):
                 return rollPitchYaw
             }
@@ -91,17 +97,26 @@ public extension Rotation {
 
 extension Rotation: Hashable {
     public func hash(into hasher: inout Hasher) {
-        fatalError("Unimplemented")
+        matrix.altHash(into: &hasher)
     }
 }
 
 extension Rotation: Codable {
     public init(from decoder: any Decoder) throws {
+        // TODO: Unimplemented
         fatalError("Unimplemented")
     }
 
     public func encode(to encoder: any Encoder) throws {
-        fatalError("Unimplemented")
+        var container = encoder.singleValueContainer()
+        switch storage {
+        case .matrix(let matrix):
+            try container.encode(["matrix": matrix.scalars])
+        case .quaternion(let quaternion):
+            try container.encode(["quaternion": quaternion.vector.scalars])
+        case .rollPitchYaw(let rollPitchYaw):
+            try container.encode(["rollPitchYaw": rollPitchYaw])
+        }
     }
 }
 

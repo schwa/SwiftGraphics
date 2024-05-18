@@ -69,3 +69,13 @@ extension SRT: CustomStringConvertible {
         return [scale, rotation, translation].compactMap({ $0 }).joined(separator: ",")
     }
 }
+
+public extension SRT {
+    init(scale: SIMD3<Float> = .unit, rotation: simd_float4x4, translation: SIMD3<Float> = .zero) {
+        self = .init(scale: scale, rotation: .matrix(rotation), translation: translation)
+    }
+    init(scale: SIMD3<Float> = .unit, rotation: simd_quatf, translation: SIMD3<Float> = .zero) {
+        self = .init(scale: scale, rotation: .quaternion(rotation), translation: translation)
+    }
+
+}
