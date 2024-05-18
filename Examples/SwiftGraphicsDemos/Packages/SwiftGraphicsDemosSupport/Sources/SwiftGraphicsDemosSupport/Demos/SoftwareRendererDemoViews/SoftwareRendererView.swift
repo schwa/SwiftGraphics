@@ -106,6 +106,10 @@ struct SoftwareRendererView: View {
         .onChange(of: ballConstraint.transform) {
             camera.transform.matrix = ballConstraint.transform
         }
+        .overlay(alignment: .topTrailing) {
+            CameraRotationWidgetView(ballConstraint: $ballConstraint)
+            .frame(width: 120, height: 120)
+        }
         .inspector(isPresented: $isInspectorPresented) {
             Form {
                 Section("Map") {
@@ -145,7 +149,7 @@ struct SoftwareRendererView: View {
     }
 }
 
-struct BallConstraint {
+struct BallConstraint: Equatable {
     var radius: Float = -5
     var lookAt: SIMD3<Float> = .zero
     var rotation: Rotation = .zero
@@ -171,6 +175,158 @@ extension TrivialMesh {
     func toPolygons() -> [[Vertex]] {
         indices.chunks(ofCount: 3).map {
             $0.map { vertices[Int($0)] }
+        }
+    }
+}
+
+ struct CameraRotationWidgetView: View {
+    @Binding
+    var ballConstraint: BallConstraint
+
+    @State
+    var camera = Camera(transform: .translation([0, 0, -5]), target: [0, 0, 0], projection: .orthographic(.init(left: -1, right: 1, bottom: -1, top: 1, near: -1, far: 1)))
+
+    @State
+    var isHovering = false
+
+    var length: Float = 0.75
+
+    enum Axis: CaseIterable {
+        case x
+        case y
+        case z
+
+        var vector: SIMD3<Float> {
+            switch self {
+            case .x:
+                [1, 0, 0]
+            case .y:
+                [0, 1, 0]
+            case .z:
+                [0, 0, 1]
+            }
+        }
+
+        var color: Color {
+            switch self {
+            case .x:
+                .red
+            case .y:
+                .green
+            case .z:
+                .blue
+            }
+        }
+    }
+
+    init(ballConstraint: Binding<BallConstraint>) {
+        self._ballConstraint = ballConstraint
+    }
+
+    var body: some View {
+        GeometryReader { proxy in
+            let projection = Projection3D(size: proxy.size, camera: camera)
+            ZStack {
+                Canvas { context, size in
+                    context.draw3DLayer(projection: projection) { context, context3D in
+                        for axis in Axis.allCases {
+                            context3D.stroke(path: Path3D { path in
+                                path.move(to: axis.vector * -length)
+                                path.addLine(to: axis.vector * length)
+                            }, with: .color(axis.color), lineWidth: 2)
+                        }
+                    }
+                }
+                .zIndex(-.greatestFiniteMagnitude)
+
+                ForEach(Axis.allCases, id: \.self) { axis in
+                    Button("-\(axis)") {
+                        ballConstraint.rotation.setAxis(axis.vector * -1)
+                    }
+                    .buttonStyle(CameraWidgetButtonStyle())
+                    .backgroundStyle(axis.color)
+                    .offset(projection.project(axis.vector * -length))
+                    .zIndex(Double(projection.worldSpaceToClipSpace(axis.vector * length).z))
+
+                    Button("+\(axis)") {
+                        ballConstraint.rotation.setAxis(axis.vector)
+                    }
+                    .buttonStyle(CameraWidgetButtonStyle())
+                    .backgroundStyle(axis.color)
+                    .offset(projection.project(axis.vector * length))
+                    .zIndex(Double(projection.worldSpaceToClipSpace(axis.vector * -length).z))
+
+                }
+            }
+            .onChange(of: ballConstraint, initial: true) {
+                camera.transform.matrix = ballConstraint.transform
+            }
+            .ballRotation($ballConstraint.rotation)
+            .background(isHovering ? .white.opacity(0.5) : .clear)
+            .onHover { isHovering = $0 }
+        }
+    }
+}
+
+extension Projection3D {
+    init(size: CGSize, camera: Camera) {
+        var projection = Projection3D(size: size)
+        projection.viewTransform = camera.transform.matrix.inverse
+        projection.projectionTransform = camera.projection.matrix(viewSize: .init(size))
+        projection.clipTransform = simd_float4x4(scale: [Float(size.width) / 2, Float(size.height) / 2, 1])
+        self = projection
+    }
+
+    func worldSpaceToScreenSpace(_ point: SIMD3<Float>) -> CGPoint {
+        var point = worldSpaceToClipSpace(point)
+        point /= point.w
+        return CGPoint(x: Double(point.x), y: Double(point.y))
+    }
+
+    func worldSpaceToClipSpace(_ point: SIMD3<Float>) -> SIMD4<Float> {
+        clipTransform * projectionTransform * viewTransform * SIMD4<Float>(point, 1.0)
+    }
+
+    //    public func unproject(_ point: CGPoint, z: Float) -> SIMD3<Float> {
+    //        // We have no model. Just use view.
+    //        let modelView = viewTransform
+    //        return gluUnproject(win: SIMD3<Float>(Float(point.x), Float(point.y), z), modelView: modelView, proj: projectionTransform, viewOrigin: .zero, viewSize: SIMD2<Float>(size))
+    //    }
+
+    func isVisible(_ point: SIMD3<Float>) -> Bool {
+        return worldSpaceToClipSpace(point).z >= 0
+    }
+}
+
+struct CameraWidgetButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+        .foregroundColor(.white)
+        .padding(2)
+        .background {
+            Circle().fill(.background)
+                .opacity(configuration.isPressed ? 0.5 : 1.0)
+        }
+    }
+}
+
+extension Rotation {
+    mutating func setAxis(_ vector: SIMD3<Float>) {
+        switch vector {
+        case [-1, 0, 0]:
+            self = .init(pitch: .degrees(0), yaw: .degrees(90), roll: .degrees(0))
+        case [1, 0, 0]:
+            self = .init(pitch: .degrees(0), yaw: .degrees(270), roll: .degrees(0))
+        case [0, -1, 0]:
+            self = .init(pitch: .degrees(90), yaw: .degrees(0), roll: .degrees(0))
+        case [0, 1, 0]:
+            self = .init(pitch: .degrees(270), yaw: .degrees(0), roll: .degrees(0))
+        case [0, 0, -1]:
+            self = .init(pitch: .degrees(180), yaw: .degrees(0), roll: .degrees(0))
+        case [0, 0, 1]:
+            self = .init(pitch: .degrees(0), yaw: .degrees(0), roll: .degrees(0))
+        default:
+            break
         }
     }
 }

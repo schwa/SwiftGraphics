@@ -20,6 +20,15 @@ extension NamedCoordinateSpace {
     static let canvas = NamedCoordinateSpace.named("CANVAS")
 }
 
+public struct SketchDemoView: View, DemoView {
+    public init() {
+    }
+
+    public var body: some View {
+        SketchView()
+    }
+}
+
 public struct SketchView: View {
     @State
     var model = SketchModel()
