@@ -11,6 +11,7 @@ import SIMDSupport
 import SwiftUI
 import UniformTypeIdentifiers
 
+// TODO: Deprecate
 struct Camera {
     var transform: Transform
 

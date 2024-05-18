@@ -25,8 +25,6 @@ struct SoftwareRendererBoxesDemoView: View, DemoView {
 //            print(projection.unproject(CGPoint(projection.size / 2), z: 0))
 //            print(projection.unproject(CGPoint(projection.size / 2), z: 1_000))
             rasterizer.rasterize()
-
-
         }
     }
 }

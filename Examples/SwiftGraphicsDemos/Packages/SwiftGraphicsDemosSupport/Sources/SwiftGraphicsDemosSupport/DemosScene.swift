@@ -48,6 +48,7 @@ struct DemosView: View {
                         row(for: ShapesDemoView.self)
                         row(for: SimpleSceneDemoView.self)
                         row(for: SimulationDemoView.self)
+                        row(for: SketchDemoView.self)
                         row(for: SplineDemoView.self)
                         row(for: TextureDemoView.self)
                         row(for: VolumetricRendererDemoView.self)
