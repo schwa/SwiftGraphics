@@ -1,5 +1,5 @@
 import simd
-
+import SwiftUI
 
 public struct Rotation: Equatable {
     public enum Storage: Equatable {
@@ -9,6 +9,8 @@ public struct Rotation: Equatable {
     }
 
     public var storage: Storage
+
+    public static let identity = Rotation.quaternion(.identity)
 }
 
 public extension Rotation {
@@ -84,5 +86,27 @@ public extension Rotation {
         set {
             storage = .rollPitchYaw(newValue)
         }
+    }
+}
+
+extension Rotation: Hashable {
+    public func hash(into hasher: inout Hasher) {
+        fatalError("Unimplemented")
+    }
+}
+
+extension Rotation: Codable {
+    public init(from decoder: any Decoder) throws {
+        fatalError("Unimplemented")
+    }
+
+    public func encode(to encoder: any Encoder) throws {
+        fatalError("Unimplemented")
+    }
+}
+
+public extension Rotation {
+    init(angle: Angle, axis: SIMD3<Float>) {
+        self = .quaternion(.init(angle: angle, axis: axis))
     }
 }

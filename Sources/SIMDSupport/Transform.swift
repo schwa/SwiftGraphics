@@ -14,7 +14,7 @@ public struct Transform: Codable, Hashable {
 
     public static let identity = Self()
 
-    public init(scale: SIMD3<Float> = .unit, rotation: simd_quatf = .identity, translation: SIMD3<Float> = .zero) {
+    public init(scale: SIMD3<Float> = .unit, rotation: Rotation = .identity, translation: SIMD3<Float> = .zero) {
         storage = .srt(SRT(scale: scale, rotation: rotation, translation: translation))
     }
 
@@ -41,7 +41,7 @@ public struct Transform: Codable, Hashable {
             switch storage {
             case .matrix(let matrix):
                 let (scale, rotation, translation) = matrix.decompose
-                return SRT(scale: scale, rotation: rotation, translation: translation)
+                return SRT(scale: scale, rotation: .matrix(rotation), translation: translation)
             case .srt(let srt):
                 return srt
             }
@@ -60,7 +60,7 @@ public struct Transform: Codable, Hashable {
         }
     }
 
-    public var rotation: simd_quatf {
+    public var rotation: Rotation {
         get {
             srt.rotation
         }
@@ -155,7 +155,7 @@ public extension Transform {
 public extension Transform {
     func rotated(_ r: simd_quatf) -> Transform {
         var copy = self
-        copy.rotation *= r
+        copy.rotation.quaternion *= r
         return copy
     }
 
