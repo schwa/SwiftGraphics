@@ -14,7 +14,7 @@ public protocol PolygonConvertable {
 }
 
 public extension PolygonConvertable {
-    func toPolygons() throws  -> [Polygon3D<SimpleVertex>] {
+    func toPolygons() throws -> [Polygon3D<SimpleVertex>] {
         let converter = PolygonConverter()
         return try converter.convert(self)
     }

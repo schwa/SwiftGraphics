@@ -11,7 +11,7 @@ struct SoftwareRendererView: View {
     struct Options: OptionSet {
         let rawValue: Int
 
-        static let showAxisRules = Options(rawValue: 1 << 0)
+        static let showAxisRules = Self(rawValue: 1 << 0)
     }
 
     @State
@@ -116,7 +116,7 @@ struct SoftwareRendererView: View {
                     MapInspector(camera: $camera, models: []).aspectRatio(1, contentMode: .fill)
                 }
                 Section("Rasterizer") {
-                    //Toggle("Axis Rules", isOn: options.contains(.showAxisRules))
+                    // Toggle("Axis Rules", isOn: options.contains(.showAxisRules))
                     Toggle("Draw Polygon Normals", isOn: $rasterizerOptions.drawNormals)
                     TextField("Normals Length", value: $rasterizerOptions.normalsLength, format: .number)
                     Toggle("Shade Normals", isOn: $rasterizerOptions.shadeFragmentsWithNormals)
@@ -227,8 +227,8 @@ extension TrivialMesh {
         GeometryReader { proxy in
             let projection = Projection3D(size: proxy.size, camera: camera)
             ZStack {
-                Canvas { context, size in
-                    context.draw3DLayer(projection: projection) { context, context3D in
+                Canvas { context, _ in
+                    context.draw3DLayer(projection: projection) { _, context3D in
                         for axis in Axis.allCases {
                             context3D.stroke(path: Path3D { path in
                                 path.move(to: axis.vector * -length)
@@ -255,7 +255,6 @@ extension TrivialMesh {
                     .backgroundStyle(axis.color)
                     .offset(projection.project(axis.vector * length))
                     .zIndex(Double(projection.worldSpaceToClipSpace(axis.vector * -length).z))
-
                 }
             }
             .onChange(of: ballConstraint, initial: true) {
@@ -294,7 +293,7 @@ extension Projection3D {
     //    }
 
     func isVisible(_ point: SIMD3<Float>) -> Bool {
-        return worldSpaceToClipSpace(point).z >= 0
+        worldSpaceToClipSpace(point).z >= 0
     }
 }
 

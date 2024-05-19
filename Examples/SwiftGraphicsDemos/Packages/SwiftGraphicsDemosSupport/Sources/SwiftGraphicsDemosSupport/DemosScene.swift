@@ -54,7 +54,6 @@ struct DemosView: View {
                         row(for: VolumetricRendererDemoView.self)
                     }
                 }
-
             }
         }
     }

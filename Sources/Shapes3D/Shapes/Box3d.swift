@@ -21,7 +21,7 @@ extension Box3D: PolygonConvertable {
         public init() {
         }
         public func convert(_ value: Box3D) throws -> [Polygon3D<SimpleVertex>] {
-            return value.toPolygonsX()
+            value.toPolygonsX()
         }
     }
 

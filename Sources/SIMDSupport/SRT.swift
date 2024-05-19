@@ -77,5 +77,4 @@ public extension SRT {
     init(scale: SIMD3<Float> = .unit, rotation: simd_quatf, translation: SIMD3<Float> = .zero) {
         self = .init(scale: scale, rotation: .quaternion(rotation), translation: translation)
     }
-
 }

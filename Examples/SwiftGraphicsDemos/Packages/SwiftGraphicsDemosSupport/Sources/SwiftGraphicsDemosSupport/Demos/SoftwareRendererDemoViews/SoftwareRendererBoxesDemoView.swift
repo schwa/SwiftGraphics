@@ -15,7 +15,7 @@ struct SoftwareRendererBoxesDemoView: View, DemoView {
     }
 
     var body: some View {
-        SoftwareRendererView { projection, _, context3D in
+        SoftwareRendererView { _, _, context3D in
             var rasterizer = context3D.rasterizer
             for model in models {
                 for (index, polygon) in try! model.toPolygons().enumerated() {

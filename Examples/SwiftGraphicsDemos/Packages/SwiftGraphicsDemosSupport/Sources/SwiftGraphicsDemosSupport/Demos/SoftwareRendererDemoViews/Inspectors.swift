@@ -113,7 +113,7 @@ struct TransformEditor: View {
             TextField("Scale", value: $transform.scale, format: .vector)
         }
         // TODO: FIXME
-        //TextField("Rotation", value: $transform.rotation, format: .quaternion)
+        // TextField("Rotation", value: $transform.rotation, format: .quaternion)
         TextField("Translation", value: $transform.translation, format: .vector)
     }
 }
