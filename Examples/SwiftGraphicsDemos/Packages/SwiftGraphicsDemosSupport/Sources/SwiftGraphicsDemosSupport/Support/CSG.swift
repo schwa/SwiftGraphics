@@ -107,7 +107,7 @@ extension CSG where Vertex == SimpleVertex {
         Self(polygons: polygons.map { $0.flipped() })
     }
 
-    func split(plane: Plane3D<Float>) -> (Self, Self) {
+    func split(plane: Plane3D) -> (Self, Self) {
         var coplanarFront: [Polygon] = []
         var coplanarBack: [Polygon] = []
         var front: [Polygon] = []
@@ -130,12 +130,12 @@ extension CSG where Vertex == SimpleVertex {
 class Node<Vertex> where Vertex: VertexLike {
     typealias Polygon = Polygon3D<Vertex>
 
-    var plane: Plane3D<Float>?
+    var plane: Plane3D?
     var front: Node?
     var back: Node?
     var polygons: [Polygon]
 
-    init(plane: Plane3D<Float>? = nil, front: Node? = nil, back: Node? = nil, polygons: [Polygon] = []) {
+    init(plane: Plane3D? = nil, front: Node? = nil, back: Node? = nil, polygons: [Polygon] = []) {
         self.plane = plane
         self.front = front
         self.back = back
@@ -277,7 +277,7 @@ extension SplitType {
 }
 
 extension Polygon3D where Vertex == SimpleVertex {
-    func split(plane splitter: Plane3D<Float>) -> (coplanarFront: [Self], coplanarBack: [Self], front: [Self], back: [Self]) {
+    func split(plane splitter: Plane3D) -> (coplanarFront: [Self], coplanarBack: [Self], front: [Self], back: [Self]) {
         let EPSILON: Float = 1e-5
 
         var coplanarFront: [Self] = []

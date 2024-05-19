@@ -75,7 +75,7 @@ public extension TrivialMesh where Vertex: VertexLike {
 
 public extension TrivialMesh where Vertex == SIMD3<Float> {
     // TODO: We can replace this with an extension.
-    var boundingBox: Box3D<SIMD3<Float>> {
+    var boundingBox: Box3D {
         guard let first = vertices.first else {
             return Box3D(min: .zero, max: .zero)
         }
@@ -107,7 +107,7 @@ public extension TrivialMesh where Vertex == SIMD3<Float> {
 }
 
 public extension TrivialMesh where Vertex == SimpleVertex {
-    var boundingBox: Box3D<SIMD3<Float>> {
+    var boundingBox: Box3D {
         guard let first = vertices.first?.position else {
             return Box3D(min: .zero, max: .zero)
         }

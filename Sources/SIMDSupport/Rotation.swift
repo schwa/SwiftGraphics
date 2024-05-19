@@ -2,7 +2,7 @@ import simd
 import SwiftUI
 
 public struct Rotation {
-    public enum Storage: Equatable {
+    public enum Storage: Sendable, Equatable {
         case matrix(simd_float4x4)
         case quaternion(simd_quatf)
         case rollPitchYaw(RollPitchYaw)
@@ -11,6 +11,9 @@ public struct Rotation {
     public var storage: Storage
 
     public static let identity = Rotation.quaternion(.identity)
+}
+
+extension Rotation: Sendable {
 }
 
 extension Rotation: Equatable {

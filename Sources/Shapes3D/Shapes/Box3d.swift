@@ -1,13 +1,32 @@
+import MetalKit
 import MetalSupport
+import ModelIO
 import SIMDSupport
 import SwiftUI
 
-public protocol PolygonConvertable {
-    func toPolygons() -> [Polygon3D<SimpleVertex>]
+// TODO: This file needs a big makeover. See also MeshConvertable.
+
+public struct Box3D {
+    public var min: SIMD3<Float>
+    public var max: SIMD3<Float>
+
+    public init(min: SIMD3<Float>, max: SIMD3<Float>) {
+        self.min = min
+        self.max = max
+    }
 }
 
-extension Box3D: PolygonConvertable where Vertex == SIMD3<Float> {
-    public func toPolygons() -> [Polygon3D<SimpleVertex>] {
+extension Box3D: PolygonConvertable {
+    public struct PolygonConverter: PolygonConverterProtocol {
+        public init() {
+        }
+        public func convert(_ value: Box3D) throws -> [Polygon3D<SimpleVertex>] {
+            return value.toPolygonsX()
+        }
+    }
+
+    // TODO: Roll into convert
+    private func toPolygonsX() -> [Polygon3D<SimpleVertex>] {
         let polygons = [
             Polygon3D(vertices: [
                 SimpleVertex(position: SIMD3<Float>(min.x, min.y, min.z), normal: .init(x: -1, y: 0, z: 0)),
@@ -47,29 +66,6 @@ extension Box3D: PolygonConvertable where Vertex == SIMD3<Float> {
                 SimpleVertex(position: SIMD3<Float>(min.x, max.y, max.z), normal: .init(x: 0, y: 0, z: 1)),
             ]),
         ]
-        return polygons
-    }
-}
-
-extension Sphere3D: PolygonConvertable {
-    public func toPolygons() -> [Polygon3D<SimpleVertex>] {
-        let slices = 12
-        let stacks = 12
-        var polygons: [Polygon3D<SimpleVertex>] = []
-        func vertex(_ theta: Angle, _ phi: Angle) -> SimpleVertex {
-            let dir = SIMD3<Float>(SIMD3<Double>(cos(theta.radians) * sin(phi.radians), cos(phi.radians), sin(theta.radians) * sin(phi.radians)))
-            return SimpleVertex(position: dir * radius + center, normal: dir)
-        }
-        for i in 0 ..< slices {
-            for j in 0 ..< stacks {
-                let v1 = vertex(.degrees(Double(i) / Double(slices) * 360), .degrees(Double(j) / Double(stacks) * 180))
-                let v2 = vertex(.degrees(Double(i + 1) / Double(slices) * 360), .degrees(Double(j) / Double(stacks) * 180))
-                let v3 = vertex(.degrees(Double(i + 1) / Double(slices) * 360), .degrees(Double(j + 1) / Double(stacks) * 180))
-                let v4 = vertex(.degrees(Double(i) / Double(slices) * 360), .degrees(Double(j + 1) / Double(stacks) * 180))
-                polygons.append(Polygon3D(vertices: [v1, v2, v3]))
-                polygons.append(Polygon3D(vertices: [v1, v3, v4]))
-            }
-        }
         return polygons
     }
 }

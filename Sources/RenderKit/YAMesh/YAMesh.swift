@@ -172,6 +172,7 @@ public extension YAMesh {
 }
 
 public extension Shape3D {
+    @available(*, deprecated, message: "Deprecate")
     func toYAMesh(allocator: MDLMeshBufferAllocator?, device: MTLDevice) throws -> YAMesh {
         let mdlMesh = toMDLMesh(allocator: allocator)
         return try YAMesh(label: "\(type(of: self))", mdlMesh: mdlMesh, device: device)

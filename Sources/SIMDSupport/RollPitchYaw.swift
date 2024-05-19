@@ -1,7 +1,7 @@
 import simd
 import SwiftUI
 
-public struct RollPitchYaw: Hashable {
+public struct RollPitchYaw: Sendable, Hashable {
 
 //    enum Order {
 //        case rollPitchYaw

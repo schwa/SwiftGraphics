@@ -5,14 +5,14 @@ import SwiftUI
 
 // TODO: Experimental
 
-public func revolve(polygonalChain: PolygonalChain3D<SIMD3<Float>>, axis: Line3D, range: ClosedRange<Angle>) -> TrivialMesh<SIMD3<Float>> {
+public func revolve(polygonalChain: PolygonalChain3D, axis: Line3D, range: ClosedRange<Angle>) -> TrivialMesh<SIMD3<Float>> {
     let quads = polygonalChain.segments.map {
         revolve(lineSegment: $0, axis: axis, range: range)
     }
     return TrivialMesh(quads: quads)
 }
 
-public func revolve(polygonalChain: PolygonalChain3D<SIMD3<Float>>, axis: Line3D, range: ClosedRange<Angle>, segments: Int) -> TrivialMesh<SIMD3<Float>> {
+public func revolve(polygonalChain: PolygonalChain3D, axis: Line3D, range: ClosedRange<Angle>, segments: Int) -> TrivialMesh<SIMD3<Float>> {
     let by = Angle(radians: (range.upperBound.radians - range.lowerBound.radians) / Double(segments))
     let quads = stride(from: range.lowerBound, to: range.upperBound, by: by).flatMap { start in
         let range = start ... start + by
@@ -47,7 +47,7 @@ public extension Line3D {
         return 𝑥𝑐𝑙𝑜𝑠𝑒𝑠𝑡
     }
 
-    func intersects(plane: Plane3D<Float>) -> SIMD3<Float> {
+    func intersects(plane: Plane3D) -> SIMD3<Float> {
         fatalError()
     }
 }

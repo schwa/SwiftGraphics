@@ -8,9 +8,9 @@ struct SoftwareRendererBoxesDemoView: View, DemoView {
 
     init() {
         models = [
-            Box3D<SIMD3<Float>>(min: [-1, -0.5, -0.5], max: [-2.0, 0.5, 0.5]),
+            Box3D(min: [-1, -0.5, -0.5], max: [-2.0, 0.5, 0.5]),
             Sphere3D(center: .zero, radius: 0.5),
-            Box3D<SIMD3<Float>>(min: [1, -0.5, -0.5], max: [2.0, 0.5, 0.5]),
+            Box3D(min: [1, -0.5, -0.5], max: [2.0, 0.5, 0.5]),
         ]
     }
 
@@ -18,7 +18,7 @@ struct SoftwareRendererBoxesDemoView: View, DemoView {
         SoftwareRendererView { projection, _, context3D in
             var rasterizer = context3D.rasterizer
             for model in models {
-                for (index, polygon) in model.toPolygons().enumerated() {
+                for (index, polygon) in try! model.toPolygons().enumerated() {
                     rasterizer.submit(polygon: polygon.vertices.map(\.position), with: .color(Color(rgb: kellyColors[index % kellyColors.count]).opacity(0.8)))
                 }
             }
