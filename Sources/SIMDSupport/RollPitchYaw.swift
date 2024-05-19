@@ -2,6 +2,12 @@ import simd
 import SwiftUI
 
 public struct RollPitchYaw: Hashable {
+
+//    enum Order {
+//        case rollPitchYaw
+//        case yawPitchRoll
+//    }
+
     public var roll: Angle
     public var pitch: Angle
     public var yaw: Angle
@@ -29,6 +35,7 @@ public extension RollPitchYaw {
 
 public extension RollPitchYaw {
     init(quaternion: simd_quatf) {
+        fatalError("Not symetrical with .quaternion_factor")
         let q = quaternion.vector
 
         let siny_cosp = 2 * (q.w * q.z + q.x * q.y)
@@ -51,9 +58,10 @@ public extension RollPitchYaw {
     }
 
     var quaternion: simd_quatf {
-        quaternion_direct
+        quaternion_factor
     }
 
+    // TODO: This has a different result from...
     var quaternion_factor: simd_quatf {
         let roll = simd_quatf(angle: Float(roll.radians), axis: [0, 0, 1])
         let pitch = simd_quatf(angle: Float(pitch.radians), axis: [1, 0, 0])
@@ -61,6 +69,7 @@ public extension RollPitchYaw {
         return yaw * pitch * roll // TODO: Order matters
     }
 
+    // TODO:  ... this… which is a problem for init(quat:)
     var quaternion_direct: simd_quatf {
         let roll2 = roll.radians / 2
         let pitch2 = pitch.radians / 2
