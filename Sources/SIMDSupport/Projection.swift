@@ -58,7 +58,6 @@ public enum Projection: ProjectionProtocol {
         }
     }
 
-    // TODO: Use that macro
     public enum Meta: CaseIterable {
         case matrix
         case perspective
