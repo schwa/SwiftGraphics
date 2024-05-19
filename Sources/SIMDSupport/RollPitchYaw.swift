@@ -2,7 +2,6 @@ import simd
 import SwiftUI
 
 public struct RollPitchYaw: Sendable, Hashable {
-
 //    enum Order {
 //        case rollPitchYaw
 //        case yawPitchRoll
@@ -83,7 +82,6 @@ public extension RollPitchYaw {
 }
 
 extension RollPitchYaw: Codable {
-
     enum CodingKeys: CodingKey {
         case roll
         case pitch
@@ -120,7 +118,6 @@ public struct RollPitchYawFormatStyle: FormatStyle {
         "roll: \(value.roll.degrees.formatted())°, pitch: \(value.pitch.degrees.formatted())°, yaw: \(value.yaw.degrees.formatted())°"
     }
 }
-
 
 public extension FormatStyle where Self == RollPitchYawFormatStyle {
     static var rollPitchYaw: Self {

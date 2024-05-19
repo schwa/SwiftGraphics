@@ -1,7 +1,7 @@
 import CoreGraphicsSupport
 import simd
-import SwiftUI
 import SIMDSupport
+import SwiftUI
 
 struct BallRotationModifier: ViewModifier {
     @Binding

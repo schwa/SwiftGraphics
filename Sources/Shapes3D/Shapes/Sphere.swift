@@ -21,7 +21,7 @@ extension Sphere3D: PolygonConvertable {
         public init() {
         }
         public func convert(_ value: Sphere3D) throws -> [Polygon3D<SimpleVertex>] {
-            return value.toPolygonsX()
+            value.toPolygonsX()
         }
     }
 
@@ -47,7 +47,6 @@ extension Sphere3D: PolygonConvertable {
         return polygons
     }
 }
-
 
 // MARK: -
 

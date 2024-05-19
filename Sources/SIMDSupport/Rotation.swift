@@ -10,7 +10,7 @@ public struct Rotation {
 
     public var storage: Storage
 
-    public static let identity = Rotation.quaternion(.identity)
+    public static let identity = Self.quaternion(.identity)
 }
 
 extension Rotation: Sendable {
@@ -18,7 +18,7 @@ extension Rotation: Sendable {
 
 extension Rotation: Equatable {
     public static func ==(lhs: Self, rhs: Self) -> Bool {
-        return lhs.matrix == rhs.matrix
+        lhs.matrix == rhs.matrix
     }
 }
 

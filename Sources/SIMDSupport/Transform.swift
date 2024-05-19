@@ -195,5 +195,4 @@ public extension Transform {
     init(scale: SIMD3<Float> = .unit, rotation: simd_float4x4, translation: SIMD3<Float> = .zero) {
         storage = .srt(SRT(scale: scale, rotation: .matrix(rotation), translation: translation))
     }
-
 }

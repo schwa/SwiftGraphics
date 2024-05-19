@@ -16,10 +16,7 @@ public struct Cylinder3D {
 
 // MARK: -
 
-
 // MARK: -
-
-
 
 // MARK: -
 
@@ -92,7 +89,6 @@ public struct CircleX: Shape3D {
 }
 
 // MARK: -
-
 
 public struct Sphere3DX: Shape3D {
     public var extent: SIMD3<Float>
