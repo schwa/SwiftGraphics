@@ -143,7 +143,7 @@ struct SoftwareRendererMeshDemoView: View, DemoView {
                 mesh = mesh.offset(by: -mesh.boundingBox.min)
                 self.mesh = mesh
             case .revolve:
-                let polygonalChain = PolygonalChain3D<SIMD3<Float>>(vertices: [
+                let polygonalChain = PolygonalChain3D(vertices: [
                     [0, 0, 0],
                     [-1, 0, 0],
                     [-1, 2.5, 0],
@@ -159,7 +159,7 @@ struct SoftwareRendererMeshDemoView: View, DemoView {
     }
 }
 
-extension Box3D where Vertex == SIMD3<Float> {
+extension Box3D {
     var minXMinYMinZ: SIMD3<Float> { [min.x, min.y, min.z] }
     var minXMinYMaxZ: SIMD3<Float> { [min.x, min.y, max.z] }
     var minXMaxYMinZ: SIMD3<Float> { [min.x, max.y, min.z] }
@@ -171,7 +171,7 @@ extension Box3D where Vertex == SIMD3<Float> {
 }
 
 extension Path3D {
-    init(box: Box3D<SIMD3<Float>>) {
+    init(box: Box3D) {
         self = Path3D { path in
             path.move(to: box.minXMinYMinZ)
             path.addLine(to: box.maxXMinYMinZ)

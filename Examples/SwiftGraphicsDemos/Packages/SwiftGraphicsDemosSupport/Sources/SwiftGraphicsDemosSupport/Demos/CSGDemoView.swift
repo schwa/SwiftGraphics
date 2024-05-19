@@ -19,8 +19,8 @@ struct CSGDemoView_: View {
     let node: Node<SimpleVertex>
 
     init() {
-        a = Box3D<SIMD3<Float>>(min: [-5, -5, -5], max: [5, 5, 5]).toCSG()
-        b = Box3D<SIMD3<Float>>(min: [-10, -2, -2], max: [0, 2, 2]).toCSG()
+        a = try! Box3D(min: [-5, -5, -5], max: [5, 5, 5]).toCSG()
+        b = try! Box3D(min: [-10, -2, -2], max: [0, 2, 2]).toCSG()
         // b = Sphere(center: [5, 0, 0], radius: 5).toCSG()
 
         //        a = CGRect(x: -5, y: -5, width: 10, height: 10).toCSG()
