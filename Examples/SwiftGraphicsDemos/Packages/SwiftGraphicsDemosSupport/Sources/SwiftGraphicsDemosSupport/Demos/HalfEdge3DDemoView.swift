@@ -5,7 +5,7 @@ import simd
 import SwiftUI
 import SIMDSupport
 
-struct HalfEdgeDemoView: View, DemoView {
+struct HalfEdge3DDemoView: View, DemoView {
     @State
     var mesh: HalfEdgeMesh
 

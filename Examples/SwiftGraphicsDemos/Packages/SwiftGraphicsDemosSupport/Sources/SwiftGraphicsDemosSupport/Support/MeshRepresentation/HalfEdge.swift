@@ -21,23 +21,11 @@ public struct HalfEdgeMesh {
         }
     }
 
-    public class Edge: Identifiable {
-        var halfEdge: HalfEdge?
-
-        var twin: HalfEdge? {
-            return halfEdge?.twin
-        }
-
-        init() {
-        }
-    }
-
     public class HalfEdge: Identifiable {
         var vertex: Vertex
         var next: HalfEdge?
         var twin: HalfEdge?
         var face: Face?
-        var edge: Edge?
 
         init(vertex: Vertex, nextEdge: HalfEdge?, twinEdge: HalfEdge?, face: Face?) {
             self.vertex = vertex
@@ -54,7 +42,6 @@ public struct HalfEdgeMesh {
 extension HalfEdgeMesh {
     mutating func addFace(positions: [SIMD3<Float>]) {
         // TODO: Twin is not being added.
-        // TODO: Edge is not being added
         let face = Face()
         let vertices = positions.map { Vertex(position: $0) }
         let halfEdges = vertices.map { HalfEdge(vertex: $0, nextEdge: nil, twinEdge: nil, face: face) }
