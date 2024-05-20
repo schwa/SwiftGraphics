@@ -16,8 +16,9 @@ let package = Package(
     ],
     dependencies: [
         .package(path: "../../../../../SwiftGraphics"),
-//        .package(path: "/Users/schwa/Projects/SwiftGraphics"),
-        .package(url: "https://github.com/schwa/SwiftGLTF", branch: "main")
+        .package(url: "https://github.com/schwa/SwiftGLTF", branch: "main"),
+        .package(url: "https://github.com/schwa/StreamBuilder", branch: "main"),
+        .package(url: "https://github.com/ksemianov/WrappingHStack", from: "0.2.0"),
     ],
     targets: [
         .target(
@@ -25,6 +26,7 @@ let package = Package(
             dependencies: [
                 .product(name: "Array2D", package: "SwiftGraphics"),
                 .product(name: "CoreGraphicsSupport", package: "SwiftGraphics"),
+                .product(name: "CoreGraphicsUnsafeConformances", package: "SwiftGraphics"),
                 .product(name: "Earcut", package: "SwiftGraphics"),
                 .product(name: "GenericGeometryBase", package: "SwiftGraphics"),
                 .product(name: "MetalSupport", package: "SwiftGraphics"),
@@ -39,6 +41,8 @@ let package = Package(
                 .product(name: "SwiftGraphicsSupport", package: "SwiftGraphics"),
                 .product(name: "SIMDSupportUnsafeConformances", package: "SwiftGraphics"),
                 "SwiftGLTF",
+                "StreamBuilder",
+                "WrappingHStack",
             ],
             resources: [
                 .process("Resources/Assets.xcassets"),

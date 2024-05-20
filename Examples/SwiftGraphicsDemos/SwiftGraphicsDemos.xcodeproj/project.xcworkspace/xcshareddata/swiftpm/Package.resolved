@@ -28,6 +28,15 @@
       }
     },
     {
+      "identity" : "streambuilder",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/schwa/StreamBuilder",
+      "state" : {
+        "branch" : "main",
+        "revision" : "4b135f3172a43bcb2cc5ea86f7f9fa21d75ca9bf"
+      }
+    },
+    {
       "identity" : "swift-algorithms",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-algorithms.git",
@@ -106,6 +115,15 @@
       "state" : {
         "branch" : "main",
         "revision" : "4160ed7e89b7cfcccf5ff7a0cbfd5b055fada771"
+      }
+    },
+    {
+      "identity" : "wrappinghstack",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ksemianov/WrappingHStack",
+      "state" : {
+        "revision" : "3300f68b6bf5f8a75ee7ca8a40f136a558053d10",
+        "version" : "0.2.0"
       }
     }
   ],

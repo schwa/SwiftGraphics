@@ -1,5 +1,5 @@
 {
-  "originHash" : "12547b1631041c2aa5484c78d6999a034e70953174320baf4f90a41014c45727",
+  "originHash" : "aca2ce987e14e423f6edaa7a03e1566ef2d06b694d8a677ba5370d9c44b08202",
   "pins" : [
     {
       "identity" : "approximateequality",
@@ -17,6 +17,15 @@
       "state" : {
         "branch" : "jwight/downsizing",
         "revision" : "7bf3c08bc99005892e02ab48dc442c8bea54eeb7"
+      }
+    },
+    {
+      "identity" : "streambuilder",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/schwa/StreamBuilder",
+      "state" : {
+        "branch" : "main",
+        "revision" : "4b135f3172a43bcb2cc5ea86f7f9fa21d75ca9bf"
       }
     },
     {
@@ -89,6 +98,15 @@
       "state" : {
         "branch" : "main",
         "revision" : "4160ed7e89b7cfcccf5ff7a0cbfd5b055fada771"
+      }
+    },
+    {
+      "identity" : "wrappinghstack",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ksemianov/WrappingHStack",
+      "state" : {
+        "revision" : "3300f68b6bf5f8a75ee7ca8a40f136a558053d10",
+        "version" : "0.2.0"
       }
     }
   ],

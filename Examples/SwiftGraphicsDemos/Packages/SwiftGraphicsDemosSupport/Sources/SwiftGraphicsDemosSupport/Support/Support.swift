@@ -214,6 +214,12 @@ struct Pair<LHS, RHS> {
     }
 }
 
+extension Pair where LHS == RHS {
+    func reversed() -> Pair<RHS, LHS> {
+        .init(rhs, lhs)
+    }
+}
+
 extension Pair: Equatable where LHS: Equatable, RHS: Equatable {
 }
 
