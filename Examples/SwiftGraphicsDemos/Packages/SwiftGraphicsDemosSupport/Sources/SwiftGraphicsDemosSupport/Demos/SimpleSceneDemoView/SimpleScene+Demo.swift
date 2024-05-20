@@ -9,6 +9,8 @@ extension SimpleScene {
         let allocator = MTKMeshBufferAllocator(device: device)
         let cone = try Cone3D(extent: [0.5, 1, 0.5], segments: [20, 10]).toYAMesh(allocator: allocator, device: device)
         let sphere = try Sphere3DX(extent: [0.5, 0.5, 0.5], segments: [20, 10]).toYAMesh(allocator: allocator, device: device)
+//        let sphere = try Sphere3D(radius: 0.25).toYAMesh(allocator: allocator, device: device)
+
         let capsule = try Capsule3D(extent: [0.25, 1, 0.25], cylinderSegments: [30, 10], hemisphereSegments: 5).toYAMesh(allocator: allocator, device: device)
 
         let meshes = [cone, sphere, capsule]

@@ -4,18 +4,9 @@ import simd
 
 // TODO: This file needs a big makeover. See also MeshConvertable.
 
-public struct Cylinder3D {
-    public var radius: Float
-    public var depth: Float
-
-    public init(radius: Float, depth: Float) {
-        self.radius = radius
-        self.depth = depth
-    }
-}
-
 // MARK: -
 
+@available(*, deprecated, message: "Deprecated")
 public struct Sphere3DX: Shape3D {
     public var extent: SIMD3<Float>
     public var segments: SIMD2<UInt32>
