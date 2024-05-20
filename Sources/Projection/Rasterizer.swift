@@ -7,9 +7,17 @@ public struct Rasterizer {
         public var normalsLength = 1.0
         public var shadeFragmentsWithNormals = false
         public var backfaceCulling = true
+        // TODO: add clockwise/counterclockwise
 
         public static var `default`: Self {
             .init()
+        }
+
+        public init(drawNormals: Bool = false, normalsLength: Double = 1.0, shadeFragmentsWithNormals: Bool = false, backfaceCulling: Bool = true) {
+            self.drawNormals = drawNormals
+            self.normalsLength = normalsLength
+            self.shadeFragmentsWithNormals = shadeFragmentsWithNormals
+            self.backfaceCulling = backfaceCulling
         }
     }
 
@@ -72,6 +80,7 @@ public struct Rasterizer {
         for fragment in fragments {
             let viewPosition = graphicsContext.projection.viewTransform.inverse.translation
             let viewSpaceNormal = (graphicsContext.projection.viewTransform * SIMD4(fragment.modelSpaceNormal, 1.0)).xyz
+            // TODO: This is clockwise and it should be counter clockwise
             let backFacing = simd_dot(fragment.modelSpaceVertices[0] - viewPosition, fragment.modelSpaceNormal) >= 0
             if options.backfaceCulling && backFacing {
                 continue
