@@ -224,3 +224,13 @@ public extension TrivialMesh where Vertex == SimpleVertex {
         return .init(indices: mesh.indices, vertices: vertices)
     }
 }
+
+public extension TrivialMesh where Vertex == SimpleVertex {
+    init(other: TrivialMesh<SIMD3<Float>>) {
+        let vertices = other.vertices.map {
+            SimpleVertex(position: $0, normal: .zero)
+        }
+        let mesh = TrivialMesh(indices: other.indices, vertices: vertices)
+        self = mesh.renormalize()
+    }
+}

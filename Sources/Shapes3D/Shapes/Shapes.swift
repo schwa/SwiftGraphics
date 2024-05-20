@@ -21,7 +21,7 @@ import simd
 
 // Cone
 // Truncated Cone
-// Capsule
+// Capsule (fat ends?)
 // Torus
 // Prism
 
