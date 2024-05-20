@@ -13,18 +13,6 @@ import SwiftUI
 import Projection
 import SIMDSupport
 
-internal func unimplemented(_ message: @autoclosure () -> String = String(), file: StaticString = #file, line: UInt = #line) -> Never {
-    fatalError(message(), file: file, line: line)
-}
-
-internal func temporarilyDisabled(_ message: @autoclosure () -> String = String(), file: StaticString = #file, line: UInt = #line) -> Never {
-    fatalError(message(), file: file, line: line)
-}
-
-internal func unreachable(_ message: @autoclosure () -> String = String(), file: StaticString = #file, line: UInt = #line) -> Never {
-    fatalError(message(), file: file, line: line)
-}
-
 // swiftlint:disable identifier_name
 
 // TODO: Move
@@ -879,4 +867,40 @@ extension View {
         }
 
     }
+}
+
+extension Path {
+    static func arrow(start: CGPoint, end: CGPoint, startStyle: ArrowHeadStyle? = nil, endStyle: ArrowHeadStyle = .simple) -> Path {
+        Path { path in
+            path.move(to: start)
+            path.addLine(to: end)
+            let angle = Angle(from: start, to: end)
+            path.addPath(arrowHead(style: endStyle), transform: .rotation(angle) * .translation(end))
+        }
+    }
+
+    enum ArrowHeadStyle {
+        case simple
+        case simpleHalfLeft
+        case simpleHalfRight
+    }
+
+    static func arrowHead(size: Double = 5, style: ArrowHeadStyle = .simple) -> Path {
+        Path { path in
+            switch style {
+            case .simple:
+                path.move(to: [-size, -size])
+                path.addLine(to: .zero)
+                path.move(to: [-size, size])
+                path.addLine(to: .zero)
+            case .simpleHalfLeft:
+                path.move(to: [-size, -size])
+                path.addLine(to: .zero)
+            case .simpleHalfRight:
+                path.move(to: [-size, size])
+                path.addLine(to: .zero)
+            }
+        }
+    }
+
 }

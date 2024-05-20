@@ -30,6 +30,7 @@ struct DemosView: View {
                 ValueView(value: true) { isExpanded in
                     DisclosureGroup("Current", isExpanded: isExpanded) {
                         row(for: HalfEdge3DDemoView.self)
+                        row(for: HalfEdge2DDemoView.self)
                         row(for: SimpleSceneDemoView.self)
                     }
                 }

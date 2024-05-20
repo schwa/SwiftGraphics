@@ -37,17 +37,6 @@ public protocol PointLike3: PointLike {
 }
 
 extension CGPoint: PointLike {
-    public var length: CGFloat {
-        sqrt(lengthSquared)
-    }
-
-    public var lengthSquared: CGFloat {
-        x * x + y * y
-    }
-
-    public var normalized: CGPoint {
-        self / length
-    }
 }
 
 extension SIMD3<Float>: PointLike, PointLike3 {

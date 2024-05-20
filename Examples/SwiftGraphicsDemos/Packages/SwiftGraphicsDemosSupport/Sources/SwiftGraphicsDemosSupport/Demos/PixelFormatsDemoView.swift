@@ -3,6 +3,7 @@ import MetalKit
 import MetalSupport
 import RenderKit
 import SwiftUI
+import SwiftGraphicsSupport
 
 struct PixelFormatsDemoView: View, DemoView {
     @Environment(\.metalDevice)

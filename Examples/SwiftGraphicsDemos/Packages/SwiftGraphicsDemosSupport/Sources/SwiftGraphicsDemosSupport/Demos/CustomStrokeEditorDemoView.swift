@@ -2,6 +2,7 @@ import Algorithms
 import CoreGraphicsSupport
 import Shapes2D
 import SwiftUI
+import SwiftGraphicsSupport
 
 // https://dl.acm.org/doi/abs/10.1145/3386569.3392392
 

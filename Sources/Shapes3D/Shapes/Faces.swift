@@ -1,6 +1,7 @@
 import CoreGraphics
 import ModelIO
 import simd
+import SwiftGraphicsSupport
 
 public protocol Face {
     associatedtype Vertex: VertexLike
@@ -45,6 +46,10 @@ public extension Polygon3D where Vertex: VertexLike3, Vertex.Vector == SIMD3<Flo
 public extension Polygon3D where Vertex == SIMD3<Float> {
     init(polygonalChain: PolygonalChain3D) {
         self.init(vertices: polygonalChain.isClosed ? polygonalChain.vertices.dropLast() : polygonalChain.vertices)
+    }
+
+    var segments: [LineSegment3D] {
+        vertices.circularPairs().map(LineSegment3D.init)
     }
 }
 

@@ -1,4 +1,5 @@
 import Metal
+import SwiftGraphicsSupport
 
 // TODO: These parameter names are terrible. But this is a very useful function.
 // TODO: Want to validate types too if possible

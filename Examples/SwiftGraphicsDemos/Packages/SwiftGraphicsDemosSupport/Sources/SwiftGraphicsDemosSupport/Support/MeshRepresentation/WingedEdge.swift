@@ -4,6 +4,7 @@ import MetalSupport
 import RenderKit
 import RenderKitShaders
 import simd
+import SwiftGraphicsSupport
 
 // swiftlint:disable conditional_returns_on_newline
 

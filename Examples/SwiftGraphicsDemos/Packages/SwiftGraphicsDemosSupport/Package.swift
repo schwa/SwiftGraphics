@@ -36,6 +36,7 @@ let package = Package(
                 .product(name: "Shapes2D", package: "SwiftGraphics"),
                 .product(name: "Shapes3D", package: "SwiftGraphics"),
                 .product(name: "SIMDSupport", package: "SwiftGraphics"),
+                .product(name: "SwiftGraphicsSupport", package: "SwiftGraphics"),
                 .product(name: "SIMDSupportUnsafeConformances", package: "SwiftGraphics"),
                 "SwiftGLTF",
             ],
