@@ -7,9 +7,9 @@ import Shapes3D
 extension SimpleScene {
     static func demo(device: MTLDevice, singlePanoramaTexture: Bool = true) throws -> SimpleScene {
         let allocator = MTKMeshBufferAllocator(device: device)
-        let cone = try YAMesh(mdlMesh: try Cone3D(height: 1, radius: 0.5).toMDLMesh(allocator: allocator), device: device)
-        let sphere = try YAMesh(mdlMesh: try Sphere3D(radius: 0.25).toMDLMesh(allocator: allocator), device: device)
-        let capsule = try YAMesh(mdlMesh: try Capsule3D(height: 1, radius: 0.05).toMDLMesh(allocator: allocator), device: device)
+        let cone = try Cone3D(height: 1, radius: 0.5).toYAMesh(allocator: allocator, device: device)
+        let sphere = try Sphere3D(radius: 0.25).toYAMesh(allocator: allocator, device: device)
+        let capsule = try Capsule3D(height: 1, radius: 0.05).toYAMesh(allocator: allocator, device: device)
 
         let meshes = [cone, sphere, capsule]
 
@@ -78,11 +78,9 @@ extension SimpleScene {
     }
 }
 
-// TODO: REMOVE
-public extension Shape3D {
-    @available(*, deprecated, message: "Deprecate")
+public extension MDLMeshConvertable {
     func toYAMesh(allocator: MDLMeshBufferAllocator?, device: MTLDevice) throws -> YAMesh {
-        let mdlMesh = toMDLMesh(allocator: allocator)
+        let mdlMesh = try toMDLMesh(allocator: allocator)
         return try YAMesh(label: "\(type(of: self))", mdlMesh: mdlMesh, device: device)
     }
 }

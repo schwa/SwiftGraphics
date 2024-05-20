@@ -106,7 +106,6 @@ let package = Package(
                 "MetalSupportUnsafeConformances",
                 "RenderKitShaders",
                 "Shapes2D",
-                "Shapes3D",
                 "SIMDSupport",
             ],
             resources: [
