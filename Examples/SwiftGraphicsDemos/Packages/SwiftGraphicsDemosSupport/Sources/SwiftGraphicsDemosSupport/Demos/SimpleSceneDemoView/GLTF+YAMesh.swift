@@ -4,6 +4,7 @@ import RenderKit
 import SwiftFormats
 import SwiftGLTF
 import SwiftUI
+import SwiftGraphicsSupport
 
 extension SwiftGLTF.Accessor {
     var vertexFormat: MTLVertexFormat? {

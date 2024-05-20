@@ -1,5 +1,6 @@
 import CoreGraphics
 import Foundation
+import SwiftGraphicsSupport
 
 // swiftlint:disable identifier_name
 

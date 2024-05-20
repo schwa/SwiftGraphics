@@ -26,6 +26,7 @@ let package = Package(
         .library(name: "Shapes3D", targets: ["Shapes3D"]),
         .library(name: "SIMDSupport", targets: ["SIMDSupport"]),
         .library(name: "SIMDSupportUnsafeConformances", targets: ["SIMDSupportUnsafeConformances"]),
+        .library(name: "SwiftGraphicsSupport", targets: ["SwiftGraphicsSupport"])
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-algorithms", from: "1.1.0"),
@@ -157,6 +158,7 @@ let package = Package(
                 "MetalSupport",
                 "Shapes2D",
                 "SIMDSupport",
+                "SwiftGraphicsSupport",
             ],
             swiftSettings: [.interoperabilityMode(.Cxx)]
         ),
@@ -172,6 +174,8 @@ let package = Package(
         .testTarget(name: "SIMDSupportTests", dependencies: [
             "SIMDSupport",
         ]),
+
+        .target(name: "SwiftGraphicsSupport"),
 
         // MARK: TrivialMeshCLI
         .executableTarget(

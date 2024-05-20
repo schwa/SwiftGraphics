@@ -19,7 +19,7 @@ public extension Line3D {
 
 // MARK: -
 
-public struct LineSegment3D {
+public struct LineSegment3D: Hashable {
     public var start: SIMD3<Float>
     public var end: SIMD3<Float>
 
@@ -30,6 +30,15 @@ public struct LineSegment3D {
 }
 
 public extension LineSegment3D {
+    init(_ tuple: (start: SIMD3<Float>, end: SIMD3<Float>)) {
+        self.start = tuple.start
+        self.end = tuple.end
+    }
+
+    func reversed() -> LineSegment3D {
+        .init(start: end, end: start)
+    }
+
     var direction: SIMD3<Float> {
         (end - start).normalized
     }
@@ -48,6 +57,12 @@ public extension LineSegment3D {
 
     func point(at t: Float) -> SIMD3<Float> {
         start + direction * t
+    }
+}
+
+extension LineSegment3D: CustomDebugStringConvertible {
+    public var debugDescription: String {
+        return "LineSegment3D(\(start), \(end))"
     }
 }
 

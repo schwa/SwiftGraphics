@@ -1,27 +1,27 @@
 // TODO: Can this be replaced/arugmented by something in SwiftAlgorithms?
 
-extension Sequence {
+public extension Sequence {
     func circularPairs() -> CircularPairsSequence<Self> {
         CircularPairsSequence(base: self)
     }
 }
 
-struct CircularPairsSequence<Base: Sequence> {
+public struct CircularPairsSequence<Base: Sequence> {
     var base: Base
 }
 
 extension CircularPairsSequence: Sequence {
-    func makeIterator() -> Iterator {
+    public func makeIterator() -> Iterator {
         Iterator(base: base.makeIterator())
     }
 
-    struct Iterator: IteratorProtocol {
+    public struct Iterator: IteratorProtocol {
         var base: Base.Iterator
         var first: Base.Element?
         var previous: Base.Element?
         var atEnd = false
 
-        mutating func next() -> (Base.Element, Base.Element)? {
+        public mutating func next() -> (Base.Element, Base.Element)? {
             switch (base.next(), first, previous, atEnd) {
             case (.none, .none, .none, false):
                 return nil
