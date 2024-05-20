@@ -7,7 +7,7 @@ import SIMDSupport
 
 struct HalfEdge3DDemoView: View, DemoView {
     @State
-    var mesh: HalfEdgeMesh
+    var mesh: HalfEdgeMesh<SIMD3<Float>>
 
     @State
     var camera = Camera(transform: .translation([0, 0, -5]), target: [0, 0, 0], projection: .perspective(.init(fovy: .degrees(90), zClip: 0.01 ... 1_000.0)))
@@ -22,7 +22,7 @@ struct HalfEdge3DDemoView: View, DemoView {
     var selection: HalfEdgeSelection?
 
     @State
-    var faceColors: [HalfEdgeMesh.Face.ID: Color]
+    var faceColors: [HalfEdgeMesh<SIMD3<Float>>.Face.ID: Color]
 
     init() {
         let mesh = try! Box3D(min: [-1, -1, -1], max: [1, 1, 1]).toHalfEdgeMesh()
@@ -125,13 +125,13 @@ enum HalfEdgeSelection: Hashable {
 struct HalfEdgeMeshInspectorView: View {
 
     @Binding
-    var mesh: HalfEdgeMesh
+    var mesh: HalfEdgeMesh<SIMD3<Float>>
 
     @Binding
     var selection: HalfEdgeSelection?
 
     @Binding
-    var faceColors: [HalfEdgeMesh.Face.ID: Color]
+    var faceColors: [HalfEdgeMesh<SIMD3<Float>>.Face.ID: Color]
 
     var body: some View {
         VStack {

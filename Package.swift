@@ -14,6 +14,7 @@ let package = Package(
     products: [
         .library(name: "Array2D", targets: ["Array2D"]),
         .library(name: "CoreGraphicsSupport", targets: ["CoreGraphicsSupport"]),
+        .library(name: "CoreGraphicsUnsafeConformances", targets: ["CoreGraphicsUnsafeConformances"]),
         .library(name: "Earcut", targets: ["Earcut"]),
         .library(name: "GenericGeometryBase", targets: ["GenericGeometryBase"]),
         .library(name: "MetalSupport", targets: ["MetalSupport"]),
@@ -52,6 +53,9 @@ let package = Package(
 
         // MARK: CoreGraphicsSupport
         .target(name: "CoreGraphicsSupport"),
+
+        // MARK: CoreGraphicsUnsafeConformances
+        .target(name: "CoreGraphicsUnsafeConformances"),
 
         // MARK: Earcut
         .target(
