@@ -16,6 +16,17 @@ public struct Box3D {
     }
 }
 
+public extension Box3D {
+    var minXMinYMinZ: SIMD3<Float> { [min.x, min.y, min.z] }
+    var minXMinYMaxZ: SIMD3<Float> { [min.x, min.y, max.z] }
+    var minXMaxYMinZ: SIMD3<Float> { [min.x, max.y, min.z] }
+    var minXMaxYMaxZ: SIMD3<Float> { [min.x, max.y, max.z] }
+    var maxXMinYMinZ: SIMD3<Float> { [max.x, min.y, min.z] }
+    var maxXMinYMaxZ: SIMD3<Float> { [max.x, min.y, max.z] }
+    var maxXMaxYMinZ: SIMD3<Float> { [max.x, max.y, min.z] }
+    var maxXMaxYMaxZ: SIMD3<Float> { [max.x, max.y, max.z] }
+}
+
 extension Box3D: PolygonConvertable {
     public struct PolygonConverter: PolygonConverterProtocol {
         public init() {

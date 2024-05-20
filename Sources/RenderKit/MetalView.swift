@@ -98,8 +98,11 @@ class MetalViewModel: NSObject, MTKViewDelegate {
     }
 
     func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
-        guard let device = view.device, let drawableSizeWillChange else {
-            fatalError()
+        guard let device = view.device else {
+            fatalError("No device in `\(#function)`.")
+        }
+        guard let drawableSizeWillChange else {
+            fatalError("`drawableSizeWillChange` not set by the time `\(#function)` called.")
         }
         do {
             var configuration = view.configuration

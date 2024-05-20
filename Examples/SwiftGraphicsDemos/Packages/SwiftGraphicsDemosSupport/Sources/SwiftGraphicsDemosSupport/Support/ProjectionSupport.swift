@@ -11,20 +11,20 @@ import SIMDSupport
 import SwiftUI
 import UniformTypeIdentifiers
 
-// TODO: Deprecate
-struct Camera {
-    var transform: Transform
+@available(*, deprecated, message: "Use scene graphs instead.")
+public struct Camera {
+    public var transform: Transform
 
     // TODO: Deprecate
     // @available(*, deprecated, message: "We can't generate this from any transform. Maybe move target into transform rotation?")
-    var target: SIMD3<Float> {
+    public var target: SIMD3<Float> {
         didSet {
             let position = transform.translation // TODO: Scale?
             transform = Transform(look(at: position + target, from: position, up: [0, 1, 0]))
         }
     }
 
-    var projection: Projection
+    public var projection: Projection
 }
 
 extension Camera: Equatable {
@@ -33,7 +33,7 @@ extension Camera: Equatable {
 extension Camera: Sendable {
 }
 
-extension Camera {
+public extension Camera {
     var heading: Angle {
         get {
             let degrees = Angle(from: .zero, to: CGPoint(target.xz)).degrees

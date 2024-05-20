@@ -4,16 +4,10 @@ import SwiftUI
 public struct GraphicsContext3D {
     public var graphicsContext2D: GraphicsContext
     public var projection: Projection3D
-    public var rasterizerOptions: Rasterizer.Options
-
-    public var rasterizer: Rasterizer {
-        Rasterizer(graphicsContext: self, options: rasterizerOptions)
-    }
 
     public init(graphicsContext2D: GraphicsContext, projection: Projection3D) {
         self.graphicsContext2D = graphicsContext2D
         self.projection = projection
-        rasterizerOptions = .default
     }
 
     public func stroke(path: Path3D, with shading: GraphicsContext.Shading, lineWidth: Double = 1) {

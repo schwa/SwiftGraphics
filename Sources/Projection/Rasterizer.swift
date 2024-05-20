@@ -6,8 +6,6 @@ public struct Rasterizer {
         public var drawNormals = false
         public var normalsLength = 1.0
         public var shadeFragmentsWithNormals = false
-        public var fill = true
-        public var stroke = false
         public var backfaceCulling = true
 
         public static var `default`: Self {
@@ -21,9 +19,10 @@ public struct Rasterizer {
         var clipSpaceMin: SIMD3<Float>
         var modelSpaceNormal: SIMD3<Float>
 
-        var shading: GraphicsContext.Shading
+        var stroke: (GraphicsContext.Shading, StrokeStyle)?
+        var fill: (GraphicsContext.Shading, FillStyle)?
 
-        init(vertices: [SIMD3<Float>], projection: Projection3D, shading: GraphicsContext.Shading) {
+        init(vertices: [SIMD3<Float>], projection: Projection3D, stroke: (GraphicsContext.Shading, StrokeStyle)?, fill: (GraphicsContext.Shading, FillStyle)?) {
             modelSpaceVertices = vertices
             let transform = projection.clipTransform * projection.projectionTransform * projection.viewTransform
             clipSpaceVertices = modelSpaceVertices.map {
@@ -39,7 +38,8 @@ public struct Rasterizer {
             let c = modelSpaceVertices[2]
             modelSpaceNormal = simd_normalize(simd_cross(b - a, c - a))
 
-            self.shading = shading
+            self.stroke = stroke
+            self.fill = fill
         }
     }
 
@@ -47,8 +47,17 @@ public struct Rasterizer {
     var fragments: [Fragment] = []
     public var options: Options
 
-    public mutating func submit(polygon: [SIMD3<Float>], with shading: GraphicsContext.Shading) {
-        fragments.append(Fragment(vertices: polygon, projection: graphicsContext.projection, shading: shading))
+    public init(graphicsContext: GraphicsContext3D, options: Options = .default) {
+        self.graphicsContext = graphicsContext
+        self.options = options
+    }
+
+    public mutating func stroke(polygon: [SIMD3<Float>], with shading: GraphicsContext.Shading, style: StrokeStyle = .init()) {
+        fragments.append(Fragment(vertices: polygon, projection: graphicsContext.projection, stroke: (shading, style), fill: nil))
+    }
+
+    public mutating func fill(polygon: [SIMD3<Float>], with shading: GraphicsContext.Shading, style: FillStyle = .init()) {
+        fragments.append(Fragment(vertices: polygon, projection: graphicsContext.projection, stroke: nil, fill: (shading, style)))
     }
 
     public mutating func rasterize() {
@@ -77,13 +86,13 @@ public struct Rasterizer {
                 path.closeSubpath()
             }
 
-            let shading = !options.shadeFragmentsWithNormals ? fragment.shading : .color(viewSpaceNormal)
-
-            if options.fill {
-                graphicsContext.graphicsContext2D.fill(path, with: shading)
+            if let fill = fragment.fill {
+                let shading = !options.shadeFragmentsWithNormals ? fill.0 : .color(viewSpaceNormal)
+                graphicsContext.graphicsContext2D.fill(path, with: shading, style: fill.1)
             }
-            if options.stroke {
-                graphicsContext.graphicsContext2D.stroke(path, with: shading, style: .init(lineCap: .round))
+            if let stroke = fragment.stroke {
+                let shading = !options.shadeFragmentsWithNormals ? stroke.0 : .color(viewSpaceNormal)
+                graphicsContext.graphicsContext2D.stroke(path, with: shading, style: stroke.1)
             }
 
             if options.drawNormals {
@@ -141,5 +150,14 @@ public extension SIMD3 {
 
     var reverseTuple: (Scalar, Scalar, Scalar) {
         (z, y, x)
+    }
+}
+
+public extension GraphicsContext3D {
+    func rasterize(options: Rasterizer.Options = .default, content: (inout Rasterizer) -> Void) {
+        var rasterizer = Rasterizer(graphicsContext: self, options: options)
+        content(&rasterizer)
+        rasterizer.rasterize()
+
     }
 }

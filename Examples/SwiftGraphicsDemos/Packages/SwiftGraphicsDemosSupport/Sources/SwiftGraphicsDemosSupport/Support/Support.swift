@@ -7,8 +7,11 @@ import MetalSupport
 import RenderKit
 import RenderKitShaders
 import Shapes2D
+import Shapes3D
 import simd
 import SwiftUI
+import Projection
+import SIMDSupport
 
 internal func unimplemented(_ message: @autoclosure () -> String = String(), file: StaticString = #file, line: UInt = #line) -> Never {
     fatalError(message(), file: file, line: line)
@@ -732,5 +735,148 @@ extension Array {
                 self[count + index] = newValue
             }
         }
+    }
+}
+
+public extension TrivialMesh {
+    func toPolygons() -> [[Vertex]] {
+        indices.chunks(ofCount: 3).map {
+            $0.map { vertices[Int($0)] }
+        }
+    }
+}
+
+public extension Projection3D {
+    init(size: CGSize, camera: Camera) {
+        var projection = Projection3D(size: size)
+        projection.viewTransform = camera.transform.matrix.inverse
+        projection.projectionTransform = camera.projection.matrix(viewSize: .init(size))
+        projection.clipTransform = simd_float4x4(scale: [Float(size.width) / 2, Float(size.height) / 2, 1])
+        self = projection
+    }
+
+    func worldSpaceToScreenSpace(_ point: SIMD3<Float>) -> CGPoint {
+        var point = worldSpaceToClipSpace(point)
+        point /= point.w
+        return CGPoint(x: Double(point.x), y: Double(point.y))
+    }
+
+    func worldSpaceToClipSpace(_ point: SIMD3<Float>) -> SIMD4<Float> {
+        clipTransform * projectionTransform * viewTransform * SIMD4<Float>(point, 1.0)
+    }
+
+    //    public func unproject(_ point: CGPoint, z: Float) -> SIMD3<Float> {
+    //        // We have no model. Just use view.
+    //        let modelView = viewTransform
+    //        return gluUnproject(win: SIMD3<Float>(Float(point.x), Float(point.y), z), modelView: modelView, proj: projectionTransform, viewOrigin: .zero, viewSize: SIMD2<Float>(size))
+    //    }
+
+    func isVisible(_ point: SIMD3<Float>) -> Bool {
+        worldSpaceToClipSpace(point).z >= 0
+    }
+}
+
+public extension RollPitchYaw {
+    mutating func setAxis(_ vector: SIMD3<Float>) {
+        switch vector {
+        case [-1, 0, 0]:
+            self = .init(roll: .degrees(0), pitch: .degrees(0), yaw: .degrees(90))
+        case [1, 0, 0]:
+            self = .init(roll: .degrees(0), pitch: .degrees(0), yaw: .degrees(270))
+        case [0, -1, 0]:
+            self = .init(roll: .degrees(0), pitch: .degrees(90), yaw: .degrees(0))
+        case [0, 1, 0]:
+            self = .init(roll: .degrees(0), pitch: .degrees(270), yaw: .degrees(0))
+        case [0, 0, -1]:
+            self = .init(roll: .degrees(0), pitch: .degrees(180), yaw: .degrees(0))
+        case [0, 0, 1]:
+            self = .init(roll: .degrees(0), pitch: .degrees(0), yaw: .degrees(0))
+        default:
+            break
+        }
+    }
+}
+
+extension Path3D {
+    init(box: Box3D) {
+        self = Path3D { path in
+            path.move(to: box.minXMinYMinZ)
+            path.addLine(to: box.maxXMinYMinZ)
+            path.addLine(to: box.maxXMaxYMinZ)
+            path.addLine(to: box.minXMaxYMinZ)
+            path.closePath()
+
+            path.move(to: box.minXMinYMaxZ)
+            path.addLine(to: box.maxXMinYMaxZ)
+            path.addLine(to: box.maxXMaxYMaxZ)
+            path.addLine(to: box.minXMaxYMaxZ)
+            path.closePath()
+
+            path.move(to: box.minXMinYMinZ)
+            path.addLine(to: box.minXMinYMaxZ)
+
+            path.move(to: box.maxXMinYMinZ)
+            path.addLine(to: box.maxXMinYMaxZ)
+
+            path.move(to: box.maxXMaxYMinZ)
+            path.addLine(to: box.maxXMaxYMaxZ)
+
+            path.move(to: box.minXMaxYMinZ)
+            path.addLine(to: box.minXMaxYMaxZ)
+        }
+    }
+}
+
+extension View {
+    func onSpatialTap(count: Int = 1, coordinateSpace: some CoordinateSpaceProtocol = .local, handler: @escaping (CGPoint) -> Void) -> some View {
+        gesture(SpatialTapGesture(count: count, coordinateSpace: coordinateSpace).onEnded({ value in
+            handler(value.location)
+        }))
+    }
+}
+
+extension GraphicsContext3D {
+    func drawAxisMarkers(labels: Bool = true) {
+        // TODO: Really this should use line3d and clip to context.
+        for axis in Axis.allCases {
+            stroke(path: Path3D { path in
+                path.move(to: axis.vector * -5)
+                path.addLine(to: axis.vector * 5)
+            }, with: .color(axis.color))
+            if labels {
+                let negativeAxisLabel = Text("-\(axis)").font(.caption)
+                graphicsContext2D.draw(negativeAxisLabel, at: projection.project(axis.vector * -5))
+                let positiveAxisLabel = Text("+\(axis)").font(.caption)
+                graphicsContext2D.draw(positiveAxisLabel, at: projection.project(axis.vector * +5))
+            }
+        }
+    }
+}
+
+struct RasterizerOptionsView: View {
+    @Binding
+    var options: Rasterizer.Options
+
+    var body: some View {
+        // Toggle("Axis Rules", isOn: options.contains(.showAxisRules))
+        Toggle("Draw Polygon Normals", isOn: $options.drawNormals)
+        TextField("Normals Length", value: $options.normalsLength, format: .number)
+        Toggle("Shade Normals", isOn: $options.shadeFragmentsWithNormals)
+        Toggle("Backface Culling", isOn: $options.backfaceCulling)
+    }
+}
+
+extension View {
+    func inspector <Content>(@ViewBuilder content: @escaping () -> Content) -> some View where Content: View {
+        ValueView(value: true) { isPresented in
+            inspector(isPresented: isPresented) {
+                content().toolbar {
+                    Spacer()
+                    Toggle(isOn: isPresented, label: { Label("Inspector", systemImage: "sidebar.right") })
+                        .toggleStyle(.button)
+                }
+            }
+        }
+
     }
 }

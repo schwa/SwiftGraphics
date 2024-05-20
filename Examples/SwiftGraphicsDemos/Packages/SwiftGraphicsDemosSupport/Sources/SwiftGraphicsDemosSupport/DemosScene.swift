@@ -28,6 +28,13 @@ struct DemosView: View {
         NavigationView {
             List {
                 ValueView(value: true) { isExpanded in
+                    DisclosureGroup("Current", isExpanded: isExpanded) {
+                        row(for: HalfEdgeDemoView.self)
+                        row(for: SimpleSceneDemoView.self)
+                    }
+                }
+                Divider()
+                ValueView(value: true) { isExpanded in
                     DisclosureGroup("Software Renderers", isExpanded: isExpanded) {
                         row(for: SoftwareRendererBoxesDemoView.self)
                         row(for: SoftwareRendererMeshDemoView.self)
@@ -39,14 +46,12 @@ struct DemosView: View {
                         row(for: BeziersDemoView.self)
                         row(for: CSGDemoView.self)
                         row(for: CustomStrokeEditorDemoView.self)
-                        row(for: HalfEdgeDemoView.self)
                         row(for: HobbyCurveDemoView.self)
                         row(for: LineDemoView.self)
                         row(for: Particles2DemoView.self)
                         row(for: PixelFormatsDemoView.self)
                         row(for: ShaderTestDemoView.self)
                         row(for: ShapesDemoView.self)
-                        row(for: SimpleSceneDemoView.self)
                         row(for: SimulationDemoView.self)
                         row(for: SketchDemoView.self)
                         row(for: SplineDemoView.self)
