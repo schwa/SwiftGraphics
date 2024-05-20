@@ -6,6 +6,7 @@ import SwiftUI
 import SIMDSupport
 
 struct HalfEdgeDemoView: View, DemoView {
+    @State
     var mesh: HalfEdgeMesh
 
     @State
@@ -17,8 +18,18 @@ struct HalfEdgeDemoView: View, DemoView {
     @State
     var rasterizerOptions = Rasterizer.Options.default
 
+    @State
+    var selection: HalfEdgeSelection?
+
+    @State
+    var faceColors: [HalfEdgeMesh.Face.ID: Color]
+
     init() {
-        mesh = try! Box3D(min: [-1, -1, -1], max: [1, 1, 1]).toHalfEdgeMesh()
+        let mesh = try! Box3D(min: [-1, -1, -1], max: [1, 1, 1]).toHalfEdgeMesh()
+        let faceColors = Dictionary(uniqueKeysWithValues: mesh.faces.map { ($0.id, Color(white: 0.8))})
+
+        self.mesh = mesh
+        self.faceColors = faceColors
     }
 
     var body: some View {
@@ -27,8 +38,23 @@ struct HalfEdgeDemoView: View, DemoView {
             Canvas { context, size in
                 context.draw3DLayer(projection: projection) { _, context3D in
                     context3D.rasterize(options: rasterizerOptions) { rasterizer in
+                        for face in mesh.faces {
+
+                            var selected = false
+                            if let selection, case .face(let index) = selection {
+                                if mesh.faces[index] === face {
+                                    selected = true
+                                }
+                            }
+
+                            let color = faceColors[face.id]!
+
+                            rasterizer.fill(polygon: face.polygon.vertices, with: .color(selected ? .accentColor : color))
+                        }
+                    }
+                    context3D.rasterize(options: .init(backfaceCulling: false)) { rasterizer in
                         for polygon in mesh.polygons {
-                            rasterizer.fill(polygon: polygon.vertices, with: .color(.green))
+                            rasterizer.stroke(polygon: polygon.vertices, with: .color(.blue))
                         }
                     }
                 }
@@ -64,37 +90,110 @@ struct HalfEdgeDemoView: View, DemoView {
         }
         .ballRotation($ballConstraint.rollPitchYaw)
         .inspector() {
-            Form {
-                Section("Map") {
-                    MapInspector(camera: $camera, models: []).aspectRatio(1, contentMode: .fill)
-                }
-                Section("Rasterizer") {
-                    RasterizerOptionsView(options: $rasterizerOptions)
-                }
-                Section("Camera") {
-                    CameraInspector(camera: $camera)
-                }
-                Section("Ball Constraint") {
-                    BallConstraintEditor(ballConstraint: $ballConstraint)
-                }
-            }
-        }
+            TabView {
+                HalfEdgeMeshInspectorView(mesh: $mesh, selection: $selection, faceColors: $faceColors)
+                .tabItem { Text("Mesh") }
 
+                Form {
+                    Section("Map") {
+                        MapInspector(camera: $camera, models: []).aspectRatio(1, contentMode: .fill)
+                    }
+                    Section("Rasterizer") {
+                        RasterizerOptionsView(options: $rasterizerOptions)
+                    }
+                    Section("Camera") {
+                        CameraInspector(camera: $camera)
+                    }
+                    Section("Ball Constraint") {
+                        BallConstraintEditor(ballConstraint: $ballConstraint)
+                    }
+                }
+                .tabItem { Text("Stuff") }
+            }
+            .inspectorColumnWidth(min: 320, ideal: 320, max: 1000)
+        }
     }
 }
 
+enum HalfEdgeSelection: Hashable {
+    case face(Int)
+    case halfEdge(Int)
+}
 
-extension HalfEdgeMesh {
-    static func demo() -> HalfEdgeMesh {
-        var mesh = HalfEdgeMesh()
-        mesh.addFace(positions: [
-            [0, 0, 0],
-            [0, 1, 0],
-            [1, 1, 0],
-            [1, 0, 0],
-        ])
 
-        return mesh
+
+struct HalfEdgeMeshInspectorView: View {
+
+    @Binding
+    var mesh: HalfEdgeMesh
+
+    @Binding
+    var selection: HalfEdgeSelection?
+
+    @Binding
+    var faceColors: [HalfEdgeMesh.Face.ID: Color]
+
+    var body: some View {
+        VStack {
+            List(selection: $selection) {
+                Section("Faces") {
+                    ForEach(mesh.faces.indexed(), id: \.0) { index, face in
+                        HStack {
+                            Text("#\(index)")
+                            let color = Binding<Color> {
+                                faceColors[face.id]!
+                            } set: { newValue in
+                                faceColors[face.id] = newValue
+                            }
+                            Spacer()
+                            ColorPicker(selection: color, label: {
+                                Text("Color")
+                            })
+                            .labelsHidden()
+
+                        }
+                        .tag(HalfEdgeSelection.face(index))
+                    }
+                }
+                Section("Half Edge") {
+                    ForEach(mesh.halfEdges.indexed(), id: \.0) { index, halfEdge in
+                        VStack(alignment: .leading) {
+                            HStack {
+                                Text("#\(index)")
+                                Spacer()
+                                Text(halfEdge.vertex.position, format: .vector)
+                                //                            var next: HalfEdge?
+                                //                            var twin: HalfEdge?
+                                //                            var face: Face?
+                            }
+                            HStack {
+                                if let faceIndex = halfEdge.face.map({ mesh.faces.firstIndex(identifiedBy: $0.id) }) {
+                                    Text("Face: #\(faceIndex!)")
+                                }
+                                else {
+                                    Text("No face").foregroundStyle(.red)
+                                }
+                                if let nextIndex = halfEdge.next.map({ mesh.halfEdges.firstIndex(identifiedBy: $0.id) }) {
+                                    Text("Next: #\(nextIndex!)")
+                                }
+                                else {
+                                    Text("No next").foregroundStyle(.red)
+                                }
+                                if let twinIndex = halfEdge.twin.map({ mesh.halfEdges.firstIndex(identifiedBy: $0.id) }) {
+                                    Text("Twin: #\(twinIndex!)")
+                                }
+                                else {
+                                    Text("No twin").foregroundStyle(.red)
+                                }
+                            }
+                            .opacity(0.5)
+
+                        }
+                        .tag(HalfEdgeSelection.halfEdge(index))
+                    }
+                }
+            }
+        }
     }
 
 }
