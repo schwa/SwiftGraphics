@@ -3,7 +3,6 @@ import MetalKit
 import MetalSupport
 import ModelIO
 import RenderKitShaders
-import Shapes3D
 
 // TODO: -> Semantics
 // struct Semantic: OptionSet, Hashable, Sendable {
@@ -168,13 +167,5 @@ public extension YAMesh {
         let vertexDescriptor = try VertexDescriptor(mdlMesh.vertexDescriptor)
         let vertexBufferViews = mtkMesh.vertexBuffers.map { BufferView(buffer: $0.buffer, offset: $0.offset) }
         self = .init(label: label, submeshes: submeshes, vertexDescriptor: vertexDescriptor, vertexBufferViews: vertexBufferViews)
-    }
-}
-
-public extension Shape3D {
-    @available(*, deprecated, message: "Deprecate")
-    func toYAMesh(allocator: MDLMeshBufferAllocator?, device: MTLDevice) throws -> YAMesh {
-        let mdlMesh = toMDLMesh(allocator: allocator)
-        return try YAMesh(label: "\(type(of: self))", mdlMesh: mdlMesh, device: device)
     }
 }

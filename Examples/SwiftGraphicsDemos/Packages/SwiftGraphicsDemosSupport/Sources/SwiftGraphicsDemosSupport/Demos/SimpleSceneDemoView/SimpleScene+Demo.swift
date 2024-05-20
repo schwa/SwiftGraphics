@@ -7,16 +7,16 @@ import Shapes3D
 extension SimpleScene {
     static func demo(device: MTLDevice, singlePanoramaTexture: Bool = true) throws -> SimpleScene {
         let allocator = MTKMeshBufferAllocator(device: device)
-        let cone = try Cone3D(extent: [0.5, 1, 0.5], segments: [20, 10]).toYAMesh(allocator: allocator, device: device)
-        let sphere = try Sphere3DX(extent: [0.5, 0.5, 0.5], segments: [20, 10]).toYAMesh(allocator: allocator, device: device)
-//        let sphere = try Sphere3D(radius: 0.25).toYAMesh(allocator: allocator, device: device)
-
-        let capsule = try Capsule3D(extent: [0.25, 1, 0.25], cylinderSegments: [30, 10], hemisphereSegments: 5).toYAMesh(allocator: allocator, device: device)
+        let cone = try YAMesh(mdlMesh: try Cone3D(height: 1, radius: 0.5).toMDLMesh(allocator: allocator), device: device)
+        let sphere = try YAMesh(mdlMesh: try Sphere3D(radius: 0.25).toMDLMesh(allocator: allocator), device: device)
+        let capsule = try YAMesh(mdlMesh: try Capsule3D(height: 1, radius: 0.05).toMDLMesh(allocator: allocator), device: device)
 
         let meshes = [cone, sphere, capsule]
 
         let xRange = [Float](stride(from: -2, through: 2, by: 1))
         let zRange = [Float](stride(from: 0, through: -10, by: -1))
+//        let xRange = [Float](stride(from: 0, through: 0, by: 1))
+//        let zRange = [Float](stride(from: 1, through: 1, by: -1))
 
         let tilesSize: SIMD2<UInt16>
         let tileTextures: [(MTKTextureLoader) throws -> MTLTexture]
@@ -60,8 +60,10 @@ extension SimpleScene {
         )
         models.append(fishModel)
 
+
         let panorama = Panorama(tilesSize: tilesSize, tileTextures: tileTextures) { device in
-            try Sphere3DX(extent: [95, 95, 95], inwardNormals: true).toYAMesh(allocator: MTKMeshBufferAllocator(device: device), device: device)
+            let allocator = MTKMeshBufferAllocator(device: device)
+            return try YAMesh(mdlMesh: try Sphere3D(radius: 47.5).toMDLMesh(allocator: allocator), device: device)
         }
 
         let scene = SimpleScene(
@@ -73,5 +75,14 @@ extension SimpleScene {
         )
 
         return scene
+    }
+}
+
+// TODO: REMOVE
+public extension Shape3D {
+    @available(*, deprecated, message: "Deprecate")
+    func toYAMesh(allocator: MDLMeshBufferAllocator?, device: MTLDevice) throws -> YAMesh {
+        let mdlMesh = toMDLMesh(allocator: allocator)
+        return try YAMesh(label: "\(type(of: self))", mdlMesh: mdlMesh, device: device)
     }
 }
