@@ -220,10 +220,27 @@ extension Pair where LHS == RHS {
     }
 }
 
+extension Pair {
+    func sorted<T>() -> Pair<T, T> where LHS == T, RHS == T, T: Comparable {
+        if lhs < rhs {
+            return Pair(lhs, rhs)
+        }
+        else {
+            return Pair(rhs, lhs)
+        }
+    }
+}
+
 extension Pair: Equatable where LHS: Equatable, RHS: Equatable {
 }
 
 extension Pair: Hashable where LHS: Hashable, RHS: Hashable {
+}
+
+extension Pair: CustomDebugStringConvertible where LHS: CustomDebugStringConvertible, RHS: CustomDebugStringConvertible {
+    var debugDescription: String {
+        return "(\(lhs), \(rhs))"
+    }
 }
 
 #if os(macOS)

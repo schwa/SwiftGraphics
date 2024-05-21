@@ -58,6 +58,12 @@ let package = Package(
                 .interoperabilityMode(.Cxx)
             ]
         ),
-        .testTarget(name: "SwiftGraphicsDemosSupportTests", dependencies: ["SwiftGraphicsDemosSupport"]),
+        .testTarget(
+            name: "SwiftGraphicsDemosSupportTests",
+            dependencies: ["SwiftGraphicsDemosSupport"],
+            swiftSettings: [
+                .interoperabilityMode(.Cxx)
+            ]
+        ),
     ]
 )
