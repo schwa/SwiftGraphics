@@ -167,6 +167,5 @@ public extension GraphicsContext3D {
         var rasterizer = Rasterizer(graphicsContext: self, options: options)
         content(&rasterizer)
         rasterizer.rasterize()
-
     }
 }

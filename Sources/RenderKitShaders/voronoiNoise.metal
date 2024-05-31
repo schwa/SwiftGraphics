@@ -1,7 +1,6 @@
 #include <metal_stdlib>
-#include "include/GLSLCompat.h"
-#include "include/Random.h"
-//#include "include/Shaders.h"
+
+#import "include/RenderKitShaders.h"
 
 using namespace metal;
 

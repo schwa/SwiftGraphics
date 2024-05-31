@@ -1,5 +1,3 @@
-#import "RenderKitShaders.h"
-
 // TODO: Rename
 struct FlatMaterial {
     float4 diffuseColor;

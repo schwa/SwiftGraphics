@@ -31,3 +31,18 @@ public extension SIMD3 where Scalar: BinaryFloatingPoint {
         self = SIMD3(xy[0], xy[1], 0)
     }
 }
+
+public extension CGColor {
+    var simd: SIMD4<Float> {
+        guard let colorSpace = CGColorSpace(name: CGColorSpace.sRGB) else {
+            fatalError("Could not create color space sRGB.")
+        }
+        guard let converted = converted(to: colorSpace, intent: .defaultIntent, options: nil) else {
+            fatalError("Could not convert color to colour space.")
+        }
+        guard let components = converted.components?.map({ Float($0) }) else {
+            fatalError("Could not get components.")
+        }
+        return .init(components)
+    }
+}

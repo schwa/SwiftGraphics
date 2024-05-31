@@ -2,6 +2,7 @@ import CoreGraphics
 import Metal
 import MetalKit
 import MetalSupport
+import MetalUISupport
 import ModelIO
 import simd
 import SIMDSupport

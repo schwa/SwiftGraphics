@@ -59,6 +59,16 @@ extension Angle: AdditiveArithmetic {
     }
 }
 
+extension Angle: VectorArithmetic {
+    public mutating func scale(by rhs: Double) {
+        radians.scale(by: rhs)
+    }
+
+    public var magnitudeSquared: Double {
+        radians.magnitudeSquared
+    }
+}
+
 extension Angle: SignedNumeric {
     public init?(exactly source: some BinaryInteger) {
         self = .init(radians: Double(source))
@@ -115,4 +125,17 @@ public extension Angle {
 
 public func abs(_ value: Angle) -> Angle {
     .radians(Swift.abs(value.radians))
+}
+
+public extension Angle {
+    // Normalized between 0° and 360°
+    var normalized: Angle {
+        let degrees = degrees.truncatingRemainder(dividingBy: 360)
+        if degrees < 0 {
+            return .degrees(degrees + 360)
+        }
+        else {
+            return .degrees(degrees)
+        }
+    }
 }

@@ -1,5 +1,4 @@
 #import "include/RenderKitShaders.h"
-#import "include/PanoramicShaders.h"
 
 typedef SimpleVertex Vertex;
 

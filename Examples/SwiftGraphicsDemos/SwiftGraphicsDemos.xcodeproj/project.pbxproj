@@ -7,16 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		4587DE4B2BF316BE00E787F3 /* SwiftGraphicsDemosSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 4587DE4A2BF316BE00E787F3 /* SwiftGraphicsDemosSupport */; };
 		45CDB0442BF4025700096326 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 45CDB0432BF4025700096326 /* Assets.xcassets */; };
+		45CEE5992C09882F00E3F2B3 /* SwiftGraphicsDemosSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 45CEE5982C09882F00E3F2B3 /* SwiftGraphicsDemosSupport */; };
 		45DA912C2BF158380070FD0C /* Info-visionOS.plist in Resources */ = {isa = PBXBuildFile; fileRef = 45DA90B12BF158380070FD0C /* Info-visionOS.plist */; };
 		45E5B5E32A8EA04100B46CDC /* SwiftGraphicsDemosApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E5B5E22A8EA04100B46CDC /* SwiftGraphicsDemosApp.swift */; };
 		45E5B5EB2A8EA04400B46CDC /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 45E5B5EA2A8EA04400B46CDC /* Preview Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		459F58632BF311190021EBA1 /* SwiftGraphicsDemosSupport */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = SwiftGraphicsDemosSupport; path = Packages/SwiftGraphicsDemosSupport; sourceTree = "<group>"; };
-		459F58642BF311370021EBA1 /* Compute */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Compute; path = Packages/Compute; sourceTree = "<group>"; };
 		45B642022A9EC70500171EE0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		45CDB0432BF4025700096326 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		45DA90B12BF158380070FD0C /* Info-visionOS.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info-visionOS.plist"; sourceTree = "<group>"; };
@@ -39,7 +37,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4587DE4B2BF316BE00E787F3 /* SwiftGraphicsDemosSupport in Frameworks */,
+				45CEE5992C09882F00E3F2B3 /* SwiftGraphicsDemosSupport in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -49,8 +47,6 @@
 		459F586B2BF311C50021EBA1 /* Packages */ = {
 			isa = PBXGroup;
 			children = (
-				459F58642BF311370021EBA1 /* Compute */,
-				459F58632BF311190021EBA1 /* SwiftGraphicsDemosSupport */,
 				45DA91582BF15D6B0070FD0C /* SwiftGraphics */,
 			);
 			name = Packages;
@@ -134,7 +130,7 @@
 			);
 			name = SwiftGraphicsDemos;
 			packageProductDependencies = (
-				4587DE4A2BF316BE00E787F3 /* SwiftGraphicsDemosSupport */,
+				45CEE5982C09882F00E3F2B3 /* SwiftGraphicsDemosSupport */,
 			);
 			productName = StairTest;
 			productReference = 45E5B5DF2A8EA04100B46CDC /* SwiftGraphicsDemos.app */;
@@ -264,7 +260,7 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		4587DE4A2BF316BE00E787F3 /* SwiftGraphicsDemosSupport */ = {
+		45CEE5982C09882F00E3F2B3 /* SwiftGraphicsDemosSupport */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SwiftGraphicsDemosSupport;
 		};

@@ -62,7 +62,7 @@ public extension LineSegment3D {
 
 extension LineSegment3D: CustomDebugStringConvertible {
     public var debugDescription: String {
-        return "LineSegment3D(\(start), \(end))"
+        "LineSegment3D(\(start), \(end))"
     }
 }
 

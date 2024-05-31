@@ -34,7 +34,7 @@ public extension RollPitchYaw {
 
 public extension RollPitchYaw {
     init(quaternion: simd_quatf) {
-        fatalError("Not symetrical with .quaternion_factor")
+        // TODO: Not symetrical with .quaternion_factor
         let q = quaternion.vector
 
         let siny_cosp = 2 * (q.w * q.z + q.x * q.y)

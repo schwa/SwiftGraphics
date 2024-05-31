@@ -1,5 +1,4 @@
 #import "include/RenderKitShaders.h"
-#import "include/VolumeShaders.h"
 
 typedef SimpleVertex Vertex;
 

@@ -27,7 +27,11 @@ let package = Package(
         .library(name: "Shapes3D", targets: ["Shapes3D"]),
         .library(name: "SIMDSupport", targets: ["SIMDSupport"]),
         .library(name: "SIMDSupportUnsafeConformances", targets: ["SIMDSupportUnsafeConformances"]),
-        .library(name: "SwiftGraphicsSupport", targets: ["SwiftGraphicsSupport"])
+        .library(name: "SwiftGraphicsSupport", targets: ["SwiftGraphicsSupport"]),
+        .library(name: "RenderKit4", targets: ["RenderKit4"]),
+        .library(name: "MetalUISupport", targets: ["MetalUISupport"]),
+        .library(name: "Compute", targets: ["Compute"]),
+        .library(name: "SwiftGraphicsDemosSupport", targets: ["SwiftGraphicsDemosSupport"]),
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-algorithms", from: "1.1.0"),
@@ -38,6 +42,10 @@ let package = Package(
         .package(url: "https://github.com/schwa/MetalCompilerPlugin", from: "0.0.2"),
         .package(url: "https://github.com/schwa/swiftfields", from: "0.1.3"),
         .package(url: "https://github.com/schwa/swiftformats", from: "0.3.3"),
+        .package(url: "https://github.com/schwa/SwiftGLTF", branch: "main"),
+        .package(url: "https://github.com/schwa/StreamBuilder", branch: "main"),
+        .package(url: "https://github.com/ksemianov/WrappingHStack", from: "0.2.0"),
+
         //        .package(url: "https://github.com/ordo-one/package-benchmark", .upToNextMajor(from: "1.4.0")),
     ],
     targets: [
@@ -112,9 +120,10 @@ let package = Package(
                 "RenderKitShaders",
                 "Shapes2D",
                 "SIMDSupport",
+                "MetalUISupport",
             ],
             resources: [
-                .process("VisionOS/Assets.xcassets"),
+                .process("Assets.xcassets"),
             ],
             swiftSettings: [
                 .enableExperimentalFeature("VariadicGenerics"),
@@ -124,6 +133,12 @@ let package = Package(
         ),
         .target(
             name: "RenderKitShaders",
+            cSettings: [
+                .unsafeFlags(["-Wno-incomplete-umbrella"])
+            ],
+            cxxSettings: [
+                .unsafeFlags(["-Wno-incomplete-umbrella"])
+            ],
             plugins: [
                 // .plugin(name: "MetalCompilerPlugin", package: "MetalCompilerPlugin")
             ]
@@ -137,6 +152,7 @@ let package = Package(
         ),
 
         // MARK: Shapes2D
+
         .target(
             name: "Shapes2D",
             dependencies: [
@@ -153,6 +169,7 @@ let package = Package(
         ]),
 
         // MARK: Shapes3D
+
         .target(
             name: "Shapes3D",
             dependencies: [
@@ -168,6 +185,7 @@ let package = Package(
         ),
 
         // MARK: SIMDSupport
+
         .target(
             name: "SIMDSupport",
             dependencies: [
@@ -179,7 +197,15 @@ let package = Package(
             "SIMDSupport",
         ]),
 
-        .target(name: "SwiftGraphicsSupport"),
+        .target(
+            name: "SwiftGraphicsSupport",
+            dependencies: [
+                "SIMDSupport",
+                "MetalSupport",
+                "RenderKitShaders",
+//                "Shapes3D",
+            ]
+        ),
 
         // MARK: TrivialMeshCLI
         .executableTarget(
@@ -190,5 +216,96 @@ let package = Package(
             ],
             swiftSettings: [.interoperabilityMode(.Cxx)]
         ),
+
+            .target(
+                name: "MetalUISupport",
+                dependencies: [
+                    "MetalSupport",
+                    .product(name: "Everything", package: "Everything"),
+                ]
+            ),
+
+            .target(
+                name: "RenderKit4",
+                dependencies: [
+                    "RenderKitShaders",
+                    "SIMDSupport",
+                    "MetalSupport",
+                    "MetalUISupport",
+                    "SwiftGraphicsSupport",
+                ],
+                resources: [
+                    .process("Placeholder.txt"),
+                ]
+            ),
+
+        .target(
+            name: "Compute",
+            dependencies: [
+                "MetalSupport",
+                "MetalUISupport",
+                "CoreGraphicsSupport",
+                "RenderKit",
+            ],
+            swiftSettings: [.interoperabilityMode(.Cxx)]
+        ),
+        .executableTarget(
+            name: "ComputeTool",
+            dependencies: ["Compute"],
+            resources: [
+                .process("BitonicSort.metal"),
+                .process("GameOfLife.metal"),
+                .process("RandomFill.metal"),
+            ],
+            swiftSettings: [.interoperabilityMode(.Cxx)]
+        ),
+
+        .target(
+            name: "SwiftGraphicsDemosSupport",
+            dependencies: [
+                "Array2D",
+                "CoreGraphicsSupport",
+                "CoreGraphicsUnsafeConformances",
+                "Earcut",
+                "GenericGeometryBase",
+                "MetalSupport",
+                "MetalSupportUnsafeConformances",
+                "Projection",
+                "Raster",
+                "RenderKit",
+                "RenderKitShaders",
+                "Shapes2D",
+                "Shapes3D",
+                "SIMDSupport",
+                "SwiftGraphicsSupport",
+                "SIMDSupportUnsafeConformances",
+                "SwiftGLTF",
+                "StreamBuilder",
+                "WrappingHStack",
+                "Compute",
+                "RenderKit4",
+            ],
+            resources: [
+                .process("Resources/Assets.xcassets"),
+                .copy("Resources/Output"),
+                .copy("Resources/PerseveranceTiles"),
+                .copy("Resources/Models"),
+                .copy("Resources/TestcardTiles"),
+                .copy("Resources/adjectives.txt"),
+                .copy("Resources/nouns.txt"),
+                .copy("Resources/StanfordVolumeData.tar"),
+            ],
+            swiftSettings: [
+                .interoperabilityMode(.Cxx)
+            ]
+        ),
+        .testTarget(
+            name: "SwiftGraphicsDemosSupportTests",
+            dependencies: ["SwiftGraphicsDemosSupport"],
+            swiftSettings: [
+                .interoperabilityMode(.Cxx)
+            ]
+        ),
+
     ]
 )

@@ -1,5 +1,3 @@
-#pragma once
-
 #import "CommonTypes.h"
 #import "MetalSupport.h"
 #import "ImmersiveShaders.h"
@@ -7,3 +5,14 @@
 #import "VolumeShaders.h"
 #import "FlatShader.h"
 #import "UnlitShader.h"
+#import "GLSLCompat.h"
+#import "Random.h"
+
+#import "Common.h"
+#import "DebugShaders.h"
+#import "FlatRenderShaders.h"
+#import "SimpleShadingShaders.h"
+#import "SmoothPanoramaShaders.h"
+#import "Support.h"
+
+//#import "GraphToy.h"

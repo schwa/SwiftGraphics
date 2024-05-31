@@ -1,6 +1,6 @@
-#pragma once
+#ifdef __METAL_VERSION__
 
-#include "GLSLCompat.h"
+#import "GLSLCompat.h"
 
 using namespace glslCompatible;
 
@@ -77,3 +77,4 @@ inline float3 rand1dTo3d(float value){
                   rand1dTo1d(value, 5.7241)
                   );
 }
+#endif // __METAL_VERSION__

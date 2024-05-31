@@ -1,4 +1,5 @@
 {
+  "originHash" : "6dc01c082c546cfb43fa713a287f5fe3cc4ddff1169763c7740b1c4c8ea3f9bd",
   "pins" : [
     {
       "identity" : "approximateequality",
@@ -25,6 +26,15 @@
       "state" : {
         "revision" : "435c493a6f1cd8846e44a24ce8b6b27f97084527",
         "version" : "0.0.2"
+      }
+    },
+    {
+      "identity" : "streambuilder",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/schwa/StreamBuilder",
+      "state" : {
+        "branch" : "main",
+        "revision" : "4b135f3172a43bcb2cc5ea86f7f9fa21d75ca9bf"
       }
     },
     {
@@ -98,7 +108,25 @@
         "revision" : "1cc4b51e9e4cead543979e85e5524e0282e7ff29",
         "version" : "0.3.4"
       }
+    },
+    {
+      "identity" : "swiftgltf",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/schwa/SwiftGLTF",
+      "state" : {
+        "branch" : "main",
+        "revision" : "4160ed7e89b7cfcccf5ff7a0cbfd5b055fada771"
+      }
+    },
+    {
+      "identity" : "wrappinghstack",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ksemianov/WrappingHStack",
+      "state" : {
+        "revision" : "3300f68b6bf5f8a75ee7ca8a40f136a558053d10",
+        "version" : "0.2.0"
+      }
     }
   ],
-  "version" : 2
+  "version" : 3
 }

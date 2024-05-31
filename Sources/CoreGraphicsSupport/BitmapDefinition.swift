@@ -53,3 +53,30 @@ public extension PixelFormat {
 public extension PixelFormat {
     static let rgba8 = PixelFormat(bitsPerComponent: 8, numberOfComponents: 4, alphaInfo: .premultipliedLast, byteOrder: .order32Little, formatInfo: .packed, useFloatComponents: false, colorSpace: CGColorSpaceCreateDeviceRGB())
 }
+
+public extension PixelFormat {
+    var bitsPerPixel: Int {
+        switch formatInfo {
+        case .packed:
+            (bitsPerComponent * numberOfComponents)
+        case .RGB555:
+            // Only for RGB 16 bits per pixel, alpha != alpha none
+            16
+        case .RGB565:
+            // Only for RGB 16 bits per pixel, alpha none
+            16
+        case .RGB101010:
+            // Only for RGB 32 bits per pixel, alpha != none
+            32
+        case .RGBCIF10:
+            // Only for RGB 32 bits per pixel,
+            32
+        default:
+            fatalError("Unknown case")
+        }
+    }
+
+    var bytesPerPixel: Int {
+        bitsPerPixel / 8
+    }
+}

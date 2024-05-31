@@ -1,7 +1,9 @@
 #if !os(visionOS)
 import MetalSupport
+import MetalUISupport
 import SwiftUI
 
+@available(*, deprecated, message: "Deprecated")
 public struct RendererView<T>: View where T: RenderPass {
     // TODO: Does this _really_ need to be a Binding?
     @Binding
