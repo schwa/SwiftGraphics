@@ -72,7 +72,7 @@
 ///// https://mathworld.wolfram.com/PerpDotProduct.html
 ///// ⟘
 ///// http://geomalgorithms.com/vector_products.html#2D-Perp-Product
-// @available(*, deprecated, message: "This is just cross product???")
+// TODO: Deprecate
 // public func perpProduct<Point: PointType>(_ lhs: Point, _ rhs: Point) -> Point.Scalar {
 //    // TODO: This looks like crossProduct
 //    lhs.x * rhs.y - lhs.y * rhs.x

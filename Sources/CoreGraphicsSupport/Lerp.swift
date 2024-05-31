@@ -82,12 +82,12 @@ public func lerp<T>(from v0: T, to v1: T, by t: T.Factor) -> T where T: Lerpable
 //    T.lerp(from: v0, to: v1, by: t)
 // }
 
-// @available(*, deprecated, message: "Use static lerp")
+// TODO: Deprecate
 // public func lerp<V>(from v0: V, to v1: V, by t: V.Factor) -> V where V: CompositeLerpable, V.Factor: FloatingPoint {
 //    (1 - t) * v0 + t * v1
 // }
 //
-// @available(*, deprecated, message: "Use static lerp")
+// TODO: Deprecate
 // public func lerp(from v0: CGRect, to v1: CGRect, by t: CGFloat) -> CGRect {
 //    CGRect(
 //        origin: lerp(from: v0.origin, to: v1.origin, by: t),
@@ -95,7 +95,7 @@ public func lerp<T>(from v0: T, to v1: T, by t: T.Factor) -> T where T: Lerpable
 //    )
 // }
 
-// @available(*, deprecated, message: "Use static lerp")
+// TODO: Deprecate
 // public func lerp(from: CGPoint, to: CGPoint, by t: CGFloat) -> CGPoint {
 //    ((1.0 - t) * from) + (t * to)
 // }

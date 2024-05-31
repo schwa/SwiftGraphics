@@ -1,14 +1,8 @@
-//
-//  RenderKitShaders.swift
-//
-//
-//  Created by Jonathan Wight on 6/30/23.
-//
-
 import Foundation
 
 public extension Bundle {
-    static let shadersBundle: Bundle = {
+    @available(*, deprecated, message: "Deprecated")
+    static let renderKitShaders: Bundle = {
         // Step 1. Find the bundle as a child of main bundle.
         if let shadersBundleURL = Bundle.main.url(forResource: "SwiftGraphics_RenderKitShaders", withExtension: "bundle"), let bundle = Bundle(url: shadersBundleURL) {
             return bundle

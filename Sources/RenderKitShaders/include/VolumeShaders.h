@@ -1,5 +1,3 @@
-#import "RenderKitShaders.h"
-
 #pragma pack(push, 1)
 struct VolumeTransforms {
     simd_float4x4 modelViewMatrix;
