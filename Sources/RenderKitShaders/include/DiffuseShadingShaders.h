@@ -7,14 +7,14 @@
 using namespace metal;
 #endif
 
-struct SimpleShadingVertexShaderUniforms
+struct DiffuseShadingVertexShaderUniforms
 {
     float4x4 modelViewMatrix;
     float4x4 modelViewProjectionMatrix;
     float3x3 modelNormalMatrix;
 };
 
-struct SimpleShadingFragmentShaderUniforms
+struct DiffuseShadingFragmentShaderUniforms
 {
     float3 materialDiffuseColor;
     float3 materialAmbientColor;

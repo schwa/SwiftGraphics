@@ -11,7 +11,7 @@
 #import "Common.h"
 #import "DebugShaders.h"
 #import "FlatRenderShaders.h"
-#import "SimpleShadingShaders.h"
+#import "DiffuseShadingShaders.h"
 #import "SmoothPanoramaShaders.h"
 #import "Support.h"
 

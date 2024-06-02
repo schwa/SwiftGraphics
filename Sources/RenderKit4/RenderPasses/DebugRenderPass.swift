@@ -64,7 +64,8 @@ public struct DebugRenderPass: RenderPassProtocol {
     }
 
     public func encode(context: Context, state: State, commandEncoder: any MTLRenderCommandEncoder) throws {
-        let helper = SceneGraphRenderHelper(scene: scene, drawableSize: state.drawableSize)
+
+        let elements = try SceneGraphRenderHelper(scene: scene, drawableSize: state.drawableSize).elements()
 
         commandEncoder.setDepthStencilState(state.depthStencilState)
         commandEncoder.setCullMode(cullMode)
@@ -72,8 +73,7 @@ public struct DebugRenderPass: RenderPassProtocol {
         commandEncoder.setTriangleFillMode(triangleFillMode)
         commandEncoder.setRenderPipelineState(state.renderPipelineState)
 
-
-        for element in helper.elements() {
+        for element in elements {
             try commandEncoder.withDebugGroup("Node: \(element.node.id)") {
                 let mesh = element.geometry.mesh
 

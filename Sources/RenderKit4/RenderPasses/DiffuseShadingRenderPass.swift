@@ -3,8 +3,7 @@ import RenderKitShaders
 import SwiftGraphicsSupport
 import SwiftUI
 
-// TODO: Rename
-public struct SimpleShadingRenderPass: RenderPassProtocol {
+public struct DiffuseShadingRenderPass: RenderPassProtocol {
 
     // TODO: Move out
     public struct Material: SG3MaterialProtocol {
@@ -46,8 +45,8 @@ public struct SimpleShadingRenderPass: RenderPassProtocol {
         let library = context.renderContext.library
         let useFlatShading = false
         let constantValues = MTLFunctionConstantValues(dictionary: [0: useFlatShading])
-        renderPipelineDescriptor.vertexFunction = try library.makeFunction(name: "SimpleShadingVertexShader", constantValues: constantValues)
-        renderPipelineDescriptor.fragmentFunction = try library.makeFunction(name: "SimpleShadingFragmentShader", constantValues: constantValues)
+        renderPipelineDescriptor.vertexFunction = try library.makeFunction(name: "DiffuseShadingVertexShader", constantValues: constantValues)
+        renderPipelineDescriptor.fragmentFunction = try library.makeFunction(name: "DiffuseShadingFragmentShader", constantValues: constantValues)
         let depthStencilDescriptor = MTLDepthStencilDescriptor(depthCompareFunction: .less, isDepthWriteEnabled: true)
         let depthStencilState = try context.device.makeDepthStencilState(descriptor: depthStencilDescriptor).safelyUnwrap(RenderKit4Error.generic("Could not create depth stencil state"))
         renderPipelineDescriptor.label = "\(type(of: self))"
@@ -74,17 +73,20 @@ public struct SimpleShadingRenderPass: RenderPassProtocol {
     }
 
     public func encode(context: Context, state: State, commandEncoder: any MTLRenderCommandEncoder) throws {
+        let elements = try SceneGraphRenderHelper(scene: scene, drawableSize: state.drawableSize).elements(material: Material.self)
         commandEncoder.setDepthStencilState(state.depthStencilState)
         let lightAmbientColor = lightAmbientColor.simd.xyz
         let lightDiffuseColor = lightDiffuseColor.simd.xyz
-        let helper = SceneGraphRenderHelper(scene: scene, drawableSize: state.drawableSize)
-        for element in helper.elements(material: Material.self) {
+        for element in elements {
+            guard let material = element.material else {
+                fatalError()
+            }
             commandEncoder.withDebugGroup("Node: \(element.node.id)") {
                 commandEncoder.setRenderPipelineState(state.renderPipelineState)
                 commandEncoder.withDebugGroup("FragmentShader") {
-                    let materialDiffuseColor = element.material.diffuseColor.simd.xyz
-                    let materialAmbientColor = element.material.ambientColor.simd.xyz
-                    let uniforms = SimpleShadingFragmentShaderUniforms(materialDiffuseColor: materialDiffuseColor, materialAmbientColor: materialAmbientColor, lightAmbientColor: lightAmbientColor, lightDiffuseColor: lightDiffuseColor, lightPosition: lightPosition, lightPower: lightPower)
+                    let materialDiffuseColor = material.diffuseColor.simd.xyz
+                    let materialAmbientColor = material.ambientColor.simd.xyz
+                    let uniforms = DiffuseShadingFragmentShaderUniforms(materialDiffuseColor: materialDiffuseColor, materialAmbientColor: materialAmbientColor, lightAmbientColor: lightAmbientColor, lightDiffuseColor: lightDiffuseColor, lightPosition: lightPosition, lightPower: lightPower)
                     commandEncoder.setFragmentBytes(of: uniforms, index: 0)
                 }
                 commandEncoder.withDebugGroup("Node: \(element.node.id)") {
@@ -92,7 +94,7 @@ public struct SimpleShadingRenderPass: RenderPassProtocol {
                         assert(element.geometry.mesh.vertexBuffers.count == 1)
                         let vertexBuffer = element.geometry.mesh.vertexBuffers[0]
                         commandEncoder.setVertexBuffer(vertexBuffer.buffer, offset: vertexBuffer.offset, index: 0)
-                        let uniforms = SimpleShadingVertexShaderUniforms(modelViewMatrix: element.modelViewMatrix, modelViewProjectionMatrix: element.modelViewProjectionMatrix, modelNormalMatrix: element.modelNormalMatrix)
+                        let uniforms = DiffuseShadingVertexShaderUniforms(modelViewMatrix: element.modelViewMatrix, modelViewProjectionMatrix: element.modelViewProjectionMatrix, modelNormalMatrix: element.modelNormalMatrix)
                         commandEncoder.setVertexBytes(of: uniforms, index: 1)
                     }
                     commandEncoder.draw(element.geometry.mesh)
