@@ -245,7 +245,6 @@ let package = Package(
                 "MetalSupport",
                 "MetalUISupport",
                 "CoreGraphicsSupport",
-                "RenderKit",
             ],
             swiftSettings: [.interoperabilityMode(.Cxx)]
         ),

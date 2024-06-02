@@ -37,7 +37,7 @@ public struct DebugRenderPass: RenderPassProtocol {
         let library = context.library
         renderPipelineDescriptor.vertexFunction = library.makeFunction(name: "DebugVertexShader")
         renderPipelineDescriptor.fragmentFunction = library.makeFunction(name: "DebugFragmentShader")
-        renderPipelineDescriptor.label = "SmoothPanorama:\(type(of: self))"
+        renderPipelineDescriptor.label = "\(type(of: self))"
 
         renderPipelineDescriptor.vertexDescriptor = vertexDescritor
 
@@ -59,24 +59,12 @@ public struct DebugRenderPass: RenderPassProtocol {
         defer {
             commandEncoder.endEncoding()
         }
-        commandEncoder.label = "SmoothPanorama:\(type(of: self))"
+        commandEncoder.label = "\(type(of: self))"
         try encode(context: context, state: state, commandEncoder: commandEncoder)
     }
 
     public func encode(context: Context, state: State, commandEncoder: any MTLRenderCommandEncoder) throws {
-        assert(state.drawableSize.x > 0 && state.drawableSize.y > 0)
-
-        guard let cameraNode = scene.currentCameraNode else {
-            fatalError("No camera node.")
-        }
-        guard let camera = cameraNode.content?.camera else {
-            fatalError("No camera on camera node.")
-        }
-
-//        print(cameraNode.transform.rotation)
-
-        let viewMatrix = cameraNode.transform.matrix.inverse
-        let projectionMatrix = camera.projectionMatrix(aspectRatio: state.drawableSize.x / state.drawableSize.y)
+        let helper = SceneGraphRenderHelper(scene: scene, drawableSize: state.drawableSize)
 
         commandEncoder.setDepthStencilState(state.depthStencilState)
         commandEncoder.setCullMode(cullMode)
@@ -84,24 +72,20 @@ public struct DebugRenderPass: RenderPassProtocol {
         commandEncoder.setTriangleFillMode(triangleFillMode)
         commandEncoder.setRenderPipelineState(state.renderPipelineState)
 
-        for node in scene.root.allNodes() {
-            try commandEncoder.withDebugGroup("Node: \(node.id)") {
-                guard let geometry = node.content?.geometry else {
-                    return
-                }
-                let mesh = geometry.mesh
 
-                let modelMatrix = node.transform.matrix
-                let modelViewProjectionMatrix = projectionMatrix * viewMatrix * modelMatrix
+        for element in helper.elements() {
+            try commandEncoder.withDebugGroup("Node: \(element.node.id)") {
+                let mesh = element.geometry.mesh
+
 
                 commandEncoder.withDebugGroup("FragmentShader") {
                     let fragmentUniforms = DebugFragmentShaderUniforms(windowSize: state.drawableSize)
                     commandEncoder.setFragmentBytes(of: fragmentUniforms, index: 0)
                 }
-                try commandEncoder.withDebugGroup("Node: \(node.id)") {
+                try commandEncoder.withDebugGroup("Node: \(element.node.id)") {
                     try commandEncoder.withDebugGroup("VertexShader") {
                         var vertexUniforms = DebugVertexShaderUniforms()
-                        vertexUniforms.modelViewProjectionMatrix = modelViewProjectionMatrix
+                        vertexUniforms.modelViewProjectionMatrix = element.modelViewProjectionMatrix
                         vertexUniforms.positionOffset = positionOffset
                         commandEncoder.setVertexBytes(of: vertexUniforms, index: 1)
 
