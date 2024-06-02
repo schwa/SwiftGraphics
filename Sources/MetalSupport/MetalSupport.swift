@@ -21,6 +21,7 @@ import SwiftUI
 public enum MetalSupportError: Error {
     case illegalValue
     case resourceCreationFailure
+    case missingBinding
 }
 
 public extension MTKMesh {

@@ -106,7 +106,7 @@ struct TextureView: View {
             let (renderPipelineState, reflection) = try device.makeRenderPipelineState(descriptor: renderPipelineDescriptor, options: [.argumentInfo])
 
             var bindings = Bindings()
-            resolveBindings(reflection: reflection!, bindable: &bindings, [
+            legacyresolveBindings(reflection: reflection!, bindable: &bindings, [
                 (\.vertexBufferIndex, .vertex, "vertexBuffer.0"),
                 (\.vertexCameraIndex, .vertex, "camera"),
                 (\.vertexModelTransformsIndex, .vertex, "models"),

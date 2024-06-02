@@ -5,10 +5,10 @@ import simd
 public extension TrivialMesh where Vertex == SimpleVertex {
     @available(*, deprecated, message: "Move to MeshConvertable")
     init(cylinder: Cylinder3D, segments: Int) {
-        let halfDepth = cylinder.depth / 2
+        let halfHeight = cylinder.height / 2
         let circle = TrivialMesh(circleRadius: cylinder.radius, segments: segments)
-        let top = circle.offset(by: [0, 0, halfDepth])
-        let bottom = circle.flipped().offset(by: [0, 0, -halfDepth])
+        let top = circle.offset(by: [0, 0, halfHeight])
+        let bottom = circle.flipped().offset(by: [0, 0, -halfHeight])
 
         func makeEdge() -> Self {
             let segmentAngle = Float.pi * 2 / Float(segments)
@@ -18,10 +18,10 @@ public extension TrivialMesh where Vertex == SimpleVertex {
                 let p1 = SIMD3(cos(startAngle) * cylinder.radius, sin(startAngle) * cylinder.radius, 0)
                 let p2 = SIMD3(cos(endAngle) * cylinder.radius, sin(endAngle) * cylinder.radius, 0)
                 let vertices = [
-                    p1 + [0, 0, -halfDepth],
-                    p2 + [0, 0, -halfDepth],
-                    p1 + [0, 0, halfDepth],
-                    p2 + [0, 0, halfDepth],
+                    p1 + [0, 0, -halfHeight],
+                    p2 + [0, 0, -halfHeight],
+                    p1 + [0, 0, halfHeight],
+                    p2 + [0, 0, halfHeight],
                 ]
                 .map {
                     SimpleVertex(position: $0, normal: simd_normalize($0), textureCoordinate: [0, 0])

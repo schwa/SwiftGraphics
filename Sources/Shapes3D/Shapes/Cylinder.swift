@@ -7,13 +7,13 @@ import SwiftUI
 
 public struct Cylinder3D {
     public var radius: Float
-    public var depth: Float
+    public var height: Float
     public var topCap: Bool
     public var bottomCap: Bool
 
-    public init(radius: Float, depth: Float, topCap: Bool = true, bottomCap: Bool = true) {
+    public init(radius: Float, height: Float, topCap: Bool = true, bottomCap: Bool = true) {
         self.radius = radius
-        self.depth = depth
+        self.height = height
         self.topCap = topCap
         self.bottomCap = bottomCap
     }
@@ -46,7 +46,7 @@ extension Cylinder3D: MDLMeshConvertable {
         public func convert(_ shape: Cylinder3D) throws -> MDLMesh {
             assert(segments.count == 2)
 
-            let extent: SIMD3<Float> = [shape.depth, shape.radius * 2, shape.radius * 2]
+            let extent: SIMD3<Float> = [shape.radius * 2, shape.height, shape.radius * 2]
             let segments: SIMD2<UInt32> = [UInt32(segments[0]), UInt32(segments[1])]
 
             let mesh = MDLMesh(cylinderWithExtent: extent, segments: segments, inwardNormals: inwardNormals, topCap: shape.topCap, bottomCap: shape.bottomCap, geometryType: geometryType, allocator: allocator)

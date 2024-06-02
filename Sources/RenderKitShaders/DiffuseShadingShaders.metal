@@ -7,30 +7,30 @@ using namespace metal;
 
 constant bool flat_shading [[function_constant(0)]];
 
-typedef VertexIn SimpleShadingVertexIn;
+typedef VertexIn DiffuseShadingVertexIn;
 
-struct SimpleShadingVertexOut {
+struct DiffuseShadingVertexOut {
     float4 position [[position]]; // in projection space
     float3 modelPosition;
     float3 interpolatedNormalFlat[[flat]];
     float3 interpolatedNormal;
 };
 
-typedef SimpleShadingVertexOut SimpleShadingFragmentIn;
+typedef DiffuseShadingVertexOut DiffuseShadingFragmentIn;
 
-struct SimpleShadingFragmentOut {
+struct DiffuseShadingFragmentOut {
     float4 fragmentColor [[color(0)]];
 };
+
 // MARK: -
 
-vertex SimpleShadingVertexOut SimpleShadingVertexShader(
-    SimpleShadingVertexIn in [[stage_in]],
-    constant SimpleShadingVertexShaderUniforms& uniforms [[buffer(1)]]
+vertex DiffuseShadingVertexOut DiffuseShadingVertexShader(
+                                                          DiffuseShadingVertexIn in [[stage_in]],
+    constant DiffuseShadingVertexShaderUniforms& uniforms [[buffer(1)]]
     )
 {
     const float4 modelVertex = uniforms.modelViewMatrix * float4(in.position, 1.0);
     return {
-
         .position = uniforms.modelViewProjectionMatrix * float4(in.position, 1),
         .modelPosition = float3(modelVertex) / modelVertex.w,
         .interpolatedNormalFlat = uniforms.modelNormalMatrix * in.normal,
@@ -38,8 +38,8 @@ vertex SimpleShadingVertexOut SimpleShadingVertexShader(
     };
 }
 
-fragment SimpleShadingFragmentOut SimpleShadingFragmentShader(SimpleShadingFragmentIn in [[stage_in]],
-    constant SimpleShadingFragmentShaderUniforms& uniforms [[buffer(0)]],
+fragment DiffuseShadingFragmentOut DiffuseShadingFragmentShader(DiffuseShadingFragmentIn in [[stage_in]],
+    constant DiffuseShadingFragmentShaderUniforms& uniforms [[buffer(0)]],
     bool is_front_face [[front_facing]],
     uint primitive_id [[primitive_id]]
     )

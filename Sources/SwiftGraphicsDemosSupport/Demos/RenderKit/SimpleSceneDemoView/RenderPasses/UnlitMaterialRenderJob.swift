@@ -1,5 +1,6 @@
 import Metal
 import MetalKit
+import MetalSupport
 import MetalUISupport
 import ModelIO
 import Observation
@@ -66,7 +67,7 @@ class UnlitMaterialRenderJob: SceneRenderJob {
             let (renderPipelineState, reflection) = try device.makeRenderPipelineState(descriptor: renderPipelineDescriptor, options: [.argumentInfo])
 
             var bindings = Bindings()
-            resolveBindings(reflection: reflection!, bindable: &bindings, [
+            legacyresolveBindings(reflection: reflection!, bindable: &bindings, [
                 (\.vertexBufferIndex, .vertex, "vertexBuffer.0"),
                 (\.vertexCameraIndex, .vertex, "camera"),
                 (\.vertexModelsIndex, .vertex, "models"),
