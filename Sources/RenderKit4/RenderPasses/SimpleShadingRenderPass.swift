@@ -3,8 +3,12 @@ import RenderKitShaders
 import SwiftGraphicsSupport
 import SwiftUI
 
+// TODO: Rename
 public struct SimpleShadingRenderPass: RenderPassProtocol {
+
+    // TODO: Move out
     public struct Material: SG3MaterialProtocol {
+        // TODO: Repalce with SIMD4
         var diffuseColor: CGColor
         var ambientColor: CGColor
 
@@ -46,7 +50,7 @@ public struct SimpleShadingRenderPass: RenderPassProtocol {
         renderPipelineDescriptor.fragmentFunction = try library.makeFunction(name: "SimpleShadingFragmentShader", constantValues: constantValues)
         let depthStencilDescriptor = MTLDepthStencilDescriptor(depthCompareFunction: .less, isDepthWriteEnabled: true)
         let depthStencilState = try context.device.makeDepthStencilState(descriptor: depthStencilDescriptor).safelyUnwrap(RenderKit4Error.generic("Could not create depth stencil state"))
-        renderPipelineDescriptor.label = "SmoothPanorama:\(type(of: self))"
+        renderPipelineDescriptor.label = "\(type(of: self))"
 
         renderPipelineDescriptor.vertexDescriptor = vertexDescriptor
         let renderPipelineState = try device.makeRenderPipelineState(descriptor: renderPipelineDescriptor)
@@ -70,52 +74,28 @@ public struct SimpleShadingRenderPass: RenderPassProtocol {
     }
 
     public func encode(context: Context, state: State, commandEncoder: any MTLRenderCommandEncoder) throws {
-        assert(state.drawableSize.x > 0 && state.drawableSize.y > 0)
-
         commandEncoder.setDepthStencilState(state.depthStencilState)
-
-        // TODO: too many bangs
-        guard let currentCameraNode = scene.currentCameraNode else {
-            return
-        }
-
-        let viewMatrix = currentCameraNode.transform.matrix.inverse
-        let projectionMatrix = currentCameraNode.content!.camera!.projectionMatrix(aspectRatio: state.drawableSize.x / state.drawableSize.y)
-
         let lightAmbientColor = lightAmbientColor.simd.xyz
         let lightDiffuseColor = lightDiffuseColor.simd.xyz
-
-        for node in scene.root.allNodes() {
-            commandEncoder.withDebugGroup("Node: \(node.id)") {
-                // TODO: Only doing one geometry
-                guard let geometry = node.content?.geometry else {
-                    return
-                }
-                // TODO: Only doing first material
-                guard let material = geometry.materials[0] as? Material else {
-                    return
-                }
+        let helper = SceneGraphRenderHelper(scene: scene, drawableSize: state.drawableSize)
+        for element in helper.elements(material: Material.self) {
+            commandEncoder.withDebugGroup("Node: \(element.node.id)") {
                 commandEncoder.setRenderPipelineState(state.renderPipelineState)
-
                 commandEncoder.withDebugGroup("FragmentShader") {
-                    let materialDiffuseColor = material.diffuseColor.simd.xyz
-                    let materialAmbientColor = material.ambientColor.simd.xyz
+                    let materialDiffuseColor = element.material.diffuseColor.simd.xyz
+                    let materialAmbientColor = element.material.ambientColor.simd.xyz
                     let uniforms = SimpleShadingFragmentShaderUniforms(materialDiffuseColor: materialDiffuseColor, materialAmbientColor: materialAmbientColor, lightAmbientColor: lightAmbientColor, lightDiffuseColor: lightDiffuseColor, lightPosition: lightPosition, lightPower: lightPower)
                     commandEncoder.setFragmentBytes(of: uniforms, index: 0)
                 }
-                commandEncoder.withDebugGroup("Node: \(node.id)") {
+                commandEncoder.withDebugGroup("Node: \(element.node.id)") {
                     commandEncoder.withDebugGroup("VertexShader") {
-                        assert(geometry.mesh.vertexBuffers.count == 1)
-                        let vertexBuffer = geometry.mesh.vertexBuffers[0]
+                        assert(element.geometry.mesh.vertexBuffers.count == 1)
+                        let vertexBuffer = element.geometry.mesh.vertexBuffers[0]
                         commandEncoder.setVertexBuffer(vertexBuffer.buffer, offset: vertexBuffer.offset, index: 0)
-                        let modelMatrix = node.transform.matrix
-                        let modelViewMatrix = viewMatrix * modelMatrix
-                        let modelViewProjectionMatrix = projectionMatrix * viewMatrix * modelMatrix
-                        let modelNormalMatrix = simd_float3x3(truncating: node.transform.matrix).inverse
-                        let uniforms = SimpleShadingVertexShaderUniforms(modelViewMatrix: modelViewMatrix, modelViewProjectionMatrix: modelViewProjectionMatrix, modelNormalMatrix: modelNormalMatrix)
+                        let uniforms = SimpleShadingVertexShaderUniforms(modelViewMatrix: element.modelViewMatrix, modelViewProjectionMatrix: element.modelViewProjectionMatrix, modelNormalMatrix: element.modelNormalMatrix)
                         commandEncoder.setVertexBytes(of: uniforms, index: 1)
                     }
-                    commandEncoder.draw(geometry.mesh)
+                    commandEncoder.draw(element.geometry.mesh)
                 }
             }
         }
