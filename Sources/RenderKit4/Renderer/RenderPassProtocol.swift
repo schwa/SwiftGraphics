@@ -9,9 +9,9 @@ public protocol RenderPassState {
 // TODO: We should do best we can to prevent render passes from needing to be equatable. Rely on id instead?
 public protocol RenderPassProtocol: Equatable {
     associatedtype State: RenderPassState
-    typealias Context = RenderPassContext
+    typealias Context = RenderContext
     var id: AnyHashable { get }
-    func setup(context: Context) throws -> State
+    func setup(context: Context, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State
     func sizeWillChange(context: Context, state: inout State, size: CGSize) throws
     func render(context: Context, state: State, renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) throws
     func encode(context: Context, state: State, commandEncoder: MTLRenderCommandEncoder) throws
@@ -37,7 +37,7 @@ public extension RenderPassProtocol {
 
 // MARK: -
 
-internal extension RenderPassProtocol {
+public extension RenderPassProtocol {
     func sizeWillChange(context: Context, untypedState: inout any RenderPassState, size: CGSize) throws {
         guard var state = untypedState as? State else {
             fatalError()

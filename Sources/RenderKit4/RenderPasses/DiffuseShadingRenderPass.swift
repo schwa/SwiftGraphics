@@ -35,16 +35,13 @@ public struct DiffuseShadingRenderPass: RenderPassProtocol {
         self.scene = scene
     }
 
-    public func setup(context: Context) throws -> State {
+    public func setup(context: Context, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State {
         let device = context.device
 
-        let renderPipelineDescriptor = MTLRenderPipelineDescriptor()
-        renderPipelineDescriptor.colorAttachments[0].pixelFormat = context.colorPixelFormat
-        renderPipelineDescriptor.depthAttachmentPixelFormat = context.depthAttachmentPixelFormat
-
-        let library = context.renderContext.library
+        let library = context.library
         let useFlatShading = false
         let constantValues = MTLFunctionConstantValues(dictionary: [0: useFlatShading])
+        let renderPipelineDescriptor = renderPipelineDescriptor()
         renderPipelineDescriptor.vertexFunction = try library.makeFunction(name: "DiffuseShadingVertexShader", constantValues: constantValues)
         renderPipelineDescriptor.fragmentFunction = try library.makeFunction(name: "DiffuseShadingFragmentShader", constantValues: constantValues)
         let depthStencilDescriptor = MTLDepthStencilDescriptor(depthCompareFunction: .less, isDepthWriteEnabled: true)

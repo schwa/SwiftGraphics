@@ -670,6 +670,7 @@ public extension MTLTexture {
         }
     }
 
+    @available(*, deprecated, message: "Deprecated")
     func cgImage() -> CGImage? {
         guard let pixelFormat = PixelFormat(pixelFormat) else {
             return nil
@@ -684,9 +685,7 @@ public extension MTLTexture {
         let image = context.makeImage()
         return image
     }
-}
 
-public extension MTLTexture {
     func cgImage(colorSpace: CGColorSpace? = nil) async -> CGImage {
         if let pixelFormat = PixelFormat(mtlPixelFormat: pixelFormat) {
             let bitmapDefinition = BitmapDefinition(width: width, height: height, pixelFormat: pixelFormat)

@@ -2,6 +2,7 @@ import CoreGraphics
 import ModelIO
 import simd
 import SwiftGraphicsSupport
+import MetalSupport
 
 public protocol Face {
     associatedtype Vertex: VertexLike
@@ -60,6 +61,29 @@ public struct Quad<Vertex: VertexLike> {
 
     public init(vertices: (Vertex, Vertex, Vertex, Vertex)) {
         self.vertices = vertices
+    }
+}
+
+public extension Quad where Vertex == SIMD3<Float> {
+    init(x: Float, y: Float, width: Float, height: Float) {
+        self.vertices = (
+            [x, y, 0],
+            [x, y + height, 0],
+            [x + width, y + height, 0],
+            [x + width, y, 0]
+        )
+    }
+}
+
+public extension Quad where Vertex == SimpleVertex {
+    init(x: Float, y: Float, width: Float, height: Float) {
+        let normal: SIMD3<Float> = [0, 0, 1]
+        self.vertices = (
+            .init(position: [x, y, 0], normal: normal, textureCoordinate: [0, 0]),
+            .init(position: [x, y + height, 0], normal: normal, textureCoordinate: [0, 1]),
+            .init(position: [x + width, y + height, 0], normal: normal, textureCoordinate: [1, 1]),
+            .init(position: [x + width, y, 0], normal: normal, textureCoordinate: [1, 0])
+        )
     }
 }
 

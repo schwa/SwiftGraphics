@@ -27,14 +27,11 @@ public struct DebugRenderPass: RenderPassProtocol {
         self.scene = scene
     }
 
-    public func setup(context: Context) throws -> State {
+    public func setup(context: Context, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State {
         let device = context.device
 
-        let renderPipelineDescriptor = MTLRenderPipelineDescriptor()
-        renderPipelineDescriptor.colorAttachments[0].pixelFormat = context.colorPixelFormat
-        renderPipelineDescriptor.depthAttachmentPixelFormat = context.depthAttachmentPixelFormat
-
         let library = context.library
+        let renderPipelineDescriptor = renderPipelineDescriptor()
         renderPipelineDescriptor.vertexFunction = library.makeFunction(name: "DebugVertexShader")
         renderPipelineDescriptor.fragmentFunction = library.makeFunction(name: "DebugFragmentShader")
         renderPipelineDescriptor.label = "\(type(of: self))"

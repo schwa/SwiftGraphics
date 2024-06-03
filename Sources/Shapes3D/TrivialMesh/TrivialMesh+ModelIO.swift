@@ -105,9 +105,13 @@ extension DataProtocol {
 }
 
 public extension MDLMesh {
-    convenience init(trivialMesh mesh: TrivialMesh<SimpleVertex>) {
+    // TODO: MDLMesh was not created using a MTKMeshBufferAllocator}
+    // TODO: FIX bangs
+    convenience init(trivialMesh mesh: TrivialMesh<SimpleVertex>, allocator: MDLMeshBufferAllocator? = nil) throws {
+
+        let allocator = allocator ?? MDLMeshBufferDataAllocator()
         let vertexBuffer = mesh.vertices.withUnsafeBytes { buffer in
-            MDLMeshBufferData(type: .vertex, data: Data(buffer))
+            allocator.newBuffer(from: nil, data: Data(buffer), type: .vertex)!
         }
         let descriptor = MDLVertexDescriptor()
         // TODO: hard coded.
@@ -123,19 +127,19 @@ public extension MDLMesh {
             indexType = .uInt8
             let indices = mesh.indices.map({ UInt8($0) })
             indexBuffer = indices.withUnsafeBytes { buffer in
-                MDLMeshBufferData(type: .index, data: Data(buffer))
+                allocator.newBuffer(from: nil, data: Data(buffer), type: .index)!
             }
         case 256 ..< 65_536:
             indexType = .uInt16
             let indices = mesh.indices.map({ UInt16($0) })
             indexBuffer = indices.withUnsafeBytes { buffer in
-                MDLMeshBufferData(type: .index, data: Data(buffer))
+                allocator.newBuffer(from: nil, data: Data(buffer), type: .index)!
             }
         case 65_536 ..< 4_294_967_296:
             indexType = .uInt32
             let indices = mesh.indices.map({ UInt32($0) })
             indexBuffer = indices.withUnsafeBytes { buffer in
-                MDLMeshBufferData(type: .index, data: Data(buffer))
+                allocator.newBuffer(from: nil, data: Data(buffer), type: .index)!
             }
         default:
             fatalError()
@@ -148,7 +152,7 @@ public extension MDLMesh {
 public extension TrivialMesh where Vertex == SimpleVertex {
     func write(to url: URL) throws {
         let asset = MDLAsset()
-        let mesh = MDLMesh(trivialMesh: self)
+        let mesh = try MDLMesh(trivialMesh: self)
         asset.add(mesh)
         try asset.export(to: url)
     }

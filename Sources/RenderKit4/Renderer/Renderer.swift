@@ -13,8 +13,8 @@ import SwiftUI
 struct Renderer {
     private var renderPasses: RenderPassCollection
     private var renderContext: RenderContext
-    private var renderPassContext: RenderPassContext?
     private var renderPassState: [AnyHashable: any RenderPassState] = [:]
+    private var configuration: MetalViewConfiguration?
     private var drawableSize: CGSize = .zero
 
     enum State: Equatable {
@@ -38,25 +38,21 @@ struct Renderer {
     mutating func configure(_ configuration: inout MetalViewConfiguration) throws {
         assert(state == .initialized)
         self.state = .configured(sizeKnown: false)
+        self.configuration = configuration
         configuration.colorPixelFormat = .bgra8Unorm_srgb
         configuration.depthStencilPixelFormat = .depth32Float
-        let renderPassContext = RenderPassContext(renderContext: renderContext, colorPixelFormat: configuration.colorPixelFormat, depthAttachmentPixelFormat: configuration.depthStencilPixelFormat)
-        self.renderPassContext = renderPassContext
-        try setupRenderPasses()
+        try setupRenderPasses(configuration: configuration)
     }
 
     mutating func sizeWillChange(_ size: CGSize) throws {
         assert(state != .initialized)
         state = .configured(sizeKnown: true)
         drawableSize = size
-        guard let renderPassContext else {
-            return
-        }
         for renderPass in renderPasses.elements {
             guard var state = renderPassState[renderPass.id] else {
                 fatalError()
             }
-            try renderPass.sizeWillChange(context: renderPassContext, untypedState: &state, size: size)
+            try renderPass.sizeWillChange(context: renderContext, untypedState: &state, size: size)
             renderPassState[renderPass.id] = state
         }
     }
@@ -66,10 +62,6 @@ struct Renderer {
         if state != .rendering {
             state = .rendering
         }
-        guard let renderPassContext else {
-            fatalError("No render pass context found. This should be impossible.")
-        }
-
         let commandBuffer = try commandQueue.makeCommandBuffer().safelyUnwrap(RenderKit4Error.resourceCreationFailure)
 
         for (index, renderPass) in renderPasses.elements.enumerated() {
@@ -97,19 +89,23 @@ struct Renderer {
             guard let state = renderPassState[renderPass.id] else {
                 fatalError()
             }
-            try renderPass.render(context: renderPassContext, untypedState: state, renderPassDescriptor: renderPassDescriptor, commandBuffer: commandBuffer)
+            try renderPass.render(context: renderContext, untypedState: state, renderPassDescriptor: renderPassDescriptor, commandBuffer: commandBuffer)
         }
         commandBuffer.present(drawable)
         commandBuffer.commit()
     }
 
-    private mutating func setupRenderPasses() throws {
-        guard let renderPassContext else {
-            fatalError()
-        }
+    private mutating func setupRenderPasses(configuration: MetalViewConfiguration) throws {
         for renderPass in renderPasses.elements {
             do {
-                let state = try renderPass.setup(context: renderPassContext)
+                let renderPipelineDescriptor = {
+                    let renderPipelineDescriptor = MTLRenderPipelineDescriptor()
+                    renderPipelineDescriptor.colorAttachments[0].pixelFormat = configuration.colorPixelFormat
+                    renderPipelineDescriptor.depthAttachmentPixelFormat = configuration.depthStencilPixelFormat
+                    return renderPipelineDescriptor
+                }
+
+                let state = try renderPass.setup(context: renderContext, renderPipelineDescriptor: renderPipelineDescriptor)
                 renderPassState[renderPass.id] = state
             }
             catch {
@@ -120,9 +116,6 @@ struct Renderer {
     }
 
     mutating func updateRenderPasses(_ renderPasses: RenderPassCollection) throws {
-        guard let renderPassContext else {
-            fatalError()
-        }
         let difference = renderPasses.elements.difference(from: self.renderPasses.elements) { lhs, rhs in
             lhs.id == rhs.id
         }
@@ -131,12 +124,23 @@ struct Renderer {
         }
         for change in difference {
             switch change {
-            case .insert(_, element: let element, _):
-                let hasState = renderPassState[element.id] != nil
-                renderContext.logger?.info("Render pass inserted: \(element.id), has state: \(hasState)")
-                var state = try element.setup(context: renderPassContext)
-                try element.sizeWillChange(context: renderPassContext, untypedState: &state, size: drawableSize)
-                renderPassState[element.id] = state
+            case .insert(_, element: let renderPass, _):
+                let hasState = renderPassState[renderPass.id] != nil
+                renderContext.logger?.info("Render pass inserted: \(renderPass.id), has state: \(hasState)")
+
+                let renderPipelineDescriptor = {
+                    guard let configuration else {
+                        fatalError()
+                    }
+                    let renderPipelineDescriptor = MTLRenderPipelineDescriptor()
+                    renderPipelineDescriptor.colorAttachments[0].pixelFormat = configuration.colorPixelFormat
+                    renderPipelineDescriptor.depthAttachmentPixelFormat = configuration.depthStencilPixelFormat
+                    return renderPipelineDescriptor
+                }
+
+                var state = try renderPass.setup(context: renderContext, renderPipelineDescriptor: renderPipelineDescriptor)
+                try renderPass.sizeWillChange(context: renderContext, untypedState: &state, size: drawableSize)
+                renderPassState[renderPass.id] = state
 
             case .remove(_, element: let element, _):
                 renderContext.logger?.info("Render pass removed: \(element.id)")
