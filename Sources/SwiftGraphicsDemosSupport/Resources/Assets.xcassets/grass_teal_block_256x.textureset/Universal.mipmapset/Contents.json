@@ -1,0 +1,12 @@
+{
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  },
+  "levels" : [
+    {
+      "filename" : "grass_teal_block_256x.png",
+      "mipmap-level" : "base"
+    }
+  ]
+}
