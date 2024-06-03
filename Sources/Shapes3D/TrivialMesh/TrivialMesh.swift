@@ -234,3 +234,11 @@ public extension TrivialMesh where Vertex == SimpleVertex {
         self = mesh.renormalize()
     }
 }
+
+public extension TrivialMesh {
+    func toPolygons() -> [[Vertex]] {
+        indices.chunks(ofCount: 3).map {
+            $0.map { vertices[Int($0)] }
+        }
+    }
+}

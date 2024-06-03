@@ -43,14 +43,11 @@ public struct UnlitShadingPass: RenderPassProtocol {
         self.scene = scene
     }
 
-    public func setup(context: Context) throws -> State {
+    public func setup(context: Context, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State {
         let device = context.device
 
-        let renderPipelineDescriptor = MTLRenderPipelineDescriptor()
-        renderPipelineDescriptor.colorAttachments[0].pixelFormat = context.colorPixelFormat
-        renderPipelineDescriptor.depthAttachmentPixelFormat = context.depthAttachmentPixelFormat
-
         let library = context.library
+        let renderPipelineDescriptor = renderPipelineDescriptor()
         renderPipelineDescriptor.vertexFunction = library.makeFunction(name: "unlitVertexShader")
         renderPipelineDescriptor.fragmentFunction = library.makeFunction(name: "unlitFragmentShader")
         let depthStencilDescriptor = MTLDepthStencilDescriptor(depthCompareFunction: .less, isDepthWriteEnabled: true)

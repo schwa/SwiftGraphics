@@ -55,16 +55,15 @@ struct VolumetricRenderPass: RenderPassProtocol {
         transferFunctionTexture = texture
     }
 
-    func setup(context: Context) throws -> State {
+    func setup(context: Context, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State {
         let device = context.device
         let library = try! device.makeDebugLibrary(bundle: .renderKitShaders)
         let vertexFunction = library.makeFunction(name: "volumeVertexShader")!
         let fragmentFunction = library.makeFunction(name: "volumeFragmentShader")
 
-        let renderPipelineDescriptor = MTLRenderPipelineDescriptor()
+        let renderPipelineDescriptor = renderPipelineDescriptor()
         renderPipelineDescriptor.vertexFunction = vertexFunction
         renderPipelineDescriptor.fragmentFunction = fragmentFunction
-        renderPipelineDescriptor.colorAttachments[0].pixelFormat = context.colorPixelFormat
         renderPipelineDescriptor.colorAttachments[0].isBlendingEnabled = true
         renderPipelineDescriptor.colorAttachments[0].rgbBlendOperation = .add
         renderPipelineDescriptor.colorAttachments[0].alphaBlendOperation = .add
@@ -73,7 +72,6 @@ struct VolumetricRenderPass: RenderPassProtocol {
         renderPipelineDescriptor.colorAttachments[0].destinationRGBBlendFactor = .oneMinusSourceAlpha
         renderPipelineDescriptor.colorAttachments[0].destinationAlphaBlendFactor = .oneMinusSourceAlpha
 
-        renderPipelineDescriptor.depthAttachmentPixelFormat = context.depthAttachmentPixelFormat
         let descriptor = VertexDescriptor.packed(semantics: [.position, .normal, .textureCoordinate])
         renderPipelineDescriptor.vertexDescriptor = MTLVertexDescriptor(descriptor)
 

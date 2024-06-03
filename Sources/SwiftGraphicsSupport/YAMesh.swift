@@ -12,8 +12,6 @@ import ModelIO
 
 // MARK: -
 
-// MARK: -
-
 public struct BufferView: Labeled {
     public var label: String?
     public var buffer: MTLBuffer

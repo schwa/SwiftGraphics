@@ -750,14 +750,6 @@ extension Array {
     }
 }
 
-public extension TrivialMesh {
-    func toPolygons() -> [[Vertex]] {
-        indices.chunks(ofCount: 3).map {
-            $0.map { vertices[Int($0)] }
-        }
-    }
-}
-
 public extension Projection3D {
     init(size: CGSize, camera: LegacyCamera) {
         var projection = Projection3D(size: size)
