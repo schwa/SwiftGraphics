@@ -23,7 +23,6 @@ public struct UnlitShadingPass: RenderPassProtocol {
     public struct State: RenderPassState {
         var renderPipelineState: MTLRenderPipelineState
         var depthStencilState: MTLDepthStencilState
-        var drawableSize: SIMD2<Float> = [.nan, .nan]
 
         struct Bindings {
             var vertexBufferIndex: Int
@@ -71,12 +70,8 @@ public struct UnlitShadingPass: RenderPassProtocol {
         return State(renderPipelineState: renderPipelineState, depthStencilState: depthStencilState, bindings: bindings)
     }
 
-    public func sizeWillChange(context: Context, state: inout State, size: CGSize) throws {
-        state.drawableSize = SIMD2<Float>(size)
-    }
-
-    public func encode(context: Context, state: State, commandEncoder: any MTLRenderCommandEncoder) throws {
-        let helper = try SceneGraphRenderHelper(scene: scene, drawableSize: state.drawableSize)
+    public func encode(context: Context, state: State, drawableSize: SIMD2<Float>, commandEncoder: any MTLRenderCommandEncoder) throws {
+        let helper = try SceneGraphRenderHelper(scene: scene, drawableSize: drawableSize)
         let elements = helper.elements(material: UnlitMaterialX.self)
         commandEncoder.setDepthStencilState(state.depthStencilState)
         commandEncoder.setRenderPipelineState(state.renderPipelineState)

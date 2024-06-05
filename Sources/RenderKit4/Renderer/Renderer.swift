@@ -89,7 +89,7 @@ struct Renderer {
             guard let state = renderPassState[renderPass.id] else {
                 fatalError()
             }
-            try renderPass.render(context: renderContext, untypedState: state, renderPassDescriptor: renderPassDescriptor, commandBuffer: commandBuffer)
+            try renderPass.render(context: renderContext, untypedState: state, drawableSize: SIMD2<Float>(drawableSize), renderPassDescriptor: renderPassDescriptor, commandBuffer: commandBuffer)
         }
         commandBuffer.present(drawable)
         commandBuffer.commit()

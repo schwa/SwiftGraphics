@@ -105,7 +105,8 @@ public struct OffscreenRenderer {
                     guard let state = renderPassState[renderPass.id] else {
                         fatalError()
                     }
-                    try renderPass.render(context: renderContext, untypedState: state, renderPassDescriptor: renderPassDescriptor, commandBuffer: commandBuffer)
+
+                    try renderPass.render(context: renderContext, untypedState: state, drawableSize: SIMD2<Float>(size), renderPassDescriptor: renderPassDescriptor, commandBuffer: commandBuffer)
                 }
 
             }
