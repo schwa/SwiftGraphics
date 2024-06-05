@@ -5,10 +5,10 @@ import MetalSupport
 
 // TODO: Rename
 public struct UnlitMaterialX: SG3MaterialProtocol {
-    public var baseColorFactor: SIMD4<Float> = .one
+    public var baseColorFactor: SIMD4<Float>
     public var baseColorTexture: MTLTexture?
 
-    public init(baseColorFactor: SIMD4<Float>, baseColorTexture: MTLTexture? = nil) {
+    public init(baseColorFactor: SIMD4<Float> = .zero, baseColorTexture: MTLTexture? = nil) {
         self.baseColorFactor = baseColorFactor
         self.baseColorTexture = baseColorTexture
     }

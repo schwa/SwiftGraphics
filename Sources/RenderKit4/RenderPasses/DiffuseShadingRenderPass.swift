@@ -11,7 +11,7 @@ public struct DiffuseShadingRenderPass: RenderPassProtocol {
         var diffuseColor: CGColor
         var ambientColor: CGColor
 
-        public init(diffuseColor: CGColor, ambientColor: CGColor) {
+        public init(diffuseColor: CGColor = .black, ambientColor: CGColor = .black) {
             self.diffuseColor = diffuseColor
             self.ambientColor = ambientColor
         }

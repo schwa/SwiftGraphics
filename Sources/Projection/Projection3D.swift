@@ -50,7 +50,6 @@ public func gluUnproject(win: SIMD3<Float>, modelView: simd_float4x4, proj: simd
         1
     )
     let result = (invPMV * v).xyz
-    print(result)
     return result
 }
 

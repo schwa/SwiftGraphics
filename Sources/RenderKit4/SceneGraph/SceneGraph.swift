@@ -3,6 +3,7 @@ import Foundation
 import os
 import SIMDSupport
 import SwiftGraphicsSupport
+
 public struct SceneGraph: Equatable {
     public var root: Node
 

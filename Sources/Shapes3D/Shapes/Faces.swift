@@ -96,14 +96,14 @@ public extension Quad {
 
 public extension Quad {
     func subdivide() -> (Triangle3D<Vertex>, Triangle3D<Vertex>) {
-        // 1---3
-        // |\  |
-        // | \ |
-        // |  \|
-        // 0---2
+        // 1---2        0---3
+        // |\  |        |  /|
+        // | \ |        | / |
+        // |  \|        |/  |
+        // 0---3        1---2
         (
-            Triangle3D(vertices: (vertices.0, vertices.1, vertices.2)),
-            Triangle3D(vertices: (vertices.1, vertices.3, vertices.2))
+            Triangle3D(vertices: (vertices.0, vertices.1, vertices.3)),
+            Triangle3D(vertices: (vertices.1, vertices.2, vertices.3))
         )
     }
 }

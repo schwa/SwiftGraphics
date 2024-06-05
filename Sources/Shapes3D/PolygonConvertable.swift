@@ -86,3 +86,15 @@ public extension Triangle3D where Vertex == SIMD3<Float> {
         }
     }
 }
+
+public extension TrianglesConvertable where Vertex == SimpleVertex {
+    func write(to url: URL) throws {
+        let mdlMesh = try toMDLMesh()
+
+        let asset = MDLAsset()
+        asset.add(mdlMesh)
+
+        try asset.export(to: url)
+
+    }
+}

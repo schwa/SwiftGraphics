@@ -17,6 +17,7 @@ public struct SceneGraphDemoView: View, DemoView {
     @State
     var cameraRotation = RollPitchYaw()
 
+
     init() {
         let device = MTLCreateSystemDefaultDevice()!
         let scene = try! SceneGraph.demo(device: device)
@@ -27,11 +28,14 @@ public struct SceneGraphDemoView: View, DemoView {
     public var body: some View {
         RenderView(renderPasses: [
             DiffuseShadingRenderPass(scene: scene),
-            DebugRenderPass(scene: scene),
             UnlitShadingPass(scene: scene),
+            DebugRenderPass(scene: scene),
         ])
-        .onChange(of: cameraRotation) {
-            scene.currentCameraNode?.transform.rotation = .rollPitchYaw(cameraRotation)
+        .onChange(of: cameraRotation, initial: true) {
+            //            scene.currentCameraNode?.transform.rotation = .rollPitchYaw(cameraRotation)
+
+            let b = BallConstraint(radius: 5, lookAt: .zero, rollPitchYaw: cameraRotation)
+            scene.currentCameraNode?.transform.matrix = b.transform
         }
         .renderContext(try! .init(device: device))
         .ballRotation($cameraRotation)
@@ -45,9 +49,9 @@ public struct SceneGraphDemoView: View, DemoView {
     func snapshot() {
         Task {
             var renderer = try! OffscreenRenderer(size: [640, 480], device: device, renderPasses: [
-                DiffuseShadingRenderPass(scene: scene),
+//                DiffuseShadingRenderPass(scene: scene),
 //                DebugRenderPass(scene: scene),
-    //            UnlitShadingPass(scene: scene),
+                UnlitShadingPass(scene: scene),
             ])
 
             let colorAttachmentTexture = try OffscreenRenderer.makeColorTexture(device: device, size: renderer.size, pixelFormat: .bgra8Unorm)
@@ -68,31 +72,108 @@ public struct SceneGraphDemoView: View, DemoView {
     }
 }
 
+#Preview {
+    SceneGraphDemoView()
+}
+
+
 extension SceneGraph {
     static func demo(device: MTLDevice) throws -> SceneGraph {
         let sphere = try Sphere3D(radius: 0.25).toMTKMesh(device: device)
-        let cylinder = try Cylinder3D(radius: 0.25, height: 0.5).toMTKMesh(device: device)
+        let cylinder = try Cylinder3D(radius: 0.25, height: 1).toMTKMesh(device: device)
+        let cone = try Cone3D(height: 1, radius: 0.5).toMTKMesh(device: device)
 
         // TODO: this is ugly
         let panoramaMesh = try Sphere3D(radius: 400).toMTKMesh(device: device, inwardNormals: true)
         let loader = MTKTextureLoader(device: device)
         let panoramaTexture = try loader.newTexture(name: "BlueSkySkybox", scaleFactor: 2, bundle: Bundle.module)
+        let grassTexture = try loader.newTexture(name: "grass_teal_block_256x", scaleFactor: 2, bundle: Bundle.module)
 
-        let quad = try Quad<SimpleVertex>(x: 0, y: 0, width: 1, height: 1).toMTKMesh(device: device)
 
 
-        // TODO: Pano location should always be tied to camera location
-        return SceneGraph(root:
-            Node(label: "root", children: [
-                Node(label: "camera", transform: .translation([0, 0, 5]), content: .camera(PerspectiveCamera()), children: [
-                    Node(label: "pano", transform: .translation([0, 0, 0]), content: .geometry(.init(mesh: panoramaMesh, materials: [UnlitMaterialX(baseColorFactor: [1, 1, 0, 1], baseColorTexture: panoramaTexture)]))),
-                ]),
-                Node(label: "model-1", transform: .translation([-0.5, 0, 0]), content: .geometry(.init(mesh: sphere, materials: [DiffuseShadingRenderPass.Material(diffuseColor: .red, ambientColor: CGColor(gray: 0, alpha: 1))]))),
-                Node(label: "model-2", transform: .translation([0.5, 0, 0]), content: .geometry(.init(mesh: cylinder, materials: [DiffuseShadingRenderPass.Material(diffuseColor: .green, ambientColor: CGColor(gray: 0, alpha: 1))]))),
-                Node(label: "model-3", transform: .translation([1.5, 0, 0]), content: .geometry(.init(mesh: sphere, materials: [UnlitMaterialX(baseColorFactor: [1, 1, 0, 1])]))),
-                Node(label: "model-4", transform: .translation([0, 0, 0]), content: .geometry(.init(mesh: quad, materials: [DiffuseShadingRenderPass.Material(diffuseColor: .red, ambientColor: CGColor(gray: 0, alpha: 1))]))),
+        let quad = try Quad<SimpleVertex>(x: -0.5, y: -0.5, width: 1, height: 1).toMTKMesh(device: device)
 
-            ])
+//        let x = try Quad<SimpleVertex>(x: 0, y: 0, width: 1, height: 1).toTrivialMesh()
+//        x.dumpIndexedPositions()
+//        try Cone3D(height: 1, radius: 0.5).write(to: URL(filePath: "test.obj"))
+
+        return try SceneGraph(root:
+            Node(label: "root") {
+                Node(label: "camera")
+                    .content(.camera(PerspectiveCamera()))
+                    .transform(translation: [0, 0, 5])
+                    .children {
+                        // TODO: Pano location should always be tied to camera location
+                        Node(label: "pano")
+                        .content(.geometry(mesh: panoramaMesh, materials: [UnlitMaterialX(baseColorTexture: panoramaTexture)]))
+                    }
+                Node(label: "model-1")
+                    .content(.geometry(mesh: sphere, materials: [DiffuseShadingRenderPass.Material(diffuseColor: .red)]))
+                    .transform(translation: [-1, 0, 0])
+                Node(label: "model-2")
+                    .content(.geometry(mesh: cylinder, materials: [DiffuseShadingRenderPass.Material(diffuseColor: .green)]))
+                    .transform(translation: [0, 0, 0])
+                Node(label: "model-3")
+                    .content(.geometry(mesh: cone, materials: [DiffuseShadingRenderPass.Material(diffuseColor: .blue)]))
+                    .transform(translation: [1, 0, 0])
+                    .transform(.init(rotation: .rotation(angle: .degrees(45) , axis: [1, 0, 0])))
+                Node(label: "model-4")
+                    .content(.geometry(mesh: quad, materials: [UnlitMaterialX(baseColorTexture: grassTexture)]))
+                    .transform(scale: [10, 10, 10])
+                    .transform(.init(rotation: .rotation(angle: .degrees(90) , axis: [1, 0, 0])))
+                    .transform(translation: [0, -1, 0])
+            }
         )
     }
 }
+
+extension Node {
+    func transform(_ transform: Transform) -> Node {
+        var copy = self
+        if copy.transform == .identity {
+            copy.transform = transform
+        }
+        else {
+            copy.transform.matrix = transform.matrix * copy.transform.matrix
+        }
+        return copy
+    }
+    func transform(translation: SIMD3<Float>) -> Node {
+        transform(.translation(translation))
+    }
+    func transform(scale: SIMD3<Float>) -> Node {
+        transform(Transform(scale: scale))
+    }
+    func content(_ content: Content) -> Node {
+        var copy = self
+        copy.content = content
+        return copy
+    }
+    func children(@NodeBuilder _  children: () -> [Node]) -> Node {
+        var copy = self
+        copy.children = children()
+        return copy
+    }
+}
+
+extension Node.Content {
+    static func geometry(mesh: MTKMesh, materials: [any SG3MaterialProtocol]) -> Self {
+        return .geometry(.init(mesh: mesh, materials: materials))
+    }
+}
+
+//extension TrivialMesh where Vertex == SimpleVertex {
+//    func dumpPositions() {
+//        print(self.vertices.map(\.position).map({ "\($0, format: .vector)" }).joined(separator: ",\n"))
+//    }
+//
+//    func dumpIndexedPositions() {
+//        for index in indices {
+//            let vertex = vertices[index]
+//            print("#\(index): \(vertex.position, format: .vector)")
+//        }
+//    }
+//
+//}
+//
+//
