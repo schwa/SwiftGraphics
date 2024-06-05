@@ -1,4 +1,5 @@
-@testable import XCTest
+import XCTest
+import MetalSupport
 
 final class VertexDescriptorTests: XCTestCase {
     func testVertexDescriptor() throws {

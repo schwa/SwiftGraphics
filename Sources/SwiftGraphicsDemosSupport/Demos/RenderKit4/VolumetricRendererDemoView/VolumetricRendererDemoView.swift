@@ -31,7 +31,7 @@ struct _VolumetricRendererDemoView: View {
     var rollPitchYaw = RollPitchYaw.zero
 
     @State
-    var volumeData = try! VolumeData(named: "CThead", in: Bundle.module, size: [256, 256, 113])
+    var volumeData = try! VolumeData(named: "CThead", in: Bundle.module, size: MTLSize(256, 256, 113))
 
     @State
     var redTransferFunction: [Float] = Array(repeating: 1.0, count: 256)

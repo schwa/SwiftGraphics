@@ -115,7 +115,6 @@ let package = Package(
                 .product(name: "SwiftFields", package: "swiftfields"),
                 "CoreGraphicsSupport",
                 "MetalSupport",
-                "MetalSupportUnsafeConformances",
                 "RenderKitShaders",
                 "Shapes2D",
                 "SIMDSupport",
@@ -202,7 +201,7 @@ let package = Package(
                 "SIMDSupport",
                 "MetalSupport",
                 "RenderKitShaders",
-//                "Shapes3D",
+                .product(name: "SwiftFormats", package: "SwiftFormats"),
             ]
         ),
 
@@ -249,7 +248,10 @@ let package = Package(
         ),
         .executableTarget(
             name: "ComputeTool",
-            dependencies: ["Compute"],
+            dependencies: [
+                "Compute",
+                "SwiftGraphicsSupport",
+            ],
             resources: [
                 .process("BitonicSort.metal"),
                 .process("GameOfLife.metal"),
@@ -267,7 +269,6 @@ let package = Package(
                 "Earcut",
                 "GenericGeometryBase",
                 "MetalSupport",
-                "MetalSupportUnsafeConformances",
                 "Projection",
                 "Raster",
                 "RenderKit",
@@ -282,6 +283,7 @@ let package = Package(
                 "WrappingHStack",
                 "Compute",
                 "RenderKit4",
+                "MetalSupportUnsafeConformances",
             ],
             resources: [
                 .process("Resources/Assets.xcassets"),
