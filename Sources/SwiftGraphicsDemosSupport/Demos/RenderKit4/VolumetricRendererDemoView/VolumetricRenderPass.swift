@@ -30,7 +30,6 @@ struct VolumetricRenderPass: RenderPassProtocol {
     struct State: RenderPassState {
         var renderPipelineState: MTLRenderPipelineState
         var depthStencilState: MTLDepthStencilState
-        var size = CGSize.zero
     }
 
     init() throws {
@@ -84,11 +83,7 @@ struct VolumetricRenderPass: RenderPassProtocol {
         return .init(renderPipelineState: renderPipelineState, depthStencilState: depthStencilState)
     }
 
-    func sizeWillChange(context: Context, state: inout State, size: CGSize) throws {
-        state.size = size
-    }
-
-    func encode(context: Context, state: State, commandEncoder encoder: MTLRenderCommandEncoder) throws {
+    func encode(context: Context, state: State, drawableSize: SIMD2<Float>, commandEncoder encoder: MTLRenderCommandEncoder) throws {
         let device = context.device
         encoder.setRenderPipelineState(state.renderPipelineState)
         encoder.setDepthStencilState(state.depthStencilState)
@@ -108,7 +103,7 @@ struct VolumetricRenderPass: RenderPassProtocol {
         encoder.setVertexBuffers(mesh2)
 
         // Vertex Buffer Index 1
-        let cameraUniforms = CameraUniforms(projectionMatrix: camera.projection.matrix(viewSize: SIMD2<Float>(state.size)))
+        let cameraUniforms = CameraUniforms(projectionMatrix: camera.projection.matrix(viewSize: drawableSize))
         encoder.setVertexBytes(of: cameraUniforms, index: 1)
 
         // Vertex Buffer Index 2

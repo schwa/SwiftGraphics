@@ -18,7 +18,6 @@ public struct DebugRenderPass: RenderPassProtocol {
     var vertexDescritor = MTLVertexDescriptor(oneTrueVertexDescriptor)
 
     public struct State: RenderPassState {
-        var drawableSize: SIMD2<Float> = [.nan, .nan]
         var depthStencilState: MTLDepthStencilState
         var renderPipelineState: MTLRenderPipelineState
     }
@@ -46,23 +45,8 @@ public struct DebugRenderPass: RenderPassProtocol {
         return State(depthStencilState: depthStencilState, renderPipelineState: renderPipelineState)
     }
 
-    public func sizeWillChange(context: Context, state: inout State, size: CGSize) throws {
-        state.drawableSize = .init(Float(size.width), Float(size.height))
-    }
-
-    public func render(context: Context, state: State, renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: any MTLCommandBuffer) throws {
-        let renderPassDescriptor = renderPassDescriptor.typedCopy()
-        let commandEncoder = try commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor).safelyUnwrap(RenderKit4Error.resourceCreationFailure)
-        defer {
-            commandEncoder.endEncoding()
-        }
-        commandEncoder.label = "\(type(of: self))"
-        try encode(context: context, state: state, commandEncoder: commandEncoder)
-    }
-
-    public func encode(context: Context, state: State, commandEncoder: any MTLRenderCommandEncoder) throws {
-
-        let elements = try SceneGraphRenderHelper(scene: scene, drawableSize: state.drawableSize).elements()
+    public func encode(context: Context, state: State, drawableSize: SIMD2<Float>, commandEncoder: MTLRenderCommandEncoder) throws {
+        let elements = try SceneGraphRenderHelper(scene: scene, drawableSize: drawableSize).elements()
 
         commandEncoder.setDepthStencilState(state.depthStencilState)
         commandEncoder.setCullMode(cullMode)
@@ -76,7 +60,7 @@ public struct DebugRenderPass: RenderPassProtocol {
 
 
                 commandEncoder.withDebugGroup("FragmentShader") {
-                    let fragmentUniforms = DebugFragmentShaderUniforms(windowSize: state.drawableSize)
+                    let fragmentUniforms = DebugFragmentShaderUniforms(windowSize: drawableSize)
                     commandEncoder.setFragmentBytes(of: fragmentUniforms, index: 0)
                 }
                 try commandEncoder.withDebugGroup("Node: \(element.node.id)") {

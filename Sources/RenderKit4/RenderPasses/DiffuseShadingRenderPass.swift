@@ -28,7 +28,6 @@ public struct DiffuseShadingRenderPass: RenderPassProtocol {
     public struct State: RenderPassState {
         var renderPipelineState: MTLRenderPipelineState
         var depthStencilState: MTLDepthStencilState
-        var drawableSize: SIMD2<Float> = [.nan, .nan]
     }
 
     public init(scene: SceneGraph) {
@@ -54,23 +53,8 @@ public struct DiffuseShadingRenderPass: RenderPassProtocol {
         return .init(renderPipelineState: renderPipelineState, depthStencilState: depthStencilState)
     }
 
-    public func sizeWillChange(context: Context, state: inout State, size: CGSize) throws {
-        state.drawableSize = .init(Float(size.width), Float(size.height))
-    }
-
-    public func render(context: Context, state: State, renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) throws {
-        let commandEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)!
-        defer {
-            commandEncoder.endEncoding()
-        }
-        try commandEncoder.withDebugGroup("Start encoding for \(type(of: self))") {
-            commandEncoder.label = "\(type(of: self))"
-            try encode(context: context, state: state, commandEncoder: commandEncoder)
-        }
-    }
-
-    public func encode(context: Context, state: State, commandEncoder: any MTLRenderCommandEncoder) throws {
-        let elements = try SceneGraphRenderHelper(scene: scene, drawableSize: state.drawableSize).elements(material: Material.self)
+    public func encode(context: Context, state: State, drawableSize: SIMD2<Float>, commandEncoder: any MTLRenderCommandEncoder) throws {
+        let elements = try SceneGraphRenderHelper(scene: scene, drawableSize: drawableSize).elements(material: Material.self)
         commandEncoder.setDepthStencilState(state.depthStencilState)
         let lightAmbientColor = lightAmbientColor.simd.xyz
         let lightDiffuseColor = lightDiffuseColor.simd.xyz

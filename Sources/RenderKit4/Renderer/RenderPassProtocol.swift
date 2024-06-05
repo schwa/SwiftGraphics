@@ -13,8 +13,8 @@ public protocol RenderPassProtocol: Equatable {
     var id: AnyHashable { get }
     func setup(context: Context, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State
     func sizeWillChange(context: Context, state: inout State, size: CGSize) throws
-    func render(context: Context, state: State, renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) throws
-    func encode(context: Context, state: State, commandEncoder: MTLRenderCommandEncoder) throws
+    func render(context: Context, state: State, drawableSize: SIMD2<Float>, renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) throws
+    func encode(context: Context, state: State, drawableSize: SIMD2<Float>, commandEncoder: MTLRenderCommandEncoder) throws
 }
 
 // MARK: -
@@ -23,14 +23,14 @@ public extension RenderPassProtocol {
     func sizeWillChange(context: Context, state: inout State, size: CGSize) throws {
     }
 
-    func render(context: Context, state: State, renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) throws {
+    func render(context: Context, state: State, drawableSize: SIMD2<Float>, renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) throws {
         let commandEncoder = try commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor).safelyUnwrap(RenderKit4Error.resourceCreationFailure)
         defer {
             commandEncoder.endEncoding()
         }
         try commandEncoder.withDebugGroup("Start encoding for \(type(of: self))") {
             commandEncoder.label = "\(type(of: self))"
-            try encode(context: context, state: state, commandEncoder: commandEncoder)
+            try encode(context: context, state: state, drawableSize: drawableSize, commandEncoder: commandEncoder)
         }
     }
 }
@@ -46,10 +46,10 @@ public extension RenderPassProtocol {
         untypedState = state
     }
 
-    func render(context: Context, untypedState: any RenderPassState, renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) throws {
+    func render(context: Context, untypedState: any RenderPassState, drawableSize: SIMD2<Float>, renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) throws {
         guard let state = untypedState as? State else {
             fatalError()
         }
-        try render(context: context, state: state, renderPassDescriptor: renderPassDescriptor, commandBuffer: commandBuffer)
+        try render(context: context, state: state, drawableSize: drawableSize, renderPassDescriptor: renderPassDescriptor, commandBuffer: commandBuffer)
     }
 }
