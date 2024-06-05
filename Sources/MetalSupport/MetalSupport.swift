@@ -9,7 +9,6 @@ import ModelIO
 import os
 import simd
 import SIMDSupport
-import SwiftFormats
 import SwiftUI
 
 // swiftlint:disable function_body_length
@@ -1021,10 +1020,10 @@ internal func fatalError(_ error: Error) -> Never {
                 ("delegate", delegate.map { String(describing: $0) }),
                 ("device", device?.name),
                 ("currentDrawable", currentDrawable.map { String(describing: $0) }),
-                ("framebufferOnly", framebufferOnly.formatted()),
+                ("framebufferOnly", String(describing: framebufferOnly)),
                 ("depthStencilAttachmentTextureUsage", String(describing: depthStencilAttachmentTextureUsage)),
                 ("multisampleColorAttachmentTextureUsage", String(describing: multisampleColorAttachmentTextureUsage)),
-                ("presentsWithTransaction", presentsWithTransaction.formatted()),
+                ("presentsWithTransaction", String(describing: presentsWithTransaction)),
                 ("colorPixelFormat", String(describing: colorPixelFormat)),
                 ("depthStencilPixelFormat", String(describing: depthStencilPixelFormat)),
                 ("depthStencilStorageMode", String(describing: depthStencilStorageMode)),
@@ -1037,11 +1036,11 @@ internal func fatalError(_ error: Error) -> Never {
                 ("currentRenderPassDescriptor", String(describing: currentRenderPassDescriptor)),
                 ("preferredFramesPerSecond", String(describing: preferredFramesPerSecond)),
                 ("enableSetNeedsDisplay", String(describing: enableSetNeedsDisplay)),
-                ("autoResizeDrawable", autoResizeDrawable.formatted()),
+                ("autoResizeDrawable", String(describing: autoResizeDrawable)),
                 ("drawableSize", String(describing: drawableSize)),
                 ("preferredDrawableSize", String(describing: preferredDrawableSize)),
                 ("preferredDevice", preferredDevice?.name),
-                ("isPaused", isPaused.formatted()),
+                ("isPaused", String(describing: isPaused)),
 //            ("colorspace", String(describing: colorspace)),
             ]
             let formattedAttributes = attributes.compactMap { key, value in

@@ -1,5 +1,6 @@
 import Foundation
 import simd
+import SwiftUI
 
 public extension simd_float4x4 {
     @inlinable init(scale s: SIMD3<Float>) {
@@ -20,8 +21,8 @@ public extension simd_float4x4 {
         ))
     }
 
-    @inlinable init(rotationAngle angle: Float, axis: SIMD3<Float>) {
-        let quat = simd_quaternion(angle, axis)
+    @inlinable init(rotationAngle angle: Angle, axis: SIMD3<Float>) {
+        let quat = simd_quaternion(Float(angle.radians), axis)
         self = simd_float4x4(quat)
     }
 
@@ -33,8 +34,8 @@ public extension simd_float4x4 {
         simd_float4x4(translate: t)
     }
 
-    @inlinable static func rotation(angle: Float, axis: SIMD3<Float>) -> simd_float4x4 {
-        simd_float4x4(simd_quaternion(angle, axis))
+    @inlinable static func rotation(angle: Angle, axis: SIMD3<Float>) -> simd_float4x4 {
+        simd_float4x4(simd_quaternion(Float(angle.radians), axis))
     }
 }
 

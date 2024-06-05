@@ -35,6 +35,13 @@ public extension MDLMeshConvertable {
         let mdlMesh = try toMDLMesh(allocator: allocator, segments: segments, inwardNormals: inwardNormals, geometryType: geometryType, flippedTextureCoordinates: flippedTextureCoordinates)
         return try MTKMesh(mesh: mdlMesh, device: device)
     }
+
+    func write(to url: URL) throws {
+        let mdlMesh = try toMDLMesh(allocator: nil)
+        let asset = MDLAsset()
+        asset.add(mdlMesh)
+        try asset.export(to: url)
+    }
 }
 
 // MARK: -

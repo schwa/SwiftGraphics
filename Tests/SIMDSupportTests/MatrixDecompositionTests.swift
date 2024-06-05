@@ -16,7 +16,6 @@ class MatrixDecompositionTests: XCTestCase {
     func testScale() {
         let srt = SRT(scale: [3, 2, 1])
         let matrix = srt.matrix
-        print(matrix)
         XCTAssertTrue(matrix.isAffine)
         let (scale, rotatation, translation) = matrix.decompose
         let decomposed = SRT(scale: scale, rotation: rotatation, translation: translation)
