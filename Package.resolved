@@ -1,5 +1,5 @@
 {
-  "originHash" : "6dc01c082c546cfb43fa713a287f5fe3cc4ddff1169763c7740b1c4c8ea3f9bd",
+  "originHash" : "640e08a4ba0696d1dc30a2071e3fcdcbf26370f9a3ef3efbcd3815776655c060",
   "pins" : [
     {
       "identity" : "approximateequality",
@@ -15,8 +15,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/schwa/Everything",
       "state" : {
-        "branch" : "jwight/downsizing",
-        "revision" : "7bf3c08bc99005892e02ab48dc442c8bea54eeb7"
+        "revision" : "c697f4e0c452283fdc1e3490f1cf6360fc214977",
+        "version" : "1.1.0"
       }
     },
     {

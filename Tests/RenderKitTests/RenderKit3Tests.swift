@@ -1,4 +1,4 @@
-@testable import XCTest
+import XCTest
 
 final class RenderKitTests: XCTestCase {
     func testExample() throws {

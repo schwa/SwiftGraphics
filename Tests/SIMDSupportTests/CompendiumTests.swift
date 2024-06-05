@@ -1,6 +1,7 @@
 import simd
 @testable import SIMDSupport
 import XCTest
+import SwiftUI
 
 // https://gpuopen.com/learn/matrix-compendium/matrix-compendium-intro
 
@@ -37,7 +38,7 @@ final class CompendiumTests: XCTestCase {
     func q2() -> String {
         // 2. It is necessary to inspect how rotation around X-Axis or Z-Axis is stored in memory. Is the first in memory stored −sin element (2a) or sin (2b), or in case of rotation around Y-Axis the first in memory is stored sin element (2a) or −sin (2b)?
 
-        let angle: Float = degreesToRadians(45)
+        let angle = Angle.degrees(45)
 
         let xRotation = simd_float4x4(rotationAngle: angle, axis: [1, 0, 0])
         let xResult = xRotation.scalars.first(where: { $0 != 0 && $0 != 1 })!

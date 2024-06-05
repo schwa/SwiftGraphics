@@ -5,6 +5,7 @@ import CoreGraphicsSupport
 import Foundation
 import Metal
 import MetalSupport
+import SwiftGraphicsSupport
 
 struct RandomFill {
     let width = 512
