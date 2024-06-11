@@ -2,22 +2,29 @@ import simd
 import SwiftUI
 
 public protocol ProjectionProtocol: Equatable, Sendable {
-    func matrix(viewSize: SIMD2<Float>) -> simd_float4x4
+    func projectionMatrix(for viewSize: SIMD2<Float>) -> simd_float4x4
 }
 
 public struct PerspectiveProjection: ProjectionProtocol {
-    public var fovy: Angle
+    public var verticalAngleOfView: Angle
     public var zClip: ClosedRange<Float>
 
-    public init(fovy: Angle, zClip: ClosedRange<Float>) {
-        self.fovy = fovy
+    public init(verticalAngleOfView: Angle = .degrees(90), zClip: ClosedRange<Float> = 0.1 ... 1_000) {
+        self.verticalAngleOfView = verticalAngleOfView
         self.zClip = zClip
     }
 
-    public func matrix(viewSize: SIMD2<Float>) -> simd_float4x4 {
+    public func projectionMatrix(for viewSize: SIMD2<Float>) -> simd_float4x4 {
         let aspect = viewSize.x / viewSize.y
-        return .perspective(aspect: aspect, fovy: Float(fovy.radians), near: zClip.lowerBound, far: zClip.upperBound)
+        return .perspective(aspect: aspect, fovy: Float(verticalAngleOfView.radians), near: zClip.lowerBound, far: zClip.upperBound)
     }
+
+    public func horizontalAngleOfView(aspectRatio: Double) -> Angle {
+        let fovy = verticalAngleOfView.radians
+        let fovx = 2 * atan(tan(fovy / 2) * aspectRatio)
+        return Angle(radians: fovx)
+    }
+
 }
 
 public struct OrthographicProjection: ProjectionProtocol {
@@ -37,7 +44,7 @@ public struct OrthographicProjection: ProjectionProtocol {
         self.far = far
     }
 
-    public func matrix(viewSize: SIMD2<Float>) -> simd_float4x4 {
+    public func projectionMatrix(for viewSize: SIMD2<Float>) -> simd_float4x4 {
         .orthographic(left: left, right: right, bottom: bottom, top: top, near: near, far: far)
     }
 }
@@ -47,14 +54,14 @@ public enum Projection: ProjectionProtocol {
     case perspective(PerspectiveProjection)
     case orthographic(OrthographicProjection)
 
-    public func matrix(viewSize: SIMD2<Float>) -> simd_float4x4 {
+    public func projectionMatrix(for viewSize: SIMD2<Float>) -> simd_float4x4 {
         switch self {
         case .matrix(let projection):
             projection
         case .perspective(let projection):
-            projection.matrix(viewSize: viewSize)
+            projection.projectionMatrix(for: viewSize)
         case .orthographic(let projection):
-            projection.matrix(viewSize: viewSize)
+            projection.projectionMatrix(for: viewSize)
         }
     }
 

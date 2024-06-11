@@ -3,7 +3,7 @@ import simd
 import SIMDSupport
 import SwiftUI
 
-protocol FirstPersonCameraProtocol {
+protocol FirstPersonCameraProtocol: Sendable {
     var transform: Transform { get set }
     var target: SIMD3<Float> { get set }
     var heading: Angle { get set }
@@ -98,9 +98,6 @@ struct FirstPersonInteractiveViewModifier <FirstPersonCamera: FirstPersonCameraP
                     .padding()
             }
     }
-}
-
-extension LegacyCamera: FirstPersonCameraProtocol {
 }
 
 extension View {

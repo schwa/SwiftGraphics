@@ -2,11 +2,14 @@ import CoreGraphicsSupport
 import Projection
 import Shapes3D
 import SwiftUI
-
+import SIMDSupport
 
 struct PointCloudSoftwareRenderView: View, DemoView {
     @State
-    var camera = LegacyCamera(transform: .translation([0, 0, -5]), target: [0, 0, 0], projection: .perspective(.init(fovy: .degrees(90), zClip: 0.01 ... 1_000.0)))
+    var cameraTransform: Transform = .translation([0, 0, -5])
+
+    @State
+    var cameraProjection: Projection = .perspective(.init())
 
     @State
     var ballConstraint = BallConstraint()
@@ -25,7 +28,7 @@ struct PointCloudSoftwareRenderView: View, DemoView {
 
     var body: some View {
         Canvas { context, size in
-            let projection = Projection3D(size: size, camera: camera)
+            let projection = Projection3DHelper(size: size, cameraProjection: cameraProjection, cameraTransform: cameraTransform)
             context.draw3DLayer(projection: projection) { context2D, context3D in
                 context3D.drawAxisMarkers()
                 context3D.rasterize(options: rasterizerOptions) { rasterizer in
@@ -48,11 +51,8 @@ struct PointCloudSoftwareRenderView: View, DemoView {
                 }
             }
         }
-        .onAppear {
-            camera.transform.matrix = ballConstraint.transform
-        }
-        .onChange(of: ballConstraint.transform) {
-            camera.transform.matrix = ballConstraint.transform
+        .onChange(of: ballConstraint.transform, initial: true) {
+            cameraTransform.matrix = ballConstraint.transform
         }
         .overlay(alignment: .topTrailing) {
             CameraRotationWidgetView(ballConstraint: $ballConstraint)

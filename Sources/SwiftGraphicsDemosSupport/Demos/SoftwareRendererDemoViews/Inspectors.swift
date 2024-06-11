@@ -5,22 +5,6 @@ import SIMDSupport
 import SwiftFormats
 import SwiftUI
 
-struct CameraInspector: View {
-    @Binding
-    var camera: LegacyCamera
-
-    var body: some View {
-        Section("Transform") {
-            TransformEditor(transform: $camera.transform, options: [.hideScale])
-            TextField("Heading", value: $camera.heading.degrees, format: .number)
-            TextField("Target", value: $camera.target, format: .vector)
-        }
-        Section("Projection") {
-            ProjectionInspector(projection: $camera.projection)
-        }
-    }
-}
-
 struct ProjectionInspector: View {
     @State
     var type: Projection.Meta
@@ -48,7 +32,7 @@ struct ProjectionInspector: View {
             case .matrix:
                 projection = .matrix(.identity)
             case .perspective:
-                projection = .perspective(.init(fovy: .degrees(90), zClip: 0.001 ... 1_000))
+                projection = .perspective(.init())
             case .orthographic:
                 projection = .orthographic(.init(left: -1, right: 1, bottom: -1, top: 1, near: -1, far: 1))
             }
@@ -69,7 +53,7 @@ struct ProjectionInspector: View {
             }
             //                    let fieldOfView = Binding<SwiftUI.Angle>(get: { .degrees(projection.fovy) }, set: { projection.fovy = $0.radians })
             HStack {
-                let binding = Binding<SwiftUI.Angle>(radians: projection.fovy.radians)
+                let binding = Binding<SwiftUI.Angle>(radians: projection.verticalAngleOfView.radians)
                 TextField("FOVY", value: binding, format: .angle)
                 // SliderPopoverButton(value: projection.fovy.degrees, in: 0...180, minimumValueLabel: { Image(systemName: "field.of.view.wide") }, maximumValueLabel: { Image(systemName: "field.of.view.ultrawide") })
             }
@@ -120,7 +104,7 @@ struct TransformEditor: View {
 
 struct MapInspector: View {
     @Binding
-    var camera: LegacyCamera
+    var cameraTransform: Transform
 
     var models: [SIMD3<Float>]
 
@@ -135,12 +119,12 @@ struct MapInspector: View {
             }, with: .color(.blue))
             context.fill(Path(ellipseIn: CGRect(center: .zero, radius: 4)), with: .color(.red))
 
-            let cameraPosition = CGPoint(camera.transform.translation.xz) * [5, 5]
+            let cameraPosition = CGPoint(cameraTransform.translation.xz) * [5, 5]
             context.fill(Path(ellipseIn: CGRect(center: cameraPosition, radius: 4)), with: .color(.yellow))
 
             context.stroke(Path { path in
                 path.move(to: cameraPosition)
-                let unit = camera.transform.matrix * SIMD4<Float>(0, 1, 0, -1)
+                let unit = cameraTransform.matrix * SIMD4<Float>(0, 1, 0, -1)
 //                path.addLine(to: cameraPosition + CGPoint(unit.xz) * -2)
                 path.addLine(to: CGPoint(unit.xz) * 2, relative: true)
             }, with: .color(.yellow), lineWidth: 2)

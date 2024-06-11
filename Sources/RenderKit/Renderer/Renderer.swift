@@ -62,7 +62,7 @@ struct Renderer {
         if state != .rendering {
             state = .rendering
         }
-        let commandBuffer = try commandQueue.makeCommandBuffer().safelyUnwrap(RenderKit4Error.resourceCreationFailure)
+        let commandBuffer = try commandQueue.makeCommandBuffer().safelyUnwrap(RenderKitError.resourceCreationFailure)
 
         for (index, renderPass) in renderPasses.elements.enumerated() {
             let isFirst = index == renderPasses.elements.startIndex

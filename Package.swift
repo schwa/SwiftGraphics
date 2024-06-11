@@ -28,7 +28,6 @@ let package = Package(
         .library(name: "SIMDSupport", targets: ["SIMDSupport"]),
         .library(name: "SIMDSupportUnsafeConformances", targets: ["SIMDSupportUnsafeConformances"]),
         .library(name: "SwiftGraphicsSupport", targets: ["SwiftGraphicsSupport"]),
-        .library(name: "RenderKit4", targets: ["RenderKit4"]),
         .library(name: "MetalUISupport", targets: ["MetalUISupport"]),
         .library(name: "Compute", targets: ["Compute"]),
         .library(name: "SwiftGraphicsDemosSupport", targets: ["SwiftGraphicsDemosSupport"]),
@@ -40,7 +39,6 @@ let package = Package(
         .package(url: "https://github.com/schwa/ApproximateEquality", from: "0.2.1"),
         .package(url: "https://github.com/schwa/Everything", from: "1.1.0"),
         .package(url: "https://github.com/schwa/MetalCompilerPlugin", from: "0.0.2"),
-        .package(url: "https://github.com/schwa/swiftfields", from: "0.1.3"),
         .package(url: "https://github.com/schwa/swiftformats", from: "0.3.3"),
         .package(url: "https://github.com/schwa/SwiftGLTF", branch: "main"),
         .package(url: "https://github.com/schwa/StreamBuilder", branch: "main"),
@@ -165,29 +163,6 @@ let package = Package(
         // MARK: RenderKit
 
         .target(
-            name: "RenderKit",
-            dependencies: [
-                .product(name: "Algorithms", package: "swift-algorithms"),
-                .product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
-                .product(name: "Everything", package: "Everything"),
-                .product(name: "SwiftFields", package: "swiftfields"),
-                "CoreGraphicsSupport",
-                "MetalSupport",
-                "RenderKitShaders",
-                "Shapes2D",
-                "SIMDSupport",
-                "MetalUISupport",
-            ],
-            resources: [
-                .process("Assets.xcassets"),
-            ],
-            swiftSettings: [
-                .enableExperimentalFeature("VariadicGenerics"),
-                .enableUpcomingFeature("StrictConcurrency"),
-                .interoperabilityMode(.Cxx),
-            ]
-        ),
-        .target(
             name: "RenderKitShaders",
             cSettings: [
                 .unsafeFlags(["-Wno-incomplete-umbrella"])
@@ -210,13 +185,14 @@ let package = Package(
             ]
         ),
         .target(
-            name: "RenderKit4",
+            name: "RenderKit",
             dependencies: [
                 "RenderKitShaders",
                 "SIMDSupport",
                 "MetalSupport",
                 "MetalUISupport",
                 "SwiftGraphicsSupport",
+                .product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
             ],
             resources: [
                 .process("Placeholder.txt"),
@@ -367,7 +343,6 @@ let package = Package(
                 "StreamBuilder",
                 "WrappingHStack",
                 "Compute",
-                "RenderKit4",
                 "MetalSupportUnsafeConformances",
             ],
             resources: [

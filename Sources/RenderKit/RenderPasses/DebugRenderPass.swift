@@ -40,7 +40,7 @@ public struct DebugRenderPass: RenderPassProtocol {
         let renderPipelineState = try device.makeRenderPipelineState(descriptor: renderPipelineDescriptor)
 
         let depthStencilDescriptor = MTLDepthStencilDescriptor(depthCompareFunction: .less, isDepthWriteEnabled: true)
-        let depthStencilState = try device.makeDepthStencilState(descriptor: depthStencilDescriptor).safelyUnwrap(RenderKit4Error.generic("Could not create depth stencil state"))
+        let depthStencilState = try device.makeDepthStencilState(descriptor: depthStencilDescriptor).safelyUnwrap(RenderKitError.generic("Could not create depth stencil state"))
 
         return State(depthStencilState: depthStencilState, renderPipelineState: renderPipelineState)
     }
@@ -70,7 +70,7 @@ public struct DebugRenderPass: RenderPassProtocol {
                         vertexUniforms.positionOffset = positionOffset
                         commandEncoder.setVertexBytes(of: vertexUniforms, index: 1)
 
-                        let vertexBuffer = try mesh.vertexBuffers.first.safelyUnwrap(RenderKit4Error.resourceCreationFailure)
+                        let vertexBuffer = try mesh.vertexBuffers.first.safelyUnwrap(RenderKitError.resourceCreationFailure)
                         commandEncoder.setVertexBuffer(vertexBuffer.buffer, offset: vertexBuffer.offset, index: 0)
                     }
                     commandEncoder.draw(mesh)

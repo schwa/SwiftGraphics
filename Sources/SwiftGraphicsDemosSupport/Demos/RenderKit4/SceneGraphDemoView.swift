@@ -1,5 +1,5 @@
 import Metal
-import RenderKit4
+import RenderKit
 import Shapes3D
 import SIMDSupport
 import SwiftGraphicsSupport
@@ -63,10 +63,10 @@ public struct SceneGraphDemoView: View, DemoView {
                 UnlitShadingPass(scene: scene),
             ])
 
-            let colorAttachmentTexture = try OffscreenRenderer.makeColorTexture(device: device, size: renderer.size, pixelFormat: .bgra8Unorm)
+            let colorAttachmentTexture = try device.makeColorTexture(size: renderer.size, pixelFormat: .bgra8Unorm)
             renderer.addColorAttachment(at: 0, texture: colorAttachmentTexture, clearColor: .init(red: 0, green: 0, blue: 0, alpha: 1))
 
-            let depthAttachmentTexture = try OffscreenRenderer.makeDepthTexture(device: device, size: renderer.size, depthStencilPixelFormat: .depth32Float, memoryless: true)
+            let depthAttachmentTexture = try device.makeDepthTexture(size: renderer.size, depthStencilPixelFormat: .depth32Float, memoryless: true)
             renderer.addDepthAttachment(texture: depthAttachmentTexture, clearDepth: 1)
 
             try! renderer.prepare()
@@ -109,7 +109,7 @@ extension SceneGraph {
         return try SceneGraph(root:
             Node(label: "root") {
                 Node(label: "camera")
-                    .content(.camera(PerspectiveCamera()))
+                    .content(.camera(Camera()))
                     .transform(translation: [0, 0, 5])
                     .children {
                         // TODO: Pano location should always be tied to camera location

@@ -2,7 +2,7 @@ import simd
 import SIMDSupport
 import SwiftUI
 
-public struct Projection3D: Sendable {
+public struct Projection3DHelper: Sendable {
     public var size: CGSize
     public var projectionTransform = simd_float4x4(diagonal: .init(repeating: 1))
     public var viewTransform = simd_float4x4(diagonal: .init(repeating: 1))
@@ -15,23 +15,33 @@ public struct Projection3D: Sendable {
         self.clipTransform = clipTransform
     }
 
-    public func project(_ point: SIMD3<Float>) -> CGPoint {
-        var point = clipTransform * projectionTransform * viewTransform * SIMD4<Float>(point, 1.0)
-        point /= point.w
-        return CGPoint(x: Double(point.x), y: Double(point.y))
-    }
-
+    // TODO: rename (screenspace to worldspace?)
     public func unproject(_ point: CGPoint, z: Float) -> SIMD3<Float> {
         // We have no model. Just use view.
         let modelView = viewTransform
         return gluUnproject(win: SIMD3<Float>(Float(point.x), Float(point.y), z), modelView: modelView, proj: projectionTransform, viewOrigin: .zero, viewSize: SIMD2<Float>(size))
     }
+
+    public func worldSpaceToScreenSpace(_ point: SIMD3<Float>) -> CGPoint {
+        var point = worldSpaceToClipSpace(point)
+        point /= point.w
+        return CGPoint(x: Double(point.x), y: Double(point.y))
+    }
+
+    public func worldSpaceToClipSpace(_ point: SIMD3<Float>) -> SIMD4<Float> {
+        clipTransform * projectionTransform * viewTransform * SIMD4<Float>(point, 1.0)
+    }
+
+    public func isVisible(_ point: SIMD3<Float>) -> Bool {
+        worldSpaceToClipSpace(point).z >= 0
+    }
+
 }
 
 // MARK: -
 
 public extension GraphicsContext {
-    func draw3DLayer(projection: Projection3D, content: (inout GraphicsContext, inout GraphicsContext3D) -> Void) {
+    func draw3DLayer(projection: Projection3DHelper, content: (inout GraphicsContext, inout GraphicsContext3D) -> Void) {
         drawLayer { context in
             context.translateBy(x: projection.size.width / 2, y: projection.size.height / 2)
             var graphicsContext = GraphicsContext3D(graphicsContext2D: context, projection: projection)
@@ -64,35 +74,19 @@ public func gluProject(obj: SIMD3<Float>, modelView: simd_float4x4, proj: simd_f
     return [winX, winY, winZ]
 }
 
-public extension Projection3D {
-    func worldSpaceToScreenSpace(_ point: SIMD3<Float>) -> CGPoint {
-        var point = worldSpaceToClipSpace(point)
-        point /= point.w
-        return CGPoint(x: Double(point.x), y: Double(point.y))
-    }
-
-    func worldSpaceToClipSpace(_ point: SIMD3<Float>) -> SIMD4<Float> {
-        clipTransform * projectionTransform * viewTransform * SIMD4<Float>(point, 1.0)
-    }
-
-    func isVisible(_ point: SIMD3<Float>) -> Bool {
-        worldSpaceToClipSpace(point).z >= 0
-    }
-}
-
 // MARK:
 
 struct Projection3DPreferenceKey: PreferenceKey {
-    static func reduce(value: inout Projection3D?, nextValue: () -> Projection3D?) {
+    static func reduce(value: inout Projection3DHelper?, nextValue: () -> Projection3DHelper?) {
         value = value ?? nextValue()
     }
 
-    static let defaultValue: Projection3D? = nil
+    static let defaultValue: Projection3DHelper? = nil
 }
 
 internal struct Projection3DOverlayViewModifier <OverlayContent>: ViewModifier where OverlayContent: View {
     var alignment: Alignment
-    var overlayContent: (Projection3D?) -> OverlayContent
+    var overlayContent: (Projection3DHelper?) -> OverlayContent
 
     func body(content: Content) -> some View {
         content.overlayPreferenceValue(Projection3DPreferenceKey.self, alignment: alignment) { value in
@@ -102,7 +96,7 @@ internal struct Projection3DOverlayViewModifier <OverlayContent>: ViewModifier w
 }
 
 public extension View {
-    func projection3DOverlay <Content>(alignment: Alignment = .center, @ViewBuilder _ content: @escaping (Projection3D?) -> Content) -> some View where Content: View {
+    func projection3DOverlay <Content>(alignment: Alignment = .center, @ViewBuilder _ content: @escaping (Projection3DHelper?) -> Content) -> some View where Content: View {
         modifier(Projection3DOverlayViewModifier(alignment: alignment, overlayContent: content))
     }
 }

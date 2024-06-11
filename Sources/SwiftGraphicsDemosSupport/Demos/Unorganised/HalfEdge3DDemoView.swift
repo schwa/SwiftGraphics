@@ -10,7 +10,10 @@ struct HalfEdge3DDemoView: View, DemoView {
     var mesh: HalfEdgeMesh<SIMD3<Float>>
 
     @State
-    var camera = LegacyCamera(transform: .translation([0, 0, -5]), target: [0, 0, 0], projection: .perspective(.init(fovy: .degrees(90), zClip: 0.01 ... 1_000.0)))
+    var cameraTransform: Transform = .translation([0, 0, -5])
+
+    @State
+    var cameraProjection: Projection = .perspective(.init())
 
     @State
     var ballConstraint = BallConstraint()
@@ -34,7 +37,7 @@ struct HalfEdge3DDemoView: View, DemoView {
 
     var body: some View {
         GeometryReader { proxy in
-            let projection = Projection3D(size: proxy.size, camera: camera)
+            let projection = Projection3DHelper(size: proxy.size, cameraProjection: cameraProjection, cameraTransform: cameraTransform)
             Canvas { context, _ in
                 context.draw3DLayer(projection: projection) { _, context3D in
                     context3D.rasterize(options: rasterizerOptions) { rasterizer in
@@ -64,7 +67,7 @@ struct HalfEdge3DDemoView: View, DemoView {
                 location.y -= proxy.size.height / 2
                 for face in mesh.faces {
                     let polygon = face.polygon
-                    let points = polygon.vertices.map { projection.project($0) }
+                    let points = polygon.vertices.map { projection.worldSpaceToScreenSpace($0) }
                     let path = Path(vertices: points, closed: true)
                     if path.contains(location) {
                         print(face)
@@ -74,14 +77,11 @@ struct HalfEdge3DDemoView: View, DemoView {
             .ballRotation($ballConstraint.rollPitchYaw)
             .onChange(of: ballConstraint) {
                 print("Ball constraint: \(ballConstraint)")
-                camera.transform.matrix = ballConstraint.transform
+                cameraTransform.matrix = ballConstraint.transform
             }
         }
-        .onAppear {
-            camera.transform.matrix = ballConstraint.transform
-        }
-        .onChange(of: ballConstraint.transform) {
-            camera.transform.matrix = ballConstraint.transform
+        .onChange(of: ballConstraint.transform, initial: true) {
+            cameraTransform.matrix = ballConstraint.transform
         }
         .overlay(alignment: .topTrailing) {
             CameraRotationWidgetView(ballConstraint: $ballConstraint)
@@ -95,13 +95,13 @@ struct HalfEdge3DDemoView: View, DemoView {
 
                 Form {
                     Section("Map") {
-                        MapInspector(camera: $camera, models: []).aspectRatio(1, contentMode: .fill)
+                        MapInspector(cameraTransform: $cameraTransform, models: []).aspectRatio(1, contentMode: .fill)
                     }
                     Section("Rasterizer") {
                         RasterizerOptionsView(options: $rasterizerOptions)
                     }
                     Section("Camera") {
-                        CameraInspector(camera: $camera)
+                        ProjectionInspector(projection: $cameraProjection)
                     }
                     Section("Ball Constraint") {
                         BallConstraintEditor(ballConstraint: $ballConstraint)

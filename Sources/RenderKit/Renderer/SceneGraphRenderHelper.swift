@@ -28,7 +28,7 @@ struct SceneGraphRenderHelper {
             fatalError() // TODO: Throw
         }
         viewMatrix = currentCameraNode.transform.matrix.inverse
-        projectionMatrix = currentCameraNode.content!.camera!.projectionMatrix(aspectRatio: drawableSize.x / drawableSize.y)
+        projectionMatrix = currentCameraNode.content!.camera!.projectionMatrix(for: drawableSize)
     }
 
     func elements() throws -> any Sequence<Element<()>> {

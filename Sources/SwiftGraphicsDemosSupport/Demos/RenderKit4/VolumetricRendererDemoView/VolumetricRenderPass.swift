@@ -6,7 +6,7 @@ import MetalUISupport
 import ModelIO
 import os
 import RenderKit
-import RenderKit4
+import RenderKit
 import RenderKitShaders
 import Shapes2D
 import SIMDSupport
@@ -87,7 +87,8 @@ struct VolumetricRenderPass: RenderPassProtocol {
         encoder.setRenderPipelineState(state.renderPipelineState)
         encoder.setDepthStencilState(state.depthStencilState)
 
-        let camera = LegacyCamera(transform: .init(translation: [0, 0, 2]), target: .zero, projection: .perspective(PerspectiveProjection(fovy: .degrees(90), zClip: 0.01 ... 10)))
+        let cameraProjection: Projection = .perspective(PerspectiveProjection(verticalAngleOfView: .degrees(90), zClip: 0.01 ... 10))
+        let cameraTransform: Transform = .init(translation: [0, 0, 2])
 
         let modelTransform = Transform(scale: [2, 2, 2], rotation: .rollPitchYaw(rollPitchYaw))
 
@@ -102,12 +103,12 @@ struct VolumetricRenderPass: RenderPassProtocol {
         encoder.setVertexBuffers(mesh2)
 
         // Vertex Buffer Index 1
-        let cameraUniforms = CameraUniforms(projectionMatrix: camera.projection.matrix(viewSize: drawableSize))
+        let cameraUniforms = CameraUniforms(projectionMatrix: cameraProjection.projectionMatrix(for: drawableSize))
         encoder.setVertexBytes(of: cameraUniforms, index: 1)
 
         // Vertex Buffer Index 2
         let modelUniforms = VolumeTransforms(
-            modelViewMatrix: camera.transform.matrix.inverse * modelTransform.matrix,
+            modelViewMatrix: cameraTransform.matrix.inverse * modelTransform.matrix,
             textureMatrix: simd_float4x4(translate: [0.5, 0.5, 0.5]) * rollPitchYaw.matrix * simd_float4x4(translate: [-0.5, -0.5, -0.5])
         )
         encoder.setVertexBytes(of: modelUniforms, index: 2)

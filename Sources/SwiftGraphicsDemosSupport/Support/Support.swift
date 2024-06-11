@@ -13,6 +13,7 @@ import SIMDSupport
 import SwiftGraphicsSupport
 import SwiftUI
 import os
+import UniformTypeIdentifiers
 
 // swiftlint:disable identifier_name
 
@@ -735,33 +736,14 @@ extension Array {
     }
 }
 
-public extension Projection3D {
-    init(size: CGSize, camera: LegacyCamera) {
-        var projection = Projection3D(size: size)
-        projection.viewTransform = camera.transform.matrix.inverse
-        projection.projectionTransform = camera.projection.matrix(viewSize: .init(size))
-        projection.clipTransform = simd_float4x4(scale: [Float(size.width) / 2, Float(size.height) / 2, 1])
-        self = projection
-    }
+public extension Projection3DHelper {
 
-    func worldSpaceToScreenSpace(_ point: SIMD3<Float>) -> CGPoint {
-        var point = worldSpaceToClipSpace(point)
-        point /= point.w
-        return CGPoint(x: Double(point.x), y: Double(point.y))
-    }
-
-    func worldSpaceToClipSpace(_ point: SIMD3<Float>) -> SIMD4<Float> {
-        clipTransform * projectionTransform * viewTransform * SIMD4<Float>(point, 1.0)
-    }
-
-    //    public func unproject(_ point: CGPoint, z: Float) -> SIMD3<Float> {
-    //        // We have no model. Just use view.
-    //        let modelView = viewTransform
-    //        return gluUnproject(win: SIMD3<Float>(Float(point.x), Float(point.y), z), modelView: modelView, proj: projectionTransform, viewOrigin: .zero, viewSize: SIMD2<Float>(size))
-    //    }
-
-    func isVisible(_ point: SIMD3<Float>) -> Bool {
-        worldSpaceToClipSpace(point).z >= 0
+    init(size: CGSize, cameraProjection: Projection, cameraTransform: Transform) {
+        var helper = Projection3DHelper(size: size)
+        helper.viewTransform = cameraTransform.matrix.inverse
+        helper.projectionTransform = cameraProjection.projectionMatrix(for: SIMD2<Float>(size))
+        helper.clipTransform = simd_float4x4(scale: [Float(size.width) / 2, Float(size.height) / 2, 1])
+        self = helper
     }
 }
 
@@ -834,9 +816,9 @@ extension GraphicsContext3D {
             }, with: .color(axis.color))
             if labels {
                 let negativeAxisLabel = Text("-\(axis)").font(.caption)
-                graphicsContext2D.draw(negativeAxisLabel, at: projection.project(axis.vector * -5))
+                graphicsContext2D.draw(negativeAxisLabel, at: projection.worldSpaceToScreenSpace(axis.vector * -5))
                 let positiveAxisLabel = Text("+\(axis)").font(.caption)
-                graphicsContext2D.draw(positiveAxisLabel, at: projection.project(axis.vector * +5))
+                graphicsContext2D.draw(positiveAxisLabel, at: projection.worldSpaceToScreenSpace(axis.vector * +5))
             }
         }
     }
@@ -909,4 +891,45 @@ public extension MDLMeshConvertable {
         let mdlMesh = try toMDLMesh(allocator: allocator)
         return try YAMesh(label: "\(type(of: self))", mdlMesh: mdlMesh, device: device)
     }
+}
+
+extension Array {
+    var mutableLast: Element? {
+        get {
+            last
+        }
+        set {
+            precondition(last != nil)
+            if let newValue {
+                self[index(before: endIndex)] = newValue
+            }
+            else {
+                _ = popLast()
+            }
+        }
+    }
+}
+
+extension Path3D {
+    init(path: Path) {
+        let elements = path.elements
+        self = Path3D { path in
+            for element in elements {
+                switch element {
+                case .move(let point):
+                    path.move(to: SIMD3(xy: SIMD2(point)))
+                case .line(let point):
+                    path.addLine(to: SIMD3(xy: SIMD2(point)))
+                case .closeSubpath:
+                    path.closePath()
+                default:
+                    fatalError("Unimplemented")
+                }
+            }
+        }
+    }
+}
+
+extension UTType {
+    static let plyFile = UTType(importedAs: "public.polygon-file-format")
 }
