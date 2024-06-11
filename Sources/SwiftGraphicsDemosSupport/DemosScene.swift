@@ -36,10 +36,7 @@ struct DemosView: View {
                 }
                 ValueView(value: true) { isExpanded in
                     DisclosureGroup("LegacyRenderKit", isExpanded: isExpanded) {
-                        row(for: Particles2DemoView.self)
-                        row(for: ShaderTestDemoView.self)
                         row(for: SimpleSceneDemoView.self)
-                        row(for: TextureDemoView.self)
                     }
                 }
                 ValueView(value: true) { isExpanded in
@@ -57,6 +54,9 @@ struct DemosView: View {
                 }
                 ValueView(value: true) { isExpanded in
                     DisclosureGroup("Unorganized", isExpanded: isExpanded) {
+                        row(for: TextureDemoView.self)
+                        row(for: ShaderTestDemoView.self)
+                        row(for: Particles2DemoView.self)
                         row(for: AngleDemoView.self)
                         row(for: BeziersDemoView.self)
                         row(for: CSGDemoView.self)
