@@ -15,7 +15,6 @@ import SwiftUI
 
 struct VolumetricRenderPass: RenderPassProtocol {
     let id: AnyHashable = "VolumetricRenderPass"
-    var scene: SimpleScene?
     var cache = Cache<String, Any>()
     var rollPitchYaw: RollPitchYaw = .zero
     var transferFunctionTexture: MTLTexture

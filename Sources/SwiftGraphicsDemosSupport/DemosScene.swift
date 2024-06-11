@@ -35,11 +35,6 @@ struct DemosView: View {
                     }
                 }
                 ValueView(value: true) { isExpanded in
-                    DisclosureGroup("LegacyRenderKit", isExpanded: isExpanded) {
-                        row(for: SimpleSceneDemoView.self)
-                    }
-                }
-                ValueView(value: true) { isExpanded in
                     DisclosureGroup("RenderKit4", isExpanded: isExpanded) {
                         row(for: SceneGraphDemoView.self)
                         row(for: VolumetricRendererDemoView.self)

@@ -56,21 +56,3 @@ public struct OffscreenRenderPassConfiguration: MetalConfiguration {
         self.currentRenderPassDescriptor = currentRenderPassDescriptor
     }
 }
-
-public extension RenderPass {
-    func snapshot(device: MTLDevice, size: CGSize) async throws -> CGImage {
-        var configuration = OffscreenRenderPassConfiguration(device: device, size: size)
-        configuration.colorPixelFormat = .bgra8Unorm_srgb
-        configuration.depthStencilPixelFormat = .depth16Unorm
-        configuration.update()
-        try setup(device: device, configuration: &configuration)
-        guard let commandQueue = device.makeCommandQueue() else {
-            fatalError()
-        }
-        try commandQueue.withCommandBuffer(waitAfterCommit: true) { commandBuffer in
-            try draw(device: device, size: size, renderPassDescriptor: configuration.currentRenderPassDescriptor!, commandBuffer: commandBuffer)
-        }
-        let cgImage = await configuration.targetTexture!.cgImage(colorSpace: CGColorSpace(name: CGColorSpace.extendedSRGB))
-        return cgImage
-    }
-}
