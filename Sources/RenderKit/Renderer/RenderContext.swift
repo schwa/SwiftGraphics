@@ -48,12 +48,12 @@ public extension View {
     }
 }
 
-//extension Bundle {
+// extension Bundle {
 //    static var renderKitShaders: Bundle {
 //        let url = Bundle.module.bundleURL.appendingPathComponent("../SwiftGraphics_RenderKitShaders.bundle")
 //        return Bundle(url: url)!
 //    }
-//}
+// }
 
 public extension Bundle {
     static let renderKitShaders: Bundle = {

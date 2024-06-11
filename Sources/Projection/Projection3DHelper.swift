@@ -35,7 +35,6 @@ public struct Projection3DHelper: Sendable {
     public func isVisible(_ point: SIMD3<Float>) -> Bool {
         worldSpaceToClipSpace(point).z >= 0
     }
-
 }
 
 // MARK: -

@@ -1,12 +1,12 @@
+import CoreGraphicsSupport
 import Metal
+import MetalKit
+import MetalSupport
 import RenderKit
 import Shapes3D
 import SIMDSupport
 import SwiftGraphicsSupport
 import SwiftUI
-import MetalKit
-import MetalSupport
-import CoreGraphicsSupport
 
 struct SceneGraphMapView: View {
     @Binding
@@ -26,7 +26,6 @@ struct SceneGraphMapView: View {
             if let cameraNode = scene.currentCameraNode, let camera = cameraNode.content?.camera {
                 let cameraPosition = CGPoint(cameraNode.transform.translation.xz)
 
-
                 switch camera.projection {
                 case .perspective(let perspective):
                     // TODO: This is showing fovY but it should be fovX
@@ -36,7 +35,6 @@ struct SceneGraphMapView: View {
                 default:
                     fatalError()
                 }
-
 
                 var cameraImage = context.resolve(Image(systemName: "camera.circle.fill"))
                 cameraImage.shading = .color(.mint)

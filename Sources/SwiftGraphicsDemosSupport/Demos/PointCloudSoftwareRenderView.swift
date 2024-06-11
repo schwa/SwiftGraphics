@@ -1,8 +1,8 @@
 import CoreGraphicsSupport
 import Projection
 import Shapes3D
-import SwiftUI
 import SIMDSupport
+import SwiftUI
 
 struct PointCloudSoftwareRenderView: View, DemoView {
     @State
@@ -31,17 +31,13 @@ struct PointCloudSoftwareRenderView: View, DemoView {
             let projection = Projection3DHelper(size: size, cameraProjection: cameraProjection, cameraTransform: cameraTransform)
             context.draw3DLayer(projection: projection) { context2D, context3D in
                 context3D.drawAxisMarkers()
-                context3D.rasterize(options: rasterizerOptions) { rasterizer in
-
+                context3D.rasterize(options: rasterizerOptions) { _ in
                     for position in points {
                         let position2D = projection.worldSpaceToScreenSpace(position * 2)
 
                         let path = Path(ellipseIn: CGRect(center: position2D, radius: 0.5))
                         context2D.fill(path, with: .color(.pink))
-
-
                     }
-
 
                     //                    for model in models {
 //                        for (index, polygon) in try! model.toPolygons().enumerated() {

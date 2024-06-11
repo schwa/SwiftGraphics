@@ -24,7 +24,6 @@ public struct PerspectiveProjection: ProjectionProtocol {
         let fovx = 2 * atan(tan(fovy / 2) * aspectRatio)
         return Angle(radians: fovx)
     }
-
 }
 
 public struct OrthographicProjection: ProjectionProtocol {

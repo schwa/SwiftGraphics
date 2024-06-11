@@ -518,7 +518,6 @@ extension MTLTextureCompressionType: @retroactive CustomStringConvertible {
     }
 }
 
-
 extension MTLPixelFormat: @retroactive CaseIterable {
     public static var allCases: [MTLPixelFormat] {
         let baseCases: [MTLPixelFormat] = [
@@ -671,7 +670,6 @@ extension MTLPixelFormat: @retroactive CaseIterable {
         #endif
     }
 }
-
 
 extension MTLStepFunction: @retroactive CustomStringConvertible {
     public var description: String {

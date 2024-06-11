@@ -1,7 +1,7 @@
-import SwiftUI
 import Observation
 import Shapes2D
 import SwiftFormats
+import SwiftUI
 
 @Observable
 class SketchModel {

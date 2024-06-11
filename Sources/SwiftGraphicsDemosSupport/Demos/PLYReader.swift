@@ -1,8 +1,7 @@
-import Foundation
 import Everything
+import Foundation
 
 // Example usage:
-
 
 struct Ply {
     struct Header {
@@ -56,16 +55,14 @@ extension Bool {
     }
 }
 
-
 extension CollectionScanner where Element == UInt8 {
-    mutating func scan_<R>(block: (inout CollectionScanner) throws -> Optional<R>) rethrows -> Optional<R> {
+    mutating func scan_<R>(block: (inout CollectionScanner) throws -> R?) rethrows -> R? {
         var scanner = self
         guard let result = try block(&scanner) else {
             return nil
         }
         self = scanner
         return result
-
     }
 
     var remainingString: String? {
@@ -105,11 +102,9 @@ extension CollectionScanner where Element == UInt8 {
             }
             _ = scanner.scan(until: { !Char(byte: $0).isSpace })
 
-
             return string
         }
     }
-
 }
 
 enum PlyError: Error {
@@ -117,7 +112,6 @@ enum PlyError: Error {
 }
 
 extension CollectionScanner where Element == UInt8 {
-
     mutating func scanPLY() throws -> Ply? {
         try scan_ { scanner in
             guard let header = try scanner.scanPLYHeader() else {
@@ -241,9 +235,7 @@ extension CollectionScanner where Element == UInt8 {
             }
             return .init(values: values)
         }
-
     }
-
 }
 
 struct Char {

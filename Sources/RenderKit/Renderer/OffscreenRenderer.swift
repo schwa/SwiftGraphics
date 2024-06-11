@@ -38,11 +38,8 @@ public struct OffscreenRenderer {
     }
 
     public mutating func prepare() throws {
-
-
         let colorPixelFormat = renderPassDescriptor.colorAttachments[0].texture!.pixelFormat
         let depthAttachmentPixelFormat = renderPassDescriptor.depthAttachment.texture?.pixelFormat ?? .invalid
-
 
         renderPassState = [:]
         for renderPass in renderPasses {
@@ -53,10 +50,8 @@ public struct OffscreenRenderer {
                 return renderPipelineDescriptor
             }
 
-
             let state = try renderPass.setup(context: renderContext, renderPipelineDescriptor: renderPipelineDescriptor)
             renderPassState[renderPass.id] = state
-
         }
         for renderPass in renderPasses {
             var state = renderPassState[renderPass.id]!
@@ -68,13 +63,10 @@ public struct OffscreenRenderer {
         if self.commandQueue.label == nil {
             self.commandQueue.label = "OffscreenRenderer"
         }
-
     }
 
     public mutating func render(waitAfterCommit: Bool = true) throws {
-
         try device.capture {
-
             let renderPassDescriptor = renderPassDescriptor.typedCopy()
             try commandQueue.withCommandBuffer(waitAfterCommit: waitAfterCommit) { commandBuffer in
                 commandBuffer.label = "OffscreenRenderer"
@@ -107,15 +99,13 @@ public struct OffscreenRenderer {
 
                     try renderPass.render(context: renderContext, untypedState: state, drawableSize: SIMD2<Float>(size), renderPassDescriptor: renderPassDescriptor, commandBuffer: commandBuffer)
                 }
-
             }
         }
     }
-
 }
 
 extension MTLDevice {
-    func capture <R>(_ block: () throws -> R) rethrows -> R{
+    func capture <R>(_ block: () throws -> R) rethrows -> R {
         let captureManager = MTLCaptureManager.shared()
         let captureScope = captureManager.makeCaptureScope(device: self)
         let captureDescriptor = MTLCaptureDescriptor()
@@ -126,22 +116,21 @@ extension MTLDevice {
             captureScope.end()
         }
         return try block()
-
     }
 }
 
 //// If we capture (i.e. debug) the render pipeline, we have to do some setup here...
-//var captureScope: MTLCaptureScope?
-//if capture {
+// var captureScope: MTLCaptureScope?
+// if capture {
 //    let captureDescriptor = MTLCaptureDescriptor()
 //    captureDescriptor.captureObject = captureScope
 //    try! captureManager.startCapture(with: captureDescriptor)
 //    captureScope?.begin()
-//}
+// }
 //        captureScope?.end()
 
 ///// Enable this to capture the frame in Xcode Metal debugger.
-//var capture = false
+// var capture = false
 
 extension MTLDevice {
     func newBufferFor2DTexture(pixelFormat: MTLPixelFormat, size: MTLSize) -> MTLBuffer {
@@ -158,7 +147,6 @@ extension MTLDevice {
     public func makeColorTexture(size: CGSize, pixelFormat: MTLPixelFormat) throws -> MTLTexture {
         // Create a shared memory MTLBuffer for the color attachment texture. This allows us to access the pixels efficiently from CPU later on (which is likely the whole point of an offscreen renderer).
         let colorAttachmentTextureBuffer = newBufferFor2DTexture(pixelFormat: pixelFormat, size: MTLSize(width: Int(size.width), height: Int(size.height), depth: 1))
-
 
         // Now create a texture descriptor and texture from the buffer
         let colorAttachmentTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: pixelFormat, width: Int(size.width), height: Int(size.height), mipmapped: false)

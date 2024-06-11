@@ -108,7 +108,6 @@ public extension MDLMesh {
     // TODO: MDLMesh was not created using a MTKMeshBufferAllocator}
     // TODO: FIX bangs
     convenience init(trivialMesh mesh: TrivialMesh<SimpleVertex>, allocator: MDLMeshBufferAllocator? = nil) throws {
-
         let allocator = allocator ?? MDLMeshBufferDataAllocator()
         let vertexBuffer = mesh.vertices.withUnsafeBytes { buffer in
             allocator.newBuffer(from: nil, data: Data(buffer), type: .vertex)!

@@ -4,7 +4,6 @@ import SwiftGraphicsSupport
 import SwiftUI
 
 public struct DiffuseShadingRenderPass: RenderPassProtocol {
-
     // TODO: Move out
     public struct Material: SG3MaterialProtocol {
         // TODO: Repalce with SIMD4

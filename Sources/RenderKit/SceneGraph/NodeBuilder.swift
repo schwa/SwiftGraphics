@@ -36,5 +36,4 @@ extension Node {
         self.content = content
         self.children = try children()
     }
-
 }

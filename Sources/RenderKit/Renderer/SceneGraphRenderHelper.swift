@@ -17,7 +17,6 @@ struct SceneGraphRenderHelper {
     var viewMatrix: simd_float4x4
     var projectionMatrix: simd_float4x4
 
-
     init(scene: SceneGraph, drawableSize: SIMD2<Float>) throws {
         // TODO: Throw
         assert(drawableSize.x > 0 && drawableSize.y > 0)
@@ -32,10 +31,9 @@ struct SceneGraphRenderHelper {
     }
 
     func elements() throws -> any Sequence<Element<()>> {
-
         // TODO: concat node's transform with parent node's transforms
 
-        return scene.root.allNodes().compactMap { node in
+        scene.root.allNodes().compactMap { node in
             guard let geometry = node.content?.geometry else {
                 return nil
             }
@@ -52,7 +50,7 @@ struct SceneGraphRenderHelper {
 
     func elements <Material>(material: Material.Type) -> any Sequence<Element<Material>> where Material: SG3MaterialProtocol {
         // TODO: concat node's transform with parent node's transforms
-        return scene.root.allNodes().compactMap { node in
+        scene.root.allNodes().compactMap { node in
             guard let geometry = node.content?.geometry else {
                 return nil
             }
