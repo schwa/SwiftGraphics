@@ -8,6 +8,8 @@ extension MDLMeshBufferType: @retroactive CustomStringConvertible {
             "index"
         case .vertex:
             "vertex"
+        case .custom:
+            "custom"
         @unknown default:
             fatalError()
         }

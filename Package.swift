@@ -45,11 +45,10 @@ let package = Package(
         .package(url: "https://github.com/schwa/SwiftGLTF", branch: "main"),
         .package(url: "https://github.com/schwa/StreamBuilder", branch: "main"),
         .package(url: "https://github.com/ksemianov/WrappingHStack", from: "0.2.0"),
-
-        //        .package(url: "https://github.com/ordo-one/package-benchmark", .upToNextMajor(from: "1.4.0")),
     ],
     targets: [
         // MARK: Array2D
+
         .target(
             name: "Array2D",
             dependencies: [
@@ -63,6 +62,7 @@ let package = Package(
         ),
 
         // MARK: CoreGraphicsSupport
+
         .target(
             name: "CoreGraphicsSupport",
             swiftSettings: [
@@ -71,6 +71,7 @@ let package = Package(
         ),
 
         // MARK: CoreGraphicsUnsafeConformances
+
         .target(
             name: "CoreGraphicsUnsafeConformances",
             swiftSettings: [
@@ -79,6 +80,7 @@ let package = Package(
         ),
 
         // MARK: Earcut
+
         .target(
             name: "Earcut", dependencies: [
                 "earcut_cpp",
@@ -91,6 +93,13 @@ let package = Package(
             name: "earcut_cpp",
             exclude: ["earcut.hpp/test", "earcut.hpp/glfw"]
         ),
+        .testTarget(
+            name: "EarcutTests", dependencies: ["Earcut"],
+            swiftSettings: [.interoperabilityMode(.Cxx)]
+        ),
+
+        // MARK: GenericGeometryBase
+
         .target(
             name: "GenericGeometryBase",
             dependencies: [
@@ -101,12 +110,9 @@ let package = Package(
                 .enableUpcomingFeature("StrictConcurrency"),
             ]
         ),
-        .testTarget(
-            name: "EarcutTests", dependencies: ["Earcut"],
-            swiftSettings: [.interoperabilityMode(.Cxx)]
-        ),
 
         // MARK: MetalSupport
+
         .target(
             name: "MetalSupport",
             dependencies: ["SIMDSupport",],
@@ -119,6 +125,20 @@ let package = Package(
                 .enableUpcomingFeature("StrictConcurrency"),
             ]
         ),
+
+        .target(
+            name: "MetalUISupport",
+            dependencies: [
+                "MetalSupport",
+                .product(name: "Everything", package: "Everything"),
+            ],
+            swiftSettings: [
+                .enableUpcomingFeature("StrictConcurrency"),
+            ]
+        ),
+
+        // MARK: Raster
+
         .target(
             name: "Raster",
             dependencies: [
@@ -133,6 +153,7 @@ let package = Package(
         ),
 
         // MARK: Projection
+
         .target(
             name: "Projection",
             dependencies: ["SIMDSupport"],
@@ -140,7 +161,9 @@ let package = Package(
                 .enableUpcomingFeature("StrictConcurrency"),
             ]
         ),
+
         // MARK: RenderKit
+
         .target(
             name: "RenderKit",
             dependencies: [
@@ -186,47 +209,64 @@ let package = Package(
                 .interoperabilityMode(.Cxx)
             ]
         ),
+        .target(
+            name: "RenderKit4",
+            dependencies: [
+                "RenderKitShaders",
+                "SIMDSupport",
+                "MetalSupport",
+                "MetalUISupport",
+                "SwiftGraphicsSupport",
+            ],
+            resources: [
+                .process("Placeholder.txt"),
+            ],
+            swiftSettings: [
+                .enableUpcomingFeature("StrictConcurrency"),
+            ]
+        ),
 
         // MARK: Shapes2D
 
-            .target(
-                name: "Shapes2D",
-                dependencies: [
-                    .product(name: "Algorithms", package: "swift-algorithms"),
-                    .product(name: "ApproximateEquality", package: "ApproximateEquality"),
-                    .product(name: "ApproximateEqualityMacros", package: "ApproximateEquality"),
-                    "CoreGraphicsSupport",
-                    "GenericGeometryBase",
-                    "SIMDSupport",
-                ],
-                swiftSettings: [
-                    .enableUpcomingFeature("StrictConcurrency"),
-                ]
-            ),
+        .target(
+            name: "Shapes2D",
+            dependencies: [
+                .product(name: "Algorithms", package: "swift-algorithms"),
+                .product(name: "ApproximateEquality", package: "ApproximateEquality"),
+                .product(name: "ApproximateEqualityMacros", package: "ApproximateEquality"),
+                "CoreGraphicsSupport",
+                "GenericGeometryBase",
+                "SIMDSupport",
+            ],
+            swiftSettings: [
+                .enableUpcomingFeature("StrictConcurrency"),
+            ]
+        ),
         .testTarget(name: "Shapes2DTests", dependencies: [
             "Shapes2D",
         ]),
 
         // MARK: Shapes3D
 
-            .target(
-                name: "Shapes3D",
-                dependencies: [
-                    .product(name: "Algorithms", package: "swift-algorithms"),
-                    "CoreGraphicsSupport",
-                    "Earcut",
-                    "MetalSupport",
-                    "Shapes2D",
-                    "SIMDSupport",
-                    "SwiftGraphicsSupport",
-                ],
-                swiftSettings: [
-                    .enableUpcomingFeature("StrictConcurrency"),
-                    .interoperabilityMode(.Cxx)
-                ]
-            ),
+        .target(
+            name: "Shapes3D",
+            dependencies: [
+                .product(name: "Algorithms", package: "swift-algorithms"),
+                "CoreGraphicsSupport",
+                "Earcut",
+                "MetalSupport",
+                "Shapes2D",
+                "SIMDSupport",
+                "SwiftGraphicsSupport",
+            ],
+            swiftSettings: [
+                .enableUpcomingFeature("StrictConcurrency"),
+                .interoperabilityMode(.Cxx)
+            ]
+        ),
 
         // MARK: SIMDSupport
+
         .target(
             name: "SIMDSupport",
             dependencies: [
@@ -244,6 +284,7 @@ let package = Package(
         ]),
 
         // MARK: SwiftGraphicsSupport
+
         .target(
             name: "SwiftGraphicsSupport",
             dependencies: [
@@ -258,6 +299,7 @@ let package = Package(
         ),
 
         // MARK: TrivialMeshCLI
+
         .executableTarget(
             name: "TrivialMeshCLI",
             dependencies: [
@@ -270,104 +312,79 @@ let package = Package(
             ]
         ),
 
-            .target(
-                name: "MetalUISupport",
-                dependencies: [
-                    "MetalSupport",
-                    .product(name: "Everything", package: "Everything"),
-                ],
-                swiftSettings: [
-                    .enableUpcomingFeature("StrictConcurrency"),
-                ]
-            ),
+        // MARK: Compute
 
-            .target(
-                name: "RenderKit4",
-                dependencies: [
-                    "RenderKitShaders",
-                    "SIMDSupport",
-                    "MetalSupport",
-                    "MetalUISupport",
-                    "SwiftGraphicsSupport",
-                ],
-                resources: [
-                    .process("Placeholder.txt"),
-                ],
-                swiftSettings: [
-                    .enableUpcomingFeature("StrictConcurrency"),
-                ]
-            ),
+        .target(
+            name: "Compute",
+            dependencies: [
+                "MetalSupport",
+                "MetalUISupport",
+                "CoreGraphicsSupport",
+            ],
+            swiftSettings: [
+                .enableUpcomingFeature("StrictConcurrency"),
+                .interoperabilityMode(.Cxx)
+            ]
+        ),
+        .executableTarget(
+            name: "ComputeTool",
+            dependencies: [
+                "Compute",
+                "SwiftGraphicsSupport",
+            ],
+            resources: [
+                .process("BitonicSort.metal"),
+                .process("GameOfLife.metal"),
+                .process("RandomFill.metal"),
+            ],
+            swiftSettings: [
+                .enableUpcomingFeature("StrictConcurrency"),
+                .interoperabilityMode(.Cxx)
+            ]
+        ),
 
-            .target(
-                name: "Compute",
-                dependencies: [
-                    "MetalSupport",
-                    "MetalUISupport",
-                    "CoreGraphicsSupport",
-                ],
-                swiftSettings: [
-                    .enableUpcomingFeature("StrictConcurrency"),
-                    .interoperabilityMode(.Cxx)
-                ]
-            ),
+        // MARK: SwiftGraphicsDemosSupport
 
-            .executableTarget(
-                name: "ComputeTool",
-                dependencies: [
-                    "Compute",
-                    "SwiftGraphicsSupport",
-                ],
-                resources: [
-                    .process("BitonicSort.metal"),
-                    .process("GameOfLife.metal"),
-                    .process("RandomFill.metal"),
-                ],
-                swiftSettings: [
-                    .enableUpcomingFeature("StrictConcurrency"),
-                    .interoperabilityMode(.Cxx)
-                ]
-            ),
-
-            .target(
-                name: "SwiftGraphicsDemosSupport",
-                dependencies: [
-                    "Array2D",
-                    "CoreGraphicsSupport",
-                    "CoreGraphicsUnsafeConformances",
-                    "Earcut",
-                    "GenericGeometryBase",
-                    "MetalSupport",
-                    "Projection",
-                    "Raster",
-                    "RenderKit",
-                    "RenderKitShaders",
-                    "Shapes2D",
-                    "Shapes3D",
-                    "SIMDSupport",
-                    "SwiftGraphicsSupport",
-                    "SIMDSupportUnsafeConformances",
-                    "SwiftGLTF",
-                    "StreamBuilder",
-                    "WrappingHStack",
-                    "Compute",
-                    "RenderKit4",
-                    "MetalSupportUnsafeConformances",
-                ],
-                resources: [
-                    .process("Resources/Assets.xcassets"),
-                    .copy("Resources/Output"),
-                    .copy("Resources/PerseveranceTiles"),
-                    .copy("Resources/Models"),
-                    .copy("Resources/TestcardTiles"),
-                    .copy("Resources/adjectives.txt"),
-                    .copy("Resources/nouns.txt"),
-                    .copy("Resources/StanfordVolumeData.tar"),
-                ],
-                swiftSettings: [
-                    .enableUpcomingFeature("StrictConcurrency"),
-                    .interoperabilityMode(.Cxx),
-                ]
-            ),
+        .target(
+            name: "SwiftGraphicsDemosSupport",
+            dependencies: [
+                "Array2D",
+                "CoreGraphicsSupport",
+                "CoreGraphicsUnsafeConformances",
+                "Earcut",
+                "GenericGeometryBase",
+                "MetalSupport",
+                "Projection",
+                "Raster",
+                "RenderKit",
+                "RenderKitShaders",
+                "Shapes2D",
+                "Shapes3D",
+                "SIMDSupport",
+                "SwiftGraphicsSupport",
+                "SIMDSupportUnsafeConformances",
+                "SwiftGLTF",
+                "StreamBuilder",
+                "WrappingHStack",
+                "Compute",
+                "RenderKit4",
+                "MetalSupportUnsafeConformances",
+            ],
+            resources: [
+                .process("Resources/Assets.xcassets"),
+                .copy("Resources/Output"),
+                .copy("Resources/PerseveranceTiles"),
+                .copy("Resources/Models"),
+                .copy("Resources/TestcardTiles"),
+                .copy("Resources/adjectives.txt"),
+                .copy("Resources/nouns.txt"),
+                .copy("Resources/StanfordVolumeData.tar"),
+            ],
+            swiftSettings: [
+                .enableUpcomingFeature("StrictConcurrency"),
+                .interoperabilityMode(.Cxx),
+            ]
+        ),
         .testTarget(
             name: "SwiftGraphicsDemosSupportTests",
             dependencies: ["SwiftGraphicsDemosSupport"],
@@ -375,6 +392,5 @@ let package = Package(
                 .interoperabilityMode(.Cxx)
             ]
         ),
-
     ]
 )
