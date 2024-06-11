@@ -6,8 +6,9 @@ import UIKit
 #endif
 import SwiftUI
 
+// TODO: Use UIUpdateLink
+
 @available(macOS 14, iOS 15, tvOS 16, *)
-@available(*, deprecated, message: "Deprecated")
 class DisplayLink2 {
     struct Event {
         var timestamp: CFTimeInterval
