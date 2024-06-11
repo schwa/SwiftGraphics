@@ -101,14 +101,18 @@ struct TextureView: View {
             let descriptor = mesh.vertexDescriptor
             renderPipelineDescriptor.vertexDescriptor = MTLVertexDescriptor(descriptor)
             let (renderPipelineState, reflection) = try device.makeRenderPipelineState(descriptor: renderPipelineDescriptor, options: [.bindingInfo])
+            guard let reflection else {
+                fatalError()
+            }
 
             var bindings = Bindings()
-            legacyresolveBindings(reflection: reflection!, bindable: &bindings, [
-                (\.vertexBufferIndex, .vertex, "vertexBuffer.0"),
-                (\.vertexCameraIndex, .vertex, "camera"),
-                (\.vertexModelTransformsIndex, .vertex, "models"),
-                (\.fragmentMaterialsIndex, .fragment, "materials"),
-            ])
+            bindings.vertexBufferIndex = try reflection.binding(for: "vertexBuffer.0", of: .vertex)
+            bindings.vertexCameraIndex = try reflection.binding(for: "camera", of: .vertex)
+            bindings.vertexModelTransformsIndex = try reflection.binding(for: "models", of: .vertex)
+            bindings.fragmentMaterialsIndex = try reflection.binding(for: "materials", of: .vertex)
+            bindings.fragmentTexturesIndex = try reflection.binding(for: "", of: .vertex)
+
+
             renderState = RenderState(mesh: mesh, commandQueue: commandQueue, bindings: bindings, renderPipelineState: renderPipelineState)
         } drawableSizeWillChange: { _, _, size in
             self.size = size

@@ -26,7 +26,7 @@ struct CustomStrokeView: View {
     let strokeStyle = StrokeStyle(lineWidth: 120, lineCap: .butt, lineJoin: .miter, miterLimit: 199_990)
 
     var segments: [LineSegment] {
-        points.windows(ofCount: 2).map(\.tuple).map {
+        points.windows(ofCount: 2).map(\.tuple2).map {
             LineSegment($0, $1)
         }
     }

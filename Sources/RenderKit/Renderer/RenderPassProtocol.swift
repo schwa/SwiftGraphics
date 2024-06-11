@@ -2,7 +2,6 @@ import Foundation
 import Metal
 import SwiftGraphicsSupport
 
-// TODO: Deprecate this - we don't need things to conform to it.
 public protocol RenderPassState {
 }
 

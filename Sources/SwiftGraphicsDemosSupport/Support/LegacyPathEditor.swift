@@ -20,7 +20,7 @@ struct LegacyPathEditor: View {
                     points.append(value.location)
                 }))
 
-            let elements = points.windows(ofCount: 2).map(\.tuple).enumerated()
+            let elements = points.windows(ofCount: 2).map(\.tuple2).enumerated()
             ForEach(Array(elements), id: \.offset) { offset, points in
                 let path = Path.line(from: points.0, to: points.1)
                 path.stroke()
