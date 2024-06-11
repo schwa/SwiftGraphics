@@ -43,7 +43,7 @@ struct SoftwareRendererBoxesDemoView: View, DemoView {
             }
         }
         .onChange(of: ballConstraint.transform, initial: true) {
-            cameraTransform.matrix = ballConstraint.transform
+            cameraTransform = ballConstraint.transform
         }
         .overlay(alignment: .topTrailing) {
             CameraRotationWidgetView(ballConstraint: $ballConstraint)
@@ -59,7 +59,7 @@ struct SoftwareRendererBoxesDemoView: View, DemoView {
                     RasterizerOptionsView(options: $rasterizerOptions)
                 }
                 Section("Camera") {
-                    ProjectionInspector(projection: $cameraProjection)
+                    ProjectionEditor(projection: $cameraProjection)
                 }
                 Section("Ball Constraint") {
                     BallConstraintEditor(ballConstraint: $ballConstraint)

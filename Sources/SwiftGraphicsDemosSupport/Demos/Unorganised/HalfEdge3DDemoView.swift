@@ -77,11 +77,11 @@ struct HalfEdge3DDemoView: View, DemoView {
             .ballRotation($ballConstraint.rollPitchYaw)
             .onChange(of: ballConstraint) {
                 print("Ball constraint: \(ballConstraint)")
-                cameraTransform.matrix = ballConstraint.transform
+                cameraTransform = ballConstraint.transform
             }
         }
         .onChange(of: ballConstraint.transform, initial: true) {
-            cameraTransform.matrix = ballConstraint.transform
+            cameraTransform = ballConstraint.transform
         }
         .overlay(alignment: .topTrailing) {
             CameraRotationWidgetView(ballConstraint: $ballConstraint)
@@ -101,7 +101,7 @@ struct HalfEdge3DDemoView: View, DemoView {
                         RasterizerOptionsView(options: $rasterizerOptions)
                     }
                     Section("Camera") {
-                        ProjectionInspector(projection: $cameraProjection)
+                        ProjectionEditor(projection: $cameraProjection)
                     }
                     Section("Ball Constraint") {
                         BallConstraintEditor(ballConstraint: $ballConstraint)

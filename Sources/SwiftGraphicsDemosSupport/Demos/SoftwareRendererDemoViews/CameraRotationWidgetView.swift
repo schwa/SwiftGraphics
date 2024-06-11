@@ -50,7 +50,7 @@ struct CameraRotationWidgetView: View {
                 }
             }
             .onChange(of: ballConstraint, initial: true) {
-                cameraTransform.matrix = ballConstraint.transform
+                cameraTransform = ballConstraint.transform
             }
             .ballRotation($ballConstraint.rollPitchYaw)
             .background(isHovering ? .white.opacity(0.5) : .clear)

@@ -39,6 +39,7 @@ let package = Package(
         .package(url: "https://github.com/schwa/ApproximateEquality", from: "0.2.1"),
         .package(url: "https://github.com/schwa/Everything", from: "1.1.0"),
         .package(url: "https://github.com/schwa/MetalCompilerPlugin", from: "0.0.2"),
+        .package(url: "https://github.com/schwa/swiftfields", from: "0.0.1"),
         .package(url: "https://github.com/schwa/swiftformats", from: "0.3.3"),
         .package(url: "https://github.com/schwa/SwiftGLTF", branch: "main"),
         .package(url: "https://github.com/schwa/StreamBuilder", branch: "main"),
@@ -63,6 +64,9 @@ let package = Package(
 
         .target(
             name: "CoreGraphicsSupport",
+            dependencies: [
+                "ApproximateEquality"
+            ],
             swiftSettings: [
                 .enableUpcomingFeature("StrictConcurrency"),
             ]
@@ -249,6 +253,7 @@ let package = Package(
         .target(
             name: "SIMDSupport",
             dependencies: [
+                "CoreGraphicsSupport",
                 .product(name: "ApproximateEquality", package: "ApproximateEquality"),
             ],
             swiftSettings: [
@@ -349,6 +354,7 @@ let package = Package(
                 "WrappingHStack",
                 "Compute",
                 "MetalUnsafeConformances",
+                .product(name: "SwiftFields", package: "swiftfields"),
             ],
             resources: [
                 .process("Resources/Assets.xcassets"),

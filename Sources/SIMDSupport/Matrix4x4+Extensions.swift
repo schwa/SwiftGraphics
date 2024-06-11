@@ -139,33 +139,3 @@ public extension simd_float4x4 {
         try [columns.0, columns.1, columns.2, columns.3].map(f)
     }
 }
-
-public extension simd_float3x3 {
-    @inlinable init(truncating other: simd_float4x4) {
-        self = simd_float3x3(other.map(\.xyz).dropLast())
-    }
-}
-
-public extension simd_float3x3 {
-    @inlinable init(scalars: [Scalar]) {
-        self = .identity
-        self.scalars = scalars
-    }
-
-    @inlinable var scalars: [Scalar] {
-        get {
-            [
-                columns.0.x, columns.0.y, columns.0.z,
-                columns.1.x, columns.1.y, columns.1.z,
-                columns.2.x, columns.2.y, columns.2.z,
-            ]
-        }
-        set {
-            self = .init(columns: (
-                [newValue[0], newValue[1], newValue[2]],
-                [newValue[3], newValue[4], newValue[5]],
-                [newValue[6], newValue[7], newValue[8]]
-            ))
-        }
-    }
-}

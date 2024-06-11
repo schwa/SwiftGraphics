@@ -1,105 +1,129 @@
 import simd
 import SwiftUI
 
-public struct RollPitchYaw: Sendable, Hashable {
-//    enum Order {
-//        case rollPitchYaw
-//        case yawPitchRoll
-//    }
+public typealias RollPitchYaw = XYZRotation
 
-    public var roll: Angle
-    public var pitch: Angle
-    public var yaw: Angle
+public struct XYZRotation: Sendable, Equatable {
+
+    public enum Target: Sendable {
+        case object
+        case world
+    }
+
+    public var x: Angle
+    public var y: Angle
+    public var z: Angle
+
+    public init() {
+        x = .zero
+        y = .zero
+        z = .zero
+    }
+
+    public init(x: Angle = .zero, y: Angle = .zero, z: Angle = .zero) {
+        self.x = x
+        self.y = y
+        self.z = z
+    }
+}
+
+extension XYZRotation {
+    public var roll: Angle {
+        get {
+            z
+        }
+        set {
+            z = newValue
+        }
+    }
+    public var pitch: Angle {
+        get {
+            x
+        }
+        set {
+            x = newValue
+        }
+
+    }
+    public var yaw: Angle {
+        get {
+            y
+        }
+        set {
+            y = newValue
+        }
+    }
 
     public init(roll: Angle = .zero, pitch: Angle = .zero, yaw: Angle = .zero) {
+        self.init()
         self.roll = roll
         self.pitch = pitch
         self.yaw = yaw
     }
-
-    public static let zero = Self(roll: .zero, pitch: .zero, yaw: .zero)
 }
 
-public extension RollPitchYaw {
-    var matrix: simd_float4x4 {
-        simd_float4x4(quaternion)
+public extension XYZRotation {
+    init(target: Target = .object, matrix: simd_float3x3) {
+        // https://web.archive.org/web/20220428033032/
+        // http://planning.cs.uiuc.edu/node103.html
+        let x = -atan2(matrix[2][1], matrix[2][2])
+        let y = -atan2(-matrix[2][0], sqrt(matrix[2][1] * matrix[2][1] + matrix[2][2] * matrix[2][2]))
+        let z = -atan2(matrix[1][0], matrix[0][0])
+        switch target {
+        case .object:
+            self.init(x: .radians(Double(x)), y: .radians(Double(y)), z: .radians(Double(z)))
+        case .world:
+            self.init(x: .radians(Double(-x)), y: .radians(Double(-y)), z: .radians(Double(-z)))
+        }
+    }
+
+    var matrix3x3: simd_float3x3 {
+        let x = simd_float3x3(rotationAngle: x, axis: [1, 0, 0])
+        let y = simd_float3x3(rotationAngle: y, axis: [0, 1, 0])
+        let z = simd_float3x3(rotationAngle: z, axis: [0, 0, 1])
+        return x * y * z
+    }
+
+    var worldMatrix3x3: simd_float3x3 {
+        let x = simd_float3x3(rotationAngle: -x, axis: [-1, 0, 0])
+        let y = simd_float3x3(rotationAngle: -y, axis: [0, -1, 0])
+        let z = simd_float3x3(rotationAngle: -z, axis: [0, 0, -1])
+        return x * y * z
     }
 }
 
-public extension RollPitchYaw {
-    static func + (lhs: RollPitchYaw, rhs: RollPitchYaw) -> RollPitchYaw {
-        RollPitchYaw(roll: lhs.roll + rhs.roll, pitch: lhs.pitch + rhs.pitch, yaw: lhs.yaw + rhs.yaw)
+public extension XYZRotation {
+    var matrix4x4: simd_float4x4 {
+        return .init(matrix3x3)
+    }
+    var worldMatrix4x4: simd_float4x4 {
+        return .init(worldMatrix3x3)
     }
 }
 
-public extension RollPitchYaw {
-    init(quaternion: simd_quatf) {
-        // TODO: Not symetrical with .quaternion_factor
-        let q = quaternion.vector
+public extension XYZRotation {
 
-        let siny_cosp = 2 * (q.w * q.z + q.x * q.y)
-        let cosy_cosp = 1 - 2 * (q.y * q.y + q.z * q.z)
-        let yaw = atan2(siny_cosp, cosy_cosp)
+    static let zero = XYZRotation()
 
-        let sinp = 2 * (q.w * q.y - q.z * q.x)
-        let pitch: Float = if abs(sinp) >= 1 {
-            copysign(.pi / 2, sinp)
-        }
-        else {
-            asin(sinp)
-        }
+    static func + (lhs: XYZRotation, rhs: XYZRotation) -> XYZRotation {
+        XYZRotation(roll: lhs.roll + rhs.roll, pitch: lhs.pitch + rhs.pitch, yaw: lhs.yaw + rhs.yaw)
+    }
+}
 
-        let sinr_cosp = 2 * (q.w * q.x + q.y * q.z)
-        let cosr_cosp = 1 - 2 * (q.x * q.x + q.y * q.y)
-        let roll = atan2(sinr_cosp, cosr_cosp)
 
-        self = .init(roll: .radians(Double(roll)), pitch: .radians(Double(pitch)), yaw: .radians(Double(yaw)))
+public extension XYZRotation {
+    init(target: Target = .object, quaternion: simd_quatf) {
+        let matrix4x4 = simd_float4x4(quaternion)
+        let matrix3x3 = simd_float3x3(matrix4x4)
+        self.init(target: target, matrix: matrix3x3)
     }
 
     var quaternion: simd_quatf {
-        quaternion_factor
+        simd_quatf(matrix4x4)
     }
 
-    // TODO: This has a different result from...
-    var quaternion_factor: simd_quatf {
-        let roll = simd_quatf(angle: Float(roll.radians), axis: [0, 0, 1])
-        let pitch = simd_quatf(angle: Float(pitch.radians), axis: [1, 0, 0])
-        let yaw = simd_quatf(angle: Float(yaw.radians), axis: [0, 1, 0])
-        return yaw * pitch * roll // TODO: Order matters
-    }
-
-    // TODO:  ... this… which is a problem for init(quat:)
-    var quaternion_direct: simd_quatf {
-        let roll2 = roll.radians / 2
-        let pitch2 = pitch.radians / 2
-        let yaw2 = yaw.radians / 2
-        let ix: Double = sin(roll2) * cos(pitch2) * cos(yaw2) - cos(roll2) * sin(pitch2) * sin(yaw2)
-        let iy: Double = cos(roll2) * sin(pitch2) * cos(yaw2) + sin(roll2) * cos(pitch2) * sin(yaw2)
-        let iz: Double = cos(roll2) * cos(pitch2) * sin(yaw2) - sin(roll2) * sin(pitch2) * cos(yaw2)
-        let r: Double = cos(roll2) * cos(pitch2) * cos(yaw2) + sin(roll2) * sin(pitch2) * sin(yaw2)
-        return simd_quatf(ix: Float(ix), iy: Float(iy), iz: Float(iz), r: Float(r))
-    }
-}
-
-extension RollPitchYaw: Codable {
-    enum CodingKeys: CodingKey {
-        case roll
-        case pitch
-        case yaw
-    }
-
-    public init(from decoder: any Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        roll = try .degrees(container.decodeIfPresent(Double.self, forKey: .roll) ?? 0)
-        pitch = try .degrees(container.decodeIfPresent(Double.self, forKey: .pitch) ?? 0)
-        yaw = try .degrees(container.decodeIfPresent(Double.self, forKey: .yaw) ?? 0)
-    }
-
-    public func encode(to encoder: any Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(roll.degrees, forKey: .roll)
-        try container.encode(pitch.degrees, forKey: .pitch)
-        try container.encode(yaw.degrees, forKey: .yaw)
+    var worldQuaternion: simd_quatf {
+        simd_quatf(worldMatrix4x4)
     }
 }
 
@@ -110,8 +134,7 @@ extension RollPitchYaw: CustomStringConvertible {
 }
 
 public struct RollPitchYawFormatStyle: FormatStyle {
-    public typealias FormatInput = RollPitchYaw
-
+    public typealias FormatInput = XYZRotation
     public typealias FormatOutput = String
 
     public func format(_ value: RollPitchYaw) -> String {

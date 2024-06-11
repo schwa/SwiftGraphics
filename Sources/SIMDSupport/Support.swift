@@ -1,5 +1,7 @@
 import simd
 import SwiftUI
+import ApproximateEquality
+import CoreGraphicsSupport
 
 func degreesToRadians<F>(_ value: F) -> F where F: FloatingPoint {
     value * .pi / 180
@@ -44,5 +46,13 @@ public extension CGColor {
             fatalError("Could not get components.")
         }
         return .init(components)
+    }
+}
+
+extension RollPitchYaw {
+    func isApproximatelyEqual(to other: Self, absoluteTolerance: Angle) -> Bool {
+        roll.isApproximatelyEqual(to: other.roll, absoluteTolerance: absoluteTolerance)
+        && pitch.isApproximatelyEqual(to: other.pitch, absoluteTolerance: absoluteTolerance)
+        && yaw.isApproximatelyEqual(to: other.yaw, absoluteTolerance: absoluteTolerance)
     }
 }
