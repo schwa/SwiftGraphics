@@ -76,10 +76,3 @@ extension SimpleScene {
         return scene
     }
 }
-
-public extension MDLMeshConvertable {
-    func toYAMesh(allocator: MDLMeshBufferAllocator?, device: MTLDevice) throws -> YAMesh {
-        let mdlMesh = try toMDLMesh(allocator: allocator)
-        return try YAMesh(label: "\(type(of: self))", mdlMesh: mdlMesh, device: device)
-    }
-}

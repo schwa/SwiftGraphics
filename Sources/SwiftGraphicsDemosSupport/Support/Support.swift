@@ -903,3 +903,45 @@ extension Path {
         }
     }
 }
+
+struct MyTabView: View {
+    enum Tab: Hashable {
+        case inspector
+        case counters
+    }
+
+    @State
+    var tab: Tab = .inspector
+
+    @Binding
+    var scene: SimpleScene
+
+    var body: some View {
+        VStack {
+            Picker("Picker", selection: $tab) {
+                Image(systemName: "slider.horizontal.3").tag(Tab.inspector)
+                Image(systemName: "tablecells").tag(Tab.counters)
+            }
+            .labelsHidden()
+            .fixedSize()
+            .pickerStyle(.palette)
+            Divider()
+            switch tab {
+            case .inspector:
+                Group {
+                    SimpleSceneInspector(scene: $scene)
+                        .controlSize(.small)
+                }
+            case .counters:
+                CountersView()
+            }
+        }
+    }
+}
+
+public extension MDLMeshConvertable {
+    func toYAMesh(allocator: MDLMeshBufferAllocator?, device: MTLDevice) throws -> YAMesh {
+        let mdlMesh = try toMDLMesh(allocator: allocator)
+        return try YAMesh(label: "\(type(of: self))", mdlMesh: mdlMesh, device: device)
+    }
+}
