@@ -174,10 +174,10 @@ struct SimulationDemoView: View, DemoView {
     }
 }
 
-extension GraphicsContext.BlendMode: Hashable {
+extension GraphicsContext.BlendMode: @retroactive Hashable {
 }
 
-extension GraphicsContext.BlendMode: CaseIterable {
+extension GraphicsContext.BlendMode: @retroactive CaseIterable {
     public static var allCases: [GraphicsContext.BlendMode] {
         [
             .normal,
@@ -212,7 +212,7 @@ extension GraphicsContext.BlendMode: CaseIterable {
     }
 }
 
-extension GraphicsContext.BlendMode: CustomStringConvertible {
+extension GraphicsContext.BlendMode: @retroactive CustomStringConvertible {
     public var description: String {
         // swiftlint:disable switch_case_on_newline
         switch self {

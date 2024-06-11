@@ -1,6 +1,6 @@
 import CoreGraphics
 
-public struct BitmapDefinition {
+public struct BitmapDefinition: Sendable {
     public var width: Int
     public var height: Int
     public var bytesPerRow: Int
@@ -20,7 +20,7 @@ public extension BitmapDefinition {
     }
 }
 
-public struct PixelFormat {
+public struct PixelFormat: Sendable {
     public var bitsPerComponent: Int
     public var numberOfComponents: Int
     public var alphaInfo: CGImageAlphaInfo

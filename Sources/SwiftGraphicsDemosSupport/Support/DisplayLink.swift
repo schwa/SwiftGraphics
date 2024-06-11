@@ -7,6 +7,7 @@ import UIKit
 import SwiftUI
 
 @available(macOS 14, iOS 15, tvOS 16, *)
+@available(*, deprecated, message: "Deprecated")
 class DisplayLink2 {
     struct Event {
         var timestamp: CFTimeInterval
@@ -103,7 +104,7 @@ class DisplayLink2 {
 
 @available(macOS 14, iOS 15, tvOS 16, *)
 struct DisplayLinkKey: EnvironmentKey {
-    static var defaultValue: DisplayLink2?
+    nonisolated(unsafe) static let defaultValue: DisplayLink2? = nil
 }
 
 @available(macOS 14, iOS 15, tvOS 16, *)

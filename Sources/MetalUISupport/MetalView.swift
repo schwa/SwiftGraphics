@@ -81,6 +81,7 @@ public struct MetalView: View {
 }
 
 @Observable
+@MainActor
 class MetalViewModel: NSObject, MTKViewDelegate {
     var view: MTKView?
     var setup: MetalView.Setup?

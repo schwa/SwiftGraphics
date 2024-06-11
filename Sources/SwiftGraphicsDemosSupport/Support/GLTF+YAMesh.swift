@@ -123,16 +123,3 @@ extension MTLPrimitiveType {
         }
     }
 }
-
-extension MTLStepFunction: CustomStringConvertible {
-    public var description: String {
-        switch self {
-        case .perVertex:
-            "perVertex"
-        case .perInstance:
-            "perInstance"
-        default:
-            unimplemented()
-        }
-    }
-}

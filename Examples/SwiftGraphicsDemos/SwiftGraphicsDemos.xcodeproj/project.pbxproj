@@ -10,6 +10,7 @@
 		45CDB0442BF4025700096326 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 45CDB0432BF4025700096326 /* Assets.xcassets */; };
 		45CEE5992C09882F00E3F2B3 /* SwiftGraphicsDemosSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 45CEE5982C09882F00E3F2B3 /* SwiftGraphicsDemosSupport */; };
 		45DA912C2BF158380070FD0C /* Info-visionOS.plist in Resources */ = {isa = PBXBuildFile; fileRef = 45DA90B12BF158380070FD0C /* Info-visionOS.plist */; };
+		45DEA3A82C174F92007481D8 /* cube_points.pointsply in Resources */ = {isa = PBXBuildFile; fileRef = 45DEA3A72C174F68007481D8 /* cube_points.pointsply */; };
 		45E5B5E32A8EA04100B46CDC /* SwiftGraphicsDemosApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E5B5E22A8EA04100B46CDC /* SwiftGraphicsDemosApp.swift */; };
 		45E5B5EB2A8EA04400B46CDC /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 45E5B5EA2A8EA04400B46CDC /* Preview Assets.xcassets */; };
 /* End PBXBuildFile section */
@@ -26,6 +27,7 @@
 		45DA914A2BF15B070070FD0C /* SwiftGraphicsDemos-Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "SwiftGraphicsDemos-Release.xcconfig"; sourceTree = "<group>"; };
 		45DA914B2BF15B070070FD0C /* SwiftGraphicsDemos-Shared.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "SwiftGraphicsDemos-Shared.xcconfig"; sourceTree = "<group>"; };
 		45DA91582BF15D6B0070FD0C /* SwiftGraphics */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = SwiftGraphics; path = ../..; sourceTree = "<group>"; };
+		45DEA3A72C174F68007481D8 /* cube_points.pointsply */ = {isa = PBXFileReference; lastKnownFileType = text; path = cube_points.pointsply; sourceTree = "<group>"; };
 		45E5B5DF2A8EA04100B46CDC /* SwiftGraphicsDemos.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftGraphicsDemos.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		45E5B5E22A8EA04100B46CDC /* SwiftGraphicsDemosApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftGraphicsDemosApp.swift; sourceTree = "<group>"; };
 		45E5B5E82A8EA04400B46CDC /* SwiftGraphicsDemos.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SwiftGraphicsDemos.entitlements; sourceTree = "<group>"; };
@@ -95,6 +97,7 @@
 		45E5B5E12A8EA04100B46CDC /* SwiftGraphicsDemos */ = {
 			isa = PBXGroup;
 			children = (
+				45DEA3A72C174F68007481D8 /* cube_points.pointsply */,
 				45B642022A9EC70500171EE0 /* Info.plist */,
 				45E5B5E22A8EA04100B46CDC /* SwiftGraphicsDemosApp.swift */,
 				45DA90B12BF158380070FD0C /* Info-visionOS.plist */,
@@ -177,6 +180,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				45DEA3A82C174F92007481D8 /* cube_points.pointsply in Resources */,
 				45DA912C2BF158380070FD0C /* Info-visionOS.plist in Resources */,
 				45CDB0442BF4025700096326 /* Assets.xcassets in Resources */,
 				45E5B5EB2A8EA04400B46CDC /* Preview Assets.xcassets in Resources */,

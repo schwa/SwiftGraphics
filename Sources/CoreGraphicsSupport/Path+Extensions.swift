@@ -282,7 +282,7 @@ public extension Path {
 }
 
 public extension Path {
-    struct Corners: OptionSet {
+    struct Corners: OptionSet, Sendable {
         public let rawValue: UInt8
 
         public static let topLeft = Self(rawValue: 0b0001)

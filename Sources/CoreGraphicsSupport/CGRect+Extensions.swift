@@ -30,12 +30,6 @@ public extension CGRect {
     }
 }
 
-extension CGRect: ExpressibleByArrayLiteral {
-    public init(arrayLiteral elements: CGFloat...) {
-        assert(elements.count == 4)
-        self = CGRect(x: elements[0], y: elements[1], width: elements[2], height: elements[3])
-    }
-}
 
 public extension CGRect {
     // Note: Rename "Position" to something else?

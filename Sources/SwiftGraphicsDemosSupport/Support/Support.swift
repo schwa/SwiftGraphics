@@ -12,6 +12,7 @@ import simd
 import SIMDSupport
 import SwiftGraphicsSupport
 import SwiftUI
+import os
 
 // swiftlint:disable identifier_name
 
@@ -91,25 +92,6 @@ extension Triangle {
     }
 }
 
-class Once {
-    // TODO: The thread safety, it's missing!!!!
-    var tokens: Set<AnyHashable> = []
-    static let shared = Once()
-}
-
-func once(_ token: AnyHashable, block: () throws -> Void) rethrows {
-    guard Once.shared.tokens.insert(token).inserted else {
-        return
-    }
-    try block()
-}
-
-extension MTLOrigin: ExpressibleByArrayLiteral {
-    public init(arrayLiteral elements: Int...) {
-        self = .init(x: elements[0], y: elements[1], z: elements[2])
-    }
-}
-
 extension MTLDepthStencilDescriptor {
     static func always() -> MTLDepthStencilDescriptor {
         let descriptor = MTLDepthStencilDescriptor()
@@ -176,8 +158,10 @@ extension YAMesh {
     }
 }
 
-private class PrintOnceManager {
-    static let instance = PrintOnceManager()
+private final class PrintOnceManager {
+    nonisolated(unsafe) static let instance = PrintOnceManager()
+
+//    var printedAlready = OSAllocatedUnfairLock(uncheckedState: [Set<String>]())
 
     var printedAlready: Set<String> = []
 
@@ -545,7 +529,7 @@ extension Binding where Value == CGPoint {
         }
     }
 
-    func transformed(_ modify: @escaping (CGFloat) -> CGFloat) -> Binding {
+    func transformed(_ modify: @escaping @Sendable (CGFloat) -> CGFloat) -> Binding {
         Binding {
             wrappedValue
         } set: { newValue in
@@ -628,6 +612,7 @@ extension CodableAppStorage where Value: ExpressibleByNilLiteral {
     }
 }
 
+@MainActor
 @resultBuilder
 enum ViewModifierBuilder {
     static func buildExpression<Content>(_ content: Content) -> Content where Content: ViewModifier {

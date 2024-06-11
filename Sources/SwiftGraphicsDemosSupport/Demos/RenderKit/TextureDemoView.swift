@@ -11,9 +11,6 @@ struct TextureDemoView: View, DemoView {
     @State
     var showDebugView = false
 
-    init() {
-    }
-
     var body: some View {
         TextureView(named: "seamless-foods-mixed-0020", bundle: .module, options: showDebugView ? [.showInfo] : [])
         .overlay(alignment: .bottomTrailing) {
@@ -103,7 +100,7 @@ struct TextureView: View {
             }
             let descriptor = mesh.vertexDescriptor
             renderPipelineDescriptor.vertexDescriptor = MTLVertexDescriptor(descriptor)
-            let (renderPipelineState, reflection) = try device.makeRenderPipelineState(descriptor: renderPipelineDescriptor, options: [.argumentInfo])
+            let (renderPipelineState, reflection) = try device.makeRenderPipelineState(descriptor: renderPipelineDescriptor, options: [.bindingInfo])
 
             var bindings = Bindings()
             legacyresolveBindings(reflection: reflection!, bindable: &bindings, [
@@ -192,69 +189,5 @@ extension TextureView {
         let loader = MTKTextureLoader(device: device)
         let texture = try! loader.newTexture(name: name, scaleFactor: 1.0, bundle: bundle)
         self.init(texture: texture, options: options)
-    }
-}
-
-extension MTLTextureType: CustomStringConvertible {
-    public var description: String {
-        switch self {
-        case .type1D:
-            return "1D"
-        case .type1DArray:
-            return "1DArray"
-        case .type2D:
-            return "2D"
-        case .type2DArray:
-            return "2DArray"
-        case .type2DMultisample:
-            return "2DMultisample"
-        case .typeCube:
-            return "Cube"
-        case .typeCubeArray:
-            return "CubeArray"
-        case .type3D:
-            return "3D"
-        case .type2DMultisampleArray:
-            return "2DMultisample"
-        case .typeTextureBuffer:
-            return "TextureBuffer"
-        @unknown default:
-            fatalError("Unknown texture type: \(self)")
-        }
-    }
-}
-
-extension MTLTextureUsage: CustomStringConvertible {
-    public var description: String {
-        var atoms: [String] = []
-        if self == .unknown {
-            return "unknown"
-        }
-        else if contains(.shaderRead) {
-            atoms.append("shaderRead")
-        }
-        else if contains(.shaderWrite) {
-            atoms.append("shaderWrite")
-        }
-        else if contains(.renderTarget) {
-            atoms.append("renderTarget")
-        }
-        else if contains(.pixelFormatView) {
-            atoms.append("pixelFormatView")
-        }
-        return atoms.joined(separator: ", ")
-    }
-}
-
-extension MTLTextureCompressionType: CustomStringConvertible {
-    public var description: String {
-        switch self {
-        case .lossless:
-            return "lossless"
-        case .lossy:
-            return "lossy"
-        @unknown default:
-            fatalError("Unknown texture compression type: \(self)")
-        }
     }
 }

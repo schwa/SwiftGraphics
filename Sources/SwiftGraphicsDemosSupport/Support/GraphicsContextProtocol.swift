@@ -35,13 +35,13 @@ protocol GraphicsContextProtocol {
 //    func resolve(_ image: Image) -> ResolvedImage
 //    func draw(_ image: ResolvedImage, in rect: CGRect, style: FillStyle)
 //    func draw(_ image: ResolvedImage, at point: CGPoint, anchor: UnitPoint)
-    func draw(_ image: Image, in rect: CGRect, style: FillStyle)
-    func draw(_ image: Image, at point: CGPoint, anchor: UnitPoint)
+    @MainActor func draw(_ image: Image, in rect: CGRect, style: FillStyle)
+    @MainActor func draw(_ image: Image, at point: CGPoint, anchor: UnitPoint)
     typealias ResolvedText = GraphicsContext.ResolvedText
 //    func resolve(_ text: Text) -> ResolvedText
 //    func draw(_ text: ResolvedText, in rect: CGRect)
 //    func draw(_ text: ResolvedText, at point: CGPoint, anchor: UnitPoint)
-    func draw(_ text: Text, in rect: CGRect)
+    @MainActor func draw(_ text: Text, in rect: CGRect)
 //    func draw(_ text: Text, at point: CGPoint, anchor: UnitPoint)
     typealias ResolvedSymbol = GraphicsContext.ResolvedSymbol
 //    func resolveSymbol<ID>(id: ID) -> GraphicsContext.ResolvedSymbol? where ID : Hashable
@@ -77,11 +77,11 @@ extension GraphicsContextProtocol {
 //    func draw(_ image: ResolvedImage, at point: CGPoint, anchor: UnitPoint = .center) {
 //    }
 //
-    func draw(_ image: Image, in rect: CGRect, style: FillStyle = FillStyle()) {
+    @MainActor func draw(_ image: Image, in rect: CGRect, style: FillStyle = FillStyle()) {
         draw(image, in: rect, style: style)
     }
 
-    func draw(_ image: Image, at point: CGPoint, anchor: UnitPoint = .center) {
+    @MainActor func draw(_ image: Image, at point: CGPoint, anchor: UnitPoint = .center) {
         draw(image, at: point, anchor: anchor)
     }
 //

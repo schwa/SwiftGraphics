@@ -20,14 +20,6 @@ public extension CGSize {
     }
 }
 
-// MARK: ExpressibleByArrayLiteral
-
-extension CGSize: ExpressibleByArrayLiteral {
-    public init(arrayLiteral elements: CGFloat...) {
-        self.init(elements)
-    }
-}
-
 // MARK: Map
 
 public extension CGSize {

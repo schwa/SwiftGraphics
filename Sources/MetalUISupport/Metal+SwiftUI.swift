@@ -1,8 +1,8 @@
-import Metal
+@preconcurrency import Metal
 import SwiftUI
 
 struct MTLDeviceKey: EnvironmentKey {
-    static var defaultValue: MTLDevice = {
+    static let defaultValue: MTLDevice = {
         guard let device = MTLCreateSystemDefaultDevice() else {
             fatalError("No default metal device found.")
         }

@@ -64,7 +64,7 @@ class UnlitMaterialRenderJob: SceneRenderJob {
 
             let descriptor = model.mesh.vertexDescriptor
             renderPipelineDescriptor.vertexDescriptor = MTLVertexDescriptor(descriptor)
-            let (renderPipelineState, reflection) = try device.makeRenderPipelineState(descriptor: renderPipelineDescriptor, options: [.argumentInfo])
+            let (renderPipelineState, reflection) = try device.makeRenderPipelineState(descriptor: renderPipelineDescriptor, options: [.bindingInfo])
 
             var bindings = Bindings()
             legacyresolveBindings(reflection: reflection!, bindable: &bindings, [

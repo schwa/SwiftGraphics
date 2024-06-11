@@ -2,7 +2,7 @@ import simd
 import SIMDSupport
 import SwiftUI
 
-public struct Projection3D {
+public struct Projection3D: Sendable {
     public var size: CGSize
     public var projectionTransform = simd_float4x4(diagonal: .init(repeating: 1))
     public var viewTransform = simd_float4x4(diagonal: .init(repeating: 1))
@@ -87,7 +87,7 @@ struct Projection3DPreferenceKey: PreferenceKey {
         value = value ?? nextValue()
     }
 
-    static var defaultValue: Projection3D?
+    static let defaultValue: Projection3D? = nil
 }
 
 internal struct Projection3DOverlayViewModifier <OverlayContent>: ViewModifier where OverlayContent: View {

@@ -1,6 +1,6 @@
 import AsyncAlgorithms
 import Foundation
-@preconcurrency import GameController
+import GameController
 import Observation
 import SwiftUI
 

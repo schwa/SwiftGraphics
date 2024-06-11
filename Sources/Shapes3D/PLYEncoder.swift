@@ -16,7 +16,7 @@ public struct PlyEncoder {
         print("comment \(comment)", to: &output)
     }
 
-    public enum NumericalType: String {
+    public enum NumericalType: String, Sendable {
         case char
         case uchar
         case short
@@ -27,7 +27,7 @@ public struct PlyEncoder {
         case double
     }
 
-    public enum Value {
+    public enum Value: Sendable {
         case char(Int8)
         case uchar(UInt8)
         case short(Int16)
@@ -38,7 +38,7 @@ public struct PlyEncoder {
         case double(Double)
     }
 
-    public enum Kind {
+    public enum Kind: Sendable {
         case numerical(NumericalType)
         case list(count: NumericalType, element: NumericalType)
     }

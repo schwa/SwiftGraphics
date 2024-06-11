@@ -20,13 +20,14 @@ public struct DemosScene: Scene {
 }
 
 protocol DemoView: View {
-    init()
+    @MainActor init()
 }
 
 struct DemosView: View {
     var body: some View {
         NavigationView {
             List {
+                row(for: PointCloudSoftwareRenderView.self)
                 ValueView(value: true) { isExpanded in
                     DisclosureGroup("Current", isExpanded: isExpanded) {
                         row(for: HalfEdge3DDemoView.self)

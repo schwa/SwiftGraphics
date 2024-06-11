@@ -161,7 +161,7 @@ extension Cachable: Identifiable {
     }
 }
 
-extension Cache {
+extension Cache where Key: Sendable {
     @discardableResult
     func insert(_ cachable: Cachable<Key, Value>) -> Value? {
         insert(key: cachable.key, value: cachable.value)

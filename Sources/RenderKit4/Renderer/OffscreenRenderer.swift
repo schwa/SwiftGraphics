@@ -1,6 +1,5 @@
 import CoreGraphics
 import Metal
-import RenderKit4
 import SwiftGraphicsSupport
 
 public struct OffscreenRenderer {

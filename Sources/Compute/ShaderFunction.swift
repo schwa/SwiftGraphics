@@ -1,8 +1,8 @@
 import Metal
 
 @dynamicMemberLookup
-public struct ShaderLibrary {
-    public static var `default` = Self.bundle(.main)
+public struct ShaderLibrary: Sendable {
+    public static let `default` = Self.bundle(.main)
 
     public static func bundle(_ bundle: Bundle) -> Self {
         Self(bundle: bundle)
