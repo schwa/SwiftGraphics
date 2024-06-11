@@ -26,7 +26,7 @@ let package = Package(
         .library(name: "Shapes2D", targets: ["Shapes2D"]),
         .library(name: "Shapes3D", targets: ["Shapes3D"]),
         .library(name: "SIMDSupport", targets: ["SIMDSupport"]),
-        .library(name: "SIMDSupportUnsafeConformances", targets: ["SIMDSupportUnsafeConformances"]),
+        .library(name: "SIMDUnsafeConformances", targets: ["SIMDUnsafeConformances"]),
         .library(name: "SwiftGraphicsSupport", targets: ["SwiftGraphicsSupport"]),
         .library(name: "MetalUISupport", targets: ["MetalUISupport"]),
         .library(name: "Compute", targets: ["Compute"]),
@@ -255,7 +255,7 @@ let package = Package(
                 .enableUpcomingFeature("StrictConcurrency"),
             ]
         ),
-        .target(name: "SIMDSupportUnsafeConformances",            swiftSettings: [
+        .target(name: "SIMDUnsafeConformances",            swiftSettings: [
             .enableUpcomingFeature("StrictConcurrency"),
         ]),
         .testTarget(name: "SIMDSupportTests", dependencies: [
@@ -343,7 +343,7 @@ let package = Package(
                 "Shapes3D",
                 "SIMDSupport",
                 "SwiftGraphicsSupport",
-                "SIMDSupportUnsafeConformances",
+                "SIMDUnsafeConformances",
                 "SwiftGLTF",
                 "StreamBuilder",
                 "WrappingHStack",
