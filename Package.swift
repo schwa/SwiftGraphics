@@ -178,6 +178,9 @@ let package = Package(
             name: "RenderKitTests",
             dependencies: [
                 "RenderKit",
+                "CoreGraphicsSupport",
+                "CoreGraphicsUnsafeConformances",
+                "MetalSupportUnsafeConformances",
             ],
             swiftSettings: [
                 .enableUpcomingFeature("StrictConcurrency"),
@@ -219,6 +222,7 @@ let package = Package(
         ),
         .testTarget(name: "Shapes2DTests", dependencies: [
             "Shapes2D",
+            "CoreGraphicsUnsafeConformances",
         ]),
 
         // MARK: Shapes3D
@@ -280,6 +284,7 @@ let package = Package(
             dependencies: [
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
                 "Shapes3D",
+                "CoreGraphicsUnsafeConformances",
             ],
             swiftSettings: [
                 .enableUpcomingFeature("StrictConcurrency"),
@@ -306,6 +311,7 @@ let package = Package(
             dependencies: [
                 "Compute",
                 "SwiftGraphicsSupport",
+                "MetalSupportUnsafeConformances",
             ],
             resources: [
                 .process("BitonicSort.metal"),
