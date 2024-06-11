@@ -167,22 +167,6 @@ extension Node.Content {
     }
 }
 
-// extension TrivialMesh where Vertex == SimpleVertex {
-//    func dumpPositions() {
-//        print(self.vertices.map(\.position).map({ "\($0, format: .vector)" }).joined(separator: ",\n"))
-//    }
-//
-//    func dumpIndexedPositions() {
-//        for index in indices {
-//            let vertex = vertices[index]
-//            print("#\(index): \(vertex.position, format: .vector)")
-//        }
-//    }
-//
-// }
-//
-//
-
 extension Node: FirstPersonCameraProtocol {
     var target: SIMD3<Float> {
         get {
