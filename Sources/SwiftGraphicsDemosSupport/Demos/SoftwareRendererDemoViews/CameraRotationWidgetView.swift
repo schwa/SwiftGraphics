@@ -8,7 +8,10 @@ struct CameraRotationWidgetView: View {
     var ballConstraint: BallConstraint
 
     @State
-    var camera = LegacyCamera(transform: .translation([0, 0, -5]), target: [0, 0, 0], projection: .orthographic(.init(left: -1, right: 1, bottom: -1, top: 1, near: -1, far: 1)))
+    var cameraTransform: Transform = .translation([0, 0, -5])
+
+    @State
+    var cameraProjection: Projection = .orthographic(.init(left: -1, right: 1, bottom: -1, top: 1, near: -1, far: 1))
 
     @State
     var isHovering = false
@@ -21,7 +24,7 @@ struct CameraRotationWidgetView: View {
 
     var body: some View {
         GeometryReader { proxy in
-            let projection = Projection3D(size: proxy.size, camera: camera)
+            let projection = Projection3DHelper(size: proxy.size, cameraProjection: cameraProjection, cameraTransform: cameraTransform)
             ZStack {
                 Canvas { context, _ in
                     context.draw3DLayer(projection: projection) { _, context3D in
@@ -41,13 +44,13 @@ struct CameraRotationWidgetView: View {
                     }
                     .buttonStyle(CameraWidgetButtonStyle())
                     .backgroundStyle(info.color)
-                    .offset(projection.project(info.vector * length))
+                    .offset(projection.worldSpaceToScreenSpace(info.vector * length))
                     .zIndex(Double(projection.worldSpaceToClipSpace(info.vector * length).z))
                     .keyboardShortcut(info.keyboardShortcut)
                 }
             }
             .onChange(of: ballConstraint, initial: true) {
-                camera.transform.matrix = ballConstraint.transform
+                cameraTransform.matrix = ballConstraint.transform
             }
             .ballRotation($ballConstraint.rollPitchYaw)
             .background(isHovering ? .white.opacity(0.5) : .clear)

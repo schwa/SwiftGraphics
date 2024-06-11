@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum RenderKit4Error: Error {
+enum RenderKitError: Error {
     case generic(String)
     case resourceCreationFailure
 }

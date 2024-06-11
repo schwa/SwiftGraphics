@@ -24,7 +24,7 @@ public extension RenderPassProtocol {
     }
 
     func render(context: Context, state: State, drawableSize: SIMD2<Float>, renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) throws {
-        let commandEncoder = try commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor).safelyUnwrap(RenderKit4Error.resourceCreationFailure)
+        let commandEncoder = try commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor).safelyUnwrap(RenderKitError.resourceCreationFailure)
         defer {
             commandEncoder.endEncoding()
         }

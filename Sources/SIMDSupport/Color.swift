@@ -19,36 +19,3 @@ import simd
         }
     }
 #endif
-
-public extension SIMD3 where Scalar: BinaryFloatingPoint {
-    /// Create a SIMD4 with red, green and blue components of an CGColor
-    @available(*, deprecated, message: "Do not use until colorspace issues are resolved.")
-    init(_ cgColor: CGColor) {
-        // TODO: Use linear color space. Piggy back of SIMD4
-        let components = cgColor.components!.map { Scalar($0) }
-        assert(components.count >= 3)
-        self = SIMD3(Array(components[..<3]))
-    }
-
-    @available(*, deprecated, message: "Do not use until colorspace issues are resolved.")
-    var cgColor: CGColor {
-        // TODO: Use linear color space. Piggy back of SIMD4
-        #if os(macOS)
-        return CGColor(red: CGFloat(self[0]), green: CGFloat(self[1]), blue: CGFloat(self[2]), alpha: 1)
-        #else
-        fatalError("Unimplemented")
-        #endif
-    }
-}
-
-public extension SIMD4 where Scalar: BinaryFloatingPoint {
-    @available(*, deprecated, message: "Do not use until colorspace issues are resolved.")
-    var cgColor: CGColor {
-        // TODO: use linear color space
-        #if os(macOS)
-        return CGColor(red: CGFloat(self[0]), green: CGFloat(self[1]), blue: CGFloat(self[2]), alpha: CGFloat(self[3]))
-        #else
-        fatalError("Unimplemented")
-        #endif
-    }
-}

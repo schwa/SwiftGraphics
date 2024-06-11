@@ -262,6 +262,9 @@ actor MouseMonitor {
     }
 }
 
+extension GCMouseInput: @unchecked @retroactive Sendable {
+}
+
 extension GCMouseInput {
     func events() -> AsyncStream<SIMD2<Float>> {
         AsyncStream { continuation in

@@ -112,35 +112,7 @@ public struct OffscreenRenderer {
         }
     }
 
-    @available(*, deprecated, message: "Move onto MTLDEvice")
-    public static func makeColorTexture(device: MTLDevice, size: CGSize, pixelFormat: MTLPixelFormat) throws -> MTLTexture {
-        // Create a shared memory MTLBuffer for the color attachment texture. This allows us to access the pixels efficiently from CPU later on (which is likely the whole point of an offscreen renderer).
-        let colorAttachmentTextureBuffer = device.newBufferFor2DTexture(pixelFormat: pixelFormat, size: MTLSize(width: Int(size.width), height: Int(size.height), depth: 1))
-
-
-        // Now create a texture descriptor and texture from the buffer
-        let colorAttachmentTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: pixelFormat, width: Int(size.width), height: Int(size.height), mipmapped: false)
-        colorAttachmentTextureDescriptor.storageMode = .shared
-        colorAttachmentTextureDescriptor.usage = [.renderTarget]
-
-        let bytesPerPixel = pixelFormat.bits! / 8
-        let alignment = device.minimumLinearTextureAlignment(for: pixelFormat)
-        let bytesPerRow = align(Int(size.width) * bytesPerPixel, alignment: alignment)
-        let colorAttachmentTexture = colorAttachmentTextureBuffer.makeTexture(descriptor: colorAttachmentTextureDescriptor, offset: 0, bytesPerRow: bytesPerRow)!
-        colorAttachmentTexture.label = "Color Texture"
-        return colorAttachmentTexture
-    }
-
-    @available(*, deprecated, message: "Move onto MTLDEvice")
-    public static func makeDepthTexture(device: MTLDevice, size: CGSize, depthStencilPixelFormat: MTLPixelFormat, memoryless: Bool) throws -> MTLTexture {
-        // ... and if we had a depth buffer - do the same... except depth buffers can be memoryless (yay) and we .dontCare about storing them later.
-        let depthTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: depthStencilPixelFormat, width: Int(size.width), height: Int(size.height), mipmapped: false)
-        depthTextureDescriptor.storageMode = .memoryless
-        depthTextureDescriptor.usage = .renderTarget
-        let depthStencilTexture = device.makeTexture(descriptor: depthTextureDescriptor)!
-        depthStencilTexture.label = "Depth Texture"
-        return depthStencilTexture
-    }}
+}
 
 extension MTLDevice {
     func capture <R>(_ block: () throws -> R) rethrows -> R{
@@ -182,4 +154,31 @@ extension MTLDevice {
         }
         return buffer
     }
-}
+
+    public func makeColorTexture(size: CGSize, pixelFormat: MTLPixelFormat) throws -> MTLTexture {
+        // Create a shared memory MTLBuffer for the color attachment texture. This allows us to access the pixels efficiently from CPU later on (which is likely the whole point of an offscreen renderer).
+        let colorAttachmentTextureBuffer = newBufferFor2DTexture(pixelFormat: pixelFormat, size: MTLSize(width: Int(size.width), height: Int(size.height), depth: 1))
+
+
+        // Now create a texture descriptor and texture from the buffer
+        let colorAttachmentTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: pixelFormat, width: Int(size.width), height: Int(size.height), mipmapped: false)
+        colorAttachmentTextureDescriptor.storageMode = .shared
+        colorAttachmentTextureDescriptor.usage = [.renderTarget]
+
+        let bytesPerPixel = pixelFormat.bits! / 8
+        let alignment = minimumLinearTextureAlignment(for: pixelFormat)
+        let bytesPerRow = align(Int(size.width) * bytesPerPixel, alignment: alignment)
+        let colorAttachmentTexture = colorAttachmentTextureBuffer.makeTexture(descriptor: colorAttachmentTextureDescriptor, offset: 0, bytesPerRow: bytesPerRow)!
+        colorAttachmentTexture.label = "Color Texture"
+        return colorAttachmentTexture
+    }
+
+    public func makeDepthTexture(size: CGSize, depthStencilPixelFormat: MTLPixelFormat, memoryless: Bool) throws -> MTLTexture {
+        // ... and if we had a depth buffer - do the same... except depth buffers can be memoryless (yay) and we .dontCare about storing them later.
+        let depthTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: depthStencilPixelFormat, width: Int(size.width), height: Int(size.height), mipmapped: false)
+        depthTextureDescriptor.storageMode = .memoryless
+        depthTextureDescriptor.usage = .renderTarget
+        let depthStencilTexture = makeTexture(descriptor: depthTextureDescriptor)!
+        depthStencilTexture.label = "Depth Texture"
+        return depthStencilTexture
+    }}

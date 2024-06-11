@@ -30,7 +30,7 @@ public struct Rasterizer {
         var stroke: (GraphicsContext.Shading, StrokeStyle)?
         var fill: (GraphicsContext.Shading, FillStyle)?
 
-        init(vertices: [SIMD3<Float>], projection: Projection3D, stroke: (GraphicsContext.Shading, StrokeStyle)?, fill: (GraphicsContext.Shading, FillStyle)?) {
+        init(vertices: [SIMD3<Float>], projection: Projection3DHelper, stroke: (GraphicsContext.Shading, StrokeStyle)?, fill: (GraphicsContext.Shading, FillStyle)?) {
             modelSpaceVertices = vertices
             let transform = projection.clipTransform * projection.projectionTransform * projection.viewTransform
             clipSpaceVertices = modelSpaceVertices.map {

@@ -6,6 +6,7 @@ import Shapes2D
 import Shapes3D
 import SwiftFormats
 import SwiftUI
+import SIMDSupport
 
 struct SoftwareRendererMeshDemoView: View, DemoView {
     enum Source: Hashable {
@@ -38,7 +39,10 @@ struct SoftwareRendererMeshDemoView: View, DemoView {
     var stroke = false
 
     @State
-    var camera = LegacyCamera(transform: .translation([0, 0, -5]), target: [0, 0, 0], projection: .perspective(.init(fovy: .degrees(90), zClip: 0.01 ... 1_000.0)))
+    var cameraTransform: Transform = .translation([0, 0, -5])
+
+    @State
+    var cameraProjection: Projection = .perspective(.init())
 
     @State
     var ballConstraint = BallConstraint()
@@ -58,7 +62,7 @@ struct SoftwareRendererMeshDemoView: View, DemoView {
     var body: some View {
         ZStack {
             Canvas { context, size in
-                let projection = Projection3D(size: size, camera: camera)
+                let projection = Projection3DHelper(size: size, cameraProjection: cameraProjection, cameraTransform: cameraTransform)
                 context.draw3DLayer(projection: projection) { _, context3D in
                     context3D.drawAxisMarkers()
                     if let mesh {
@@ -113,11 +117,8 @@ struct SoftwareRendererMeshDemoView: View, DemoView {
                 break
             }
         }
-        .onAppear {
-            camera.transform.matrix = ballConstraint.transform
-        }
-        .onChange(of: ballConstraint.transform) {
-            camera.transform.matrix = ballConstraint.transform
+        .onChange(of: ballConstraint.transform, initial: true) {
+            cameraTransform.matrix = ballConstraint.transform
         }
         .overlay(alignment: .topTrailing) {
             CameraRotationWidgetView(ballConstraint: $ballConstraint)
@@ -146,7 +147,7 @@ struct SoftwareRendererMeshDemoView: View, DemoView {
         .inspector {
             Form {
                 Section("Map") {
-                    MapInspector(camera: $camera, models: []).aspectRatio(1, contentMode: .fill)
+                    MapInspector(cameraTransform: $cameraTransform, models: []).aspectRatio(1, contentMode: .fill)
                 }
                 Section("Rasterizer") {
                     RasterizerOptionsView(options: $rasterizerOptions)
@@ -156,7 +157,7 @@ struct SoftwareRendererMeshDemoView: View, DemoView {
                     TextField("Yaw Limit", value: $pitchLimit, format: ClosedRangeFormatStyle(substyle: .angle))
                 }
                 Section("Camera") {
-                    CameraInspector(camera: $camera)
+                    ProjectionInspector(projection: $cameraProjection)
                 }
                 Section("Ball Constraint") {
                     BallConstraintEditor(ballConstraint: $ballConstraint)

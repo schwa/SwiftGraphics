@@ -45,7 +45,7 @@ public struct SceneGraph: Equatable {
 
 public struct Node: Identifiable, Sendable, Equatable {
     public enum Content: Sendable, Equatable {
-        case camera(PerspectiveCamera)
+        case camera(Camera)
         case geometry(Geometry)
     }
 
@@ -209,7 +209,7 @@ public extension Node.Content {
     }
 
     // TODO: Return a non-optional?
-    var camera: PerspectiveCamera? {
+    var camera: Camera? {
         get {
             if case let .camera(value) = self {
                 return value

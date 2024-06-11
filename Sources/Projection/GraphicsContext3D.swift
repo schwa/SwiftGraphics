@@ -3,9 +3,9 @@ import SwiftUI
 
 public struct GraphicsContext3D {
     public var graphicsContext2D: GraphicsContext
-    public var projection: Projection3D
+    public var projection: Projection3DHelper
 
-    public init(graphicsContext2D: GraphicsContext, projection: Projection3D) {
+    public init(graphicsContext2D: GraphicsContext, projection: Projection3DHelper) {
         self.graphicsContext2D = graphicsContext2D
         self.projection = projection
     }
