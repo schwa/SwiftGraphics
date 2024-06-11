@@ -1,8 +1,8 @@
 import Algorithms
 import CoreGraphics
 import CoreGraphicsSupport
-import GenericGeometryBase
 import CoreGraphicsUnsafeConformances
+import GenericGeometryBase
 
 private extension Array2D {
     mutating func draw(image: CGImage, definition: BitmapDefinition) {

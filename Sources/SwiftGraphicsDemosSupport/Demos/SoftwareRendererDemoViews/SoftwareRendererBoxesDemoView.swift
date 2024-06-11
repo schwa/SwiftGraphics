@@ -1,8 +1,8 @@
 import CoreGraphicsSupport
 import Projection
 import Shapes3D
-import SwiftUI
 import SIMDSupport
+import SwiftUI
 
 struct SoftwareRendererBoxesDemoView: View, DemoView {
     @State

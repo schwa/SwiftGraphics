@@ -1,7 +1,7 @@
 @preconcurrency import Metal
-import SwiftGraphicsSupport
-import RenderKitShaders
 import MetalSupport
+import RenderKitShaders
+import SwiftGraphicsSupport
 
 // TODO: Rename
 public struct UnlitMaterialX: SG3MaterialProtocol {
@@ -33,7 +33,6 @@ public struct UnlitShadingPass: RenderPassProtocol {
         }
         var bindings: Bindings
     }
-
 
     public var id: AnyHashable = "UnlitShadingPass"
     public var scene: SceneGraph
@@ -82,7 +81,6 @@ public struct UnlitShadingPass: RenderPassProtocol {
             }
             commandEncoder.withDebugGroup("Node: \(element.node.id)") {
                 commandEncoder.withDebugGroup("VertexShader") {
-
                     let cameraUniforms = CameraUniforms(projectionMatrix: helper.projectionMatrix)
                     commandEncoder.setVertexBytes(of: cameraUniforms, index: bindings.vertexCameraIndex)
 
@@ -107,7 +105,4 @@ public struct UnlitShadingPass: RenderPassProtocol {
             }
         }
     }
-
-
-
 }

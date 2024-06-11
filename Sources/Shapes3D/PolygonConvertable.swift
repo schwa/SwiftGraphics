@@ -1,8 +1,8 @@
-import MetalSupport
-import SwiftGraphicsSupport
-import ModelIO
 import Metal
 import MetalKit
+import MetalSupport
+import ModelIO
+import SwiftGraphicsSupport
 
 public protocol PolygonConverterProtocol: ConverterProtocol {
     associatedtype Input
@@ -28,7 +28,6 @@ public protocol TrianglesConverterProtocol: ConverterProtocol {
     init()
 }
 
-
 public protocol TrianglesConvertable {
     associatedtype Vertex: VertexLike
     associatedtype TrianglesConverter: TrianglesConverterProtocol where TrianglesConverter.Input == Self, TrianglesConverter.Output == [Triangle3D<Vertex>]
@@ -42,7 +41,6 @@ extension TrianglesConvertable {
 }
 
 extension Quad: TrianglesConvertable {
-
     public struct TrianglesConverter: TrianglesConverterProtocol {
         public init() {
         }
@@ -74,7 +72,7 @@ public extension TrianglesConvertable where Vertex == SimpleVertex {
 
 public extension Triangle3D {
     func map<VertexOut>(_ transform: (Vertex) -> VertexOut) -> Triangle3D<VertexOut> where VertexOut: VertexLike {
-        return Triangle3D<VertexOut>(vertices: (transform(vertices.0), transform(vertices.1), transform(vertices.2)))
+        Triangle3D<VertexOut>(vertices: (transform(vertices.0), transform(vertices.1), transform(vertices.2)))
     }
 }
 
@@ -95,6 +93,5 @@ public extension TrianglesConvertable where Vertex == SimpleVertex {
         asset.add(mdlMesh)
 
         try asset.export(to: url)
-
     }
 }

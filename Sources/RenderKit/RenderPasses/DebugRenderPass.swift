@@ -58,7 +58,6 @@ public struct DebugRenderPass: RenderPassProtocol {
             try commandEncoder.withDebugGroup("Node: \(element.node.id)") {
                 let mesh = element.geometry.mesh
 
-
                 commandEncoder.withDebugGroup("FragmentShader") {
                     let fragmentUniforms = DebugFragmentShaderUniforms(windowSize: drawableSize)
                     commandEncoder.setFragmentBytes(of: fragmentUniforms, index: 0)

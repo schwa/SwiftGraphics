@@ -4,9 +4,9 @@ import MetalSupport
 import Projection
 import Shapes2D
 import Shapes3D
+import SIMDSupport
 import SwiftFormats
 import SwiftUI
-import SIMDSupport
 
 struct SoftwareRendererMeshDemoView: View, DemoView {
     enum Source: Hashable {

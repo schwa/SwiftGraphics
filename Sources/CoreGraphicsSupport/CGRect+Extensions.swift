@@ -30,7 +30,6 @@ public extension CGRect {
     }
 }
 
-
 public extension CGRect {
     // Note: Rename "Position" to something else?
     enum Position {

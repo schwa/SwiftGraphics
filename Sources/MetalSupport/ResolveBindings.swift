@@ -52,6 +52,5 @@ public extension MTLRenderPipelineReflection {
             throw MetalSupportError.missingBinding
         }
         return binding.index
-
     }
 }

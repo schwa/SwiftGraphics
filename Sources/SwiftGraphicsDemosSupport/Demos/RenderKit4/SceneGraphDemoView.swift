@@ -1,12 +1,12 @@
+import CoreGraphicsSupport
 import Metal
+import MetalKit
+import MetalSupport
 import RenderKit
 import Shapes3D
 import SIMDSupport
 import SwiftGraphicsSupport
 import SwiftUI
-import MetalKit
-import MetalSupport
-import CoreGraphicsSupport
 
 public struct SceneGraphDemoView: View, DemoView {
     let device: MTLDevice
@@ -26,7 +26,7 @@ public struct SceneGraphDemoView: View, DemoView {
 
     public var body: some View {
         let cameraNode = Binding<Node> {
-            return scene.currentCameraNode ?? Node()
+            scene.currentCameraNode ?? Node()
         }
         set: { newValue in
             scene.currentCameraNode = newValue
@@ -77,14 +77,12 @@ public struct SceneGraphDemoView: View, DemoView {
             print(image)
             try! ImageDestination.write(image: image, to: URL(filePath: "test.png"))
         }
-
     }
 }
 
 #Preview {
     SceneGraphDemoView()
 }
-
 
 extension SceneGraph {
     static func demo(device: MTLDevice) throws -> SceneGraph {
@@ -97,8 +95,6 @@ extension SceneGraph {
         let loader = MTKTextureLoader(device: device)
         let panoramaTexture = try loader.newTexture(name: "BlueSkySkybox", scaleFactor: 2, bundle: Bundle.module)
         let grassTexture = try loader.newTexture(name: "grass_teal_block_256x", scaleFactor: 2, bundle: Bundle.module)
-
-
 
         let quad = try Quad<SimpleVertex>(x: -0.5, y: -0.5, width: 1, height: 1).toMTKMesh(device: device)
 
@@ -125,11 +121,11 @@ extension SceneGraph {
                 Node(label: "model-3")
                     .content(.geometry(mesh: cone, materials: [DiffuseShadingRenderPass.Material(diffuseColor: .blue)]))
                     .transform(translation: [1, 0, 0])
-                    .transform(.init(rotation: .rotation(angle: .degrees(45) , axis: [1, 0, 0])))
+                    .transform(.init(rotation: .rotation(angle: .degrees(45), axis: [1, 0, 0])))
                 Node(label: "model-4")
                     .content(.geometry(mesh: quad, materials: [UnlitMaterialX(baseColorTexture: grassTexture)]))
                     .transform(scale: [10, 10, 10])
-                    .transform(.init(rotation: .rotation(angle: .degrees(90) , axis: [1, 0, 0])))
+                    .transform(.init(rotation: .rotation(angle: .degrees(90), axis: [1, 0, 0])))
                     .transform(translation: [0, -1, 0])
             }
         )
@@ -167,11 +163,11 @@ extension Node {
 
 extension Node.Content {
     static func geometry(mesh: MTKMesh, materials: [any SG3MaterialProtocol]) -> Self {
-        return .geometry(.init(mesh: mesh, materials: materials))
+        .geometry(.init(mesh: mesh, materials: materials))
     }
 }
 
-//extension TrivialMesh where Vertex == SimpleVertex {
+// extension TrivialMesh where Vertex == SimpleVertex {
 //    func dumpPositions() {
 //        print(self.vertices.map(\.position).map({ "\($0, format: .vector)" }).joined(separator: ",\n"))
 //    }
@@ -183,7 +179,7 @@ extension Node.Content {
 //        }
 //    }
 //
-//}
+// }
 //
 //
 
@@ -203,6 +199,4 @@ extension Node: FirstPersonCameraProtocol {
         set {
         }
     }
-
-
 }

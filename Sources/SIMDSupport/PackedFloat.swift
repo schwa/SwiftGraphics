@@ -35,7 +35,7 @@ extension PackedFloat3: ExpressibleByArrayLiteral {
 
 extension PackedFloat3: CustomDebugStringConvertible {
     public var debugDescription: String {
-        return "[\(x.formatted()), \(y.formatted()), \(z.formatted())]"
+        "[\(x.formatted()), \(y.formatted()), \(z.formatted())]"
     }
 }
 public extension SIMD3 where Scalar == Float {

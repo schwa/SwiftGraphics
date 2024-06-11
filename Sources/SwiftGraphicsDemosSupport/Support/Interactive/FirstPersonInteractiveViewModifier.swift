@@ -10,7 +10,6 @@ protocol FirstPersonCameraProtocol: Sendable {
 }
 
 struct FirstPersonInteractiveViewModifier <FirstPersonCamera: FirstPersonCameraProtocol>: ViewModifier, @unchecked Sendable {
-
     @Environment(\.displayLink)
     var displayLink
 

@@ -4,6 +4,7 @@ import Everything
 import Foundation
 import MetalKit
 import MetalSupport
+import os
 import Projection
 import RenderKitShaders
 import Shapes2D
@@ -12,7 +13,6 @@ import simd
 import SIMDSupport
 import SwiftGraphicsSupport
 import SwiftUI
-import os
 import UniformTypeIdentifiers
 
 // swiftlint:disable identifier_name
@@ -737,7 +737,6 @@ extension Array {
 }
 
 public extension Projection3DHelper {
-
     init(size: CGSize, cameraProjection: Projection, cameraTransform: Transform) {
         var helper = Projection3DHelper(size: size)
         helper.viewTransform = cameraTransform.matrix.inverse

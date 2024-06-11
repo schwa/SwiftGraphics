@@ -1,9 +1,9 @@
 @preconcurrency import Metal
 import MetalKit
 import MetalSupport
+import MetalSupportUnsafeConformances
 import SwiftGraphicsSupport
 import SwiftUI
-import MetalSupportUnsafeConformances
 
 struct PixelFormatsDemoView: View, DemoView {
     @Environment(\.metalDevice)

@@ -26,7 +26,6 @@ public extension MDLMeshConvertable {
         converter.geometryType = geometryType
         converter.flippedTextureCoordinates = flippedTextureCoordinates
 
-
         return try converter.convert(self)
     }
 

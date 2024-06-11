@@ -6,7 +6,6 @@ import MetalUISupport
 import ModelIO
 import os
 import RenderKit
-import RenderKit
 import RenderKitShaders
 import Shapes2D
 import SIMDSupport
@@ -137,7 +136,6 @@ struct VolumetricRenderPass: RenderPassProtocol {
         encoder.setFragmentBytes(of: fragmentUniforms, index: 0)
 
         encoder.draw(mesh2, instanceCount: instanceCount)
-
     }
 }
 
