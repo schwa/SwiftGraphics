@@ -1,7 +1,7 @@
 @preconcurrency import Metal
 import MetalKit
 import MetalSupport
-import MetalSupportUnsafeConformances
+import MetalUnsafeConformances
 import SwiftGraphicsSupport
 import SwiftUI
 

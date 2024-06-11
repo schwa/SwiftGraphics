@@ -5,7 +5,7 @@ import CoreGraphicsSupport
 import Foundation
 import Metal
 import MetalSupport
-import MetalSupportUnsafeConformances
+import MetalUnsafeConformances
 import SwiftGraphicsSupport
 
 struct RandomFill {
