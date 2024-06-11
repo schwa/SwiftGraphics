@@ -2,6 +2,7 @@ import Foundation
 import simd
 import SIMDSupport
 import SwiftUI
+import CoreGraphicsUnsafeConformances
 
 // TODO: Experimental
 

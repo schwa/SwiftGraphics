@@ -1,5 +1,6 @@
 import SwiftUI
 
+// TODO: This @preconcurrency is weird.
 struct QuartzContext: GraphicsContextProtocol {
     struct Shading {
         enum Value {

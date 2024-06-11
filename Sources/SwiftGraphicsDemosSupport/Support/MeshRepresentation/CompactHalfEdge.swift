@@ -146,7 +146,7 @@ extension OneBasedIndex: CustomDebugStringConvertible {
     }
 }
 
-extension CompactHalfEdgeMesh.HalfEdgeID: CustomDebugStringConvertible {
+extension CompactHalfEdgeMesh.HalfEdgeID: @retroactive CustomDebugStringConvertible {
     public var debugDescription: String {
         "\(rawValue.0), \(rawValue.1)"
     }

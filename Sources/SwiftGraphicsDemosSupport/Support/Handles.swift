@@ -50,7 +50,7 @@ struct HandleConfiguration {
     let isPressed: Bool
 }
 
-protocol HandleStyle {
+protocol HandleStyle: Sendable {
     associatedtype Body: View
     typealias Configuration = HandleConfiguration
     @ViewBuilder func makeBody(configuration: Configuration) -> Self.Body
@@ -68,7 +68,7 @@ struct SimpleHandleStyle: HandleStyle {
 }
 
 struct HandleStyleKey: EnvironmentKey {
-    static var defaultValue: any HandleStyle = SimpleHandleStyle()
+    static let defaultValue: any HandleStyle = SimpleHandleStyle()
 }
 
 extension EnvironmentValues {

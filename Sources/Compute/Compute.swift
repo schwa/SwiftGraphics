@@ -47,7 +47,7 @@ public extension Compute {
             let computePipelineDescriptor = MTLComputePipelineDescriptor()
             computePipelineDescriptor.threadGroupSizeIsMultipleOfThreadExecutionWidth = false
             computePipelineDescriptor.computeFunction = function
-            let (computePipelineState, reflection) = try device.makeComputePipelineState(descriptor: computePipelineDescriptor, options: [.argumentInfo])
+            let (computePipelineState, reflection) = try device.makeComputePipelineState(descriptor: computePipelineDescriptor, options: [.bindingInfo])
             bindings = Dictionary(uniqueKeysWithValues: reflection!.bindings.map { binding in
                 (binding.name, binding.index)
             })

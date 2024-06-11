@@ -1,10 +1,10 @@
 import os
 import SwiftUI
 
-struct RenderErrorHandler {
-    var handler: (Error) -> Void
+struct RenderErrorHandler: Sendable {
+    var handler: @Sendable (Error) -> Void
 
-    init(handler: @escaping (Error) -> Void = { _ in }) {
+    init(handler: @Sendable @escaping (Error) -> Void = { _ in }) {
         self.handler = handler
     }
 
@@ -17,7 +17,7 @@ struct RenderErrorHandler {
 }
 
 struct RenderErrorHandlerKey: EnvironmentKey {
-    static var defaultValue = RenderErrorHandler()
+    static let defaultValue = RenderErrorHandler()
 }
 
 extension EnvironmentValues {
@@ -38,7 +38,7 @@ struct RenderErrorHandlerModifier: ViewModifier {
 }
 
 public extension View {
-    func renderErrorHandler(_ handler: @escaping (Error) -> Void) -> some View {
+    func renderErrorHandler(_ handler: @Sendable @escaping (Error) -> Void) -> some View {
         environment(\.renderErrorHandler, .init(handler: handler))
     }
 }

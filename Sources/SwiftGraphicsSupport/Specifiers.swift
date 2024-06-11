@@ -238,7 +238,7 @@ public var debugDescription: String {
 // MARK: -
 
 // A box that allows MTLTextures to become Equatable and Hashable.
-struct TextureBox: Equatable, Hashable {
+struct TextureBox: Equatable, Hashable, @unchecked Sendable {
     var texture: MTLTexture
 
     init(_ texture: MTLTexture) {

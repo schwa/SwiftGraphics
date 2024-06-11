@@ -1,7 +1,7 @@
+import SwiftUI
 import Observation
 import Shapes2D
 import SwiftFormats
-import SwiftUI
 
 @Observable
 class SketchModel {
@@ -17,7 +17,7 @@ class SketchModel {
 }
 
 extension NamedCoordinateSpace {
-    static let canvas = NamedCoordinateSpace.named("CANVAS")
+    nonisolated(unsafe) static let canvas = NamedCoordinateSpace.named("CANVAS")
 }
 
 public struct SketchDemoView: View, DemoView {

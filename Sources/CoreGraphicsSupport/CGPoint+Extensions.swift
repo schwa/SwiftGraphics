@@ -44,12 +44,6 @@ public extension CGPoint {
     }
 }
 
-extension CGPoint: ExpressibleByArrayLiteral {
-    public init(arrayLiteral elements: CGFloat...) {
-        self.init(elements)
-    }
-}
-
 public extension CGPoint {
     func map(_ block: (CGFloat) throws -> CGFloat) rethrows -> Self {
         try Self(block(x), block(y))

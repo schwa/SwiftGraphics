@@ -1,4 +1,5 @@
 import Combine
+@preconcurrency import Metal
 import MetalKit
 import ModelIO
 import os.log
@@ -7,7 +8,7 @@ import simd
 import SwiftGraphicsSupport
 import SwiftUI
 
-public struct RenderContext {
+public struct RenderContext: Sendable {
     public var logger: Logger?
     public var device: MTLDevice
     public var library: MTLLibrary
@@ -27,7 +28,7 @@ public struct RenderContext {
 }
 
 internal struct RenderContextKey: EnvironmentKey {
-    static var defaultValue: RenderContext?
+    static let defaultValue: RenderContext? = nil
 }
 
 public extension EnvironmentValues {

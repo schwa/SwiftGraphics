@@ -36,7 +36,7 @@ struct FirstPersonInteractiveViewModifier: ViewModifier, @unchecked Sendable {
                         Counters.shared.increment(counter: "Consumption")
                         switch event.payload {
                         case .movement(let movement):
-                            let target = camera.target
+                            let target = await camera.target
                             let angle = atan2(target.z, target.x) - .pi / 2
                             let rotation = simd_quaternion(angle, [0, -1, 0])
                             Task {

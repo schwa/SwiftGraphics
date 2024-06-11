@@ -1,6 +1,41 @@
 import Metal
+import ModelIO
 
-extension MTLPixelFormat: CustomStringConvertible {
+extension MDLMeshBufferType: @retroactive CustomStringConvertible {
+    public var description: String {
+        switch self {
+        case .index:
+            "index"
+        case .vertex:
+            "vertex"
+        @unknown default:
+            fatalError()
+        }
+    }
+}
+
+extension MDLGeometryType: @retroactive CustomStringConvertible {
+    public var description: String {
+        switch self {
+        case .lines:
+            return "lines"
+        case .points:
+            return "points"
+        case .triangles:
+            return "triangles"
+        case .triangleStrips:
+            return "triangleStrips"
+        case .quads:
+            return "quads"
+        case .variableTopology:
+            return "variableTopology"
+        @unknown default:
+            fatalError()
+        }
+    }
+}
+
+extension MTLPixelFormat: @retroactive CustomStringConvertible {
     public var description: String {
         switch self {
         // swiftlint:disable switch_case_on_newline
@@ -150,7 +185,7 @@ extension MTLPixelFormat: CustomStringConvertible {
     }
 }
 
-extension MTLVertexFormat: CustomStringConvertible {
+extension MTLVertexFormat: @retroactive CustomStringConvertible {
     public var description: String {
         switch self {
         // swiftlint:disable switch_case_on_newline
@@ -212,7 +247,7 @@ extension MTLVertexFormat: CustomStringConvertible {
     }
 }
 
-extension MTLArgumentBuffersTier: CustomStringConvertible {
+extension MTLArgumentBuffersTier: @retroactive CustomStringConvertible {
     public var description: String {
         switch self {
         case .tier1:
@@ -225,7 +260,7 @@ extension MTLArgumentBuffersTier: CustomStringConvertible {
     }
 }
 
-extension MTLReadWriteTextureTier: CustomStringConvertible {
+extension MTLReadWriteTextureTier: @retroactive CustomStringConvertible {
     public var description: String {
         switch self {
         case .tierNone:
@@ -240,7 +275,7 @@ extension MTLReadWriteTextureTier: CustomStringConvertible {
     }
 }
 
-extension MTLGPUFamily: CaseIterable, CustomStringConvertible {
+extension MTLGPUFamily: @retroactive CaseIterable, @retroactive CustomStringConvertible {
     public var description: String {
         switch self {
         case .apple1: return "apple1"
@@ -288,8 +323,8 @@ extension MTLGPUFamily: CaseIterable, CustomStringConvertible {
     }
 }
 
-extension MTLWinding: CaseIterable, CustomStringConvertible {
-    public static var allCases: [MTLWinding] = [.clockwise, .counterClockwise]
+extension MTLWinding: @retroactive CaseIterable, @retroactive CustomStringConvertible {
+    public static let allCases: [MTLWinding] = [.clockwise, .counterClockwise]
 
     public var description: String {
         switch self {
@@ -303,8 +338,8 @@ extension MTLWinding: CaseIterable, CustomStringConvertible {
     }
 }
 
-extension MTLCullMode: CaseIterable, CustomStringConvertible {
-    public static var allCases: [MTLCullMode] = [.back, .front, .none]
+extension MTLCullMode: @retroactive CaseIterable, @retroactive CustomStringConvertible {
+    public static let allCases: [MTLCullMode] = [.back, .front, .none]
 
     public var description: String {
         switch self {
@@ -320,11 +355,11 @@ extension MTLCullMode: CaseIterable, CustomStringConvertible {
     }
 }
 
-extension MTLTriangleFillMode: CaseIterable {
-    public static var allCases: [MTLTriangleFillMode] = [.fill, .lines]
+extension MTLTriangleFillMode: @retroactive CaseIterable {
+    public static let allCases: [MTLTriangleFillMode] = [.fill, .lines]
 }
 
-extension MTLTriangleFillMode: CustomStringConvertible {
+extension MTLTriangleFillMode: @retroactive CustomStringConvertible {
     public var description: String {
         switch self {
         case .fill: "fill"
@@ -335,8 +370,8 @@ extension MTLTriangleFillMode: CustomStringConvertible {
     }
 }
 
-extension MTLCompareFunction: CaseIterable, CustomStringConvertible {
-    public static var allCases: [MTLCompareFunction] = [
+extension MTLCompareFunction: @retroactive CaseIterable, @retroactive CustomStringConvertible {
+    public static let allCases: [MTLCompareFunction] = [
         .never,
         .less,
         .equal,
@@ -363,17 +398,17 @@ extension MTLCompareFunction: CaseIterable, CustomStringConvertible {
     }
 }
 
-extension MTLSize: ExpressibleByArrayLiteral {
+extension MTLSize: @retroactive ExpressibleByArrayLiteral {
     public init(arrayLiteral elements: Int...) {
         assert(elements.count == 3)
         self = MTLSize(width: elements[0], height: elements[1], depth: elements[2])
     }
 }
 
-extension MTLResourceUsage: Hashable {
+extension MTLResourceUsage: @retroactive Hashable {
 }
 
-extension MTLRenderStages: Hashable {
+extension MTLRenderStages: @retroactive Hashable {
 }
 
 extension MTLSize: Codable {
@@ -414,5 +449,243 @@ extension MTLResourceUsage: Codable {
         ]
         let strings = mapping.compactMap { contains($0.0) ? $0.1 : nil }
         try container.encode(strings)
+    }
+}
+
+extension MTLTextureType: @retroactive CustomStringConvertible {
+    public var description: String {
+        switch self {
+        case .type1D:
+            return "1D"
+        case .type1DArray:
+            return "1DArray"
+        case .type2D:
+            return "2D"
+        case .type2DArray:
+            return "2DArray"
+        case .type2DMultisample:
+            return "2DMultisample"
+        case .typeCube:
+            return "Cube"
+        case .typeCubeArray:
+            return "CubeArray"
+        case .type3D:
+            return "3D"
+        case .type2DMultisampleArray:
+            return "2DMultisample"
+        case .typeTextureBuffer:
+            return "TextureBuffer"
+        @unknown default:
+            fatalError("Unknown texture type: \(self)")
+        }
+    }
+}
+
+extension MTLTextureUsage: @retroactive CustomStringConvertible {
+    public var description: String {
+        var atoms: [String] = []
+        if self == .unknown {
+            return "unknown"
+        }
+        else if contains(.shaderRead) {
+            atoms.append("shaderRead")
+        }
+        else if contains(.shaderWrite) {
+            atoms.append("shaderWrite")
+        }
+        else if contains(.renderTarget) {
+            atoms.append("renderTarget")
+        }
+        else if contains(.pixelFormatView) {
+            atoms.append("pixelFormatView")
+        }
+        return atoms.joined(separator: ", ")
+    }
+}
+
+extension MTLTextureCompressionType: @retroactive CustomStringConvertible {
+    public var description: String {
+        switch self {
+        case .lossless:
+            return "lossless"
+        case .lossy:
+            return "lossy"
+        @unknown default:
+            fatalError("Unknown texture compression type: \(self)")
+        }
+    }
+}
+
+
+extension MTLPixelFormat: @retroactive CaseIterable {
+    public static var allCases: [MTLPixelFormat] {
+        let baseCases: [MTLPixelFormat] = [
+            .invalid,
+            .a8Unorm,
+            .r8Unorm,
+            .r8Unorm_srgb,
+            .r8Snorm,
+            .r8Uint,
+            .r8Sint,
+            .r16Unorm,
+            .r16Snorm,
+            .r16Uint,
+            .r16Sint,
+            .r16Float,
+            .rg8Unorm,
+            .rg8Unorm_srgb,
+            .rg8Snorm,
+            .rg8Uint,
+            .rg8Sint,
+            .b5g6r5Unorm,
+            .a1bgr5Unorm,
+            .abgr4Unorm,
+            .bgr5A1Unorm,
+            .r32Uint,
+            .r32Sint,
+            .r32Float,
+            .rg16Unorm,
+            .rg16Snorm,
+            .rg16Uint,
+            .rg16Sint,
+            .rg16Float,
+            .rgba8Unorm,
+            .rgba8Unorm_srgb,
+            .rgba8Snorm,
+            .rgba8Uint,
+            .rgba8Sint,
+            .bgra8Unorm,
+            .bgra8Unorm_srgb,
+            .rgb10a2Unorm,
+            .rgb10a2Uint,
+            .rg11b10Float,
+            .rgb9e5Float,
+            .bgr10a2Unorm,
+            .bgr10_xr,
+            .bgr10_xr_srgb,
+            .rg32Uint,
+            .rg32Sint,
+            .rg32Float,
+            .rgba16Unorm,
+            .rgba16Snorm,
+            .rgba16Uint,
+            .rgba16Sint,
+            .rgba16Float,
+            .bgra10_xr,
+            .bgra10_xr_srgb,
+            .rgba32Uint,
+            .rgba32Sint,
+            .rgba32Float,
+            .bc1_rgba,
+            .bc1_rgba_srgb,
+            .bc2_rgba,
+            .bc2_rgba_srgb,
+            .bc3_rgba,
+            .bc3_rgba_srgb,
+            .bc4_rUnorm,
+            .bc4_rSnorm,
+            .bc5_rgUnorm,
+            .bc5_rgSnorm,
+            .bc6H_rgbFloat,
+            .bc6H_rgbuFloat,
+            .bc7_rgbaUnorm,
+            .bc7_rgbaUnorm_srgb,
+//            .pvrtc_rgb_2bpp,
+//            .pvrtc_rgb_2bpp_srgb,
+//            .pvrtc_rgb_4bpp,
+//            .pvrtc_rgb_4bpp_srgb,
+//            .pvrtc_rgba_2bpp,
+//            .pvrtc_rgba_2bpp_srgb,
+//            .pvrtc_rgba_4bpp,
+//            .pvrtc_rgba_4bpp_srgb,
+            .eac_r11Unorm,
+            .eac_r11Snorm,
+            .eac_rg11Unorm,
+            .eac_rg11Snorm,
+            .eac_rgba8,
+            .eac_rgba8_srgb,
+            .etc2_rgb8,
+            .etc2_rgb8_srgb,
+            .etc2_rgb8a1,
+            .etc2_rgb8a1_srgb,
+            .astc_4x4_srgb,
+            .astc_5x4_srgb,
+            .astc_5x5_srgb,
+            .astc_6x5_srgb,
+            .astc_6x6_srgb,
+            .astc_8x5_srgb,
+            .astc_8x6_srgb,
+            .astc_8x8_srgb,
+            .astc_10x5_srgb,
+            .astc_10x6_srgb,
+            .astc_10x8_srgb,
+            .astc_10x10_srgb,
+            .astc_12x10_srgb,
+            .astc_12x12_srgb,
+            .astc_4x4_ldr,
+            .astc_5x4_ldr,
+            .astc_5x5_ldr,
+            .astc_6x5_ldr,
+            .astc_6x6_ldr,
+            .astc_8x5_ldr,
+            .astc_8x6_ldr,
+            .astc_8x8_ldr,
+            .astc_10x5_ldr,
+            .astc_10x6_ldr,
+            .astc_10x8_ldr,
+            .astc_10x10_ldr,
+            .astc_12x10_ldr,
+            .astc_12x12_ldr,
+            .astc_4x4_hdr,
+            .astc_5x4_hdr,
+            .astc_5x5_hdr,
+            .astc_6x5_hdr,
+            .astc_6x6_hdr,
+            .astc_8x5_hdr,
+            .astc_8x6_hdr,
+            .astc_8x8_hdr,
+            .astc_10x5_hdr,
+            .astc_10x6_hdr,
+            .astc_10x8_hdr,
+            .astc_10x10_hdr,
+            .astc_12x10_hdr,
+            .astc_12x12_hdr,
+            .gbgr422,
+            .bgrg422,
+            .depth16Unorm,
+            .depth32Float,
+            .stencil8,
+            .depth32Float_stencil8,
+            .x32_stencil8,
+        ]
+
+        #if os(macOS)
+            return baseCases + [
+                .depth24Unorm_stencil8,
+                .x24_stencil8,
+            ]
+        #else
+            return baseCases
+        #endif
+    }
+}
+
+
+extension MTLStepFunction: @retroactive CustomStringConvertible {
+    public var description: String {
+        switch self {
+        case .perVertex:
+            "perVertex"
+        case .perInstance:
+            "perInstance"
+        default:
+            fatalError("unimplemented")
+        }
+    }
+}
+
+extension MTLOrigin: @retroactive ExpressibleByArrayLiteral {
+    public init(arrayLiteral elements: Int...) {
+        self = .init(x: elements[0], y: elements[1], z: elements[2])
     }
 }

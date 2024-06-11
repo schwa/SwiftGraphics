@@ -16,6 +16,7 @@ public extension MeshDescriptor {
 }
 
 public extension ModelComponent {
+    @MainActor
     init(trivialMesh mesh: TrivialMesh<SimpleVertex>, materials: [Material] = []) throws {
         let meshDescriptor = MeshDescriptor(trivialMesh: mesh)
         let meshResource = try MeshResource.generate(from: [meshDescriptor])
