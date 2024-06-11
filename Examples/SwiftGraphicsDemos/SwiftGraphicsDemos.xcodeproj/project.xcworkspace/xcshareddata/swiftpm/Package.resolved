@@ -1,5 +1,5 @@
 {
-  "originHash" : "be4e0f410c93887219644243a3617967360bf19d84176b0d93fab47210fadd16",
+  "originHash" : "a1cd592a1e4d20ee789e6502b4f4d39a69fd7b7f743e2b24037a98de5b912903",
   "pins" : [
     {
       "identity" : "approximateequality",
@@ -89,6 +89,15 @@
       "state" : {
         "revision" : "64889f0c732f210a935a0ad7cda38f77f876262d",
         "version" : "509.1.1"
+      }
+    },
+    {
+      "identity" : "swiftfields",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/schwa/swiftfields",
+      "state" : {
+        "revision" : "8a9715b88509c93557833018f335397153f194bb",
+        "version" : "0.1.3"
       }
     },
     {

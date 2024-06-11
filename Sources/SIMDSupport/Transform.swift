@@ -4,10 +4,12 @@ import SwiftUI
 /**
  A type to represent a 3d transformation as an `SRT` or a SIMD matrix.
  */
-public struct Transform: Codable, Hashable {
+public struct Transform: Hashable {
     public enum Storage: Equatable {
+
         case matrix(simd_float4x4)
         case srt(SRT)
+
     }
 
     public private(set) var storage: Storage
@@ -36,12 +38,16 @@ public struct Transform: Codable, Hashable {
         }
     }
 
+    public init(_ srt: SRT) {
+        storage = .srt(srt)
+    }
+
     public var srt: SRT {
         get {
             switch storage {
             case .matrix(let matrix):
                 let (scale, rotation, translation) = matrix.decompose
-                return SRT(scale: scale, rotation: .matrix(rotation), translation: translation)
+                return SRT(scale: scale, rotation: rotation, translation: translation)
             case .srt(let srt):
                 return srt
             }
@@ -93,40 +99,6 @@ public struct Transform: Codable, Hashable {
     }
 
     // MARK: -
-
-    enum CodingKeys: CodingKey {
-        case kind
-        case matrix
-        case srt
-    }
-
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-
-        let kind = try container.decode(String.self, forKey: .kind)
-        switch kind {
-        case "matrix":
-            let scalars = try container.decode([Float].self, forKey: .matrix)
-            let matrix = simd_float4x4(scalars: scalars)
-            storage = .matrix(matrix)
-        case "srt":
-            storage = try .srt(container.decode(SRT.self, forKey: .srt))
-        default:
-            throw DecodingError()
-        }
-    }
-
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        switch storage {
-        case .matrix(let matrix):
-            try container.encode("matrix", forKey: .kind)
-            try container.encode(matrix.scalars, forKey: .matrix)
-        case .srt(let srt):
-            try container.encode("srt", forKey: .kind)
-            try container.encode(srt, forKey: .srt)
-        }
-    }
 }
 
 extension Transform: Sendable {
@@ -189,10 +161,13 @@ extension Transform.Storage {
 }
 
 public extension Transform {
+    init(scale: SIMD3<Float> = .unit, rotation: RollPitchYaw, translation: SIMD3<Float> = .zero) {
+        storage = .srt(SRT(scale: scale, rotation: rotation, translation: translation))
+    }
     init(scale: SIMD3<Float> = .unit, rotation: simd_quatf, translation: SIMD3<Float> = .zero) {
-        storage = .srt(SRT(scale: scale, rotation: .quaternion(rotation), translation: translation))
+        storage = .srt(SRT(scale: scale, rotation: rotation, translation: translation))
     }
     init(scale: SIMD3<Float> = .unit, rotation: simd_float4x4, translation: SIMD3<Float> = .zero) {
-        storage = .srt(SRT(scale: scale, rotation: .matrix(rotation), translation: translation))
+        storage = .srt(SRT(scale: scale, rotation: rotation, translation: translation))
     }
 }

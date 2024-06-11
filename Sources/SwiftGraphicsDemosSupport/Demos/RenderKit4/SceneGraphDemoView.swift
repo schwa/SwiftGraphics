@@ -43,8 +43,8 @@ public struct SceneGraphDemoView: View, DemoView {
         .onChange(of: cameraRotation, initial: true) {
             //            scene.currentCameraNode?.transform.rotation = .rollPitchYaw(cameraRotation)
 
-            let b = BallConstraint(radius: 5, lookAt: .zero, rollPitchYaw: cameraRotation)
-            scene.currentCameraNode?.transform.matrix = b.transform
+            let b = BallConstraint(radius: 5, rollPitchYaw: cameraRotation)
+            scene.currentCameraNode?.transform = b.transform
         }
         .renderContext(try! .init(device: device))
         .ballRotation($cameraRotation)

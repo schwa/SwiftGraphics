@@ -118,7 +118,7 @@ struct SoftwareRendererMeshDemoView: View, DemoView {
             }
         }
         .onChange(of: ballConstraint.transform, initial: true) {
-            cameraTransform.matrix = ballConstraint.transform
+            cameraTransform = ballConstraint.transform
         }
         .overlay(alignment: .topTrailing) {
             CameraRotationWidgetView(ballConstraint: $ballConstraint)
@@ -157,7 +157,7 @@ struct SoftwareRendererMeshDemoView: View, DemoView {
                     TextField("Yaw Limit", value: $pitchLimit, format: ClosedRangeFormatStyle(substyle: .angle))
                 }
                 Section("Camera") {
-                    ProjectionInspector(projection: $cameraProjection)
+                    ProjectionEditor(projection: $cameraProjection)
                 }
                 Section("Ball Constraint") {
                     BallConstraintEditor(ballConstraint: $ballConstraint)

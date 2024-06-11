@@ -33,29 +33,22 @@ extension SRT: Hashable {
     }
 }
 
-// MARK: -
-
-extension SRT: Codable {
-    enum CodingKeys: CodingKey {
-        case scale
-        case rotation
-        case translation
+public extension SRT {
+    init(scale: SIMD3<Float> = .unit, rotation: simd_quatf, translation: SIMD3<Float> = .zero) {
+        self.init(scale: scale, rotation: .quaternion(rotation), translation: translation)
     }
 
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        scale = try container.decodeIfPresent([Float].self, forKey: .scale).map { SIMD3<Float>($0) } ?? .unit
-        rotation = try container.decodeIfPresent(Rotation.self, forKey: .rotation) ?? .identity
-        translation = try container.decodeIfPresent([Float].self, forKey: .translation).map { SIMD3<Float>($0) } ?? .zero
+    init(scale: SIMD3<Float> = .unit, rotation: RollPitchYaw, translation: SIMD3<Float> = .zero) {
+        self.init(scale: scale, rotation: .rollPitchYaw(rotation), translation: translation)
     }
 
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(scale.scalars, forKey: .scale)
-        try container.encode(rotation, forKey: .rotation)
-        try container.encode(translation.scalars, forKey: .translation)
+    init(scale: SIMD3<Float> = .unit, rotation: simd_float4x4, translation: SIMD3<Float> = .zero) {
+        let rotation = simd_quatf(rotation)
+        self = .init(scale: scale, rotation: rotation, translation: translation)
     }
 }
+
+// MARK: -
 
 extension SRT: CustomStringConvertible {
     public var description: String {
@@ -67,14 +60,5 @@ extension SRT: CustomStringConvertible {
         let rotation = rotation == .identity ? nil : "rotation: \(rotation)"
         let translation = translation == .zero ? nil : "translation: [\(translation.x.formatted()), \(translation.y.formatted()), \(translation.z.formatted())]"
         return [scale, rotation, translation].compactMap({ $0 }).joined(separator: ",")
-    }
-}
-
-public extension SRT {
-    init(scale: SIMD3<Float> = .unit, rotation: simd_float4x4, translation: SIMD3<Float> = .zero) {
-        self = .init(scale: scale, rotation: .matrix(rotation), translation: translation)
-    }
-    init(scale: SIMD3<Float> = .unit, rotation: simd_quatf, translation: SIMD3<Float> = .zero) {
-        self = .init(scale: scale, rotation: .quaternion(rotation), translation: translation)
     }
 }

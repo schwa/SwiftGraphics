@@ -1,5 +1,6 @@
 import Foundation
 import SwiftUI
+import ApproximateEquality
 
 // We treat SwiftUI.Angle as part of CoreGraphics - because it's too useful not to be.
 
@@ -51,5 +52,11 @@ public extension Angle {
         else {
             return .degrees(degrees)
         }
+    }
+}
+
+public extension Angle {
+    func isApproximatelyEqual(to other: Angle, absoluteTolerance: Angle) -> Bool {
+        radians.isApproximatelyEqual(to: other.radians, absoluteTolerance: absoluteTolerance.radians)
     }
 }

@@ -264,3 +264,29 @@ extension Ply {
         self = ply
     }
 }
+
+extension Ply.Element.Row.Value {
+    var float: Float? {
+        if case let .float(float) = self {
+            return float
+        }
+        return nil
+    }
+}
+
+extension Ply.Element.Row {
+    func to(definition: Ply.Header.Element, ofType: SIMD3<Float>.Type) -> SIMD3<Float>? {
+        guard let x = values[0].float, let y = values[1].float, let z = values[2].float else {
+            return nil
+        }
+        return [x, y, z]
+    }
+}
+
+extension Ply {
+    var points: [SIMD3<Float>] {
+        elements[0].rows.map {
+            $0.to(definition: elements[0].definition, ofType: SIMD3<Float>.self)!
+        }
+    }
+}

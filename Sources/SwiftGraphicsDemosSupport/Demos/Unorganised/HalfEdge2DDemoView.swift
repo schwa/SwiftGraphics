@@ -48,7 +48,7 @@ struct HalfEdge2DDemoView: View, DemoView {
                     let from = halfEdges.0.vertex.position
                     let to = halfEdges.1.vertex.position
 
-                    let sideOffset = CGPoint(angle: Angle(from: from, to: to) + 90, length: -5)
+                    let sideOffset = CGPoint(distance: -5, angle: Angle(from: from, to: to) + 90)
 
                     let fromOffset: CGPoint = (to - from).normalized * 15
                     let toOffset = (from - to).normalized * 15
@@ -135,7 +135,9 @@ struct BetterHalfEdgeMeshInspectorView <Position>: View where Position: Hashable
         if let index = mesh.index(for: face) {
             Button("#\(index)") {
             }
+            #if os(macOS)
             .buttonStyle(.link)
+            #endif
         }
         else {
             ContentUnavailableView("No face in mesh", systemImage: "exclamationmark.triangle")
@@ -152,7 +154,9 @@ struct BetterHalfEdgeMeshInspectorView <Position>: View where Position: Hashable
             if let index = mesh.index(for: halfEdge) {
                 Button("#\(index)") {
                 }
+                #if os(macOS)
                 .buttonStyle(.link)
+                #endif
             }
             else {
                 ContentUnavailableView("No half-edge in mesh", systemImage: "exclamationmark.triangle")
