@@ -18,7 +18,7 @@ let package = Package(
         .library(name: "Earcut", targets: ["Earcut"]),
         .library(name: "GenericGeometryBase", targets: ["GenericGeometryBase"]),
         .library(name: "MetalSupport", targets: ["MetalSupport"]),
-        .library(name: "MetalSupportUnsafeConformances", targets: ["MetalSupportUnsafeConformances"]),
+        .library(name: "MetalUnsafeConformances", targets: ["MetalUnsafeConformances"]),
         .library(name: "Projection", targets: ["Projection"]),
         .library(name: "Raster", targets: ["Raster"]),
         .library(name: "RenderKit", targets: ["RenderKit"]),
@@ -118,7 +118,7 @@ let package = Package(
                 .enableUpcomingFeature("StrictConcurrency"),
             ]),
         .target(
-            name: "MetalSupportUnsafeConformances",
+            name: "MetalUnsafeConformances",
             swiftSettings: [
                 .enableUpcomingFeature("StrictConcurrency"),
             ]
@@ -180,7 +180,7 @@ let package = Package(
                 "RenderKit",
                 "CoreGraphicsSupport",
                 "CoreGraphicsUnsafeConformances",
-                "MetalSupportUnsafeConformances",
+                "MetalUnsafeConformances",
             ],
             swiftSettings: [
                 .enableUpcomingFeature("StrictConcurrency"),
@@ -311,7 +311,7 @@ let package = Package(
             dependencies: [
                 "Compute",
                 "SwiftGraphicsSupport",
-                "MetalSupportUnsafeConformances",
+                "MetalUnsafeConformances",
             ],
             resources: [
                 .process("BitonicSort.metal"),
@@ -348,7 +348,7 @@ let package = Package(
                 "StreamBuilder",
                 "WrappingHStack",
                 "Compute",
-                "MetalSupportUnsafeConformances",
+                "MetalUnsafeConformances",
             ],
             resources: [
                 .process("Resources/Assets.xcassets"),
