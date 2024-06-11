@@ -5,7 +5,7 @@ import Shapes3D
 import SwiftGraphicsSupport
 
 extension SimpleScene {
-    static func demo(device: MTLDevice, singlePanoramaTexture: Bool = true) throws -> SimpleScene {
+    static func demo(device: MTLDevice) throws -> SimpleScene {
         let allocator = MTKMeshBufferAllocator(device: device)
         let cone = try Cone3D(height: 1, radius: 0.5).toYAMesh(allocator: allocator, device: device)
         let sphere = try Sphere3D(radius: 0.25).toYAMesh(allocator: allocator, device: device)
@@ -20,30 +20,15 @@ extension SimpleScene {
 
         let tilesSize: SIMD2<UInt16>
         let tileTextures: [(MTKTextureLoader) throws -> MTLTexture]
-        if !singlePanoramaTexture {
-            tilesSize = [6, 2]
-            tileTextures = (1 ... 12).map { index in
-                BundleResourceReference(bundle: .bundle(.module), name: "perseverance_\(index.formatted(.number.precision(.integerLength(2))))", extension: "ktx")
-                // ResourceReference.bundle(.main, name: "Testcard_\(index.formatted(.number.precision(.integerLength(2))))", extension: "ktx")
-            }
-            .map { resource -> ((MTKTextureLoader) throws -> MTLTexture) in
-                // swiftlint:disable:next opening_brace
-                { loader in
-                    try loader.newTexture(resource: resource, options: [.textureStorageMode: MTLStorageMode.private.rawValue])
-                }
-            }
-        }
-        else {
-            tilesSize = [1, 1]
-            // swiftlint:disable:next multiline_literal_brackets opening_brace
-            tileTextures = [{ loader in
-                try loader.newTexture(name: "BlueSkySkybox", scaleFactor: 1, bundle: .module, options: [
-                    .textureStorageMode: MTLStorageMode.private.rawValue,
-                    .SRGB: true,
-                ])
-                },
-            ]
-        }
+        tilesSize = [1, 1]
+        // swiftlint:disable:next multiline_literal_brackets opening_brace
+        tileTextures = [{ loader in
+            try loader.newTexture(name: "BlueSkySkybox", scaleFactor: 1, bundle: .module, options: [
+                .textureStorageMode: MTLStorageMode.private.rawValue,
+                .SRGB: true,
+            ])
+            },
+        ]
 
         var models: [Model] = []
         models += product(xRange, zRange).map { x, z in
