@@ -17,7 +17,6 @@ public struct SceneGraphDemoView: View, DemoView {
     @State
     var cameraRotation = RollPitchYaw()
 
-
     init() {
         let device = MTLCreateSystemDefaultDevice()!
         let scene = try! SceneGraph.demo(device: device)
@@ -26,11 +25,21 @@ public struct SceneGraphDemoView: View, DemoView {
     }
 
     public var body: some View {
+        let cameraNode = Binding<Node> {
+            return scene.currentCameraNode ?? Node()
+        }
+        set: { newValue in
+            scene.currentCameraNode = newValue
+        }
+
         RenderView(renderPasses: [
             DiffuseShadingRenderPass(scene: scene),
             UnlitShadingPass(scene: scene),
             DebugRenderPass(scene: scene),
         ])
+        .firstPersonInteractive(camera: cameraNode)
+        .displayLink(DisplayLink2())
+        .showFrameEditor()
         .onChange(of: cameraRotation, initial: true) {
             //            scene.currentCameraNode?.transform.rotation = .rollPitchYaw(cameraRotation)
 
@@ -177,3 +186,23 @@ extension Node.Content {
 //}
 //
 //
+
+extension Node: FirstPersonCameraProtocol {
+    var target: SIMD3<Float> {
+        get {
+            .zero
+        }
+        set {
+        }
+    }
+
+    var heading: Angle {
+        get {
+            .zero
+        }
+        set {
+        }
+    }
+
+
+}

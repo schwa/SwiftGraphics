@@ -3,7 +3,14 @@ import simd
 import SIMDSupport
 import SwiftUI
 
-struct FirstPersonInteractiveViewModifier: ViewModifier, @unchecked Sendable {
+protocol FirstPersonCameraProtocol {
+    var transform: Transform { get set }
+    var target: SIMD3<Float> { get set }
+    var heading: Angle { get set }
+}
+
+struct FirstPersonInteractiveViewModifier <FirstPersonCamera: FirstPersonCameraProtocol>: ViewModifier, @unchecked Sendable {
+
     @Environment(\.displayLink)
     var displayLink
 
@@ -17,7 +24,7 @@ struct FirstPersonInteractiveViewModifier: ViewModifier, @unchecked Sendable {
     var movementConsumerTask: Task<Void, Never>?
 
     @Binding
-    var camera: LegacyCamera
+    var camera: FirstPersonCamera
 
     func body(content: Content) -> some View {
         content
@@ -93,8 +100,11 @@ struct FirstPersonInteractiveViewModifier: ViewModifier, @unchecked Sendable {
     }
 }
 
+extension LegacyCamera: FirstPersonCameraProtocol {
+}
+
 extension View {
-    func firstPersonInteractive(camera: Binding<LegacyCamera>) -> some View {
+    func firstPersonInteractive(camera: Binding<some FirstPersonCameraProtocol>) -> some View {
         modifier(FirstPersonInteractiveViewModifier(camera: camera))
     }
 }
