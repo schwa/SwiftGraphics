@@ -382,8 +382,7 @@ extension Array {
 }
 
 extension Sequence {
-    // TODO: Deprecate do not use in production.
-    var tuple: (Element, Element) {
+    var tuple2: (Element, Element) {
         let array = Array(self)
         assert(array.count == 2)
         return (array[0], array[1])

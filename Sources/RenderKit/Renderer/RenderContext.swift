@@ -19,7 +19,6 @@ public struct RenderContext: Sendable {
         self.library = library
     }
 
-    @available(*, deprecated, message: "Deprecated")
     public init(logger: Logger? = nil, device: MTLDevice) throws {
         self.logger = logger
         self.device = device

@@ -77,26 +77,3 @@ public func lerp<T>(_ v: Range<T>, by t: T.Factor) -> T where T: UnitLerpable & 
 public func lerp<T>(from v0: T, to v1: T, by t: T.Factor) -> T where T: Lerpable {
     T.lerp(from: v0, to: v1, by: t)
 }
-
-// public func lerp<T>(from v0: T, to v1: T, by t: T) -> T where T: UnitLerpable {
-//    T.lerp(from: v0, to: v1, by: t)
-// }
-
-// TODO: Deprecate
-// public func lerp<V>(from v0: V, to v1: V, by t: V.Factor) -> V where V: CompositeLerpable, V.Factor: FloatingPoint {
-//    (1 - t) * v0 + t * v1
-// }
-//
-// TODO: Deprecate
-// public func lerp(from v0: CGRect, to v1: CGRect, by t: CGFloat) -> CGRect {
-//    CGRect(
-//        origin: lerp(from: v0.origin, to: v1.origin, by: t),
-//        size: lerp(from: v0.size, to: v1.size, by: t)
-//    )
-// }
-
-// TODO: Deprecate
-// public func lerp(from: CGPoint, to: CGPoint, by t: CGFloat) -> CGPoint {
-//    ((1.0 - t) * from) + (t * to)
-// }
-//

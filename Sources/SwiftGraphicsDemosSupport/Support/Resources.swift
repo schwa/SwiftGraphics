@@ -1,7 +1,7 @@
 import Foundation
 import MetalKit
 
-// TODO: all this is very experimental.
+// TODO: all this is very experimental. And probably worth deprecating!
 
 protocol ResourceProtocol: Hashable, Sendable {
 }

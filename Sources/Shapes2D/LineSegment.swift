@@ -1,12 +1,10 @@
 import Algorithms
 import ApproximateEquality
-import ApproximateEqualityMacros
 import CoreGraphics
 import CoreGraphicsSupport
 import Foundation
 import SwiftUI
 
-@DeriveApproximateEquality
 public struct LineSegment {
     public var start: CGPoint
     public var end: CGPoint
@@ -14,6 +12,13 @@ public struct LineSegment {
     public init(_ start: CGPoint, _ end: CGPoint) {
         self.start = start
         self.end = end
+    }
+}
+
+extension LineSegment: ApproximateEquality {
+    public func isApproximatelyEqual(to other: Self, absoluteTolerance: Double.Magnitude) -> Bool {
+        start.isApproximatelyEqual(to: other.start, absoluteTolerance: CGPoint.Magnitude(absoluteTolerance))
+        && end.isApproximatelyEqual(to: other.end, absoluteTolerance: CGPoint.Magnitude(absoluteTolerance))
     }
 }
 

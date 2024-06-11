@@ -209,7 +209,6 @@ let package = Package(
             dependencies: [
                 .product(name: "Algorithms", package: "swift-algorithms"),
                 .product(name: "ApproximateEquality", package: "ApproximateEquality"),
-                .product(name: "ApproximateEqualityMacros", package: "ApproximateEquality"),
                 "CoreGraphicsSupport",
                 "GenericGeometryBase",
                 "SIMDSupport",
