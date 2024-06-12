@@ -1,5 +1,5 @@
 import MetalSupport
-import RenderKitShaders
+import RenderKitShadersLegacy
 import Shapes3D
 import SIMDSupport
 import SwiftUI

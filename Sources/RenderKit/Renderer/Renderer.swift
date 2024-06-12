@@ -4,7 +4,7 @@ import MetalSupport
 import MetalUISupport
 import ModelIO
 import os.log
-import RenderKitShaders
+import RenderKitShadersLegacy
 import simd
 import SIMDSupport
 import SwiftGraphicsSupport

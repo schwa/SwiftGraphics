@@ -3,7 +3,7 @@ import Combine
 import MetalKit
 import ModelIO
 import os.log
-import RenderKitShaders
+import RenderKitShadersLegacy
 import simd
 import SwiftGraphicsSupport
 import SwiftUI
@@ -22,7 +22,7 @@ public struct RenderContext: Sendable {
     public init(logger: Logger? = nil, device: MTLDevice) throws {
         self.logger = logger
         self.device = device
-        self.library = try device.makeDebugLibrary(bundle: .renderKitShaders)
+        self.library = try device.makeDebugLibrary(bundle: .renderKitShadersLegacy)
     }
 }
 
@@ -55,6 +55,19 @@ public extension View {
 // }
 
 public extension Bundle {
+    static let renderKitShadersLegacy: Bundle = {
+        // Step 1. Find the bundle as a child of main bundle.
+        if let shadersBundleURL = Bundle.main.url(forResource: "SwiftGraphics_RenderKitShadersLegacy", withExtension: "bundle"), let bundle = Bundle(url: shadersBundleURL) {
+            return bundle
+        }
+        // Step 2. Find the bundle as peer to the current `Bundle.module`
+        if let bundle = Bundle(url: Bundle.module.bundleURL.deletingLastPathComponent().appendingPathComponent("RenderKit_RenderKitShadersLegacy.bundle")) {
+            return bundle
+        }
+        // Fail.
+        fatalError("Could not find shaders bundle")
+    }()
+
     static let renderKitShaders: Bundle = {
         // Step 1. Find the bundle as a child of main bundle.
         if let shadersBundleURL = Bundle.main.url(forResource: "SwiftGraphics_RenderKitShaders", withExtension: "bundle"), let bundle = Bundle(url: shadersBundleURL) {

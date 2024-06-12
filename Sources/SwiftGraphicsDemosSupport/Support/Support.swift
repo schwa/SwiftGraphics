@@ -6,7 +6,7 @@ import MetalKit
 import MetalSupport
 import os
 import Projection
-import RenderKitShaders
+import RenderKitShadersLegacy
 import Shapes2D
 import Shapes3D
 import simd

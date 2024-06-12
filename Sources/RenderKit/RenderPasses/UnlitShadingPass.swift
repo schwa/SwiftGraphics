@@ -1,6 +1,6 @@
 @preconcurrency import Metal
 import MetalSupport
-import RenderKitShaders
+import RenderKitShadersLegacy
 import SwiftGraphicsSupport
 
 // TODO: Rename

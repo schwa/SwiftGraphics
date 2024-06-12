@@ -2,6 +2,7 @@ import MetalKit
 import MetalSupport
 import ModelIO
 import SIMDSupport
+import SwiftGraphicsSupport
 import SwiftUI
 
 // TODO: This file needs a big makeover. See also MeshConvertable.
@@ -78,5 +79,32 @@ extension Box3D: PolygonConvertable {
             ]),
         ]
         return polygons
+    }
+}
+
+extension Box3D: MDLMeshConvertable {
+    public struct MDLMeshConverter: MDLMeshConverterProtocol {
+        public var segments: [Int]
+        public var inwardNormals: Bool
+        public var geometryType: MDLGeometryType
+        public var flippedTextureCoordinates: Bool
+        public var allocator: MDLMeshBufferAllocator?
+
+        public init(allocator: MDLMeshBufferAllocator?) {
+            segments = [1, 1, 1]
+            inwardNormals = false
+            geometryType = .triangles
+            flippedTextureCoordinates = false
+            self.allocator = allocator
+        }
+
+        public func convert(_ box: Box3D) throws -> MDLMesh {
+            // TODO: FIXME - box isn't centered at correct lcoation
+            let mesh = MDLMesh(boxWithExtent: [box.max.x - box.min.x, box.max.y - box.min.y, box.max.z - box.min.z], segments: SIMD3(segments.map(UInt32.init)), inwardNormals: inwardNormals, geometryType: geometryType, allocator: allocator)
+            if flippedTextureCoordinates {
+                mesh.flipTextureCoordinates(inAttributeNamed: "textureCoordinate")
+            }
+            return mesh
+        }
     }
 }

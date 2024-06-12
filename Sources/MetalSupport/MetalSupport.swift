@@ -584,39 +584,15 @@ public extension MTLRegion {
 }
 
 public extension MTLRenderCommandEncoder {
-    func draw(_ mesh: MTKMesh) {
-        for (index, vertexBuffer) in mesh.vertexBuffers.enumerated() {
-            setVertexBuffer(vertexBuffer.buffer, offset: vertexBuffer.offset, index: index)
+    func withDebugGroup<R>(_ string: String, block: () throws -> R) rethrows -> R {
+        pushDebugGroup(string)
+        defer {
+            popDebugGroup()
         }
-        for submesh in mesh.submeshes {
-            drawIndexedPrimitives(type: submesh.primitiveType, indexCount: submesh.indexCount, indexType: submesh.indexType, indexBuffer: submesh.indexBuffer.buffer, indexBufferOffset: submesh.indexBuffer.offset)
-        }
-    }
-}
-
-// MARK: -
-
-public extension MTLRenderCommandEncoder {
-    func setVertexBuffer(_ mesh: MTKMesh, startingIndex: Int) {
-        for (index, vertexBuffer) in mesh.vertexBuffers.enumerated() {
-            setVertexBuffer(vertexBuffer.buffer, offset: vertexBuffer.offset, index: startingIndex + index)
-        }
+        return try block()
     }
 
-//    func draw(_ mesh: MTKMesh) {
-//        for submesh in mesh.submeshes {
-//            drawIndexedPrimitives(type: submesh.primitiveType, indexCount: submesh.indexCount, indexType: submesh.indexType, indexBuffer: submesh.indexBuffer.buffer, indexBufferOffset: submesh.indexBuffer.offset)
-//        }
-//    }
-//
-//    func draw(_ mesh: MTKMesh, instanceCount: Int) {
-//        for submesh in mesh.submeshes {
-//            drawIndexedPrimitives(type: submesh.primitiveType, indexCount: submesh.indexCount, indexType: submesh.indexType, indexBuffer: submesh.indexBuffer.buffer, indexBufferOffset: submesh.indexBuffer.offset, instanceCount: instanceCount)
-//        }
-//    }
-}
-
-public extension MTLRenderCommandEncoder {
+    @available(*, deprecated, message: "Deprecated. Clean this up.")
     func setVertexBuffersFrom(mesh: MTKMesh) {
         for (index, element) in mesh.vertexDescriptor.layouts.enumerated() {
             guard let layout = element as? MDLVertexBufferLayout else {
@@ -630,12 +606,31 @@ public extension MTLRenderCommandEncoder {
         }
     }
 
-    func withDebugGroup<R>(_ string: String, block: () throws -> R) rethrows -> R {
-        pushDebugGroup(string)
-        defer {
-            popDebugGroup()
+
+    @available(*, deprecated, message: "Deprecated. Clean this up.")
+    func draw(_ mesh: MTKMesh, setVertexBuffers: Bool = true) {
+        if setVertexBuffers {
+            for (index, vertexBuffer) in mesh.vertexBuffers.enumerated() {
+                setVertexBuffer(vertexBuffer.buffer, offset: vertexBuffer.offset, index: index)
+            }
         }
-        return try block()
+        for submesh in mesh.submeshes {
+            drawIndexedPrimitives(type: submesh.primitiveType, indexCount: submesh.indexCount, indexType: submesh.indexType, indexBuffer: submesh.indexBuffer.buffer, indexBufferOffset: submesh.indexBuffer.offset)
+        }
+    }
+
+    @available(*, deprecated, message: "Deprecated. Clean this up.")
+    func draw(_ mesh: MTKMesh, instanceCount: Int) {
+        for submesh in mesh.submeshes {
+            drawIndexedPrimitives(type: submesh.primitiveType, indexCount: submesh.indexCount, indexType: submesh.indexType, indexBuffer: submesh.indexBuffer.buffer, indexBufferOffset: submesh.indexBuffer.offset, instanceCount: instanceCount)
+        }
+    }
+
+    @available(*, deprecated, message: "Deprecated. Clean this up.")
+    func setVertexBuffer(_ mesh: MTKMesh, startingIndex: Int) {
+        for (index, vertexBuffer) in mesh.vertexBuffers.enumerated() {
+            setVertexBuffer(vertexBuffer.buffer, offset: vertexBuffer.offset, index: startingIndex + index)
+        }
     }
 }
 

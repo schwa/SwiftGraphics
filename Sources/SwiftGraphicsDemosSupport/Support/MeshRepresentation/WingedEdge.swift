@@ -1,7 +1,7 @@
 import Algorithms
 import Metal
 import MetalSupport
-import RenderKitShaders
+import RenderKitShadersLegacy
 import simd
 import SwiftGraphicsSupport
 

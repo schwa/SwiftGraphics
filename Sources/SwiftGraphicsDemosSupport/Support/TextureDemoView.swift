@@ -3,7 +3,7 @@ import MetalKit
 import MetalSupport
 import MetalUISupport
 import ModelIO
-import RenderKitShaders
+import RenderKitShadersLegacy
 import SwiftGraphicsSupport
 import SwiftUI
 
@@ -74,7 +74,7 @@ struct TextureView: View {
             configuration.enableSetNeedsDisplay = true
             let commandQueue = device.makeCommandQueue()!
 
-            let library = try! device.makeDefaultLibrary(bundle: .renderKitShaders)
+            let library = try! device.makeDefaultLibrary(bundle: .renderKitShadersLegacy)
             let vertexFunction = library.makeFunction(name: "unlitVertexShader")!
             let fragmentFunction = library.makeFunction(name: "unlitFragmentShader")!
 
@@ -142,7 +142,7 @@ struct TextureView: View {
 
                     renderCommandEncoder.setVertexBytes(of: cameraUniforms, index: renderState.bindings.vertexCameraIndex)
 
-                    let material = RenderKitShaders.UnlitMaterial(color: [1, 0, 0, 1], textureIndex: 0)
+                    let material = RenderKitShadersLegacy.UnlitMaterial(color: [1, 0, 0, 1], textureIndex: 0)
                     renderCommandEncoder.setFragmentBytes(of: [material], index: renderState.bindings.fragmentMaterialsIndex)
                     renderCommandEncoder.setFragmentTextures([texture], range: 0 ..< 1)
 

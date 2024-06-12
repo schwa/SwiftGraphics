@@ -23,6 +23,7 @@ let package = Package(
         .library(name: "Raster", targets: ["Raster"]),
         .library(name: "RenderKit", targets: ["RenderKit"]),
         .library(name: "RenderKitShaders", targets: ["RenderKitShaders"]),
+        .library(name: "RenderKitShadersLegacy", targets: ["RenderKitShadersLegacy"]),
         .library(name: "Shapes2D", targets: ["Shapes2D"]),
         .library(name: "Shapes3D", targets: ["Shapes3D"]),
         .library(name: "SIMDSupport", targets: ["SIMDSupport"]),
@@ -159,6 +160,12 @@ let package = Package(
 
         .target(
             name: "RenderKitShaders",
+            plugins: [
+                .plugin(name: "MetalCompilerPlugin", package: "MetalCompilerPlugin")
+            ]
+        ),
+        .target(
+            name: "RenderKitShadersLegacy",
             cSettings: [
                 .unsafeFlags(["-Wno-incomplete-umbrella"])
             ],
@@ -166,7 +173,7 @@ let package = Package(
                 .unsafeFlags(["-Wno-incomplete-umbrella"])
             ],
             plugins: [
-                // .plugin(name: "MetalCompilerPlugin", package: "MetalCompilerPlugin")
+                 .plugin(name: "MetalCompilerPlugin", package: "MetalCompilerPlugin")
             ]
         ),
         .testTarget(
@@ -184,7 +191,7 @@ let package = Package(
         .target(
             name: "RenderKit",
             dependencies: [
-                "RenderKitShaders",
+                "RenderKitShadersLegacy",
                 "SIMDSupport",
                 "MetalSupport",
                 "MetalUISupport",
@@ -262,7 +269,7 @@ let package = Package(
             dependencies: [
                 "SIMDSupport",
                 "MetalSupport",
-                "RenderKitShaders",
+                "RenderKitShadersLegacy",
                 .product(name: "SwiftFormats", package: "SwiftFormats"),
             ],
             swiftSettings: [
@@ -328,6 +335,7 @@ let package = Package(
                 "Raster",
                 "RenderKit",
                 "RenderKitShaders",
+                "RenderKitShadersLegacy",
                 "Shapes2D",
                 "Shapes3D",
                 "SIMDSupport",
