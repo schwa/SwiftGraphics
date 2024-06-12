@@ -14,7 +14,7 @@ protocol MTLBufferProviding {
 }
 
 extension YAMesh {
-    @available(*, deprecated, message: "Move into converter api.")
+    // TODO: Maybe deprecate? @available(*, deprecated, message: "Move into converter api.")
     static func triangle(label: String? = nil, triangle: Triangle, transform: simd_float3x2 = simd_float3x2([1, 0], [0, 1], [0, 0]), device: MTLDevice, textureCoordinate: (CGPoint) -> SIMD2<Float>) throws -> YAMesh {
         let vertices = [
             triangle.vertices.0,

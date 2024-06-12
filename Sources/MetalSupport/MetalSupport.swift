@@ -668,7 +668,8 @@ public extension MTLTexture {
         }
     }
 
-    @available(*, deprecated, message: "Deprecate if can't be provide working in unit tests.")
+//    @available(*, deprecated, message: "Deprecate if can't be provide working in unit tests.")
+    // TODO: Maybe deprecate?
     func cgImage() -> CGImage? {
         guard let pixelFormat = PixelFormat(pixelFormat) else {
             return nil
