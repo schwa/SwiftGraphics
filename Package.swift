@@ -56,7 +56,6 @@ let package = Package(
                 "GenericGeometryBase",
             ],
             swiftSettings: [
-                .enableUpcomingFeature("StrictConcurrency"),
             ]
         ),
 
@@ -68,7 +67,6 @@ let package = Package(
                 "ApproximateEquality"
             ],
             swiftSettings: [
-                .enableUpcomingFeature("StrictConcurrency"),
             ]
         ),
 
@@ -77,7 +75,6 @@ let package = Package(
         .target(
             name: "CoreGraphicsUnsafeConformances",
             swiftSettings: [
-                .enableUpcomingFeature("StrictConcurrency"),
             ]
         ),
 
@@ -86,9 +83,8 @@ let package = Package(
         .target(
             name: "Earcut", dependencies: [
                 "earcut_cpp",
-            ], swiftSettings: [.interoperabilityMode(.Cxx),
-                               .enableUpcomingFeature("StrictConcurrency"),
-
+            ], swiftSettings: [
+                .interoperabilityMode(.Cxx),
             ]
         ),
         .target(
@@ -109,7 +105,6 @@ let package = Package(
                 "CoreGraphicsSupport",
             ],
             swiftSettings: [
-                .enableUpcomingFeature("StrictConcurrency"),
             ]
         ),
 
@@ -119,12 +114,11 @@ let package = Package(
             name: "MetalSupport",
             dependencies: ["SIMDSupport",],
             swiftSettings: [
-                .enableUpcomingFeature("StrictConcurrency"),
-            ]),
+            ]
+        ),
         .target(
             name: "MetalUnsafeConformances",
             swiftSettings: [
-                .enableUpcomingFeature("StrictConcurrency"),
             ]
         ),
 
@@ -135,7 +129,6 @@ let package = Package(
                 .product(name: "Everything", package: "Everything"),
             ],
             swiftSettings: [
-                .enableUpcomingFeature("StrictConcurrency"),
             ]
         ),
 
@@ -150,7 +143,6 @@ let package = Package(
                 "Shapes2D",
             ],
             swiftSettings: [
-                .enableUpcomingFeature("StrictConcurrency"),
             ]
         ),
 
@@ -160,7 +152,6 @@ let package = Package(
             name: "Projection",
             dependencies: ["SIMDSupport"],
             swiftSettings: [
-                .enableUpcomingFeature("StrictConcurrency"),
             ]
         ),
 
@@ -187,7 +178,6 @@ let package = Package(
                 "MetalUnsafeConformances",
             ],
             swiftSettings: [
-                .enableUpcomingFeature("StrictConcurrency"),
                 .interoperabilityMode(.Cxx)
             ]
         ),
@@ -205,7 +195,6 @@ let package = Package(
                 .process("Placeholder.txt"),
             ],
             swiftSettings: [
-                .enableUpcomingFeature("StrictConcurrency"),
             ]
         ),
 
@@ -221,7 +210,6 @@ let package = Package(
                 "SIMDSupport",
             ],
             swiftSettings: [
-                .enableUpcomingFeature("StrictConcurrency"),
             ]
         ),
         .testTarget(name: "Shapes2DTests", dependencies: [
@@ -243,7 +231,6 @@ let package = Package(
                 "SwiftGraphicsSupport",
             ],
             swiftSettings: [
-                .enableUpcomingFeature("StrictConcurrency"),
                 .interoperabilityMode(.Cxx)
             ]
         ),
@@ -257,12 +244,13 @@ let package = Package(
                 .product(name: "ApproximateEquality", package: "ApproximateEquality"),
             ],
             swiftSettings: [
-                .enableUpcomingFeature("StrictConcurrency"),
             ]
         ),
-        .target(name: "SIMDUnsafeConformances",            swiftSettings: [
-            .enableUpcomingFeature("StrictConcurrency"),
-        ]),
+        .target(
+            name: "SIMDUnsafeConformances",
+            swiftSettings: [
+            ]
+        ),
         .testTarget(name: "SIMDSupportTests", dependencies: [
             "SIMDSupport",
         ]),
@@ -278,7 +266,6 @@ let package = Package(
                 .product(name: "SwiftFormats", package: "SwiftFormats"),
             ],
             swiftSettings: [
-                .enableUpcomingFeature("StrictConcurrency"),
             ]
         ),
 
@@ -292,7 +279,6 @@ let package = Package(
                 "CoreGraphicsUnsafeConformances",
             ],
             swiftSettings: [
-                .enableUpcomingFeature("StrictConcurrency"),
                 .interoperabilityMode(.Cxx)
             ]
         ),
@@ -307,7 +293,6 @@ let package = Package(
                 "CoreGraphicsSupport",
             ],
             swiftSettings: [
-                .enableUpcomingFeature("StrictConcurrency"),
                 .interoperabilityMode(.Cxx)
             ]
         ),
@@ -324,7 +309,6 @@ let package = Package(
                 .process("RandomFill.metal"),
             ],
             swiftSettings: [
-                .enableUpcomingFeature("StrictConcurrency"),
                 .interoperabilityMode(.Cxx)
             ]
         ),
@@ -367,7 +351,6 @@ let package = Package(
                 .copy("Resources/StanfordVolumeData.tar"),
             ],
             swiftSettings: [
-                .enableUpcomingFeature("StrictConcurrency"),
                 .interoperabilityMode(.Cxx),
             ]
         ),
@@ -378,5 +361,7 @@ let package = Package(
                 .interoperabilityMode(.Cxx)
             ]
         ),
-    ]
+    ],
+    swiftLanguageVersions: [.v6]
+
 )
