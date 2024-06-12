@@ -79,7 +79,7 @@ public extension YAMesh {
 }
 
 public extension YAMesh {
-    @available(*, deprecated, message: "Deprecated")
+    // TODO: Maybe deprecate? @available(*, deprecated, message: "Deprecated")
     static func simpleMesh(label: String? = nil, indices: [UInt16], vertices: [SimpleVertex], primitiveType: MTLPrimitiveType = .triangle, device: MTLDevice) throws -> YAMesh {
         guard let indexBuffer = device.makeBuffer(bytesOf: indices, options: .storageModeShared) else {
             fatalError()
