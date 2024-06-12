@@ -37,8 +37,8 @@ public struct SceneGraphDemoView: View, DemoView {
             UnlitShadingPass(scene: scene),
             DebugRenderPass(scene: scene),
         ])
-        .firstPersonInteractive(camera: cameraNode)
-        .displayLink(DisplayLink2())
+//        .firstPersonInteractive(camera: cameraNode)
+//        .displayLink(DisplayLink2())
         .showFrameEditor()
         .onChange(of: cameraRotation, initial: true) {
             //            scene.currentCameraNode?.transform.rotation = .rollPitchYaw(cameraRotation)

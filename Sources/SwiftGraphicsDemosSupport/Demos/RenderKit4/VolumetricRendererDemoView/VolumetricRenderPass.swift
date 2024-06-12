@@ -6,7 +6,7 @@ import MetalUISupport
 import ModelIO
 import os
 import RenderKit
-import RenderKitShaders
+import RenderKitShadersLegacy
 import Shapes2D
 import SIMDSupport
 import SwiftGraphicsSupport
@@ -54,7 +54,7 @@ struct VolumetricRenderPass: RenderPassProtocol {
 
     func setup(context: Context, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State {
         let device = context.device
-        let library = try! device.makeDebugLibrary(bundle: .renderKitShaders)
+        let library = context.library
         let vertexFunction = library.makeFunction(name: "volumeVertexShader")!
         let fragmentFunction = library.makeFunction(name: "volumeFragmentShader")
 

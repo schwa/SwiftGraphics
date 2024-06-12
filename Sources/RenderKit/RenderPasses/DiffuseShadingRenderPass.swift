@@ -1,5 +1,5 @@
 import MetalKit
-import RenderKitShaders
+import RenderKitShadersLegacy
 import SwiftGraphicsSupport
 import SwiftUI
 

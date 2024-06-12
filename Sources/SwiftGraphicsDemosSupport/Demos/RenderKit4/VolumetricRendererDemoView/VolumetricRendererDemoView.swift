@@ -6,7 +6,7 @@ import MetalSupport
 import ModelIO
 import os
 import RenderKit
-import RenderKitShaders
+import RenderKitShadersLegacy
 import Shapes2D
 import SIMDSupport
 import SwiftUI

@@ -1,7 +1,7 @@
 import Metal
 import MetalKit
 import Observation
-import RenderKitShaders
+import RenderKitShadersLegacy
 import simd
 import SwiftGraphicsSupport
 
