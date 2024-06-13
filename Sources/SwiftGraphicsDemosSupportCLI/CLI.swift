@@ -6,8 +6,8 @@ enum Main {
     static func main() async throws {
         let source = """
             ply
-            format binary_little_endian 1.0
-            element vertex 1
+            format ascii 1.0
+            element vertex 2
             property float x
             property float y
             property float z
@@ -15,11 +15,14 @@ enum Main {
             property list uchar uint vertex_indices
             end_header
             1 2 3
+            4 5 6
             4 0 0 0 0
             """
         let ply = try Ply(source: source)
-        print(ply.elements[0].records[0].values[0].float)
-        print(ply.elements[0].records[1].values[0].float)
-
+        print(ply)
+        print(ply.elements[0].records[0].to(definition: ply.header.elements[0], ofType: SIMD3<Float>.self)!)
+        print(ply.elements[0].records[1].to(definition: ply.header.elements[0], ofType: SIMD3<Float>.self)!)
+        print(ply.elements[0].records[0].values[0].float!)
+        print(ply.elements[0].records[1].values[0].float!)
     }
 }
