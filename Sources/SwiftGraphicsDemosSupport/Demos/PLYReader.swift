@@ -24,15 +24,14 @@ public struct Ply {
     }
 
     public struct Element {
-//        public enum Record {
-//            case compound([ScalarValue])
-//            case list(ScalarValue_)
-//        }
-
-        public struct Record {
-            public var values: [Value]
+        public enum Record {
+            case compound([ScalarValue]) // Values may be different
+            case collection([ScalarValue]) // All values are same
         }
 
+//        public struct Record {
+//            public var values: [Value]
+//        }
 
         public var definition: Header.Element
         public var records: [Record]
@@ -59,13 +58,6 @@ public struct Ply {
         case float(Float)
         case double(Double)
     }
-
-    // DEPRECATE
-    public enum Value {
-        case scalar(ScalarValue)
-        case list(ScalarValue_)
-    }
-
 
     public var header: Header
     public var elements: [Element]
@@ -169,19 +161,17 @@ extension CollectionScanner where Element == UInt8 {
             let version = String(match.output.version)
             var elements: [Ply.Header.Element] = []
             while true {
-                print(">>>>", scanner.remainingString)
-                if let comment = scanner.scanPrefixedLine(prefix: "comment") {
-                    print("COMMENT: \(comment)")
+                if scanner.scanPrefixedLine(prefix: "comment") != nil {
+                    // This block intentionally left blank.
                 }
                 else if scanner.scanPrefixedLine(prefix: "end_header") != nil {
                     break
                 }
                 else if let element = try scanner.scanPLYHeaderElement() {
                     elements.append(element)
-                    print("ELEMENT")
                 }
                 else {
-                    throw PlyError.generic("Unhandled content: \"\(scanner.scanLine())\"")
+                    throw PlyError.generic("Unhandled content: \"\(scanner.scanLine() ?? "")\"")
                 }
             }
             return .init(format: format, version: version, elements: elements)
@@ -225,7 +215,6 @@ extension CollectionScanner where Element == UInt8 {
                 return .scalar(name: name, valueType: valueType)
             }
             else if let match = line.firstMatch(of: #/^property\s+list\s+(?<count_type>.+)\s+(?<value_type>.+)\s+(?<name>.+)\s*$/#) {
-                let valueType = String(match.output.value_type)
                 guard let countType = Ply.ScalarType(rawValue: String(match.output.count_type)) else {
                     throw PlyError.generic("Unknown scalar type \"\(match.output.count_type)\".")
                 }
@@ -257,36 +246,93 @@ extension CollectionScanner where Element == UInt8 {
     mutating func scanPLYRow(definition: Ply.Header.Element) throws -> Ply.Element.Record? {
         // TODO: Assumes ascii
         try scan_ { scanner in
-            var values: [Ply.Value] = []
-            for property in definition.properties {
-                var value: Ply.Value?
-                switch property {
-                case .scalar(_, let type):
+            if definition.properties.count == 1, case let .list(_, countType, valueType) = definition.properties[0] {
+                guard let word = scanner.scanWord(), let count = Ply.ScalarValue(type: countType, string: word)?.int else {
+                    fatalError()
+                }
+                let values = (0..<count).map { _ in
+                    guard let word = scanner.scanWord(), let scalar = Ply.ScalarValue(type: valueType, string: word) else {
+                        fatalError()
+                    }
+                    return scalar
+                }
+                return .collection(values)
+            }
+            else {
+                var values: [Ply.ScalarValue] = []
+                for property in definition.properties {
+                    guard case let .scalar(_, type) = property else {
+                        fatalError()
+                    }
                     guard let word = scanner.scanWord() else {
                         return nil
                     }
-                    value = Ply.ScalarValue(type: type, string: word).map { .scalar($0) }
+                    let value = Ply.ScalarValue(type: type, string: word)
                     guard let value else {
                         throw PlyError.generic("Could not convert value.")
                     }
                     values.append(value)
-                case .list(_, countType: let countType, valueType: let valueType):
-                    guard let word = scanner.scanWord(), let count = Ply.ScalarValue(type: countType, string: word)?.int else {
-                        fatalError()
-                    }
-                    let values = (0..<count).map { _ in
-                        guard let word = scanner.scanWord(), let scalar = Ply.ScalarValue(type: valueType, string: word)?.int else {
-                            fatalError()
-                        }
-                        print(scalar)
-                        return scalar
-                    }
-                    print(values)
-
-                    fatalError()
                 }
+                return .compound(values)
             }
-            return .init(values: values)
+        }
+    }
+}
+
+extension Ply.Header.Element: CustomDebugStringConvertible {
+    public var debugDescription: String {
+        "Element(name: \(name), properties: \(properties))"
+    }
+
+}
+
+extension Ply.Header.Element.Property: CustomDebugStringConvertible {
+    public var debugDescription: String {
+        switch self {
+        case .list(name: let name, countType: let countType, valueType: let valueType):
+            return "Property(name: \(name), countType: \(countType) valueType: \(valueType))"
+        case .scalar(name: let name, valueType: let valueType):
+            return "Property(name: \(name), valueType: \(valueType))"
+        }
+    }
+}
+
+extension Ply.Element: CustomDebugStringConvertible {
+    public var debugDescription: String {
+        "Element(name: \(definition.name), records: [\(records.map({ "[\($0)]" }).joined(separator: ", "))])"
+    }
+}
+
+extension Ply.Element.Record: CustomDebugStringConvertible {
+    public var debugDescription: String {
+        switch self {
+        case .collection(let values):
+            values.map(\.debugDescription).joined(separator: ", ")
+        case .compound(let values):
+            values.map(\.debugDescription).joined(separator: ", ")
+        }
+    }
+}
+
+extension Ply.ScalarValue: CustomDebugStringConvertible {
+    public var debugDescription: String {
+        switch self {
+        case .char(let value):
+            String(value)
+        case .uchar(let value):
+            String(value)
+        case .short(let value):
+            String(value)
+        case .ushort(let value):
+            String(value)
+        case .int(let value):
+            String(value)
+        case .uint(let value):
+            String(value)
+        case .float(let value):
+            String(value)
+        case .double(let value):
+            String(value)
         }
     }
 }
@@ -312,14 +358,6 @@ extension Ply.ScalarValue {
         default:
             fatalError()
         }
-    }
-}
-
-struct Char {
-    var byte: UInt8
-
-    var isSpace: Bool {
-        Darwin.isspace(Int32(byte)) != 0
     }
 }
 
@@ -366,23 +404,32 @@ public extension Ply.ScalarValue {
     }
 }
 
-public extension Ply.Value {
-
-    var scalar: Ply.ScalarValue? {
-        if case let .scalar(scalar) = self {
-            return scalar
+extension Ply.Header.Element.Property {
+    var name: String {
+        switch self {
+        case .list(name: let name, _, _):
+            return name
+        case .scalar(name: let name, _):
+            return name
         }
-        return nil
-
-    }
-
-    var float: Float? {
-        return scalar?.float
     }
 }
 
-extension Ply.Element.Record {
+public extension Ply.Element.Record {
+
+    var values: [Ply.ScalarValue] {
+        switch self {
+        case .collection(let values):
+            return values
+        case .compound(let values):
+            return values
+        }
+    }
+
     func to(definition: Ply.Header.Element, ofType: SIMD3<Float>.Type) -> SIMD3<Float>? {
+        guard case let .compound(values) = self else {
+            return nil
+        }
         guard let x = values[0].float, let y = values[1].float, let z = values[2].float else {
             return nil
         }
@@ -395,5 +442,13 @@ extension Ply {
         elements[0].records.map {
             $0.to(definition: elements[0].definition, ofType: SIMD3<Float>.self)!
         }
+    }
+}
+
+struct Char {
+    var byte: UInt8
+
+    var isSpace: Bool {
+        Darwin.isspace(Int32(byte)) != 0
     }
 }
