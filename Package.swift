@@ -369,6 +369,20 @@ let package = Package(
                 .interoperabilityMode(.Cxx)
             ]
         ),
+
+        .executableTarget(
+            name: "SwiftGraphicsDemosSupportCLI",
+            dependencies: [
+                "MetalSupport",
+                "SwiftGraphicsDemosSupport",
+            ],
+            resources: [
+                .copy("CubeBinary.ply"),
+            ],
+            swiftSettings: [
+                .interoperabilityMode(.Cxx)
+            ]
+        ),
     ],
     swiftLanguageVersions: [.v6]
 
