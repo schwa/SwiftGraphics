@@ -12,7 +12,6 @@
 		45DA912C2BF158380070FD0C /* Info-visionOS.plist in Resources */ = {isa = PBXBuildFile; fileRef = 45DA90B12BF158380070FD0C /* Info-visionOS.plist */; };
 		45DEA3A82C174F92007481D8 /* cube_points.pointsply in Resources */ = {isa = PBXBuildFile; fileRef = 45DEA3A72C174F68007481D8 /* cube_points.pointsply */; };
 		45E5B5E32A8EA04100B46CDC /* SwiftGraphicsDemosApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E5B5E22A8EA04100B46CDC /* SwiftGraphicsDemosApp.swift */; };
-		45E5B5EB2A8EA04400B46CDC /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 45E5B5EA2A8EA04400B46CDC /* Preview Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,7 +30,6 @@
 		45E5B5DF2A8EA04100B46CDC /* SwiftGraphicsDemos.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftGraphicsDemos.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		45E5B5E22A8EA04100B46CDC /* SwiftGraphicsDemosApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftGraphicsDemosApp.swift; sourceTree = "<group>"; };
 		45E5B5E82A8EA04400B46CDC /* SwiftGraphicsDemos.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SwiftGraphicsDemos.entitlements; sourceTree = "<group>"; };
-		45E5B5EA2A8EA04400B46CDC /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,18 +100,9 @@
 				45E5B5E22A8EA04100B46CDC /* SwiftGraphicsDemosApp.swift */,
 				45DA90B12BF158380070FD0C /* Info-visionOS.plist */,
 				45E5B5E82A8EA04400B46CDC /* SwiftGraphicsDemos.entitlements */,
-				45E5B5E92A8EA04400B46CDC /* Preview Content */,
 				45CDB0432BF4025700096326 /* Assets.xcassets */,
 			);
 			path = SwiftGraphicsDemos;
-			sourceTree = "<group>";
-		};
-		45E5B5E92A8EA04400B46CDC /* Preview Content */ = {
-			isa = PBXGroup;
-			children = (
-				45E5B5EA2A8EA04400B46CDC /* Preview Assets.xcassets */,
-			);
-			path = "Preview Content";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -183,7 +172,6 @@
 				45DEA3A82C174F92007481D8 /* cube_points.pointsply in Resources */,
 				45DA912C2BF158380070FD0C /* Info-visionOS.plist in Resources */,
 				45CDB0442BF4025700096326 /* Assets.xcassets in Resources */,
-				45E5B5EB2A8EA04400B46CDC /* Preview Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
