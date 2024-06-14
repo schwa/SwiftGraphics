@@ -22,7 +22,8 @@ struct PointCloudSoftwareRenderView: View, DemoView {
 
     init() {
         let url = Bundle.main.url(forResource: "cube_points", withExtension: "pointsply")!
-        points = try! Ply(url: url).points
+        var ply = try! Ply(url: url)
+        points = try! ply.points
     }
 
     var body: some View {

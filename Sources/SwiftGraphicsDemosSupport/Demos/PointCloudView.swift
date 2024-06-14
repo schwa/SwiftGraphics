@@ -32,7 +32,8 @@ struct PointCloudView: View, DemoView {
     init() {
         let device = MTLCreateSystemDefaultDevice()!
         let url = Bundle.main.url(forResource: "cube_points", withExtension: "pointsply")!
-        let points = try! Ply(url: url).points
+        var ply = try! Ply(url: url)
+        let points = try! ply.points
 
         self.device = device
         self.pointCount = points.count
