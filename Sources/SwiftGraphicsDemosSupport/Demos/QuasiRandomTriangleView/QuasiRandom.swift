@@ -21,15 +21,30 @@ func quasiRandomPointIn(triangle: Triangle, n: Int) -> CGPoint {
 extension Triangle {
 
     var a: CGPoint {
-        vertices.0
+        get {
+            vertices.0
+        }
+        set {
+            vertices.0 = newValue
+        }
     }
 
     var b: CGPoint {
-        vertices.1
+        get {
+            vertices.1
+        }
+        set {
+            vertices.1 = newValue
+        }
     }
 
     var c: CGPoint {
-        vertices.2
+        get {
+            vertices.2
+        }
+        set {
+            vertices.2 = newValue
+        }
     }
 
     init(a: CGPoint, b: CGPoint, c: CGPoint) {
