@@ -12,13 +12,23 @@ public struct Ply {
             case binaryLittleEndian = "binary_little_endian"
         }
         public struct Element: Equatable {
-            public enum Property: Equatable {
-                case scalar(name: String, valueType: ScalarType)
-                case list(name: String, countType: ScalarType, valueType: ScalarType)
+            public enum Specification: Equatable {
+                public struct Property: Equatable {
+                    var name: String
+                    var valueType: ScalarType
+                }
+                public struct List: Equatable {
+                    var name: String
+                    var countType: ScalarType
+                    var valueType: ScalarType
+                }
+                case compound([Property])
+                case list(List)
             }
+
             public var name: String
             public var count: Int
-            public var properties: [Property]
+            public var specification: Specification
         }
 
         public var format: Format
@@ -126,17 +136,17 @@ public extension Ply {
 //    }
 //}
 
-extension Ply.Header.Element.Property {
-    var size: Int? {
-        switch self {
-        case .list:
-            // Can't compute the length of a list record just from the header :-(
-            nil
-        case .scalar(_, let valueType):
-            valueType.size
-        }
-    }
-}
+//extension Ply.Header.Element.Property {
+//    var size: Int? {
+//        switch self {
+//        case .list:
+//            // Can't compute the length of a list record just from the header :-(
+//            nil
+//        case .scalar(_, let valueType):
+//            valueType.size
+//        }
+//    }
+//}
 
 extension Ply.ScalarType {
     var size: Int {
@@ -164,22 +174,22 @@ extension Ply.ScalarType {
 
 // MARK:
 
-extension Ply.Header.Element: CustomDebugStringConvertible {
-    public var debugDescription: String {
-        "Element(name: \(name), properties: \(properties))"
-    }
-}
+//extension Ply.Header.Element: CustomDebugStringConvertible {
+//    public var debugDescription: String {
+//        "Element(name: \(name), properties: \(properties))"
+//    }
+//}
 
-extension Ply.Header.Element.Property: CustomDebugStringConvertible {
-    public var debugDescription: String {
-        switch self {
-        case .list(name: let name, countType: let countType, valueType: let valueType):
-            return "Property(name: \(name), countType: \(countType) valueType: \(valueType))"
-        case .scalar(name: let name, valueType: let valueType):
-            return "Property(name: \(name), valueType: \(valueType))"
-        }
-    }
-}
+//extension Ply.Header.Element.Property: CustomDebugStringConvertible {
+//    public var debugDescription: String {
+//        switch self {
+//        case .list(name: let name, countType: let countType, valueType: let valueType):
+//            return "Property(name: \(name), countType: \(countType) valueType: \(valueType))"
+//        case .scalar(name: let name, valueType: let valueType):
+//            return "Property(name: \(name), valueType: \(valueType))"
+//        }
+//    }
+//}
 
 extension Ply.Element: CustomDebugStringConvertible {
     public var debugDescription: String {
@@ -298,14 +308,36 @@ public extension Ply.ScalarValue {
     }
 }
 
-extension Ply.Header.Element.Property {
-    var name: String {
-        switch self {
-        case .list(name: let name, _, _):
-            return name
-        case .scalar(name: let name, _):
-            return name
+public extension Ply.Header.Element.Specification {
+    var properties: [Ply.Header.Element.Specification.Property]? {
+        guard case let .compound(array) = self else {
+            return nil
         }
+        return array
+    }
+}
+
+//extension Ply.Header.Element.Property {
+//    var name: String {
+//        switch self {
+//        case .list(name: let name, _, _):
+//            return name
+//        case .scalar(name: let name, _):
+//            return name
+//        }
+//    }
+//}
+
+public extension Ply.Header {
+    init(source: String) throws {
+        guard let data = source.data(using: .utf8) else {
+            throw PlyError.generic("Could not convert data.")
+        }
+        var scanner = CollectionScanner(elements: data)
+        guard let header = try scanner.scanPLYHeader() else {
+            throw PlyError.generic("Could not scan PLY header")
+        }
+        self = header
     }
 }
 
@@ -343,6 +375,8 @@ extension Ply {
     }
 }
 
+// MARK: -
+
 extension CollectionScanner where Element == UInt8 {
     mutating func scanPLYHeader() throws -> Ply.Header? {
         try scan_ { scanner in
@@ -364,7 +398,7 @@ extension CollectionScanner where Element == UInt8 {
             }
             let version = String(match.output.version)
             var elements: [Ply.Header.Element] = []
-            while true {
+            while !scanner.atEnd {
                 if scanner.scanPrefixedLine(prefix: "comment") != nil {
                     // This block intentionally left blank.
                 }
@@ -373,9 +407,6 @@ extension CollectionScanner where Element == UInt8 {
                 }
                 else if let element = try scanner.scanPLYHeaderElement() {
                     elements.append(element)
-                }
-                else {
-                    throw PlyError.generic("Unhandled content: \"\(scanner.scanLine() ?? "")\"")
                 }
             }
             return .init(format: format, version: version, elements: elements)
@@ -395,43 +426,59 @@ extension CollectionScanner where Element == UInt8 {
             guard let count = Int(match.output.count) else {
                 throw PlyError.generic("Could not get count of properties")
             }
-            var properties: [Ply.Header.Element.Property] = []
-            while true {
-                guard let property = try scanner.scanPLYHeaderElementProperty() else {
-                    break
-                }
-                properties.append(property)
+            guard let specification = try scanner.scanPLYHeaderElementSpecification() else {
+                return nil
             }
-            return .init(name: name, count: count, properties: properties)
+            return .init(name: name, count: count, specification: specification)
         }
     }
 
-    mutating func scanPLYHeaderElementProperty() throws -> Ply.Header.Element.Property? {
-        try scan_ { scanner in
+    mutating func scanPLYHeaderElementSpecification() throws -> Ply.Header.Element.Specification? {
+        // TODO: This function is doing too much and is badly written.
+        var specification: Ply.Header.Element.Specification?
+        specification = try scan_ { scanner in
             guard let line = scanner.scanLine() else {
                 return nil
             }
-            if let match = line.firstMatch(of: #/^property\s+(?<value_type>[A-Za-z]+)\s+(?<name>[A-Za-z]+)\s*$/#) {
-                let name = String(match.output.name)
-                guard let valueType = Ply.ScalarType(rawValue: String(match.output.value_type)) else {
-                    throw PlyError.generic("Unknown scalar type \"\(match.output.value_type)\".")
-                }
-                return .scalar(name: name, valueType: valueType)
-            }
-            else if let match = line.firstMatch(of: #/^property\s+list\s+(?<count_type>.+)\s+(?<value_type>.+)\s+(?<name>.+)\s*$/#) {
-                guard let countType = Ply.ScalarType(rawValue: String(match.output.count_type)) else {
-                    throw PlyError.generic("Unknown scalar type \"\(match.output.count_type)\".")
-                }
-                guard let valueType = Ply.ScalarType(rawValue: String(match.output.value_type)) else {
-                    throw PlyError.generic("Unknown scalar type \"\(match.output.value_type)\".")
-                }
-                let name = String(match.output.name)
-                return .list(name: name, countType: countType, valueType: valueType)
-            }
-            else {
+            guard let match = line.firstMatch(of: #/^property\s+list\s+(?<count_type>.+)\s+(?<value_type>.+)\s+(?<name>.+)\s*$/#) else {
                 return nil
             }
+            guard let countType = Ply.ScalarType(rawValue: String(match.output.count_type)) else {
+                throw PlyError.generic("Unknown scalar type \"\(match.output.count_type)\".")
+            }
+            guard let valueType = Ply.ScalarType(rawValue: String(match.output.value_type)) else {
+                throw PlyError.generic("Unknown scalar type \"\(match.output.value_type)\".")
+            }
+            let name = String(match.output.name)
+            return .list(.init(name: name, countType: countType, valueType: valueType))
         }
+        if let specification {
+            return specification
+        }
+        var saved = current
+        specification = try scan_ { scanner in
+            var properties: [Ply.Header.Element.Specification.Property] = []
+            while !scanner.atEnd {
+                saved = scanner.current
+                guard let line = scanner.scanLine() else {
+                    break
+                }
+                guard let match = line.firstMatch(of: #/^property\s+(?<value_type>.+)\s+(?<name>.+)\s*$/#) else {
+                    break
+                }
+                let name = String(match.output.name)
+                guard let valueType = Ply.ScalarType(rawValue: String(match.output.value_type)) else {
+                    throw PlyError.generic("Unknown scalar type \"\(match.output.value_type)\".")
+                }
+                properties.append(.init(name: name, valueType: valueType))
+            }
+            return .compound(properties)
+        }
+        if let specification {
+            current = saved
+            return specification
+        }
+        return nil
     }
 
     mutating func scanPLYElement(definition: Ply.Header.Element, format: Ply.Header.Format) throws -> Ply.Element? {
@@ -446,27 +493,26 @@ extension CollectionScanner where Element == UInt8 {
     }
 
     mutating func scanPLYRow(definition: Ply.Header.Element, format: Ply.Header.Format) throws -> Ply.Element.Record {
-        // TODO: Assumes ascii
-        if definition.properties.count == 1, case let .list(_, countType, valueType) = definition.properties[0] {
-            guard let count = try scanPLYScalarValue(type: countType, format: format).int else {
-                fatalError("Could not convert count to int.")
-            }
-            let values = try (0..<count).map { _ in
-                try scanPLYScalarValue(type: valueType, format: format)
-            }
-            return .collection(values)
-        }
-        else {
+
+        switch definition.specification {
+        case .compound(let properties):
             var values: [Ply.ScalarValue] = []
-            for property in definition.properties {
-                guard case let .scalar(_, type) = property else {
-                    throw PlyError.generic("Property is not scalar.")
-                }
-                let value = try scanPLYScalarValue(type: type, format: format)
+            for property in properties {
+                let value = try scanPLYScalarValue(type: property.valueType, format: format)
                 values.append(value)
             }
             return .compound(values)
+        case .list(let list):
+            guard let count = try scanPLYScalarValue(type: list.countType, format: format).int else {
+                fatalError("Could not convert count to int.")
+            }
+            let values = try (0..<count).map { _ in
+                try scanPLYScalarValue(type: list.valueType, format: format)
+            }
+            return .collection(values)
         }
+
+
     }
 
     mutating func scanPLYScalarValue(type: Ply.ScalarType, format: Ply.Header.Format) throws -> Ply.ScalarValue {

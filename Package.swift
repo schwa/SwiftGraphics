@@ -378,6 +378,7 @@ let package = Package(
             ],
             resources: [
                 .copy("CubeBinary.ply"),
+                .copy("test-splat.3-points-from-train.ply"),
             ],
             swiftSettings: [
                 .interoperabilityMode(.Cxx)
