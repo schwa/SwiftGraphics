@@ -27,6 +27,7 @@ struct DemosView: View {
     var body: some View {
         NavigationView {
             List {
+                row(for: QuasiRandomTriangleView.self)
                 row(for: PointCloudView.self)
                 row(for: PointCloudSoftwareRenderView.self)
                 ValueView(value: true) { isExpanded in
