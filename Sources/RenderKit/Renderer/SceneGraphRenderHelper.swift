@@ -48,7 +48,7 @@ public struct SceneGraphRenderHelper {
         .lazy
     }
 
-    public func elements <Material>(material: Material.Type) -> any Sequence<Element<Material>> where Material: SG3MaterialProtocol {
+    public func elements <Material>(material: Material.Type) -> any Sequence<Element<Material>> where Material: MaterialProtocol {
         // TODO: concat node's transform with parent node's transforms
         scene.root.allNodes().compactMap { node in
             guard let geometry = node.content?.geometry else {

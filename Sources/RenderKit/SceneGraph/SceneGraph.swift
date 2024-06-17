@@ -229,14 +229,14 @@ public extension Node.Content {
 
 // MARK: -
 
-public protocol SG3MaterialProtocol: Sendable, Equatable {
+public protocol MaterialProtocol: Sendable, Equatable {
 }
 
 public struct Geometry: Sendable, Equatable {
     public var mesh: MTKMesh
-    public var materials: [any SG3MaterialProtocol]
+    public var materials: [any MaterialProtocol]
 
-    public init(mesh: MTKMesh, materials: [any SG3MaterialProtocol]) {
+    public init(mesh: MTKMesh, materials: [any MaterialProtocol]) {
         self.mesh = mesh
         self.materials = materials
     }

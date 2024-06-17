@@ -4,7 +4,7 @@ import RenderKitShadersLegacy
 import SwiftGraphicsSupport
 
 // TODO: Rename
-public struct UnlitMaterialX: SG3MaterialProtocol {
+public struct UnlitMaterialX: MaterialProtocol {
     public var baseColorFactor: SIMD4<Float>
     public var baseColorTexture: MTLTexture?
 
