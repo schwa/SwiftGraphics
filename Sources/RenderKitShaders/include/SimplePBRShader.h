@@ -1,10 +1,9 @@
 #include <simd/simd.h>
 
 struct SimplePBRMaterial {
-    simd_float3 albedo;
+    simd_float3 baseColor;
     float metallic;
     float roughness;
-    simd_float3 ambientOcclusion;
 };
 
 struct SimplePBRLight {
@@ -31,7 +30,7 @@ namespace SimplePBRShader {
     using namespace metal;
 
     struct VertexIn {
-        float4 position [[attribute(0)]];
+        float3 position [[attribute(0)]];
         float3 normal [[attribute(1)]];
         float2 uv [[attribute(2)]];
     };
@@ -49,52 +48,95 @@ namespace SimplePBRShader {
     typedef SimplePBRFragmentUniforms FragmentUniforms;
     typedef VertexOut FragmentIn;
 
-    float DistributionGGX(float3 N, float3 H, float roughness) {
-        float a = roughness * roughness;
-        float a2 = a * a;
-        float NdotH = max(dot(N, H), 0.0);
-        float NdotH2 = NdotH * NdotH;
-
-        float num = a2;
-        float denom = (NdotH2 * (a2 - 1.0) + 1.0);
-        denom = M_PI_F * denom * denom;
-
-        return num / denom;
-    }
-
-    float GeometrySchlickGGX(float NdotV, float roughness) {
-        float r = (roughness + 1.0);
-        float k = (r * r) / 8.0;
-
-        float num = NdotV;
-        float denom = NdotV * (1.0 - k) + k;
-
-        return num / denom;
-    }
-
-    float GeometrySmith(float3 N, float3 V, float3 L, float roughness) {
-        float NdotV = max(dot(N, V), 0.0);
-        float NdotL = max(dot(N, L), 0.0);
-        float ggx1 = GeometrySchlickGGX(NdotV, roughness);
-        float ggx2 = GeometrySchlickGGX(NdotL, roughness);
-        return ggx1 * ggx2;
-    }
-
-    float3 FresnelSchlick(float cosTheta, float3 F0) {
-        return F0 + (1.0 - F0) * pow(1.0 - cosTheta, 5.0);
-    }
-
     [[vertex]]
     VertexOut VertexShader(
         VertexIn in [[stage_in]],
         constant VertexUniforms &uniforms[[buffer(1)]]
     ) {
         VertexOut out;
-        out.position = uniforms.modelViewProjectionMatrix * in.position;
-        out.worldPosition = (uniforms.modelMatrix * in.position).xyz;
-        out.worldNormal = normalize((uniforms.modelMatrix * float4(in.normal, 0.0)).xyz);
+        out.position = uniforms.modelViewProjectionMatrix * float4(in.position, 1.0);
+        out.worldPosition = (uniforms.modelMatrix * float4(in.position, 1.0)).xyz;
+        out.worldNormal = normalize((uniforms.modelMatrix * float4(in.normal, 1.0)).xyz);
         out.uv = in.uv;
         return out;
+    }
+
+    float D_GGX(float NoH, float a) {
+        float a2 = a * a;
+        float f = (NoH * a2 - NoH) * NoH + 1.0;
+        return a2 / (M_PI_F * f * f);
+    }
+
+    float3 F_Schlick(float u, float3 f0) {
+        return f0 + (float3(1.0) - f0) * pow(1.0 - u, 5.0);
+    }
+
+    float V_SmithGGXCorrelated(float NoV, float NoL, float a) {
+        float a2 = a * a;
+        float GGXL = NoV * sqrt((-NoL * a2 + NoL) * NoL + a2);
+        float GGXV = NoL * sqrt((-NoV * a2 + NoV) * NoV + a2);
+        return 0.5 / (GGXV + GGXL);
+    }
+
+    float V_SmithGGXCorrelatedFast(float NoV, float NoL, float roughness) {
+        float a = roughness;
+        float GGXV = NoL * (NoV * (1.0 - a) + a);
+        float GGXL = NoV * (NoL * (1.0 - a) + a);
+        return 0.5 / (GGXV + GGXL);
+    }
+
+    float Fd_Lambert() {
+        return 1.0 / M_PI_F;
+    }
+
+    float F_Schlick(float u, float f0, float f90) {
+        return f0 + (f90 - f0) * pow(1.0 - u, 5.0);
+    }
+
+    float Fd_Burley(float NoV, float NoL, float LoH, float roughness) {
+        float f90 = 0.5 + 2.0 * roughness * LoH * LoH;
+        float lightScatter = F_Schlick(NoL, 1.0, f90);
+        float viewScatter = F_Schlick(NoV, 1.0, f90);
+        return lightScatter * viewScatter * (1.0 / M_PI_F);
+    }
+
+    float3 brdf(thread const FragmentIn &in, thread const FragmentUniforms uniforms, thread const Material material, thread const Light light) {
+        // Specular term: a Cook-Torrance specular microfacet model, with a GGX normal distribution function, a Smith-GGX height-correlated visibility function, and a Schlick Fresnel function.
+        // Diffuse term: a Lambertian diffuse model OR Disney diffus
+
+        float3 l = normalize(light.position - in.worldPosition);
+        float3 n = in.worldNormal;
+        float3 v = normalize(uniforms.cameraPosition - in.worldPosition);
+        float perceptualRoughness = material.roughness;
+        float3 f0 = material.baseColor;
+        float3 diffuseColor = (1.0 - material.metallic) * material.baseColor.rgb;
+
+        float3 h = normalize(v + l);
+        float NoV = abs(dot(n, v)) + 1e-5;
+        float NoL = clamp(dot(n, l), 0.0, 1.0);
+        float NoH = clamp(dot(n, h), 0.0, 1.0);
+        float LoH = clamp(dot(l, h), 0.0, 1.0);
+
+        // perceptually linear roughness to roughness (see parameterization)
+        float roughness = perceptualRoughness * perceptualRoughness;
+
+        // Normal distribution function (specular D)
+        float D = D_GGX(NoH, roughness);
+
+        // Fresnel (specular F)
+        float3  F = F_Schlick(LoH, f0);
+
+        // (Visibility V)
+        float V = V_SmithGGXCorrelated(NoV, NoL, roughness);
+
+        // specular BRDF
+        float3 Fr = (D * V) * F;
+
+        // diffuse BRDF
+//        float3 Fd = diffuseColor * Fd_Lambert();
+        float3 Fd = diffuseColor * Fd_Burley(NoV, NoL, LoH, perceptualRoughness);
+
+        return Fr + Fd;
     }
 
     [[fragment]]
@@ -103,35 +145,8 @@ namespace SimplePBRShader {
         constant SimplePBRFragmentUniforms &uniforms [[buffer(0)]],
         constant Material& material [[buffer(1)]],
         constant Light& light [[buffer(2)]]
-//        texture2d<float> albedoMap [[texture(0)]],
-//        sampler textureSampler [[sampler(0)]]
     ) {
-
-//        float3 albedo = material.albedo * albedoMap.sample(textureSampler, in.uv).rgb;
-        float3 albedo = material.albedo;
-        float3 N = normalize(in.worldNormal);
-        float3 V = normalize(uniforms.cameraPosition - in.worldPosition);
-        float3 L = normalize(light.position - in.worldPosition);
-        float3 H = normalize(V + L);
-        float3 radiance = light.color * light.intensity;
-
-        float NDF = DistributionGGX(N, H, material.roughness);
-        float G = GeometrySmith(N, V, L, material.roughness);
-        float3 F0 = mix(float3(0.04), albedo, material.metallic);
-        float3 F = FresnelSchlick(max(dot(H, V), 0.0), F0);
-        float3 kS = F;
-        float3 kD = float3(1.0) - kS;
-        kD *= 1.0 - material.metallic;
-
-        float NdotL = max(dot(N, L), 0.0);
-        float3 numerator = NDF * G * F;
-        float denominator = 4.0 * max(dot(N, V), 0.0) * NdotL + 0.001;
-        float3 specular = numerator / denominator;
-
-        float3 ambient = material.ambientOcclusion * albedo;
-        float3 color = ambient + (kD * albedo / M_PI_F + specular) * radiance * NdotL;
-
-        return float4(color, 1.0);
+        return float4(brdf(in, uniforms, material, light), 1.0);
     }
 }
 

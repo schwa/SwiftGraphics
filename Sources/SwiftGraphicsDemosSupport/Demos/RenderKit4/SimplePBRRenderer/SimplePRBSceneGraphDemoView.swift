@@ -31,7 +31,7 @@ public struct SimplePBRSceneGraphDemoView: View, DemoView {
             DiffuseShadingRenderPass(scene: scene),
             UnlitShadingPass(scene: scene),
             SimplePBRShadingPass(scene: scene),
-            DebugRenderPass(scene: scene),
+            //            DebugRenderPass(scene: scene),
         ])
         .showFrameEditor()
         .onChange(of: cameraRotation, initial: true) {
@@ -40,6 +40,22 @@ public struct SimplePBRSceneGraphDemoView: View, DemoView {
         }
         .renderContext(try! RenderContext(device: device))
         .ballRotation($cameraRotation)
+        .inspector(isPresented: .constant(true)) {
+            let path = scene.root.allIndexedNodes().first(where: { $0.0.label == "model-1" })!.1
+            let material = Binding<SimplePBRMaterial> {
+                scene.root[indexPath: path].content!.geometry!.materials[0] as! SimplePBRMaterial
+            }
+            set: {
+                print("SET MATERIAL: \($0)")
+                scene.root[indexPath: path].content!.geometry!.materials[0] = $0
+            }
+            SimplePBRMaterialEditor(material: material)
+        }
+        .onChange(of: scene) {
+            print("Scene did change")
+        }
+
+
     }
 }
 
@@ -62,9 +78,7 @@ public struct SimplePBRSceneGraphDemoView: View, DemoView {
 
 extension SceneGraph {
     static func pbrDemo(device: MTLDevice) throws -> SceneGraph {
-        let sphere = try Sphere3D(radius: 1).toMTKMesh(device: device)
-
-        // TODO: this is ugly
+        let sphere = try Sphere3D(radius: 1.5).toMTKMesh(device: device, segments: [96, 96])
         let panoramaMesh = try Sphere3D(radius: 400).toMTKMesh(device: device, inwardNormals: true)
         let loader = MTKTextureLoader(device: device)
         let panoramaTexture = try loader.newTexture(name: "BlueSkySkybox", scaleFactor: 2, bundle: Bundle.module)
@@ -73,26 +87,73 @@ extension SceneGraph {
         let quad = try Quad<SimpleVertex>(x: -0.5, y: -0.5, width: 1, height: 1).toMTKMesh(device: device)
 
         return try SceneGraph(root:
-            Node(label: "root") {
-                Node(label: "camera")
-                    .content(.camera(Camera()))
-                    .transform(translation: [0, 0, 5])
-                    .children {
-                        // TODO: Pano location should always be tied to camera location
-                        Node(label: "pano")
+                                Node(label: "root") {
+            Node(label: "camera")
+                .content(.camera(Camera()))
+                .transform(translation: [0, 0, 5])
+                .children {
+                    // TODO: Pano location should always be tied to camera location
+                    Node(label: "pano")
                         .content(.geometry(mesh: panoramaMesh, materials: [UnlitMaterialX(baseColorTexture: panoramaTexture)]))
-                    }
-                Node(label: "model-1")
-                .content(.geometry(mesh: sphere, materials: [SimplePBRMaterial(albedo: [0, 0, 1.0], metallic: 0.0, roughness: 1, ambientOcclusion: [1, 1, 1])]))
-                Node(label: "model-2")
-                    .content(.geometry(mesh: quad, materials: [UnlitMaterialX(baseColorTexture: grassTexture)]))
-                    .transform(scale: [10, 10, 10])
-                    .transform(.init(rotation: .rotation(angle: .degrees(90), axis: [1, 0, 0])))
-                    .transform(translation: [0, -1, 0])
-            }
+                }
+            Node(label: "model-1")
+                .content(.geometry(mesh: sphere, materials: [SimplePBRMaterial(baseColor: [1, 0, 0], metallic: 0.5, roughness: 0.5)]))
+            Node(label: "model-2")
+                .content(.geometry(mesh: quad, materials: [UnlitMaterialX(baseColorTexture: grassTexture)]))
+                .transform(scale: [10, 10, 10])
+                .transform(.init(rotation: .rotation(angle: .degrees(90), axis: [1, 0, 0])))
+                .transform(translation: [0, -1, 0])
+        }
         )
     }
 }
+
+struct SimplePBRMaterialEditor: View {
+    @Binding
+    var material: SimplePBRMaterial
+
+    @State
+    var baseColor: Color
+
+    init(material: Binding<SimplePBRMaterial>) {
+        self._material = material
+        self.baseColor = Color(
+            red: Double(material.wrappedValue.baseColor[0]),
+            green: Double(material.wrappedValue.baseColor[1]),
+            blue: Double(material.wrappedValue.baseColor[2])
+        )
+    }
+
+    var body: some View {
+        Form {
+            LabeledContent("Base Color") {
+                ColorPicker("Base Color", selection: $baseColor)
+            }
+            LabeledContent("Metallic") {
+                VStack {
+                    TextField("Metallic", value: $material.metallic, format: .number)
+                        .labelsHidden()
+                    Slider(value: $material.metallic, in: 0...1)
+                }
+            }
+            LabeledContent("Roughness") {
+                VStack {
+                    TextField("Roughness", value: $material.roughness, format: .number)
+                        .labelsHidden()
+                    Slider(value: $material.roughness, in: 0...1)
+                }
+            }
+        }
+        .onChange(of: baseColor) {
+            let cgColor = baseColor.resolve(in: .init()).cgColor
+            let components = cgColor.components!.map(Float.init)
+            material.baseColor = [components[0], components[1], components[2]]
+        }
+    }
+}
+
+
+
 
 // MARK: -
 
@@ -101,8 +162,9 @@ extension SimplePBRMaterial: @retroactive @unchecked Sendable {
 
 extension SimplePBRMaterial: @retroactive Equatable {
     public static func == (lhs: SimplePBRMaterial, rhs: SimplePBRMaterial) -> Bool {
-        // TODO: FIXME
-        return true
+        lhs.baseColor == rhs.baseColor
+        && lhs.metallic == rhs.metallic
+        && lhs.roughness == rhs.roughness
     }
 }
 
@@ -180,22 +242,22 @@ public struct SimplePBRShadingPass: RenderPassProtocol {
                 }
 
                 commandEncoder.withDebugGroup("FragmentShader") {
-//                    let vertexBuffer = element.geometry.mesh.vertexBuffers[0]
-//                    commandEncoder.setVertexBuffer(vertexBuffer.buffer, offset: vertexBuffer.offset, index: bindings.vertexBufferIndex)
+                    //                    let vertexBuffer = element.geometry.mesh.vertexBuffers[0]
+                    //                    commandEncoder.setVertexBuffer(vertexBuffer.buffer, offset: vertexBuffer.offset, index: bindings.vertexBufferIndex)
 
                     let uniforms = SimplePBRFragmentUniforms(cameraPosition: helper.scene.currentCameraNode!.transform.translation)
                     commandEncoder.setFragmentBytes(of: uniforms, index: bindings.fragmentUniformsIndex)
 
                     commandEncoder.setFragmentBytes(of: material, index: bindings.fragmentMaterialIndex)
 
-                    let light = SimplePBRLight(position: [0, 1, 1], color: [1, 0, 0], intensity: 0)
-                    commandEncoder.setFragmentBytes(of: material, index: bindings.fragmentLightIndex)
+                    let light = SimplePBRLight(position: [0, 0, 2], color: [1, 1, 1], intensity: 1)
+                    commandEncoder.setFragmentBytes(of: light, index: bindings.fragmentLightIndex)
 
 
-//                    if let texture = material.baseColorTexture {
-//                        commandEncoder.setFragmentBytes(of: UnlitMaterial(color: material.baseColorFactor, textureIndex: 0), index: bindings.fragmentMaterialsIndex)
-//                        commandEncoder.setFragmentTextures([texture], range: 0..<(bindings.fragmentTexturesIndex + 1))
-//                    }
+                    //                    if let texture = material.baseColorTexture {
+                    //                        commandEncoder.setFragmentBytes(of: UnlitMaterial(color: material.baseColorFactor, textureIndex: 0), index: bindings.fragmentMaterialsIndex)
+                    //                        commandEncoder.setFragmentTextures([texture], range: 0..<(bindings.fragmentTexturesIndex + 1))
+                    //                    }
                 }
 
                 assert(element.geometry.mesh.vertexBuffers.count == 1)
