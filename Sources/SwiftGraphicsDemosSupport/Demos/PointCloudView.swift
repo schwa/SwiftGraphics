@@ -129,22 +129,4 @@ struct PointCloudRenderPass: RenderPassProtocol {
 
         commandEncoder.draw(pointMesh, instanceCount: pointCount)
     }
-
-}
-
-struct Box <Content>: Hashable where Content: AnyObject {
-    var content: Content
-
-    init(_ content: Content) {
-        self.content = content
-    }
-
-    static func ==(lhs: Self, rhs: Self) -> Bool {
-        lhs.content === rhs.content
-    }
-
-    func hash(into hasher: inout Hasher) {
-        ObjectIdentifier(content).hash(into: &hasher)
-    }
-
 }

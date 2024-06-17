@@ -152,24 +152,15 @@ struct SimplePBRMaterialEditor: View {
     }
 }
 
-
-
-
 // MARK: -
 
-extension SimplePBRMaterial: @retroactive @unchecked Sendable {
+extension SimplePBRLight: @retroactive LightProtocol, @retroactive @unchecked Sendable, @retroactive Equatable, UnsafeMemoryEquatable {
 }
 
-extension SimplePBRMaterial: @retroactive Equatable {
-    public static func == (lhs: SimplePBRMaterial, rhs: SimplePBRMaterial) -> Bool {
-        lhs.baseColor == rhs.baseColor
-        && lhs.metallic == rhs.metallic
-        && lhs.roughness == rhs.roughness
-    }
+extension SimplePBRMaterial: @retroactive MaterialProtocol, @retroactive @unchecked Sendable, @retroactive Equatable, UnsafeMemoryEquatable {
 }
 
-extension SimplePBRMaterial: @retroactive MaterialProtocol {
-}
+// <ARL:
 
 public struct SimplePBRShadingPass: RenderPassProtocol {
     public struct State: RenderPassState {
