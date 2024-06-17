@@ -83,7 +83,7 @@ extension SceneGraph {
                         .content(.geometry(mesh: panoramaMesh, materials: [UnlitMaterialX(baseColorTexture: panoramaTexture)]))
                     }
                 Node(label: "model-1")
-                .content(.geometry(mesh: sphere, materials: [SimplePBRMaterial(albedo: [0, 0, 1.0], metallic: 1.0, roughness: 0, ambientOcclusion: [1, 1, 1])]))
+                .content(.geometry(mesh: sphere, materials: [SimplePBRMaterial(albedo: [0, 0, 1.0], metallic: 0.0, roughness: 1, ambientOcclusion: [1, 1, 1])]))
                 Node(label: "model-2")
                     .content(.geometry(mesh: quad, materials: [UnlitMaterialX(baseColorTexture: grassTexture)]))
                     .transform(scale: [10, 10, 10])
@@ -188,7 +188,7 @@ public struct SimplePBRShadingPass: RenderPassProtocol {
 
                     commandEncoder.setFragmentBytes(of: material, index: bindings.fragmentMaterialIndex)
 
-                    let light = SimplePBRLight(position: [3, 3, 3], color: [1, 0, 0], intensity: 0.5)
+                    let light = SimplePBRLight(position: [0, 1, 1], color: [1, 0, 0], intensity: 0)
                     commandEncoder.setFragmentBytes(of: material, index: bindings.fragmentLightIndex)
 
 
