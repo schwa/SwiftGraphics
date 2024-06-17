@@ -2,10 +2,12 @@ import CoreGraphics
 import CoreGraphicsSupport
 import Everything
 import Foundation
+import Metal
 import MetalKit
 import MetalSupport
 import os
 import Projection
+import RenderKit
 import RenderKitShadersLegacy
 import Shapes2D
 import Shapes3D
@@ -930,4 +932,106 @@ extension Path3D {
 
 extension UTType {
     static let plyFile = UTType(importedAs: "public.polygon-file-format")
+}
+
+
+extension SceneGraph {
+    static func demo(device: MTLDevice) throws -> SceneGraph {
+        let sphere = try Sphere3D(radius: 0.25).toMTKMesh(device: device)
+        let cylinder = try Cylinder3D(radius: 0.25, height: 1).toMTKMesh(device: device)
+        let cone = try Cone3D(height: 1, radius: 0.5).toMTKMesh(device: device)
+
+        // TODO: this is ugly
+        let panoramaMesh = try Sphere3D(radius: 400).toMTKMesh(device: device, inwardNormals: true)
+        let loader = MTKTextureLoader(device: device)
+        let panoramaTexture = try loader.newTexture(name: "BlueSkySkybox", scaleFactor: 2, bundle: Bundle.module)
+        let grassTexture = try loader.newTexture(name: "grass_teal_block_256x", scaleFactor: 2, bundle: Bundle.module)
+
+        let quad = try Quad<SimpleVertex>(x: -0.5, y: -0.5, width: 1, height: 1).toMTKMesh(device: device)
+
+//        let x = try Quad<SimpleVertex>(x: 0, y: 0, width: 1, height: 1).toTrivialMesh()
+//        x.dumpIndexedPositions()
+//        try Cone3D(height: 1, radius: 0.5).write(to: URL(filePath: "test.obj"))
+
+        return try SceneGraph(root:
+            Node(label: "root") {
+                Node(label: "camera")
+                    .content(.camera(Camera()))
+                    .transform(translation: [0, 0, 5])
+                    .children {
+                        // TODO: Pano location should always be tied to camera location
+                        Node(label: "pano")
+                        .content(.geometry(mesh: panoramaMesh, materials: [UnlitMaterialX(baseColorTexture: panoramaTexture)]))
+                    }
+                Node(label: "model-1")
+                    .content(.geometry(mesh: sphere, materials: [DiffuseShadingRenderPass.Material(diffuseColor: .red)]))
+                    .transform(translation: [-1, 0, 0])
+                Node(label: "model-2")
+                    .content(.geometry(mesh: cylinder, materials: [DiffuseShadingRenderPass.Material(diffuseColor: .green)]))
+                    .transform(translation: [0, 0, 0])
+                Node(label: "model-3")
+                    .content(.geometry(mesh: cone, materials: [DiffuseShadingRenderPass.Material(diffuseColor: .blue)]))
+                    .transform(translation: [1, 0, 0])
+                    .transform(.init(rotation: .rotation(angle: .degrees(45), axis: [1, 0, 0])))
+                Node(label: "model-4")
+                    .content(.geometry(mesh: quad, materials: [UnlitMaterialX(baseColorTexture: grassTexture)]))
+                    .transform(scale: [10, 10, 10])
+                    .transform(.init(rotation: .rotation(angle: .degrees(90), axis: [1, 0, 0])))
+                    .transform(translation: [0, -1, 0])
+            }
+        )
+    }
+}
+
+extension Node {
+    func transform(_ transform: Transform) -> Node {
+        var copy = self
+        if copy.transform == .identity {
+            copy.transform = transform
+        }
+        else {
+            copy.transform.matrix = transform.matrix * copy.transform.matrix
+        }
+        return copy
+    }
+    func transform(translation: SIMD3<Float>) -> Node {
+        transform(.translation(translation))
+    }
+    func transform(scale: SIMD3<Float>) -> Node {
+        transform(Transform(scale: scale))
+    }
+    func content(_ content: Content) -> Node {
+        var copy = self
+        copy.content = content
+        return copy
+    }
+    func children(@NodeBuilder _  children: () -> [Node]) -> Node {
+        var copy = self
+        copy.children = children()
+        return copy
+    }
+}
+
+extension Node.Content {
+    static func geometry(mesh: MTKMesh, materials: [any SG3MaterialProtocol]) -> Self {
+        .geometry(.init(mesh: mesh, materials: materials))
+    }
+}
+
+extension Node: FirstPersonCameraProtocol {
+    var target: SIMD3<Float> {
+        get {
+            .zero
+        }
+        set {
+        }
+    }
+
+    var heading: Angle {
+        get {
+            .zero
+        }
+        set {
+        }
+    }
 }

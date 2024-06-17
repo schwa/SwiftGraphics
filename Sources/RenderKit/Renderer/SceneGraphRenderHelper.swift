@@ -1,23 +1,23 @@
 import simd
 
-struct SceneGraphRenderHelper {
-    struct Element <Material> {
-        var node: Node
-        var material: Material?
-        var geometry: Geometry
+public struct SceneGraphRenderHelper {
+    public struct Element <Material> {
+        public var node: Node
+        public var material: Material?
+        public var geometry: Geometry
         // TODO: Some of these should be calculated on the fly.
-        var modelMatrix: simd_float4x4
-        var modelViewMatrix: simd_float4x4
-        var modelViewProjectionMatrix: simd_float4x4
-        var modelNormalMatrix: simd_float3x3
+        public var modelMatrix: simd_float4x4
+        public var modelViewMatrix: simd_float4x4
+        public var modelViewProjectionMatrix: simd_float4x4
+        public var modelNormalMatrix: simd_float3x3
     }
 
-    var scene: SceneGraph
-    var drawableSize: SIMD2<Float>
-    var viewMatrix: simd_float4x4
-    var projectionMatrix: simd_float4x4
+    public var scene: SceneGraph
+    public var drawableSize: SIMD2<Float>
+    public var viewMatrix: simd_float4x4
+    public var projectionMatrix: simd_float4x4
 
-    init(scene: SceneGraph, drawableSize: SIMD2<Float>) throws {
+    public init(scene: SceneGraph, drawableSize: SIMD2<Float>) throws {
         // TODO: Throw
         assert(drawableSize.x > 0 && drawableSize.y > 0)
         self.scene = scene
@@ -30,7 +30,7 @@ struct SceneGraphRenderHelper {
         projectionMatrix = currentCameraNode.content!.camera!.projectionMatrix(for: drawableSize)
     }
 
-    func elements() throws -> any Sequence<Element<()>> {
+    public func elements() throws -> any Sequence<Element<()>> {
         // TODO: concat node's transform with parent node's transforms
 
         scene.root.allNodes().compactMap { node in
@@ -48,7 +48,7 @@ struct SceneGraphRenderHelper {
         .lazy
     }
 
-    func elements <Material>(material: Material.Type) -> any Sequence<Element<Material>> where Material: SG3MaterialProtocol {
+    public func elements <Material>(material: Material.Type) -> any Sequence<Element<Material>> where Material: SG3MaterialProtocol {
         // TODO: concat node's transform with parent node's transforms
         scene.root.allNodes().compactMap { node in
             guard let geometry = node.content?.geometry else {
