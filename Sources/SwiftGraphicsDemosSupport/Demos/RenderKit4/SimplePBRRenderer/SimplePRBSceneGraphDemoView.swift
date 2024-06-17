@@ -168,7 +168,7 @@ extension SimplePBRMaterial: @retroactive Equatable {
     }
 }
 
-extension SimplePBRMaterial: @retroactive SG3MaterialProtocol {
+extension SimplePBRMaterial: @retroactive MaterialProtocol {
 }
 
 public struct SimplePBRShadingPass: RenderPassProtocol {

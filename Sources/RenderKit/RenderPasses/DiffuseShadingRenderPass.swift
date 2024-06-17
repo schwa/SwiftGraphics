@@ -5,7 +5,7 @@ import SwiftUI
 
 public struct DiffuseShadingRenderPass: RenderPassProtocol {
     // TODO: Move out
-    public struct Material: SG3MaterialProtocol {
+    public struct Material: MaterialProtocol {
         // TODO: Repalce with SIMD4
         var diffuseColor: CGColor
         var ambientColor: CGColor

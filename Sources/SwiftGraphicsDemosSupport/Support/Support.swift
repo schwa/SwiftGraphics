@@ -1013,7 +1013,7 @@ extension Node {
 }
 
 extension Node.Content {
-    static func geometry(mesh: MTKMesh, materials: [any SG3MaterialProtocol]) -> Self {
+    static func geometry(mesh: MTKMesh, materials: [any MaterialProtocol]) -> Self {
         .geometry(.init(mesh: mesh, materials: materials))
     }
 }
