@@ -108,7 +108,7 @@ namespace SimplePBRShader {
     ) {
 
 //        float3 albedo = material.albedo * albedoMap.sample(textureSampler, in.uv).rgb;
-        float3 albedo = material.albedo * float3(1, 1, 1);
+        float3 albedo = material.albedo;
         float3 N = normalize(in.worldNormal);
         float3 V = normalize(uniforms.cameraPosition - in.worldPosition);
         float3 L = normalize(light.position - in.worldPosition);
