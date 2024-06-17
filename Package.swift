@@ -357,6 +357,8 @@ let package = Package(
                 .copy("Resources/adjectives.txt"),
                 .copy("Resources/nouns.txt"),
                 .copy("Resources/StanfordVolumeData.tar"),
+                .copy("Resources/train.splat"),
+
             ],
             swiftSettings: [
                 .interoperabilityMode(.Cxx),

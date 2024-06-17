@@ -13,6 +13,35 @@ public struct PackedFloat3 {
 }
 
 public extension PackedFloat3 {
+    subscript(_ index: Int) -> Float {
+        get {
+            switch index {
+            case 0:
+                return x
+            case 1:
+                return y
+            case 2:
+                return z
+            default:
+                fatalError("Index out of range")
+            }
+        }
+        set {
+            switch index {
+            case 0:
+                x = newValue
+            case 1:
+                y = newValue
+            case 2:
+                z = newValue
+            default:
+                fatalError("Index out of range")
+            }
+        }
+    }
+}
+
+public extension PackedFloat3 {
     init(_ value: SIMD3<Float>) {
         self = .init(x: value.x, y: value.y, z: value.z)
     }

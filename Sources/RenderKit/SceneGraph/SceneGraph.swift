@@ -47,6 +47,7 @@ public struct Node: Identifiable, Sendable, Equatable {
     public enum Content: Sendable, Equatable {
         case camera(Camera)
         case geometry(Geometry)
+        case light(any LightProtocol)
     }
 
     public var id: TrivialID {
@@ -103,6 +104,21 @@ public struct Node: Identifiable, Sendable, Equatable {
     public mutating func updateGeneration<T>(new: T, old: T, structural: Bool = false) where T: Equatable {
         if new != old {
             generation += 1
+        }
+    }
+}
+
+extension Node.Content {
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+        switch (lhs, rhs) {
+        case (.camera(let lhs), .camera(let rhs)):
+            lhs == rhs
+        case (.geometry(let lhs), .geometry(let rhs)):
+            lhs == rhs
+        case (.light(let lhs), .light(let rhs)):
+            AnyEquatable(lhs) == AnyEquatable(rhs)
+        default:
+            false
         }
     }
 }
@@ -229,6 +245,9 @@ public extension Node.Content {
 
 // MARK: -
 
+public protocol LightProtocol: Sendable, Equatable {
+}
+
 public protocol MaterialProtocol: Sendable, Equatable {
 }
 
@@ -272,6 +291,8 @@ extension Node.Content: CustomDebugStringConvertible {
             ".camera(\(camera))"
         case .geometry(let geometry):
             ".geometry(\(geometry))"
+        case .light(let light):
+            ".light(\(light))"
         }
     }
 }

@@ -1035,3 +1035,40 @@ extension Node: FirstPersonCameraProtocol {
         }
     }
 }
+
+protocol UnsafeMemoryEquatable: Equatable {
+}
+
+extension UnsafeMemoryEquatable {
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+        withUnsafeBytes(of: lhs) { lhs in
+            withUnsafeBytes(of: rhs) { rhs in
+                guard lhs.count == rhs.count else {
+                    return false
+                }
+                let count = lhs.count
+                guard let lhs = lhs.baseAddress, let rhs = rhs.baseAddress else {
+                    return true
+                }
+                return memcmp(lhs, rhs, count) == 0
+            }
+        }
+    }
+}
+
+struct Box <Content>: Hashable where Content: AnyObject {
+    var content: Content
+
+    init(_ content: Content) {
+        self.content = content
+    }
+
+    static func ==(lhs: Self, rhs: Self) -> Bool {
+        lhs.content === rhs.content
+    }
+
+    func hash(into hasher: inout Hasher) {
+        ObjectIdentifier(content).hash(into: &hasher)
+    }
+
+}
