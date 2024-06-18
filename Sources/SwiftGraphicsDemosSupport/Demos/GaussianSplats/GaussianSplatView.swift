@@ -75,10 +75,11 @@ struct GaussianSplatView: View, DemoView {
         let splatCount = data.count / splatSize
         splats = device.makeBuffer(data: data, options: .storageModeShared)!
 
-        let splatIndicesData = (0 ..< splatCount).map { UInt32($0) }.withUnsafeBytes {
+        let splatIndicesData = (0 ..< splatCount).shuffled().map { UInt32($0) }.withUnsafeBytes {
             Data($0)
         }
         splatIndices = device.makeBuffer(data: splatIndicesData, options: .storageModeShared)!
+        print(splatCount);
 
 
         self.device = device
@@ -200,20 +201,21 @@ struct GaussianSplatRenderPass: RenderPassProtocol {
         commandEncoder.setDepthStencilState(state.depthStencilState)
         commandEncoder.setRenderPipelineState(state.renderPipelineState)
 
+        var uniforms = GaussianSplatUniforms()
+        uniforms.modelViewProjectionMatrix = cameraProjection.projectionMatrix(for: drawableSize) * cameraTransform.matrix.inverse * modelTransform.matrix
+        uniforms.modelMatrix = modelTransform.matrix
+        uniforms.cameraPosition = cameraTransform.translation
 
-        try commandEncoder.withDebugGroup("VertexShader") {
+        commandEncoder.withDebugGroup("VertexShader") {
             commandEncoder.setVertexBuffersFrom(mesh: pointMesh)
 
-            var vertexUniforms = GaussianSplatVertexUniforms()
-            vertexUniforms.modelViewProjectionMatrix = cameraProjection.projectionMatrix(for: drawableSize) * cameraTransform.matrix.inverse * modelTransform.matrix
-            commandEncoder.setVertexBytes(of: vertexUniforms, index: state.bindings.vertexUniforms)
+            commandEncoder.setVertexBytes(of: uniforms, index: state.bindings.vertexUniforms)
 
             commandEncoder.setVertexBuffer(splats.content, offset: 0, index: state.bindings.vertexSplats)
             commandEncoder.setVertexBuffer(splatIndices.content, offset: 0, index: state.bindings.vertexSplatIndices)
         }
         commandEncoder.withDebugGroup("FragmentShader") {
-            let fragmentUniforms = GaussianSplatFragmentUniforms()
-            commandEncoder.setFragmentBytes(of: fragmentUniforms, index: state.bindings.fragmentUniforms)
+            commandEncoder.setFragmentBytes(of: uniforms, index: state.bindings.fragmentUniforms)
             commandEncoder.setFragmentBuffer(splats.content, offset: 0, index: state.bindings.fragmentSplats)
             commandEncoder.setFragmentBuffer(splatIndices.content, offset: 0, index: state.bindings.fragmentSplatIndices)
         }

@@ -1,11 +1,18 @@
 #include <simd/simd.h>
 
-
-struct GaussianSplatVertexUniforms {
+struct GaussianSplatUniforms {
     simd_float4x4 modelViewProjectionMatrix;
+    simd_float4x4 modelMatrix;
+    simd_float3 cameraPosition;
 };
 
-struct GaussianSplatFragmentUniforms {
+struct GaussianSplatSortUniforms {
+    unsigned int splatCount;
+    unsigned int groupWidth;
+    unsigned int groupHeight;
+    unsigned int stepIndex;
+    simd_float3x3 modelMatrix;
+    simd_float3 cameraPosition;
 };
 
 #ifdef __METAL_VERSION__
@@ -34,8 +41,8 @@ namespace GaussianSplatShader {
     };
 
 
-    typedef GaussianSplatVertexUniforms VertexUniforms;
-    typedef GaussianSplatFragmentUniforms FragmentUniforms;
+    typedef GaussianSplatUniforms VertexUniforms;
+    typedef GaussianSplatUniforms FragmentUniforms;
     typedef VertexOut FragmentIn;
 
     struct FragmentOut {
@@ -61,7 +68,7 @@ namespace GaussianSplatShader {
     }
 
     [[fragment]]
-    FragmentOut FragmentShader(
+    float4 FragmentShader(
         FragmentIn in [[stage_in]],
         constant FragmentUniforms &uniforms [[buffer(0)]],
         constant Splat *splats [[buffer(1)]],
@@ -69,9 +76,47 @@ namespace GaussianSplatShader {
     ) {
         auto splat = splats[splatIndices[in.instance_id]];
         auto color = float4(splat.color) / 255.0;
-        return {
-            .fragColor = float4(color.xyz, 1)
-        };
+
+//        auto d = 1 - distance((uniforms.modelMatrix * float4(splat.position, 1)).xyz, uniforms.cameraPosition) / 4;
+
+        auto d = float(in.instance_id) / 1026508.0;
+
+        return float4(d, d, d, 1);
+
+        //return float4(color.xyz, 1);
     }
+
+    [[kernel]]
+    void BitonicSortSplats(
+        uint3 thread_position_in_grid [[thread_position_in_grid]],
+        constant GaussianSplatSortUniforms &uniforms [[buffer(0)]],
+        device Splat *splats [[buffer(1)]],
+        device uint *splatIndices [[buffer(2)]]
+    ) {
+        const auto index = thread_position_in_grid.x;
+        const auto hIndex = index & (uniforms.groupWidth - 1);
+        const auto indexLeft = hIndex + (uniforms.groupHeight + 1) * (index / uniforms.groupWidth);
+        const auto stepSize = uniforms.stepIndex == 0 ? uniforms.groupHeight - 2 * hIndex : (uniforms.groupHeight + 1) / 2;
+        const auto indexRight = indexLeft + stepSize;
+        // Exit if out of bounds (for non-power of 2 input sizes)
+        if (indexRight >= uniforms.splatCount) {
+            return;
+        }
+        const auto valueLeft = splats[splatIndices[indexLeft]];
+        const auto valueRight = splats[splatIndices[indexRight]];
+
+        // TODO: Waste of two sqrts() here.
+        auto distanceLeft = distance(uniforms.modelMatrix * float3(valueLeft.position), uniforms.cameraPosition);
+        auto distanceRight = distance(uniforms.modelMatrix * float3(valueRight.position), uniforms.cameraPosition);
+
+        // Swap entries if value is descending
+        if (distanceLeft > distanceRight) {
+            // TODO: Does metal have a swap function?
+            splatIndices[indexLeft] = splatIndices[indexRight];
+            splatIndices[indexRight] = splatIndices[indexLeft];
+        }
+    }
+
 }
+
 #endif
