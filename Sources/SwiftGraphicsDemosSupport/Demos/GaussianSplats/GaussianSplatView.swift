@@ -82,7 +82,7 @@ struct GaussianSplatView: View, DemoView {
         let size: Float = 0.005
         cube = try! Box3D(min: [-size, -size, -size], max: [size, size, size]).toMTKMesh(device: device)
 
-        //test()
+        debugSort()
     }
 
     var body: some View {
@@ -95,24 +95,25 @@ struct GaussianSplatView: View, DemoView {
         }
     }
 
-    func test() {
+    func debugSort() {
         let before = UnsafeBufferPointer<UInt32>(start: splatIndices.contents().assumingMemoryBound(to: UInt32.self), count: splatCount)
         print(Array(before[..<10]))
         print("Unique indices before:", Set(before).count)
+        device.capture(enabled: false) {
 
-        let gaussianSplatSortComputePass = GaussianSplatBitonicSortComputePass(
-            splatCount: splatCount,
-            splatIndicesBuffer: Box(splatIndices),
-            splatBuffer: Box(splats),
-            modelMatrix: simd_float3x3(truncating: modelTransform.matrix),
-            cameraPosition: cameraTransform.translation
-        )
-        try! gaussianSplatSortComputePass.computeOnce(device: device)
+            let gaussianSplatSortComputePass = GaussianSplatBitonicSortComputePass(
+                splatCount: splatCount,
+                splatIndicesBuffer: Box(splatIndices),
+                splatBuffer: Box(splats),
+                modelMatrix: simd_float3x3(truncating: modelTransform.matrix),
+                cameraPosition: cameraTransform.translation
+            )
+            try! gaussianSplatSortComputePass.computeOnce(device: device)
 
-        let after = UnsafeBufferPointer<UInt32>(start: splatIndices.contents().assumingMemoryBound(to: UInt32.self), count: splatCount)
-        print(Array(after[..<10]))
-        print("Unique indices after:", Set(after).count)
-
+            let after = UnsafeBufferPointer<UInt32>(start: splatIndices.contents().assumingMemoryBound(to: UInt32.self), count: splatCount)
+            print(Array(after[..<10]))
+            print("Unique indices after:", Set(after).count)
+        }
     }
 
     var passes: [any PassProtocol] {
@@ -144,7 +145,6 @@ struct GaussianSplatView: View, DemoView {
 }
 
 struct GaussianSplatRenderPass: RenderPassProtocol {
-
     struct State: PassState {
         struct Bindings {
             var vertexBuffer0: Int

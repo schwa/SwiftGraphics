@@ -45,6 +45,7 @@ struct GaussianSplatBitonicSortComputePass: ComputePassProtocol {
     func compute(device: MTLDevice, state: State, commandBuffer: MTLCommandBuffer) throws {
         let computePipelineState = state.pipelineState
         let commandEncoder = commandBuffer.makeComputeCommandEncoder().forceUnwrap()
+        commandEncoder.label = "GaussianSplatBitonicSortComputePass"
         commandEncoder.withDebugGroup("GaussianSplatBitonicSortComputePass") {
             commandEncoder.setComputePipelineState(computePipelineState)
 
@@ -54,7 +55,6 @@ struct GaussianSplatBitonicSortComputePass: ComputePassProtocol {
             let numStages = Int(log2(nextPowerOfTwo(Double(splatCount))))
             var threadgroupsPerGrid = (splatCount + computePipelineState.maxTotalThreadsPerThreadgroup - 1) / computePipelineState.maxTotalThreadsPerThreadgroup
             threadgroupsPerGrid = (threadgroupsPerGrid + computePipelineState.threadExecutionWidth - 1) / computePipelineState.threadExecutionWidth * computePipelineState.threadExecutionWidth
-            print("Sort -- numStages: \(numStages), threadgroupsPerGrid: \(threadgroupsPerGrid), NPO2: \(nextPowerOfTwo(Double(splatCount)))")
             for stageIndex in 0 ..< numStages {
                 commandEncoder.withDebugGroup("Stage \(stageIndex) of \(numStages)") {
                     for stepIndex in 0 ..< (stageIndex + 1) {
@@ -69,7 +69,6 @@ struct GaussianSplatBitonicSortComputePass: ComputePassProtocol {
                 }
             }
         }
-
         commandEncoder.endEncoding()
     }
 }

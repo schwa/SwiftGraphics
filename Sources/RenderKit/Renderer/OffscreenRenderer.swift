@@ -102,8 +102,11 @@ public struct OffscreenRenderer {
     }
 }
 
-extension MTLDevice {
-    func capture <R>(_ block: () throws -> R) rethrows -> R {
+public extension MTLDevice {
+    func capture <R>(enabled: Bool = true, _ block: () throws -> R) rethrows -> R {
+        guard enabled else {
+            return try block()
+        }
         let captureManager = MTLCaptureManager.shared()
         let captureScope = captureManager.makeCaptureScope(device: self)
         let captureDescriptor = MTLCaptureDescriptor()
