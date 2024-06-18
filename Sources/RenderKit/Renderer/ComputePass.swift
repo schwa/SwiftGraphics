@@ -1,6 +1,15 @@
 import Metal
 
-protocol ComputePassProtocol: PassProtocol {
-    func setup(device: MTLDevice, renderPipelineDescriptor: () -> MTLComputePipelineDescriptor) throws -> State
-    func render(device: MTLDevice, state: State, passDescriptor: MTLComputePassDescriptor, commandBuffer: MTLCommandBuffer) throws
+public protocol ComputePassProtocol: PassProtocol {
+    func setup(device: MTLDevice) throws -> State
+    func compute(device: MTLDevice, state: State, commandBuffer: MTLCommandBuffer) throws
+}
+
+public extension ComputePassProtocol {
+    func compute(device: MTLDevice, untypedState: any PassState, commandBuffer: MTLCommandBuffer) throws {
+        guard let state = untypedState as? State else {
+            fatalError()
+        }
+        try compute(device: device, state: state, commandBuffer: commandBuffer)
+    }
 }

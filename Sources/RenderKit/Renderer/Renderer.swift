@@ -50,7 +50,7 @@ struct Renderer {
         self.configuration = configuration
         configuration.colorPixelFormat = .bgra8Unorm_srgb
         configuration.depthStencilPixelFormat = .depth32Float
-        try setupRenderPasses(configuration: configuration)
+        try setupPasses(configuration: configuration)
     }
 
     mutating func sizeWillChange(_ size: CGSize) throws {
@@ -73,40 +73,51 @@ struct Renderer {
         }
         let commandBuffer = try commandQueue.makeCommandBuffer().safelyUnwrap(RenderKitError.resourceCreationFailure)
 
-        for (index, renderPass) in passes.renderPasses.enumerated() {
-            let isFirst = index == passes.renderPasses.startIndex
-            let isLast = index == passes.renderPasses.endIndex - 1
-
-            if isFirst {
-                renderPassDescriptor.colorAttachments[0].loadAction = .clear
-                renderPassDescriptor.depthAttachment.loadAction = .clear
+        for (index, renderPass) in passes.elements.enumerated() {
+            for pass in passes.elements {
+                switch pass {
+                case let renderPass as any RenderPassProtocol:
+                    let isFirst = index == passes.renderPasses.startIndex
+                    let isLast = index == passes.renderPasses.endIndex - 1
+                    if isFirst {
+                        renderPassDescriptor.colorAttachments[0].loadAction = .clear
+                        renderPassDescriptor.depthAttachment.loadAction = .clear
+                    }
+                    else {
+                        renderPassDescriptor.colorAttachments[0].loadAction = .load
+                        renderPassDescriptor.depthAttachment.loadAction = .load
+                    }
+                    if isLast {
+                        renderPassDescriptor.colorAttachments[0].storeAction = .store
+                        renderPassDescriptor.depthAttachment.storeAction = .dontCare
+                    }
+                    else {
+                        renderPassDescriptor.colorAttachments[0].storeAction = .store
+                        renderPassDescriptor.depthAttachment.storeAction = .store
+                    }
+                    guard let state = statesByPasses[renderPass.id] else {
+                        fatalError()
+                    }
+                    try renderPass.render(device: device, untypedState: state, drawableSize: SIMD2<Float>(drawableSize), renderPassDescriptor: renderPassDescriptor, commandBuffer: commandBuffer)
+                case let computePass as any ComputePassProtocol:
+                    guard let state = statesByPasses[computePass.id] else {
+                        fatalError()
+                    }
+                    try computePass.compute(device: device, untypedState: state, commandBuffer: commandBuffer)
+                default:
+                    fatalError()
+                }
             }
-            else {
-                renderPassDescriptor.colorAttachments[0].loadAction = .load
-                renderPassDescriptor.depthAttachment.loadAction = .load
-            }
-
-            if isLast {
-                renderPassDescriptor.colorAttachments[0].storeAction = .store
-                renderPassDescriptor.depthAttachment.storeAction = .dontCare
-            }
-            else {
-                renderPassDescriptor.colorAttachments[0].storeAction = .store
-                renderPassDescriptor.depthAttachment.storeAction = .store
-            }
-
-            guard let state = statesByPasses[renderPass.id] else {
-                fatalError()
-            }
-            try renderPass.render(device: device, untypedState: state, drawableSize: SIMD2<Float>(drawableSize), renderPassDescriptor: renderPassDescriptor, commandBuffer: commandBuffer)
         }
         commandBuffer.present(drawable)
         commandBuffer.commit()
     }
 
-    private mutating func setupRenderPasses(configuration: MetalViewConfiguration) throws {
-        for renderPass in passes.renderPasses {
-            do {
+    // TODO: MERGE WITH updateRenderPasses
+    private mutating func setupPasses(configuration: MetalViewConfiguration) throws {
+        for pass in passes.elements {
+            switch pass {
+            case let renderPass as any RenderPassProtocol:
                 let renderPipelineDescriptor = {
                     let renderPipelineDescriptor = MTLRenderPipelineDescriptor()
                     renderPipelineDescriptor.colorAttachments[0].pixelFormat = configuration.colorPixelFormat
@@ -116,14 +127,16 @@ struct Renderer {
 
                 let state = try renderPass.setup(device: device, renderPipelineDescriptor: renderPipelineDescriptor)
                 statesByPasses[renderPass.id] = state
-            }
-            catch {
-                print("Error in setup: \(error)")
-                throw error
+            case let computePass as any ComputePassProtocol:
+                let state = try computePass.setup(device: device)
+                statesByPasses[computePass.id] = state
+            default:
+                fatalError("Unsupported pass type: \(pass).")
             }
         }
     }
 
+    // TODO: MERGE WITH setupPasses
     mutating func updateRenderPasses(_ passes: PassCollection) throws {
         let difference = passes.elements.difference(from: self.passes.elements) { lhs, rhs in
             lhs.id == rhs.id
