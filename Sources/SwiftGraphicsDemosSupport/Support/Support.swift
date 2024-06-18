@@ -1072,3 +1072,29 @@ struct Box <Content>: Hashable where Content: AnyObject {
     }
 
 }
+
+extension Collection where Element == PackedFloat3 {
+    var bounds: (min: PackedFloat3, max: PackedFloat3) {
+        return (
+            reduce([Float.greatestFiniteMagnitude, Float.greatestFiniteMagnitude, Float.greatestFiniteMagnitude], SwiftGraphicsDemosSupport.min),
+            reduce([-Float.greatestFiniteMagnitude, -Float.greatestFiniteMagnitude, -Float.greatestFiniteMagnitude], SwiftGraphicsDemosSupport.max)
+        )
+    }
+}
+
+func max(lhs: PackedFloat3, rhs: PackedFloat3) -> PackedFloat3 {
+    [max(lhs[0], rhs[0]), max(lhs[1], rhs[1]), max(lhs[2], rhs[2])]
+}
+
+func min(lhs: PackedFloat3, rhs: PackedFloat3) -> PackedFloat3 {
+    [min(lhs[0], rhs[0]), min(lhs[1], rhs[1]), min(lhs[2], rhs[2])]
+}
+
+
+func max(lhs: SIMD3<Float>, rhs: SIMD3<Float>) -> SIMD3<Float> {
+    [max(lhs[0], rhs[0]), max(lhs[1], rhs[1]), max(lhs[2], rhs[2])]
+}
+
+func min(lhs: SIMD3<Float>, rhs: SIMD3<Float>) -> SIMD3<Float> {
+    [min(lhs[0], rhs[0]), min(lhs[1], rhs[1]), min(lhs[2], rhs[2])]
+}
