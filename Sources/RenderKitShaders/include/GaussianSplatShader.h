@@ -76,7 +76,7 @@ namespace GaussianSplatShader {
     ) {
         auto splat = splats[splatIndices[in.instance_id]];
         auto color = float4(splat.color) / 255.0;
-        return float4(color.rgb, 1);
+        return color;
 //        auto d = 1 - distance((uniforms.modelMatrix * float4(splat.position, 1)).xyz, uniforms.cameraPosition) / 4;
 //        auto d = float(in.instance_id) / 1026508.0;
 //        return float4(d, d, d, 1);

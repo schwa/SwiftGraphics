@@ -96,7 +96,6 @@ struct GaussianSplatView: View, DemoView {
     }
 
     func test() {
-
         let before = UnsafeBufferPointer<UInt32>(start: splatIndices.contents().assumingMemoryBound(to: UInt32.self), count: splatCount)
         print(Array(before[..<10]))
         print("Unique indices before:", Set(before).count)
@@ -178,6 +177,13 @@ struct GaussianSplatRenderPass: RenderPassProtocol {
         renderPipelineDescriptor.vertexDescriptor = MTLVertexDescriptor(oneTrueVertexDescriptor)
         renderPipelineDescriptor.vertexFunction = library.makeFunction(name: "GaussianSplatShader::VertexShader")
         renderPipelineDescriptor.fragmentFunction = library.makeFunction(name: "GaussianSplatShader::FragmentShader")
+
+        renderPipelineDescriptor.colorAttachments[0].isBlendingEnabled = true
+        renderPipelineDescriptor.colorAttachments[0].sourceRGBBlendFactor = .sourceAlpha
+        renderPipelineDescriptor.colorAttachments[0].sourceAlphaBlendFactor = .sourceAlpha
+        renderPipelineDescriptor.colorAttachments[0].destinationRGBBlendFactor = .oneMinusSourceAlpha
+        renderPipelineDescriptor.colorAttachments[0].destinationAlphaBlendFactor = .oneMinusSourceAlpha
+
 
         let (renderPipelineState, reflection) = try device.makeRenderPipelineState(descriptor: renderPipelineDescriptor, options: [.bindingInfo])
         guard let reflection else {
