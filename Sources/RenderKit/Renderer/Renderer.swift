@@ -152,7 +152,7 @@ struct Renderer {
     }
 }
 
-// No need for this to actually be a colleciton -we just need Equatable
+// No need for this to actually be a collection -we just need Equatable
 struct PassCollection: Equatable {
     var elements: [any PassProtocol]
 
