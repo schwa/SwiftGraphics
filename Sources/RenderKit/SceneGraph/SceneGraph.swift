@@ -4,7 +4,7 @@ import os
 import SIMDSupport
 import SwiftGraphicsSupport
 
-public struct SceneGraph: Equatable {
+public struct SceneGraph: Equatable, Sendable {
     public var root: Node
 
     public var currentCameraPath: IndexPath?
@@ -239,6 +239,23 @@ public extension Node.Content {
                 fatalError()
             }
             self = .camera(newValue)
+        }
+    }
+
+    var light: (any LightProtocol)? {
+        get {
+            if case let .light(value) = self {
+                return value
+            }
+            else {
+                return nil
+            }
+        }
+        set {
+            guard let newValue else {
+                fatalError()
+            }
+            self = .light(newValue)
         }
     }
 }

@@ -69,4 +69,13 @@ public struct SceneGraphRenderHelper {
         }
         .lazy
     }
+
+    public func nodes <Light>(withContentOf: Light.Type) -> [Node] where Light: LightProtocol {
+        scene.root.allNodes().compactMap { node in
+            guard node.content?.light as? Light != nil else {
+                return nil
+            }
+            return node
+        }
+    }
 }
