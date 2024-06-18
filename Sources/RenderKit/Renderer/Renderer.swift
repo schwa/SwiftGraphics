@@ -10,6 +10,14 @@ import SIMDSupport
 import SwiftGraphicsSupport
 import SwiftUI
 
+protocol PassState: Equatable, Sendable {
+}
+
+protocol PassProtocol: Equatable, Sendable {
+    associatedtype State: PassState
+    var id: AnyHashable { get }
+}
+
 struct Renderer {
     private var renderPasses: RenderPassCollection
     private var renderContext: RenderContext

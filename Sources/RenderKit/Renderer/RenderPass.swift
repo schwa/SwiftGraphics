@@ -5,7 +5,6 @@ import SwiftGraphicsSupport
 public protocol RenderPassState {
 }
 
-// TODO: We should do best we can to prevent render passes from needing to be equatable. Rely on id instead?
 public protocol RenderPassProtocol: Equatable {
     associatedtype State: RenderPassState
     typealias Context = RenderContext
