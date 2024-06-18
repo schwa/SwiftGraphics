@@ -8,7 +8,7 @@ public struct OffscreenRenderer {
     public private(set) var device: MTLDevice // TODO: remove
     public private(set) var renderPasses: [any RenderPassProtocol]
     private var renderPassDescriptor: MTLRenderPassDescriptor
-    private var renderPassState: [AnyHashable: RenderPassState]! // TODO: !
+    private var stateByPasses: [AnyHashable: PassState]! // TODO: !
     private var commandQueue: MTLCommandQueue! // TODO: !
 
     public init(size: CGSize, device: MTLDevice, commandQueue: MTLCommandQueue? = nil, renderPasses: [any RenderPassProtocol]) throws {
@@ -41,7 +41,7 @@ public struct OffscreenRenderer {
         let colorPixelFormat = renderPassDescriptor.colorAttachments[0].texture!.pixelFormat
         let depthAttachmentPixelFormat = renderPassDescriptor.depthAttachment.texture?.pixelFormat ?? .invalid
 
-        renderPassState = [:]
+        stateByPasses = [:]
         for renderPass in renderPasses {
             let renderPipelineDescriptor = {
                 let renderPipelineDescriptor = MTLRenderPipelineDescriptor()
@@ -51,12 +51,12 @@ public struct OffscreenRenderer {
             }
 
             let state = try renderPass.setup(context: renderContext, renderPipelineDescriptor: renderPipelineDescriptor)
-            renderPassState[renderPass.id] = state
+            stateByPasses[renderPass.id] = state
         }
         for renderPass in renderPasses {
-            var state = renderPassState[renderPass.id]!
+            var state = stateByPasses[renderPass.id]!
             try renderPass.sizeWillChange(context: renderContext, untypedState: &state, size: size)
-            renderPassState[renderPass.id] = state
+            stateByPasses[renderPass.id] = state
         }
 
         self.commandQueue = commandQueue ?? device.makeCommandQueue().forceUnwrap("Could not make command queue")
@@ -93,7 +93,7 @@ public struct OffscreenRenderer {
                         renderPassDescriptor.depthAttachment.storeAction = .store
                     }
 
-                    guard let state = renderPassState[renderPass.id] else {
+                    guard let state = stateByPasses[renderPass.id] else {
                         fatalError()
                     }
 

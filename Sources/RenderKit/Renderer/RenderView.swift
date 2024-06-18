@@ -15,7 +15,7 @@ public struct RenderView: View {
     public typealias Configure = (MetalViewConfiguration) -> Void
     public typealias SizeWillChange = (CGSize) -> Void
 
-    var renderPasses: RenderPassCollection
+    var renderPasses: PassCollection
     var configure: Configure
     var sizeWillChange: SizeWillChange
 
@@ -42,7 +42,7 @@ public struct RenderView: View {
 
         MetalView { device, configuration in
             do {
-                renderer = Renderer(renderPasses: renderPasses, renderContext: renderContext)
+                renderer = Renderer(passes: renderPasses, renderContext: renderContext)
                 try renderer!.configure(&configuration)
                 configure(configuration)
                 commandQueue = device.makeCommandQueue()

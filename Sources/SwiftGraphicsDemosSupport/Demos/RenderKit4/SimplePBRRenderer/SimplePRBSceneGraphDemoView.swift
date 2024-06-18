@@ -163,7 +163,7 @@ extension SimplePBRMaterial: @retroactive MaterialProtocol, @retroactive @unchec
 // <ARL:
 
 public struct SimplePBRShadingPass: RenderPassProtocol {
-    public struct State: RenderPassState {
+    public struct State: PassState {
         var renderPipelineState: MTLRenderPipelineState
         var depthStencilState: MTLDepthStencilState
 

@@ -20,7 +20,7 @@ public struct UnlitMaterialX: MaterialProtocol {
 }
 
 public struct UnlitShadingPass: RenderPassProtocol {
-    public struct State: RenderPassState {
+    public struct State: PassState {
         var renderPipelineState: MTLRenderPipelineState
         var depthStencilState: MTLDepthStencilState
 
