@@ -101,8 +101,7 @@ struct GaussianSplatView: View, DemoView {
             pointMesh: cube
         )
 
-        RenderView(renderPasses: [renderPass])
-            .renderContext(RenderContext(device: device, library: try! device.makeDebugLibrary(bundle: .renderKitShaders)))
+        RenderView(device: device, renderPasses: [renderPass])
             .ballRotation($modelTransform.rotation.rollPitchYaw, pitchLimit: .radians(-.infinity) ... .radians(.infinity))
             .overlay(alignment: .bottom) {
                 Text("\(splatCount)")
@@ -139,10 +138,8 @@ struct GaussianSplatRenderPass: RenderPassProtocol {
     var splatIndices: Box<MTLBuffer>
     var pointMesh: MTKMesh
 
-    func setup(context: Context, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State {
-        let device = context.device
-
-        let library = context.library
+    func setup(device: MTLDevice, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State {
+        let library = try device.makeDebugLibrary(bundle: .renderKitShaders)
         let renderPipelineDescriptor = renderPipelineDescriptor()
         renderPipelineDescriptor.label = "\(type(of: self))"
         renderPipelineDescriptor.vertexDescriptor = MTLVertexDescriptor(oneTrueVertexDescriptor)
@@ -170,7 +167,7 @@ struct GaussianSplatRenderPass: RenderPassProtocol {
         return State(bindings: bindings, depthStencilState: depthStencilState, renderPipelineState: renderPipelineState)
     }
 
-    func encode(context: Context, state: State, drawableSize: SIMD2<Float>, commandEncoder: any MTLRenderCommandEncoder) throws {
+    func encode(device: MTLDevice, state: State, drawableSize: SIMD2<Float>, commandEncoder: any MTLRenderCommandEncoder) throws {
 
         commandEncoder.setDepthStencilState(state.depthStencilState)
         commandEncoder.setRenderPipelineState(state.renderPipelineState)

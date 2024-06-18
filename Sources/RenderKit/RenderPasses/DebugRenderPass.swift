@@ -26,10 +26,8 @@ public struct DebugRenderPass: RenderPassProtocol {
         self.scene = scene
     }
 
-    public func setup(context: Context, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State {
-        let device = context.device
-
-        let library = context.library
+    public func setup(device: MTLDevice, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State {
+        let library = try device.makeDebugLibrary(bundle: .renderKitShadersLegacy)
         let renderPipelineDescriptor = renderPipelineDescriptor()
         renderPipelineDescriptor.vertexFunction = library.makeFunction(name: "DebugVertexShader")
         renderPipelineDescriptor.fragmentFunction = library.makeFunction(name: "DebugFragmentShader")
@@ -45,7 +43,7 @@ public struct DebugRenderPass: RenderPassProtocol {
         return State(depthStencilState: depthStencilState, renderPipelineState: renderPipelineState)
     }
 
-    public func encode(context: Context, state: State, drawableSize: SIMD2<Float>, commandEncoder: MTLRenderCommandEncoder) throws {
+    public func encode(device: MTLDevice, state: State, drawableSize: SIMD2<Float>, commandEncoder: MTLRenderCommandEncoder) throws {
         let elements = try SceneGraphRenderHelper(scene: scene, drawableSize: drawableSize).elements()
 
         commandEncoder.setDepthStencilState(state.depthStencilState)
