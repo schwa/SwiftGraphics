@@ -16,7 +16,7 @@ public struct RenderView: View {
     public typealias SizeWillChange = (CGSize) -> Void
 
     var device: MTLDevice
-    var renderPasses: PassCollection
+    var passes: PassCollection
     var configure: Configure
     var sizeWillChange: SizeWillChange
 
@@ -32,9 +32,9 @@ public struct RenderView: View {
     @State
     var logger: Logger = Logger(subsystem: "RenderView", category: "RenderView")
 
-    public init(device: MTLDevice, renderPasses: [any RenderPassProtocol], configure: @escaping Configure = { _ in }, sizeWillChange: @escaping SizeWillChange = { _ in }) {
+    public init(device: MTLDevice, passes: [any PassProtocol], configure: @escaping Configure = { _ in }, sizeWillChange: @escaping SizeWillChange = { _ in }) {
         self.device = device
-        self.renderPasses = .init(renderPasses)
+        self.passes = .init(passes)
         self.configure = configure
         self.sizeWillChange = sizeWillChange
     }
@@ -42,7 +42,7 @@ public struct RenderView: View {
     public var body: some View {
         MetalView { device, configuration in
             do {
-                renderer = Renderer(device: device, passes: renderPasses)
+                renderer = Renderer(device: device, passes: passes)
                 try renderer!.configure(&configuration)
                 configure(configuration)
                 commandQueue = device.makeCommandQueue()
@@ -66,8 +66,8 @@ public struct RenderView: View {
                 renderErrorHandler.send(error, logger: logger)
             }
         }
-        .onChange(of: renderPasses) {
-            try! renderer?.updateRenderPasses(renderPasses)
+        .onChange(of: passes) {
+            try! renderer?.updateRenderPasses(passes)
         }
     }
 }

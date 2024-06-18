@@ -32,7 +32,7 @@ public struct SceneGraphDemoView: View, DemoView {
             scene.currentCameraNode = newValue
         }
 
-        RenderView(device: device, renderPasses: [
+        RenderView(device: device, passes: [
             DiffuseShadingRenderPass(scene: scene),
             UnlitShadingPass(scene: scene),
             DebugRenderPass(scene: scene),

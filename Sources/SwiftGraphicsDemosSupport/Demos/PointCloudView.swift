@@ -44,7 +44,7 @@ struct PointCloudView: View, DemoView {
     }
 
     var body: some View {
-        RenderView(device: device, renderPasses: [PointCloudRenderPass(cameraTransform: cameraTransform, cameraProjection: cameraProjection, modelTransform: modelTransform, pointCount: pointCount, points: Box(points), pointMesh: cube)])
+        RenderView(device: device, passes: [PointCloudRenderPass(cameraTransform: cameraTransform, cameraProjection: cameraProjection, modelTransform: modelTransform, pointCount: pointCount, points: Box(points), pointMesh: cube)])
             .ballRotation($modelTransform.rotation.rollPitchYaw)
             .overlay(alignment: .bottom) {
                 Text("\(pointCount)")
