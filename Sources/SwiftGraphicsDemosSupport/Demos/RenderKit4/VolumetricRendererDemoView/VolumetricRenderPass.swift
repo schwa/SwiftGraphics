@@ -25,7 +25,7 @@ struct VolumetricRenderPass: RenderPassProtocol {
         lhs.id == rhs.id && lhs.rollPitchYaw == rhs.rollPitchYaw
     }
 
-    struct State: RenderPassState {
+    struct State: PassState {
         var renderPipelineState: MTLRenderPipelineState
         var depthStencilState: MTLDepthStencilState
     }

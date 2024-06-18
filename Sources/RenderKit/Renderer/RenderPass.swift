@@ -2,13 +2,8 @@ import Foundation
 import Metal
 import SwiftGraphicsSupport
 
-public protocol RenderPassState {
-}
-
-public protocol RenderPassProtocol: Equatable {
-    associatedtype State: RenderPassState
+public protocol RenderPassProtocol: PassProtocol {
     typealias Context = RenderContext
-    var id: AnyHashable { get }
     func setup(context: Context, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State
     func sizeWillChange(context: Context, state: inout State, size: CGSize) throws
     func render(context: Context, state: State, drawableSize: SIMD2<Float>, renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) throws
@@ -36,7 +31,7 @@ public extension RenderPassProtocol {
 // MARK: -
 
 public extension RenderPassProtocol {
-    func sizeWillChange(context: Context, untypedState: inout any RenderPassState, size: CGSize) throws {
+    func sizeWillChange(context: Context, untypedState: inout any PassState, size: CGSize) throws {
         guard var state = untypedState as? State else {
             fatalError()
         }
@@ -44,7 +39,7 @@ public extension RenderPassProtocol {
         untypedState = state
     }
 
-    func render(context: Context, untypedState: any RenderPassState, drawableSize: SIMD2<Float>, renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) throws {
+    func render(context: Context, untypedState: any PassState, drawableSize: SIMD2<Float>, renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) throws {
         guard let state = untypedState as? State else {
             fatalError()
         }

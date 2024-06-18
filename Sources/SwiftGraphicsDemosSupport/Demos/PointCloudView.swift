@@ -57,7 +57,7 @@ struct PointCloudView: View, DemoView {
 
 struct PointCloudRenderPass: RenderPassProtocol {
 
-    struct State: RenderPassState {
+    struct State: PassState {
         struct Bindings {
             var vertexBuffer0: Int
             var vertexUniforms: Int

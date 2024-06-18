@@ -114,7 +114,7 @@ struct GaussianSplatView: View, DemoView {
 
 struct GaussianSplatRenderPass: RenderPassProtocol {
 
-    struct State: RenderPassState {
+    struct State: PassState {
         struct Bindings {
             var vertexBuffer0: Int
             var vertexUniforms: Int
