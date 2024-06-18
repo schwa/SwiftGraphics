@@ -15,6 +15,7 @@ public struct RenderView: View {
     public typealias Configure = (MetalViewConfiguration) -> Void
     public typealias SizeWillChange = (CGSize) -> Void
 
+    var device: MTLDevice
     var renderPasses: PassCollection
     var configure: Configure
     var sizeWillChange: SizeWillChange
@@ -25,36 +26,35 @@ public struct RenderView: View {
     @State
     var renderer: Renderer?
 
-    @Environment(\.renderContext)
-    var renderContext
-
     @Environment(\.renderErrorHandler)
     var renderErrorHandler
 
-    public init(renderPasses: [any RenderPassProtocol], configure: @escaping Configure = { _ in }, sizeWillChange: @escaping SizeWillChange = { _ in }) {
+    @State
+    var logger: Logger = Logger(subsystem: "RenderView", category: "RenderView")
+
+    public init(device: MTLDevice, renderPasses: [any RenderPassProtocol], configure: @escaping Configure = { _ in }, sizeWillChange: @escaping SizeWillChange = { _ in }) {
+        self.device = device
         self.renderPasses = .init(renderPasses)
         self.configure = configure
         self.sizeWillChange = sizeWillChange
     }
 
     public var body: some View {
-        let renderContext = renderContext.forceUnwrap("Provide a render context.")
-
         MetalView { device, configuration in
             do {
-                renderer = Renderer(passes: renderPasses, renderContext: renderContext)
+                renderer = Renderer(device: device, passes: renderPasses)
                 try renderer!.configure(&configuration)
                 configure(configuration)
                 commandQueue = device.makeCommandQueue()
             } catch {
-                renderErrorHandler.send(error, logger: renderContext.logger)
+                renderErrorHandler.send(error, logger: logger)
             }
         } drawableSizeWillChange: { _, _, size in
             do {
                 try renderer!.sizeWillChange(size)
                 sizeWillChange(size)
             } catch {
-                renderErrorHandler.send(error, logger: renderContext.logger)
+                renderErrorHandler.send(error, logger: logger)
             }
         } draw: { _, _, size, drawable, renderPassDescriptor in
             do {
@@ -63,7 +63,7 @@ public struct RenderView: View {
                 }
                 try renderer!.draw(commandQueue: commandQueue, renderPassDescriptor: renderPassDescriptor, drawable: drawable, drawableSize: size)
             } catch {
-                renderErrorHandler.send(error, logger: renderContext.logger)
+                renderErrorHandler.send(error, logger: logger)
             }
         }
         .onChange(of: renderPasses) {

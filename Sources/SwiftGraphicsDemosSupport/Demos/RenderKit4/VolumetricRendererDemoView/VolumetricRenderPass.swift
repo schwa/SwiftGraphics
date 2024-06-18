@@ -52,9 +52,8 @@ struct VolumetricRenderPass: RenderPassProtocol {
         transferFunctionTexture = texture
     }
 
-    func setup(context: Context, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State {
-        let device = context.device
-        let library = context.library
+    func setup(device: MTLDevice, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State {
+        let library = try device.makeDebugLibrary(bundle: .renderKitShadersLegacy)
         let vertexFunction = library.makeFunction(name: "volumeVertexShader")!
         let fragmentFunction = library.makeFunction(name: "volumeFragmentShader")
 
@@ -81,8 +80,7 @@ struct VolumetricRenderPass: RenderPassProtocol {
         return .init(renderPipelineState: renderPipelineState, depthStencilState: depthStencilState)
     }
 
-    func encode(context: Context, state: State, drawableSize: SIMD2<Float>, commandEncoder encoder: MTLRenderCommandEncoder) throws {
-        let device = context.device
+    func encode(device: MTLDevice, state: State, drawableSize: SIMD2<Float>, commandEncoder encoder: MTLRenderCommandEncoder) throws {
         encoder.setRenderPipelineState(state.renderPipelineState)
         encoder.setDepthStencilState(state.depthStencilState)
 

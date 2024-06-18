@@ -41,15 +41,13 @@ public struct UnlitShadingPass: RenderPassProtocol {
         self.scene = scene
     }
 
-    public func setup(context: Context, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State {
-        let device = context.device
-
-        let library = context.library
+    public func setup(device: MTLDevice, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State {
+        let library = try device.makeDebugLibrary(bundle: .renderKitShadersLegacy)
         let renderPipelineDescriptor = renderPipelineDescriptor()
         renderPipelineDescriptor.vertexFunction = library.makeFunction(name: "unlitVertexShader")
         renderPipelineDescriptor.fragmentFunction = library.makeFunction(name: "unlitFragmentShader")
         let depthStencilDescriptor = MTLDepthStencilDescriptor(depthCompareFunction: .less, isDepthWriteEnabled: true)
-        let depthStencilState = try context.device.makeDepthStencilState(descriptor: depthStencilDescriptor).safelyUnwrap(RenderKitError.generic("Could not create depth stencil state"))
+        let depthStencilState = try device.makeDepthStencilState(descriptor: depthStencilDescriptor).safelyUnwrap(RenderKitError.generic("Could not create depth stencil state"))
         renderPipelineDescriptor.label = "\(type(of: self))"
 
         renderPipelineDescriptor.vertexDescriptor = MTLVertexDescriptor(oneTrueVertexDescriptor)
@@ -69,7 +67,7 @@ public struct UnlitShadingPass: RenderPassProtocol {
         return State(renderPipelineState: renderPipelineState, depthStencilState: depthStencilState, bindings: bindings)
     }
 
-    public func encode(context: Context, state: State, drawableSize: SIMD2<Float>, commandEncoder: any MTLRenderCommandEncoder) throws {
+    public func encode(device: MTLDevice, state: State, drawableSize: SIMD2<Float>, commandEncoder: any MTLRenderCommandEncoder) throws {
         let helper = try SceneGraphRenderHelper(scene: scene, drawableSize: drawableSize)
         let elements = helper.elements(material: UnlitMaterialX.self)
         commandEncoder.setDepthStencilState(state.depthStencilState)

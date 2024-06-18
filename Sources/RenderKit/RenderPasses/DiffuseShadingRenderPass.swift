@@ -33,17 +33,15 @@ public struct DiffuseShadingRenderPass: RenderPassProtocol {
         self.scene = scene
     }
 
-    public func setup(context: Context, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State {
-        let device = context.device
-
-        let library = context.library
+    public func setup(device: MTLDevice, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State {
+        let library = try device.makeDebugLibrary(bundle: .renderKitShadersLegacy)
         let useFlatShading = false
         let constantValues = MTLFunctionConstantValues(dictionary: [0: useFlatShading])
         let renderPipelineDescriptor = renderPipelineDescriptor()
         renderPipelineDescriptor.vertexFunction = try library.makeFunction(name: "DiffuseShadingVertexShader", constantValues: constantValues)
         renderPipelineDescriptor.fragmentFunction = try library.makeFunction(name: "DiffuseShadingFragmentShader", constantValues: constantValues)
         let depthStencilDescriptor = MTLDepthStencilDescriptor(depthCompareFunction: .less, isDepthWriteEnabled: true)
-        let depthStencilState = try context.device.makeDepthStencilState(descriptor: depthStencilDescriptor).safelyUnwrap(RenderKitError.generic("Could not create depth stencil state"))
+        let depthStencilState = try device.makeDepthStencilState(descriptor: depthStencilDescriptor).safelyUnwrap(RenderKitError.generic("Could not create depth stencil state"))
         renderPipelineDescriptor.label = "\(type(of: self))"
 
         renderPipelineDescriptor.vertexDescriptor = vertexDescriptor
@@ -52,7 +50,7 @@ public struct DiffuseShadingRenderPass: RenderPassProtocol {
         return .init(renderPipelineState: renderPipelineState, depthStencilState: depthStencilState)
     }
 
-    public func encode(context: Context, state: State, drawableSize: SIMD2<Float>, commandEncoder: any MTLRenderCommandEncoder) throws {
+    public func encode(device: MTLDevice, state: State, drawableSize: SIMD2<Float>, commandEncoder: any MTLRenderCommandEncoder) throws {
         let elements = try SceneGraphRenderHelper(scene: scene, drawableSize: drawableSize).elements(material: Material.self)
         commandEncoder.setDepthStencilState(state.depthStencilState)
         let lightAmbientColor = lightAmbientColor.simd.xyz

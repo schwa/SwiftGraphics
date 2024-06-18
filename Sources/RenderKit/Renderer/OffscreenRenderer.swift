@@ -3,7 +3,6 @@ import Metal
 import SwiftGraphicsSupport
 
 public struct OffscreenRenderer {
-    private var renderContext: RenderContext
     public private(set) var size: CGSize
     public private(set) var device: MTLDevice // TODO: remove
     public private(set) var renderPasses: [any RenderPassProtocol]
@@ -15,7 +14,6 @@ public struct OffscreenRenderer {
         self.size = size
         self.device = device
         self.renderPasses = renderPasses
-        self.renderContext = try RenderContext(device: device)
         self.renderPassDescriptor = MTLRenderPassDescriptor()
     }
 
@@ -50,12 +48,12 @@ public struct OffscreenRenderer {
                 return renderPipelineDescriptor
             }
 
-            let state = try renderPass.setup(context: renderContext, renderPipelineDescriptor: renderPipelineDescriptor)
+            let state = try renderPass.setup(device: device, renderPipelineDescriptor: renderPipelineDescriptor)
             stateByPasses[renderPass.id] = state
         }
         for renderPass in renderPasses {
             var state = stateByPasses[renderPass.id]!
-            try renderPass.sizeWillChange(context: renderContext, untypedState: &state, size: size)
+            try renderPass.sizeWillChange(device: device, untypedState: &state, size: size)
             stateByPasses[renderPass.id] = state
         }
 
@@ -97,7 +95,7 @@ public struct OffscreenRenderer {
                         fatalError()
                     }
 
-                    try renderPass.render(context: renderContext, untypedState: state, drawableSize: SIMD2<Float>(size), renderPassDescriptor: renderPassDescriptor, commandBuffer: commandBuffer)
+                    try renderPass.render(device: device, untypedState: state, drawableSize: SIMD2<Float>(size), renderPassDescriptor: renderPassDescriptor, commandBuffer: commandBuffer)
                 }
             }
         }

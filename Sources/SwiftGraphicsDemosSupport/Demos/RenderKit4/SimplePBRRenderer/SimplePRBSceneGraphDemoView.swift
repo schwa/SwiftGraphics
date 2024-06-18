@@ -27,7 +27,7 @@ public struct SimplePBRSceneGraphDemoView: View, DemoView {
     }
 
     public var body: some View {
-        RenderView(renderPasses: [
+        RenderView(device: device, renderPasses: [
             DiffuseShadingRenderPass(scene: scene),
             UnlitShadingPass(scene: scene),
             SimplePBRShadingPass(scene: scene),
@@ -38,7 +38,6 @@ public struct SimplePBRSceneGraphDemoView: View, DemoView {
             let b = BallConstraint(radius: 5, rollPitchYaw: cameraRotation)
             scene.currentCameraNode?.transform = b.transform
         }
-        .renderContext(try! RenderContext(device: device))
         .ballRotation($cameraRotation)
         .inspector(isPresented: .constant(true)) {
             let path = scene.root.allIndexedNodes().first(where: { $0.0.label == "model-1" })!.1
@@ -184,15 +183,13 @@ public struct SimplePBRShadingPass: RenderPassProtocol {
         self.scene = scene
     }
 
-    public func setup(context: Context, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State {
-        let device = context.device
-
+    public func setup(device: MTLDevice, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State {
         let library = try device.makeDebugLibrary(bundle: .renderKitShaders)
         let renderPipelineDescriptor = renderPipelineDescriptor()
         renderPipelineDescriptor.vertexFunction = library.makeFunction(name: "SimplePBRShader::VertexShader")!
         renderPipelineDescriptor.fragmentFunction = library.makeFunction(name: "SimplePBRShader::FragmentShader")!
         let depthStencilDescriptor = MTLDepthStencilDescriptor(depthCompareFunction: .less, isDepthWriteEnabled: true)
-        let depthStencilState = try context.device.makeDepthStencilState(descriptor: depthStencilDescriptor).safelyUnwrap(RenderKitError.generic("Could not create depth stencil state"))
+        let depthStencilState = try device.makeDepthStencilState(descriptor: depthStencilDescriptor).safelyUnwrap(RenderKitError.generic("Could not create depth stencil state"))
         renderPipelineDescriptor.label = "\(type(of: self))"
 
         renderPipelineDescriptor.vertexDescriptor = MTLVertexDescriptor(oneTrueVertexDescriptor)
@@ -212,7 +209,7 @@ public struct SimplePBRShadingPass: RenderPassProtocol {
         return State(renderPipelineState: renderPipelineState, depthStencilState: depthStencilState, bindings: bindings)
     }
 
-    public func encode(context: Context, state: State, drawableSize: SIMD2<Float>, commandEncoder: any MTLRenderCommandEncoder) throws {
+    public func encode(device: MTLDevice, state: State, drawableSize: SIMD2<Float>, commandEncoder: any MTLRenderCommandEncoder) throws {
         let helper = try SceneGraphRenderHelper(scene: scene, drawableSize: drawableSize)
         let elements = helper.elements(material: SimplePBRMaterial.self)
         commandEncoder.setDepthStencilState(state.depthStencilState)

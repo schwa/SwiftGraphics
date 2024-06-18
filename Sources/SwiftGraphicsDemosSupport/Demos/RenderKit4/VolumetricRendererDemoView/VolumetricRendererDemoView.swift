@@ -13,17 +13,7 @@ import SwiftUI
 
 // https://www.youtube.com/watch?v=y4KdxaMC69w&t=1761s
 
-struct VolumetricRendererDemoView: View, DemoView {
-    @Environment(\.metalDevice)
-    var device
-
-    var body: some View {
-        _VolumetricRendererDemoView()
-            .renderContext(try! .init(device: device))
-    }
-}
-
-struct _VolumetricRendererDemoView: View {
+struct VolumetricRendererDemoView: DemoView {
     @State
     var renderPass = try! VolumetricRenderPass()
 
@@ -45,11 +35,13 @@ struct _VolumetricRendererDemoView: View {
     @State
     var alphaTransferFunction: [Float] = (0 ..< 256).map({ Float($0) / Float(255) })
 
+    let device = MTLCreateSystemDefaultDevice()!
+
     init() {
     }
 
     var body: some View {
-        RenderView(renderPasses: [renderPass])
+        RenderView(device: device, renderPasses: [renderPass])
             .ballRotation($rollPitchYaw)
         .onAppear {
             updateTransferFunctionTexture()

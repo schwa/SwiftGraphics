@@ -32,7 +32,7 @@ public struct SceneGraphDemoView: View, DemoView {
             scene.currentCameraNode = newValue
         }
 
-        RenderView(renderPasses: [
+        RenderView(device: device, renderPasses: [
             DiffuseShadingRenderPass(scene: scene),
             UnlitShadingPass(scene: scene),
             DebugRenderPass(scene: scene),
@@ -46,7 +46,6 @@ public struct SceneGraphDemoView: View, DemoView {
             let b = BallConstraint(radius: 5, rollPitchYaw: cameraRotation)
             scene.currentCameraNode?.transform = b.transform
         }
-        .renderContext(try! .init(device: device))
         .ballRotation($cameraRotation)
         .toolbar {
             Button("Snapshot") {

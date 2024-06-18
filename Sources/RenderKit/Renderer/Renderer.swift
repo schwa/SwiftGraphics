@@ -19,11 +19,12 @@ public protocol PassProtocol: Equatable/*, Sendable*/ {
 }
 
 struct Renderer {
+    private var device: MTLDevice
     private var passes: PassCollection
-    private var renderContext: RenderContext
     private var statesByPasses: [AnyHashable: any PassState] = [:]
     private var configuration: MetalViewConfiguration?
     private var drawableSize: CGSize = .zero
+    private var logger: Logger? = Logger(subsystem: "com.swiftui.metal", category: "Renderer")
 
     enum State: Equatable {
         case initialized
@@ -33,13 +34,13 @@ struct Renderer {
     var state: State {
         didSet {
             let state = state
-            renderContext.logger?.info("State change: \(String(describing: oldValue)) -> \(String(describing: state))")
+            logger?.info("State change: \(String(describing: oldValue)) -> \(String(describing: state))")
         }
     }
 
-    init(passes: PassCollection, renderContext: RenderContext) {
+    init(device: MTLDevice, passes: PassCollection) {
+        self.device = device
         self.passes = passes
-        self.renderContext = renderContext
         self.state = .initialized
     }
 
@@ -60,7 +61,7 @@ struct Renderer {
             guard var state = statesByPasses[renderPass.id] else {
                 fatalError()
             }
-            try renderPass.sizeWillChange(context: renderContext, untypedState: &state, size: size)
+            try renderPass.sizeWillChange(device: device, untypedState: &state, size: size)
             statesByPasses[renderPass.id] = state
         }
     }
@@ -97,7 +98,7 @@ struct Renderer {
             guard let state = statesByPasses[renderPass.id] else {
                 fatalError()
             }
-            try renderPass.render(context: renderContext, untypedState: state, drawableSize: SIMD2<Float>(drawableSize), renderPassDescriptor: renderPassDescriptor, commandBuffer: commandBuffer)
+            try renderPass.render(device: device, untypedState: state, drawableSize: SIMD2<Float>(drawableSize), renderPassDescriptor: renderPassDescriptor, commandBuffer: commandBuffer)
         }
         commandBuffer.present(drawable)
         commandBuffer.commit()
@@ -113,7 +114,7 @@ struct Renderer {
                     return renderPipelineDescriptor
                 }
 
-                let state = try renderPass.setup(context: renderContext, renderPipelineDescriptor: renderPipelineDescriptor)
+                let state = try renderPass.setup(device: device, renderPipelineDescriptor: renderPipelineDescriptor)
                 statesByPasses[renderPass.id] = state
             }
             catch {
@@ -128,14 +129,14 @@ struct Renderer {
             lhs.id == rhs.id
         }
         if !difference.isEmpty {
-            renderContext.logger?.info("passes content changed.")
+            logger?.info("passes content changed.")
         }
         for change in difference {
             switch change {
             case .insert(_, element: let pass, _):
                 if let pass = pass as? any RenderPassProtocol {
                     let hasState = statesByPasses[pass.id] != nil
-                    renderContext.logger?.info("Render pass inserted: \(pass.id), has state: \(hasState)")
+                    logger?.info("Render pass inserted: \(pass.id), has state: \(hasState)")
 
                     let renderPipelineDescriptor = {
                         guard let configuration else {
@@ -147,8 +148,8 @@ struct Renderer {
                         return renderPipelineDescriptor
                     }
 
-                    var state = try pass.setup(context: renderContext, renderPipelineDescriptor: renderPipelineDescriptor)
-                    try pass.sizeWillChange(context: renderContext, untypedState: &state, size: drawableSize)
+                    var state = try pass.setup(device: device, renderPipelineDescriptor: renderPipelineDescriptor)
+                    try pass.sizeWillChange(device: device, untypedState: &state, size: drawableSize)
                     statesByPasses[pass.id] = state
                 }
                 else {
@@ -156,7 +157,7 @@ struct Renderer {
                 }
 
             case .remove(_, element: let element, _):
-                renderContext.logger?.info("Render pass removed: \(element.id)")
+                logger?.info("Render pass removed: \(element.id)")
                 statesByPasses[element.id] = nil
             }
         }

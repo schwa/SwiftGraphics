@@ -44,8 +44,7 @@ struct PointCloudView: View, DemoView {
     }
 
     var body: some View {
-        RenderView(renderPasses: [PointCloudRenderPass(cameraTransform: cameraTransform, cameraProjection: cameraProjection, modelTransform: modelTransform, pointCount: pointCount, points: Box(points), pointMesh: cube)])
-            .renderContext(RenderContext(device: device, library: try! device.makeDebugLibrary(bundle: .renderKitShaders)))
+        RenderView(device: device, renderPasses: [PointCloudRenderPass(cameraTransform: cameraTransform, cameraProjection: cameraProjection, modelTransform: modelTransform, pointCount: pointCount, points: Box(points), pointMesh: cube)])
             .ballRotation($modelTransform.rotation.rollPitchYaw)
             .overlay(alignment: .bottom) {
                 Text("\(pointCount)")
@@ -78,10 +77,8 @@ struct PointCloudRenderPass: RenderPassProtocol {
     var points: Box<MTLBuffer>
     var pointMesh: MTKMesh
 
-    func setup(context: Context, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State {
-        let device = context.device
-
-        let library = context.library
+    func setup(device: MTLDevice, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State {
+        let library = try device.makeDebugLibrary(bundle: .renderKitShaders)
         let renderPipelineDescriptor = renderPipelineDescriptor()
         renderPipelineDescriptor.label = "\(type(of: self))"
         renderPipelineDescriptor.vertexDescriptor = MTLVertexDescriptor(oneTrueVertexDescriptor)
@@ -106,7 +103,7 @@ struct PointCloudRenderPass: RenderPassProtocol {
         return State(bindings: bindings, depthStencilState: depthStencilState, renderPipelineState: renderPipelineState)
     }
 
-    func encode(context: Context, state: State, drawableSize: SIMD2<Float>, commandEncoder: any MTLRenderCommandEncoder) throws {
+    func encode(device: MTLDevice, state: State, drawableSize: SIMD2<Float>, commandEncoder: any MTLRenderCommandEncoder) throws {
 
         commandEncoder.setDepthStencilState(state.depthStencilState)
         commandEncoder.setRenderPipelineState(state.renderPipelineState)
