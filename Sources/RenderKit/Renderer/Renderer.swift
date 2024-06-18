@@ -47,10 +47,10 @@ struct Renderer {
     mutating func configure(_ configuration: inout MetalViewConfiguration) throws {
         assert(state == .initialized)
         self.state = .configured(sizeKnown: false)
-        self.configuration = configuration
         configuration.colorPixelFormat = .bgra8Unorm_srgb
         configuration.depthStencilPixelFormat = .depth32Float
-        try setupPasses(configuration: configuration)
+        self.configuration = configuration
+        try setupPasses(passes: passes.elements)
     }
 
     mutating func sizeWillChange(_ size: CGSize) throws {
@@ -73,49 +73,49 @@ struct Renderer {
         }
         let commandBuffer = try commandQueue.makeCommandBuffer().safelyUnwrap(RenderKitError.resourceCreationFailure)
 
-        for (index, renderPass) in passes.elements.enumerated() {
-            for pass in passes.elements {
-                switch pass {
-                case let renderPass as any RenderPassProtocol:
-                    let isFirst = index == passes.renderPasses.startIndex
-                    let isLast = index == passes.renderPasses.endIndex - 1
-                    if isFirst {
-                        renderPassDescriptor.colorAttachments[0].loadAction = .clear
-                        renderPassDescriptor.depthAttachment.loadAction = .clear
-                    }
-                    else {
-                        renderPassDescriptor.colorAttachments[0].loadAction = .load
-                        renderPassDescriptor.depthAttachment.loadAction = .load
-                    }
-                    if isLast {
-                        renderPassDescriptor.colorAttachments[0].storeAction = .store
-                        renderPassDescriptor.depthAttachment.storeAction = .dontCare
-                    }
-                    else {
-                        renderPassDescriptor.colorAttachments[0].storeAction = .store
-                        renderPassDescriptor.depthAttachment.storeAction = .store
-                    }
-                    guard let state = statesByPasses[renderPass.id] else {
-                        fatalError()
-                    }
-                    try renderPass.render(device: device, untypedState: state, drawableSize: SIMD2<Float>(drawableSize), renderPassDescriptor: renderPassDescriptor, commandBuffer: commandBuffer)
-                case let computePass as any ComputePassProtocol:
-                    guard let state = statesByPasses[computePass.id] else {
-                        fatalError()
-                    }
-                    try computePass.compute(device: device, untypedState: state, commandBuffer: commandBuffer)
-                default:
+        for (index, pass) in passes.elements.enumerated() {
+            switch pass {
+            case let renderPass as any RenderPassProtocol:
+                let isFirst = index == passes.renderPasses.startIndex
+                let isLast = index == passes.renderPasses.endIndex - 1
+                if isFirst {
+                    renderPassDescriptor.colorAttachments[0].loadAction = .clear
+                    renderPassDescriptor.depthAttachment.loadAction = .clear
+                }
+                else {
+                    renderPassDescriptor.colorAttachments[0].loadAction = .load
+                    renderPassDescriptor.depthAttachment.loadAction = .load
+                }
+                if isLast {
+                    renderPassDescriptor.colorAttachments[0].storeAction = .store
+                    renderPassDescriptor.depthAttachment.storeAction = .dontCare
+                }
+                else {
+                    renderPassDescriptor.colorAttachments[0].storeAction = .store
+                    renderPassDescriptor.depthAttachment.storeAction = .store
+                }
+                guard let state = statesByPasses[renderPass.id] else {
                     fatalError()
                 }
+                try renderPass.render(device: device, untypedState: state, drawableSize: SIMD2<Float>(drawableSize), renderPassDescriptor: renderPassDescriptor, commandBuffer: commandBuffer)
+            case let computePass as any ComputePassProtocol:
+                guard let state = statesByPasses[computePass.id] else {
+                    fatalError()
+                }
+                try computePass.compute(device: device, untypedState: state, commandBuffer: commandBuffer)
+            default:
+                fatalError()
             }
         }
         commandBuffer.present(drawable)
         commandBuffer.commit()
     }
 
-    // TODO: MERGE WITH updateRenderPasses
-    private mutating func setupPasses(configuration: MetalViewConfiguration) throws {
-        for pass in passes.elements {
+    mutating func setupPasses(passes: [any PassProtocol]) throws {
+        guard let configuration else {
+            fatalError()
+        }
+        for pass in passes {
             switch pass {
             case let renderPass as any RenderPassProtocol:
                 let renderPipelineDescriptor = {
@@ -124,7 +124,6 @@ struct Renderer {
                     renderPipelineDescriptor.depthAttachmentPixelFormat = configuration.depthStencilPixelFormat
                     return renderPipelineDescriptor
                 }
-
                 let state = try renderPass.setup(device: device, renderPipelineDescriptor: renderPipelineDescriptor)
                 statesByPasses[renderPass.id] = state
             case let computePass as any ComputePassProtocol:
@@ -136,44 +135,19 @@ struct Renderer {
         }
     }
 
-    // TODO: MERGE WITH setupPasses
     mutating func updateRenderPasses(_ passes: PassCollection) throws {
         let difference = passes.elements.difference(from: self.passes.elements) { lhs, rhs in
             lhs.id == rhs.id
         }
         if !difference.isEmpty {
-            logger?.info("passes content changed.")
+            logger?.info("Passes content changed.")
         }
-        for change in difference {
-            switch change {
-            case .insert(_, element: let pass, _):
-                if let pass = pass as? any RenderPassProtocol {
-                    let hasState = statesByPasses[pass.id] != nil
-                    logger?.info("Render pass inserted: \(pass.id), has state: \(hasState)")
-
-                    let renderPipelineDescriptor = {
-                        guard let configuration else {
-                            fatalError()
-                        }
-                        let renderPipelineDescriptor = MTLRenderPipelineDescriptor()
-                        renderPipelineDescriptor.colorAttachments[0].pixelFormat = configuration.colorPixelFormat
-                        renderPipelineDescriptor.depthAttachmentPixelFormat = configuration.depthStencilPixelFormat
-                        return renderPipelineDescriptor
-                    }
-
-                    var state = try pass.setup(device: device, renderPipelineDescriptor: renderPipelineDescriptor)
-                    try pass.sizeWillChange(device: device, untypedState: &state, size: drawableSize)
-                    statesByPasses[pass.id] = state
-                }
-                else {
-                    fatalError()
-                }
-
-            case .remove(_, element: let element, _):
-                logger?.info("Render pass removed: \(element.id)")
-                statesByPasses[element.id] = nil
-            }
+        for pass in difference.removals.map(\.element) {
+            logger?.info("Pass removed: \(pass.id)")
+            statesByPasses[pass.id] = nil
         }
+        let insertions = difference.insertions.map(\.element)
+        try setupPasses(passes: insertions)
         self.passes = passes
     }
 }
@@ -198,5 +172,16 @@ struct PassCollection: Equatable {
 
     var computePasses: [any ComputePassProtocol] {
         elements.compactMap { $0 as? any ComputePassProtocol }
+    }
+}
+
+extension CollectionDifference.Change {
+    var element: ChangeElement {
+        switch self {
+        case .insert(_, let element, _):
+            return element
+        case .remove(_, let element, _):
+            return element
+        }
     }
 }
