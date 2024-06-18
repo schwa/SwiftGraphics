@@ -41,7 +41,7 @@ struct VolumetricRendererDemoView: DemoView {
     }
 
     var body: some View {
-        RenderView(device: device, renderPasses: [renderPass])
+        RenderView(device: device, passes: [renderPass])
             .ballRotation($rollPitchYaw)
         .onAppear {
             updateTransferFunctionTexture()

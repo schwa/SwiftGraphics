@@ -34,7 +34,7 @@ struct Renderer {
     var state: State {
         didSet {
             let state = state
-            logger?.info("State change: \(String(describing: oldValue)) -> \(String(describing: state))")
+//            logger?.info("State change: \(String(describing: oldValue)) -> \(String(describing: state))")
         }
     }
 
@@ -76,24 +76,24 @@ struct Renderer {
         for (index, pass) in passes.elements.enumerated() {
             switch pass {
             case let renderPass as any RenderPassProtocol:
-                let isFirst = index == passes.renderPasses.startIndex
-                let isLast = index == passes.renderPasses.endIndex - 1
-                if isFirst {
-                    renderPassDescriptor.colorAttachments[0].loadAction = .clear
-                    renderPassDescriptor.depthAttachment.loadAction = .clear
-                }
-                else {
-                    renderPassDescriptor.colorAttachments[0].loadAction = .load
-                    renderPassDescriptor.depthAttachment.loadAction = .load
-                }
-                if isLast {
-                    renderPassDescriptor.colorAttachments[0].storeAction = .store
-                    renderPassDescriptor.depthAttachment.storeAction = .dontCare
-                }
-                else {
-                    renderPassDescriptor.colorAttachments[0].storeAction = .store
-                    renderPassDescriptor.depthAttachment.storeAction = .store
-                }
+//                let isFirst = index == passes.renderPasses.startIndex
+//                let isLast = index == passes.renderPasses.endIndex - 1
+//                if isFirst {
+//                    renderPassDescriptor.colorAttachments[0].loadAction = .clear
+//                    renderPassDescriptor.depthAttachment.loadAction = .clear
+//                }
+//                else {
+//                    renderPassDescriptor.colorAttachments[0].loadAction = .load
+//                    renderPassDescriptor.depthAttachment.loadAction = .load
+//                }
+//                if isLast {
+//                    renderPassDescriptor.colorAttachments[0].storeAction = .store
+//                    renderPassDescriptor.depthAttachment.storeAction = .dontCare
+//                }
+//                else {
+//                    renderPassDescriptor.colorAttachments[0].storeAction = .store
+//                    renderPassDescriptor.depthAttachment.storeAction = .store
+//                }
                 guard let state = statesByPasses[renderPass.id] else {
                     fatalError()
                 }

@@ -1,5 +1,15 @@
 #include <simd/simd.h>
 
+struct ArgumentBufferExample {
+    TEXTURE2D(float, access::write) a;
+    SAMPLER c;
+    TEXTURE2D(float) d;
+    DEVICE_PTR(float) e;
+    TEXTURE2D(float) f;
+    int g;
+//    SimplePBRMaterial material;
+};
+
 struct SimplePBRMaterial {
     simd_float3 baseColor;
     float metallic;

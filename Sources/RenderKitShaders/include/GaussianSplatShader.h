@@ -76,14 +76,10 @@ namespace GaussianSplatShader {
     ) {
         auto splat = splats[splatIndices[in.instance_id]];
         auto color = float4(splat.color) / 255.0;
-
+        return float4(color.rgb, 1);
 //        auto d = 1 - distance((uniforms.modelMatrix * float4(splat.position, 1)).xyz, uniforms.cameraPosition) / 4;
-
-        auto d = float(in.instance_id) / 1026508.0;
-
-        return float4(d, d, d, 1);
-
-        //return float4(color.xyz, 1);
+//        auto d = float(in.instance_id) / 1026508.0;
+//        return float4(d, d, d, 1);
     }
 
     [[kernel]]
@@ -102,21 +98,51 @@ namespace GaussianSplatShader {
         if (indexRight >= uniforms.splatCount) {
             return;
         }
-        const auto valueLeft = splats[splatIndices[indexLeft]];
-        const auto valueRight = splats[splatIndices[indexRight]];
+
+        const auto valueLeft = splatIndices[indexLeft];
+        const auto valueRight = splatIndices[indexRight];
+        const auto splatLeft = splats[valueLeft];
+        const auto splatRight = splats[valueRight];
 
         // TODO: Waste of two sqrts() here.
-        auto distanceLeft = distance(uniforms.modelMatrix * float3(valueLeft.position), uniforms.cameraPosition);
-        auto distanceRight = distance(uniforms.modelMatrix * float3(valueRight.position), uniforms.cameraPosition);
+        auto distanceLeft = distance(uniforms.modelMatrix * float3(splatLeft.position), uniforms.cameraPosition);
+        auto distanceRight = distance(uniforms.modelMatrix * float3(splatRight.position), uniforms.cameraPosition);
 
         // Swap entries if value is descending
         if (distanceLeft > distanceRight) {
             // TODO: Does metal have a swap function?
-            splatIndices[indexLeft] = splatIndices[indexRight];
-            splatIndices[indexRight] = splatIndices[indexLeft];
+            splatIndices[indexLeft] = valueRight;
+            splatIndices[indexRight] = valueLeft;
         }
     }
-
 }
+
+[[kernel]]
+void bitonicSort(
+    uint3 thread_position_in_grid [[thread_position_in_grid]],
+    constant uint &numEntries [[buffer(0)]],
+    constant uint &groupWidth [[buffer(1)]],
+    constant uint &groupHeight [[buffer(2)]],
+    constant uint &stepIndex [[buffer(3)]],
+    device uint *entries [[buffer(4)]]
+) {
+    const auto index = thread_position_in_grid.x;
+    const auto hIndex = index & (groupWidth - 1);
+    const auto indexLeft = hIndex + (groupHeight + 1) * (index / groupWidth);
+    const auto stepSize = stepIndex == 0 ? groupHeight - 2 * hIndex : (groupHeight + 1) / 2;
+    const auto indexRight = indexLeft + stepSize;
+    // Exit if out of bounds (for non-power of 2 input sizes)
+    if (indexRight >= numEntries) {
+        return;
+    }
+    const auto valueLeft = entries[indexLeft];
+    const auto valueRight = entries[indexRight];
+    // Swap entries if value is descending
+    if (valueLeft > valueRight) {
+        entries[indexLeft] = valueRight;
+        entries[indexRight] = valueLeft;
+    }
+}
+
 
 #endif
