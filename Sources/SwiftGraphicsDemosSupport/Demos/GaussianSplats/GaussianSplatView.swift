@@ -15,6 +15,14 @@ struct Splat {
     var rot: SIMD4<UInt8>      // 4 uint8_t for normalized rotation (rot_0, rot_1, rot_2, rot_3) scaled to [0, 255]
 };
 
+//struct SplatC {
+//    var position: SIMD3<Float16>
+//    var color: SIMD4<Float16>
+//    var cov_a: SIMD3<Float16>
+//    var cov_b: SIMD3<Float16>
+//};
+
+
 struct GaussianSplatView: View, DemoView {
     @State
     var splatCount: Int
@@ -45,7 +53,7 @@ struct GaussianSplatView: View, DemoView {
 
     init() {
         let device = MTLCreateSystemDefaultDevice()!
-        let url = Bundle.module.url(forResource: "train", withExtension: "splat")!
+        let url = Bundle.module.url(forResource: "train.splatc", withExtension: "data")!
         var data = try! Data(contentsOf: url)
 
 //        data.withUnsafeMutableBytes { buffer in
@@ -68,8 +76,10 @@ struct GaussianSplatView: View, DemoView {
 //
 //        }
 
-        let splatSize = MemoryLayout<Splat>.size
-        assert(splatSize == 32)
+//        let splatSize = MemoryLayout<SplatC>.size
+//        assert(splatSize == 26)
+        print(Float(data.count) / 26)
+        let splatSize = 26
         let splatCount = data.count / splatSize
         splats = device.makeBuffer(data: data, options: .storageModeShared)!.labelled("Splats")
 

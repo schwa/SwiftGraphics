@@ -373,6 +373,7 @@ let package = Package(
                 .copy("Resources/nouns.txt"),
                 .copy("Resources/StanfordVolumeData.tar"),
                 .copy("Resources/train.splat"),
+                .copy("Resources/train.splatc.data"),
 
             ],
             swiftSettings: [
