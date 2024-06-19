@@ -8,13 +8,6 @@ import Shapes3D
 import MetalKit
 import simd
 
-struct Splat {
-    var position: PackedFloat3 // 3 floats for position (x, y, z)
-    var scales: PackedFloat3   // 3 floats for scales (exp(scale_0), exp(scale_1), exp(scale_2))
-    var color: SIMD4<UInt8>    // 4 uint8_t for color (r, g, b, opacity)
-    var rot: SIMD4<UInt8>      // 4 uint8_t for normalized rotation (rot_0, rot_1, rot_2, rot_3) scaled to [0, 255]
-};
-
 //struct SplatC {
 //    var position: SIMD3<Float16>
 //    var color: SIMD4<Float16>
