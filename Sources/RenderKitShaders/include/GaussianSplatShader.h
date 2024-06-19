@@ -31,13 +31,21 @@ namespace GaussianSplatShader {
         uint instance_id[[flat]];
     };
 
-    struct Splat {
+    struct SplatB {
         packed_float3 position; // 3 floats for position (x, y, z)
         packed_float3 scales;   // 3 floats for scales (exp(scale_0), exp(scale_1), exp(scale_2))
         simd_uchar4 color;     // 4 uint8_t for color (r, g, b, opacity)
         simd_uchar4 rot;       // 4 uint8_t for normalized rotation (rot_0, rot_1, rot_2, rot_3) scaled to [0, 255]
     };
 
+    struct SplatC {
+        packed_half3 position;
+        half4 color;
+        packed_half3 cov_a;
+        packed_half3 cov_b;
+    };
+
+    typedef SplatC Splat;
 
     typedef GaussianSplatUniforms VertexUniforms;
     typedef GaussianSplatUniforms FragmentUniforms;
@@ -58,7 +66,7 @@ namespace GaussianSplatShader {
         constant uint *splatIndices [[buffer(3)]]
    ) {
         auto splat = splats[splatIndices[instance_id]];
-        auto position = uniforms.modelViewProjectionMatrix * float4(splat.position + in.position, 1.0);
+        auto position = uniforms.modelViewProjectionMatrix * float4(float3(splat.position) + in.position, 1.0);
         return {
             .position = position,
             .instance_id = instance_id,
@@ -73,10 +81,15 @@ namespace GaussianSplatShader {
         constant uint *splatIndices [[buffer(3)]]
     ) {
         auto splat = splats[splatIndices[in.instance_id]];
-        auto color = float4(splat.color) / 255.0;
-        auto d = 1 - distance((uniforms.modelMatrix * float4(splat.position, 1)).xyz, uniforms.cameraPosition) / 4;
-//        auto d = float(in.instance_id) / 1026508.0;
-        return float4(d, d, d, 1);
+        if (true) {
+            auto color = float4(splat.color);
+            return color;
+        }
+        else {
+            auto d = 1 - distance((uniforms.modelMatrix * float4(float3(splat.position), 1)).xyz, uniforms.cameraPosition) / 4;
+            //auto d = float(in.instance_id) / 1026508.0;
+            return float4(d, d, d, 1);
+        }
     }
 
 
