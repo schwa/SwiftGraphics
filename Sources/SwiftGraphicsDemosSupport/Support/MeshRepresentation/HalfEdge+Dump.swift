@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import StreamBuilder
+//import StreamBuilder
 
 extension HalfEdgeMesh {
     func dump() {
