@@ -243,10 +243,14 @@ struct GaussianSplatRenderPass: RenderPassProtocol {
         commandEncoder.setDepthStencilState(state.depthStencilState)
         commandEncoder.setRenderPipelineState(state.renderPipelineState)
 
-        var uniforms = GaussianSplatUniforms()
-        uniforms.modelViewProjectionMatrix = cameraProjection.projectionMatrix(for: drawableSize) * cameraTransform.matrix.inverse * modelTransform.matrix
-        uniforms.modelMatrix = modelTransform.matrix
-        uniforms.cameraPosition = cameraTransform.translation
+        let uniforms = GaussianSplatUniforms(
+            modelViewProjectionMatrix: cameraProjection.projectionMatrix(for: drawableSize) * cameraTransform.matrix.inverse * modelTransform.matrix,
+            projectionMatrix: cameraProjection.projectionMatrix(for: drawableSize),
+            modelMatrix: modelTransform.matrix,
+            viewMatrix: cameraTransform.matrix.inverse,
+            cameraPosition: cameraTransform.translation,
+            viewSize: drawableSize
+        )
 
         commandEncoder.withDebugGroup("VertexShader") {
             commandEncoder.setVertexBuffersFrom(mesh: pointMesh)
@@ -260,7 +264,12 @@ struct GaussianSplatRenderPass: RenderPassProtocol {
             commandEncoder.setFragmentBuffer(splatIndices.content, offset: 0, index: state.bindings.fragmentSplatIndices)
         }
 
-        commandEncoder.draw(pointMesh, instanceCount: splatCount)
+//        commandEncoder.draw(pointMesh, instanceCount: splatCount)
+        commandEncoder.drawPrimitives(type: .triangleStrip,
+                                     vertexStart: 0,
+                                     vertexCount: 4,
+                                     instanceCount: splatCount)
+
     }
 
 }
