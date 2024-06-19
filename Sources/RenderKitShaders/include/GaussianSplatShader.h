@@ -6,7 +6,7 @@ struct GaussianSplatUniforms {
     simd_float4x4 modelMatrix;
     simd_float4x4 viewMatrix;
     simd_float3 cameraPosition;
-    simd_float2 viewSize;
+    simd_float2 drawableSize;
 };
 
 struct GaussianSplatSortUniforms {
@@ -31,9 +31,8 @@ namespace GaussianSplatShader {
 
     struct VertexOut {
         float4 position [[position]];
-        half2 relativePosition; // Ranges from -kBoundsRadius to +kBoundsRadius
-        half4 color;
-        uint instance_id[[flat]];
+        float2 relativePosition; // Ranges from -kBoundsRadius to +kBoundsRadius
+        float4 color;
     };
 
     struct SplatC {
@@ -84,8 +83,7 @@ namespace GaussianSplatShader {
         );
         float3x3 cov = T * Vrk * transpose(T);
 
-        // Apply low-pass filter: every Gaussian should be at least
-        // one pixel wide/high. Discard 3rd row and column.
+        // Apply low-pass filter: every Gaussian should be at least one pixel wide/high. Discard 3rd row and column.
         cov[0][0] += 0.3;
         cov[1][1] += 0.3;
         return float3(cov[0][0], cov[0][1], cov[1][1]);
@@ -123,10 +121,20 @@ namespace GaussianSplatShader {
         v2 = eigenvector2 * sqrt(lambda2);
     }
 
+    void decomposeCalculatedCovariance(float3 viewPos, packed_half3 cov3Da, packed_half3 cov3Db, float4x4 viewMatrix, float4x4 projectionMatrix, float2 screenSize, thread half2 &v1, thread half2 &v2) {
+        float3 cov2D = calcCovariance2D(viewPos, cov3Da, cov3Db, viewMatrix, projectionMatrix, screenSize);
+        float2 axis1;
+        float2 axis2;
+        decomposeCovariance(cov2D, axis1, axis2);
+        v1 = half2(axis1);
+        v2 = half2(axis2);
+    }
+
+
     // MARK: -
 
     constant static const half kBoundsRadius = 2;
-    constant static const half kBoundsRadiusSquared = kBoundsRadius*kBoundsRadius;
+    constant static const half kBoundsRadiusSquared = kBoundsRadius * kBoundsRadius;
 
     [[vertex]]
     VertexOut VertexShader(
@@ -137,65 +145,57 @@ namespace GaussianSplatShader {
         constant Splat *splats [[buffer(2)]],
         constant uint *splatIndices [[buffer(3)]]
    ) {
-        VertexOut out;
+        const float2 relativeCoordinatesArray[] = { { -1, -1 }, { -1, 1 }, { 1, -1 }, { 1, 1 } };
         auto splat = splats[splatIndices[instance_id]];
-        float4 viewPosition4 = uniforms.viewMatrix * float4(float3(splat.position), 1);
-        float4 projectedCenter = uniforms.projectionMatrix * viewPosition4;
 
-        float3 viewPosition3 = viewPosition4.xyz;
+        VertexOut out;
+        float4 splatWorldSpacePosition = uniforms.viewMatrix * uniforms.modelMatrix * float4(float3(splat.position), 1);
+        float4 splatClipSpacePosition = uniforms.projectionMatrix * splatWorldSpacePosition;
+        half2 axis1;
+        half2 axis2;
+        decomposeCalculatedCovariance(splatWorldSpacePosition.xyz, splat.cov_a, splat.cov_b, uniforms.viewMatrix, uniforms.projectionMatrix, uniforms.drawableSize, axis1, axis2);
 
-        float3 cov2D = calcCovariance2D(viewPosition3, splat.cov_a, splat.cov_b, uniforms.viewMatrix, uniforms.projectionMatrix, uniforms.viewSize);
-
-        float2 axis1;
-        float2 axis2;
-        decomposeCovariance(cov2D, axis1, axis2);
-
-
-        float bounds = 1.2 * projectedCenter.w;
-        if (projectedCenter.z < -projectedCenter.w ||
-            projectedCenter.x < -bounds ||
-            projectedCenter.x > bounds ||
-            projectedCenter.y < -bounds ||
-            projectedCenter.y > bounds) {
+        auto bounds = 1.2 * splatClipSpacePosition.w;
+        if (splatClipSpacePosition.z < -splatClipSpacePosition.w
+            || splatClipSpacePosition.x < -bounds
+            || splatClipSpacePosition.x > bounds
+            || splatClipSpacePosition.y < -bounds
+            || splatClipSpacePosition.y > bounds) {
             out.position = float4(1, 1, 0, 1);
             return out;
         }
 
-        const half2 relativeCoordinatesArray[] = { { -1, -1 }, { -1, 1 }, { 1, -1 }, { 1, 1 } };
-        half2 relativeCoordinates = relativeCoordinatesArray[vertex_id];
-        half2 screenSizeFloat = half2(uniforms.viewSize.x, uniforms.viewSize.y);
-        half2 projectedScreenDelta =
-            (relativeCoordinates.x * half2(axis1) + relativeCoordinates.y * half2(axis2))
-            * 2
-            * kBoundsRadius
-            / screenSizeFloat;
+        auto vertexModelSpacePosition = relativeCoordinatesArray[vertex_id];
+        auto screenSizeFloat = half2(uniforms.drawableSize.x, uniforms.drawableSize.y);
+        auto projectedScreenDelta = (vertexModelSpacePosition.x * axis1 + vertexModelSpacePosition.y * axis2) * 2 * kBoundsRadius / screenSizeFloat;
 
-        out.position = float4(projectedCenter.x + projectedScreenDelta.x * projectedCenter.w,
-                              projectedCenter.y + projectedScreenDelta.y * projectedCenter.w,
-                              projectedCenter.z,
-                              projectedCenter.w);
-        out.relativePosition = kBoundsRadius * relativeCoordinates;
-        out.color = splat.color;
+        out.position = float4(splatClipSpacePosition.x + projectedScreenDelta.x * splatClipSpacePosition.w,
+                              splatClipSpacePosition.y + projectedScreenDelta.y * splatClipSpacePosition.w,
+                              splatClipSpacePosition.z,
+                              splatClipSpacePosition.w);
+        out.relativePosition = vertexModelSpacePosition * kBoundsRadius;
+        out.color = float4(splat.color);
         return out;
     }
 
     // MARK: -
 
     [[fragment]]
-    half4 FragmentShader(
+    float4 FragmentShader(
         FragmentIn in [[stage_in]],
         constant FragmentUniforms &uniforms [[buffer(0)]],
         constant Splat *splats [[buffer(1)]],
         constant uint *splatIndices [[buffer(3)]]
     ) {
-        half2 v = in.relativePosition;
-        half negativeVSquared = -dot(v, v);
+        auto v = in.relativePosition;
+        float negativeVSquared = -dot(v, v);
         if (negativeVSquared < -kBoundsRadiusSquared) {
             discard_fragment();
         }
+        auto alpha = in.color.a;
 
-        half alpha = exp(negativeVSquared) * in.color.a;
-        return half4(alpha * in.color.rgb, alpha);
+        auto e = exp(negativeVSquared) * alpha;
+        return float4(in.color.rgb * e, e);
     }
 
     // MARK: -
@@ -242,7 +242,7 @@ namespace GaussianSplatShader {
         auto distanceLeft = splatDistances[valueLeft];
         auto distanceRight = splatDistances[valueRight];
         // Swap entries if value is descending
-        if (distanceLeft > distanceRight) {
+        if (distanceLeft < distanceRight) {
             // TODO: Does metal have a swap function?
             splatIndices[indexLeft] = valueRight;
             splatIndices[indexRight] = valueLeft;
