@@ -87,7 +87,7 @@ struct GaussianSplatView: View, DemoView {
         let size: Float = 0.005
         cube = try! Box3D(min: [-size, -size, -size], max: [size, size, size]).toMTKMesh(device: device)
 
-        debugSort()
+//        debugSort()
     }
 
     var body: some View {
@@ -101,8 +101,6 @@ struct GaussianSplatView: View, DemoView {
     }
 
     func debugSort() {
-
-
         device.capture(enabled: false) {
             print("START", CFAbsoluteTimeGetCurrent())
             print(Array(UnsafeBufferPointer<Float32>(start: splatDistances.contents().assumingMemoryBound(to: Float32.self), count: splatCount)[..<10]))
@@ -120,32 +118,37 @@ struct GaussianSplatView: View, DemoView {
 
 
 
-        let before = UnsafeBufferPointer<UInt32>(start: splatIndices.contents().assumingMemoryBound(to: UInt32.self), count: splatCount)
-        print(Array(before[..<10]))
-        print("Unique indices before:", Set(before).count)
-        device.capture(enabled: false) {
-            let gaussianSplatSortComputePass = GaussianSplatBitonicSortComputePass(
-                splatCount: splatCount,
-                splatIndicesBuffer: Box(splatIndices),
-                splatBuffer: Box(splats),
-                modelMatrix: simd_float3x3(truncating: modelTransform.matrix),
-                cameraPosition: cameraTransform.translation
-            )
-            try! gaussianSplatSortComputePass.computeOnce(device: device)
-
-            let after = UnsafeBufferPointer<UInt32>(start: splatIndices.contents().assumingMemoryBound(to: UInt32.self), count: splatCount)
-            print(Array(after[..<10]))
-            print("Unique indices after:", Set(after).count)
-        }
+//        let before = UnsafeBufferPointer<UInt32>(start: splatIndices.contents().assumingMemoryBound(to: UInt32.self), count: splatCount)
+//        print(Array(before[..<10]))
+//        print("Unique indices before:", Set(before).count)
+//        device.capture(enabled: false) {
+//            let gaussianSplatSortComputePass = GaussianSplatBitonicSortComputePass(
+//                splatCount: splatCount,
+//                splatIndicesBuffer: Box(splatIndices),
+//                splatDistancesBuffer: Box<splatDistances>
+//            )
+//            try! gaussianSplatSortComputePass.computeOnce(device: device)
+//
+//            let after = UnsafeBufferPointer<UInt32>(start: splatIndices.contents().assumingMemoryBound(to: UInt32.self), count: splatCount)
+//            print(Array(after[..<10]))
+//            print("Unique indices after:", Set(after).count)
+//        }
     }
 
     var passes: [any PassProtocol] {
-        let gaussianSplatSortComputePass = GaussianSplatBitonicSortComputePass(
+
+        let preCalcComputePass = GaussianSplatPreCalcComputePass(
             splatCount: splatCount,
-            splatIndicesBuffer: Box(splatIndices),
+            splatDistancesBuffer: Box(splatDistances),
             splatBuffer: Box(splats),
             modelMatrix: simd_float3x3(truncating: modelTransform.matrix),
             cameraPosition: cameraTransform.translation
+        )
+
+        let gaussianSplatSortComputePass = GaussianSplatBitonicSortComputePass(
+            splatCount: splatCount,
+            splatIndicesBuffer: Box(splatIndices),
+            splatDistancesBuffer: Box(splatDistances)
         )
 
         let gaussianSplatRenderPass = GaussianSplatRenderPass(
@@ -160,6 +163,7 @@ struct GaussianSplatView: View, DemoView {
         )
 
         return [
+            preCalcComputePass,
             gaussianSplatSortComputePass,
             gaussianSplatRenderPass
         ]
