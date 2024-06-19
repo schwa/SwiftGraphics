@@ -43,7 +43,6 @@ let package = Package(
         .package(url: "https://github.com/schwa/swiftfields", from: "0.0.1"),
         .package(url: "https://github.com/schwa/swiftformats", from: "0.3.3"),
         .package(url: "https://github.com/schwa/SwiftGLTF", branch: "main"),
-        .package(url: "https://github.com/schwa/StreamBuilder", branch: "main"),
         .package(url: "https://github.com/ksemianov/WrappingHStack", from: "0.2.0"),
     ],
     targets: [
@@ -342,7 +341,6 @@ let package = Package(
                 "SwiftGraphicsSupport",
                 "SIMDUnsafeConformances",
                 "SwiftGLTF",
-                "StreamBuilder",
                 "WrappingHStack",
                 "Compute",
                 "MetalUnsafeConformances",
