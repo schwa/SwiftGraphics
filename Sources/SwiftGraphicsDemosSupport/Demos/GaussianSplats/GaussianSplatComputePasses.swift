@@ -73,36 +73,52 @@ struct GaussianSplatBitonicSortComputePass: ComputePassProtocol {
     }
 }
 
-public func nextPowerOfTwo(_ value: Double) -> Double {
-    let logValue = log2(Double(value))
-    let nextPower = pow(2.0, ceil(logValue))
-    return nextPower
-}
 
-public func nextPowerOfTwo(_ value: Int) -> Int {
-    Int(nextPowerOfTwo(Double(value)))
-}
-
-public extension MTLSize {
-    init(width: Int) {
-        self = MTLSize(width: width, height: 1, depth: 1)
-    }
-}
-
-extension MTLComputeCommandEncoder {
-    func setBytes(_ bytes: UnsafeRawBufferPointer, index: Int) {
-        setBytes(bytes.baseAddress!, length: bytes.count, index: index)
+struct GaussianSplatPreCalcComputePass: ComputePassProtocol {
+    struct State: PassState {
+        var pipelineState: MTLComputePipelineState
+        var bindingsModelMatrixIndex: Int
+        var bindingsCameraPositionIndex: Int
+        var bindingsSplatsIndex: Int
+        var bindingsSplatDistancesIndex: Int
     }
 
-    func setBytes(of value: some Any, index: Int) {
-        withUnsafeBytes(of: value) { buffer in
-            setBytes(buffer, index: index)
+    var id = AnyHashable("GaussianSplatPreCalcComputePass")
+    var splatCount: Int
+    var splatDistancesBuffer: Box<MTLBuffer>
+    var splatBuffer: Box<MTLBuffer>
+    var modelMatrix: simd_float3x3
+    var cameraPosition: float3
+
+    func setup(device: MTLDevice) throws -> State {
+        let library = try device.makeDebugLibrary(bundle: .renderKitShaders)
+        let function = library.makeFunction(name: "GaussianSplatShader::DistancePreCalc").forceUnwrap("No function found")
+        let (pipelineState, reflection) = try device.makeComputePipelineState(function: function, options: .bindingInfo)
+        guard let reflection else {
+            fatalError()
         }
+        let state = State(
+            pipelineState: pipelineState,
+            bindingsModelMatrixIndex: try reflection.binding(for: "modelMatrix"),
+            bindingsCameraPositionIndex: try reflection.binding(for: "cameraPosition"),
+            bindingsSplatsIndex: try reflection.binding(for: "splats"),
+            bindingsSplatDistancesIndex: try reflection.binding(for: "splatDistances")
+        )
+        return state
     }
 
-    func setBytes(of value: [some Any], index: Int) {
-        value.withUnsafeBytes { buffer in
-            setBytes(buffer, index: index)
+    func compute(device: MTLDevice, state: State, commandBuffer: MTLCommandBuffer) throws {
+        let computePipelineState = state.pipelineState
+        let commandEncoder = commandBuffer.makeComputeCommandEncoder().forceUnwrap()
+        commandEncoder.label = "GaussianSplatPreCalcComputePass"
+        commandEncoder.withDebugGroup("GaussianSplatPreCalcComputePass") {
+            commandEncoder.setComputePipelineState(computePipelineState)
+            commandEncoder.setBytes(of: modelMatrix, index: state.bindingsModelMatrixIndex)
+            commandEncoder.setBytes(of: cameraPosition, index: state.bindingsCameraPositionIndex)
+            commandEncoder.setBuffer(splatDistancesBuffer.content, offset: 0, index: state.bindingsSplatDistancesIndex)
+            commandEncoder.setBuffer(splatBuffer.content, offset: 0, index: state.bindingsSplatsIndex)
+            commandEncoder.dispatchThreadgroups(MTLSize(width: splatCount), threadsPerThreadgroup: MTLSize(width: computePipelineState.maxTotalThreadsPerThreadgroup))
         }
+        commandEncoder.endEncoding()
     }
 }

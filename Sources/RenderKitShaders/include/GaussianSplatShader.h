@@ -81,6 +81,21 @@ namespace GaussianSplatShader {
         return float4(d, d, d, 1);
     }
 
+
+    [[kernel]]
+    void DistancePreCalc(
+        uint3 thread_position_in_grid [[thread_position_in_grid]],
+        constant simd_float3x3 &modelMatrix[[buffer(0)]],
+        constant simd_float3 &cameraPosition[[buffer(1)]],
+        device Splat *splats [[buffer(2)]],
+        device uint *splatIndices [[buffer(3)]],
+        device float *distances [[buffer(4)]]
+    ) {
+        const auto index = thread_position_in_grid.x;
+        auto distance = distance_squared(modelMatrix * float3(splats[index].position), cameraPosition);
+        distances[index] = distance;
+    }
+
     [[kernel]]
     void BitonicSortSplats(
         uint3 thread_position_in_grid [[thread_position_in_grid]],
