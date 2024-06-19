@@ -30,7 +30,7 @@ struct GaussianSplatView: View, DemoView {
     var splatDistances: MTLBuffer
 
     @State
-    var cameraTransform: Transform = .translation([0, 0, 2])
+    var cameraTransform: Transform = .translation([0, 0, 3])
 
     @State
     var cameraProjection: Projection = .perspective(.init())
@@ -211,11 +211,17 @@ struct GaussianSplatRenderPass: RenderPassProtocol {
         renderPipelineDescriptor.fragmentFunction = library.makeFunction(name: "GaussianSplatShader::FragmentShader")
 
         renderPipelineDescriptor.colorAttachments[0].isBlendingEnabled = true
-        renderPipelineDescriptor.colorAttachments[0].sourceRGBBlendFactor = .sourceAlpha
-        renderPipelineDescriptor.colorAttachments[0].sourceAlphaBlendFactor = .sourceAlpha
+        renderPipelineDescriptor.colorAttachments[0].rgbBlendOperation = .add
+        renderPipelineDescriptor.colorAttachments[0].alphaBlendOperation = .add
+        renderPipelineDescriptor.colorAttachments[0].sourceRGBBlendFactor = .one
+        renderPipelineDescriptor.colorAttachments[0].sourceAlphaBlendFactor = .one
         renderPipelineDescriptor.colorAttachments[0].destinationRGBBlendFactor = .oneMinusSourceAlpha
         renderPipelineDescriptor.colorAttachments[0].destinationAlphaBlendFactor = .oneMinusSourceAlpha
 
+//        renderPipelineDescriptor.colorAttachments[0].sourceRGBBlendFactor = .oneMinusDestinationAlpha
+//        renderPipelineDescriptor.colorAttachments[0].sourceAlphaBlendFactor = .oneMinusDestinationAlpha
+//        renderPipelineDescriptor.colorAttachments[0].destinationRGBBlendFactor = .one
+//        renderPipelineDescriptor.colorAttachments[0].destinationAlphaBlendFactor = .one
 
         let (renderPipelineState, reflection) = try device.makeRenderPipelineState(descriptor: renderPipelineDescriptor, options: [.bindingInfo])
         guard let reflection else {
@@ -232,7 +238,7 @@ struct GaussianSplatRenderPass: RenderPassProtocol {
             fragmentSplatIndices: try reflection.binding(for: "splatIndices", of: .fragment)
         )
 
-        let depthStencilDescriptor = MTLDepthStencilDescriptor(depthCompareFunction: .less, isDepthWriteEnabled: true)
+        let depthStencilDescriptor = MTLDepthStencilDescriptor(depthCompareFunction: .always, isDepthWriteEnabled: true)
         let depthStencilState = try device.makeDepthStencilState(descriptor: depthStencilDescriptor).safelyUnwrap(RenderKitError.generic("Could not create depth stencil state"))
 
         return State(bindings: bindings, depthStencilState: depthStencilState, renderPipelineState: renderPipelineState)
@@ -243,13 +249,19 @@ struct GaussianSplatRenderPass: RenderPassProtocol {
         commandEncoder.setDepthStencilState(state.depthStencilState)
         commandEncoder.setRenderPipelineState(state.renderPipelineState)
 
+        commandEncoder.setCullMode(.back)
+        commandEncoder.setFrontFacing(.counterClockwise)
+//        commandEncoder.setTriangleFillMode(triangleFillMode)
+//        commandEncoder.setRenderPipelineState(state.renderPipelineState)
+
+
         let uniforms = GaussianSplatUniforms(
             modelViewProjectionMatrix: cameraProjection.projectionMatrix(for: drawableSize) * cameraTransform.matrix.inverse * modelTransform.matrix,
             projectionMatrix: cameraProjection.projectionMatrix(for: drawableSize),
             modelMatrix: modelTransform.matrix,
             viewMatrix: cameraTransform.matrix.inverse,
             cameraPosition: cameraTransform.translation,
-            viewSize: drawableSize
+            drawableSize: drawableSize
         )
 
         commandEncoder.withDebugGroup("VertexShader") {
