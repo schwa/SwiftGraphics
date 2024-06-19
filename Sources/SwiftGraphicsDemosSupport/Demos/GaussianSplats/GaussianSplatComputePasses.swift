@@ -15,16 +15,14 @@ struct GaussianSplatBitonicSortComputePass: ComputePassProtocol {
     struct State: PassState {
         var pipelineState: MTLComputePipelineState
         var bindingsUniformsIndex: Int
-        var bindingsSplatsIndex: Int
+        var bindingsSplatDistancesIndex: Int
         var bindingsSplatIndicesIndex: Int
     }
 
     var id = AnyHashable("GaussianSplatBitonicSortComputePass")
     var splatCount: Int
     var splatIndicesBuffer: Box<MTLBuffer>
-    var splatBuffer: Box<MTLBuffer>
-    var modelMatrix: simd_float3x3
-    var cameraPosition: float3
+    var splatDistancesBuffer: Box<MTLBuffer>
 
     func setup(device: MTLDevice) throws -> State {
         let library = try device.makeDebugLibrary(bundle: .renderKitShaders)
@@ -36,7 +34,7 @@ struct GaussianSplatBitonicSortComputePass: ComputePassProtocol {
         let state = State(
             pipelineState: pipelineState,
             bindingsUniformsIndex: try reflection.binding(for: "uniforms"),
-            bindingsSplatsIndex: try reflection.binding(for: "splats"),
+            bindingsSplatDistancesIndex: try reflection.binding(for: "splatDistances"),
             bindingsSplatIndicesIndex: try reflection.binding(for: "splatIndices")
         )
         return state
@@ -50,7 +48,7 @@ struct GaussianSplatBitonicSortComputePass: ComputePassProtocol {
             commandEncoder.setComputePipelineState(computePipelineState)
 
             commandEncoder.setBuffer(splatIndicesBuffer.content, offset: 0, index: state.bindingsSplatIndicesIndex)
-            commandEncoder.setBuffer(splatBuffer.content, offset: 0, index: state.bindingsSplatsIndex)
+            commandEncoder.setBuffer(splatDistancesBuffer.content, offset: 0, index: state.bindingsSplatDistancesIndex)
 
             let numStages = Int(log2(nextPowerOfTwo(Double(splatCount))))
             var threadgroupsPerGrid = (splatCount + computePipelineState.maxTotalThreadsPerThreadgroup - 1) / computePipelineState.maxTotalThreadsPerThreadgroup
@@ -62,7 +60,7 @@ struct GaussianSplatBitonicSortComputePass: ComputePassProtocol {
                         let groupHeight = 2 * groupWidth - 1
 
                         // TODO: Changing all the uniforms per call() is a bit over the top but hey.
-                        let uniforms = GaussianSplatSortUniforms(splatCount: UInt32(splatCount), groupWidth: UInt32(groupWidth), groupHeight: UInt32(groupHeight), stepIndex: UInt32(stepIndex), modelMatrix: modelMatrix, cameraPosition: cameraPosition)
+                        let uniforms = GaussianSplatSortUniforms(splatCount: UInt32(splatCount), groupWidth: UInt32(groupWidth), groupHeight: UInt32(groupHeight), stepIndex: UInt32(stepIndex))
                         commandEncoder.setBytes(of: uniforms, index: state.bindingsUniformsIndex)
                         commandEncoder.dispatchThreadgroups(MTLSize(width: threadgroupsPerGrid), threadsPerThreadgroup: MTLSize(width: computePipelineState.maxTotalThreadsPerThreadgroup))
                     }
