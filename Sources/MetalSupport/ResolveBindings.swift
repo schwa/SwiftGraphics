@@ -11,7 +11,7 @@ public func resolveBindings<Bindable>(reflection: MTLRenderPipelineReflection, b
 public extension MTLComputePipelineReflection {
     func binding(for name: String) throws -> Int {
         guard let binding = bindings.first(where: { $0.name == name }) else {
-            throw MetalSupportError.missingBinding
+            throw MetalSupportError.missingBinding(name)
         }
         return binding.index
     }
@@ -33,7 +33,7 @@ public extension MTLRenderPipelineReflection {
             fatalError("Unimplemented")
         }
         guard let binding = bindings.first(where: { $0.name == name }) else {
-            throw MetalSupportError.missingBinding
+            throw MetalSupportError.missingBinding(name)
         }
         return binding.index
     }

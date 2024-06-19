@@ -80,6 +80,7 @@ struct GaussianSplatPreCalcComputePass: ComputePassProtocol {
         var bindingsModelMatrixIndex: Int
         var bindingsCameraPositionIndex: Int
         var bindingsSplatsIndex: Int
+        var bindingsSplatCountIndex: Int
         var bindingsSplatDistancesIndex: Int
     }
 
@@ -102,6 +103,7 @@ struct GaussianSplatPreCalcComputePass: ComputePassProtocol {
             bindingsModelMatrixIndex: try reflection.binding(for: "modelMatrix"),
             bindingsCameraPositionIndex: try reflection.binding(for: "cameraPosition"),
             bindingsSplatsIndex: try reflection.binding(for: "splats"),
+            bindingsSplatCountIndex: try reflection.binding(for: "splatCount"),
             bindingsSplatDistancesIndex: try reflection.binding(for: "splatDistances")
         )
         return state
@@ -115,10 +117,15 @@ struct GaussianSplatPreCalcComputePass: ComputePassProtocol {
             commandEncoder.setComputePipelineState(computePipelineState)
             commandEncoder.setBytes(of: modelMatrix, index: state.bindingsModelMatrixIndex)
             commandEncoder.setBytes(of: cameraPosition, index: state.bindingsCameraPositionIndex)
-            commandEncoder.setBuffer(splatDistancesBuffer.content, offset: 0, index: state.bindingsSplatDistancesIndex)
             commandEncoder.setBuffer(splatBuffer.content, offset: 0, index: state.bindingsSplatsIndex)
-            commandEncoder.dispatchThreadgroups(MTLSize(width: splatCount), threadsPerThreadgroup: MTLSize(width: computePipelineState.maxTotalThreadsPerThreadgroup))
+            commandEncoder.setBytes(of: splatCount, index: state.bindingsSplatCountIndex)
+            commandEncoder.setBuffer(splatDistancesBuffer.content, offset: 0, index: state.bindingsSplatDistancesIndex)
+            let threadsPerThreadgroup = MTLSize(width: computePipelineState.maxTotalThreadsPerThreadgroup, height: 1, depth: 1)
+            let numThreadgroups = (splatCount + threadsPerThreadgroup.width - 1) / threadsPerThreadgroup.width
+            let threadgroupsPerGrid = MTLSize(width: numThreadgroups, height: 1, depth: 1)
+            commandEncoder.dispatchThreadgroups(threadgroupsPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
         }
+
         commandEncoder.endEncoding()
     }
 }
