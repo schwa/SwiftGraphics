@@ -31,16 +31,9 @@ namespace GaussianSplatShader {
         uint instance_id[[flat]];
     };
 
-    struct SplatB {
-        packed_float3 position; // 3 floats for position (x, y, z)
-        packed_float3 scales;   // 3 floats for scales (exp(scale_0), exp(scale_1), exp(scale_2))
-        simd_uchar4 color;     // 4 uint8_t for color (r, g, b, opacity)
-        simd_uchar4 rot;       // 4 uint8_t for normalized rotation (rot_0, rot_1, rot_2, rot_3) scaled to [0, 255]
-    };
-
     struct SplatC {
         packed_half3 position;
-        half4 color;
+        packed_half4 color;
         packed_half3 cov_a;
         packed_half3 cov_b;
     };
@@ -81,7 +74,7 @@ namespace GaussianSplatShader {
         constant uint *splatIndices [[buffer(3)]]
     ) {
         auto splat = splats[splatIndices[in.instance_id]];
-        if (true) {
+        if (false) {
             auto color = float4(splat.color);
             return color;
         }
