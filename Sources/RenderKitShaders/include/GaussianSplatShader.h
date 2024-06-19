@@ -87,20 +87,24 @@ namespace GaussianSplatShader {
         uint3 thread_position_in_grid [[thread_position_in_grid]],
         constant simd_float3x3 &modelMatrix[[buffer(0)]],
         constant simd_float3 &cameraPosition[[buffer(1)]],
-        device Splat *splats [[buffer(2)]],
-        device uint *splatIndices [[buffer(3)]],
-        device float *distances [[buffer(4)]]
+        constant Splat *splats [[buffer(2)]],
+        constant uint &splatCount [[buffer(3)]],
+        device float *splatDistances [[buffer(4)]]
     ) {
-        const auto index = thread_position_in_grid.x;
-        auto distance = distance_squared(modelMatrix * float3(splats[index].position), cameraPosition);
-        distances[index] = distance;
+        const uint index = thread_position_in_grid.x;
+        if (index >= splatCount) {
+            return;
+        }
+        const auto position = modelMatrix * float3(splats[index].position);
+        const auto distance = distance_squared(position, cameraPosition);
+        splatDistances[index] = distance;
     }
 
     [[kernel]]
     void BitonicSortSplats(
         uint3 thread_position_in_grid [[thread_position_in_grid]],
         constant GaussianSplatSortUniforms &uniforms [[buffer(0)]],
-        device Splat *splats [[buffer(1)]],
+        constant Splat *splats [[buffer(1)]],
         device uint *splatIndices [[buffer(2)]]
     ) {
         const auto index = thread_position_in_grid.x;
@@ -115,11 +119,8 @@ namespace GaussianSplatShader {
 
         const auto valueLeft = splatIndices[indexLeft];
         const auto valueRight = splatIndices[indexRight];
-
-        // TODO: Waste of two sqrts() here.
         auto distanceLeft = distance_squared(uniforms.modelMatrix * float3(splats[valueLeft].position), uniforms.cameraPosition);
         auto distanceRight = distance_squared(uniforms.modelMatrix * float3(splats[valueRight].position), uniforms.cameraPosition);
-
         // Swap entries if value is descending
         if (distanceLeft > distanceRight) {
             // TODO: Does metal have a swap function?

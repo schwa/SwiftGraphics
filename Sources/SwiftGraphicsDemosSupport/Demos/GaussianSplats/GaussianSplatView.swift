@@ -26,6 +26,9 @@ struct GaussianSplatView: View, DemoView {
     var splatIndices: MTLBuffer
 
     @State
+    var splatDistances: MTLBuffer
+
+    @State
     var cameraTransform: Transform = .translation([0, 0, 2])
 
     @State
@@ -76,6 +79,8 @@ struct GaussianSplatView: View, DemoView {
         splatIndices = device.makeBuffer(data: splatIndicesData, options: .storageModeShared)!.labelled("Splats-Indices")
         print("#splats", splatCount);
 
+        splatDistances = device.makeBuffer(length: MemoryLayout<Float>.size * splatCount, options: .storageModeShared)!.labelled("Splat-Distances")
+
         self.device = device
         self.splatCount = splatCount
 
@@ -96,11 +101,29 @@ struct GaussianSplatView: View, DemoView {
     }
 
     func debugSort() {
+
+
+        device.capture(enabled: false) {
+            print("START", CFAbsoluteTimeGetCurrent())
+            print(Array(UnsafeBufferPointer<Float32>(start: splatDistances.contents().assumingMemoryBound(to: Float32.self), count: splatCount)[..<10]))
+            let preCalcComputePass = GaussianSplatPreCalcComputePass(
+                splatCount: splatCount,
+                splatDistancesBuffer: Box(splatDistances),
+                splatBuffer: Box(splats),
+                modelMatrix: simd_float3x3(truncating: modelTransform.matrix),
+                cameraPosition: cameraTransform.translation
+            )
+            try! preCalcComputePass.computeOnce(device: device)
+            print(Array(UnsafeBufferPointer<Float32>(start: splatDistances.contents().assumingMemoryBound(to: Float32.self), count: splatCount)[..<10]))
+            print("DONE", CFAbsoluteTimeGetCurrent())
+        }
+
+
+
         let before = UnsafeBufferPointer<UInt32>(start: splatIndices.contents().assumingMemoryBound(to: UInt32.self), count: splatCount)
         print(Array(before[..<10]))
         print("Unique indices before:", Set(before).count)
         device.capture(enabled: false) {
-
             let gaussianSplatSortComputePass = GaussianSplatBitonicSortComputePass(
                 splatCount: splatCount,
                 splatIndicesBuffer: Box(splatIndices),
@@ -132,6 +155,7 @@ struct GaussianSplatView: View, DemoView {
             splatCount: splatCount,
             splats: Box(splats),
             splatIndices: Box(splatIndices),
+            splatDistances: Box(splatDistances),
             pointMesh: cube
         )
 
@@ -140,9 +164,9 @@ struct GaussianSplatView: View, DemoView {
             gaussianSplatRenderPass
         ]
     }
-
-
 }
+
+// MARK: -
 
 struct GaussianSplatRenderPass: RenderPassProtocol {
     struct State: PassState {
@@ -168,6 +192,7 @@ struct GaussianSplatRenderPass: RenderPassProtocol {
     var splatCount: Int
     var splats: Box<MTLBuffer>
     var splatIndices: Box<MTLBuffer>
+    var splatDistances: Box<MTLBuffer>
     var pointMesh: MTKMesh
 
     func setup(device: MTLDevice, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State {
@@ -229,19 +254,6 @@ struct GaussianSplatRenderPass: RenderPassProtocol {
         }
 
         commandEncoder.draw(pointMesh, instanceCount: splatCount)
-    }
-
-}
-
-extension ComputePassProtocol {
-    func computeOnce(device: MTLDevice) throws {
-        let state = try setup(device: device)
-        let commandQueue = device.makeCommandQueue().forceUnwrap()
-        let commandBuffer = commandQueue.makeCommandBuffer( ).forceUnwrap()
-        try compute(device: device, state: state, commandBuffer: commandBuffer)
-        commandBuffer.commit()
-        commandBuffer.waitUntilCompleted()
-        print("DONE")
     }
 
 }
