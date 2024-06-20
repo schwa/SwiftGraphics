@@ -22,6 +22,7 @@ struct GaussianSplatRenderPass: RenderPassProtocol {
             var fragmentSplats: Int
             var fragmentSplatIndices: Int
         }
+        var quadMesh: MTKMesh
         var bindings: Bindings
         var depthStencilState: MTLDepthStencilState
         var renderPipelineState: MTLRenderPipelineState
@@ -35,10 +36,13 @@ struct GaussianSplatRenderPass: RenderPassProtocol {
     var splatCount: Int
     var splats: Box<MTLBuffer>
     var splatIndices: Box<MTLBuffer>
-    var pointMesh: MTKMesh
     var debugMode: Bool
 
     func setup(device: MTLDevice, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State {
+
+        let allocator = MTKMeshBufferAllocator(device: device)
+        let quadMesh = try! MTKMesh(mesh: MDLMesh(planeWithExtent: [2, 2, 0], segments: [1, 1], geometryType: .triangles, allocator: allocator), device: device)
+
         let library = try device.makeDebugLibrary(bundle: .renderKitShaders)
         let renderPipelineDescriptor = renderPipelineDescriptor()
         renderPipelineDescriptor.label = "\(type(of: self))"
@@ -77,7 +81,7 @@ struct GaussianSplatRenderPass: RenderPassProtocol {
         let depthStencilDescriptor = MTLDepthStencilDescriptor(depthCompareFunction: .always, isDepthWriteEnabled: true)
         let depthStencilState = try device.makeDepthStencilState(descriptor: depthStencilDescriptor).safelyUnwrap(RenderKitError.generic("Could not create depth stencil state"))
 
-        return State(bindings: bindings, depthStencilState: depthStencilState, renderPipelineState: renderPipelineState)
+        return State(quadMesh: quadMesh, bindings: bindings, depthStencilState: depthStencilState, renderPipelineState: renderPipelineState)
     }
 
     func encode(device: MTLDevice, state: inout State, drawableSize: SIMD2<Float>, commandEncoder: any MTLRenderCommandEncoder) throws {
@@ -101,7 +105,7 @@ struct GaussianSplatRenderPass: RenderPassProtocol {
         )
 
         commandEncoder.withDebugGroup("VertexShader") {
-            commandEncoder.setVertexBuffersFrom(mesh: pointMesh)
+            commandEncoder.setVertexBuffersFrom(mesh: state.quadMesh)
             commandEncoder.setVertexBytes(of: uniforms, index: state.bindings.vertexUniforms)
             commandEncoder.setVertexBuffer(splats.content, offset: 0, index: state.bindings.vertexSplats)
             commandEncoder.setVertexBuffer(splatIndices.content, offset: 0, index: state.bindings.vertexSplatIndices)

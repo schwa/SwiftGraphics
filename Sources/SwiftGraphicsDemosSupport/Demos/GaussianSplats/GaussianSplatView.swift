@@ -56,7 +56,6 @@ class GaussianSplatViewModel {
     var splats: MTLBuffer
     var splatIndices: MTLBuffer
     var splatDistances: MTLBuffer
-    var cube: MTKMesh // TODO: RENAME
 
     init(device: MTLDevice, url: URL) throws {
         let data = try! Data(contentsOf: url)
@@ -69,9 +68,6 @@ class GaussianSplatViewModel {
         splatIndices = device.makeBuffer(data: splatIndicesData, options: .storageModeShared)!.labelled("Splats-Indices")
         splatDistances = device.makeBuffer(length: MemoryLayout<Float>.size * splatCount, options: .storageModeShared)!.labelled("Splat-Distances")
         self.splatCount = splatCount
-
-        let allocator = MTKMeshBufferAllocator(device: device)
-        cube = try! MTKMesh(mesh: MDLMesh(planeWithExtent: [2, 2, 0], segments: [1, 1], geometryType: .triangles, allocator: allocator), device: device)
     }
 }
 
@@ -154,7 +150,6 @@ struct GaussianSplatRenderView: View {
             splatCount: viewModel.splatCount,
             splats: Box(viewModel.splats),
             splatIndices: Box(viewModel.splatIndices),
-            pointMesh: viewModel.cube,
             debugMode: debugMode
         )
 

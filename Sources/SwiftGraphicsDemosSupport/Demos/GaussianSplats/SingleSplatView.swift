@@ -58,9 +58,6 @@ struct SingleSplatView: View, DemoView {
     var splatIndices: MTLBuffer
 
     @State
-    var mesh: MTKMesh // TODO: RENAME
-
-    @State
     var splat: SplatC
 
 
@@ -78,8 +75,6 @@ struct SingleSplatView: View, DemoView {
         self.splat = splat
         self.splats = splats
         self.splatIndices = splatIndices
-        let allocator = MTKMeshBufferAllocator(device: device)
-        self.mesh = try! MTKMesh(mesh: MDLMesh(planeWithExtent: [2, 2, 0], segments: [1, 1], geometryType: .triangles, allocator: allocator), device: device)
     }
 
     var body: some View {
@@ -156,7 +151,6 @@ struct SingleSplatView: View, DemoView {
             splatCount: 1,
             splats: Box(splats),
             splatIndices: Box(splatIndices),
-            pointMesh: mesh,
             debugMode: debugMode
         )
         return [
