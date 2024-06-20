@@ -10,6 +10,7 @@ import simd
 import Observation
 import Everything
 import UniformTypeIdentifiers
+import SwiftFormats
 
 extension UTType {
     static let splatC = UTType(filenameExtension: "splatc")!
@@ -97,11 +98,23 @@ struct GaussianSplatRenderView: View {
     @Environment(GaussianSplatViewModel.self)
     var viewModel
 
+    @State
+    var size: CGSize = .zero
+
     var body: some View {
         RenderView(device: device, passes: passes)
+        .onGeometryChange(for: CGSize.self) { proxy in
+            return proxy.size
+        }
+        action: { size in
+            self.size = size
+        }
+
+
         .ballRotation($modelTransform.rotation.rollPitchYaw, pitchLimit: .radians(-.infinity) ... .radians(.infinity))
         .overlay(alignment: .bottom) {
             VStack {
+                Text("Size: \(size, format: .size)")
                 Text("#splats: \(viewModel.splatCount)")
                 Slider(value: $cameraTransform.translation.z, in: 0.0 ... 20.0) { Text("Distance") }
                     .frame(maxWidth: 120)
