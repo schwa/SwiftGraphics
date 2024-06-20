@@ -40,6 +40,9 @@ struct SingleSplatView: View, DemoView {
     var cameraProjection: Projection = .perspective(.init())
 
     @State
+    var ballConstraint = BallConstraint(radius: 5)
+
+    @State
     var modelTransform: Transform = .init(scale: [1, 1, 1])
 
     @State
@@ -86,7 +89,15 @@ struct SingleSplatView: View, DemoView {
 
     var body: some View {
         RenderView(device: device, passes: passes)
-        .ballRotation($modelTransform.rotation.rollPitchYaw, pitchLimit: .radians(-.infinity) ... .radians(.infinity))
+        .ballRotation($ballConstraint.rollPitchYaw, updatesPitch: true, updatesYaw: true)
+        .onChange(of: ballConstraint.transform, initial: true) {
+            cameraTransform = ballConstraint.transform
+            print(cameraTransform)
+        }
+        .overlay(alignment: .topLeading) {
+            CameraRotationWidgetView(ballConstraint: $ballConstraint)
+                .frame(width: 120, height: 120)
+        }
         .onChange(of: splat) {
             let splats = device.makeBuffer(bytesOf: [splat], options: .storageModeShared)!
             self.splats = splats
@@ -95,9 +106,9 @@ struct SingleSplatView: View, DemoView {
             Form {
                 Section("Camera") {
                     HStack {
-                        TextField("Roll", value: $modelTransform.rotation.rollPitchYaw.roll.degrees, format: .number)
-                        TextField("Pitch", value: $modelTransform.rotation.rollPitchYaw.pitch.degrees, format: .number)
-                        TextField("Yaw", value: $modelTransform.rotation.rollPitchYaw.yaw.degrees, format: .number)
+                        TextField("Roll", value: $cameraTransform.rotation.rollPitchYaw.roll.degrees, format: .number)
+                        TextField("Pitch", value: $cameraTransform.rotation.rollPitchYaw.pitch.degrees, format: .number)
+                        TextField("Yaw", value: $cameraTransform.rotation.rollPitchYaw.yaw.degrees, format: .number)
                     }
                     .labelsHidden()
 

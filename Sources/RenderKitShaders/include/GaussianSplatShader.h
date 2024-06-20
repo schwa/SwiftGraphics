@@ -88,12 +88,19 @@ namespace GaussianSplatShader {
         return float3(cov[0][0], cov[0][1], cov[1][1]);
     }
 
+    struct Axes {
+        float2 axis1;
+        float2 axis2;
+    };
+
+
+
     // cov2D is a flattened 2d covariance matrix. Given
     // covariance = | a b |
     //              | c d |
     // (where b == c because the Gaussian covariance matrix is symmetric),
     // cov2D = ( a, b, d )
-    void decomposeCovariance(float3 cov2D, thread float2 &v1, thread float2 &v2) {
+    Axes decomposeCovariance(float3 cov2D) {
         float a = cov2D.x;
         float b = cov2D.y;
         float d = cov2D.z;
@@ -116,19 +123,10 @@ namespace GaussianSplatShader {
         float2 eigenvector2 = float2(eigenvector1.y, -eigenvector1.x);
         lambda1 *= 2;
         lambda2 *= 2;
-        v1 = eigenvector1 * sqrt(lambda1);
-        v2 = eigenvector2 * sqrt(lambda2);
+        auto v1 = eigenvector1 * sqrt(lambda1);
+        auto v2 = eigenvector2 * sqrt(lambda2);
+        return { v1, v2 };
     }
-
-    void decomposeCalculatedCovariance(float3 viewPos, packed_half3 cov3Da, packed_half3 cov3Db, float4x4 viewMatrix, float4x4 projectionMatrix, float2 screenSize, thread float2 &v1, thread float2 &v2) {
-        float3 cov2D = calcCovariance2D(viewPos, cov3Da, cov3Db, viewMatrix, projectionMatrix, screenSize);
-        float2 axis1;
-        float2 axis2;
-        decomposeCovariance(cov2D, axis1, axis2);
-        v1 = axis1;
-        v2 = axis2;
-    }
-
 
     // MARK: -
 
@@ -146,6 +144,7 @@ namespace GaussianSplatShader {
    ) {
         VertexOut out;
 
+        const auto vertexModelSpacePosition = in.position.xy;
         auto splat = splats[splatIndices[instance_id]];
         const auto splatWorldSpacePosition = uniforms.modelViewMatrix * float4(float3(splat.position), 1);
         const auto splatClipSpacePosition = uniforms.projectionMatrix * splatWorldSpacePosition;
@@ -160,15 +159,10 @@ namespace GaussianSplatShader {
 //            return out;
 //        }
 
-//        const float2 relativeCoordinatesArray[] = { { -1, -1 }, { -1, 1 }, { 1, -1 }, { 1, 1 } };
-//        const auto vertexModelSpacePosition2 = relativeCoordinatesArray[vertex_id];
-        const auto vertexModelSpacePosition = in.position.xy;
+        const auto cov2D = calcCovariance2D(splatWorldSpacePosition.xyz, splat.cov_a, splat.cov_b, uniforms.viewMatrix, uniforms.projectionMatrix, uniforms.drawableSize);
+        const auto axes = decomposeCovariance(cov2D);
 
-        float2 axis1;
-        float2 axis2;
-        decomposeCalculatedCovariance(splatWorldSpacePosition.xyz, splat.cov_a, splat.cov_b, uniforms.modelViewMatrix, uniforms.projectionMatrix, uniforms.drawableSize, axis1, axis2);
-
-        const auto projectedScreenDelta = (vertexModelSpacePosition.x * axis1 + vertexModelSpacePosition.y * axis2) * 2 * kBoundsRadius / uniforms.drawableSize;
+        const auto projectedScreenDelta = (vertexModelSpacePosition.x * axes.axis1 + vertexModelSpacePosition.y * axes.axis2) * 2 * kBoundsRadius / uniforms.drawableSize;
 
         auto position = splatClipSpacePosition;
         position.xy += projectedScreenDelta.xy * splatClipSpacePosition.w;

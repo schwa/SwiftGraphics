@@ -11,6 +11,7 @@ import Observation
 import Everything
 import UniformTypeIdentifiers
 import SwiftFormats
+import CoreGraphicsSupport
 
 extension UTType {
     static let splatC = UTType(filenameExtension: "splatc")!
@@ -72,9 +73,7 @@ class GaussianSplatViewModel {
         let allocator = MTKMeshBufferAllocator(device: device)
         cube = try! MTKMesh(mesh: MDLMesh(planeWithExtent: [2, 2, 0], segments: [1, 1], geometryType: .triangles, allocator: allocator), device: device)
     }
-
 }
-
 
 struct GaussianSplatRenderView: View {
     @State
@@ -101,6 +100,9 @@ struct GaussianSplatRenderView: View {
     @State
     var size: CGSize = .zero
 
+    @Environment(\.displayScale)
+    var displayScale
+
     var body: some View {
         RenderView(device: device, passes: passes)
         .onGeometryChange(for: CGSize.self) { proxy in
@@ -109,12 +111,10 @@ struct GaussianSplatRenderView: View {
         action: { size in
             self.size = size
         }
-
-
         .ballRotation($modelTransform.rotation.rollPitchYaw, pitchLimit: .radians(-.infinity) ... .radians(.infinity))
         .overlay(alignment: .bottom) {
             VStack {
-                Text("Size: \(size, format: .size)")
+                Text("Size: [\(size * displayScale, format: .size)]")
                 Text("#splats: \(viewModel.splatCount)")
                 Slider(value: $cameraTransform.translation.z, in: 0.0 ... 20.0) { Text("Distance") }
                     .frame(maxWidth: 120)
@@ -124,7 +124,6 @@ struct GaussianSplatRenderView: View {
                     .frame(maxWidth: 120)
                     Text("\(sortRate)")
                 }
-
             }
             .padding()
             .background(.ultraThickMaterial).cornerRadius(8)
