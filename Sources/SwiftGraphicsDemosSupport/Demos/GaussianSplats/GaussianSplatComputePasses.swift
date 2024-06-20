@@ -24,6 +24,7 @@ struct GaussianSplatBitonicSortComputePass: ComputePassProtocol {
     var splatCount: Int
     var splatIndicesBuffer: Box<MTLBuffer>
     var splatDistancesBuffer: Box<MTLBuffer>
+    var sortRate: Int
 
     func setup(device: MTLDevice) throws -> State {
         let library = try device.makeDebugLibrary(bundle: .renderKitShaders)
@@ -44,7 +45,7 @@ struct GaussianSplatBitonicSortComputePass: ComputePassProtocol {
     func compute(device: MTLDevice, state: inout State, commandBuffer: MTLCommandBuffer) throws {
 
         state.frameCount += 1
-        if state.frameCount > 1 && state.frameCount % 8 != 0 {
+        if sortRate > 1 && state.frameCount > 1 && state.frameCount % sortRate != 0 {
             return
         }
 
