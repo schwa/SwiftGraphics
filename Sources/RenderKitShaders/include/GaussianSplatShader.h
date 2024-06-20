@@ -2,6 +2,7 @@
 
 struct GaussianSplatUniforms {
     simd_float4x4 modelViewProjectionMatrix;
+    simd_float4x4 modelViewMatrix;
     simd_float4x4 projectionMatrix;
     simd_float4x4 modelMatrix;
     simd_float4x4 viewMatrix;
@@ -121,20 +122,20 @@ namespace GaussianSplatShader {
         v2 = eigenvector2 * sqrt(lambda2);
     }
 
-    void decomposeCalculatedCovariance(float3 viewPos, packed_half3 cov3Da, packed_half3 cov3Db, float4x4 viewMatrix, float4x4 projectionMatrix, float2 screenSize, thread half2 &v1, thread half2 &v2) {
+    void decomposeCalculatedCovariance(float3 viewPos, packed_half3 cov3Da, packed_half3 cov3Db, float4x4 viewMatrix, float4x4 projectionMatrix, float2 screenSize, thread float2 &v1, thread float2 &v2) {
         float3 cov2D = calcCovariance2D(viewPos, cov3Da, cov3Db, viewMatrix, projectionMatrix, screenSize);
         float2 axis1;
         float2 axis2;
         decomposeCovariance(cov2D, axis1, axis2);
-        v1 = half2(axis1);
-        v2 = half2(axis2);
+        v1 = axis1;
+        v2 = axis2;
     }
 
 
     // MARK: -
 
-    constant static const half kBoundsRadius = 2;
-    constant static const half kBoundsRadiusSquared = kBoundsRadius * kBoundsRadius;
+    constant static const float kBoundsRadius = 2;
+    constant static const float kBoundsRadiusSquared = kBoundsRadius * kBoundsRadius;
 
     [[vertex]]
     VertexOut VertexShader(
@@ -145,17 +146,14 @@ namespace GaussianSplatShader {
         constant Splat *splats [[buffer(2)]],
         constant uint *splatIndices [[buffer(3)]]
    ) {
+        VertexOut out;
+
         const float2 relativeCoordinatesArray[] = { { -1, -1 }, { -1, 1 }, { 1, -1 }, { 1, 1 } };
         auto splat = splats[splatIndices[instance_id]];
+        const auto splatWorldSpacePosition = uniforms.modelViewMatrix * float4(float3(splat.position), 1);
+        const auto splatClipSpacePosition = uniforms.projectionMatrix * splatWorldSpacePosition;
 
-        VertexOut out;
-        float4 splatWorldSpacePosition = uniforms.viewMatrix * uniforms.modelMatrix * float4(float3(splat.position), 1);
-        float4 splatClipSpacePosition = uniforms.projectionMatrix * splatWorldSpacePosition;
-        half2 axis1;
-        half2 axis2;
-        decomposeCalculatedCovariance(splatWorldSpacePosition.xyz, splat.cov_a, splat.cov_b, uniforms.viewMatrix, uniforms.projectionMatrix, uniforms.drawableSize, axis1, axis2);
-
-        auto bounds = 1.2 * splatClipSpacePosition.w;
+        const auto bounds = 1.2 * splatClipSpacePosition.w;
         if (splatClipSpacePosition.z < -splatClipSpacePosition.w
             || splatClipSpacePosition.x < -bounds
             || splatClipSpacePosition.x > bounds
@@ -165,14 +163,17 @@ namespace GaussianSplatShader {
             return out;
         }
 
-        auto vertexModelSpacePosition = relativeCoordinatesArray[vertex_id];
-        auto screenSizeFloat = half2(uniforms.drawableSize.x, uniforms.drawableSize.y);
-        auto projectedScreenDelta = (vertexModelSpacePosition.x * axis1 + vertexModelSpacePosition.y * axis2) * 2 * kBoundsRadius / screenSizeFloat;
+        float2 axis1;
+        float2 axis2;
+        decomposeCalculatedCovariance(splatWorldSpacePosition.xyz, splat.cov_a, splat.cov_b, uniforms.modelViewMatrix, uniforms.projectionMatrix, uniforms.drawableSize, axis1, axis2);
 
-        out.position = float4(splatClipSpacePosition.x + projectedScreenDelta.x * splatClipSpacePosition.w,
-                              splatClipSpacePosition.y + projectedScreenDelta.y * splatClipSpacePosition.w,
-                              splatClipSpacePosition.z,
-                              splatClipSpacePosition.w);
+        const auto vertexModelSpacePosition = relativeCoordinatesArray[vertex_id];
+        const auto projectedScreenDelta = (vertexModelSpacePosition.x * axis1 + vertexModelSpacePosition.y * axis2) * 2 * kBoundsRadius / uniforms.drawableSize;
+
+        auto position = splatClipSpacePosition;
+        position.xy += projectedScreenDelta.xy * splatClipSpacePosition.w;
+
+        out.position = position;
         out.relativePosition = vertexModelSpacePosition * kBoundsRadius;
         out.color = float4(splat.color);
         return out;
@@ -187,15 +188,14 @@ namespace GaussianSplatShader {
         constant Splat *splats [[buffer(1)]],
         constant uint *splatIndices [[buffer(3)]]
     ) {
-        auto v = in.relativePosition;
-        float negativeVSquared = -dot(v, v);
-        if (negativeVSquared < -kBoundsRadiusSquared) {
+        const auto relativePosition = in.relativePosition;
+        const auto negativeDistanceSquared = -dot(relativePosition, relativePosition);
+        if (negativeDistanceSquared < -kBoundsRadiusSquared) {
             discard_fragment();
         }
-        auto alpha = in.color.a;
-
-        auto e = exp(negativeVSquared) * alpha;
-        return float4(in.color.rgb * e, e);
+        const auto falloff = exp(negativeDistanceSquared);
+        const auto alpha = in.color.a * falloff;
+        return float4(in.color.rgb * alpha, alpha);
     }
 
     // MARK: -

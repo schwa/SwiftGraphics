@@ -44,34 +44,14 @@ struct GaussianSplatView: View, DemoView {
     @State
     var cube: MTKMesh
 
+    @State
+    var debugMode: Bool = false
+
     init() {
         let device = MTLCreateSystemDefaultDevice()!
         let url = Bundle.module.url(forResource: "train.splatc", withExtension: "data")!
         var data = try! Data(contentsOf: url)
-
-//        data.withUnsafeMutableBytes { buffer in
-//            let splats = buffer.bindMemory(to: Splat.self)
-//            let flipY = true
-//            if flipY {
-//                let bounds = splats.map(\.position).bounds
-//                print(bounds)
-//                for index in 0..<splats.count {
-//                    splats[index].position.y = bounds.max.y - (splats[index].position.y - bounds.min.y)
-//                    splats[index].position.y -= (bounds.min.y + bounds.max.y) / 2
-//                }
-//                print(splats.map(\.position).bounds)
-////                let newPositions = splats.map(\.position)
-////                let newMin = newPositions.reduce([Float.greatestFiniteMagnitude, Float.greatestFiniteMagnitude, Float.greatestFiniteMagnitude], min)
-////                let newMax = newPositions.reduce([-Float.greatestFiniteMagnitude, -Float.greatestFiniteMagnitude, -Float.greatestFiniteMagnitude], max)
-////                print(newMin.y, newMax.y)
-//
-//            }
-//
-//        }
-
-//        let splatSize = MemoryLayout<SplatC>.size
-//        assert(splatSize == 26)
-        print(Float(data.count) / 26)
+//        print(Float(data.count) / 26)
         let splatSize = 26
         let splatCount = data.count / splatSize
         splats = device.makeBuffer(data: data, options: .storageModeShared)!.labelled("Splats")
@@ -80,7 +60,7 @@ struct GaussianSplatView: View, DemoView {
             Data($0)
         }
         splatIndices = device.makeBuffer(data: splatIndicesData, options: .storageModeShared)!.labelled("Splats-Indices")
-        print("#splats", splatCount);
+//        print("#splats", splatCount);
 
         splatDistances = device.makeBuffer(length: MemoryLayout<Float>.size * splatCount, options: .storageModeShared)!.labelled("Splat-Distances")
 
@@ -97,49 +77,19 @@ struct GaussianSplatView: View, DemoView {
         RenderView(device: device, passes: passes)
         .ballRotation($modelTransform.rotation.rollPitchYaw, pitchLimit: .radians(-.infinity) ... .radians(.infinity))
         .overlay(alignment: .bottom) {
-            Text("\(splatCount)")
-            .foregroundStyle(.white)
+            VStack {
+                Text("#splats: \(splatCount)")
+                Slider(value: $cameraTransform.translation.z, in: 0.0 ... 20.0) { Text("Distance") }
+                    .frame(maxWidth: 120)
+                Toggle("Debug Mode", isOn: $debugMode)
+            }
+            .padding()
+            .background(.ultraThickMaterial).cornerRadius(8)
             .padding()
         }
     }
 
-    func debugSort() {
-        device.capture(enabled: false) {
-            print("START", CFAbsoluteTimeGetCurrent())
-            print(Array(UnsafeBufferPointer<Float32>(start: splatDistances.contents().assumingMemoryBound(to: Float32.self), count: splatCount)[..<10]))
-            let preCalcComputePass = GaussianSplatPreCalcComputePass(
-                splatCount: splatCount,
-                splatDistancesBuffer: Box(splatDistances),
-                splatBuffer: Box(splats),
-                modelMatrix: simd_float3x3(truncating: modelTransform.matrix),
-                cameraPosition: cameraTransform.translation
-            )
-            try! preCalcComputePass.computeOnce(device: device)
-            print(Array(UnsafeBufferPointer<Float32>(start: splatDistances.contents().assumingMemoryBound(to: Float32.self), count: splatCount)[..<10]))
-            print("DONE", CFAbsoluteTimeGetCurrent())
-        }
-
-
-
-//        let before = UnsafeBufferPointer<UInt32>(start: splatIndices.contents().assumingMemoryBound(to: UInt32.self), count: splatCount)
-//        print(Array(before[..<10]))
-//        print("Unique indices before:", Set(before).count)
-//        device.capture(enabled: false) {
-//            let gaussianSplatSortComputePass = GaussianSplatBitonicSortComputePass(
-//                splatCount: splatCount,
-//                splatIndicesBuffer: Box(splatIndices),
-//                splatDistancesBuffer: Box<splatDistances>
-//            )
-//            try! gaussianSplatSortComputePass.computeOnce(device: device)
-//
-//            let after = UnsafeBufferPointer<UInt32>(start: splatIndices.contents().assumingMemoryBound(to: UInt32.self), count: splatCount)
-//            print(Array(after[..<10]))
-//            print("Unique indices after:", Set(after).count)
-//        }
-    }
-
     var passes: [any PassProtocol] {
-
         let preCalcComputePass = GaussianSplatPreCalcComputePass(
             splatCount: splatCount,
             splatDistancesBuffer: Box(splatDistances),
@@ -162,7 +112,8 @@ struct GaussianSplatView: View, DemoView {
             splats: Box(splats),
             splatIndices: Box(splatIndices),
             splatDistances: Box(splatDistances),
-            pointMesh: cube
+            pointMesh: cube,
+            debugMode: debugMode
         )
 
         return [
@@ -201,6 +152,7 @@ struct GaussianSplatRenderPass: RenderPassProtocol {
     var splatIndices: Box<MTLBuffer>
     var splatDistances: Box<MTLBuffer>
     var pointMesh: MTKMesh
+    var debugMode: Bool
 
     func setup(device: MTLDevice, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State {
         let library = try device.makeDebugLibrary(bundle: .renderKitShaders)
@@ -254,9 +206,14 @@ struct GaussianSplatRenderPass: RenderPassProtocol {
 //        commandEncoder.setTriangleFillMode(triangleFillMode)
 //        commandEncoder.setRenderPipelineState(state.renderPipelineState)
 
+        if debugMode {
+            commandEncoder.setTriangleFillMode(.lines)
+        }
+
 
         let uniforms = GaussianSplatUniforms(
             modelViewProjectionMatrix: cameraProjection.projectionMatrix(for: drawableSize) * cameraTransform.matrix.inverse * modelTransform.matrix,
+            modelViewMatrix: cameraTransform.matrix.inverse * modelTransform.matrix,
             projectionMatrix: cameraProjection.projectionMatrix(for: drawableSize),
             modelMatrix: modelTransform.matrix,
             viewMatrix: cameraTransform.matrix.inverse,
