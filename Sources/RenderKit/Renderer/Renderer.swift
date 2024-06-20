@@ -100,10 +100,11 @@ struct Renderer {
                 try renderPass.render(device: device, untypedState: &state, drawableSize: SIMD2<Float>(drawableSize), renderPassDescriptor: renderPassDescriptor, commandBuffer: commandBuffer)
                 statesByPasses[renderPass.id] = state
             case let computePass as any ComputePassProtocol:
-                guard let state = statesByPasses[computePass.id] else {
+                guard var state = statesByPasses[computePass.id] else {
                     fatalError()
                 }
-                try computePass.compute(device: device, untypedState: state, commandBuffer: commandBuffer)
+                try computePass.compute(device: device, untypedState: &state, commandBuffer: commandBuffer)
+                statesByPasses[computePass.id] = state
             default:
                 fatalError()
             }

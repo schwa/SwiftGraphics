@@ -1135,10 +1135,10 @@ public extension MTLComputeCommandEncoder {
 
 extension ComputePassProtocol {
     func computeOnce(device: MTLDevice) throws {
-        let state = try setup(device: device)
+        var state = try setup(device: device)
         let commandQueue = device.makeCommandQueue().forceUnwrap()
         let commandBuffer = commandQueue.makeCommandBuffer( ).forceUnwrap()
-        try compute(device: device, state: state, commandBuffer: commandBuffer)
+        try compute(device: device, state: &state, commandBuffer: commandBuffer)
         commandBuffer.commit()
         commandBuffer.waitUntilCompleted()
         print("DONE")
