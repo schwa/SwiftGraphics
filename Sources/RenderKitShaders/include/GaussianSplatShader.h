@@ -152,15 +152,15 @@ namespace GaussianSplatShader {
         const auto splatWorldSpacePosition = uniforms.modelViewMatrix * float4(float3(splat.position), 1);
         const auto splatClipSpacePosition = uniforms.projectionMatrix * splatWorldSpacePosition;
 
-        const auto bounds = 1.2 * splatClipSpacePosition.w;
-        if (splatClipSpacePosition.z < -splatClipSpacePosition.w
-            || splatClipSpacePosition.x < -bounds
-            || splatClipSpacePosition.x > bounds
-            || splatClipSpacePosition.y < -bounds
-            || splatClipSpacePosition.y > bounds) {
-            out.position = float4(1, 1, 0, 1);
-            return out;
-        }
+//        const auto bounds = 1.2 * splatClipSpacePosition.w;
+//        if (splatClipSpacePosition.z < -splatClipSpacePosition.w
+//            || splatClipSpacePosition.x < -bounds
+//            || splatClipSpacePosition.x > bounds
+//            || splatClipSpacePosition.y < -bounds
+//            || splatClipSpacePosition.y > bounds) {
+//            out.position = float4(1, 1, 0, 1);
+//            return out;
+//        }
 
 //        const float2 relativeCoordinatesArray[] = { { -1, -1 }, { -1, 1 }, { 1, -1 }, { 1, 1 } };
 //        const auto vertexModelSpacePosition2 = relativeCoordinatesArray[vertex_id];
