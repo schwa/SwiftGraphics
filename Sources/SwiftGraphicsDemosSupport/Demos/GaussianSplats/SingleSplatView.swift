@@ -86,32 +86,54 @@ struct SingleSplatView: View, DemoView {
 
     var body: some View {
         RenderView(device: device, passes: passes)
+        .ballRotation($modelTransform.rotation.rollPitchYaw, pitchLimit: .radians(-.infinity) ... .radians(.infinity))
         .onChange(of: splat) {
             let splats = device.makeBuffer(bytesOf: [splat], options: .storageModeShared)!
             self.splats = splats
         }
         .inspector(isPresented: .constant(true)) {
             Form {
+                Section("Camera") {
+                    HStack {
+                        TextField("Roll", value: $modelTransform.rotation.rollPitchYaw.roll.degrees, format: .number)
+                        TextField("Pitch", value: $modelTransform.rotation.rollPitchYaw.pitch.degrees, format: .number)
+                        TextField("Yaw", value: $modelTransform.rotation.rollPitchYaw.yaw.degrees, format: .number)
+                    }
+                    .labelsHidden()
+
+                }
                 Section("Position") {
-                    TextField("X", value: $splat.position.x, format: .number)
-                    TextField("Y", value: $splat.position.y, format: .number)
-                    TextField("Z", value: $splat.position.z, format: .number)
+                    HStack {
+                        TextField("X", value: $splat.position.x, format: .number)
+                        TextField("Y", value: $splat.position.y, format: .number)
+                        TextField("Z", value: $splat.position.z, format: .number)
+                    }
+                    .labelsHidden()
                 }
                 Section("Color") {
-                    TextField("R", value: $splat.color.x, format: .number)
-                    TextField("G", value: $splat.color.y, format: .number)
-                    TextField("B", value: $splat.color.z, format: .number)
-                    TextField("A", value: $splat.color.w, format: .number)
+                    HStack {
+                        TextField("R", value: $splat.color.x, format: .number)
+                        TextField("G", value: $splat.color.y, format: .number)
+                        TextField("B", value: $splat.color.z, format: .number)
+                        TextField("A", value: $splat.color.w, format: .number)
+                    }
+                    .labelsHidden()
                 }
                 Section("COV_A") {
-                    TextField("0", value: $splat.cov_a.x, format: .number)
-                    TextField("1", value: $splat.cov_a.y, format: .number)
-                    TextField("2", value: $splat.cov_a.z, format: .number)
+                    HStack {
+                        TextField("0", value: $splat.cov_a.x, format: .number)
+                        TextField("1", value: $splat.cov_a.y, format: .number)
+                        TextField("2", value: $splat.cov_a.z, format: .number)
+                    }
+                    .labelsHidden()
                 }
                 Section("COV_B") {
-                    TextField("0", value: $splat.cov_b.x, format: .number)
-                    TextField("1", value: $splat.cov_b.y, format: .number)
-                    TextField("2", value: $splat.cov_b.z, format: .number)
+                    HStack {
+                        TextField("0", value: $splat.cov_b.x, format: .number)
+                        TextField("1", value: $splat.cov_b.y, format: .number)
+                        TextField("2", value: $splat.cov_b.z, format: .number)
+                    }
+                    .labelsHidden()
                 }
             }
             Toggle(isOn: $debugMode) {
