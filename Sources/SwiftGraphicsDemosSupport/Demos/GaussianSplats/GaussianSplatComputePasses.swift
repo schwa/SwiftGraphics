@@ -17,6 +17,7 @@ struct GaussianSplatBitonicSortComputePass: ComputePassProtocol {
         var bindingsUniformsIndex: Int
         var bindingsSplatDistancesIndex: Int
         var bindingsSplatIndicesIndex: Int
+        var frameCount: Int = 0
     }
 
     var id = AnyHashable("GaussianSplatBitonicSortComputePass")
@@ -41,6 +42,12 @@ struct GaussianSplatBitonicSortComputePass: ComputePassProtocol {
     }
 
     func compute(device: MTLDevice, state: inout State, commandBuffer: MTLCommandBuffer) throws {
+
+        state.frameCount += 1
+        if state.frameCount > 1 && state.frameCount % 8 != 0 {
+            return
+        }
+
         let computePipelineState = state.pipelineState
         let commandEncoder = commandBuffer.makeComputeCommandEncoder().forceUnwrap()
         commandEncoder.label = "GaussianSplatBitonicSortComputePass"
