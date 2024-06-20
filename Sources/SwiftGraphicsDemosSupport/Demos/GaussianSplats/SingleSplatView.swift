@@ -55,9 +55,6 @@ struct SingleSplatView: View, DemoView {
     var splats: MTLBuffer
 
     @State
-    var splatDistances: MTLBuffer
-
-    @State
     var splatIndices: MTLBuffer
 
     @State
@@ -76,13 +73,11 @@ struct SingleSplatView: View, DemoView {
 
         let splats = device.makeBuffer(bytesOf: [splat], options: .storageModeShared)!
         let splatIndices = device.makeBuffer(bytesOf: [UInt32.zero], options: .storageModeShared)!
-        let splatDistances = device.makeBuffer(bytesOf: [Float32.zero], options: .storageModeShared)!
 
         self.device = device
         self.splat = splat
         self.splats = splats
         self.splatIndices = splatIndices
-        self.splatDistances = splatDistances
         let allocator = MTKMeshBufferAllocator(device: device)
         self.mesh = try! MTKMesh(mesh: MDLMesh(planeWithExtent: [2, 2, 0], segments: [1, 1], geometryType: .triangles, allocator: allocator), device: device)
     }
@@ -161,7 +156,6 @@ struct SingleSplatView: View, DemoView {
             splatCount: 1,
             splats: Box(splats),
             splatIndices: Box(splatIndices),
-            splatDistances: Box(splatDistances),
             pointMesh: mesh,
             debugMode: debugMode
         )

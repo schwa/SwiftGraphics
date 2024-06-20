@@ -35,7 +35,6 @@ struct GaussianSplatRenderPass: RenderPassProtocol {
     var splatCount: Int
     var splats: Box<MTLBuffer>
     var splatIndices: Box<MTLBuffer>
-    var splatDistances: Box<MTLBuffer>
     var pointMesh: MTKMesh
     var debugMode: Bool
 

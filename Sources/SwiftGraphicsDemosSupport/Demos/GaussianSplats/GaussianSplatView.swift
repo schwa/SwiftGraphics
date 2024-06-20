@@ -154,7 +154,6 @@ struct GaussianSplatRenderView: View {
             splatCount: viewModel.splatCount,
             splats: Box(viewModel.splats),
             splatIndices: Box(viewModel.splatIndices),
-            splatDistances: Box(viewModel.splatDistances),
             pointMesh: viewModel.cube,
             debugMode: debugMode
         )
