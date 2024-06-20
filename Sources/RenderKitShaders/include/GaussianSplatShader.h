@@ -26,8 +26,8 @@ namespace GaussianSplatShader {
 
     struct VertexIn {
         float3 position  [[attribute(0)]];
-        float3 normal    [[attribute(1)]];
-        float2 texCoords [[attribute(2)]];
+//        float3 normal    [[attribute(1)]];
+//        float2 texCoords [[attribute(2)]];
     };
 
     struct VertexOut {
@@ -148,7 +148,6 @@ namespace GaussianSplatShader {
    ) {
         VertexOut out;
 
-        const float2 relativeCoordinatesArray[] = { { -1, -1 }, { -1, 1 }, { 1, -1 }, { 1, 1 } };
         auto splat = splats[splatIndices[instance_id]];
         const auto splatWorldSpacePosition = uniforms.modelViewMatrix * float4(float3(splat.position), 1);
         const auto splatClipSpacePosition = uniforms.projectionMatrix * splatWorldSpacePosition;
@@ -163,11 +162,14 @@ namespace GaussianSplatShader {
             return out;
         }
 
+//        const float2 relativeCoordinatesArray[] = { { -1, -1 }, { -1, 1 }, { 1, -1 }, { 1, 1 } };
+//        const auto vertexModelSpacePosition2 = relativeCoordinatesArray[vertex_id];
+        const auto vertexModelSpacePosition = in.position.xy;
+
         float2 axis1;
         float2 axis2;
         decomposeCalculatedCovariance(splatWorldSpacePosition.xyz, splat.cov_a, splat.cov_b, uniforms.modelViewMatrix, uniforms.projectionMatrix, uniforms.drawableSize, axis1, axis2);
 
-        const auto vertexModelSpacePosition = relativeCoordinatesArray[vertex_id];
         const auto projectedScreenDelta = (vertexModelSpacePosition.x * axis1 + vertexModelSpacePosition.y * axis2) * 2 * kBoundsRadius / uniforms.drawableSize;
 
         auto position = splatClipSpacePosition;
