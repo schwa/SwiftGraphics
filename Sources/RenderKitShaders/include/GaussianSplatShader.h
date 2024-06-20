@@ -26,8 +26,6 @@ namespace GaussianSplatShader {
 
     struct VertexIn {
         float3 position  [[attribute(0)]];
-//        float3 normal    [[attribute(1)]];
-//        float2 texCoords [[attribute(2)]];
     };
 
     struct VertexOut {
