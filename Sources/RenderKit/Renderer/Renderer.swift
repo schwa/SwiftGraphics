@@ -33,7 +33,7 @@ struct Renderer {
     }
     var state: State {
         didSet {
-            let state = state
+//            let state = state
 //            logger?.info("State change: \(String(describing: oldValue)) -> \(String(describing: state))")
         }
     }
@@ -94,10 +94,11 @@ struct Renderer {
 //                    renderPassDescriptor.colorAttachments[0].storeAction = .store
 //                    renderPassDescriptor.depthAttachment.storeAction = .store
 //                }
-                guard let state = statesByPasses[renderPass.id] else {
+                guard var state = statesByPasses[renderPass.id] else {
                     fatalError()
                 }
-                try renderPass.render(device: device, untypedState: state, drawableSize: SIMD2<Float>(drawableSize), renderPassDescriptor: renderPassDescriptor, commandBuffer: commandBuffer)
+                try renderPass.render(device: device, untypedState: &state, drawableSize: SIMD2<Float>(drawableSize), renderPassDescriptor: renderPassDescriptor, commandBuffer: commandBuffer)
+                statesByPasses[renderPass.id] = state
             case let computePass as any ComputePassProtocol:
                 guard let state = statesByPasses[computePass.id] else {
                     fatalError()

@@ -91,11 +91,12 @@ public struct OffscreenRenderer {
                         renderPassDescriptor.depthAttachment.storeAction = .store
                     }
 
-                    guard let state = stateByPasses[renderPass.id] else {
+                    guard var state = stateByPasses[renderPass.id] else {
                         fatalError()
                     }
+                    try renderPass.render(device: device, untypedState: &state, drawableSize: SIMD2<Float>(size), renderPassDescriptor: renderPassDescriptor, commandBuffer: commandBuffer)
+                    stateByPasses[renderPass.id] = state
 
-                    try renderPass.render(device: device, untypedState: state, drawableSize: SIMD2<Float>(size), renderPassDescriptor: renderPassDescriptor, commandBuffer: commandBuffer)
                 }
             }
         }
