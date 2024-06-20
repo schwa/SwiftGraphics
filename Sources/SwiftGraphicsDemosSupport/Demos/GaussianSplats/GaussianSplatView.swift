@@ -68,7 +68,13 @@ struct GaussianSplatView: View, DemoView {
         self.splatCount = splatCount
 
         let size: Float = 0.005
-        cube = try! Box3D(min: [-size, -size, -size], max: [size, size, size]).toMTKMesh(device: device)
+//        cube = try! Box3D(min: [-size, -size, -size], max: [size, size, size]).toMTKMesh(device: device)
+
+        let allocator = MTKMeshBufferAllocator(device: device)
+        cube = try! MTKMesh(mesh: MDLMesh(planeWithExtent: [2, 2, 0], segments: [1, 1], geometryType: .triangles, allocator: allocator), device: device)
+
+        //{ { -1, -1 }, { -1, 1 }, { 1, -1 }, { 1, 1 } }
+
 
 //        debugSort()
     }
@@ -201,15 +207,11 @@ struct GaussianSplatRenderPass: RenderPassProtocol {
         commandEncoder.setDepthStencilState(state.depthStencilState)
         commandEncoder.setRenderPipelineState(state.renderPipelineState)
 
-        commandEncoder.setCullMode(.back)
-        commandEncoder.setFrontFacing(.counterClockwise)
-//        commandEncoder.setTriangleFillMode(triangleFillMode)
-//        commandEncoder.setRenderPipelineState(state.renderPipelineState)
-
+        commandEncoder.setCullMode(.back) // default is .none
+        commandEncoder.setFrontFacing(.clockwise) // default is .clockwise
         if debugMode {
             commandEncoder.setTriangleFillMode(.lines)
         }
-
 
         let uniforms = GaussianSplatUniforms(
             modelViewProjectionMatrix: cameraProjection.projectionMatrix(for: drawableSize) * cameraTransform.matrix.inverse * modelTransform.matrix,
