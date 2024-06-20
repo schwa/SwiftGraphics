@@ -40,7 +40,7 @@ struct GaussianSplatBitonicSortComputePass: ComputePassProtocol {
         return state
     }
 
-    func compute(device: MTLDevice, state: State, commandBuffer: MTLCommandBuffer) throws {
+    func compute(device: MTLDevice, state: inout State, commandBuffer: MTLCommandBuffer) throws {
         let computePipelineState = state.pipelineState
         let commandEncoder = commandBuffer.makeComputeCommandEncoder().forceUnwrap()
         commandEncoder.label = "GaussianSplatBitonicSortComputePass"
@@ -107,7 +107,7 @@ struct GaussianSplatPreCalcComputePass: ComputePassProtocol {
         return state
     }
 
-    func compute(device: MTLDevice, state: State, commandBuffer: MTLCommandBuffer) throws {
+    func compute(device: MTLDevice, state: inout State, commandBuffer: MTLCommandBuffer) throws {
         let computePipelineState = state.pipelineState
         let commandEncoder = commandBuffer.makeComputeCommandEncoder().forceUnwrap()
         commandEncoder.label = "GaussianSplatPreCalcComputePass"
