@@ -14,6 +14,7 @@ import SwiftFormats
 import CoreGraphicsSupport
 
 extension UTType {
+    static let splat = UTType(filenameExtension: "splat")!
     static let splatC = UTType(filenameExtension: "splatc")!
 }
 
@@ -35,7 +36,7 @@ struct GaussianSplatView: View, DemoView {
         .toolbar {
             ValueView(value: false) { isPresented in
                 Toggle("Load", isOn: isPresented)
-                .fileImporter(isPresented: isPresented, allowedContentTypes: [.splatC]) { result in
+                    .fileImporter(isPresented: isPresented, allowedContentTypes: [.splatC, .splat]) { result in
                     if case let .success(url) = result {
                         viewModel = try! GaussianSplatViewModel(device: device, url: url)
                     }
@@ -72,14 +73,33 @@ class GaussianSplatViewModel {
 
     init(device: MTLDevice, url: URL) throws {
         let data = try! Data(contentsOf: url)
-        let splatSize = 26
-        let splatCount = data.count / splatSize
-        splats = device.makeBuffer(data: data, options: .storageModeShared)!.labelled("Splats")
+
+        let splats: MTLBuffer
+        let splatCount: Int
+        if url.pathExtension == "splatc" {
+            let splatSize = 26
+            splatCount = data.count / splatSize
+            splats = device.makeBuffer(data: data, options: .storageModeShared)!.labelled("Splats")
+        }
+        else if url.pathExtension == "splat" {
+            let splatArray = data.withUnsafeBytes { buffer in
+                buffer.withMemoryRebound(to: SplatB.self) { buffer in
+                    convert(buffer)
+                }
+            }
+            splats = device.makeBuffer(bytesOf: splatArray, options: .storageModeShared)!.labelled("Splats")
+            splatCount = splatArray.count
+        }
+        else {
+            fatalError()
+        }
+
         let splatIndicesData = (0 ..< splatCount).map { UInt32($0) }.withUnsafeBytes {
             Data($0)
         }
         splatIndices = device.makeBuffer(data: splatIndicesData, options: .storageModeShared)!.labelled("Splats-Indices")
         splatDistances = device.makeBuffer(length: MemoryLayout<Float>.size * splatCount, options: .storageModeShared)!.labelled("Splat-Distances")
+        self.splats = splats
         self.splatCount = splatCount
     }
 }
