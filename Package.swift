@@ -374,7 +374,6 @@ let package = Package(
                 .copy("Resources/StanfordVolumeData.tar"),
                 .copy("Resources/train.splatc"),
                 .copy("Resources/6_20_2024.splatc"),
-                .copy("Resources/OneSplat.splatc"),
             ],
             swiftSettings: [
                 .interoperabilityMode(.Cxx),
