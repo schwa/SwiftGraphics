@@ -121,10 +121,8 @@ namespace GaussianSplatShader {
         }
         // Gaussian axes are orthogonal
         float2 eigenvector2 = float2(eigenvector1.y, -eigenvector1.x);
-        lambda1 *= 2;
-        lambda2 *= 2;
-        auto v1 = eigenvector1 * sqrt(lambda1);
-        auto v2 = eigenvector2 * sqrt(lambda2);
+        auto v1 = eigenvector1 * sqrt(lambda1 * 2);
+        auto v2 = eigenvector2 * sqrt(lambda2 * 2);
         return { v1, v2 };
     }
 
@@ -144,10 +142,10 @@ namespace GaussianSplatShader {
    ) {
         VertexOut out;
 
-        const auto vertexModelSpacePosition = in.position.xy;
+        const float2 vertexModelSpacePosition = in.position.xy;
         auto splat = splats[splatIndices[instance_id]];
-        const auto splatWorldSpacePosition = uniforms.modelViewMatrix * float4(float3(splat.position), 1);
-        const auto splatClipSpacePosition = uniforms.projectionMatrix * splatWorldSpacePosition;
+        const float4 splatWorldSpacePosition = uniforms.modelViewMatrix * float4(float3(splat.position), 1);
+        const float4 splatClipSpacePosition = uniforms.projectionMatrix * splatWorldSpacePosition;
 
 //        const auto bounds = 1.2 * splatClipSpacePosition.w;
 //        if (splatClipSpacePosition.z < -splatClipSpacePosition.w
@@ -159,15 +157,11 @@ namespace GaussianSplatShader {
 //            return out;
 //        }
 
-        const auto cov2D = calcCovariance2D(splatWorldSpacePosition.xyz, splat.cov_a, splat.cov_b, uniforms.viewMatrix, uniforms.projectionMatrix, uniforms.drawableSize);
-        const auto axes = decomposeCovariance(cov2D);
+        const float3 cov2D = calcCovariance2D(splatWorldSpacePosition.xyz, splat.cov_a, splat.cov_b, uniforms.viewMatrix, uniforms.projectionMatrix, uniforms.drawableSize);
+        const Axes axes = decomposeCovariance(cov2D);
 
-        const auto projectedScreenDelta = (vertexModelSpacePosition.x * axes.axis1 + vertexModelSpacePosition.y * axes.axis2) * 2 * kBoundsRadius / uniforms.drawableSize;
-
-        auto position = splatClipSpacePosition;
-        position.xy += projectedScreenDelta.xy * splatClipSpacePosition.w;
-
-        out.position = position;
+        const float2 projectedScreenDelta = (vertexModelSpacePosition.x * axes.axis1 + vertexModelSpacePosition.y * axes.axis2) * 2 * kBoundsRadius / uniforms.drawableSize;
+        out.position = splatClipSpacePosition + float4(projectedScreenDelta.xy * splatClipSpacePosition.w, 0, 0);
         out.relativePosition = vertexModelSpacePosition * kBoundsRadius;
         out.color = float4(splat.color);
         return out;
