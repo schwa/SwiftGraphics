@@ -41,12 +41,25 @@ struct GaussianSplatView: View, DemoView {
                     }
                 }
             }
+            ForEach(try! Bundle.module.urls(withExtension: "splatc"), id: \.self) { url in
+                Button(url.lastPathComponent) {
+                    viewModel = try! GaussianSplatViewModel(device: device, url: url)
+                }
+            }
         }
         .onAppear {
-            let url = Bundle.module.url(forResource: "train.splatc", withExtension: "data")!
+            let url = Bundle.module.url(forResource: "train", withExtension: "splatc")!
             viewModel = try! GaussianSplatViewModel(device: device, url: url)
         }
 
+    }
+}
+
+extension Bundle {
+    func urls(withExtension extension: String) throws -> [URL] {
+        try FileManager().contentsOfDirectory(at: resourceURL!, includingPropertiesForKeys: nil).filter {
+            $0.pathExtension == `extension`
+        }
     }
 }
 
@@ -79,7 +92,7 @@ struct GaussianSplatRenderView: View {
     var cameraProjection: Projection = .perspective(.init())
 
     @State
-    var modelTransform: Transform = .init(scale: [1, 1, 1])
+    var modelTransform: Transform = Transform(scale: [1, 1, 1])
 
     @State
     var device: MTLDevice
@@ -112,8 +125,13 @@ struct GaussianSplatRenderView: View {
             VStack {
                 Text("Size: [\(size * displayScale, format: .size)]")
                 Text("#splats: \(viewModel.splatCount)")
-                Slider(value: $cameraTransform.translation.z, in: 0.0 ... 20.0) { Text("Distance") }
+                HStack {
+                    Slider(value: $cameraTransform.translation.z, in: 0.0 ... 20.0) { Text("Distance") }
                     .frame(maxWidth: 120)
+                    TextField("Distance", value: $cameraTransform.translation.z, format: .number)
+                        .labelsHidden()
+                    .frame(maxWidth: 120)
+                    }
                 Toggle("Debug Mode", isOn: $debugMode)
                 HStack {
                     Slider(value: $sortRate.toDouble, in: 1 ... 60) { Text("Sort Rate") }
