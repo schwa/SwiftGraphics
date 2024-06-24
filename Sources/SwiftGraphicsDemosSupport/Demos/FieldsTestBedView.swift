@@ -10,8 +10,11 @@ struct FieldsTestBedView: View, DemoView {
         Wheel(label: "Hello", value: $value)
         Text("\(value)")
         Button("Boing") {
-            value += Double.random(in: 0..<1000)
+            withAnimation {
+                value += Double.random(in: 0..<1000)
+            }
         }
+        Slider(value: $value, in: -1000 ... 1000)
 
     }
 }

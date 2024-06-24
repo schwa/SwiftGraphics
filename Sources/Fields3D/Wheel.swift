@@ -1,7 +1,8 @@
 import SwiftUI
 import CoreGraphicsSupport
+import SwiftGraphicsSupport
 
-public struct Wheel <Label>: View  where Label: View {
+public struct Wheel <Label>: View where Label: View {
     @Binding
     var value: Double
 
@@ -25,29 +26,49 @@ public struct Wheel <Label>: View  where Label: View {
     }
 
     public var body: some View {
-
         AnimatableValueView(value: value) {
             wheelStyle.makeBody_(configuration: .init(label: AnyView(label), value: $0, inDrag: false))
         }
-//        .animation(.easeInOut, value: value)
-        .focusable()
+        .focusable(interactions: .activate)
         .geometrySize($size)
         .gesture(drag())
-        .gesture(LongPressGesture().onEnded { _ in
+        .gesture(LongPressGesture(minimumDuration: 2).onEnded { _ in
             withAnimation {
                 value = 0
             }
         })
-        .onKeyPress(.rightArrow) {
-            withAnimation {
-                value += 1.1 * rate
+#if os(macOS)
+            .onMoveCommand { direction in
+
+                switch direction {
+                case .right, .up:
+                    withAnimation {
+                        value += 1 * rate
+                    }
+                case .left, .down:
+                    withAnimation {
+                        value -= 1 * rate
+                    }
+                default:
+                    break
+
+                }
             }
-            return .handled
-        }
-        .onKeyPress(.leftArrow) {
-            value -= 1 * rate
-            return .handled
-        }
+#endif
+
+
+//        .onKeyPress(.rightArrow, phases: .all) { _ in
+//            withAnimation {
+//                value += 1 * rate
+//            }
+//            return .handled
+//        }
+//        .onKeyPress(.leftArrow, phases: [.down, .repeat]) { _ in
+//            withAnimation {
+//                value -= 1 * rate
+//            }
+//            return .handled
+//        }
     }
 
     func drag() -> some Gesture {
@@ -57,9 +78,12 @@ public struct Wheel <Label>: View  where Label: View {
             lastDragValue = drag.translation.width
         }
         .onEnded { drag in
-//            withAnimation(.easeOut) {
-//                value += (drag.predictedEndTranslation.width - lastDragValue) / size.width * rate
-//            }
+            print(drag.predictedEndTranslation)
+            if drag.predictedEndTranslation.width > 200 {
+                withAnimation(.easeOut) {
+                    value += (drag.predictedEndTranslation.width - lastDragValue) / size.width * rate
+                }
+            }
             lastDragValue = 0.0
         }
     }
@@ -119,9 +143,6 @@ struct DefaultWheelStyle: WheelStyle {
     }
 
     struct WheelStyleView: View {
-
-
-
         var configuration: Configuration
 
         var body: some View {
@@ -163,20 +184,7 @@ func sign(_ v: Double) -> Double {
     else {
         return 1
     }
-
 }
-
-//struct UncheckedSendableBox <Value>: @unchecked Sendable {
-//    var value: Value
-//
-//    init(_ value: Value) {
-//        self.value = value
-//    }
-//
-//    func callAsFunction() -> Value {
-//        return value
-//    }
-//}
 
 extension EnvironmentValues {
     @Entry
@@ -203,19 +211,4 @@ extension View {
         }
     }
     .padding()
-}
-
-struct AnimatableValueView <Value, Content>: View, Animatable where Content: View {
-    var animatableData: Value
-
-    var content: (Value) -> Content
-
-    init(value: Value, content: @escaping (Value) -> Content) {
-        self.animatableData = value
-        self.content = content
-    }
-
-    var body: some View {
-        content(animatableData)
-    }
 }
