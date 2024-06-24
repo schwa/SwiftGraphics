@@ -105,6 +105,7 @@ let package = Package(
                 "CoreGraphicsSupport",
                 "SIMDSupport",
                 .product(name: "SwiftFormats", package: "SwiftFormats"),
+                "SwiftGraphicsSupport"
             ],
             swiftSettings: [
             ]
