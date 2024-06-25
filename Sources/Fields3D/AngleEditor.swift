@@ -27,7 +27,7 @@ public struct AngleEditor: View {
         HStack {
             AngleEditor("Angle", value: $angle, prompt: Text("Angle"))
                 .frame(maxWidth: 160)
-            Dial(value: $angle.degrees, range: 0...100)
+            Dial(value: $angle.degrees, in: 0...100)
         }
     }
     .padding()
