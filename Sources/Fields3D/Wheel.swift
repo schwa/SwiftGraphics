@@ -37,38 +37,31 @@ public struct Wheel <Label>: View where Label: View {
                 value = 0
             }
         })
-#if os(macOS)
-            .onMoveCommand { direction in
+        .onMoveCommand { direction in
+            switch direction {
+            case .right, .up:
+                increment()
+            case .left, .down:
+                decrement()
+            default:
+                break
 
-                switch direction {
-                case .right, .up:
-                    withAnimation {
-                        value += 1 * rate
-                    }
-                case .left, .down:
-                    withAnimation {
-                        value -= 1 * rate
-                    }
-                default:
-                    break
-
-                }
             }
-#endif
-
-
-//        .onKeyPress(.rightArrow, phases: .all) { _ in
-//            withAnimation {
-//                value += 1 * rate
-//            }
-//            return .handled
-//        }
-//        .onKeyPress(.leftArrow, phases: [.down, .repeat]) { _ in
-//            withAnimation {
-//                value -= 1 * rate
-//            }
-//            return .handled
-//        }
+        }
+//        .accessibilityLabel("xxx")
+        .accessibilityValue(Text("\(value.formatted())"))
+        .accessibilityAddTraits(.allowsDirectInteraction)
+        .accessibilityElement(children: .ignore)
+        .accessibilityAdjustableAction { direction in
+            switch direction {
+            case .increment:
+                increment()
+            case .decrement:
+                decrement()
+            @unknown default:
+                break
+            }
+        }
     }
 
     func drag() -> some Gesture {
@@ -88,6 +81,19 @@ public struct Wheel <Label>: View where Label: View {
         }
     }
 
+    func increment() {
+        withAnimation {
+            value += 1 * rate
+        }
+
+    }
+
+    func decrement() {
+        withAnimation {
+            value -= 1 * rate
+        }
+    }
+
 }
 
 extension Wheel where Label == EmptyView {
@@ -104,41 +110,27 @@ extension Wheel where Label == Text {
 
 // MARK: -
 
-struct WheelStyleConfiguration {
-    var label: AnyView
-    var value: Double
-    var inDrag: Bool
+public struct WheelStyleConfiguration {
+    public var label: AnyView
+    public var value: Double
+    public var inDrag: Bool
 }
 
 @MainActor
-protocol WheelStyle: Sendable {
+public protocol WheelStyle: Sendable {
     associatedtype Body: View
     typealias Configuration = WheelStyleConfiguration
     @ViewBuilder func makeBody(configuration: Configuration) -> Body
 }
 
-extension WheelStyle {
+internal extension WheelStyle {
     func makeBody_(configuration: Configuration) -> AnyView {
         AnyView( makeBody(configuration: configuration) )
     }
 }
 
-func wrap(_ value: Double, within range: ClosedRange<Double>) -> Double {
-    let size = range.upperBound - range.lowerBound
-    let normalized = value - range.lowerBound
-    return (normalized.truncatingRemainder(dividingBy: size) + size).truncatingRemainder(dividingBy: size) + range.lowerBound
-}
-
-func wrap(_ point: CGPoint, within rect: CGRect) -> CGPoint {
-    CGPoint(
-        x: wrap(point.x, within: rect.minX ... rect.maxX),
-        y: wrap(point.y, within: rect.minY ... rect.maxY)
-    )
-}
-
-struct DefaultWheelStyle: WheelStyle {
-
-    func makeBody(configuration: Configuration) -> some View {
+public struct DefaultWheelStyle: WheelStyle {
+    public func makeBody(configuration: Configuration) -> some View {
         WheelStyleView(configuration: configuration)
     }
 
@@ -163,7 +155,7 @@ struct DefaultWheelStyle: WheelStyle {
                             path.addLine(to: point + CGPoint(x: 0, y: frame.width / 2))
                         }
                     }
-                    context.stroke(path, with: .color(.gray.opacity(0.4)), lineWidth: 2)
+                    context.stroke(path, with: .color(.accentColor.opacity(0.4)), lineWidth: 2)
                 }
                 .border(.gray.opacity(0.8))
                 .contentShape(Rectangle())
@@ -174,24 +166,12 @@ struct DefaultWheelStyle: WheelStyle {
     }
 }
 
-func sign(_ v: Double) -> Double {
-    if v < 0 {
-        return -1
-    }
-    else if v == 0 {
-        return 0
-    }
-    else {
-        return 1
-    }
-}
-
-extension EnvironmentValues {
+public extension EnvironmentValues {
     @Entry
     var wheelStyle: any WheelStyle = DefaultWheelStyle()
 }
 
-extension View {
+public extension View {
     func wheelStyle(_ value: some WheelStyle) -> some View {
         self.environment(\.wheelStyle, value)
     }
