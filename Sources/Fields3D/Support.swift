@@ -106,3 +106,61 @@ extension View {
         modifier(RedlineModifier())
     }
 }
+
+
+public extension Path {
+
+    static func curve(from: CGPoint, to: CGPoint, control1: CGPoint, control2: CGPoint) -> Path {
+        Path { path in
+            path.move(to: from)
+            path.addCurve(to: to, control1: control1, control2: control2)
+        }
+    }
+
+    var firstPoint: CGPoint? {
+        var firstPoint: CGPoint?
+        forEach { element in
+            guard firstPoint == nil else {
+                return
+            }
+            switch element {
+            case .move(let point):
+                firstPoint = point
+            default:
+                firstPoint = .zero
+            }
+        }
+        return firstPoint
+    }
+}
+
+public extension Path {
+
+    static func spiral(center: CGPoint, initialRadius: Double, finalRadius: Double, turns: Double) -> Path {
+        var path = Path()
+
+        let points = 500 // Increase for smoother spiral
+        let angleIncrement = 2 * Double.pi * turns / Double(points)
+        let radiusIncrement = (finalRadius - initialRadius) / Double(points)
+
+        var angle = 0.0
+        var radius = initialRadius
+
+        var currentPoint = CGPoint(x: center.x + CGFloat(radius * cos(angle)),
+                                   y: center.y + CGFloat(radius * sin(angle)))
+        path.move(to: currentPoint)
+
+        for _ in 0..<points {
+            angle += angleIncrement
+            radius += radiusIncrement
+            let nextPoint = CGPoint(x: center.x + CGFloat(radius * cos(angle)),
+                                    y: center.y + CGFloat(radius * sin(angle)))
+            let controlPoint = CGPoint(x: (currentPoint.x + nextPoint.x) / 2,
+                                       y: (currentPoint.y + nextPoint.y) / 2)
+            path.addQuadCurve(to: nextPoint, control: controlPoint)
+            currentPoint = nextPoint
+        }
+
+        return path
+    }
+}

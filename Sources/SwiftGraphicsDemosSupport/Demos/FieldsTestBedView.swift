@@ -7,10 +7,8 @@ struct FieldsTestBedView: View, DemoView {
     @State
     var value = 0.0
 
-//    @State
-    //var path = Path.curve(from: [0, 0], to: [100, 0], control1: [0, 0], control2: [100, 0])
-
-    var path = Path.spiral(center: [100, 100], initialRadius: 1, finalRadius: 100, turns: 3)
+    @State
+    var morpher = PathMorpher(a: Path.line(from: [0, 0], to: [100, 0]), b: .smileyFace(in: [0, 0, 100, 100]))
 
     var body: some View {
         VStack {
@@ -28,16 +26,10 @@ struct FieldsTestBedView: View, DemoView {
 //            .padding(32)
 
             VStack {
-                PathSlider(value: $value, path: path, range: 0...1)
-//                    .onChange(of: value) {
-//                        let cp1: CGPoint = lerp(from: [0, 0], to: [0, 100], by: value)
-//                        let cp2: CGPoint = lerp(from: [100, 0], to: [100, 100], by: value)
-//
-//                        self.path = Path.curve(from: [0, 0], to: [100, 0], control1: cp1, control2: cp2)
-//
-//                    }
+                PathSlider(value: $value, path: morpher.morph(value))
+
                 Text("\(value.formatted())")
-                //Slider(value: $value)
+                Slider(value: $value)
             }
             .padding()
 
