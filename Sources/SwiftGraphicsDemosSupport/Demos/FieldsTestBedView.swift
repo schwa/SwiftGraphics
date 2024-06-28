@@ -12,6 +12,8 @@ struct FieldsTestBedView: View, DemoView {
 
     var body: some View {
         VStack {
+//            HilbertCurve()
+
 //            WrappingHStack {
 //                let items: [String] = Array(1...20).map { "Item \($0)" }
 //

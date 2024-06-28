@@ -30,7 +30,7 @@ public struct RenderView: View {
     var renderErrorHandler
 
     @State
-    var logger: Logger = Logger(subsystem: "RenderView", category: "RenderView")
+    var logger = Logger(subsystem: "RenderView", category: "RenderView")
 
     public init(device: MTLDevice, passes: [any PassProtocol], configure: @escaping Configure = { _ in }, sizeWillChange: @escaping SizeWillChange = { _ in }) {
         self.device = device
