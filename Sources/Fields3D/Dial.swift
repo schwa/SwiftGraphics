@@ -156,11 +156,6 @@ public struct UnifiedDialStyle: DialStyle {
     nonisolated
     public let styleType: StyleType
 
-    nonisolated
-    init(styleType: StyleType) {
-        self.styleType = styleType
-    }
-
     public func makeBody(configuration: Configuration) -> some View {
         @Environment(\.controlSize)
         var controlSize
