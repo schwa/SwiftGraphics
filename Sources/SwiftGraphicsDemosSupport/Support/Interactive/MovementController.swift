@@ -33,7 +33,7 @@ class MovementController: @unchecked Sendable {
     var focused = false
 
     @ObservationIgnored
-    var displayLink: DisplayLink2! = nil
+    var displayLink: DisplayLink2?
 
     @ObservationIgnored
     var controller: GCController? {
@@ -143,10 +143,8 @@ class MovementController: @unchecked Sendable {
                     }
                 }
                 group.addTask { [weak self] in
-                    for await controller in notificationCenter.notifications(named: .GCControllerDidDisconnect).compactMap(\.object).cast(to: GCController.self) {
-                        if self?.controller === controller {
-                            self?.controller = nil
-                        }
+                    for await controller in notificationCenter.notifications(named: .GCControllerDidDisconnect).compactMap(\.object).cast(to: GCController.self) where self?.controller === controller {
+                        self?.controller = nil
                     }
                 }
                 group.addTask { [weak self] in
@@ -155,17 +153,15 @@ class MovementController: @unchecked Sendable {
                     }
                 }
                 group.addTask { [weak self] in
-                    for await mouse in notificationCenter.notifications(named: .GCMouseDidDisconnect).compactMap(\.object).cast(to: GCMouse.self) {
-                        if self?.mouse === mouse {
-                            self?.mouse = nil
-                        }
+                    for await mouse in notificationCenter.notifications(named: .GCMouseDidDisconnect).compactMap(\.object).cast(to: GCMouse.self) where self?.mouse === mouse {
+                        self?.mouse = nil
                     }
                 }
             }
         }
 
         relayTask = Task { [weak self] in
-            let events = self?.displayLink.events().flatMap { [weak self] _ in
+            let events = self?.displayLink!.events().flatMap { [weak self] _ in
                 Counters.shared.increment(counter: "DisplayLink")
                 return (self?.makeEvent() ?? []).async
             }

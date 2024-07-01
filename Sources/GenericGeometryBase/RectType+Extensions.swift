@@ -1,5 +1,3 @@
-// swiftlint:disable file_length
-
 public extension RectType {
     var x: Point.Scalar {
         get {

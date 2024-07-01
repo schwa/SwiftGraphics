@@ -10,11 +10,16 @@ enum TrivialMeshError: Error {
 public extension TrivialMesh where Vertex == SIMD3<Float> {
     init(url: URL) throws {
         let asset = MDLAsset(url: url)
-        let mesh = asset.object(at: 0) as! MDLMesh
+
+        guard let mesh = asset.object(at: 0) as? MDLMesh else {
+            throw TrivialMeshError.generic("No object.")
+        }
         let positions = try mesh.positions
         // TODO: confirm that these are triangles.
         // TODO: confirm that index is uint32
-        let submesh = mesh.submeshes![0] as! MDLSubmesh
+        guard let submesh = mesh.submeshes![0] as? MDLSubmesh else {
+            throw TrivialMeshError.generic("No submesh.")
+        }
         let indexBuffer = submesh.indexBuffer
         let indexBytes = UnsafeRawBufferPointer(start: indexBuffer.map().bytes, count: indexBuffer.length)
         let indices = indexBytes.bindMemory(to: UInt32.self).map { Int($0) }
@@ -26,6 +31,7 @@ public extension TrivialMesh where Vertex == SIMD3<Float> {
 public extension TrivialMesh where Vertex == SimpleVertex {
     init(url: URL) throws {
         let asset = MDLAsset(url: url)
+        // swiftlint:disable:next force_cast
         let mesh = asset.object(at: 0) as! MDLMesh
         let positions = try mesh.positions
         let normals: [PackedFloat3] = if mesh.hasNormals {
@@ -40,6 +46,7 @@ public extension TrivialMesh where Vertex == SimpleVertex {
 
         // TODO: confirm that these are triangles.
         // TODO: confirm that index is uint32
+        // swiftlint:disable:next force_cast
         let submesh = mesh.submeshes![0] as! MDLSubmesh
         let indexBuffer = submesh.indexBuffer
         let indexBytes = UnsafeRawBufferPointer(start: indexBuffer.map().bytes, count: indexBuffer.length)
@@ -58,7 +65,9 @@ extension MDLMesh {
             guard attribute.format == .float3 else {
                 throw TrivialMeshError.generic("Expected attribute to be .float3")
             }
-            let bufferLayout = vertexDescriptor.layouts[attribute.bufferIndex] as! MDLVertexBufferLayout
+            guard let bufferLayout = vertexDescriptor.layouts[attribute.bufferIndex] as? MDLVertexBufferLayout else {
+                throw TrivialMeshError.generic("No layout.")
+            }
             let buffer = vertexBuffers[attribute.bufferIndex]
             let bytes = UnsafeRawBufferPointer(start: buffer.map().bytes, count: buffer.length)
             return bytes.chunks(stride: bufferLayout.stride, offset: attribute.offset, size: MemoryLayout<PackedFloat3>.stride).map {
@@ -82,7 +91,9 @@ extension MDLMesh {
             guard attribute.format == .float3 else {
                 throw TrivialMeshError.generic("Expected attribute to be .float3")
             }
-            let bufferLayout = vertexDescriptor.layouts[attribute.bufferIndex] as! MDLVertexBufferLayout
+            guard let bufferLayout = vertexDescriptor.layouts[attribute.bufferIndex] as? MDLVertexBufferLayout else {
+                throw TrivialMeshError.generic("No layout.")
+            }
             let buffer = vertexBuffers[attribute.bufferIndex]
             let bytes = UnsafeRawBufferPointer(start: buffer.map().bytes, count: buffer.length)
             return bytes.chunks(stride: bufferLayout.stride, offset: attribute.offset, size: MemoryLayout<PackedFloat3>.stride).map {
@@ -124,19 +135,19 @@ public extension MDLMesh {
         switch mesh.indices.count {
         case 0 ..< 256:
             indexType = .uInt8
-            let indices = mesh.indices.map({ UInt8($0) })
+            let indices = mesh.indices.map { UInt8($0) }
             indexBuffer = indices.withUnsafeBytes { buffer in
                 allocator.newBuffer(from: nil, data: Data(buffer), type: .index)!
             }
         case 256 ..< 65_536:
             indexType = .uInt16
-            let indices = mesh.indices.map({ UInt16($0) })
+            let indices = mesh.indices.map { UInt16($0) }
             indexBuffer = indices.withUnsafeBytes { buffer in
                 allocator.newBuffer(from: nil, data: Data(buffer), type: .index)!
             }
         case 65_536 ..< 4_294_967_296:
             indexType = .uInt32
-            let indices = mesh.indices.map({ UInt32($0) })
+            let indices = mesh.indices.map { UInt32($0) }
             indexBuffer = indices.withUnsafeBytes { buffer in
                 allocator.newBuffer(from: nil, data: Data(buffer), type: .index)!
             }

@@ -5,7 +5,6 @@ import SIMDSupport
 import SwiftFormats
 import SwiftUI
 
-
 public struct SRTEditor: View {
     @Binding
     var srt: SRT
@@ -26,7 +25,6 @@ public struct SRTEditor: View {
         }
     }
 }
-
 
 #Preview {
     @Previewable @State var srt = SRT()

@@ -205,8 +205,7 @@ class Simulation<Storage>: Observable where Storage: SimulationStorage {
 
     private func convertDensityToPressure(_ density: Float) -> Float {
         let densityError = density - targetDensity
-        let pressure = densityError * pressureMultiplier
-        return pressure
+        return densityError * pressureMultiplier
     }
 
     private func calculateSharedPressure(densityA: Float, densityB: Float) -> Float {

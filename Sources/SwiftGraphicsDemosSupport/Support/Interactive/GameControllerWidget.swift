@@ -2,6 +2,8 @@ import Foundation
 import GameController
 import SwiftUI
 
+// swiftlint:disable force_try
+
 // Working for C++ Interop caused problem. https://github.com/apple/swift/issues/69914
 public extension Notification.Name {
     static let GCControllerDidConnect = Self(rawValue: "GCControllerDidConnectNotification")
@@ -110,7 +112,7 @@ struct GameControllerWidget: View {
     }
 
     @State
-    var model = GameControllerWidgetModel()
+    private var model = GameControllerWidgetModel()
 
     var body: some View {
         HStack {

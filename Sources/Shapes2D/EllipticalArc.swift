@@ -2,7 +2,6 @@
 // swiftlint:disable type_body_length
 // swiftlint:disable function_parameter_count
 // swiftlint:disable identifier_name
-// swiftlint:disable file_length
 // swiftlint:disable multiline_parameters
 // swiftlint:disable indentation_width
 // swiftlint:disable implicitly_unwrapped_optional
@@ -370,7 +369,6 @@ public class EllipticalArc {
     }
 
     /* Compute the bounding box. */
-    // swiftlint:disable:next function_body_length
     private func computeBounds() {
         let bOnA = b / a
         var etaXMin: Double, etaXMax: Double, etaYMin: Double, etaYMax: Double
@@ -448,7 +446,6 @@ public class EllipticalArc {
      * @return upper bound of the approximation error between the Bézier
      * curve and the real ellipse
      */
-    // swiftlint:disable:next function_body_length
     func estimateError(_ degree: Int, _ etaA: Double, _ etaB: Double) -> Double {
         let eta = 0.5 * (etaA + etaB)
 
@@ -575,7 +572,6 @@ public class EllipticalArc {
      * @param yB ordinate of the second point of the line segment
      * @return true if the two line segments intersect
      */
-    // swiftlint:disable:next function_body_length
     private func intersectArc(_ xA: Double, _ yA: Double,
                               _ xB: Double, _ yB: Double) -> Bool {
         var dx = xA - xB
@@ -759,7 +755,6 @@ public class EllipticalArc {
      * @param threshold acceptable error
      * @return a path iterator
      */
-    // swiftlint:disable:next function_body_length
     public func buildPathIterator(degree: Int, threshold: Double) -> Path {
         // find the number of Bézier curves needed
         var found = false

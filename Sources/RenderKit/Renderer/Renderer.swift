@@ -73,7 +73,7 @@ struct Renderer {
         }
         let commandBuffer = try commandQueue.makeCommandBuffer().safelyUnwrap(RenderKitError.resourceCreationFailure)
 
-        for (index, pass) in passes.elements.enumerated() {
+        for pass in passes.elements {
             switch pass {
             case let renderPass as any RenderPassProtocol:
 //                let isFirst = index == passes.renderPasses.startIndex
@@ -162,7 +162,7 @@ struct PassCollection: Equatable {
         self.elements = elements
     }
 
-    static func ==(lhs: Self, rhs: Self) -> Bool {
+    static func == (lhs: Self, rhs: Self) -> Bool {
         let lhs = lhs.elements.map { AnyEquatable($0) }
         let rhs = rhs.elements.map { AnyEquatable($0) }
         return lhs == rhs

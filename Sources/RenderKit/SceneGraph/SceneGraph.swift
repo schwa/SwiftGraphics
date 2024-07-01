@@ -28,7 +28,7 @@ public struct SceneGraph: Equatable, Sendable {
 
     public init(root: Node) {
         self.root = root
-        self.currentCameraPath = root.allIndexedNodes().first(where: { $0.0.content?.camera != nil })?.1
+        self.currentCameraPath = root.allIndexedNodes().first { $0.0.content?.camera != nil }?.1
     }
 
     public init() {
@@ -44,7 +44,7 @@ public struct SceneGraph: Equatable, Sendable {
 }
 
 public struct Node: Identifiable, Sendable, Equatable {
-    public enum Content: Sendable, Equatable {
+    public enum Content: Sendable {
         case camera(Camera)
         case geometry(Geometry)
         case light(any LightProtocol)
@@ -108,7 +108,7 @@ public struct Node: Identifiable, Sendable, Equatable {
     }
 }
 
-extension Node.Content {
+extension Node.Content: Equatable {
     public static func == (lhs: Self, rhs: Self) -> Bool {
         switch (lhs, rhs) {
         case (.camera(let lhs), .camera(let rhs)):
@@ -328,14 +328,14 @@ extension SceneGraph {
     }
 
     func firstIndexPath(id: Node.ID) -> IndexPath? {
-        firstIndexPath(matching: { node, _ in
+        firstIndexPath { node, _ in
             node.id == id
-        })
+        }
     }
 
     func firstIndexPath(label: String) -> IndexPath? {
-        firstIndexPath(matching: { node, _ in
+        firstIndexPath { node, _ in
             node.label == label
-        })
+        }
     }
 }

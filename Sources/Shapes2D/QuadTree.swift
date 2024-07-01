@@ -9,8 +9,8 @@ struct QuadTreeConfig {
 
 // TODO: Make value type
 public class QuadTree<T> {
-    public var frame: CGRect { rootNode.frame }
-    public var rootNode: QuadTreeNode<T>!
+    public var frame: CGRect { rootNode!.frame }
+    public var rootNode: QuadTreeNode<T>?
     private let config: QuadTreeConfig
 
     public required init(frame: CGRect, minimumNodeSize: CGSize = CGSize(width: 1, height: 1), maximumObjectsPerNode: Int = 8) {
@@ -20,12 +20,12 @@ public class QuadTree<T> {
 
     public func addObject(object: T, point: CGPoint) {
         assert(frame.contains(point))
-        rootNode.addObject(object, point: point)
+        rootNode!.addObject(object, point: point)
     }
 
     public func objectsInRect(rect: CGRect) -> [T] {
         assert(frame.intersects(rect))
-        return rootNode.objectsInRect(rect)
+        return rootNode!.objectsInRect(rect)
     }
 }
 
@@ -104,11 +104,10 @@ public class QuadTreeNode<T> {
     func subnodeForPoint(_ point: CGPoint) -> QuadTreeNode? {
         assert(frame.contains(point))
         let quadrant = Quadrant.from(point: point, rect: frame)
-        let subnode = subnodeForQuadrant(quadrant!)
-        return subnode
+        return subnodeForQuadrant(quadrant!)
     }
 
-    func subnodeForQuadrant(_ quadrant: Quadrant) -> QuadTreeNode! {
+    func subnodeForQuadrant(_ quadrant: Quadrant) -> QuadTreeNode? {
         if !subnodes.isEmpty {
             switch quadrant {
             case .minXMinY:

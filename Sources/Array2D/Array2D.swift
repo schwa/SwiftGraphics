@@ -115,6 +115,7 @@ extension Array2D: MutableCollection {
 // MARK: BidirectionalCollection
 
 extension Array2D: BidirectionalCollection {
+    // swiftlint:disable:next unavailable_function
     public func index(before i: Index) -> Index {
         fatalError("Unimplemented")
     }

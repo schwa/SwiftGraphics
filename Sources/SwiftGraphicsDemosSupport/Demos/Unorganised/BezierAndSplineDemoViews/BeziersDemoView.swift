@@ -12,7 +12,7 @@ import simd
 
 struct BeziersDemoView: View, DemoView {
     @State
-    var points: [CGPoint] = [[70, 250], [20, 110], [220, 60], [270, 200]]
+    private var points: [CGPoint] = [[70, 250], [20, 110], [220, 60], [270, 200]]
 
     init() {
     }

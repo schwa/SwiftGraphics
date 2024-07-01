@@ -22,7 +22,6 @@ public enum Alignment {
     case right
 }
 
-// swiftlint:disable:next cyclomatic_complexity function_body_length
 public func scaleAndAlignRectToRect(source: CGRect, destination: CGRect, scaling: Scaling, alignment: Alignment) -> CGRect {
     var result = CGRect()
     var theScaledImageSize = source.size

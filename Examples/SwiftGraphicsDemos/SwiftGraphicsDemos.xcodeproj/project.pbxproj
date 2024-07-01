@@ -115,6 +115,7 @@
 				45E5B5DB2A8EA04100B46CDC /* Sources */,
 				45E5B5DC2A8EA04100B46CDC /* Frameworks */,
 				45E5B5DD2A8EA04100B46CDC /* Resources */,
+				455E029F2C33550B0065093A /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -176,6 +177,27 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		455E029F2C33550B0065093A /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cd ../..\n/opt/homebrew/bin/swiftlint --quiet --config .swiftlint.yml\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		45E5B5DB2A8EA04100B46CDC /* Sources */ = {

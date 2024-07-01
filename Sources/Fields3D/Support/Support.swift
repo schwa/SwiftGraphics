@@ -1,5 +1,5 @@
-import SwiftUI
 import CoreGraphicsSupport
+import SwiftUI
 
 struct GeometrySizeChangeViewModifier: ViewModifier {
     @Binding
@@ -49,18 +49,15 @@ func sign(_ v: Double) -> Double {
 
 public extension FloatingPoint {
     func clamped(to range: ClosedRange<Self>) -> Self {
-        return min(max(self, range.lowerBound), range.upperBound)
+        min(max(self, range.lowerBound), range.upperBound)
     }
 
     func wrapped(to range: ClosedRange<Self>) -> Self {
         let rangeSize = range.upperBound - range.lowerBound
         let wrappedValue = (self - range.lowerBound).truncatingRemainder(dividingBy: rangeSize)
         return (wrappedValue < 0 ? wrappedValue + rangeSize : wrappedValue) + range.lowerBound
-        return wrappedValue + range.lowerBound
     }
 }
-
-
 
 extension Image {
     @MainActor
@@ -108,9 +105,7 @@ extension View {
     }
 }
 
-
 public extension Path {
-
     static func curve(from: CGPoint, to: CGPoint, control1: CGPoint, control2: CGPoint) -> Path {
         Path { path in
             path.move(to: from)
@@ -136,7 +131,6 @@ public extension Path {
 }
 
 public extension Path {
-
     static func spiral(center: CGPoint, initialRadius: Double, finalRadius: Double, turns: Double) -> Path {
         var path = Path()
 
@@ -201,6 +195,7 @@ public extension Path {
     private static func hilbertPoints(order: Int) -> [(x: Int, y: Int)] {
         var points: [(x: Int, y: Int)] = []
 
+        // swiftlint:disable:next function_parameter_count
         func hilbert(_ x: inout Int, _ y: inout Int, _ xi: Int, _ xj: Int, _ yi: Int, _ yj: Int, _ n: Int) {
             if n <= 0 {
                 points.append((x: x, y: y))
@@ -229,11 +224,7 @@ public extension Path {
     }
 }
 
-
-
 public struct PathMorpher {
-
-
     var a: Path
     var b: Path
 
@@ -256,8 +247,6 @@ public struct PathMorpher {
         }
         return Path(lines: lines)
     }
-
-
 }
 
 public extension Path {

@@ -36,11 +36,9 @@ public struct GrahamScan: ConvexHullProtocol {
             hull.append(index)
         }
 
-        let hull_points: [CGPoint] = hull.map {
+        return hull.map {
             points[$0]
-        }
-
-        return hull_points
+        } as [CGPoint]
     }
 
     static func grahamOrdered(points: [CGPoint]) -> [CGPoint] {

@@ -106,8 +106,9 @@ public struct Ply {
         }
     }
 
+    @available(*, unavailable)
     func fetch(element: Header.Element, record: Int) -> Data.SubSequence {
-        header.elements.firstIndex(of: element)
+        // header.elements.firstIndex(of: element)
 
         fatalError()
     }
@@ -129,14 +130,14 @@ public extension Ply {
 
 // MARK: -
 
-//extension Ply.Header.Element {
+// extension Ply.Header.Element {
 //    var size: Int {
 //
 //
 //    }
-//}
+// }
 
-//extension Ply.Header.Element.Property {
+// extension Ply.Header.Element.Property {
 //    var size: Int? {
 //        switch self {
 //        case .list:
@@ -146,7 +147,7 @@ public extension Ply {
 //            valueType.size
 //        }
 //    }
-//}
+// }
 
 extension Ply.ScalarType {
     var size: Int {
@@ -174,13 +175,13 @@ extension Ply.ScalarType {
 
 // MARK:
 
-//extension Ply.Header.Element: CustomDebugStringConvertible {
+// extension Ply.Header.Element: CustomDebugStringConvertible {
 //    public var debugDescription: String {
 //        "Element(name: \(name), properties: \(properties))"
 //    }
-//}
+// }
 
-//extension Ply.Header.Element.Property: CustomDebugStringConvertible {
+// extension Ply.Header.Element.Property: CustomDebugStringConvertible {
 //    public var debugDescription: String {
 //        switch self {
 //        case .list(name: let name, countType: let countType, valueType: let valueType):
@@ -189,11 +190,11 @@ extension Ply.ScalarType {
 //            return "Property(name: \(name), valueType: \(valueType))"
 //        }
 //    }
-//}
+// }
 
 extension Ply.Element: CustomDebugStringConvertible {
     public var debugDescription: String {
-        "Element(name: \(definition.name), records: [\(records.map({ "[\($0)]" }).joined(separator: ", "))])"
+        "Element(name: \(definition.name), records: [\(records.map { "[\($0)]" }.joined(separator: ", "))])"
     }
 }
 
@@ -317,7 +318,7 @@ public extension Ply.Header.Element.Specification {
     }
 }
 
-//extension Ply.Header.Element.Property {
+// extension Ply.Header.Element.Property {
 //    var name: String {
 //        switch self {
 //        case .list(name: let name, _, _):
@@ -326,7 +327,7 @@ public extension Ply.Header.Element.Specification {
 //            return name
 //        }
 //    }
-//}
+// }
 
 public extension Ply.Header {
     init(source: String) throws {
@@ -342,7 +343,6 @@ public extension Ply.Header {
 }
 
 public extension Ply.Element.Record {
-
     var values: [Ply.ScalarValue] {
         switch self {
         case .collection(let values):
@@ -493,7 +493,6 @@ extension CollectionScanner where Element == UInt8 {
     }
 
     mutating func scanPLYRow(definition: Ply.Header.Element, format: Ply.Header.Format) throws -> Ply.Element.Record {
-
         switch definition.specification {
         case .compound(let properties):
             var values: [Ply.ScalarValue] = []
@@ -511,8 +510,6 @@ extension CollectionScanner where Element == UInt8 {
             }
             return .collection(values)
         }
-
-
     }
 
     mutating func scanPLYScalarValue(type: Ply.ScalarType, format: Ply.Header.Format) throws -> Ply.ScalarValue {
@@ -569,7 +566,6 @@ extension CollectionScanner where Element == UInt8 {
     }
 }
 
-
 // MARK: -
 
 struct Char {
@@ -594,7 +590,6 @@ extension CollectionScanner {
 }
 
 extension CollectionScanner where Element == UInt8 {
-
     var remainingString: String? {
         String(bytes: remaining, encoding: .utf8)
     }
@@ -629,7 +624,7 @@ extension CollectionScanner where Element == UInt8 {
             guard let string = String(bytes: bytes, encoding: .utf8) else {
                 return nil
             }
-            _ = scanner.scan(until: { !Char(byte: $0).isSpace })
+            _ = scanner.scan { !Char(byte: $0).isSpace }
 
             return string
         }

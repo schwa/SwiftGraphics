@@ -47,7 +47,7 @@ extension TarArchive.Header: CustomStringConvertible {
 extension TarArchive.Header {
     var filename: String {
         get throws {
-            let bytes = buffer.sub(offset: 0, count: 100).prefix(while: { $0 != 0x00 })
+            let bytes = buffer.sub(offset: 0, count: 100).prefix { $0 != 0x00 }
             return String(decoding: bytes, as: UTF8.self)
         }
     }

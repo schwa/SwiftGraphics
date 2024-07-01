@@ -33,19 +33,17 @@ struct GaussianSplatBitonicSortComputePass: ComputePassProtocol {
         guard let reflection else {
             fatalError()
         }
-        let state = State(
+        return State(
             pipelineState: pipelineState,
             bindingsUniformsIndex: try reflection.binding(for: "uniforms"),
             bindingsSplatDistancesIndex: try reflection.binding(for: "splatDistances"),
             bindingsSplatIndicesIndex: try reflection.binding(for: "splatIndices")
         )
-        return state
     }
 
     func compute(device: MTLDevice, state: inout State, commandBuffer: MTLCommandBuffer) throws {
-
         state.frameCount += 1
-        if sortRate > 1 && state.frameCount > 1 && state.frameCount % sortRate != 0 {
+        if sortRate > 1 && state.frameCount > 1 && state.frameCount.isMultiple(of: sortRate) {
             return
         }
 
@@ -79,7 +77,6 @@ struct GaussianSplatBitonicSortComputePass: ComputePassProtocol {
     }
 }
 
-
 struct GaussianSplatPreCalcComputePass: ComputePassProtocol {
     struct State: PassState {
         var pipelineState: MTLComputePipelineState
@@ -95,7 +92,7 @@ struct GaussianSplatPreCalcComputePass: ComputePassProtocol {
     var splatDistancesBuffer: Box<MTLBuffer>
     var splatBuffer: Box<MTLBuffer>
     var modelMatrix: simd_float3x3
-    var cameraPosition: float3
+    var cameraPosition: SIMD3<Float>
 
     func setup(device: MTLDevice) throws -> State {
         let library = try device.makeDebugLibrary(bundle: .renderKitShaders)
@@ -104,7 +101,7 @@ struct GaussianSplatPreCalcComputePass: ComputePassProtocol {
         guard let reflection else {
             fatalError()
         }
-        let state = State(
+        return State(
             pipelineState: pipelineState,
             bindingsModelMatrixIndex: try reflection.binding(for: "modelMatrix"),
             bindingsCameraPositionIndex: try reflection.binding(for: "cameraPosition"),
@@ -112,7 +109,6 @@ struct GaussianSplatPreCalcComputePass: ComputePassProtocol {
             bindingsSplatCountIndex: try reflection.binding(for: "splatCount"),
             bindingsSplatDistancesIndex: try reflection.binding(for: "splatDistances")
         )
-        return state
     }
 
     func compute(device: MTLDevice, state: inout State, commandBuffer: MTLCommandBuffer) throws {

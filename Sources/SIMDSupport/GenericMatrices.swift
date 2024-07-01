@@ -53,6 +53,7 @@ public extension SIMDMatrix {
     static var identity: Self { Self(1) }
 }
 
+// swiftlint:disable:next type_name
 public protocol _MatrixExtra {
     var size: SIMD2<Int> { get }
 }

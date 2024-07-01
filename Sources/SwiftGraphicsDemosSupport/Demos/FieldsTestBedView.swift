@@ -1,14 +1,13 @@
-import SwiftUI
-import Fields3D
 import CoreGraphicsSupport
+import Fields3D
+import SwiftUI
 
 struct FieldsTestBedView: View, DemoView {
+    @State
+    private var value = 0.0
 
     @State
-    var value = 0.0
-
-    @State
-    var morpher = PathMorpher(a: Path.line(from: [0, 0], to: [100, 0]), b: .smileyFace(in: [0, 0, 100, 100]))
+    private var morpher = PathMorpher(a: Path.line(from: [0, 0], to: [100, 0]), b: .smileyFace(in: [0, 0, 100, 100]))
 
     var body: some View {
         VStack {

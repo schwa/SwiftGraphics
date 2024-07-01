@@ -3,7 +3,7 @@ import simd
 struct SpatialLookupTable<Positions> where Positions: Collection, Positions.Element == SIMD2<Float>, Positions.Index == Int {
     private(set) var size: SIMD2<Float>
     private(set) var radius: Float = 0
-    private(set) var points: Positions!
+    private(set) var points: Positions?
     private var spatialLookup: [(index: Int, cellKey: Int)] = []
     private var startIndices: [Int] = []
     private let cellOffsets: [SIMD2<Int>] = [
@@ -88,7 +88,7 @@ struct SpatialLookupTable<Positions> where Positions: Collection, Positions.Elem
                 // Exit loop if we're no longer looking at the correct cell
                 if spatialLookup[i].cellKey != key { break }
                 let particleIndex = spatialLookup[i].index
-                let sqrDst = distance_squared(points[particleIndex], point)
+                let sqrDst = distance_squared(points![particleIndex], point)
                 // Test if the point is inside the radius
                 if sqrDst <= sqrRadius {
                     // Do something with the particleIndex!
@@ -104,19 +104,19 @@ struct SpatialLookupTable<Positions> where Positions: Collection, Positions.Elem
 extension SpatialLookupTable {
     func indicesNear(point: SIMD2<Float>) -> Set<Int> {
         var indices: Set<Int> = []
-        indicesNear(point: point, hits: {
+        indicesNear(point: point) {
             indices.insert($0)
-        })
+        }
         return indices
     }
 
     func indicesNear(index: Int, hits: (Int) -> Void) {
-        let point = points[index]
+        let point = points![index]
         indicesNear(point: point, hits: hits)
     }
 
     func indicesNear(index: Int) -> Set<Int> {
-        let point = points[index]
+        let point = points![index]
         return indicesNear(point: point)
     }
 }

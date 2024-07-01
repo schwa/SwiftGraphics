@@ -7,6 +7,7 @@ protocol LSystemRecipe {
     func apply<Turtle>(symbol: Symbol, in turtle: inout Turtle) where Turtle: TurtleProtocol
 }
 
+// swiftlint:disable:next type_name
 struct FractalBinaryTree_: LSystemRecipe {
     let system = LSystem(initialState: "0", rules: [
         "1": "11",
@@ -30,11 +31,7 @@ struct FractalBinaryTree_: LSystemRecipe {
     }
 }
 
-
-
-
-struct FractalBinaryTree: View  {
-
+struct FractalBinaryTree: View {
     var distance = 2.0
     var symbols = LSystem.fractalBinaryTree.apply(iterations: 7)
 
@@ -61,8 +58,7 @@ struct FractalBinaryTree: View  {
     }
 }
 
-struct SierpinskiTriangle: View  {
-
+struct SierpinskiTriangle: View {
     let symbols = LSystem.sierpinskiTriangle.apply(iterations: 6)
 
     var body: some View {
@@ -87,8 +83,7 @@ struct SierpinskiTriangle: View  {
     }
 }
 
-struct DragonCurve: View  {
-
+struct DragonCurve: View {
     let symbols = LSystem.dragonCurve.apply(iterations: 15)
 
     var body: some View {
@@ -117,7 +112,6 @@ public struct HilbertCurve: View {
     let symbols = LSystem.hilbertCurve.apply(iterations: 10)
 
     public init() {
-
     }
 
     public var body: some View {
@@ -142,11 +136,7 @@ public struct HilbertCurve: View {
             }
         }
     }
-
 }
-
-
-
 
 #Preview {
     HilbertCurve()

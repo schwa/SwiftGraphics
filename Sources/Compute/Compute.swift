@@ -1,4 +1,5 @@
 import Metal
+import MetalSupport
 
 public struct Compute {
     public let device: MTLDevice
@@ -6,7 +7,10 @@ public struct Compute {
 
     public init(device: MTLDevice) throws {
         self.device = device
-        commandQueue = self.device.makeCommandQueue()!
+        guard let commandQueue = device.makeCommandQueue() else {
+            throw MetalSupportError.resourceCreationFailure
+        }
+        self.commandQueue = commandQueue
     }
 
     public func task<R>(_ block: (Task) throws -> R) rethrows -> R {
@@ -29,7 +33,7 @@ public struct Compute {
 public extension Compute {
     struct Pass {
         public let function: ShaderFunction
-        fileprivate let bindings: [String: Int]
+        internal let bindings: [String: Int]
         public var arguments: Arguments
         public let computePipelineState: MTLComputePipelineState
 

@@ -39,7 +39,7 @@ extension Box3D: PolygonConvertable {
 
     // TODO: Roll into convert
     private func toPolygonsX() -> [Polygon3D<SimpleVertex>] {
-        let polygons = [
+        [
             Polygon3D(vertices: [
                 SimpleVertex(position: SIMD3<Float>(min.x, min.y, min.z), normal: .init(x: -1, y: 0, z: 0)),
                 SimpleVertex(position: SIMD3<Float>(min.x, max.y, min.z), normal: .init(x: -1, y: 0, z: 0)),
@@ -78,7 +78,6 @@ extension Box3D: PolygonConvertable {
                 SimpleVertex(position: SIMD3<Float>(min.x, max.y, max.z), normal: .init(x: 0, y: 0, z: 1)),
             ]),
         ]
-        return polygons
     }
 }
 

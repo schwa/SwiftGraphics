@@ -47,7 +47,7 @@ extension MyGradient {
         if stops.count == 1 {
             return stops.first!.color
         }
-        let color = stops.reduce(SIMD4<Float>.zero) { result, stop in
+        return stops.reduce(SIMD4<Float>.zero) { result, stop in
             var factor: Float = 0
             if (stop.controls.0 ... stop.controls.1).contains(position) {
                 factor = inverseLerp(value: position, startValue: stop.controls.0, endValue: stop.controls.1)
@@ -58,8 +58,6 @@ extension MyGradient {
             let color = stop.color * factor
             return result + color
         }
-
-        return color
     }
 }
 

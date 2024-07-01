@@ -10,10 +10,10 @@ public struct TransformEditor: View {
     var transform: Transform
 
     @State
-    var editedTransform: Transform
+    private var editedTransform: Transform
 
     @State
-    var mode: Transform.Storage.Base
+    private var mode: Transform.Storage.Base
 
     public init(_ transform: Binding<Transform>) {
         self._transform = transform
@@ -35,10 +35,10 @@ public struct TransformEditor: View {
             }
         }
         .onChange(of: mode) {
-            self.editedTransform = transform.converted(to: mode)
+            editedTransform = transform.converted(to: mode)
         }
         .onChange(of: transform) {
-            self.editedTransform = transform.converted(to: mode)
+            editedTransform = transform.converted(to: mode)
         }
     }
 }
@@ -67,7 +67,6 @@ extension Transform.Storage {
             .srt
         }
     }
-
 }
 
 #Preview {

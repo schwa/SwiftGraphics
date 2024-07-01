@@ -1,6 +1,6 @@
-import SwiftUI
 import CoreGraphicsSupport
 import SwiftGraphicsSupport
+import SwiftUI
 
 public struct Wheel <Label>: View where Label: View {
     @Binding
@@ -45,7 +45,6 @@ public struct Wheel <Label>: View where Label: View {
                 decrement()
             default:
                 break
-
             }
         }
 //        .accessibilityLabel("xxx")
@@ -85,7 +84,6 @@ public struct Wheel <Label>: View where Label: View {
         withAnimation {
             value += 1 * rate
         }
-
     }
 
     func decrement() {
@@ -93,18 +91,17 @@ public struct Wheel <Label>: View where Label: View {
             value -= 1 * rate
         }
     }
-
 }
 
-extension Wheel where Label == EmptyView {
-    public init(value: Binding<Double>, rate: Double = 1) {
-        self.init(value: value, rate: rate, label: { EmptyView() })
+public extension Wheel where Label == EmptyView {
+    init(value: Binding<Double>, rate: Double = 1) {
+        self.init(value: value, rate: rate) { EmptyView() }
     }
 }
 
-extension Wheel where Label == Text {
-    public init(label: String, value: Binding<Double>, rate: Double = 1) {
-        self.init(value: value, rate: rate, label: { Text(label) })
+public extension Wheel where Label == Text {
+    init(label: String, value: Binding<Double>, rate: Double = 1) {
+        self.init(value: value, rate: rate) { Text(label) }
     }
 }
 
@@ -161,7 +158,6 @@ public struct DefaultWheelStyle: WheelStyle {
                 .contentShape(Rectangle())
                 .frame(width: 60, height: 12)
             }
-
         }
     }
 }

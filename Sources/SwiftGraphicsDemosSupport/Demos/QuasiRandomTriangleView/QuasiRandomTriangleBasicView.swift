@@ -1,5 +1,5 @@
-import SwiftUI
 import Shapes2D
+import SwiftUI
 
 struct TriangleReflectionView: View, DemoView {
     @State private var triangle = Triangle(
@@ -18,8 +18,8 @@ struct TriangleReflectionView: View, DemoView {
     }
 
     var body: some View {
-        GeometryReader { geometry in
-            Canvas { context, size in
+        GeometryReader { _ in
+            Canvas { context, _ in
                 let parallelogramPath = Path { path in
                     path.move(to: triangle.a)
                     path.addLine(to: triangle.b)

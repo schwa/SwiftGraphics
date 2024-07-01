@@ -29,7 +29,7 @@ public extension CGContext {
         return CGContext(data: data?.baseAddress, width: definition.width, height: definition.height, bitsPerComponent: definition.pixelFormat.bitsPerComponent, bytesPerRow: definition.bytesPerRow, space: definition.pixelFormat.colorSpace!, bitmapInfo: definition.pixelFormat.bitmapInfo.rawValue)
     }
 
-    class func bitmapContext(bounds: CGRect, color: CGColor? = nil) -> CGContext! {
+    class func bitmapContext(bounds: CGRect, color: CGColor? = nil) -> CGContext {
         let colorspace = CGColorSpaceCreateDeviceRGB()
         let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue)
         let width = Int(ceil(bounds.size.width))

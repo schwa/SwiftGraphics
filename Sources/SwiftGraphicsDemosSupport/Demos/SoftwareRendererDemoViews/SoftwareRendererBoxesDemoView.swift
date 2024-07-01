@@ -1,25 +1,27 @@
 import CoreGraphicsSupport
+import Fields3D
 import Projection
 import Shapes3D
 import SIMDSupport
 import SwiftUI
-import Fields3D
+
+// swiftlint:disable force_try
 
 struct SoftwareRendererBoxesDemoView: View, DemoView {
     @State
-    var models: [any PolygonConvertable]
+    private var models: [any PolygonConvertable]
 
     @State
-    var cameraTransform: Transform = .translation([0, 0, -5])
+    private var cameraTransform: Transform = .translation([0, 0, -5])
 
     @State
-    var cameraProjection: Projection = .perspective(.init())
+    private var cameraProjection: Projection = .perspective(.init())
 
     @State
-    var ballConstraint = BallConstraint()
+    private var ballConstraint = BallConstraint()
 
     @State
-    var rasterizerOptions = Rasterizer.Options.default
+    private var rasterizerOptions = Rasterizer.Options.default
 
     init() {
         models = [

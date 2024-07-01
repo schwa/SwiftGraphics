@@ -1,7 +1,6 @@
 import SwiftUI
 
 public struct ColorPalette: View {
-
     let colors: [Color] = [
         .red,
         .orange,
@@ -52,5 +51,4 @@ public struct ColorPalette: View {
             .tint(color)
     }
     .padding()
-
 }

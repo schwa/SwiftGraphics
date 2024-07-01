@@ -33,10 +33,10 @@ public struct MetalView: View {
     var device
 
     @State
-    var model = MetalViewModel()
+    private var model = MetalViewModel()
 
     @State
-    var error: Error?
+    private var error: Error?
 
     let setup: Self.Setup
     let drawableSizeWillChange: Self.DrawableSizeWillChange

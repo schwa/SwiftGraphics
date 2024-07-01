@@ -1,6 +1,6 @@
+import ApproximateEquality
 import Foundation
 import SwiftUI
-import ApproximateEquality
 
 // We treat SwiftUI.Angle as part of CoreGraphics - because it's too useful not to be.
 

@@ -1,5 +1,5 @@
-import SwiftUI
 import CoreGraphicsSupport
+import SwiftUI
 
 public struct PathSlider: View {
     @Binding
@@ -9,7 +9,7 @@ public struct PathSlider: View {
     var path: Path
 
     @State
-    var cachedPoints: [(Double, CGPoint)] = []
+    private var cachedPoints: [(Double, CGPoint)] = []
 
     public init(value: Binding<Double>, in range: ClosedRange<Double> = 0...1, path: Path) {
         self._value = value
@@ -21,7 +21,7 @@ public struct PathSlider: View {
         let path = path.strokedPath(.init(lineWidth: 4, lineCap: .round))
         let bounds = path.boundingRect.insetBy(dx: -10, dy: -10)
 
-        Canvas { context, size in
+        Canvas { context, _ in
             context.translateBy(x: 10, y: 10)
             context.fill(path, with: .color(.gray.opacity(0.2)))
             let value = range.normalize(value)
@@ -41,15 +41,14 @@ public struct PathSlider: View {
                 return (n, path.currentPoint ?? self.path.firstPoint ?? .zero)
             }
         }
-        .gesture(DragGesture(minimumDistance: 0).onChanged({ value in
+        .gesture(DragGesture(minimumDistance: 0).onChanged { value in
             let points = cachedPoints.sorted { lhs, rhs in
                 lhs.1.distance(to: value.location) < rhs.1.distance(to: value.location)
             }
             self.value = points.first!.0
-        }))
+        })
         .frame(width: bounds.width, height: bounds.height)
     }
-
 }
 
 #Preview {

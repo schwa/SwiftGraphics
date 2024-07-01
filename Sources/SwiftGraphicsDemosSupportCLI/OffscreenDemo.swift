@@ -1,11 +1,11 @@
-//import MetalKit
-//import MetalSupport
-//import ModelIO
-//import simd
-//import SIMDSupport
-//import SwiftUI
+// import MetalKit
+// import MetalSupport
+// import ModelIO
+// import simd
+// import SIMDSupport
+// import SwiftUI
 //
-//public class OffscreenRenderPass: RenderPass {
+// public class OffscreenRenderPass: RenderPass {
 //    public typealias Configuration = OffscreenRenderPassConfiguration
 //    public var shaderToyRenderPipelineState: MTLRenderPipelineState?
 //    public var plane: MTKMesh?
@@ -74,9 +74,9 @@
 //
 //        captureScope?.end()
 //    }
-//}
+// }
 //
-//#if os(macOS)
+// #if os(macOS)
 //    public enum OffscreenDemo {
 //        public static func main() async throws {
 //            let device = MTLCreateSystemDefaultDevice()!
@@ -104,4 +104,4 @@
 //            _ = try await NSWorkspace.shared.open(url, configuration: openConfiguration)
 //        }
 //    }
-//#endif
+// #endif

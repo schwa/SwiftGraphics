@@ -108,7 +108,6 @@ public extension LineSegment {
     }
 
     // Adapted from: http://geomalgorithms.com/a05-_intersect-1.html
-    // swiftlint:disable:next function_body_length
     func advancedIntersection(_ other: LineSegment) -> LineSegmentIntersection? {
         let smallNumber = CGPoint.Factor(0.00000001)
 

@@ -1,7 +1,7 @@
 import SIMDSupport
 import SwiftGraphicsSupport
 
-@resultBuilder public struct NodeBuilder {
+@resultBuilder public enum NodeBuilder {
     public static func buildBlock(_ nodes: [Node]...) -> [Node] {
         Array(nodes.joined())
     }
@@ -27,8 +27,8 @@ import SwiftGraphicsSupport
     }
 }
 
-extension Node {
-    public init(label: String = "", transform: Transform = .identity, content: Content? = nil, @NodeBuilder children: () throws -> [Node]) throws {
+public extension Node {
+    init(label: String = "", transform: Transform = .identity, content: Content? = nil, @NodeBuilder children: () throws -> [Node]) throws {
         self.id = TrivialID(for: Self.self)
         self.isEnabled = true
         self.label = label

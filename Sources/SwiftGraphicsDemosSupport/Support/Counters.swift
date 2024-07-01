@@ -53,7 +53,7 @@ struct CountersView: View {
     let startDate = Date.now
 
     @State
-    var records: [Counters.Record] = []
+    private var records: [Counters.Record] = []
 
     var body: some View {
         VStack {

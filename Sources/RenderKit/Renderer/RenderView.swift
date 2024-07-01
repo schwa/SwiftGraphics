@@ -21,16 +21,16 @@ public struct RenderView: View {
     var sizeWillChange: SizeWillChange
 
     @State
-    var commandQueue: MTLCommandQueue?
+    private var commandQueue: MTLCommandQueue?
 
     @State
-    var renderer: Renderer?
+    private var renderer: Renderer?
 
     @Environment(\.renderErrorHandler)
     var renderErrorHandler
 
     @State
-    var logger = Logger(subsystem: "RenderView", category: "RenderView")
+    private var logger = Logger(subsystem: "RenderView", category: "RenderView")
 
     public init(device: MTLDevice, passes: [any PassProtocol], configure: @escaping Configure = { _ in }, sizeWillChange: @escaping SizeWillChange = { _ in }) {
         self.device = device
@@ -67,7 +67,11 @@ public struct RenderView: View {
             }
         }
         .onChange(of: passes) {
-            try! renderer?.updateRenderPasses(passes)
+            do {
+                try renderer!.updateRenderPasses(passes)
+            } catch {
+                renderErrorHandler.send(error, logger: logger)
+            }
         }
     }
 }

@@ -1,5 +1,5 @@
-import SwiftUI
 import CoreGraphicsSupport
+import SwiftUI
 
 struct PathTurtle: TurtleProtocol {
     var path: Path = .init()
@@ -29,7 +29,7 @@ struct PathTurtle: TurtleProtocol {
 
     mutating func forwards(distance: Double) {
         let nextPosition = CGPoint(x: position.x + CoreGraphics.cos(angle.radians) * distance, y: position.y + CoreGraphics.sin(angle.radians) * distance)
-        path = path + Path { path in path.addLines([position, nextPosition]) }
+        path += Path { path in path.addLines([position, nextPosition]) }
         position = nextPosition
     }
 }

@@ -1,43 +1,45 @@
-import SwiftUI
+import MetalKit
+import MetalSupport
 import RenderKit
+import RenderKitShaders
+import Shapes3D
 import SIMDSupport
 import SwiftGraphicsSupport
-import RenderKitShaders
-import MetalSupport
-import Shapes3D
-import MetalKit
+import SwiftUI
+
+// swiftlint:disable force_try
 
 struct PointCloudView: View, DemoView {
     @State
-    var pointCount: Int
+    private var pointCount: Int
 
     @State
-    var points: MTLBuffer
+    private var points: MTLBuffer
 
     @State
-    var cameraTransform: Transform = .translation([0, 0, 2])
+    private var cameraTransform: Transform = .translation([0, 0, 2])
 
     @State
-    var cameraProjection: Projection = .perspective(.init())
+    private var cameraProjection: Projection = .perspective(.init())
 
     @State
-    var modelTransform: Transform = .init(scale: [1, 1, 1])
+    private var modelTransform: Transform = .init(scale: [1, 1, 1])
 
     @State
-    var device: MTLDevice
+    private var device: MTLDevice
 
     @State
-    var cube: MTKMesh
+    private var cube: MTKMesh
 
     init() {
         let device = MTLCreateSystemDefaultDevice()!
-        let url = Bundle.main.url(forResource: "cube_points", withExtension: "pointsply")!
+        let url: URL = try! Bundle.main.url(forResource: "cube_points", withExtension: "pointsply")
         var ply = try! Ply(url: url)
         let points = try! ply.points
 
         self.device = device
         self.pointCount = points.count
-        self.points = device.makeBuffer(bytesOf: points, options: .storageModeShared)!
+        self.points = try! device.makeBuffer(bytesOf: points, options: .storageModeShared)
 
         let size: Float = 0.001
         cube = try! Box3D(min: [-size, -size, -size], max: [size, size, size]).toMTKMesh(device: device)
@@ -55,7 +57,6 @@ struct PointCloudView: View, DemoView {
 }
 
 struct PointCloudRenderPass: RenderPassProtocol {
-
     struct State: PassState {
         struct Bindings {
             var vertexBuffer0: Int
@@ -104,12 +105,10 @@ struct PointCloudRenderPass: RenderPassProtocol {
     }
 
     func encode(device: MTLDevice, state: inout State, drawableSize: SIMD2<Float>, commandEncoder: any MTLRenderCommandEncoder) throws {
-
         commandEncoder.setDepthStencilState(state.depthStencilState)
         commandEncoder.setRenderPipelineState(state.renderPipelineState)
 
-
-        try commandEncoder.withDebugGroup("VertexShader") {
+        commandEncoder.withDebugGroup("VertexShader") {
             commandEncoder.setVertexBuffersFrom(mesh: pointMesh)
 
             var vertexUniforms = PointCloudVertexUniforms()
@@ -117,7 +116,6 @@ struct PointCloudRenderPass: RenderPassProtocol {
             commandEncoder.setVertexBytes(of: vertexUniforms, index: state.bindings.vertexUniforms)
 
             commandEncoder.setVertexBuffer(points.content, offset: 0, index: state.bindings.vertexInstancePositions)
-
         }
         commandEncoder.withDebugGroup("FragmentShader") {
             let fragmentUniforms = PointCloudFragmentUniforms()

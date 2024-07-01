@@ -81,14 +81,10 @@ public extension YAMesh {
 public extension YAMesh {
     // TODO: Maybe deprecate? @available(*, deprecated, message: "Deprecated")
     static func simpleMesh(label: String? = nil, indices: [UInt16], vertices: [SimpleVertex], primitiveType: MTLPrimitiveType = .triangle, device: MTLDevice) throws -> YAMesh {
-        guard let indexBuffer = device.makeBuffer(bytesOf: indices, options: .storageModeShared) else {
-            fatalError()
-        }
+        let indexBuffer = try device.makeBuffer(bytesOf: indices, options: .storageModeShared)
         indexBuffer.label = "\(label ?? "unlabeled YAMesh"):indices"
         let indexBufferView = BufferView(buffer: indexBuffer, offset: 0)
-        guard let vertexBuffer = device.makeBuffer(bytesOf: vertices, options: .storageModeShared) else {
-            fatalError()
-        }
+        let vertexBuffer = try device.makeBuffer(bytesOf: vertices, options: .storageModeShared)
         vertexBuffer.label = "\(label ?? "unlabeled YAMesh"):vertices"
         assert(vertexBuffer.length == vertices.count * 32)
         let vertexBufferView = BufferView(buffer: vertexBuffer, offset: 0)

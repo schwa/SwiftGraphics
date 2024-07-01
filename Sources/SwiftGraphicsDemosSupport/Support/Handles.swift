@@ -13,10 +13,10 @@ struct Handle: View {
     var style
 
     @State
-    var isPressed = false
+    private var isPressed = false
 
     @State
-    var dragDelta: CGPoint?
+    private var dragDelta: CGPoint?
 
     init(_ location: Binding<CGPoint>, coordinateSpace: CoordinateSpace = .local, constraining: @escaping (_ current: CGPoint, _ suggested: CGPoint) -> CGPoint = { $1 }) {
         _location = location

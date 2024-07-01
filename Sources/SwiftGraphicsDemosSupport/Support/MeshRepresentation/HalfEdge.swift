@@ -89,12 +89,12 @@ extension HalfEdgeMesh {
 extension HalfEdgeMesh.Face {
     var halfEdges: [HalfEdgeMesh.HalfEdge] {
         var edges: [HalfEdgeMesh.HalfEdge] = []
-        var current: HalfEdgeMesh.HalfEdge! = halfEdge
+        var current: HalfEdgeMesh.HalfEdge = halfEdge!
         repeat {
             edges.append(current)
-            current = current.next
+            current = current.next!
         }
-        while current !== halfEdge
+        while current !== halfEdge!
         return edges
     }
 

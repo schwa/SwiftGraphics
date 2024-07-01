@@ -21,7 +21,7 @@ struct VolumetricRenderPass: RenderPassProtocol {
     var texture: MTLTexture
 
     // TODO: WORKAROUND
-    static func ==(lhs: Self, rhs: Self) -> Bool {
+    static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.id == rhs.id && lhs.rollPitchYaw == rhs.rollPitchYaw
     }
 
@@ -33,10 +33,10 @@ struct VolumetricRenderPass: RenderPassProtocol {
     init() throws {
         print(#function)
         let device = MTLCreateSystemDefaultDevice()! // TODO: Naughty
-        let volumeData = try! VolumeData(named: "CThead", in: Bundle.module, size: [256, 256, 113]) // TODO: Hardcoded
+        let volumeData = try VolumeData(named: "CThead", in: Bundle.module, size: [256, 256, 113]) // TODO: Hardcoded
         //        let volumeData = VolumeData(named: "MRBrain", size: [256, 256, 109])
-        let load = try! volumeData.load()
-        texture = try! load(device)
+        let load = try volumeData.load()
+        texture = try load(device)
 
         // TODO: Hardcoded
         let textureDescriptor = MTLTextureDescriptor()
@@ -71,7 +71,7 @@ struct VolumetricRenderPass: RenderPassProtocol {
         let descriptor = VertexDescriptor.packed(semantics: [.position, .normal, .textureCoordinate])
         renderPipelineDescriptor.vertexDescriptor = MTLVertexDescriptor(descriptor)
 
-        let renderPipelineState = try! device.makeRenderPipelineState(descriptor: renderPipelineDescriptor)
+        let renderPipelineState = try device.makeRenderPipelineState(descriptor: renderPipelineDescriptor)
 
         let depthStencilDescriptor = MTLDepthStencilDescriptor()
         depthStencilDescriptor.depthCompareFunction = .lessEqual
@@ -114,12 +114,12 @@ struct VolumetricRenderPass: RenderPassProtocol {
 
         let instanceCount = 256 // TODO: Random - numbers as low as 32 - but you will see layering in the image.
 
-        let instances = cache.get(key: "instance_data", of: MTLBuffer.self) {
+        let instances = try cache.get(key: "instance_data", of: MTLBuffer.self) {
             let instances = (0 ..< instanceCount).map { slice in
                 let z = Float(slice) / Float(instanceCount - 1)
                 return VolumeInstance(offsetZ: z - 0.5, textureZ: 1 - z)
             }
-            let buffer = device.makeBuffer(bytesOf: instances, options: .storageModeShared)!
+            let buffer = try device.makeBuffer(bytesOf: instances, options: .storageModeShared)
             buffer.label = "instances"
             assert(buffer.length == 8 * instanceCount)
             return buffer

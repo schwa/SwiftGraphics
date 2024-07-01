@@ -1,5 +1,5 @@
-import SwiftUI
 import CoreGraphicsSupport
+import SwiftUI
 
 public struct WrappingHStack: Layout {
     public struct Cache {
@@ -28,7 +28,7 @@ public struct WrappingHStack: Layout {
         var y: CGFloat = 0
         var lineHeight: CGFloat = 0
         var maxWidth: CGFloat = 0
-        for (index, _) in subviews.enumerated() {
+        for index in subviews.indices {
             let size = cache.sizes[index]!
             if x + size.width > (proposal.width ?? .infinity) {
                 x = 0
@@ -55,7 +55,6 @@ public struct WrappingHStack: Layout {
     }
 }
 
-
 #Preview {
     let items: [String] = Array(1...20).map { "Item \($0)" }
 
@@ -68,5 +67,4 @@ public struct WrappingHStack: Layout {
         }
     }
     .border(Color.red)
-
 }

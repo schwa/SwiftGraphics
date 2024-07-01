@@ -1,11 +1,10 @@
-import SwiftUI
 import CoreGraphicsSupport
 import SwiftGraphicsSupport
+import SwiftUI
 
 // TODO: Bug - drag does not consider center of Canvas to be center of drag if the view has a label.
 
 public struct Dial <Label>: View where Label: View {
-
     @Binding
     var value: Double
 
@@ -18,10 +17,10 @@ public struct Dial <Label>: View where Label: View {
     var dialStyle
 
     @State
-    var inDrag = false
+    private var inDrag = false
 
     @State
-    var size: CGSize = .zero
+    private var size: CGSize = .zero
 
     let dragCoordinateSpace = NamedCoordinateSpace.named("DragGestureCoordinateSpace")
 
@@ -40,11 +39,11 @@ public struct Dial <Label>: View where Label: View {
         .geometrySize($size)
         .gesture(
             SpatialTapGesture()
-                .onChanged { gesture in
+                .onChanged { _ in
                     inDrag = true
                 }
                 .onEnded { gesture in
-                    self.value = value(for: gesture.location)
+                    value = value(for: gesture.location)
                     inDrag = false
                 }
         )
@@ -52,7 +51,7 @@ public struct Dial <Label>: View where Label: View {
             DragGesture(minimumDistance: 0, coordinateSpace: dragCoordinateSpace)
                 .onChanged { gesture in
                     inDrag = true
-                    self.value = value(for: gesture.location)
+                    value = value(for: gesture.location)
                 }
                 .onEnded { _ in
                     inDrag = false
@@ -69,7 +68,7 @@ public struct Dial <Label>: View where Label: View {
             }
         }
         .accessibilityRepresentation {
-            Slider(value: $value, in: range, label: { label })
+            Slider(value: $value, in: range) { label }
         }
     }
 
@@ -98,15 +97,15 @@ public struct Dial <Label>: View where Label: View {
 
 // MARK: -
 
-extension Dial where Label == EmptyView {
-    public init(value: Binding<Double>, in range: ClosedRange<Double> = 0...1, stepRate: Double = 0.1) {
-        self.init(value: value, in: range, stepRate: stepRate, label: {})
+public extension Dial where Label == EmptyView {
+    init(value: Binding<Double>, in range: ClosedRange<Double> = 0...1, stepRate: Double = 0.1) {
+        self.init(value: value, in: range, stepRate: stepRate) {}
     }
 }
 
-extension Dial where Label == Text {
-    public init(_ titleKey: LocalizedStringKey, value: Binding<Double>, in range: ClosedRange<Double> = 0...1, stepRate: Double = 0.1) {
-        self.init(value: value, in: range, stepRate: stepRate, label: { Text(titleKey) })
+public extension Dial where Label == Text {
+    init(_ titleKey: LocalizedStringKey, value: Binding<Double>, in range: ClosedRange<Double> = 0...1, stepRate: Double = 0.1) {
+        self.init(value: value, in: range, stepRate: stepRate) { Text(titleKey) }
     }
 }
 
@@ -141,7 +140,6 @@ public extension EnvironmentValues {
 public extension View {
     func dialStyle(value: some DialStyle) -> some View {
         self.environment(\.dialStyle, value)
-
     }
 }
 
@@ -187,7 +185,7 @@ public struct UnifiedDialStyle: DialStyle {
                         path.addArc(center: center, radius: radius, startAngle: .degrees(-90), endAngle: angle - .degrees(90), clockwise: false)
                     }
                     context.stroke(activePath, with: activeColor, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
-                    let knobPosition = CGPoint(x: center.x + radius * CGFloat(cos(angle.radians - .pi/2)), y: center.y + radius * CGFloat(sin(angle.radians - .pi/2)))
+                    let knobPosition = CGPoint(x: center.x + radius * CGFloat(cos(angle.radians - .pi / 2)), y: center.y + radius * CGFloat(sin(angle.radians - .pi / 2)))
                     context.fill(Path(ellipseIn: CGRect(center: knobPosition, radius: knobRadius)), with: thumbFillColor)
                     context.stroke(Path(ellipseIn: CGRect(center: knobPosition, radius: knobRadius)), with: inactiveColor)
                 case .slice:
@@ -239,6 +237,6 @@ public struct UnifiedDialStyle: DialStyle {
 
 extension ClosedRange where Bound: FloatingPoint {
     func normalize(_ value: Bound) -> Bound {
-        return (value - lowerBound) / (upperBound - lowerBound)
+        (value - lowerBound) / (upperBound - lowerBound)
     }
 }

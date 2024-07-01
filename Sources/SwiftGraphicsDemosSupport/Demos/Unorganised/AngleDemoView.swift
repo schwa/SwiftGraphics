@@ -4,13 +4,13 @@ import SwiftUI
 
 struct AngleDemoView: View, DemoView {
     @State
-    var p0 = CGPoint(x: 100, y: 400)
+    private var p0 = CGPoint(x: 100, y: 400)
 
     @State
-    var p1 = CGPoint(x: 200, y: 400)
+    private var p1 = CGPoint(x: 200, y: 400)
 
     @State
-    var p2 = CGPoint(x: 300, y: 400)
+    private var p2 = CGPoint(x: 300, y: 400)
 
     init() {
     }

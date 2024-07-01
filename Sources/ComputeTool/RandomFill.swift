@@ -29,7 +29,7 @@ struct RandomFill {
             fatalError()
         }
         let bufferSize = bytesPerRow * height
-        let buffer = device.makeBuffer(length: bufferSize, options: [.storageModeShared])!
+        let buffer = try device.makeBuffer(length: bufferSize, options: [.storageModeShared])
         let alignment = device.minimumLinearTextureAlignment(for: textureDescriptor.pixelFormat)
         let texture = buffer.makeTexture(descriptor: textureDescriptor, offset: 0, bytesPerRow: bytesPerRow)!
 
@@ -66,7 +66,7 @@ struct RandomFill {
     }
 }
 
-func testPixelFormats() {
+func testPixelFormats() throws {
     let device = MTLCreateSystemDefaultDevice()!
     for pixelFormat in MTLPixelFormat.allCases {
         guard let pixelFormat2 = PixelFormat(pixelFormat) else {
@@ -81,7 +81,7 @@ func testPixelFormats() {
         }
         let bytesPerRow = align(unalignedBytesPerRow, alignment: alignment)
         let bufferSize = bytesPerRow * textureDescriptor.height
-        let buffer = device.makeBuffer(length: bufferSize, options: [.storageModeShared])!
+        let buffer = try device.makeBuffer(length: bufferSize, options: [.storageModeShared])
         let texture = buffer.makeTexture(descriptor: textureDescriptor, offset: 0, bytesPerRow: bytesPerRow)!
 
         let data = UnsafeMutableRawBufferPointer(start: buffer.contents(), count: buffer.length)

@@ -3,31 +3,33 @@ import CoreGraphicsSupport
 import Shapes2D
 import SwiftUI
 
+// swiftlint:disable force_try
+
 struct LegacyPathEditor: View {
     @Binding
     var points: [CGPoint]
 
     @State
-    var selection: Set<Int> = []
+    private var selection: Set<Int> = []
 
     let coordinateSpace = NamedCoordinateSpace.named("canvas")
 
     var body: some View {
         ZStack(alignment: .topLeading) {
             Color.white
-                .gesture(SpatialTapGesture(coordinateSpace: coordinateSpace).onEnded({ value in
+                .gesture(SpatialTapGesture(coordinateSpace: coordinateSpace).onEnded { value in
                     print(value.location)
                     points.append(value.location)
-                }))
+                })
 
             let elements = points.windows(ofCount: 2).map(\.tuple2).enumerated()
             ForEach(Array(elements), id: \.offset) { offset, points in
                 let path = Path.line(from: points.0, to: points.1)
                 path.stroke()
                     .contentShape(Path(lineSegment: points, width: 20, lineCap: .round), eoFill: false)
-                    .gesture(SpatialTapGesture(coordinateSpace: coordinateSpace).onEnded({ value in
+                    .gesture(SpatialTapGesture(coordinateSpace: coordinateSpace).onEnded { value in
                         self.points.insert(value.location, at: offset + 1)
-                    }))
+                    })
 //                    .overlay {
 //                        (Path(line: points, width: 20, lineCap: .round).stroke(Color.black.opacity(0.2)))
 //                    }
@@ -86,22 +88,22 @@ struct LegacyPathEditor: View {
                 isFileExporterPresented = true
             }
         }
-        .fileImporter(isPresented: $isFileImporterPresented, allowedContentTypes: [.json], onCompletion: { result in
+        .fileImporter(isPresented: $isFileImporterPresented, allowedContentTypes: [.json]) { result in
             if case .success(let url) = result {
                 let data = try! Data(contentsOf: url)
                 points = try! JSONDecoder().decode([CGPoint].self, from: data)
             }
-        })
+        }
         .fileExporter(isPresented: $isFileExporterPresented, item: JSONCodingTransferable(element: points)) { _ in }
     }
 
     @State
-    var isFileImporterPresented = false
+    private var isFileImporterPresented = false
     @State
-    var isFileExporterPresented = false
+    private var isFileExporterPresented = false
 
     func dragGesture(offset: Int) -> some Gesture {
-        DragGesture(coordinateSpace: coordinateSpace).onChanged({ value in
+        DragGesture(coordinateSpace: coordinateSpace).onChanged { value in
             var location = value.location
             #if os(macOS)
                 if NSEvent.modifierFlags.contains(.shift) {
@@ -109,6 +111,6 @@ struct LegacyPathEditor: View {
                 }
             #endif
             points[offset] = location
-        })
+        }
     }
 }

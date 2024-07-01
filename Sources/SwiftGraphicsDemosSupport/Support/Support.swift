@@ -18,6 +18,7 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 // swiftlint:disable identifier_name
+// swiftlint:disable file_length
 
 // TODO: Move
 extension CGVector {
@@ -81,7 +82,7 @@ extension SIMD3 where Scalar == Float {
 extension Shapes2D.Circle {
     init(containing rect: CGRect) {
         let center = rect.midXMidY
-        let diameter = sqrt(rect.width ** 2 + rect.height ** 3)
+        let diameter = sqrt(rect.width * rect.width + rect.height * rect.height)
         self = .init(center: center, diameter: diameter)
     }
 }
@@ -113,23 +114,6 @@ extension MTLRenderPipelineColorAttachmentDescriptor {
         sourceAlphaBlendFactor = .sourceAlpha
         destinationRGBBlendFactor = .oneMinusSourceAlpha
         destinationAlphaBlendFactor = .oneMinusSourceAlpha
-    }
-}
-
-extension MTLBuffer {
-    func contentsBuffer() -> UnsafeMutableRawBufferPointer {
-        UnsafeMutableRawBufferPointer(start: contents(), count: length)
-    }
-
-    func contentsBuffer<T>(of type: T.Type) -> UnsafeMutableBufferPointer<T> {
-        contentsBuffer().bindMemory(to: type)
-    }
-}
-
-extension MTLBuffer {
-    func labelled(_ label: String) -> MTLBuffer {
-        self.label = label
-        return self
     }
 }
 
@@ -245,16 +229,16 @@ extension Pair: CustomDebugStringConvertible where LHS: CustomDebugStringConvert
 
         func body(content: Content) -> some View {
             GeometryReader { geometry in
-                content.onAppear(perform: {
-                    NSEvent.addLocalMonitorForEvents(matching: [.rightMouseDown]) {
-                        if let frame = $0.window?.frame {
-                            let windowLocation = $0.locationInWindow.flipVertically(within: frame)
+                content.onAppear {
+                    NSEvent.addLocalMonitorForEvents(matching: [.rightMouseDown]) { event in
+                        if let frame = event.window?.frame {
+                            let windowLocation = event.locationInWindow.flipVertically(within: frame)
                             let localWindowFrame = geometry.frame(in: coordinateSpace)
                             location = windowLocation - localWindowFrame.origin
                         }
-                        return $0
+                        return event
                     }
-                })
+                }
             }
         }
     }
@@ -351,7 +335,7 @@ struct RelativeTimelineView<Schedule, Content>: View where Schedule: TimelineSch
     let content: (TimelineViewDefaultContext, TimeInterval) -> Content
 
     @State
-    var start: Date = .init()
+    private var start: Date = .init()
 
     init(schedule: Schedule, @ViewBuilder content: @escaping (TimelineViewDefaultContext, TimeInterval) -> Content, start: Date = Date()) {
         self.schedule = schedule
@@ -580,36 +564,51 @@ struct CodableAppStorage<Value: Codable>: DynamicProperty {
             storage
         }
         nonmutating set {
-            storage = newValue
-            let data = try! JSONEncoder().encode(newValue)
-            let string = String(data: data, encoding: .utf8)!
-            UserDefaults.standard.setValue(string, forKey: key)
+            do {
+                storage = newValue
+                let data = try JSONEncoder().encode(newValue)
+                let string = String(decoding: data, as: UTF8.self)
+                UserDefaults.standard.setValue(string, forKey: key)
+            }
+            catch {
+                fatalError()
+            }
         }
     }
 
     init(wrappedValue: Value, _ key: String) {
+        do {
         self.key = key
         if let string = UserDefaults.standard.string(forKey: key) {
             let data = string.data(using: .utf8)!
-            let value = try! JSONDecoder().decode(Value.self, from: data)
+            let value = try JSONDecoder().decode(Value.self, from: data)
             _storage = .init(initialValue: value)
         }
         else {
             _storage = .init(initialValue: wrappedValue)
+        }
+        }
+        catch {
+            fatalError()
         }
     }
 }
 
 extension CodableAppStorage where Value: ExpressibleByNilLiteral {
     init(_ key: String) {
-        self.key = key
-        if let string = UserDefaults.standard.string(forKey: key) {
-            let data = string.data(using: .utf8)!
-            let value = try! JSONDecoder().decode(Value.self, from: data)
-            _storage = .init(initialValue: value)
+        do {
+            self.key = key
+            if let string = UserDefaults.standard.string(forKey: key) {
+                let data = string.data(using: .utf8)!
+                let value = try JSONDecoder().decode(Value.self, from: data)
+                _storage = .init(initialValue: value)
+            }
+            else {
+                _storage = .init(initialValue: nil)
+            }
         }
-        else {
-            _storage = .init(initialValue: nil)
+        catch {
+            fatalError()
         }
     }
 }
@@ -700,7 +699,7 @@ extension Collection {
 
 extension Int {
     var isEven: Bool {
-        self % 2 == 0
+        self.isMultiple(of: 2)
     }
 }
 
@@ -800,9 +799,9 @@ extension Path3D {
 
 extension View {
     func onSpatialTap(count: Int = 1, coordinateSpace: some CoordinateSpaceProtocol = .local, handler: @escaping (CGPoint) -> Void) -> some View {
-        gesture(SpatialTapGesture(count: count, coordinateSpace: coordinateSpace).onEnded({ value in
+        gesture(SpatialTapGesture(count: count, coordinateSpace: coordinateSpace).onEnded { value in
             handler(value.location)
-        }))
+        })
     }
 }
 
@@ -843,7 +842,7 @@ extension View {
             inspector(isPresented: isPresented) {
                 content().toolbar {
                     Spacer()
-                    Toggle(isOn: isPresented, label: { Label("Inspector", systemImage: "sidebar.right") })
+                    Toggle(isOn: isPresented) { Label("Inspector", systemImage: "sidebar.right") }
                         .toggleStyle(.button)
                 }
             }
@@ -934,7 +933,6 @@ extension UTType {
     static let plyFile = UTType(importedAs: "public.polygon-file-format")
 }
 
-
 extension SceneGraph {
     static func demo(device: MTLDevice) throws -> SceneGraph {
         let sphere = try Sphere3D(radius: 0.25).toMTKMesh(device: device)
@@ -1023,7 +1021,9 @@ extension Node: FirstPersonCameraProtocol {
         get {
             .zero
         }
+        // swiftlint:disable:next unused_setter_value
         set {
+            fatalError()
         }
     }
 
@@ -1031,14 +1031,17 @@ extension Node: FirstPersonCameraProtocol {
         get {
             .zero
         }
+        // swiftlint:disable:next unused_setter_value
         set {
+            fatalError()
         }
     }
 }
 
-protocol UnsafeMemoryEquatable: Equatable {
+public protocol UnsafeMemoryEquatable: Equatable {
 }
 
+// swiftlint:disable:next extension_access_modifier
 extension UnsafeMemoryEquatable {
     public static func == (lhs: Self, rhs: Self) -> Bool {
         withUnsafeBytes(of: lhs) { lhs in
@@ -1063,20 +1066,21 @@ struct Box <Content>: Hashable where Content: AnyObject {
         self.content = content
     }
 
-    static func ==(lhs: Self, rhs: Self) -> Bool {
+    static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.content === rhs.content
     }
 
     func hash(into hasher: inout Hasher) {
         ObjectIdentifier(content).hash(into: &hasher)
     }
-
 }
 
 extension Collection where Element == PackedFloat3 {
     var bounds: (min: PackedFloat3, max: PackedFloat3) {
-        return (
+        (
+            // swiftlint:disable:next reduce_into
             reduce([Float.greatestFiniteMagnitude, Float.greatestFiniteMagnitude, Float.greatestFiniteMagnitude], SwiftGraphicsDemosSupport.min),
+            // swiftlint:disable:next reduce_into
             reduce([-Float.greatestFiniteMagnitude, -Float.greatestFiniteMagnitude, -Float.greatestFiniteMagnitude], SwiftGraphicsDemosSupport.max)
         )
     }
@@ -1090,7 +1094,6 @@ func min(lhs: PackedFloat3, rhs: PackedFloat3) -> PackedFloat3 {
     [min(lhs[0], rhs[0]), min(lhs[1], rhs[1]), min(lhs[2], rhs[2])]
 }
 
-
 func max(lhs: SIMD3<Float>, rhs: SIMD3<Float>) -> SIMD3<Float> {
     [max(lhs[0], rhs[0]), max(lhs[1], rhs[1]), max(lhs[2], rhs[2])]
 }
@@ -1101,8 +1104,7 @@ func min(lhs: SIMD3<Float>, rhs: SIMD3<Float>) -> SIMD3<Float> {
 
 public func nextPowerOfTwo(_ value: Double) -> Double {
     let logValue = log2(Double(value))
-    let nextPower = pow(2.0, ceil(logValue))
-    return nextPower
+    return pow(2.0, ceil(logValue))
 }
 
 public func nextPowerOfTwo(_ value: Int) -> Int {
@@ -1143,5 +1145,13 @@ extension ComputePassProtocol {
         commandBuffer.waitUntilCompleted()
         print("DONE")
     }
+}
 
+extension Bundle {
+    func url(forResource resource: String?, withExtension extension: String?) throws -> URL {
+        guard let url = url(forResource: resource, withExtension: `extension`) else {
+            fatalError()
+        }
+        return url
+    }
 }

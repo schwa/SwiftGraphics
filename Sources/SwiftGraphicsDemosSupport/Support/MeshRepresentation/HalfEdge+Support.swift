@@ -31,7 +31,7 @@ public protocol HalfEdgeMeshConvertable {
 extension Box3D: HalfEdgeMeshConvertable {
     public struct HalfEdgeMeshConverter: HalfEdgeMeshConverterProtocol {
         public func convert(_ box: Box3D) throws -> HalfEdgeMesh<SIMD3<Float>> {
-            let mesh = HalfEdgeMesh<SIMD3<Float>>(polygons: [
+            HalfEdgeMesh<SIMD3<Float>>(polygons: [
                 // Bottom face (viewed from above, must be clockwise because normally viewed from below)
                 .init(vertices: [box.minXMinYMinZ, box.maxXMinYMinZ, box.maxXMaxYMinZ, box.minXMaxYMinZ]),
                 // Top face (viewed from above)
@@ -45,7 +45,6 @@ extension Box3D: HalfEdgeMeshConvertable {
                 // Back face (viewed from back)
                 .init(vertices: [box.minXMaxYMinZ, box.maxXMaxYMinZ, box.maxXMaxYMaxZ, box.minXMaxYMaxZ]),
             ])
-            return mesh
         }
     }
 

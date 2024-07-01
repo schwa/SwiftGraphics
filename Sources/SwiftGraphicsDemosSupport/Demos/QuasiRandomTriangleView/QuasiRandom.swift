@@ -1,6 +1,6 @@
 import Foundation
-import SwiftUI
 import Shapes2D
+import SwiftUI
 
 // https://extremelearning.com.au/unreasonable-effectiveness-of-quasirandom-sequences/
 func quasiRandomPointIn(size: CGSize, n: Int) -> CGPoint {
@@ -19,7 +19,6 @@ func quasiRandomPointIn(triangle: Triangle, n: Int) -> CGPoint {
 }
 
 extension Triangle {
-
     var a: CGPoint {
         get {
             vertices.0
@@ -57,7 +56,7 @@ extension Triangle {
 
     func contains(point: CGPoint) -> Bool {
         func sign(p1: CGPoint, p2: CGPoint, p3: CGPoint) -> CGFloat {
-            return (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y)
+            (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y)
         }
         let d1 = sign(p1: point, p2: a, p3: b)
         let d2 = sign(p1: point, p2: b, p3: c)
@@ -82,8 +81,7 @@ func pointInTriangle(point: UnitPoint, triangle: Triangle) -> CGPoint {
     let ab = point.x
     let ac = point.y
     // Calculate the point based on m and n
-    let parallelogramPoint = CGPoint(x: (1 - ab - ac) * triangle.a.x + ab * triangle.b.x + ac * triangle.c.x,
-                        y: (1 - ab - ac) * triangle.a.y + ab * triangle.b.y + ac * triangle.c.y)
+    let parallelogramPoint = CGPoint(x: (1 - ab - ac) * triangle.a.x + ab * triangle.b.x + ac * triangle.c.x, y: (1 - ab - ac) * triangle.a.y + ab * triangle.b.y + ac * triangle.c.y)
 
     // Check if the point is inside the triangle
     if ab + ac <= 1 {

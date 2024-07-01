@@ -8,13 +8,13 @@ import WrappingHStack
 
 struct HalfEdge2DDemoView: View, DemoView {
     @State
-    var mesh: HalfEdgeMesh<CGPoint>
+    private var mesh: HalfEdgeMesh<CGPoint>
 
     @State
-    var selection: HalfEdgeSelection?
+    private var selection: HalfEdgeSelection?
 
     @State
-    var faceColors: [HalfEdgeMesh<CGPoint>.Face.ID: Color]
+    private var faceColors: [HalfEdgeMesh<CGPoint>.Face.ID: Color]
 
     init() {
 //        let polygons: [Polygon3D<SIMD3<Float>>] = [
@@ -187,7 +187,7 @@ extension HalfEdgeMesh {
 
 struct DisclosureGroup2 <Label, Content>: View where Label: View, Content: View {
     @State
-    var isExpanded: Bool
+    private var isExpanded: Bool
 
     var label: Label
     var content: Content

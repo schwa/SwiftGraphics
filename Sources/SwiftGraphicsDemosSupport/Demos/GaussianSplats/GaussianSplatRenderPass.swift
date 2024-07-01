@@ -1,14 +1,14 @@
-import SwiftUI
+import Everything
+import MetalKit
+import MetalSupport
+import Observation
 import RenderKit
+import RenderKitShaders
+import Shapes3D
+import simd
 import SIMDSupport
 import SwiftGraphicsSupport
-import RenderKitShaders
-import MetalSupport
-import Shapes3D
-import MetalKit
-import simd
-import Observation
-import Everything
+import SwiftUI
 import UniformTypeIdentifiers
 
 struct GaussianSplatRenderPass: RenderPassProtocol {
@@ -39,9 +39,8 @@ struct GaussianSplatRenderPass: RenderPassProtocol {
     var debugMode: Bool
 
     func setup(device: MTLDevice, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State {
-
         let allocator = MTKMeshBufferAllocator(device: device)
-        let quadMesh = try! MTKMesh(mesh: MDLMesh(planeWithExtent: [2, 2, 0], segments: [1, 1], geometryType: .triangles, allocator: allocator), device: device)
+        let quadMesh = try MTKMesh(mesh: MDLMesh(planeWithExtent: [2, 2, 0], segments: [1, 1], geometryType: .triangles, allocator: allocator), device: device)
 
         let library = try device.makeDebugLibrary(bundle: .renderKitShaders)
         let renderPipelineDescriptor = renderPipelineDescriptor()
@@ -117,11 +116,6 @@ struct GaussianSplatRenderPass: RenderPassProtocol {
         }
 
 //        commandEncoder.draw(pointMesh, instanceCount: splatCount)
-        commandEncoder.drawPrimitives(type: .triangleStrip,
-                                     vertexStart: 0,
-                                     vertexCount: 4,
-                                     instanceCount: splatCount)
-
+        commandEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4, instanceCount: splatCount)
     }
-
 }

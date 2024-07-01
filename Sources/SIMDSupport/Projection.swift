@@ -143,8 +143,7 @@ public func look(at target: SIMD3<Float>, from eye: SIMD3<Float>, up: SIMD3<Floa
     matrix2[2] = SIMD4<Float>(-forward, 0)
     matrix2[3] = [0, 0, 0, 1]
 
-    let result = .init(translate: eye) * matrix2
-    return result
+    return .init(translate: eye) * matrix2
 }
 
 // https://docs.microsoft.com/en-us/windows/win32/direct3d9/d3dxmatrixlookatlh

@@ -20,10 +20,10 @@ struct LineDemoView: View, DemoView {
     var selectedElement: Element.ID?
 
     @State
-    var showIntercepts = true
+    private var showIntercepts = true
 
     @State
-    var showIntersections = true
+    private var showIntersections = true
 
     var body: some View {
         ZStack {
@@ -73,9 +73,9 @@ struct LineDemoView: View, DemoView {
                         elements[elements.firstIndex(identifiedBy: element.id)!].lineSegment.end = newValue.map { floor($0 / 0.25) * 0.25 }
                     }
                     Handle(start.transformed(transform))
-                        .simultaneousGesture(TapGesture().onEnded({ selectedElement = element.id }))
+                        .simultaneousGesture(TapGesture().onEnded { selectedElement = element.id })
                     Handle(end.transformed(transform))
-                        .simultaneousGesture(TapGesture().onEnded({ selectedElement = element.id }))
+                        .simultaneousGesture(TapGesture().onEnded { selectedElement = element.id })
                 }
                 Canvas { context, _ in
                     for (index, lhs) in elements.enumerated() {

@@ -107,12 +107,11 @@ public extension Triangle {
 
     var signedArea: Double {
         let (a, b, c) = vertices
-        let signedArea = 0.5 * (
+        return 0.5 * (
             a.x * (b.y - c.y) +
                 b.x * (c.y - a.y) +
                 c.x * (a.y - b.y)
         )
-        return signedArea
     }
 
     var area: Double { abs(signedArea) }
