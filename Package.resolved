@@ -1,5 +1,5 @@
 {
-  "originHash" : "71718ed91cf2f8af88355e4741c27337d41ac61e8b417d9099bc486ffcbc4eb4",
+  "originHash" : "442537d75dba8fab9a5c4f7ab2ca98c84270e7b2e9369f5b60c2a41bbfa41103",
   "pins" : [
     {
       "identity" : "approximateequality",
@@ -26,15 +26,6 @@
       "state" : {
         "revision" : "435c493a6f1cd8846e44a24ce8b6b27f97084527",
         "version" : "0.0.2"
-      }
-    },
-    {
-      "identity" : "streambuilder",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/schwa/StreamBuilder",
-      "state" : {
-        "branch" : "main",
-        "revision" : "4b135f3172a43bcb2cc5ea86f7f9fa21d75ca9bf"
       }
     },
     {
