@@ -6,11 +6,13 @@ on:
       - main
 jobs:
   build:
-    runs-on: macos-14 # macos-latest
+    # macos-latest
+    runs-on: macos-14
     steps:
       - name: Install Xcode.
         uses: maxim-lobanov/setup-xcode@v1
         with:
+          # 15.0 / 16-beta etc
           xcode-version: 16-beta
       - name: Install just.
         uses: extractions/setup-just@v2
