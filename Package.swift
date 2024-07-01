@@ -159,11 +159,8 @@ let package = Package(
 
         .target(
             name: "RenderKitShaders",
-            swiftSettings: [
-                .unsafeFlags(["ENABLE_USER_SCRIPT_SANDBOXING", "YES"])
-            ],
             plugins: [
-                .plugin(name: "MetalCompilerPlugin", package: "MetalCompilerPlugin")
+//                .plugin(name: "MetalCompilerPlugin", package: "MetalCompilerPlugin")
             ]
         ),
         .target(
