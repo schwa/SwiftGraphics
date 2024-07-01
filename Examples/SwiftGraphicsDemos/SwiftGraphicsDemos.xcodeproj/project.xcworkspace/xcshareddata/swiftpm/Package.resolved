@@ -1,5 +1,5 @@
 {
-  "originHash" : "0b0478d35e80a04080a0db448948aa1199875c49db63e87f6bf35c147818ee97",
+  "originHash" : "cbab65d111c86e9194ffc972b8160d10a6e40c1c0284f3f7c27d2af1036c3293",
   "pins" : [
     {
       "identity" : "approximateequality",
@@ -96,8 +96,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/schwa/swiftformats",
       "state" : {
-        "revision" : "1cc4b51e9e4cead543979e85e5524e0282e7ff29",
-        "version" : "0.3.4"
+        "revision" : "6b51ccec7fccf2f1d4f28f03def6c6b97d17c05b",
+        "version" : "0.3.6"
       }
     },
     {
