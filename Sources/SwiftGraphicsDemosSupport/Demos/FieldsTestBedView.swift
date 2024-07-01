@@ -7,7 +7,11 @@ struct FieldsTestBedView: View, DemoView {
     var value = 0.0
 
     var body: some View {
-        Wheel(value: $value)
+        Wheel(label: "Hello", value: $value)
         Text("\(value)")
+        Button("Boing") {
+            value += Double.random(in: 0..<1000)
+        }
+
     }
 }

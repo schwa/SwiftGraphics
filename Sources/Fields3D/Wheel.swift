@@ -1,65 +1,93 @@
 import SwiftUI
 import CoreGraphicsSupport
 
-public struct Wheel: View {
-    @Binding var value: Double
+public struct Wheel <Label>: View  where Label: View {
+    @Binding
+    var value: Double
 
-    @State private var lastDragValue: Double = 0.0
+    var rate: Double
 
+    var label: Label
 
-    @State var size: CGSize = .zero
+    @State
+    private var lastDragValue: Double = 0.0
 
-    public init(value: Binding<Double>) {
+    @State
+    private var size: CGSize = .zero
+
+    @Environment(\.wheelStyle)
+    var wheelStyle
+
+    public init(value: Binding<Double>, rate: Double = 1, label: () -> Label) {
         self._value = value
+        self.rate = rate
+        self.label = label()
     }
 
     public var body: some View {
-        WheelContentView(value: value)
-            .geometrySize($size)
-            .gesture(DragGesture().onChanged { drag in
-                value += (drag.translation.width - lastDragValue) / size.width
-                lastDragValue = drag.translation.width
-            }.onEnded { drag in
-                withAnimation(.easeOut) {
-                    print(drag.predictedEndTranslation.width)
-                    value += (drag.predictedEndTranslation.width - lastDragValue) / size.width
-                }
-                lastDragValue = 0.0
-            })
-            .gesture(LongPressGesture().onEnded { _ in
-                withAnimation {
-                    value = 0
-                }
-            })
+
+        AnimatableValueView(value: value) {
+            wheelStyle.makeBody_(configuration: .init(label: AnyView(label), value: $0, inDrag: false))
+        }
+//        .animation(.easeInOut, value: value)
+        .focusable()
+        .geometrySize($size)
+        .gesture(drag())
+        .gesture(LongPressGesture().onEnded { _ in
+            withAnimation {
+                value = 0
+            }
+        })
+        .onKeyPress(.rightArrow) {
+            withAnimation {
+                value += 1.1 * rate
+            }
+            return .handled
+        }
+        .onKeyPress(.leftArrow) {
+            value -= 1 * rate
+            return .handled
+        }
     }
 
-    struct WheelContentView: View, @preconcurrency Animatable {
-        @Environment(\.wheelStyle)
-        var wheelStyle
-        var value: Double
-        var body: some View {
-            wheelStyle.makeBody_(configuration: .init(value: value, inDrag: false))
+    func drag() -> some Gesture {
+        DragGesture()
+        .onChanged { drag in
+            value += (drag.translation.width - lastDragValue) / size.width * rate
+            lastDragValue = drag.translation.width
         }
-        var animatableData: Double {
-            get {
-                value
-            }
-            set {
-                value = newValue
-            }
+        .onEnded { drag in
+//            withAnimation(.easeOut) {
+//                value += (drag.predictedEndTranslation.width - lastDragValue) / size.width * rate
+//            }
+            lastDragValue = 0.0
         }
+    }
+
+}
+
+extension Wheel where Label == EmptyView {
+    public init(value: Binding<Double>, rate: Double = 1) {
+        self.init(value: value, rate: rate, label: { EmptyView() })
+    }
+}
+
+extension Wheel where Label == Text {
+    public init(label: String, value: Binding<Double>, rate: Double = 1) {
+        self.init(value: value, rate: rate, label: { Text(label) })
     }
 }
 
 // MARK: -
 
 struct WheelStyleConfiguration {
+    var label: AnyView
     var value: Double
     var inDrag: Bool
 }
 
 @MainActor
-protocol WheelStyle {
+protocol WheelStyle: Sendable {
     associatedtype Body: View
     typealias Configuration = WheelStyleConfiguration
     @ViewBuilder func makeBody(configuration: Configuration) -> Body
@@ -87,26 +115,41 @@ func wrap(_ point: CGPoint, within rect: CGRect) -> CGPoint {
 struct DefaultWheelStyle: WheelStyle {
 
     func makeBody(configuration: Configuration) -> some View {
-        Canvas { context, size in
-            let frame = CGRect(origin: .zero, size: size)
-            let offset = CGPoint(
-                x: (configuration.value * frame.size.width),
-                y: 0
-            )
-            let tickSpacing = 4.0
-            let path = Path { path in
-                let center = CGPoint(x: frame.midX, y: frame.midX)
-                for x in stride(from: -frame.width, to: frame.width, by: tickSpacing) {
-                    let point = wrap(offset + CGPoint(x: x, y: 0) + center, within: frame)
-                    path.move(to: point + CGPoint(x: 0, y: -frame.width / 2))
-                    path.addLine(to: point + CGPoint(x: 0, y: frame.width / 2))
+        WheelStyleView(configuration: configuration)
+    }
+
+    struct WheelStyleView: View {
+
+
+
+        var configuration: Configuration
+
+        var body: some View {
+            HStack(alignment: .center, spacing: 2) {
+                configuration.label
+                Canvas { context, size in
+                    let frame = CGRect(origin: .zero, size: size)
+                    let offset = CGPoint(
+                        x: (configuration.value * frame.size.width),
+                        y: 0
+                    )
+                    let tickSpacing = 4.0
+                    let path = Path { path in
+                        let center = CGPoint(x: frame.midX, y: frame.midX)
+                        for x in stride(from: -frame.width, to: frame.width, by: tickSpacing) {
+                            let point = wrap(offset + CGPoint(x: x, y: 0) + center, within: frame)
+                            path.move(to: point + CGPoint(x: 0, y: -frame.width / 2))
+                            path.addLine(to: point + CGPoint(x: 0, y: frame.width / 2))
+                        }
+                    }
+                    context.stroke(path, with: .color(.gray.opacity(0.4)), lineWidth: 2)
                 }
+                .border(.gray.opacity(0.8))
+                .contentShape(Rectangle())
+                .frame(width: 60, height: 12)
             }
-            context.stroke(path, with: .color(.gray.opacity(0.4)), lineWidth: 2)
+
         }
-        .contentShape(Rectangle())
-        .border(.gray.opacity(0.8))
-        .frame(width: 60, height: 10)
     }
 }
 
@@ -123,20 +166,21 @@ func sign(_ v: Double) -> Double {
 
 }
 
-struct WheelStyleKey: EnvironmentKey {
-    // TODO: FIXME
-    nonisolated(unsafe) static let defaultValue: any WheelStyle = DefaultWheelStyle()
-}
+//struct UncheckedSendableBox <Value>: @unchecked Sendable {
+//    var value: Value
+//
+//    init(_ value: Value) {
+//        self.value = value
+//    }
+//
+//    func callAsFunction() -> Value {
+//        return value
+//    }
+//}
 
 extension EnvironmentValues {
-    var wheelStyle: (any WheelStyle) {
-        get {
-            self[WheelStyleKey.self]
-        }
-        set {
-            self[WheelStyleKey.self] = newValue
-        }
-    }
+    @Entry
+    var wheelStyle: any WheelStyle = DefaultWheelStyle()
 }
 
 extension View {
@@ -151,9 +195,27 @@ extension View {
     @Previewable @State var value = 0.0
 
     VStack {
-        Wheel(value: $value)
-        Spacer()
-        Text("\(value)")
+        Wheel(value: $value, rate: 360)
+        Button("Boing") {
+            withAnimation {
+                value += Double.random(in: 0...1000)
+            }
+        }
     }
     .padding()
+}
+
+struct AnimatableValueView <Value, Content>: View, Animatable where Content: View {
+    var animatableData: Value
+
+    var content: (Value) -> Content
+
+    init(value: Value, content: @escaping (Value) -> Content) {
+        self.animatableData = value
+        self.content = content
+    }
+
+    var body: some View {
+        content(animatableData)
+    }
 }
