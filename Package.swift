@@ -16,6 +16,7 @@ let package = Package(
         .library(name: "CoreGraphicsSupport", targets: ["CoreGraphicsSupport"]),
         .library(name: "CoreGraphicsUnsafeConformances", targets: ["CoreGraphicsUnsafeConformances"]),
         .library(name: "Earcut", targets: ["Earcut"]),
+        .library(name: "Fields3D", targets: ["Fields3D"]),
         .library(name: "GenericGeometryBase", targets: ["GenericGeometryBase"]),
         .library(name: "MetalSupport", targets: ["MetalSupport"]),
         .library(name: "MetalUnsafeConformances", targets: ["MetalUnsafeConformances"]),
@@ -95,6 +96,20 @@ let package = Package(
             name: "EarcutTests", dependencies: ["Earcut"],
             swiftSettings: [.interoperabilityMode(.Cxx)]
         ),
+
+        // MARK: GenericGeometryBase
+
+        .target(
+            name: "Fields3D",
+            dependencies: [
+                "CoreGraphicsSupport",
+                "SIMDSupport",
+                .product(name: "SwiftFormats", package: "SwiftFormats"),
+            ],
+            swiftSettings: [
+            ]
+        ),
+
 
         // MARK: GenericGeometryBase
 
@@ -344,6 +359,7 @@ let package = Package(
                 "WrappingHStack",
                 "Compute",
                 "MetalUnsafeConformances",
+                "Fields3D",
                 .product(name: "SwiftFields", package: "swiftfields"),
             ],
             resources: [
