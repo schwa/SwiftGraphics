@@ -12,7 +12,7 @@ struct ProjectionEditor: View {
     @Binding
     var projection: Projection
 
-    init(projection: Binding<Projection>) {
+    init(_ projection: Binding<Projection>) {
         type = projection.wrappedValue.meta
         _projection = projection
     }
