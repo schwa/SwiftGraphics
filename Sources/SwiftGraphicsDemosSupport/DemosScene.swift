@@ -23,10 +23,12 @@ protocol DemoView: View {
     @MainActor init()
 }
 
+
 struct DemosView: View {
     var body: some View {
         NavigationView {
             List {
+                row(for: FieldsTestBedView.self)
                 row(for: GaussianSplatView.self)
                 row(for: SimplePBRSceneGraphDemoView.self)
                 row(for: TriangleReflectionView.self)
