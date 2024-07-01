@@ -59,7 +59,7 @@ struct SoftwareRendererBoxesDemoView: View, DemoView {
                     RasterizerOptionsView(options: $rasterizerOptions)
                 }
                 Section("Camera") {
-                    ProjectionEditor(projection: $cameraProjection)
+                    ProjectionEditor($cameraProjection)
                 }
                 Section("Ball Constraint") {
                     BallConstraintEditor(ballConstraint: $ballConstraint)

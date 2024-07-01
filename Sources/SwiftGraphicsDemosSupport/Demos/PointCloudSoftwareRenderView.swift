@@ -60,7 +60,7 @@ struct PointCloudSoftwareRenderView: View, DemoView {
             Form {
 
                 Section("Camera Projection") {
-                    ProjectionEditor(projection: $cameraProjection)
+                    ProjectionEditor($cameraProjection)
                 }
 
                 Section("Ball Constraint") {
