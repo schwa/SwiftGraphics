@@ -47,6 +47,54 @@
             "name": "Release Shapes2DBenchmarkTarget",
             "program": "${workspaceFolder:SwiftGraphics}/.build/release/Shapes2DBenchmarkTarget",
             "preLaunchTask": "swift: Build Release Shapes2DBenchmarkTarget"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "sourceLanguages": [
+                "swift"
+            ],
+            "args": [],
+            "cwd": "${workspaceFolder:SwiftGraphics}",
+            "name": "Debug SwiftGraphicsDemosSupportCLI",
+            "program": "${workspaceFolder:SwiftGraphics}/.build/debug/SwiftGraphicsDemosSupportCLI",
+            "preLaunchTask": "swift: Build Debug SwiftGraphicsDemosSupportCLI"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "sourceLanguages": [
+                "swift"
+            ],
+            "args": [],
+            "cwd": "${workspaceFolder:SwiftGraphics}",
+            "name": "Release SwiftGraphicsDemosSupportCLI",
+            "program": "${workspaceFolder:SwiftGraphics}/.build/release/SwiftGraphicsDemosSupportCLI",
+            "preLaunchTask": "swift: Build Release SwiftGraphicsDemosSupportCLI"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "sourceLanguages": [
+                "swift"
+            ],
+            "args": [],
+            "cwd": "${workspaceFolder:SwiftGraphics}",
+            "name": "Debug ComputeTool",
+            "program": "${workspaceFolder:SwiftGraphics}/.build/debug/ComputeTool",
+            "preLaunchTask": "swift: Build Debug ComputeTool"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "sourceLanguages": [
+                "swift"
+            ],
+            "args": [],
+            "cwd": "${workspaceFolder:SwiftGraphics}",
+            "name": "Release ComputeTool",
+            "program": "${workspaceFolder:SwiftGraphics}/.build/release/ComputeTool",
+            "preLaunchTask": "swift: Build Release ComputeTool"
         }
     ]
 }
