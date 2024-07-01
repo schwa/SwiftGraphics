@@ -4,7 +4,6 @@ import SwiftUI
 public typealias RollPitchYaw = XYZRotation
 
 public struct XYZRotation: Sendable, Equatable {
-
     public enum Target: Sendable {
         case object
         case world
@@ -27,8 +26,8 @@ public struct XYZRotation: Sendable, Equatable {
     }
 }
 
-extension XYZRotation {
-    public var roll: Angle {
+public extension XYZRotation {
+    var roll: Angle {
         get {
             z
         }
@@ -36,16 +35,15 @@ extension XYZRotation {
             z = newValue
         }
     }
-    public var pitch: Angle {
+    var pitch: Angle {
         get {
             x
         }
         set {
             x = newValue
         }
-
     }
-    public var yaw: Angle {
+    var yaw: Angle {
         get {
             y
         }
@@ -54,7 +52,7 @@ extension XYZRotation {
         }
     }
 
-    public init(roll: Angle = .zero, pitch: Angle = .zero, yaw: Angle = .zero) {
+    init(roll: Angle = .zero, pitch: Angle = .zero, yaw: Angle = .zero) {
         self.init()
         self.roll = roll
         self.pitch = pitch
@@ -94,22 +92,20 @@ public extension XYZRotation {
 
 public extension XYZRotation {
     var matrix4x4: simd_float4x4 {
-        return .init(matrix3x3)
+        .init(matrix3x3)
     }
     var worldMatrix4x4: simd_float4x4 {
-        return .init(worldMatrix3x3)
+        .init(worldMatrix3x3)
     }
 }
 
 public extension XYZRotation {
-
     static let zero = XYZRotation()
 
     static func + (lhs: XYZRotation, rhs: XYZRotation) -> XYZRotation {
         XYZRotation(roll: lhs.roll + rhs.roll, pitch: lhs.pitch + rhs.pitch, yaw: lhs.yaw + rhs.yaw)
     }
 }
-
 
 public extension XYZRotation {
     init(target: Target = .object, quaternion: simd_quatf) {

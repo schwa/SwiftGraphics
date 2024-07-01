@@ -42,7 +42,7 @@ extension Path {
         var onEditingChanged: (Bool) -> Void
 
         @State
-        var isPresented = false
+        private var isPresented = false
 
         var body: some View {
             Button(systemImage: "slider.horizontal.2.square") {
@@ -50,12 +50,12 @@ extension Path {
             }
             .buttonStyle(.borderless)
             .tint(.accentColor)
-            .popover(isPresented: $isPresented, content: {
+            .popover(isPresented: $isPresented) {
                 Slider(value: $value, in: bounds, label: { label }, minimumValueLabel: { minimumValueLabel }, maximumValueLabel: { maximumValueLabel }, onEditingChanged: onEditingChanged)
                     .controlSize(.mini)
                     .frame(minWidth: 100)
                     .padding()
-            })
+            }
         }
 
         init<V>(value: Binding<V>, in bounds: ClosedRange<V> = 0 ... 1, @ViewBuilder label: () -> Label, @ViewBuilder minimumValueLabel: () -> ValueLabel, @ViewBuilder maximumValueLabel: () -> ValueLabel, onEditingChanged: @escaping (Bool) -> Void = { _ in }) where V: BinaryFloatingPoint, V.Stride: BinaryFloatingPoint {

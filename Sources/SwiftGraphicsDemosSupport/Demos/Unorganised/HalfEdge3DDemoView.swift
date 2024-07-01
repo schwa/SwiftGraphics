@@ -1,32 +1,34 @@
 import CoreGraphicsSupport
+import Fields3D
 import Projection
 import Shapes3D
 import simd
 import SIMDSupport
 import SwiftUI
-import Fields3D
+
+// swiftlint:disable force_try
 
 struct HalfEdge3DDemoView: View, DemoView {
     @State
-    var mesh: HalfEdgeMesh<SIMD3<Float>>
+    private var mesh: HalfEdgeMesh<SIMD3<Float>>
 
     @State
-    var cameraTransform: Transform = .translation([0, 0, -5])
+    private var cameraTransform: Transform = .translation([0, 0, -5])
 
     @State
-    var cameraProjection: Projection = .perspective(.init())
+    private var cameraProjection: Projection = .perspective(.init())
 
     @State
-    var ballConstraint = BallConstraint()
+    private var ballConstraint = BallConstraint()
 
     @State
-    var rasterizerOptions = Rasterizer.Options.default
+    private var rasterizerOptions = Rasterizer.Options.default
 
     @State
-    var selection: HalfEdgeSelection?
+    private var selection: HalfEdgeSelection?
 
     @State
-    var faceColors: [HalfEdgeMesh<SIMD3<Float>>.Face.ID: Color]
+    private var faceColors: [HalfEdgeMesh<SIMD3<Float>>.Face.ID: Color]
 
     init() {
         let mesh = try! Box3D(min: [-1, -1, -1], max: [1, 1, 1]).toHalfEdgeMesh()
@@ -143,9 +145,9 @@ struct HalfEdgeMeshInspectorView: View {
                                 faceColors[face.id] = newValue
                             }
                             Spacer()
-                            ColorPicker(selection: color, label: {
+                            ColorPicker(selection: color) {
                                 Text("Color")
-                            })
+                            }
                             .labelsHidden()
                         }
                         .tag(HalfEdgeSelection.face(index))

@@ -11,6 +11,8 @@ import Shapes2D
 import SIMDSupport
 import SwiftUI
 
+// swiftlint:disable force_try
+
 // https://www.youtube.com/watch?v=y4KdxaMC69w&t=1761s
 
 struct VolumetricRendererDemoView: DemoView {
@@ -33,7 +35,7 @@ struct VolumetricRendererDemoView: DemoView {
     var blueTransferFunction: [Float] = Array(repeating: 1.0, count: 256)
 
     @State
-    var alphaTransferFunction: [Float] = (0 ..< 256).map({ Float($0) / Float(255) })
+    var alphaTransferFunction: [Float] = (0 ..< 256).map { Float($0) / Float(255) }
 
     let device = MTLCreateSystemDefaultDevice()!
 
@@ -79,16 +81,16 @@ struct VolumetricRendererDemoView: DemoView {
     }
 
     func updateTransferFunctionTexture() {
-        let values = (0 ... 255).map {
+        let values = (0 ... 255).map { value in
             SIMD4<Float>(
-                redTransferFunction[$0],
-                greenTransferFunction[$0],
-                blueTransferFunction[$0],
-                alphaTransferFunction[$0]
+                redTransferFunction[value],
+                greenTransferFunction[value],
+                blueTransferFunction[value],
+                alphaTransferFunction[value]
             )
         }
-            .map { $0 * 255.0 }
-            .map { SIMD4<UInt8>($0) }
+        .map { $0 * 255.0 }
+        .map { SIMD4<UInt8>($0) }
 
         values.withUnsafeBytes { buffer in
             let region = MTLRegion(origin: [0, 0, 0], size: [256, 1, 1]) // TODO: Hardcoded
@@ -108,7 +110,7 @@ struct TransferFunctionEditor: View {
     let color: Color
 
     @State
-    var lastLocation: CGPoint?
+    private var lastLocation: CGPoint?
 
     let coordinateSpace = NamedCoordinateSpace.named(ObjectIdentifier(Self.self))
 

@@ -59,6 +59,6 @@ extension SRT: CustomStringConvertible {
         let scale = scale == .unit ? nil : "scale: [\(scale.x.formatted()), \(scale.y.formatted()), \(scale.z.formatted())]"
         let rotation = rotation == .identity ? nil : "rotation: \(rotation)"
         let translation = translation == .zero ? nil : "translation: [\(translation.x.formatted()), \(translation.y.formatted()), \(translation.z.formatted())]"
-        return [scale, rotation, translation].compactMap({ $0 }).joined(separator: ",")
+        return [scale, rotation, translation].compactMap { $0 }.joined(separator: ",")
     }
 }

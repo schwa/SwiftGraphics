@@ -148,7 +148,7 @@ public extension TrivialMesh where Vertex == SimpleVertex {
 
     var isValid: Bool {
         // Not a mesh of triangles...
-        if indices.count % 3 != 0 {
+        if indices.count.isMultiple(of: 3) {
             return false
         }
 

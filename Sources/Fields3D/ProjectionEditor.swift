@@ -7,7 +7,7 @@ import SwiftUI
 
 public struct ProjectionEditor: View {
     @State
-    var type: Projection.Meta
+    private var type: Projection.Meta
 
     @Binding
     var projection: Projection

@@ -8,13 +8,13 @@ struct CameraRotationWidgetView: View {
     var ballConstraint: BallConstraint
 
     @State
-    var cameraTransform: Transform = .translation([0, 0, -5])
+    private var cameraTransform: Transform = .translation([0, 0, -5])
 
     @State
-    var cameraProjection: Projection = .orthographic(.init(left: -1, right: 1, bottom: -1, top: 1, near: -1, far: 1))
+    private var cameraProjection: Projection = .orthographic(.init(left: -1, right: 1, bottom: -1, top: 1, near: -1, far: 1))
 
     @State
-    var isHovering = false
+    private var isHovering = false
 
     var length: Float = 0.75
 

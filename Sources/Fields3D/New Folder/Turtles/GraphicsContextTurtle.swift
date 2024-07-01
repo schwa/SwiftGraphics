@@ -1,9 +1,8 @@
-import Foundation
 import CoreGraphics
+import Foundation
 import SwiftUI
 
 struct GraphicsContextTurtle: TurtleProtocol {
-
     var context: any GraphicsContextProtocol
     var stack: [(CGPoint, Angle)] = []
     var position = CGPoint.zero

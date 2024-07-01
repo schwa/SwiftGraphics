@@ -4,19 +4,19 @@ import SwiftUI
 
 struct SplineDemoView: View, DemoView {
     @State
-    var points: [CGPoint] = []
+    private var points: [CGPoint] = []
 
     @State
-    var lines: [Line] = []
+    private var lines: [Line] = []
 
     @State
-    var spline = Spline(knots: [])
+    private var spline = Spline(knots: [])
 
     @State
-    var lastRightMouseDownLocation: CGPoint?
+    private var lastRightMouseDownLocation: CGPoint?
 
     @State
-    var showComb = false
+    private var showComb = false
 
     var coordinateSpace = CoordinateSpace.named("canvas")
 

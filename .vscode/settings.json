@@ -1,5 +1,5 @@
 {
-  "cmake.sourceDirectory": "/Users/schwa/Shared/Projects/SwiftGraphics/.build/checkouts/swift-atomics/Sources",
+  "cmake.sourceDirectory": "/Users/schwa/Shared/Projects/SwiftGraphics/.build/checkouts/swift-argument-parser",
   "cSpell.ignorePaths": [
     "package-lock.json",
     "node_modules",

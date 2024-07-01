@@ -9,10 +9,10 @@ import SwiftUI
 
 struct SimulationDemoView: View, DemoView {
     @State
-    var simulation: Simulation<ArraySimulatorStorage>
+    private var simulation: Simulation<ArraySimulatorStorage>
 
     @State
-    var mouseLocation: CGPoint?
+    private var mouseLocation: CGPoint?
 
     let gradient = MyGradient(colors: [
         [0, 0, 1, 0.5],
@@ -20,16 +20,16 @@ struct SimulationDemoView: View, DemoView {
     ])
 
     @State
-    var renderRadius: Double = 5
+    private var renderRadius: Double = 5
 
     @State
-    var blurRadius: Double = 0
+    private var blurRadius: Double = 0
 
     @State
-    var scale: Double = 1
+    private var scale: Double = 1
 
     @State
-    var blendMode: GraphicsContext.BlendMode = .screen
+    private var blendMode: GraphicsContext.BlendMode = .screen
 
     init() {
         let count = 500
@@ -82,7 +82,7 @@ struct SimulationDemoView: View, DemoView {
                     .frame(width: 320)
             }
         }
-        .gesture(DragGesture().onChanged({ value in
+        .gesture(DragGesture().onChanged { value in
             mouseLocation = value.location
             let location = SIMD2<Float>(value.location)
             for index in 0 ..< simulation.count {
@@ -90,7 +90,7 @@ struct SimulationDemoView: View, DemoView {
                 // simulation.storage.positions[index] / location
                 simulation.storage.velocities[index] += (1 / force) * 50
             }
-        }))
+        })
         .onContinuousHover(coordinateSpace: .local) { phase in
             switch phase {
             case .active(let location):

@@ -50,8 +50,7 @@ public extension PolygonalChain {
             ))
             result.append(quad)
         }
-        let mesh = TrivialMesh<SimpleVertex>(quads: quads)
-        return mesh
+        return TrivialMesh<SimpleVertex>(quads: quads)
     }
 }
 
@@ -72,7 +71,7 @@ public extension Polygon {
     }
 
     func triangulate(z: Float = 0, transform: simd_float3x3 = .init(diagonal: [1, 1, 1])) -> TrivialMesh<SimpleVertex> {
-        let indices = earcut(polygons: [vertices.map({ SIMD2($0) })]).map({ Int($0) })
+        let indices = earcut(polygons: [vertices.map { SIMD2($0) }]).map { Int($0) }
         assert(!indices.isEmpty)
         let vertices = vertices.map {
             // TODO: We're not calculating texture coordinate here.

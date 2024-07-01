@@ -4,12 +4,15 @@ import Shapes3D
 import simd
 import SwiftUI
 
+// swiftlint:disable force_try
+
 struct CSGDemoView: View, DemoView {
     var body: some View {
         CSGDemoView_()
     }
 }
 
+// swiftlint:disable:next type_name
 struct CSGDemoView_: View {
     let a: CSG<SimpleVertex>
     let b: CSG<SimpleVertex>

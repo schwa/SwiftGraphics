@@ -14,9 +14,9 @@ public struct BitonicSortDemo {
         print("Copying buffer to GPU.", stopWatch)
         let device = MTLCreateSystemDefaultDevice()!
         let numEntries = entries.count
-        let buffer = entries.withUnsafeMutableBufferPointer { buffer in
+        let buffer = try entries.withUnsafeMutableBufferPointer { buffer in
             let buffer = UnsafeMutableRawBufferPointer(buffer)
-            return device.makeBuffer(bytes: buffer.baseAddress!, length: buffer.count)!
+            return try device.makeBuffer(bytes: buffer.baseAddress!, length: buffer.count)
         }
         print("Preparing compute.", stopWatch)
 
@@ -50,7 +50,7 @@ public struct BitonicSortDemo {
                         pass.arguments.groupHeight = .int(groupHeight)
                         pass.arguments.stepIndex = .int(stepIndex)
 
-                        print("\(n), \(stageIndex)/\(numStages), \(stepIndex)/\(stageIndex+1), \(groupWidth), \(groupHeight)")
+                        print("\(n), \(stageIndex)/\(numStages), \(stepIndex)/\(stageIndex + 1), \(groupWidth), \(groupHeight)")
                         try dispatch(
                             pass: pass,
                             threadgroupsPerGrid: MTLSize(width: threadgroupsPerGrid),

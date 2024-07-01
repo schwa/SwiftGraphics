@@ -30,7 +30,7 @@ public struct AnyEquatable: Equatable {
         self.equals = { ($0 as? E) == value }
     }
 
-    public static func ==(lhs: Self, rhs: Self) -> Bool {
+    public static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.equals(rhs.value)
     }
 }
@@ -144,6 +144,7 @@ public struct TreeIterator <Element>: IteratorProtocol {
 
 public extension NSCopying {
     func typedCopy() -> Self {
+        // swiftlint:disable force_cast
         self.copy() as! Self
     }
 }
@@ -176,9 +177,15 @@ public func hueToRgb(_ p: Float, _ q: Float, _ t: Float) -> Float {
     var t = t
     if t < 0 { t += 1 }
     if t > 1 { t -= 1 }
-    if t < 1 / 6 { return p + (q - p) * 6 * t }
-    if t < 1 / 2 { return q }
-    if t < 2 / 3 { return p + (q - p) * (2 / 3 - t) * 6 }
+    if t < 1 / 6 {
+        return p + (q - p) * 6 * t
+    }
+    if t < 1 / 2 {
+        return q
+    }
+    if t < 2 / 3 {
+        return p + (q - p) * (2 / 3 - t) * 6
+    }
     return p
 }
 
@@ -189,14 +196,14 @@ public struct SpatialTapGestureModifier: ViewModifier {
     var start: CGPoint?
 
     public func body(content: Content) -> some View {
-        content.gesture(DragGesture(minimumDistance: 0).onChanged({ value in
+        content.gesture(DragGesture(minimumDistance: 0).onChanged { value in
             if start == nil {
                 start = value.location
             }
-        })
-            .onEnded({ value in
+        }
+            .onEnded { value in
                 callback(value.location)
-            }))
+            })
     }
 }
 
@@ -249,7 +256,7 @@ public extension MTKTextureLoader {
     }
 }
 
-public struct AnimatableValueView <Value, Content>: View, @preconcurrency Animatable where Content: View, Value: VectorArithmetic & Sendable {
+public struct AnimatableValueView <Value, Content>: View, Animatable where Content: View, Value: VectorArithmetic & Sendable {
     public var animatableData: Value
 
     var content: (Value) -> Content

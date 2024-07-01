@@ -1,28 +1,30 @@
 import CoreGraphicsSupport
+import Fields3D
 import Projection
 import Shapes3D
 import SIMDSupport
 import SwiftUI
-import Fields3D
+
+// swiftlint:disable force_try
 
 struct PointCloudSoftwareRenderView: View, DemoView {
     @State
-    var cameraTransform: Transform = .translation([0, 0, -5])
+    private var cameraTransform: Transform = .translation([0, 0, -5])
 
     @State
-    var cameraProjection: Projection = .perspective(.init())
+    private var cameraProjection: Projection = .perspective(.init())
 
     @State
-    var ballConstraint = BallConstraint()
+    private var ballConstraint = BallConstraint()
 
     @State
-    var rasterizerOptions = Rasterizer.Options.default
+    private var rasterizerOptions = Rasterizer.Options.default
 
     @State
-    var points: [SIMD3<Float>]
+    private var points: [SIMD3<Float>]
 
     init() {
-        let url = Bundle.main.url(forResource: "cube_points", withExtension: "pointsply")!
+        let url: URL = try! Bundle.main.url(forResource: "cube_points", withExtension: "pointsply")
         var ply = try! Ply(url: url)
         points = try! ply.points
     }
@@ -59,7 +61,6 @@ struct PointCloudSoftwareRenderView: View, DemoView {
         }
         .inspector(isPresented: .constant(true)) {
             Form {
-
                 Section("Camera Projection") {
                     ProjectionEditor($cameraProjection)
                 }

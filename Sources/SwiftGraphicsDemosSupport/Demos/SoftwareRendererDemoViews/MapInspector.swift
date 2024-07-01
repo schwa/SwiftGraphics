@@ -1,7 +1,7 @@
-import SwiftUI
+import CoreGraphicsSupport
 import simd
 import SIMDSupport
-import CoreGraphicsSupport
+import SwiftUI
 
 struct MapInspector: View {
     @Binding

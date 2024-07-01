@@ -120,7 +120,7 @@ public extension Array2D {
     // TODO: Replace with methods on CGContext
 
     func render(in context: CGContext, cellSize: CGSize, dirtyRect: CGRect = .infinite, colorMapper: (Element) -> CGColor) {
-        var lastColor: CGColor!
+        var lastColor: CGColor?
         for (index, value) in indexed() {
             let cellOrigin = CGPoint(x: CGFloat(index.x) * cellSize.width, y: CGFloat(index.y) * cellSize.height)
             let cellRect = CGRect(origin: cellOrigin, size: cellSize)

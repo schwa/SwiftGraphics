@@ -1,17 +1,19 @@
-import SwiftUI
-import RenderKit
-import SIMDSupport
-import SwiftGraphicsSupport
-import RenderKitShaders
-import MetalSupport
-import Shapes3D
-import MetalKit
-import simd
-import Observation
-import Everything
-import UniformTypeIdentifiers
-import SwiftFormats
 import CoreGraphicsSupport
+import Everything
+import MetalKit
+import MetalSupport
+import Observation
+import RenderKit
+import RenderKitShaders
+import Shapes3D
+import simd
+import SIMDSupport
+import SwiftFormats
+import SwiftGraphicsSupport
+import SwiftUI
+import UniformTypeIdentifiers
+
+// swiftlint:disable force_try
 
 extension UTType {
     static let splat = UTType(filenameExtension: "splat")!
@@ -19,12 +21,14 @@ extension UTType {
 }
 
 struct GaussianSplatView: View, DemoView {
+    @State
+    private var device = MTLCreateSystemDefaultDevice()!
 
     @State
-    var device = MTLCreateSystemDefaultDevice()!
+    private var viewModel: GaussianSplatViewModel?
 
-    @State
-    var viewModel: GaussianSplatViewModel?
+    init() {
+    }
 
     var body: some View {
         ZStack {
@@ -40,7 +44,7 @@ struct GaussianSplatView: View, DemoView {
                     if case let .success(url) = result {
                         viewModel = try! GaussianSplatViewModel(device: device, url: url)
                     }
-                }
+                    }
             }
             ForEach(try! Bundle.module.urls(withExtension: "splatc"), id: \.self) { url in
                 Button(url.lastPathComponent) {
@@ -49,10 +53,9 @@ struct GaussianSplatView: View, DemoView {
             }
         }
         .onAppear {
-            let url = Bundle.module.url(forResource: "train", withExtension: "splatc")!
+            let url: URL = try! Bundle.module.url(forResource: "train", withExtension: "splatc")
             viewModel = try! GaussianSplatViewModel(device: device, url: url)
         }
-
     }
 }
 
@@ -79,7 +82,7 @@ class GaussianSplatViewModel {
         if url.pathExtension == "splatc" {
             let splatSize = 26
             splatCount = data.count / splatSize
-            splats = device.makeBuffer(data: data, options: .storageModeShared)!.labelled("Splats")
+            splats = try device.makeBuffer(data: data, options: .storageModeShared).labelled("Splats")
         }
         else if url.pathExtension == "splat" {
             let splatArray = data.withUnsafeBytes { buffer in
@@ -87,7 +90,7 @@ class GaussianSplatViewModel {
                     convert(buffer)
                 }
             }
-            splats = device.makeBuffer(bytesOf: splatArray, options: .storageModeShared)!.labelled("Splats")
+            splats = try device.makeBuffer(bytesOf: splatArray, options: .storageModeShared).labelled("Splats")
             splatCount = splatArray.count
         }
         else {
@@ -97,7 +100,7 @@ class GaussianSplatViewModel {
         let splatIndicesData = (0 ..< splatCount).map { UInt32($0) }.withUnsafeBytes {
             Data($0)
         }
-        splatIndices = device.makeBuffer(data: splatIndicesData, options: .storageModeShared)!.labelled("Splats-Indices")
+        splatIndices = try device.makeBuffer(data: splatIndicesData, options: .storageModeShared).labelled("Splats-Indices")
         splatDistances = device.makeBuffer(length: MemoryLayout<Float>.size * splatCount, options: .storageModeShared)!.labelled("Splat-Distances")
         self.splats = splats
         self.splatCount = splatCount
@@ -106,36 +109,40 @@ class GaussianSplatViewModel {
 
 struct GaussianSplatRenderView: View {
     @State
-    var cameraTransform: Transform = .translation([0, 0, 3])
+    private var cameraTransform: Transform = .translation([0, 0, 3])
 
     @State
-    var cameraProjection: Projection = .perspective(.init())
+    private var cameraProjection: Projection = .perspective(.init())
 
     @State
-    var modelTransform: Transform = Transform(scale: [1, 1, 1])
+    private var modelTransform = Transform(scale: [1, 1, 1])
 
     @State
-    var device: MTLDevice
+    private var device: MTLDevice
 
     @State
-    var debugMode: Bool = false
+    private var debugMode: Bool = false
 
     @State
-    var sortRate: Int = 1
+    private var sortRate: Int = 1
 
     @Environment(GaussianSplatViewModel.self)
     var viewModel
 
     @State
-    var size: CGSize = .zero
+    private var size: CGSize = .zero
 
     @Environment(\.displayScale)
     var displayScale
 
+    init(device: MTLDevice) {
+        self.device = device
+    }
+
     var body: some View {
         RenderView(device: device, passes: passes)
         .onGeometryChange(for: CGSize.self) { proxy in
-            return proxy.size
+            proxy.size
         }
         action: { size in
             self.size = size
@@ -151,7 +158,7 @@ struct GaussianSplatRenderView: View {
                     TextField("Distance", value: $cameraTransform.translation.z, format: .number)
                         .labelsHidden()
                     .frame(maxWidth: 120)
-                    }
+                }
                 Toggle("Debug Mode", isOn: $debugMode)
                 HStack {
                     Slider(value: $sortRate.toDouble, in: 1 ... 60) { Text("Sort Rate") }

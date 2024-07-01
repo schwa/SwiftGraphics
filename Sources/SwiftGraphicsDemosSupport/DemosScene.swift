@@ -23,7 +23,6 @@ protocol DemoView: View {
     @MainActor init()
 }
 
-
 struct DemosView: View {
     var body: some View {
         NavigationView {

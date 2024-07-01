@@ -135,12 +135,9 @@ public extension PolygonalChain3D {
             return true
         }
         let normal = simd.cross(segments[0].direction, segments[1].direction)
-        for segment in segments.dropFirst(2) {
-            if simd.dot(segment.direction, normal) != 0 {
-                return false
-            }
+        return !segments.dropFirst(2).contains {
+            simd.dot($0.direction, normal) != 0
         }
-        return true
     }
 }
 

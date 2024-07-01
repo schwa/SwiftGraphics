@@ -8,7 +8,7 @@ import SwiftUI
 
 struct CustomStrokeEditorDemoView: View, DemoView {
     @State
-    var points: [CGPoint] = [[50, 50], [250, 50], [300, 100]]
+    private var points: [CGPoint] = [[50, 50], [250, 50], [300, 100]]
 
     var body: some View {
         ZStack {

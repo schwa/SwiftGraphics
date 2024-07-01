@@ -40,7 +40,7 @@ extension CSG where Vertex == SimpleVertex {
         a.clip(to: b)
         a.dump()
 
-        try! CSG(node: a).toPLY().write(to: URL(filePath: "intermediate-1.ply"), atomically: true, encoding: .ascii)
+//        try! CSG(node: a).toPLY().write(to: URL(filePath: "intermediate-1.ply"), atomically: true, encoding: .ascii)
         b.clip(to: a)
         b.invert()
         b.clip(to: a)
@@ -197,6 +197,7 @@ class CSGNode<Vertex> where Vertex: VertexLike {
     }
 
     // Recursively remove all polygons in `polygons` that are inside this BSP tree.
+    // swiftlint:disable:next unavailable_function
     func clip(polygons: [Polygon]) -> [Polygon] {
         // TODO: FIXME
         fatalError("Unimplemented")
@@ -311,6 +312,7 @@ extension Polygon3D where Vertex == SimpleVertex {
             fatalError("Unimplemented")
             // TODO: FIXME
 
+// swiftlint:disable local_doc_comment
             //            var f: [Vertex] = []
 //            var b: [Vertex] = []
 //            for (i, j) in zip(vertices, types).circularPairs() {

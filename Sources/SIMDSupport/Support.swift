@@ -1,7 +1,7 @@
-import simd
-import SwiftUI
 import ApproximateEquality
 import CoreGraphicsSupport
+import simd
+import SwiftUI
 
 func degreesToRadians<F>(_ value: F) -> F where F: FloatingPoint {
     value * .pi / 180

@@ -10,10 +10,10 @@ public struct RollPitchYawEditor: View {
     var rollPitchYaw: RollPitchYaw
 
     @State
-    var showsMatrix: Bool = false
+    private var showsMatrix: Bool = false
 
     @State
-    var target: RollPitchYaw.Target = .object
+    private var target: RollPitchYaw.Target = .object
 
     public init(_ rollPitchYaw: Binding<RollPitchYaw>) {
         self._rollPitchYaw = rollPitchYaw

@@ -10,10 +10,10 @@ public struct RotationEditor: View {
     var rotation: Rotation
 
     @State
-    var mode: Rotation.Storage.Base
+    private var mode: Rotation.Storage.Base
 
     @State
-    var editedRotation: Rotation
+    private var editedRotation: Rotation
 
     public init(_ rotation: Binding<Rotation>) {
         self._rotation = rotation
@@ -36,10 +36,10 @@ public struct RotationEditor: View {
             }
         }
         .onChange(of: mode) {
-            self.editedRotation = rotation.converted(to: mode)
+            editedRotation = rotation.converted(to: mode)
         }
         .onChange(of: rotation) {
-            self.editedRotation = rotation.converted(to: mode)
+            editedRotation = rotation.converted(to: mode)
         }
     }
 }
@@ -68,7 +68,6 @@ extension Rotation.Storage {
             .rollPitchYaw
         }
     }
-
 }
 
 #Preview {

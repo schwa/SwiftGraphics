@@ -1,7 +1,6 @@
 import CoreGraphicsSupport
-import SIMDSupport
 import simd
-
+import SIMDSupport
 
 struct SplatB: Equatable {
     var position: PackedFloat3
@@ -17,14 +16,14 @@ struct SplatD: Equatable {
     var rotation: Rotation
 }
 
-//struct SplatC: Equatable {
+// struct SplatC: Equatable {
 //    var position: PackedHalf3
 //    var color: PackedHalf4
 //    var cov_a: PackedHalf3
 //    var cov_b: PackedHalf3
-//};
+// };
 
-//buffer.write(
+// buffer.write(
 //           ((rot / np.linalg.norm(rot)) * 128 + 128)
 //           .clip(0, 255)
 //           .astype(np.uint8)
@@ -42,7 +41,7 @@ extension SplatB {
 
 extension simd_quatf {
     var vectorRealFirst: simd_float4 {
-        return [vector.w, vector.x, vector.y, vector.z]
+        [vector.w, vector.x, vector.y, vector.z]
     }
 }
 
@@ -57,7 +56,6 @@ extension SIMD4 where Scalar == Float {
         [x.clamped(to: range), y.clamped(to: range), z.clamped(to: range), w.clamped(to: range)]
     }
 }
-
 
 extension SplatC {
     init(_ other: SplatB) {
@@ -84,7 +82,6 @@ extension SplatC {
         let cov_b = PackedHalf3(x: Float16(cov3D[1, 1]), y: Float16(cov3D[1, 2]), z: Float16(cov3D[2, 2]))
 
         self = SplatC(position: PackedHalf3(SIMD3<Float>(other.position)), color: PackedHalf4(other.color), cov_a: cov_a, cov_b: cov_b)
-
     }
 }
 

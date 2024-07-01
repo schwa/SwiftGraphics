@@ -7,8 +7,8 @@ public struct OffscreenRenderer {
     public private(set) var device: MTLDevice // TODO: remove
     public private(set) var renderPasses: [any RenderPassProtocol]
     private var renderPassDescriptor: MTLRenderPassDescriptor
-    private var stateByPasses: [AnyHashable: PassState]! // TODO: !
-    private var commandQueue: MTLCommandQueue! // TODO: !
+    private var stateByPasses: [AnyHashable: PassState] = [:]
+    private var commandQueue: MTLCommandQueue? // TODO: !
 
     public init(size: CGSize, device: MTLDevice, commandQueue: MTLCommandQueue? = nil, renderPasses: [any RenderPassProtocol]) throws {
         self.size = size
@@ -58,15 +58,15 @@ public struct OffscreenRenderer {
         }
 
         self.commandQueue = commandQueue ?? device.makeCommandQueue().forceUnwrap("Could not make command queue")
-        if self.commandQueue.label == nil {
-            self.commandQueue.label = "OffscreenRenderer"
+        if self.commandQueue!.label == nil {
+            self.commandQueue!.label = "OffscreenRenderer"
         }
     }
 
     public mutating func render(waitAfterCommit: Bool = true) throws {
         try device.capture {
             let renderPassDescriptor = renderPassDescriptor.typedCopy()
-            try commandQueue.withCommandBuffer(waitAfterCommit: waitAfterCommit) { commandBuffer in
+            try commandQueue!.withCommandBuffer(waitAfterCommit: waitAfterCommit) { commandBuffer in
                 commandBuffer.label = "OffscreenRenderer"
 
                 for (index, renderPass) in renderPasses.enumerated() {
@@ -96,28 +96,9 @@ public struct OffscreenRenderer {
                     }
                     try renderPass.render(device: device, untypedState: &state, drawableSize: SIMD2<Float>(size), renderPassDescriptor: renderPassDescriptor, commandBuffer: commandBuffer)
                     stateByPasses[renderPass.id] = state
-
                 }
             }
         }
-    }
-}
-
-public extension MTLDevice {
-    func capture <R>(enabled: Bool = true, _ block: () throws -> R) rethrows -> R {
-        guard enabled else {
-            return try block()
-        }
-        let captureManager = MTLCaptureManager.shared()
-        let captureScope = captureManager.makeCaptureScope(device: self)
-        let captureDescriptor = MTLCaptureDescriptor()
-        captureDescriptor.captureObject = captureScope
-        try! captureManager.startCapture(with: captureDescriptor)
-        captureScope.begin()
-        defer {
-            captureScope.end()
-        }
-        return try block()
     }
 }
 

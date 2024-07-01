@@ -1,19 +1,21 @@
 import AVFoundation
 import Compute
+import Everything
 import Foundation
 import Metal
+import MetalSupport
 
 struct GameOfLife {
     let width = 16
     let height = 16
-    let device = MTLCreateSystemDefaultDevice()!
+    let device = MTLDevice.default()
 
     func main() throws {
         let textureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .r8Uint, width: width, height: height, mipmapped: false)
         textureDescriptor.usage = [.shaderRead, .shaderWrite]
-        let textureA = device.makeTexture(descriptor: textureDescriptor)!
+        let textureA = try device.makeTexture(descriptor: textureDescriptor).safelyUnwrap(GeneralError.unknown)
         textureA.label = "texture-a"
-        let textureB = device.makeTexture(descriptor: textureDescriptor)!
+        let textureB = try device.makeTexture(descriptor: textureDescriptor).safelyUnwrap(GeneralError.unknown)
         textureB.label = "texture-b"
         let compute = try Compute(device: device)
         let library = ShaderLibrary.bundle(.module)

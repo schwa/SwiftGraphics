@@ -3,21 +3,23 @@ import Metal
 import MetalKit
 import MetalSupport
 import RenderKit
+import RenderKitShaders
 import Shapes3D
 import SIMDSupport
+import SwiftGLTF
 import SwiftGraphicsSupport
 import SwiftUI
-import RenderKitShaders
-import SwiftGLTF
+
+// swiftlint:disable force_try
 
 public struct SimplePBRSceneGraphDemoView: View, DemoView {
     let device: MTLDevice
 
     @State
-    var scene: SceneGraph
+    private var scene: SceneGraph
 
     @State
-    var cameraRotation = RollPitchYaw()
+    private var cameraRotation = RollPitchYaw()
 
     init() {
         let device = MTLCreateSystemDefaultDevice()!
@@ -40,9 +42,12 @@ public struct SimplePBRSceneGraphDemoView: View, DemoView {
         }
         .ballRotation($cameraRotation)
         .inspector(isPresented: .constant(true)) {
-            let path = scene.root.allIndexedNodes().first(where: { $0.0.label == "model-1" })!.1
+            let path = scene.root.allIndexedNodes().first { $0.0.label == "model-1" }!.1
             let material = Binding<SimplePBRMaterial> {
-                scene.root[indexPath: path].content!.geometry!.materials[0] as! SimplePBRMaterial
+                guard let material = scene.root[indexPath: path].content!.geometry!.materials[0] as? SimplePBRMaterial else {
+                    fatalError()
+                }
+                return material
             }
             set: {
                 print("SET MATERIAL: \($0)")
@@ -53,12 +58,10 @@ public struct SimplePBRSceneGraphDemoView: View, DemoView {
         .onChange(of: scene) {
             print("Scene did change")
         }
-
-
     }
 }
 
-//func loadit() throws {
+// func loadit() throws {
 //    let url = Bundle.module.url(forResource: "Models/BarramundiFish", withExtension: "glb")!
 //    let fish = try GLB(url: url)
 //    let document = try fish.document()
@@ -73,7 +76,7 @@ public struct SimplePBRSceneGraphDemoView: View, DemoView {
 //        fatalError()
 //    }
 //    print(mesh)
-//}
+// }
 
 extension SceneGraph {
     static func pbrDemo(device: MTLDevice) throws -> SceneGraph {
@@ -102,7 +105,7 @@ extension SceneGraph {
                 .transform(scale: [10, 10, 10])
                 .transform(.init(rotation: .rotation(angle: .degrees(90), axis: [1, 0, 0])))
                 .transform(translation: [0, -1, 0])
-        }
+                                }
         )
     }
 }
@@ -112,7 +115,7 @@ struct SimplePBRMaterialEditor: View {
     var material: SimplePBRMaterial
 
     @State
-    var baseColor: Color
+    private var baseColor: Color
 
     init(material: Binding<SimplePBRMaterial>) {
         self._material = material
@@ -226,7 +229,6 @@ public struct SimplePBRShadingPass: RenderPassProtocol {
                         modelMatrix: element.modelMatrix
                     )
                     commandEncoder.setVertexBytes(of: uniforms, index: bindings.vertexUniformsIndex)
-
                 }
 
                 commandEncoder.withDebugGroup("FragmentShader") {
@@ -240,7 +242,6 @@ public struct SimplePBRShadingPass: RenderPassProtocol {
 
                     let light = SimplePBRLight(position: [0, 0, 2], color: [1, 1, 1], intensity: 1)
                     commandEncoder.setFragmentBytes(of: light, index: bindings.fragmentLightIndex)
-
 
                     //                    if let texture = material.baseColorTexture {
                     //                        commandEncoder.setFragmentBytes(of: UnlitMaterial(color: material.baseColorFactor, textureIndex: 0), index: bindings.fragmentMaterialsIndex)

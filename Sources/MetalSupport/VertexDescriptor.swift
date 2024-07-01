@@ -173,15 +173,6 @@ public extension VertexDescriptor {
             return layout
         }
     }
-
-    var encodedDescription: String {
-        let encoder = JSONEncoder()
-        encoder.outputFormatting = [.sortedKeys]
-        let data = try! encoder.encode(self)
-        let string = String(data: data, encoding: .utf8)!
-            .replacingOccurrences(of: "\"", with: "")
-        return string
-    }
 }
 
 // MARK: Convert from/to MTLVertexDescriptor
@@ -206,8 +197,7 @@ public extension VertexDescriptor {
                 }
                 return Attribute(semantic: nil, format: mtlAttribute.format, offset: mtlAttribute.offset)
             }
-            let layout = Layout(bufferIndex: bufferIndex, stride: mtlLayout.stride, stepFunction: mtlLayout.stepFunction, stepRate: mtlLayout.stepRate, attributes: attributes)
-            return layout
+            return Layout(bufferIndex: bufferIndex, stride: mtlLayout.stride, stepFunction: mtlLayout.stepFunction, stepRate: mtlLayout.stepRate, attributes: attributes)
         }
         self = .init(label: nil, layouts: layouts)
     }
@@ -239,12 +229,16 @@ public extension VertexDescriptor {
         let maxBufferArgumentEntriesCount = 31
         let maxVertexAttributesCount = 31
         let layouts: [Layout] = (0 ..< maxBufferArgumentEntriesCount).compactMap { bufferIndex in
-            let mdlLayout = mdlDescriptor.layouts[bufferIndex] as! MDLVertexBufferLayout
+            guard let mdlLayout = mdlDescriptor.layouts[bufferIndex] as? MDLVertexBufferLayout else {
+                fatalError("No buffer at index.")
+            }
             guard mdlLayout.stride != 0 else {
                 return nil
             }
             let attributes: [Attribute] = (0 ..< maxVertexAttributesCount).compactMap { attributeIndex in
-                let mdlAttribute = mdlDescriptor.attributes[attributeIndex] as! MDLVertexAttribute
+                guard let mdlAttribute = mdlDescriptor.attributes[attributeIndex] as? MDLVertexAttribute else {
+                    fatalError("No attribute at index")
+                }
                 guard mdlAttribute.bufferIndex == bufferIndex, mdlAttribute.format != .invalid else {
                     return nil
                 }

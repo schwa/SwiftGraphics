@@ -122,18 +122,19 @@ extension Cache {
 extension Cache where Key == String {
     func remove(matching pattern: Regex<String>) throws {
         try lock.withUnsafeLock {
-            for key in storage.keys {
-                if try pattern.wholeMatch(in: key) != nil {
-                    storage[key] = nil
-                }
+            for key in storage.keys where try pattern.wholeMatch(in: key) != nil {
+                storage[key] = nil
             }
         }
     }
 }
 
 extension Cache where Value == Any {
-    func get<T>(key: Key, of: T.Type, default: () throws -> T) rethrows -> T {
-        try get(key: key, default: `default`) as! T
+    func get<T>(key: Key, of type: T.Type, default: () throws -> T) rethrows -> T {
+        guard let value = try get(key: key, default: `default`) as? T else {
+            fatalError("Could not get key of type \(type)")
+        }
+        return value
     }
 }
 

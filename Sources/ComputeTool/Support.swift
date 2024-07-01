@@ -33,8 +33,7 @@ func time(_ block: () -> Void) -> CFAbsoluteTime {
 
 public func nextPowerOfTwo(_ value: Double) -> Double {
     let logValue = log2(Double(value))
-    let nextPower = pow(2.0, ceil(logValue))
-    return nextPower
+    return pow(2.0, ceil(logValue))
 }
 
 public func nextPowerOfTwo(_ value: Int) -> Int {

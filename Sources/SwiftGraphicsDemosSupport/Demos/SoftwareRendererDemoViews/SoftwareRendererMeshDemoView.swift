@@ -1,5 +1,6 @@
 import CoreGraphicsSupport
 import Everything
+import Fields3D
 import MetalSupport
 import Projection
 import Shapes2D
@@ -7,7 +8,8 @@ import Shapes3D
 import SIMDSupport
 import SwiftFormats
 import SwiftUI
-import Fields3D
+
+// swiftlint:disable force_try
 
 struct SoftwareRendererMeshDemoView: View, DemoView {
     enum Source: Hashable {
@@ -28,34 +30,34 @@ struct SoftwareRendererMeshDemoView: View, DemoView {
     ]
 
     @State
-    var source: Source?
+    private var source: Source?
 
     @State
-    var mesh: TrivialMesh<SimpleVertex>?
+    private var mesh: TrivialMesh<SimpleVertex>?
 
     @State
-    var fill = true
+    private var fill = true
 
     @State
-    var stroke = false
+    private var stroke = false
 
     @State
-    var cameraTransform: Transform = .translation([0, 0, -5])
+    private var cameraTransform: Transform = .translation([0, 0, -5])
 
     @State
-    var cameraProjection: Projection = .perspective(.init())
+    private var cameraProjection: Projection = .perspective(.init())
 
     @State
-    var ballConstraint = BallConstraint()
+    private var ballConstraint = BallConstraint()
 
     @State
-    var pitchLimit: ClosedRange<SwiftUI.Angle> = .degrees(-.infinity) ... .degrees(.infinity)
+    private var pitchLimit: ClosedRange<SwiftUI.Angle> = .degrees(-.infinity) ... .degrees(.infinity)
 
     @State
-    var yawLimit: ClosedRange<SwiftUI.Angle> = .degrees(-.infinity) ... .degrees(.infinity)
+    private var yawLimit: ClosedRange<SwiftUI.Angle> = .degrees(-.infinity) ... .degrees(.infinity)
 
     @State
-    var rasterizerOptions = Rasterizer.Options.default
+    private var rasterizerOptions = Rasterizer.Options.default
 
     init() {
     }
@@ -88,7 +90,7 @@ struct SoftwareRendererMeshDemoView: View, DemoView {
         .onChange(of: source) {
             switch source {
             case .file(let name):
-                let url = Bundle.module.url(forResource: name, withExtension: "ply")!
+                let url: URL = try! Bundle.module.url(forResource: name, withExtension: "ply")
                 mesh = try! TrivialMesh(url: url)
             case .extrusion(let name):
                 let path: Path

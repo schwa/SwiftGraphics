@@ -71,7 +71,7 @@ public struct MatrixEditor: View {
 public extension MatrixEditor {
     init(_ binding: Binding<simd_float4x4>) {
         self.init(matrix: Binding<Matrix> {
-            return .float4x4(binding.wrappedValue)
+            .float4x4(binding.wrappedValue)
         }
                   set: { newValue in
             guard case let .float4x4(matrix) = newValue else {
@@ -84,7 +84,7 @@ public extension MatrixEditor {
 
     init(_ binding: Binding<simd_float3x3>) {
         self.init(matrix: Binding<Matrix> {
-            return .float3x3(binding.wrappedValue)
+            .float3x3(binding.wrappedValue)
         }
                   set: { newValue in
             guard case let .float3x3(matrix) = newValue else {

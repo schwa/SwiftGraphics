@@ -194,7 +194,7 @@ public extension Path {
         assert(points > 1, "Number of points should be greater than 1 for a star")
         var angle = -0.5 * .pi // Starting from the top
         for n in 0 ..< points * 2 {
-            let radius = n % 2 == 0 ? outerRadius : innerRadius
+            let radius = n.isMultiple(of: 2) ? outerRadius : innerRadius
             let point = CGPoint(x: radius * cos(angle), y: radius * sin(angle))
             if path.isEmpty {
                 path.move(to: point)
@@ -297,7 +297,6 @@ public extension Path {
         }
     }
 
-    // swiftlint:disable:next cyclomatic_complexity
     init(roundedRect rect: CGRect, cornerRadius: CGFloat, style: RoundedCornerStyle = .circular, corners: Corners) {
         let elements = Path(roundedRect: rect, cornerRadius: cornerRadius, style: style).elements
 

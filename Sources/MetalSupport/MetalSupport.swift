@@ -10,7 +10,6 @@ import simd
 import SIMDSupport
 import SwiftUI
 
-// swiftlint:disable function_body_length
 // swiftlint:disable cyclomatic_complexity
 // swiftlint:disable file_length
 
@@ -71,15 +70,25 @@ public extension MTLBuffer {
     /// Update a MTLBuffer's contents using an inout type block
     func with<T, R>(type: T.Type, _ block: (inout T) -> R) -> R {
         let value = contents().bindMemory(to: T.self, capacity: 1)
-        let result = block(&value.pointee)
-        return result
+        return block(&value.pointee)
     }
 
     func withEx<T, R>(type: T.Type, count: Int, _ block: (UnsafeMutableBufferPointer<T>) -> R) -> R {
         let pointer = contents().bindMemory(to: T.self, capacity: count)
         let buffer = UnsafeMutableBufferPointer(start: pointer, count: count)
-        let result = block(buffer)
-        return result
+        return block(buffer)
+    }
+
+    func contentsBuffer() -> UnsafeMutableRawBufferPointer {
+        UnsafeMutableRawBufferPointer(start: contents(), count: length)
+    }
+
+    func contentsBuffer<T>(of type: T.Type) -> UnsafeMutableBufferPointer<T> {
+        contentsBuffer().bindMemory(to: type)
+    }
+    func labelled(_ label: String) -> MTLBuffer {
+        self.label = label
+        return self
     }
 }
 
@@ -101,8 +110,7 @@ public extension MTLCommandEncoder {
         defer {
             popDebugGroup()
         }
-        let result = try closure()
-        return result
+        return try closure()
     }
 }
 
@@ -143,15 +151,53 @@ public extension MTLDepthStencilDescriptor {
 }
 
 public extension MTLDevice {
-    func makeBuffer(bytesOf content: some Any, options: MTLResourceOptions) -> MTLBuffer? {
-        withUnsafeBytes(of: content) { buffer in
-            makeBuffer(bytes: buffer.baseAddress!, length: buffer.count, options: options)
+    func capture <R>(enabled: Bool = true, _ block: () throws -> R) throws -> R {
+        guard enabled else {
+            return try block()
+        }
+        let captureManager = MTLCaptureManager.shared()
+        let captureScope = captureManager.makeCaptureScope(device: self)
+        let captureDescriptor = MTLCaptureDescriptor()
+        captureDescriptor.captureObject = captureScope
+        try captureManager.startCapture(with: captureDescriptor)
+        captureScope.begin()
+        defer {
+            captureScope.end()
+        }
+        return try block()
+    }
+
+    func makeBuffer(length: Int, options: MTLResourceOptions = []) throws -> MTLBuffer {
+        guard let buffer = makeBuffer(length: length, options: options) else {
+            throw MetalSupportError.resourceCreationFailure
+        }
+        return buffer
+    }
+
+    func makeBuffer(data: Data, options: MTLResourceOptions) throws -> MTLBuffer {
+        try data.withUnsafeBytes { buffer in
+            guard let buffer = makeBuffer(bytes: buffer.baseAddress!, length: buffer.count, options: options) else {
+                throw MetalSupportError.resourceCreationFailure
+            }
+            return buffer
         }
     }
 
-    func makeBuffer(bytesOf content: [some Any], options: MTLResourceOptions) -> MTLBuffer? {
-        content.withUnsafeBytes { buffer in
-            makeBuffer(bytes: buffer.baseAddress!, length: buffer.count, options: options)
+    func makeBuffer(bytesOf content: some Any, options: MTLResourceOptions) throws -> MTLBuffer {
+        try withUnsafeBytes(of: content) { buffer in
+            guard let buffer = makeBuffer(bytes: buffer.baseAddress!, length: buffer.count, options: options) else {
+                throw MetalSupportError.resourceCreationFailure
+            }
+            return buffer
+        }
+    }
+
+    func makeBuffer(bytesOf content: [some Any], options: MTLResourceOptions) throws -> MTLBuffer {
+        try content.withUnsafeBytes { buffer in
+            guard let buffer = makeBuffer(bytes: buffer.baseAddress!, length: buffer.count, options: options) else {
+                throw MetalSupportError.resourceCreationFailure
+            }
+            return buffer
         }
     }
 
@@ -606,7 +652,6 @@ public extension MTLRenderCommandEncoder {
         }
     }
 
-
     @available(*, deprecated, message: "Deprecated. Clean this up.")
     func draw(_ mesh: MTKMesh, setVertexBuffers: Bool = true) {
         if setVertexBuffers {
@@ -676,12 +721,11 @@ public extension MTLTexture {
             return nil
         }
         getBytes(pixelBytes, bytesPerRow: context.bytesPerRow, from: MTLRegion(origin: .zero, size: MTLSize(width, height, 1)), mipmapLevel: 0)
-        let image = context.makeImage()
-        return image
+        return context.makeImage()
     }
 
     @available(*, deprecated, message: "Deprecate if can't be provide working in unit tests.")
-    func cgImage(colorSpace: CGColorSpace? = nil) async -> CGImage {
+    func cgImage(colorSpace: CGColorSpace? = nil) async throws -> CGImage {
         if let pixelFormat = PixelFormat(mtlPixelFormat: pixelFormat) {
             let bitmapDefinition = BitmapDefinition(width: width, height: height, pixelFormat: pixelFormat)
             if let buffer {
@@ -689,7 +733,10 @@ public extension MTLTexture {
                 guard let context = CGContext.bitmapContext(data: buffer, definition: bitmapDefinition) else {
                     fatalError()
                 }
-                return context.makeImage()!
+                guard let image = context.makeImage() else {
+                    throw MetalSupportError.resourceCreationFailure
+                }
+                return image
             }
             else {
                 let bytesPerRow = bufferBytesPerRow != 0 ? bufferBytesPerRow : width * pixelFormat.bytesPerPixel
@@ -701,11 +748,14 @@ public extension MTLTexture {
                     let region = MTLRegion(origin: MTLOrigin(x: 0, y: 0, z: 0), size: MTLSize(width: width, height: height, depth: 1))
                     return getBytes(baseAddress, bytesPerRow: bytesPerRow, from: region, mipmapLevel: 0)
                 }
-                return data.withUnsafeMutableBytes { data in
+                return try data.withUnsafeMutableBytes { data in
                     guard let context = CGContext.bitmapContext(data: data, definition: bitmapDefinition) else {
                         fatalError()
                     }
-                    return context.makeImage()!
+                    guard let image = context.makeImage() else {
+                        throw MetalSupportError.resourceCreationFailure
+                    }
+                    return image
                 }
             }
         }
@@ -730,7 +780,7 @@ public extension MTLTexture {
             conversion.encode(commandBuffer: commandBuffer, sourceTexture: self, destinationTexture: destinationTexture)
             commandBuffer.commit()
             commandBuffer.waitUntilCompleted()
-            return await destinationTexture.cgImage()
+            return try await destinationTexture.cgImage()
         }
     }
 
@@ -782,12 +832,14 @@ public extension MTLVertexDescriptor {
     convenience init(vertexDescriptor: MDLVertexDescriptor) {
         self.init()
         for (index, mdlAttribute) in vertexDescriptor.attributes.enumerated() {
+            // swiftlint:disable:next force_cast
             let mdlAttribute = mdlAttribute as! MDLVertexAttribute
             attributes[index].offset = mdlAttribute.offset
             attributes[index].bufferIndex = mdlAttribute.bufferIndex
             attributes[index].format = MTLVertexFormat(mdlAttribute.format)
         }
         for (index, mdlLayout) in vertexDescriptor.layouts.enumerated() {
+            // swiftlint:disable:next force_cast
             let mdlLayout = mdlLayout as! MDLVertexBufferLayout
             layouts[index].stride = mdlLayout.stride
         }

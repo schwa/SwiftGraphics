@@ -58,8 +58,7 @@ public func gluUnproject(win: SIMD3<Float>, modelView: simd_float4x4, proj: simd
         (2 * (win.z)) - 1,
         1
     )
-    let result = (invPMV * v).xyz
-    return result
+    return (invPMV * v).xyz
 }
 
 // https://registry.khronos.org/OpenGL-Refpages/gl2.1/xhtml/gluProject.xml

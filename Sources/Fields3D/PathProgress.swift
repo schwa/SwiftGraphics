@@ -5,19 +5,18 @@
 //  Created by Jonathan Wight on 6/27/24.
 //
 
-
-import SwiftUI
 import CoreGraphicsSupport
+import SwiftUI
 
 struct PathProgress: View {
     @ViewBuilder
     var example1: some View {
-        //let path = Path.curvedLine(length: 100, curl: 0.5).applying(.translation(x: 50, y: 50))
+        // let path = Path.curvedLine(length: 100, curl: 0.5).applying(.translation(x: 50, y: 50))
         let path = Path.xyzzy(bounds: CGRect(x: 0, y: 0, width: 200, height: 200)).applying(.translation(x: 100, y: 150))
         let lineWidth = 2.0
         TimelineView(.animation) { timeline in
             let delta = timeline.date.timeIntervalSinceReferenceDate
-            Canvas { context, size in
+            Canvas { context, _ in
                 let parameters: [(offset: Double, width: Double, speed: Double, color: Color)] = [
                     (0, 0.05, 1.0, .green.opacity(0.25)),
                     (0.5, 0.05, 1.0, .green.opacity(0.5)),
@@ -38,9 +37,6 @@ struct PathProgress: View {
     @ViewBuilder
     var example2: some View {
         let lineWidth = 2.0
-
-
-
 
 //        let path = Path(ellipseIn: CGRect(center: CGPoint(100, 100), radius: 50))
 //        + Path(ellipseIn: CGRect(center: CGPoint(100, 100), radius: 40))

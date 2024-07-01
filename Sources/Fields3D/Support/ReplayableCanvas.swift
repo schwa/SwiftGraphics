@@ -1,16 +1,14 @@
-import SwiftUI
 import Observation
-
+import SwiftUI
 
 struct ReplayableCanvas: View {
-
     let renderer: (inout ReplayableGraphicsContext, CGSize) -> Void
 
     @State
-    var maxEvent = 0.0
+    private var maxEvent = 0.0
 
     @State
-    var replayableModel = ReplayableModel()
+    private var replayableModel = ReplayableModel()
 
     var body: some View {
         Canvas { context, size in
@@ -32,7 +30,6 @@ struct ReplayableCanvas: View {
 
 @Observable
 class ReplayableModel {
-
     typealias Event = ReplayableGraphicsContext.Event
 
     var events: [Event] = []
@@ -46,7 +43,7 @@ class ReplayableModel {
     }
 
     func makeContext() -> ReplayableGraphicsContext {
-        return ReplayableGraphicsContext(model: self)
+        ReplayableGraphicsContext(model: self)
     }
 
     func replay(context: some GraphicsContextProtocol, range: Range<Int>? = nil) {
@@ -62,9 +59,7 @@ class ReplayableModel {
     }
 }
 
-
 struct ReplayableGraphicsContext: GraphicsContextProtocol {
-
     enum Event {
         case stroke(path: Path, GraphicsContext.Shading, style: StrokeStyle)
         case fill(path: Path, GraphicsContext.Shading, style: FillStyle)
@@ -80,22 +75,27 @@ struct ReplayableGraphicsContext: GraphicsContextProtocol {
 
     var clipBoundingRect: CGRect { fatalError() }
 
+    // swiftlint:disable:next unavailable_function
     mutating func clip(to path: Path, style: FillStyle, options: GraphicsContext.ClipOptions) {
         fatalError()
     }
 
+    // swiftlint:disable:next unavailable_function
     mutating func clipToLayer(opacity: Double, options: GraphicsContext.ClipOptions, content: (inout GraphicsContext) throws -> Void) rethrows {
         fatalError()
     }
 
+    // swiftlint:disable:next unavailable_function
     mutating func addFilter(_ filter: GraphicsContext.Filter, options: GraphicsContext.FilterOptions) {
         fatalError()
     }
 
+    // swiftlint:disable:next unavailable_function
     func resolve(_ shading: GraphicsContext.Shading) -> GraphicsContext.Shading {
         fatalError()
     }
 
+    // swiftlint:disable:next unavailable_function
     func drawLayer(content: (inout GraphicsContext) throws -> Void) rethrows {
         fatalError()
     }

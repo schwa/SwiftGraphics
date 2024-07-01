@@ -113,6 +113,7 @@ public extension CompactHalfEdgeMesh {
 }
 
 extension CompactHalfEdgeMesh {
+    // swiftlint:disable:next unavailable_function
     init(connectivity: [(FaceID, [VertexID])]) {
         fatalError()
     }
@@ -129,7 +130,7 @@ public struct OneBasedIndex: Hashable, Comparable, RawRepresentable {
         rawValue <= 0 ? nil : rawValue - 1
     }
 
-    public static func <(lhs: Self, rhs: Self) -> Bool {
+    public static func < (lhs: Self, rhs: Self) -> Bool {
         lhs.rawValue < rhs.rawValue
     }
 }

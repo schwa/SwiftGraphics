@@ -45,6 +45,7 @@ let package = Package(
         .package(url: "https://github.com/schwa/swiftformats", from: "0.3.5"),
         .package(url: "https://github.com/schwa/SwiftGLTF", branch: "main"),
         .package(url: "https://github.com/ksemianov/WrappingHStack", from: "0.2.0"),
+
     ],
     targets: [
         // MARK: Array2D

@@ -31,7 +31,7 @@ extension LSystem {
 extension LSystem where Symbol == Character {
     init(initialState: String, rules: [Character: String]) {
         self.initialState = Array(initialState)
-        self.rules = rules.mapValues{
+        self.rules = rules.mapValues {
             Array($0)
         }
     }

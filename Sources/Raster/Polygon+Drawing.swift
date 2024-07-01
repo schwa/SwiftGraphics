@@ -8,7 +8,7 @@ public extension Polygon {
         let segments: [LineSegment] = toLineSegments()
 
         // swiftlint:disable:next closure_body_length
-        let rays = stride(from: bounds.minY, to: bounds.maxY, by: step).flatMap { (y: CGFloat) -> [LineSegment] in
+        return stride(from: bounds.minY, to: bounds.maxY, by: step).flatMap { (y: CGFloat) -> [LineSegment] in
             let scanLine = LineSegment(CGPoint(x: bounds.minX, y: y), CGPoint(x: bounds.maxX, y: y))
             let intersections = segments.enumerated()
                 .flatMap { (index: Int, segment: LineSegment) -> [CGPoint] in
@@ -37,14 +37,11 @@ public extension Polygon {
                 }
                 .sorted { $0.x < $1.x }
 
-            let lines = intersections.pairs()
+            return intersections.pairs()
                 .map { first, second -> LineSegment in
                     LineSegment(first, second ?? first)
                 }
-            return lines
         }
-
-        return rays
     }
 }
 
@@ -53,7 +50,7 @@ public func polygonToScanlines(_ polygon: Polygon, step: CGFloat = 1.0) -> [Line
     let segments: [LineSegment] = polygon.toLineSegments()
 
     // swiftlint:disable:next closure_body_length
-    let rays = stride(from: bounds.minY, to: bounds.maxY, by: step).flatMap { (y: CGFloat) -> [LineSegment] in
+    return stride(from: bounds.minY, to: bounds.maxY, by: step).flatMap { (y: CGFloat) -> [LineSegment] in
         let scanLine = LineSegment(CGPoint(x: bounds.minX, y: y), CGPoint(x: bounds.maxX, y: y))
         let intersections = segments.enumerated()
             .flatMap { (index: Int, segment: LineSegment) -> [CGPoint] in
@@ -83,14 +80,11 @@ public func polygonToScanlines(_ polygon: Polygon, step: CGFloat = 1.0) -> [Line
             }
             .sorted { $0.x < $1.x }
 
-        let lines = intersections.pairs()
+        return intersections.pairs()
             .map { first, second -> LineSegment in
                 LineSegment(first, second ?? first)
             }
-        return lines
     }
-
-    return rays
 }
 
 extension Collection {

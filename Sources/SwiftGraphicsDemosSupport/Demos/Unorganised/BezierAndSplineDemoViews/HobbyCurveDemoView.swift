@@ -3,7 +3,7 @@ import SwiftUI
 
 struct HobbyCurveDemoView: View, DemoView {
     @State
-    var points: [CGPoint] = [[70, 250], [20, 110], [220, 60], [270, 200]]
+    private var points: [CGPoint] = [[70, 250], [20, 110], [220, 60], [270, 200]]
 
     var body: some View {
         ZStack {

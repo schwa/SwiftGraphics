@@ -15,13 +15,13 @@ struct SelectTool: ViewModifier {
     var shapes: [Identified<UUID, MyShape>]
 
     func body(content: Content) -> some View {
-        content.gesture(SpatialTapGesture(coordinateSpace: NamedCoordinateSpace.canvas).onEnded({ value in
+        content.gesture(SpatialTapGesture(coordinateSpace: NamedCoordinateSpace.canvas).onEnded { value in
             let hits = shapes.filter { shape in
                 shape.content.contains(value.location, lineWidth: 8)
             }
             .map(\.id)
             selection = Set(hits)
-        }))
+        })
         .overlay {
             handles()
         }
@@ -66,7 +66,7 @@ struct LineTool: ViewModifier {
                     Path.line(from: lastPoint, to: currentPoint).stroke(.cyan)
                 }
             }
-            .gesture(SpatialTapGesture(coordinateSpace: NamedCoordinateSpace.canvas).onEnded({ value in
+            .gesture(SpatialTapGesture(coordinateSpace: NamedCoordinateSpace.canvas).onEnded { value in
                 if lastPoint != nil {
                     onCommit()
                     lastPoint = nil
@@ -74,7 +74,7 @@ struct LineTool: ViewModifier {
                 else {
                     lastPoint = value.location
                 }
-            }))
+            })
             .onContinuousHover { phase in
                 switch phase {
                 case .active(let location):
@@ -109,7 +109,7 @@ struct CircleTool: ViewModifier {
                     Path.circle(center: center, radius: center.distance(to: currentPoint)).stroke(.cyan)
                 }
             }
-            .gesture(SpatialTapGesture(coordinateSpace: NamedCoordinateSpace.canvas).onEnded({ value in
+            .gesture(SpatialTapGesture(coordinateSpace: NamedCoordinateSpace.canvas).onEnded { value in
                 if center != nil {
                     onCommit()
                     center = nil
@@ -117,7 +117,7 @@ struct CircleTool: ViewModifier {
                 else {
                     center = value.location
                 }
-            }))
+            })
             .onContinuousHover { phase in
                 switch phase {
                 case .active(let location):

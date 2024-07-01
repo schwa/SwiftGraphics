@@ -26,7 +26,7 @@ public extension ModelComponent {
 
 public extension ModelEntity {
     convenience init(trivialMesh mesh: TrivialMesh<SimpleVertex>, materials: [Material] = []) throws {
-        let modelComponent = try! ModelComponent(trivialMesh: mesh, materials: materials)
+        let modelComponent = try ModelComponent(trivialMesh: mesh, materials: materials)
         self.init()
         components.set(modelComponent)
     }

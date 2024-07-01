@@ -18,7 +18,7 @@ extension SwiftGLTF.Accessor {
         case (.FLOAT, .VEC4):
             .float4
         default:
-            unimplemented() // MORE TO DO
+            fatalError("Unimplemented") // MORE TO DO
         }
     }
 
@@ -34,17 +34,9 @@ extension SwiftGLTF.Accessor {
     }
 }
 
-extension MTLDevice {
-    func makeBuffer(data: Data, options: MTLResourceOptions) -> MTLBuffer? {
-        data.withUnsafeBytes { buffer in
-            makeBuffer(bytes: buffer.baseAddress!, length: buffer.count, options: options)
-        }
-    }
-}
-
 extension YAMesh {
     init(gltf name: String, in bundle: Bundle = .main, device: MTLDevice) throws {
-        let url = bundle.url(forResource: name, withExtension: "glb")!
+        let url: URL = try bundle.url(forResource: name, withExtension: "glb")
         let container = try Container(url: url)
 //        dump(container)
         let node = try container.document.scenes[0].nodes[0].resolve(in: container.document)
@@ -55,9 +47,9 @@ extension YAMesh {
     }
 
     init(container: SwiftGLTF.Container, primitive: SwiftGLTF.Mesh.Primitive, device: MTLDevice) throws {
-        func makeBuffer(for bufferView: SwiftGLTF.BufferView, label: String) -> MTLBuffer {
-            let data = try! container.data(for: bufferView)
-            let buffer = device.makeBuffer(data: data, options: [])!
+        func makeBuffer(for bufferView: SwiftGLTF.BufferView, label: String) throws -> MTLBuffer {
+            let data = try container.data(for: bufferView)
+            let buffer = try device.makeBuffer(data: data, options: [])
             buffer.label = label
             return buffer
         }
@@ -78,7 +70,7 @@ extension YAMesh {
             assert(accessor.byteOffset == 0)
             let bufferView = try accessor.bufferView!.resolve(in: container.document)
             assert(bufferView.byteStride == nil)
-            let mtlBuffer = makeBuffer(for: bufferView, label: "\(container.url.lastPathComponent):\(semantic):\(index)")
+            let mtlBuffer = try makeBuffer(for: bufferView, label: "\(container.url.lastPathComponent):\(semantic):\(index)")
 
             bufferViews.append(BufferView(buffer: mtlBuffer, offset: 0))
 
@@ -92,7 +84,7 @@ extension YAMesh {
         let accessor = try primitive.indices!.resolve(in: container.document)
         let bufferView = try accessor.bufferView!.resolve(in: container.document)
         assert(bufferView.byteStride == nil)
-        let mtlBuffer: MTLBuffer! = makeBuffer(for: bufferView, label: "\(container.url.lastPathComponent):indices")
+        let mtlBuffer = try makeBuffer(for: bufferView, label: "\(container.url.lastPathComponent):indices")
         let indexBufferView = BufferView(label: "Indices", buffer: mtlBuffer, offset: 0)
         let indexType: MTLIndexType = accessor.indexType
         let indexCount = accessor.count

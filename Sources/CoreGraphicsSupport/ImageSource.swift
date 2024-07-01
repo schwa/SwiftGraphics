@@ -52,8 +52,8 @@ public struct ImageSource {
         return image
     }
 
-    public func properties(at index: Int) throws -> [String: Any] {
-        CGImageSourceCopyPropertiesAtIndex(imageSource, index, nil) as! [String: Any]
+    public func properties(at index: Int) throws -> [String: Any]? {
+        CGImageSourceCopyPropertiesAtIndex(imageSource, index, nil) as? [String: Any]
     }
 }
 
@@ -72,8 +72,7 @@ public extension ImageSource {
     public extension CGImage {
         static func image(contentsOf url: URL) throws -> CGImage {
             let nsImage = NSImage(contentsOf: url)! // TODO: Bang
-            let cgImage = nsImage.cgImage
-            return cgImage
+            return nsImage.cgImage
         }
     }
 
@@ -81,6 +80,7 @@ public extension ImageSource {
     import UIKit
 
     public extension CGImage {
+        @available(*, unavailable)
         static func image(contentsOf url: URL) throws -> CGImage {
             // TODO:
             fatalError("Unimplemented")

@@ -1,17 +1,19 @@
-import SwiftUI
-import RenderKit
-import SIMDSupport
-import SwiftGraphicsSupport
-import RenderKitShaders
-import MetalSupport
-import Shapes3D
-import MetalKit
-import simd
-import Observation
 import Everything
-import UniformTypeIdentifiers
-import SwiftFields
 import Fields3D
+import MetalKit
+import MetalSupport
+import Observation
+import RenderKit
+import RenderKitShaders
+import Shapes3D
+import simd
+import SIMDSupport
+import SwiftFields
+import SwiftGraphicsSupport
+import SwiftUI
+import UniformTypeIdentifiers
+
+// swiftlint:disable force_try
 
 struct PackedHalf3: Hashable {
     var x: Float16
@@ -31,37 +33,35 @@ struct SplatC: Equatable {
     var color: PackedHalf4
     var cov_a: PackedHalf3
     var cov_b: PackedHalf3
-};
+}
 
 struct SingleSplatView: View, DemoView {
+    @State
+    private var cameraTransform: Transform = .translation([0, 0, 10])
 
     @State
-    var cameraTransform: Transform = .translation([0, 0, 10])
+    private var cameraProjection: Projection = .perspective(.init())
 
     @State
-    var cameraProjection: Projection = .perspective(.init())
+    private var ballConstraint = BallConstraint(radius: 5)
 
     @State
-    var ballConstraint = BallConstraint(radius: 5)
+    private var modelTransform: Transform = .init(scale: [1, 1, 1])
 
     @State
-    var modelTransform: Transform = .init(scale: [1, 1, 1])
+    private var device: MTLDevice
 
     @State
-    var device: MTLDevice
+    private var debugMode: Bool = false
 
     @State
-    var debugMode: Bool = false
+    private var splats: MTLBuffer
 
     @State
-    var splats: MTLBuffer
+    private var splatIndices: MTLBuffer
 
     @State
-    var splatIndices: MTLBuffer
-
-    @State
-    var splat: SplatD
-
+    private var splat: SplatD
 
     init() {
         let device = MTLCreateSystemDefaultDevice()!
@@ -70,8 +70,8 @@ struct SingleSplatView: View, DemoView {
 
         let splat = SplatD(position: [0, 0, 0], scale: [0.1, 0.1, 0.1], color: [1, 0, 0, 1], rotation: .init(angle: .zero, axis: [0, 0, 0]))
 
-        let splats = device.makeBuffer(bytesOf: [splat], options: .storageModeShared)!
-        let splatIndices = device.makeBuffer(bytesOf: [UInt32.zero], options: .storageModeShared)!
+        let splats = try! device.makeBuffer(bytesOf: [splat], options: .storageModeShared)
+        let splatIndices = try! device.makeBuffer(bytesOf: [UInt32.zero], options: .storageModeShared)
 
         self.device = device
         self.splat = splat
@@ -91,7 +91,7 @@ struct SingleSplatView: View, DemoView {
                 .frame(width: 120, height: 120)
         }
         .onChange(of: splat) {
-            let splats = device.makeBuffer(bytesOf: [SplatC(splat)], options: .storageModeShared)!
+            let splats = try! device.makeBuffer(bytesOf: [SplatC(splat)], options: .storageModeShared)
             self.splats = splats
         }
         .inspector(isPresented: .constant(true)) {
@@ -103,7 +103,6 @@ struct SingleSplatView: View, DemoView {
                         TextField("Yaw", value: $cameraTransform.rotation.rollPitchYaw.yaw.degrees, format: .number)
                     }
                     .labelsHidden()
-
                 }
                 Section("Position") {
                     HStack {

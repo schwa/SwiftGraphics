@@ -18,16 +18,16 @@ extension Rotation: Sendable {
 public extension Rotation {
     var matrix: simd_float4x4 {
         switch storage {
-          case .quaternion(let quaternion):
-                return simd_float4x4(quaternion)
+        case .quaternion(let quaternion):
+            return simd_float4x4(quaternion)
         case .rollPitchYaw(let rollPitchYaw):
             return .init(rollPitchYaw.matrix3x3)
-         }
+        }
     }
 }
 
 extension Rotation: Equatable {
-    public static func ==(lhs: Self, rhs: Self) -> Bool {
+    public static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.quaternion == rhs.quaternion
     }
 }

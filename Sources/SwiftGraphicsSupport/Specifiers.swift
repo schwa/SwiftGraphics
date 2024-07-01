@@ -56,12 +56,6 @@ public struct BundleResourceSpecifier: Sendable, Equatable, Hashable {
     }
 }
 
-extension BundleResourceSpecifier: CustomDebugStringConvertible {
-    public var debugDescription: String {
-        "BundleResourceSpecifier(bundle: \(bundle), name: \"\(name)\(`extension`.map({ ".\($0)" }) ?? "")\")"
-    }
-}
-
 // MARK: -
 
 public struct MeshSpecifier: Equatable {

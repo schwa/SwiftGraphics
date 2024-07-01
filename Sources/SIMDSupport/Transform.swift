@@ -6,10 +6,8 @@ import SwiftUI
  */
 public struct Transform: Hashable {
     public enum Storage: Equatable {
-
         case matrix(simd_float4x4)
         case srt(SRT)
-
     }
 
     public private(set) var storage: Storage

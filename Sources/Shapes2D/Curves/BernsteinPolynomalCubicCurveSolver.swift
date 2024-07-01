@@ -49,10 +49,9 @@ public struct BernsteinPolynomalCubicCurveSolver {
         let (P₀, P₁, P₂, P₃) = controlPoints
         let t² = t * t
         let t³ = t² * t
-        let P = P₀ * (-t³ + 3 * t² - 3 * t + 1)
+        return P₀ * (-t³ + 3 * t² - 3 * t + 1)
             + P₁ * (3 * t³ - 6 * t² + 3 * t)
             + P₂ * (-3 * t³ + 3 * t²)
             + P₃ * t³
-        return P
     }
 }

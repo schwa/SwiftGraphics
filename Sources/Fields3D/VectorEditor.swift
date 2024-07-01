@@ -19,7 +19,7 @@ public struct VectorEditor: View {
         switch vector {
         case .float2(let vector):
             let binding = Binding<SIMD2<Float>> {
-                return vector
+                vector
             }
             set: {
                 self.vector = .float2($0)
@@ -28,7 +28,7 @@ public struct VectorEditor: View {
             TextField("y", value: binding.y, format: .number)
         case .float3(let vector):
             let binding = Binding<SIMD3<Float>> {
-                return vector
+                vector
             }
             set: {
                 self.vector = .float3($0)
@@ -40,7 +40,7 @@ public struct VectorEditor: View {
             }
         case .float4(let vector):
             let binding = Binding<SIMD4<Float>> {
-                return vector
+                vector
             }
             set: {
                 self.vector = .float4($0)

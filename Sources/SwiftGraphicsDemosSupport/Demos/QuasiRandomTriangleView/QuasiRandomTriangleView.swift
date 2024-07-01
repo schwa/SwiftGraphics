@@ -1,25 +1,25 @@
-import SwiftUI
 import CoreGraphics
 import Shapes2D
+import SwiftUI
 
 struct QuasiRandomTriangleView: View, DemoView {
     @State
-    var density = 0.01
+    private var density = 0.01
 
     @State
-    var count = 0.01
+    private var count = 0.01
 
     @State
-    var radius = 4.0
+    private var radius = 4.0
 
     @State
-    var jitter = 0.0
+    private var jitter = 0.0
 
     @State
-    var saturation = 1.0
+    private var saturation = 1.0
 
     @State
-    var bouncingBalls: BouncingBallsSimulation?
+    private var bouncingBalls: BouncingBallsSimulation?
 
     var body: some View {
         VStack {
@@ -52,8 +52,7 @@ struct QuasiRandomTriangleView: View, DemoView {
 
             GeometryReader { proxy in
                 TimelineView(.animation) { time in
-                    Canvas { context, size in
-
+                    Canvas { context, _ in
                         guard let vertices = bouncingBalls?.balls.map(\.position) else {
                             return
                         }
@@ -70,14 +69,11 @@ struct QuasiRandomTriangleView: View, DemoView {
                         let area = triangle.area
                         let count = area * density
 
-
                         for n in stride(from: 1.0, through: count, by: 1) {
                             let point = quasiRandomPointIn(triangle: triangle, n: Int(n))
                             let jitteredPoint = CGPoint(x: point.x + .random(in: -jitter...jitter), y: point.y + .random(in: -jitter...jitter))
 
                             let chosenPoint = triangle.contains(point: jitteredPoint) ? jitteredPoint : point
-
-
 
                             let color = Color(hue: n / (count + 1), saturation: saturation, brightness: 1.0)
                             let path = Path(ellipseIn: CGRect(x: chosenPoint.x - radius, y: chosenPoint.y - radius, width: radius * 2, height: radius * 2))

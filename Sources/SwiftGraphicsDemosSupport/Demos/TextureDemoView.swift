@@ -7,9 +7,11 @@ import RenderKitShadersLegacy
 import SwiftGraphicsSupport
 import SwiftUI
 
+// swiftlint:disable force_try
+
 struct TextureDemoView: View, DemoView {
     @State
-    var showDebugView = false
+    private var showDebugView = false
 
     var body: some View {
         TextureView(named: "seamless-foods-mixed-0020", bundle: .module, options: showDebugView ? [.showInfo] : [])
@@ -53,10 +55,10 @@ struct TextureView: View {
     let texture: MTLTexture
 
     @State
-    var renderState: RenderState?
+    private var renderState: RenderState?
 
     @State
-    var size: CGSize?
+    private var size: CGSize?
 
     var options: Options
 
@@ -112,7 +114,6 @@ struct TextureView: View {
             bindings.fragmentMaterialsIndex = try reflection.binding(for: "materials", of: .vertex)
             bindings.fragmentTexturesIndex = try reflection.binding(for: "", of: .vertex)
 
-
             renderState = RenderState(mesh: mesh, commandQueue: commandQueue, bindings: bindings, renderPipelineState: renderPipelineState)
         } drawableSizeWillChange: { _, _, size in
             self.size = size
@@ -120,7 +121,7 @@ struct TextureView: View {
             guard let renderState else {
                 fatalError("Draw called before command queue set up. This should be impossible.")
             }
-            renderState.commandQueue.withCommandBuffer(drawable: currentDrawable, block: { commandBuffer in
+            renderState.commandQueue.withCommandBuffer(drawable: currentDrawable) { commandBuffer in
                 commandBuffer.label = "RendererView-CommandBuffer"
                 commandBuffer.withRenderCommandEncoder(descriptor: renderPassDescriptor) { renderCommandEncoder in
                     renderCommandEncoder.setRenderPipelineState(renderState.renderPipelineState)
@@ -150,7 +151,7 @@ struct TextureView: View {
 
                     renderCommandEncoder.draw(renderState.mesh, instanceCount: 1)
                 }
-            })
+            }
         }
         .aspectRatio(Double(texture.height) / Double(texture.width), contentMode: .fit)
         .overlay(alignment: .topTrailing) {

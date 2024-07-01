@@ -1,6 +1,6 @@
-import SwiftUI
-import SwiftFormats
 import CoreGraphicsSupport
+import SwiftFormats
+import SwiftUI
 
 public struct AngleEditor: View {
     let titleKey: LocalizedStringKey?

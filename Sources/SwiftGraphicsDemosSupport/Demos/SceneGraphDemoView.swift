@@ -8,14 +8,16 @@ import SIMDSupport
 import SwiftGraphicsSupport
 import SwiftUI
 
+// swiftlint:disable force_try
+
 public struct SceneGraphDemoView: View, DemoView {
     let device: MTLDevice
 
     @State
-    var scene: SceneGraph
+    private var scene: SceneGraph
 
     @State
-    var cameraRotation = RollPitchYaw()
+    private var cameraRotation = RollPitchYaw()
 
     init() {
         let device = MTLCreateSystemDefaultDevice()!
@@ -25,12 +27,12 @@ public struct SceneGraphDemoView: View, DemoView {
     }
 
     public var body: some View {
-        let cameraNode = Binding<Node> {
-            scene.currentCameraNode ?? Node()
-        }
-        set: { newValue in
-            scene.currentCameraNode = newValue
-        }
+//        let cameraNode = Binding<Node> {
+//            scene.currentCameraNode ?? Node()
+//        }
+//        set: { newValue in
+//            scene.currentCameraNode = newValue
+//        }
 
         RenderView(device: device, passes: [
             DiffuseShadingRenderPass(scene: scene),
@@ -56,25 +58,30 @@ public struct SceneGraphDemoView: View, DemoView {
 
     func snapshot() {
         Task {
-            var renderer = try! OffscreenRenderer(size: [640, 480], device: device, renderPasses: [
-//                DiffuseShadingRenderPass(scene: scene),
-//                DebugRenderPass(scene: scene),
-                UnlitShadingPass(scene: scene),
-            ])
+            do {
+                var renderer = try! OffscreenRenderer(size: [640, 480], device: device, renderPasses: [
+    //                DiffuseShadingRenderPass(scene: scene),
+    //                DebugRenderPass(scene: scene),
+                    UnlitShadingPass(scene: scene),
+                ])
 
-            let colorAttachmentTexture = try device.makeColorTexture(size: renderer.size, pixelFormat: .bgra8Unorm)
-            renderer.addColorAttachment(at: 0, texture: colorAttachmentTexture, clearColor: .init(red: 0, green: 0, blue: 0, alpha: 1))
+                let colorAttachmentTexture = try device.makeColorTexture(size: renderer.size, pixelFormat: .bgra8Unorm)
+                renderer.addColorAttachment(at: 0, texture: colorAttachmentTexture, clearColor: .init(red: 0, green: 0, blue: 0, alpha: 1))
 
-            let depthAttachmentTexture = try device.makeDepthTexture(size: renderer.size, depthStencilPixelFormat: .depth32Float, memoryless: true)
-            renderer.addDepthAttachment(texture: depthAttachmentTexture, clearDepth: 1)
+                let depthAttachmentTexture = try device.makeDepthTexture(size: renderer.size, depthStencilPixelFormat: .depth32Float, memoryless: true)
+                renderer.addDepthAttachment(texture: depthAttachmentTexture, clearDepth: 1)
 
-            try! renderer.prepare()
+                try renderer.prepare()
 
-            try! renderer.render(waitAfterCommit: true)
-            let texture = renderer.colorAttachmentTexture(at: 0)!
-            let image = texture.cgImage()!
-            print(image)
-            try! ImageDestination.write(image: image, to: URL(filePath: "test.png"))
+                try renderer.render(waitAfterCommit: true)
+                let texture = renderer.colorAttachmentTexture(at: 0)!
+                let image = texture.cgImage()!
+                print(image)
+                try ImageDestination.write(image: image, to: URL(filePath: "test.png"))
+            }
+            catch {
+                fatalError("\(error)")
+            }
         }
     }
 }

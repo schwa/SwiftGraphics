@@ -31,7 +31,7 @@ public struct SketchDemoView: View, DemoView {
 
 public struct SketchView: View {
     @State
-    var model = SketchModel()
+    private var model = SketchModel()
 
     @Environment(\.undoManager)
     var undoManager

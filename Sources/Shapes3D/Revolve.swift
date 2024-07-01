@@ -17,10 +17,9 @@ public func revolve(polygonalChain: PolygonalChain3D, axis: Line3D, range: Close
     let by = Angle(radians: (range.upperBound.radians - range.lowerBound.radians) / Double(segments))
     let quads = stride(from: range.lowerBound, to: range.upperBound, by: by).flatMap { start in
         let range = start ... start + by
-        let quads = polygonalChain.segments.map {
+        return polygonalChain.segments.map {
             revolve(lineSegment: $0, axis: axis, range: range)
         }
-        return quads
     }
     return TrivialMesh(quads: quads)
 }
@@ -44,10 +43,10 @@ public extension Line3D {
         let 𝑙0 = point
         let 𝑙 = direction
         let 𝑡𝑐𝑙𝑜𝑠𝑒𝑠𝑡 = simd.dot(𝑝0 - 𝑙0, 𝑙) / simd.dot(𝑙, 𝑙)
-        let 𝑥𝑐𝑙𝑜𝑠𝑒𝑠𝑡 = 𝑙0 + 𝑡𝑐𝑙𝑜𝑠𝑒𝑠𝑡 * 𝑙
-        return 𝑥𝑐𝑙𝑜𝑠𝑒𝑠𝑡
+        return 𝑙0 + 𝑡𝑐𝑙𝑜𝑠𝑒𝑠𝑡 * 𝑙
     }
 
+    @available(*, unavailable)
     func intersects(plane: Plane3D) -> SIMD3<Float> {
         fatalError()
     }

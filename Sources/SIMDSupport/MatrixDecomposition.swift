@@ -8,15 +8,15 @@ import simd
 
 public func isApproximatelyEqual(_ lhs: SIMD3<Float>, _ rhs: SIMD3<Float>, epsilon: Float) -> Bool {
     let difference = abs(lhs - rhs)
-    return (0 ..< 3).allSatisfy({ difference[$0] < epsilon })
+    return (0 ..< 3).allSatisfy { difference[$0] < epsilon }
 }
 
 public func isApproximatelyEqual(_ lhs: simd_float3x3, _ rhs: simd_float3x3, epsilon: Float) -> Bool {
-    zip(lhs.scalars, rhs.scalars).allSatisfy({ abs($0 - $1) < epsilon })
+    zip(lhs.scalars, rhs.scalars).allSatisfy { abs($0 - $1) < epsilon }
 }
 
 public func isApproximatelyEqual(_ lhs: simd_float4x4, _ rhs: simd_float4x4, epsilon: Float) -> Bool {
-    zip(lhs.scalars, rhs.scalars).allSatisfy({ abs($0 - $1) < epsilon })
+    zip(lhs.scalars, rhs.scalars).allSatisfy { abs($0 - $1) < epsilon }
 }
 
 public extension simd_float4x4 {

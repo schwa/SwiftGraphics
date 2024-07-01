@@ -5,15 +5,17 @@ import MetalUnsafeConformances
 import SwiftGraphicsSupport
 import SwiftUI
 
+// swiftlint:disable force_try
+
 struct PixelFormatsDemoView: View, DemoView {
     @Environment(\.metalDevice)
     var device
 
     @State
-    var texture: MTLTexture?
+    private var texture: MTLTexture?
 
     @State
-    var convertedTextures: [MTLPixelFormat: MTLTexture] = [:]
+    private var convertedTextures: [MTLPixelFormat: MTLTexture] = [:]
 
      init() {
     }
