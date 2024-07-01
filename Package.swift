@@ -39,7 +39,7 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-async-algorithms", from: "0.1.0"),
         .package(url: "https://github.com/schwa/ApproximateEquality", from: "0.2.1"),
         .package(url: "https://github.com/schwa/Everything", from: "1.1.0"),
-        .package(url: "https://github.com/schwa/MetalCompilerPlugin", from: "0.0.2"),
+        .package(url: "https://github.com/schwa/MetalCompilerPlugin", branch: "jwight/develop"),
         .package(url: "https://github.com/schwa/swiftfields", from: "0.0.1"),
         .package(url: "https://github.com/schwa/swiftformats", from: "0.3.3"),
         .package(url: "https://github.com/schwa/SwiftGLTF", branch: "main"),
@@ -160,7 +160,7 @@ let package = Package(
         .target(
             name: "RenderKitShaders",
             plugins: [
-                // .plugin(name: "MetalCompilerPlugin", package: "MetalCompilerPlugin")
+                 .plugin(name: "MetalCompilerPlugin", package: "MetalCompilerPlugin")
             ]
         ),
         .target(
@@ -172,7 +172,7 @@ let package = Package(
                 .unsafeFlags(["-Wno-incomplete-umbrella"])
             ],
             plugins: [
-                //  .plugin(name: "MetalCompilerPlugin", package: "MetalCompilerPlugin")
+                  .plugin(name: "MetalCompilerPlugin", package: "MetalCompilerPlugin")
             ]
         ),
         .testTarget(
