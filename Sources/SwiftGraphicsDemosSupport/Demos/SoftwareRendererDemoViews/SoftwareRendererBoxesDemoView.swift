@@ -3,6 +3,7 @@ import Projection
 import Shapes3D
 import SIMDSupport
 import SwiftUI
+import Fields3D
 
 struct SoftwareRendererBoxesDemoView: View, DemoView {
     @State
