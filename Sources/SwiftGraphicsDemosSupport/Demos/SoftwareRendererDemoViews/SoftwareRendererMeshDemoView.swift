@@ -157,7 +157,7 @@ struct SoftwareRendererMeshDemoView: View, DemoView {
                     TextField("Yaw Limit", value: $pitchLimit, format: ClosedRangeFormatStyle(substyle: .angle))
                 }
                 Section("Camera") {
-                    ProjectionEditor(projection: $cameraProjection)
+                    ProjectionEditor($cameraProjection)
                 }
                 Section("Ball Constraint") {
                     BallConstraintEditor(ballConstraint: $ballConstraint)

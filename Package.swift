@@ -42,7 +42,7 @@ let package = Package(
         .package(url: "https://github.com/schwa/Everything", from: "1.1.0"),
         .package(url: "https://github.com/schwa/MetalCompilerPlugin", branch: "jwight/develop"),
         .package(url: "https://github.com/schwa/swiftfields", from: "0.0.1"),
-        .package(url: "https://github.com/schwa/swiftformats", from: "0.3.3"),
+        .package(url: "https://github.com/schwa/swiftformats", from: "0.3.5"),
         .package(url: "https://github.com/schwa/SwiftGLTF", branch: "main"),
         .package(url: "https://github.com/ksemianov/WrappingHStack", from: "0.2.0"),
     ],
