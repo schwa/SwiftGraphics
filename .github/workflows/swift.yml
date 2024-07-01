@@ -11,7 +11,7 @@ jobs:
       - name: Install Xcode.
         uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: 15.3
+          xcode-version: 16-beta
       - name: Install just.
         uses: extractions/setup-just@v2
       - name: Checkout source.
