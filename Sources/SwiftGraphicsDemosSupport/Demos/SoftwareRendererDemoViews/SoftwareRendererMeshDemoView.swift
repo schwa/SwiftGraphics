@@ -7,6 +7,7 @@ import Shapes3D
 import SIMDSupport
 import SwiftFormats
 import SwiftUI
+import Fields3D
 
 struct SoftwareRendererMeshDemoView: View, DemoView {
     enum Source: Hashable {

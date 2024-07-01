@@ -1,4 +1,4 @@
-#include <simd/simd.h>
+#import <simd/simd.h>
 
 struct ArgumentBufferExample {
     TEXTURE2D(float, access::write) a;

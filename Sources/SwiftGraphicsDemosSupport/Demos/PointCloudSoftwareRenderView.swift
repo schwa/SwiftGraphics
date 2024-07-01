@@ -3,6 +3,7 @@ import Projection
 import Shapes3D
 import SIMDSupport
 import SwiftUI
+import Fields3D
 
 struct PointCloudSoftwareRenderView: View, DemoView {
     @State
@@ -68,7 +69,7 @@ struct PointCloudSoftwareRenderView: View, DemoView {
                 }
 
                 Section("Camera Transform") {
-                    TransformEditor(transform: $cameraTransform)
+                    TransformEditor($cameraTransform)
                 }
             }
         }

@@ -4,6 +4,7 @@ import Shapes3D
 import simd
 import SIMDSupport
 import SwiftUI
+import Fields3D
 
 struct HalfEdge3DDemoView: View, DemoView {
     @State
