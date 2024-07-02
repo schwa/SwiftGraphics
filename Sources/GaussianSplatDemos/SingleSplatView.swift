@@ -60,7 +60,7 @@ public struct SingleSplatView: View {
 
     public var body: some View {
         RenderView(device: device, passes: passes)
-//            .ballRotation($ballConstraint.rollPitchYaw, updatesPitch: true, updatesYaw: true)
+            .ballRotation($ballConstraint.rollPitchYaw, updatesPitch: true, updatesYaw: true)
             .onChange(of: ballConstraint.transform, initial: true) {
                 cameraTransform = ballConstraint.transform
                 print(cameraTransform)

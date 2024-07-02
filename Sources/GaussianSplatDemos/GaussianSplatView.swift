@@ -11,6 +11,7 @@ import SIMDSupport
 import RenderKit
 import Everything
 import GaussianSplatSupport
+import Foundation
 
 // swiftlint:disable force_try
 
@@ -45,16 +46,16 @@ public struct GaussianSplatView: View {
                         }
                     }
             }
-//            ForEach(try! Bundle.module.urls(withExtension: "splatc"), id: \.self) { url in
-//                Button(url.lastPathComponent) {
-//                    viewModel = try! GaussianSplatViewModel(device: device, url: url)
-//                }
-//            }
+            ForEach(try! Bundle.module.urls(withExtension: "splatc"), id: \.self) { url in
+                Button(url.lastPathComponent) {
+                    viewModel = try! GaussianSplatViewModel(device: device, url: url)
+                }
+            }
         }
-//        .onAppear {
-//            let url: URL = try! Bundle.module.url(forResource: "train", withExtension: "splatc")
-//            viewModel = try! GaussianSplatViewModel(device: device, url: url)
-//        }
+        .onAppear {
+            let url = Bundle.module.url(forResource: "train", withExtension: "splatc")!
+            viewModel = try! GaussianSplatViewModel(device: device, url: url)
+        }
     }
 }
 
@@ -146,7 +147,7 @@ struct GaussianSplatRenderView: View {
             action: { size in
                 self.size = size
             }
-//            .ballRotation($modelTransform.rotation.rollPitchYaw, pitchLimit: .radians(-.infinity) ... .radians(.infinity))
+            .ballRotation($modelTransform.rotation.rollPitchYaw, pitchLimit: .radians(-.infinity) ... .radians(.infinity))
             .overlay(alignment: .bottom) {
                 VStack {
                     Text("Size: [\(size * displayScale, format: .size)]")
