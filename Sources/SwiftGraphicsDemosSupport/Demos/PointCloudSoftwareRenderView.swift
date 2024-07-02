@@ -4,6 +4,7 @@ import Projection
 import Shapes3D
 import SIMDSupport
 import SwiftUI
+import SwiftGraphicsSupport
 
 // swiftlint:disable force_try
 

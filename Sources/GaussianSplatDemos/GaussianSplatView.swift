@@ -1,17 +1,16 @@
 import CoreGraphicsSupport
-import Everything
 import MetalKit
 import MetalSupport
 import Observation
-import RenderKit
-import RenderKitShaders
-import Shapes3D
 import simd
-import SIMDSupport
 import SwiftFormats
 import SwiftGraphicsSupport
 import SwiftUI
 import UniformTypeIdentifiers
+import SIMDSupport
+import RenderKit
+import Everything
+import GaussianSplatSupport
 
 // swiftlint:disable force_try
 
@@ -20,17 +19,17 @@ extension UTType {
     static let splatC = UTType(filenameExtension: "splatc")!
 }
 
-struct GaussianSplatView: View, DemoView {
+public struct GaussianSplatView: View {
     @State
     private var device = MTLCreateSystemDefaultDevice()!
 
     @State
     private var viewModel: GaussianSplatViewModel?
 
-    init() {
+    public init() {
     }
 
-    var body: some View {
+    public var body: some View {
         ZStack {
             Color.white
             if let viewModel {
@@ -46,16 +45,16 @@ struct GaussianSplatView: View, DemoView {
                         }
                     }
             }
-            ForEach(try! Bundle.module.urls(withExtension: "splatc"), id: \.self) { url in
-                Button(url.lastPathComponent) {
-                    viewModel = try! GaussianSplatViewModel(device: device, url: url)
-                }
-            }
+//            ForEach(try! Bundle.module.urls(withExtension: "splatc"), id: \.self) { url in
+//                Button(url.lastPathComponent) {
+//                    viewModel = try! GaussianSplatViewModel(device: device, url: url)
+//                }
+//            }
         }
-        .onAppear {
-            let url: URL = try! Bundle.module.url(forResource: "train", withExtension: "splatc")
-            viewModel = try! GaussianSplatViewModel(device: device, url: url)
-        }
+//        .onAppear {
+//            let url: URL = try! Bundle.module.url(forResource: "train", withExtension: "splatc")
+//            viewModel = try! GaussianSplatViewModel(device: device, url: url)
+//        }
     }
 }
 
@@ -147,7 +146,7 @@ struct GaussianSplatRenderView: View {
             action: { size in
                 self.size = size
             }
-            .ballRotation($modelTransform.rotation.rollPitchYaw, pitchLimit: .radians(-.infinity) ... .radians(.infinity))
+//            .ballRotation($modelTransform.rotation.rollPitchYaw, pitchLimit: .radians(-.infinity) ... .radians(.infinity))
             .overlay(alignment: .bottom) {
                 VStack {
                     Text("Size: [\(size * displayScale, format: .size)]")

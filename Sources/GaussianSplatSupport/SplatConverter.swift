@@ -2,18 +2,25 @@ import CoreGraphicsSupport
 import simd
 import SIMDSupport
 
-struct SplatB: Equatable {
-    var position: PackedFloat3
-    var scale: PackedFloat3
-    var color: SIMD4<UInt8>
-    var rotation: SIMD4<UInt8>
+public struct SplatB: Equatable {
+    public var position: PackedFloat3
+    public var scale: PackedFloat3
+    public var color: SIMD4<UInt8>
+    public var rotation: SIMD4<UInt8>
 }
 
-struct SplatD: Equatable {
-    var position: PackedFloat3
-    var scale: PackedFloat3
-    var color: SIMD4<Float>
-    var rotation: Rotation
+public struct SplatD: Equatable {
+    public var position: PackedFloat3
+    public var scale: PackedFloat3
+    public var color: SIMD4<Float>
+    public var rotation: Rotation
+
+    public init(position: PackedFloat3, scale: PackedFloat3, color: SIMD4<Float>, rotation: Rotation) {
+        self.position = position
+        self.scale = scale
+        self.color = color
+        self.rotation = rotation
+    }
 }
 
 // struct SplatC: Equatable {
@@ -30,8 +37,8 @@ struct SplatD: Equatable {
 //           .tobytes()
 //       )
 
-extension SplatB {
-    init(_ other: SplatD) {
+public extension SplatB {
+    public init(_ other: SplatD) {
         let color = SIMD4<UInt8>(other.color * 255)
         let rotation_vector = other.rotation.quaternion.vectorRealFirst
         let rotation = ((rotation_vector / rotation_vector.length) * 128 + 128).clamped(to: 0...255)
@@ -39,25 +46,13 @@ extension SplatB {
     }
 }
 
-extension simd_quatf {
+public extension simd_quatf {
     var vectorRealFirst: simd_float4 {
         [vector.w, vector.x, vector.y, vector.z]
     }
 }
 
-extension FloatingPoint {
-    func clamped(to range: ClosedRange<Self>) -> Self {
-        clamp(self, in: range)
-    }
-}
-
-extension SIMD4 where Scalar == Float {
-    func clamped(to range: ClosedRange<Scalar>) -> Self {
-        [x.clamped(to: range), y.clamped(to: range), z.clamped(to: range), w.clamped(to: range)]
-    }
-}
-
-extension SplatC {
+public extension SplatC {
     init(_ other: SplatB) {
         let rotation = simd_quatf(vector: SIMD4(x: Float(other.rotation[1]) - 128,
                                                 y: Float(other.rotation[2]) - 128,
@@ -85,24 +80,12 @@ extension SplatC {
     }
 }
 
-func convert <C>(_ splats: C) -> [SplatC] where C: Collection, C.Element == SplatB {
+public func convert <C>(_ splats: C) -> [SplatC] where C: Collection, C.Element == SplatB {
     print(MemoryLayout<SplatC>.size)
     print(MemoryLayout<SplatB>.size)
     assert(MemoryLayout<SplatC>.size == 26)
     assert(MemoryLayout<SplatB>.size == 32)
     return splats.map { splat in
         SplatC(splat)
-    }
-}
-
-extension PackedHalf3 {
-    init(_ other: SIMD3<Float>) {
-        self = PackedHalf3(x: Float16(other.x), y: Float16(other.y), z: Float16(other.z))
-    }
-}
-
-extension PackedHalf4 {
-    init(_ other: SIMD4<Float>) {
-        self = PackedHalf4(x: Float16(other.x), y: Float16(other.y), z: Float16(other.z), w: Float16(other.w))
     }
 }
