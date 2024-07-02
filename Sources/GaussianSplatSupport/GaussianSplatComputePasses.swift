@@ -1,10 +1,11 @@
 import Metal
 import RenderKit
-import RenderKitShaders
+import GaussianSplatShaders
 import simd
+import SwiftGraphicsSupport
 
-struct GaussianSplatBitonicSortComputePass: ComputePassProtocol {
-    struct State: PassState {
+public struct GaussianSplatBitonicSortComputePass: ComputePassProtocol {
+    public struct State: PassState {
         var pipelineState: MTLComputePipelineState
         var bindingsUniformsIndex: Int
         var bindingsSplatDistancesIndex: Int
@@ -12,13 +13,20 @@ struct GaussianSplatBitonicSortComputePass: ComputePassProtocol {
         var frameCount: Int = 0
     }
 
-    var id = AnyHashable("GaussianSplatBitonicSortComputePass")
+    public var id = AnyHashable("GaussianSplatBitonicSortComputePass")
     var splatCount: Int
     var splatIndicesBuffer: Box<MTLBuffer>
     var splatDistancesBuffer: Box<MTLBuffer>
     var sortRate: Int
 
-    func setup(device: MTLDevice) throws -> State {
+    public init(splatCount: Int, splatIndicesBuffer: Box<MTLBuffer>, splatDistancesBuffer: Box<MTLBuffer>, sortRate: Int) {
+        self.splatCount = splatCount
+        self.splatIndicesBuffer = splatIndicesBuffer
+        self.splatDistancesBuffer = splatDistancesBuffer
+        self.sortRate = sortRate
+    }
+
+    public func setup(device: MTLDevice) throws -> State {
         let library = try device.makeDebugLibrary(bundle: .renderKitShaders)
         let function = library.makeFunction(name: "GaussianSplatShader::BitonicSortSplats").forceUnwrap("No function found")
         let (pipelineState, reflection) = try device.makeComputePipelineState(function: function, options: .bindingInfo)
@@ -33,7 +41,7 @@ struct GaussianSplatBitonicSortComputePass: ComputePassProtocol {
         )
     }
 
-    func compute(device: MTLDevice, state: inout State, commandBuffer: MTLCommandBuffer) throws {
+    public func compute(device: MTLDevice, state: inout State, commandBuffer: MTLCommandBuffer) throws {
         state.frameCount += 1
         if sortRate > 1 && state.frameCount > 1 && state.frameCount.isMultiple(of: sortRate) {
             return
@@ -69,8 +77,8 @@ struct GaussianSplatBitonicSortComputePass: ComputePassProtocol {
     }
 }
 
-struct GaussianSplatPreCalcComputePass: ComputePassProtocol {
-    struct State: PassState {
+public struct GaussianSplatPreCalcComputePass: ComputePassProtocol {
+    public struct State: PassState {
         var pipelineState: MTLComputePipelineState
         var bindingsModelMatrixIndex: Int
         var bindingsCameraPositionIndex: Int
@@ -79,14 +87,22 @@ struct GaussianSplatPreCalcComputePass: ComputePassProtocol {
         var bindingsSplatDistancesIndex: Int
     }
 
-    var id = AnyHashable("GaussianSplatPreCalcComputePass")
+    public var id = AnyHashable("GaussianSplatPreCalcComputePass")
     var splatCount: Int
     var splatDistancesBuffer: Box<MTLBuffer>
     var splatBuffer: Box<MTLBuffer>
     var modelMatrix: simd_float3x3
     var cameraPosition: SIMD3<Float>
 
-    func setup(device: MTLDevice) throws -> State {
+    public init(splatCount: Int, splatDistancesBuffer: Box<MTLBuffer>, splatBuffer: Box<MTLBuffer>, modelMatrix: simd_float3x3, cameraPosition: SIMD3<Float>) {
+        self.splatCount = splatCount
+        self.splatDistancesBuffer = splatDistancesBuffer
+        self.splatBuffer = splatBuffer
+        self.modelMatrix = modelMatrix
+        self.cameraPosition = cameraPosition
+    }
+
+    public func setup(device: MTLDevice) throws -> State {
         let library = try device.makeDebugLibrary(bundle: .renderKitShaders)
         let function = library.makeFunction(name: "GaussianSplatShader::DistancePreCalc").forceUnwrap("No function found")
         let (pipelineState, reflection) = try device.makeComputePipelineState(function: function, options: .bindingInfo)
@@ -103,7 +119,7 @@ struct GaussianSplatPreCalcComputePass: ComputePassProtocol {
         )
     }
 
-    func compute(device: MTLDevice, state: inout State, commandBuffer: MTLCommandBuffer) throws {
+    public func compute(device: MTLDevice, state: inout State, commandBuffer: MTLCommandBuffer) throws {
         let computePipelineState = state.pipelineState
         let commandEncoder = commandBuffer.makeComputeCommandEncoder().forceUnwrap()
         commandEncoder.label = "GaussianSplatPreCalcComputePass"

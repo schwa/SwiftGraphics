@@ -1,12 +1,5 @@
-//
-//  Untitled.swift
-//
-//
-//  Created by Jonathan Wight on 6/21/24.
-//
-
 import SwiftUI
-
+import SwiftGraphicsSupport
 import Fields3D
 
 struct BallConstraintEditor: View {

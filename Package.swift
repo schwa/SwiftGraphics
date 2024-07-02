@@ -33,6 +33,10 @@ let package = Package(
         .library(name: "MetalUISupport", targets: ["MetalUISupport"]),
         .library(name: "Compute", targets: ["Compute"]),
         .library(name: "SwiftGraphicsDemosSupport", targets: ["SwiftGraphicsDemosSupport"]),
+
+        .library(name: "GaussianSplatDemos", targets: ["GaussianSplatDemos"]),
+        .library(name: "GaussianSplatSupport", targets: ["GaussianSplatSupport"]),
+
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-algorithms", from: "1.1.0"),
@@ -363,6 +367,7 @@ let package = Package(
                 "MetalUnsafeConformances",
                 "Fields3D",
                 .product(name: "SwiftFields", package: "swiftfields"),
+                "GaussianSplatDemos",
             ],
             resources: [
                 .process("Resources/Assets.xcassets"),
@@ -402,7 +407,24 @@ let package = Package(
                 .interoperabilityMode(.Cxx)
             ]
         ),
+
+        .target(
+            name: "GaussianSplatDemos",
+            dependencies: ["GaussianSplatSupport"]
+        ),
+        .target(
+            name: "GaussianSplatShaders"
+        ),
+        .target(
+            name: "GaussianSplatSupport",
+            dependencies: [
+                "GaussianSplatShaders",
+                "RenderKit",
+            ]
+        ),
     ],
     swiftLanguageVersions: [.v6]
+
+
 
 )

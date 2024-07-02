@@ -2,5 +2,3 @@
 
 #import "PointCloudShader.h"
 #import "SimplePBRShader.h"
-#import "GaussianSplatShader.h"
-#import "GaussianSplatSupport.h"

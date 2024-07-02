@@ -4,38 +4,17 @@ import MetalKit
 import MetalSupport
 import Observation
 import RenderKit
-import RenderKitShaders
-import Shapes3D
 import simd
 import SIMDSupport
 import SwiftFields
 import SwiftGraphicsSupport
 import SwiftUI
 import UniformTypeIdentifiers
+import GaussianSplatSupport
 
 // swiftlint:disable force_try
 
-struct PackedHalf3: Hashable {
-    var x: Float16
-    var y: Float16
-    var z: Float16
-}
-
-struct PackedHalf4: Hashable {
-    var x: Float16
-    var y: Float16
-    var z: Float16
-    var w: Float16
-}
-
-struct SplatC: Equatable {
-    var position: PackedHalf3
-    var color: PackedHalf4
-    var cov_a: PackedHalf3
-    var cov_b: PackedHalf3
-}
-
-struct SingleSplatView: View, DemoView {
+public struct SingleSplatView: View {
     @State
     private var cameraTransform: Transform = .translation([0, 0, 10])
 
@@ -63,7 +42,7 @@ struct SingleSplatView: View, DemoView {
     @State
     private var splat: SplatD
 
-    init() {
+    public init() {
         let device = MTLCreateSystemDefaultDevice()!
 
         assert(MemoryLayout<SplatC>.size == 26)
@@ -79,17 +58,17 @@ struct SingleSplatView: View, DemoView {
         self.splatIndices = splatIndices
     }
 
-    var body: some View {
+    public var body: some View {
         RenderView(device: device, passes: passes)
-            .ballRotation($ballConstraint.rollPitchYaw, updatesPitch: true, updatesYaw: true)
+//            .ballRotation($ballConstraint.rollPitchYaw, updatesPitch: true, updatesYaw: true)
             .onChange(of: ballConstraint.transform, initial: true) {
                 cameraTransform = ballConstraint.transform
                 print(cameraTransform)
             }
-            .overlay(alignment: .topLeading) {
-                CameraRotationWidgetView(ballConstraint: $ballConstraint)
-                    .frame(width: 120, height: 120)
-            }
+//            .overlay(alignment: .topLeading) {
+//                CameraRotationWidgetView(ballConstraint: $ballConstraint)
+//                    .frame(width: 120, height: 120)
+//            }
             .onChange(of: splat) {
                 let splats = try! device.makeBuffer(bytesOf: [SplatC(splat)], options: .storageModeShared)
                 self.splats = splats

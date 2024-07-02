@@ -1,5 +1,6 @@
 import Everything
 import SwiftUI
+import GaussianSplatDemos
 
 public struct DemosScene: Scene {
     public init() {
