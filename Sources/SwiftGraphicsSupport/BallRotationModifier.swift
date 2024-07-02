@@ -1,10 +1,9 @@
 import CoreGraphicsSupport
 import simd
 import SIMDSupport
-import SwiftGraphicsSupport
 import SwiftUI
 
-struct BallRotationModifier: ViewModifier {
+public struct BallRotationModifier: ViewModifier {
     @Binding
     var rollPitchYaw: RollPitchYaw
 
@@ -13,7 +12,7 @@ struct BallRotationModifier: ViewModifier {
     let interactionScale: CGVector
     let coordinateSpace = ObjectIdentifier(Self.self)
 
-    static let defaultInteractionScale = CGVector(1 / .pi, 1 / .pi)
+    public static let defaultInteractionScale = CGVector(1 / .pi, 1 / .pi)
 
     @State
     var initialGestureRollPitchYaw: RollPitchYaw?
@@ -21,14 +20,14 @@ struct BallRotationModifier: ViewModifier {
     @State
     var cameraMoved = false
 
-    init(rollPitchYaw: Binding<RollPitchYaw>, pitchLimit: ClosedRange<Angle> = .degrees(-90) ... .degrees(90), yawLimit: ClosedRange<Angle> = .degrees(-.infinity) ... .degrees(.infinity), interactionScale: CGVector = Self.defaultInteractionScale) {
+    public init(rollPitchYaw: Binding<RollPitchYaw>, pitchLimit: ClosedRange<Angle> = .degrees(-90) ... .degrees(90), yawLimit: ClosedRange<Angle> = .degrees(-.infinity) ... .degrees(.infinity), interactionScale: CGVector = Self.defaultInteractionScale) {
         _rollPitchYaw = rollPitchYaw
         self.pitchLimit = pitchLimit
         self.yawLimit = yawLimit
         self.interactionScale = interactionScale
     }
 
-    func body(content: Content) -> some View {
+    public func body(content: Content) -> some View {
         content
             .coordinateSpace(name: coordinateSpace)
             .simultaneousGesture(dragGesture())
@@ -68,7 +67,7 @@ struct BallRotationModifier: ViewModifier {
     }
 }
 
-extension View {
+public extension View {
     func ballRotation(_ rollPitchYaw: Binding<RollPitchYaw>, pitchLimit: ClosedRange<Angle> = .degrees(-90) ... .degrees(90), yawLimit: ClosedRange<Angle> = .degrees(-.infinity) ... .degrees(.infinity), interactionScale: CGVector = BallRotationModifier.defaultInteractionScale) -> some View {
         modifier(BallRotationModifier(rollPitchYaw: rollPitchYaw, pitchLimit: pitchLimit, yawLimit: yawLimit, interactionScale: interactionScale))
     }

@@ -378,8 +378,6 @@ let package = Package(
                 .copy("Resources/adjectives.txt"),
                 .copy("Resources/nouns.txt"),
                 .copy("Resources/StanfordVolumeData.tar"),
-                .copy("Resources/train.splatc"),
-                .copy("Resources/6_20_2024.splatc"),
             ],
             swiftSettings: [
                 .interoperabilityMode(.Cxx),
@@ -410,7 +408,11 @@ let package = Package(
 
         .target(
             name: "GaussianSplatDemos",
-            dependencies: ["GaussianSplatSupport"]
+            dependencies: ["GaussianSplatSupport"],
+            resources: [
+                .copy("Resources/train.splatc"),
+                .copy("Resources/6_20_2024.splatc"),
+            ]
         ),
         .target(
             name: "GaussianSplatShaders",
