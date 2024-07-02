@@ -59,6 +59,7 @@ public extension FloatingPoint {
     }
 }
 
+#if os(macOS)
 extension Image {
     @MainActor
     init(color: Color, size: CGSize) {
@@ -66,6 +67,7 @@ extension Image {
         self = .init(nsImage: nsImage)
     }
 }
+#endif
 
 extension ControlSize {
     var ratio: UnitPoint {

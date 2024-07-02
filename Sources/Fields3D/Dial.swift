@@ -57,6 +57,7 @@ public struct Dial <Label>: View where Label: View {
                     inDrag = false
                 }
         )
+        #if os(macOS)
         .onMoveCommand { direction in
             switch direction {
             case .right, .up:
@@ -67,6 +68,7 @@ public struct Dial <Label>: View where Label: View {
                 break
             }
         }
+        #endif
         .accessibilityRepresentation {
             Slider(value: $value, in: range) { label }
         }
