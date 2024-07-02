@@ -19,7 +19,7 @@ struct RandomFill {
         let outImage = testTexture.cgImage()
         try outImage?.write(to: URL(filePath: "/tmp/out.png"))
 
-        testPixelFormats()
+        try testPixelFormats()
         return
 
         let textureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .r8Uint, width: width, height: height, mipmapped: false)
@@ -29,7 +29,7 @@ struct RandomFill {
             fatalError()
         }
         let bufferSize = bytesPerRow * height
-        let buffer = try device.makeBuffer(length: bufferSize, options: [.storageModeShared])
+        let buffer = try device.makeBufferEx(length: bufferSize, options: [.storageModeShared])
         let alignment = device.minimumLinearTextureAlignment(for: textureDescriptor.pixelFormat)
         let texture = buffer.makeTexture(descriptor: textureDescriptor, offset: 0, bytesPerRow: bytesPerRow)!
 
@@ -81,7 +81,7 @@ func testPixelFormats() throws {
         }
         let bytesPerRow = align(unalignedBytesPerRow, alignment: alignment)
         let bufferSize = bytesPerRow * textureDescriptor.height
-        let buffer = try device.makeBuffer(length: bufferSize, options: [.storageModeShared])
+        let buffer = try device.makeBufferEx(length: bufferSize, options: [.storageModeShared])
         let texture = buffer.makeTexture(descriptor: textureDescriptor, offset: 0, bytesPerRow: bytesPerRow)!
 
         let data = UnsafeMutableRawBufferPointer(start: buffer.contents(), count: buffer.length)

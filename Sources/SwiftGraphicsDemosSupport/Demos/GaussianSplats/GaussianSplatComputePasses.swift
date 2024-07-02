@@ -3,14 +3,6 @@ import RenderKit
 import RenderKitShaders
 import simd
 
-extension MTLDevice {
-    func makeComputePipelineState(function: MTLFunction, options: MTLPipelineOption) throws -> (MTLComputePipelineState, MTLComputePipelineReflection?) {
-        var reflection: MTLComputePipelineReflection?
-        let pipelineState = try makeComputePipelineState(function: function, options: options, reflection: &reflection)
-        return (pipelineState, reflection)
-    }
-}
-
 struct GaussianSplatBitonicSortComputePass: ComputePassProtocol {
     struct State: PassState {
         var pipelineState: MTLComputePipelineState

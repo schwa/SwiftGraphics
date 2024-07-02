@@ -83,27 +83,3 @@ struct VolumeData {
         }
     }
 }
-
-extension MTLDevice {
-    /// "To copy your data to a private texture, copy your data to a temporary texture with non-private storage, and then use an MTLBlitCommandEncoder to copy the data to the private texture for GPU use."
-    func makePrivateCopy(of source: MTLTexture) throws -> MTLTexture {
-        let textureDescriptor = MTLTextureDescriptor()
-        textureDescriptor.textureType = source.textureType
-        textureDescriptor.pixelFormat = source.pixelFormat
-        textureDescriptor.storageMode = .private
-
-        textureDescriptor.width = source.width
-        textureDescriptor.height = source.height
-        textureDescriptor.depth = source.depth
-        let destination = try makeTexture(descriptor: textureDescriptor).safelyUnwrap(GeneralError.generic("Could not create texture"))
-        destination.label = source.label.map { "\($0)-private-copy" }
-
-        let commandQueue = try makeCommandQueue().safelyUnwrap(GeneralError.generic("Could not create command queue"))
-        try commandQueue.withCommandBuffer(waitAfterCommit: true) { commandBuffer in
-            let encoder = try commandBuffer.makeBlitCommandEncoder().safelyUnwrap(GeneralError.generic("Could not create blit command encoder"))
-            encoder.copy(from: source, to: destination)
-            encoder.endEncoding()
-        }
-        return destination
-    }
-}

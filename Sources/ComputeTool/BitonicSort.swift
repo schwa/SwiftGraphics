@@ -1,5 +1,6 @@
 import Compute
 import Metal
+import MetalSupport
 
 public struct BitonicSortDemo {
     public init() {
@@ -14,9 +15,9 @@ public struct BitonicSortDemo {
         print("Copying buffer to GPU.", stopWatch)
         let device = MTLCreateSystemDefaultDevice()!
         let numEntries = entries.count
-        let buffer = try entries.withUnsafeMutableBufferPointer { buffer in
+        let buffer: MTLBuffer = try entries.withUnsafeMutableBufferPointer { buffer in
             let buffer = UnsafeMutableRawBufferPointer(buffer)
-            return try device.makeBuffer(bytes: buffer.baseAddress!, length: buffer.count)
+            return try device.makeBufferEx(bytes: buffer.baseAddress!, length: buffer.count)
         }
         print("Preparing compute.", stopWatch)
 
