@@ -364,7 +364,6 @@ public extension Ply.Element.Record {
 }
 
 extension Ply {
-    @available(*, deprecated, message: "Deprecated")
     var points: [SIMD3<Float>] {
         mutating get throws {
             let elements = try self.elements

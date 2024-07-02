@@ -37,6 +37,7 @@ public struct Wheel <Label>: View where Label: View {
                 value = 0
             }
         })
+#if os(macOS)
         .onMoveCommand { direction in
             switch direction {
             case .right, .up:
@@ -47,6 +48,7 @@ public struct Wheel <Label>: View where Label: View {
                 break
             }
         }
+#endif
         //        .accessibilityLabel("xxx")
         .accessibilityValue(Text("\(value.formatted())"))
         .accessibilityAddTraits(.allowsDirectInteraction)

@@ -30,6 +30,7 @@ public struct ColorPalette: View {
     }
 
     public var body: some View {
+#if os(macOS)
         Picker(selection: $color) {
             ForEach(colors, id: \.self) { color in
                 Image(color: color, size: CGSize(width: 16, height: 16))
@@ -39,6 +40,9 @@ public struct ColorPalette: View {
             Text("Color")
         }
         .pickerStyle(.segmented)
+#else
+        fatalError()
+#endif
     }
 }
 
