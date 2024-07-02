@@ -1,5 +1,6 @@
-import SIMDSupport
 import CoreGraphicsSupport
+import Foundation
+import SIMDSupport
 
 public struct PackedHalf3: Hashable {
     public var x: Float16
@@ -61,5 +62,50 @@ extension FloatingPoint {
 extension SIMD4 where Scalar == Float {
     func clamped(to range: ClosedRange<Scalar>) -> Self {
         [x.clamped(to: range), y.clamped(to: range), z.clamped(to: range), w.clamped(to: range)]
+    }
+}
+
+public extension Bundle {
+    static let gaussianSplatShaders: Bundle = {
+        if let shadersBundleURL = Bundle.main.url(forResource: "SwiftGraphics_GaussianSplatShaders", withExtension: "bundle"), let bundle = Bundle(url: shadersBundleURL) {
+            return bundle
+        }
+        // Fail.
+        fatalError("Could not find shaders bundle")
+    }()
+}
+
+public extension Bundle {
+
+    func bundle(atPath path: [String]) -> Bundle? {
+        print(resourcePath)
+        print(try! childBundles().map { $0.bundleURL.lastPathComponent })
+        guard let bundleURL = url(forResource: path.first, withExtension: "bundle"), let bundle = Bundle(url: bundleURL) else {
+            return nil
+        }
+        print(bundleURL)
+        let path = path.dropFirst()
+        if path.isEmpty {
+            return bundle
+        }
+        else {
+            return bundle.bundle(atPath: Array(path))
+        }
+    }
+
+    func childBundles() throws -> [Bundle] {
+        guard let resourceURL else {
+            return []
+        }
+        let contents = try FileManager().contentsOfDirectory(at: resourceURL, includingPropertiesForKeys: [.contentTypeKey])
+        return contents.filter { url in
+            guard let contentType = try? url.resourceValues(forKeys: [.contentTypeKey]).contentType else {
+                return false
+            }
+            return contentType.conforms(to: .bundle)
+        }
+        .compactMap { url in
+            Bundle(url: url)
+        }
     }
 }
