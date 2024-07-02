@@ -2,7 +2,7 @@ import Foundation
 import os
 
 #if os(iOS)
-    import UIKit
+import UIKit
 #endif
 
 class Cache<Key, Value> where Key: Hashable {
@@ -10,38 +10,38 @@ class Cache<Key, Value> where Key: Hashable {
 
     var lock = OSAllocatedUnfairLock()
     var storage = [Key: Value]()
-//    var task: Task<(), Never>?
+    //    var task: Task<(), Never>?
     var logger: Logger?
 
     init(label: String? = nil) {
         self.label = label
-//        let q = DispatchQueue.init(label: "test")
-//        q.async {
-//            let source = DispatchSource.makeMemoryPressureSource(eventMask: .all, queue: nil)
-//            source.setEventHandler {
-//                let event:DispatchSource.MemoryPressureEvent  = source.mask
-//                switch event {
-//                case DispatchSource.MemoryPressureEvent.normal:
-//                    print("normal")
-//                case DispatchSource.MemoryPressureEvent.warning:
-//                    print("warning")
-//                case DispatchSource.MemoryPressureEvent.critical:
-//                    print("critical")
-//                default:
-//                    break
-//                }
-//
-//            }
-//            source.resume()
-//        }
-//
-//        #if os(iOS)
-//        task = Task { [weak self] in
-//            for await _ in await NotificationCenter.default.notifications(named: UIApplication.didReceiveMemoryWarningNotification) {
-//                self?.storage.removeAll()
-//            }
-//        }
-//        #endif
+        //        let q = DispatchQueue.init(label: "test")
+        //        q.async {
+        //            let source = DispatchSource.makeMemoryPressureSource(eventMask: .all, queue: nil)
+        //            source.setEventHandler {
+        //                let event:DispatchSource.MemoryPressureEvent  = source.mask
+        //                switch event {
+        //                case DispatchSource.MemoryPressureEvent.normal:
+        //                    print("normal")
+        //                case DispatchSource.MemoryPressureEvent.warning:
+        //                    print("warning")
+        //                case DispatchSource.MemoryPressureEvent.critical:
+        //                    print("critical")
+        //                default:
+        //                    break
+        //                }
+        //
+        //            }
+        //            source.resume()
+        //        }
+        //
+        //        #if os(iOS)
+        //        task = Task { [weak self] in
+        //            for await _ in await NotificationCenter.default.notifications(named: UIApplication.didReceiveMemoryWarningNotification) {
+        //                self?.storage.removeAll()
+        //            }
+        //        }
+        //        #endif
     }
 
     func get(key: Key) -> Value? {
@@ -56,7 +56,7 @@ class Cache<Key, Value> where Key: Hashable {
                 return value
             }
             else {
-//                logger?.info("Cache miss: \(String(describing: key)).")
+                //                logger?.info("Cache miss: \(String(describing: key)).")
                 let value = try `default`()
                 storage[key] = value
                 return value

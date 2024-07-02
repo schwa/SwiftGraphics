@@ -47,7 +47,7 @@ public struct Wheel <Label>: View where Label: View {
                 break
             }
         }
-//        .accessibilityLabel("xxx")
+        //        .accessibilityLabel("xxx")
         .accessibilityValue(Text("\(value.formatted())"))
         .accessibilityAddTraits(.allowsDirectInteraction)
         .accessibilityElement(children: .ignore)
@@ -65,19 +65,19 @@ public struct Wheel <Label>: View where Label: View {
 
     func drag() -> some Gesture {
         DragGesture()
-        .onChanged { drag in
-            value += (drag.translation.width - lastDragValue) / size.width * rate
-            lastDragValue = drag.translation.width
-        }
-        .onEnded { drag in
-            print(drag.predictedEndTranslation)
-            if drag.predictedEndTranslation.width > 200 {
-                withAnimation(.easeOut) {
-                    value += (drag.predictedEndTranslation.width - lastDragValue) / size.width * rate
-                }
+            .onChanged { drag in
+                value += (drag.translation.width - lastDragValue) / size.width * rate
+                lastDragValue = drag.translation.width
             }
-            lastDragValue = 0.0
-        }
+            .onEnded { drag in
+                print(drag.predictedEndTranslation)
+                if drag.predictedEndTranslation.width > 200 {
+                    withAnimation(.easeOut) {
+                        value += (drag.predictedEndTranslation.width - lastDragValue) / size.width * rate
+                    }
+                }
+                lastDragValue = 0.0
+            }
     }
 
     func increment() {

@@ -17,10 +17,10 @@ struct HalfEdge2DDemoView: View, DemoView {
     private var faceColors: [HalfEdgeMesh<CGPoint>.Face.ID: Color]
 
     init() {
-//        let polygons: [Polygon3D<SIMD3<Float>>] = [
-//            .init(vertices: [[0, 0, 0], [100, 0, 0], [100, 100, 0], [0, 100, 0]]),
-//            .init(vertices: [[100, 0, 0], [200, 0, 0], [200, 100, 0], [100, 100, 0]]),
-//        ]
+        //        let polygons: [Polygon3D<SIMD3<Float>>] = [
+        //            .init(vertices: [[0, 0, 0], [100, 0, 0], [100, 100, 0], [0, 100, 0]]),
+        //            .init(vertices: [[100, 0, 0], [200, 0, 0], [200, 100, 0], [100, 100, 0]]),
+        //        ]
         let polygons: [[CGPoint]] = [
             [[0, 0], [0, 100], [100, 100]],
             [[100, 0], [0, 0], [100, 100]],
@@ -91,10 +91,10 @@ struct BetterHalfEdgeMeshInspectorView <Position>: View where Position: Hashable
                 DisclosureGroup2("Half Edges") {
                     ForEach(mesh.halfEdges.indices, id: \.self) { index in
                         let halfEdge = mesh.halfEdges[index]
-//                        var vertex: Vertex
-//                        var next: HalfEdge?
-//                        var twin: HalfEdge?
-//                        var face: Face?
+                        //                        var vertex: Vertex
+                        //                        var next: HalfEdge?
+                        //                        var twin: HalfEdge?
+                        //                        var face: Face?
 
                         DisclosureGroup2("#\(index)") {
                             LabeledContent("Next") {
@@ -132,16 +132,16 @@ struct BetterHalfEdgeMeshInspectorView <Position>: View where Position: Hashable
     @ViewBuilder
     func link(for face: Mesh.Face?) -> some View {
         if let face {
-        if let index = mesh.index(for: face) {
-            Button("#\(index)") {
+            if let index = mesh.index(for: face) {
+                Button("#\(index)") {
+                }
+                #if os(macOS)
+                .buttonStyle(.link)
+                #endif
             }
-            #if os(macOS)
-            .buttonStyle(.link)
-            #endif
-        }
-        else {
-            ContentUnavailableView("No face in mesh", systemImage: "exclamationmark.triangle")
-        }
+            else {
+                ContentUnavailableView("No face in mesh", systemImage: "exclamationmark.triangle")
+            }
         }
         else {
             ContentUnavailableView("No face in mesh", systemImage: "exclamationmark.triangle")
@@ -179,10 +179,10 @@ extension HalfEdgeMesh {
 
 /*
  Mesh:
-   Faces:
-     #0: Edges
-   HalfEdges:
-     #0
+ Faces:
+ #0: Edges
+ HalfEdges:
+ #0
  */
 
 struct DisclosureGroup2 <Label, Content>: View where Label: View, Content: View {

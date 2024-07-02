@@ -67,23 +67,23 @@ public extension ImageSource {
 }
 
 #if os(macOS)
-    import AppKit
+import AppKit
 
-    public extension CGImage {
-        static func image(contentsOf url: URL) throws -> CGImage {
-            let nsImage = NSImage(contentsOf: url)! // TODO: Bang
-            return nsImage.cgImage
-        }
+public extension CGImage {
+    static func image(contentsOf url: URL) throws -> CGImage {
+        let nsImage = NSImage(contentsOf: url)! // TODO: Bang
+        return nsImage.cgImage
     }
+}
 
 #elseif os(iOS) || os(tvOS)
-    import UIKit
+import UIKit
 
-    public extension CGImage {
-        @available(*, unavailable)
-        static func image(contentsOf url: URL) throws -> CGImage {
-            // TODO:
-            fatalError("Unimplemented")
-        }
+public extension CGImage {
+    @available(*, unavailable)
+    static func image(contentsOf url: URL) throws -> CGImage {
+        // TODO:
+        fatalError("Unimplemented")
     }
+}
 #endif // os(macOS)

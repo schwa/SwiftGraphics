@@ -7,15 +7,15 @@ public struct DemosScene: Scene {
     }
 
     public var body: some Scene {
-#if os(macOS)
+        #if os(macOS)
         Window("Demos", id: "demos") {
             DemosView()
         }
-#else
+        #else
         WindowGroup("Demos", id: "demos") {
             DemosView()
         }
-#endif
+        #endif
     }
 }
 

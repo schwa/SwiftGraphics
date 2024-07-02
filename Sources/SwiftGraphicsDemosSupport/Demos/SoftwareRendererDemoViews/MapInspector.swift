@@ -26,7 +26,7 @@ struct MapInspector: View {
             context.stroke(Path { path in
                 path.move(to: cameraPosition)
                 let unit = cameraTransform.matrix * SIMD4<Float>(0, 1, 0, -1)
-//                path.addLine(to: cameraPosition + CGPoint(unit.xz) * -2)
+                //                path.addLine(to: cameraPosition + CGPoint(unit.xz) * -2)
                 path.addLine(to: CGPoint(unit.xz) * 2, relative: true)
             }, with: .color(.yellow), lineWidth: 2)
         }

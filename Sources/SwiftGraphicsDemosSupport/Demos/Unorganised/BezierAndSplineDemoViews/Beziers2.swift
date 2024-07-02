@@ -96,8 +96,8 @@ func quadBezFlatten(_ q: QuadraticBezierCurve, tolerance: Double) -> [CGPoint] {
             }
         }
         ts.append(1.0)
-//        quadBezState.numberOfSegments = ts.length;
-//        return ts;
+        //        quadBezState.numberOfSegments = ts.length;
+        //        return ts;
         unimplemented()
     }
     let u0 = approxInvIntegral(a0)

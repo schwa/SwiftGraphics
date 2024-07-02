@@ -65,7 +65,7 @@ class MovementController: @unchecked Sendable {
     //    var lastMouseUpdate: TimeInterval = 0
 
     func disableUIKeys() {
-#if os(macOS)
+        #if os(macOS)
         logger?.debug("NSEvent.addLocalMonitorForEvents(matching: .keyDown) …")
         NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
             // If we're not focused return everything.
@@ -87,7 +87,7 @@ class MovementController: @unchecked Sendable {
             // Consume the key
             return nil
         }
-#endif
+        #endif
     }
 
     @ObservationIgnored

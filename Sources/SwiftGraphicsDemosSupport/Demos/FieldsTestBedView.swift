@@ -11,20 +11,20 @@ struct FieldsTestBedView: View, DemoView {
 
     var body: some View {
         VStack {
-//            HilbertCurve()
+            //            HilbertCurve()
 
-//            WrappingHStack {
-//                let items: [String] = Array(1...20).map { "Item \($0)" }
-//
-//                ForEach(items, id: \.self) { item in
-//                    Text(item)
-//                        .padding()
-//                        .background(Color.blue)
-//                        .cornerRadius(8)
-//                }
-//            }
-//            .border(Color.red)
-//            .padding(32)
+            //            WrappingHStack {
+            //                let items: [String] = Array(1...20).map { "Item \($0)" }
+            //
+            //                ForEach(items, id: \.self) { item in
+            //                    Text(item)
+            //                        .padding()
+            //                        .background(Color.blue)
+            //                        .cornerRadius(8)
+            //                }
+            //            }
+            //            .border(Color.red)
+            //            .padding(32)
 
             VStack {
                 PathSlider(value: $value, path: morpher.morph(value))
@@ -34,18 +34,18 @@ struct FieldsTestBedView: View, DemoView {
             }
             .padding()
 
-//            Wheel(label: "Hello", value: $value)
-//            Text("\(value)")
-//            Button("Boing") {
-//                withAnimation {
-//                    value += Double.random(in: 0..<1000)
-//                }
-//            }
-//            Slider(value: $value, in: -1000 ... 1000)
-//
-//            Dial(value: $value, in: -1000 ... 1000) {
-//                Text("Hello")
-//            }
+            //            Wheel(label: "Hello", value: $value)
+            //            Text("\(value)")
+            //            Button("Boing") {
+            //                withAnimation {
+            //                    value += Double.random(in: 0..<1000)
+            //                }
+            //            }
+            //            Slider(value: $value, in: -1000 ... 1000)
+            //
+            //            Dial(value: $value, in: -1000 ... 1000) {
+            //                Text("Hello")
+            //            }
         }
     }
 }

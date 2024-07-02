@@ -35,7 +35,7 @@ struct FirstPersonInteractiveViewModifier <FirstPersonCamera: FirstPersonCameraP
                 movementController.focused = renderViewFocused
                 self.movementController = movementController
                 #if os(macOS)
-                    movementController.disableUIKeys()
+                movementController.disableUIKeys()
                 #endif
                 movementConsumerTask = Task.detached { [movementController] in
                     for await event in movementController.events() {

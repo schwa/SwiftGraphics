@@ -3,38 +3,38 @@ import SwiftGraphicsDemosSupport
 
 @main
 enum Main {
-//    static func main() async throws {
-//        let source = """
-//            ply
-//            format ascii 1.0
-//            element vertex 2
-//            property float x
-//            property float y
-//            property float z
-//            element face 1
-//            property list uchar uint vertex_indices
-//            end_header
-//            1 2 3
-//            4 5 6
-//            4 10 11 12 13
-//            """
-//        let ply = try Ply(string: source, processElements: true)
-////        print(ply)
-////        dump(ply.header)
-////        print(ply.processedElements![0].records[0].to(definition: ply.header.elements[0], ofType: SIMD3<Float>.self)!)
-////        print(ply.processedElements![0].records[1].to(definition: ply.header.elements[0], ofType: SIMD3<Float>.self)!)
-////        print(ply.processedElements![1].records)
-////
-////        let url = Bundle.module.url(forResource: "CubeBinary", withExtension: "ply")!
-////        var ply2 = try Ply(url: url, processElements: true)
-////        print(ply2)
-////        print(ply2.processedElements)
-//
-//        let url3 = Bundle.module.url(forResource: "test-splat.3-points-from-train", withExtension: "ply")!
-//        var ply3 = try Ply(url: url3, processElements: true)
-//        print(ply3)
-//
-//    }
+    //    static func main() async throws {
+    //        let source = """
+    //            ply
+    //            format ascii 1.0
+    //            element vertex 2
+    //            property float x
+    //            property float y
+    //            property float z
+    //            element face 1
+    //            property list uchar uint vertex_indices
+    //            end_header
+    //            1 2 3
+    //            4 5 6
+    //            4 10 11 12 13
+    //            """
+    //        let ply = try Ply(string: source, processElements: true)
+    ////        print(ply)
+    ////        dump(ply.header)
+    ////        print(ply.processedElements![0].records[0].to(definition: ply.header.elements[0], ofType: SIMD3<Float>.self)!)
+    ////        print(ply.processedElements![0].records[1].to(definition: ply.header.elements[0], ofType: SIMD3<Float>.self)!)
+    ////        print(ply.processedElements![1].records)
+    ////
+    ////        let url = Bundle.module.url(forResource: "CubeBinary", withExtension: "ply")!
+    ////        var ply2 = try Ply(url: url, processElements: true)
+    ////        print(ply2)
+    ////        print(ply2.processedElements)
+    //
+    //        let url3 = Bundle.module.url(forResource: "test-splat.3-points-from-train", withExtension: "ply")!
+    //        var ply3 = try Ply(url: url3, processElements: true)
+    //        print(ply3)
+    //
+    //    }
 
     static func main() async throws {
         let source = """

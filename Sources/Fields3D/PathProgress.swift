@@ -38,10 +38,10 @@ struct PathProgress: View {
     var example2: some View {
         let lineWidth = 2.0
 
-//        let path = Path(ellipseIn: CGRect(center: CGPoint(100, 100), radius: 50))
-//        + Path(ellipseIn: CGRect(center: CGPoint(100, 100), radius: 40))
-//        + Path(ellipseIn: CGRect(center: CGPoint(100, 100), radius: 30))
-//        + Path(ellipseIn: CGRect(center: CGPoint(100, 100), radius: 20))
+        //        let path = Path(ellipseIn: CGRect(center: CGPoint(100, 100), radius: 50))
+        //        + Path(ellipseIn: CGRect(center: CGPoint(100, 100), radius: 40))
+        //        + Path(ellipseIn: CGRect(center: CGPoint(100, 100), radius: 30))
+        //        + Path(ellipseIn: CGRect(center: CGPoint(100, 100), radius: 20))
         TimelineView(.animation) { timeline in
             let delta = timeline.date.timeIntervalSinceReferenceDate
             Canvas { context, size in

@@ -17,7 +17,7 @@ struct PixelFormatsDemoView: View, DemoView {
     @State
     private var convertedTextures: [MTLPixelFormat: MTLTexture] = [:]
 
-     init() {
+    init() {
     }
 
     var body: some View {

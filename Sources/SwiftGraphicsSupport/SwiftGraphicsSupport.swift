@@ -201,9 +201,9 @@ public struct SpatialTapGestureModifier: ViewModifier {
                 start = value.location
             }
         }
-            .onEnded { value in
-                callback(value.location)
-            })
+        .onEnded { value in
+            callback(value.location)
+        })
     }
 }
 
@@ -222,17 +222,17 @@ public extension Image {
         if try url.checkResourceIsReachable() == false {
             throw ImageLoadError(string: "Resource does not exist at: \(url)")
         }
-#if os(macOS)
+        #if os(macOS)
         guard let nsImage = NSImage(contentsOf: url) else {
             throw ImageLoadError(string: "Cannot load resource at \(url), maybe sandbox issues.")
         }
         self = Image(nsImage: nsImage)
-#elseif os(iOS)
+        #elseif os(iOS)
         guard let uiImage = UIImage(contentsOfFile: url.path) else {
             throw ImageLoadError(string: "Cannot load resource at \(url), maybe sandbox issues.")
         }
         self = Image(uiImage: uiImage)
-#endif
+        #endif
     }
 }
 

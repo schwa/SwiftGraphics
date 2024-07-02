@@ -81,17 +81,17 @@ public extension Ellipse {
     }
 
     // TODO: FIXME
-//    var boundingBox: CGRect {
-//        let bezierCurves = toBezierCurves()
-//        let rects = [
-//            bezierCurves.0.boundingBox,
-//            bezierCurves.1.boundingBox,
-//            bezierCurves.2.boundingBox,
-//            bezierCurves.3.boundingBox
-//            ]
-//
-//        return CGRect.unionOfRects(rects)
-//    }
+    //    var boundingBox: CGRect {
+    //        let bezierCurves = toBezierCurves()
+    //        let rects = [
+    //            bezierCurves.0.boundingBox,
+    //            bezierCurves.1.boundingBox,
+    //            bezierCurves.2.boundingBox,
+    //            bezierCurves.3.boundingBox
+    //            ]
+    //
+    //        return CGRect.unionOfRects(rects)
+    //    }
 }
 
 public extension Ellipse {

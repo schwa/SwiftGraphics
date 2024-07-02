@@ -22,7 +22,7 @@ struct BeziersDemoView: View, DemoView {
             LegacyPathEditor(points: $points)
             let curve = CubicBezierCurve(controlPoints: points)
             ZStack {
-//                Path(curve: curve).stroke()
+                //                Path(curve: curve).stroke()
                 Path(lines: curve.render()).stroke().foregroundColor(.red)
                 Path.dots(curve.render(), radius: 2).fill().foregroundColor(.red)
             }

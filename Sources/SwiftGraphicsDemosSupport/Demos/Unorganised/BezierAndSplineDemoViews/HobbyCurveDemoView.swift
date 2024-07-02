@@ -11,7 +11,7 @@ struct HobbyCurveDemoView: View, DemoView {
                 .foregroundColor(.gray)
             let points = hobby(points: points, omega: 0)
             ZStack {
-//                Path(curve: curve).stroke()
+                //                Path(curve: curve).stroke()
                 Path(lines: points).stroke()
             }
         }

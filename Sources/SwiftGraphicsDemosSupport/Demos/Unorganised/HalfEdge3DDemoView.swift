@@ -94,7 +94,7 @@ struct HalfEdge3DDemoView: View, DemoView {
         .inspector {
             TabView {
                 HalfEdgeMeshInspectorView(mesh: $mesh, selection: $selection, faceColors: $faceColors)
-                .tabItem { Text("Mesh") }
+                    .tabItem { Text("Mesh") }
 
                 Form {
                     Section("Map") {

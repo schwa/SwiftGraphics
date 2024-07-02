@@ -57,10 +57,10 @@ struct GaussianSplatRenderPass: RenderPassProtocol {
         renderPipelineDescriptor.colorAttachments[0].destinationRGBBlendFactor = .oneMinusSourceAlpha
         renderPipelineDescriptor.colorAttachments[0].destinationAlphaBlendFactor = .oneMinusSourceAlpha
 
-//        renderPipelineDescriptor.colorAttachments[0].sourceRGBBlendFactor = .oneMinusDestinationAlpha
-//        renderPipelineDescriptor.colorAttachments[0].sourceAlphaBlendFactor = .oneMinusDestinationAlpha
-//        renderPipelineDescriptor.colorAttachments[0].destinationRGBBlendFactor = .one
-//        renderPipelineDescriptor.colorAttachments[0].destinationAlphaBlendFactor = .one
+        //        renderPipelineDescriptor.colorAttachments[0].sourceRGBBlendFactor = .oneMinusDestinationAlpha
+        //        renderPipelineDescriptor.colorAttachments[0].sourceAlphaBlendFactor = .oneMinusDestinationAlpha
+        //        renderPipelineDescriptor.colorAttachments[0].destinationRGBBlendFactor = .one
+        //        renderPipelineDescriptor.colorAttachments[0].destinationAlphaBlendFactor = .one
 
         let (renderPipelineState, reflection) = try device.makeRenderPipelineState(descriptor: renderPipelineDescriptor, options: [.bindingInfo])
         guard let reflection else {
@@ -115,7 +115,7 @@ struct GaussianSplatRenderPass: RenderPassProtocol {
             commandEncoder.setFragmentBuffer(splatIndices.content, offset: 0, index: state.bindings.fragmentSplatIndices)
         }
 
-//        commandEncoder.draw(pointMesh, instanceCount: splatCount)
+        //        commandEncoder.draw(pointMesh, instanceCount: splatCount)
         commandEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4, instanceCount: splatCount)
     }
 }

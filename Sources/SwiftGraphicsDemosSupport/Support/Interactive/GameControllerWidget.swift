@@ -43,8 +43,8 @@ struct GameControllerWidget: View {
         var devices: Set<DeviceBox> = []
 
         #if os(iOS)
-            var virtualController: GCVirtualController?
-            // Temporary workaround for FB12509166
+        var virtualController: GCVirtualController?
+        // Temporary workaround for FB12509166
         #endif
 
         @ObservationIgnored
@@ -132,33 +132,33 @@ struct GameControllerWidget: View {
                     }
                 }
                 #if os(iOS)
-                    Divider()
-                    if model.virtualController != nil {
-                        Button("Disable Touch Controller") {
-                            model.virtualController?.disconnect()
-                            model.virtualController = nil
+                Divider()
+                if model.virtualController != nil {
+                    Button("Disable Touch Controller") {
+                        model.virtualController?.disconnect()
+                        model.virtualController = nil
+                    }
+                }
+                else {
+                    Button("Enable Touch Controller") {
+                        Task {
+                            let configuration = GCVirtualController.Configuration()
+                            configuration.elements = [
+                                GCInputLeftThumbstick, GCInputRightThumbstick, GCInputLeftShoulder, GCInputRightShoulder,
+                                //                        GCInputButtonA,
+                                //                        GCInputButtonB,
+                                //                        GCInputButtonX,
+                                //                        GCInputButtonY,
+                                // GCInputDirectionPad,
+                                //                        GCInputLeftTrigger,
+                                //                        GCInputRightTrigger
+                            ]
+                            let virtualController = GCVirtualController(configuration: configuration)
+                            try! await virtualController.connect()
+                            model.virtualController = virtualController
                         }
                     }
-                    else {
-                        Button("Enable Touch Controller") {
-                            Task {
-                                let configuration = GCVirtualController.Configuration()
-                                configuration.elements = [
-                                    GCInputLeftThumbstick, GCInputRightThumbstick, GCInputLeftShoulder, GCInputRightShoulder,
-                                    //                        GCInputButtonA,
-                                    //                        GCInputButtonB,
-                                    //                        GCInputButtonX,
-                                    //                        GCInputButtonY,
-                                    // GCInputDirectionPad,
-                                    //                        GCInputLeftTrigger,
-                                    //                        GCInputRightTrigger
-                                ]
-                                let virtualController = GCVirtualController(configuration: configuration)
-                                try! await virtualController.connect()
-                                model.virtualController = virtualController
-                            }
-                        }
-                    }
+                }
                 #endif
                 if !model.devices.isEmpty {
                     Divider()

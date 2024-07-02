@@ -58,13 +58,13 @@ class DisplayLink2 {
     }
 
     convenience init(runloop: RunLoop = .current, mode: RunLoop.Mode = .default) {
-#if os(macOS)
+        #if os(macOS)
         self.init(runloop: runloop, mode: mode, source: NSScreen.screens[0])
-#else
+        #else
         self.init(runloop: runloop, mode: mode) {
             CADisplayLink(target: $0, selector: #selector(Helper.callCallback))
         }
-#endif
+        #endif
     }
 
     func events() -> AsyncStream<Event> {
@@ -79,28 +79,28 @@ class DisplayLink2 {
 }
 
 #if os(macOS)
-    @available(macOS 14, iOS 15, tvOS 16, *)
-    extension DisplayLink2 {
-        convenience init(runloop: RunLoop = .current, mode: RunLoop.Mode = .default, source: NSScreen) {
-            self.init(runloop: runloop, mode: mode) {
-                source.displayLink(target: $0, selector: #selector(Helper.callCallback))
-            }
-        }
-
-        @MainActor
-        convenience init(runloop: RunLoop = .current, mode: RunLoop.Mode = .default, source: NSWindow) {
-            self.init(runloop: runloop, mode: mode) {
-                source.displayLink(target: $0, selector: #selector(Helper.callCallback))
-            }
-        }
-
-        @MainActor
-        convenience init(runloop: RunLoop = .current, mode: RunLoop.Mode = .default, source: NSView) {
-            self.init(runloop: runloop, mode: mode) {
-                source.displayLink(target: $0, selector: #selector(Helper.callCallback))
-            }
+@available(macOS 14, iOS 15, tvOS 16, *)
+extension DisplayLink2 {
+    convenience init(runloop: RunLoop = .current, mode: RunLoop.Mode = .default, source: NSScreen) {
+        self.init(runloop: runloop, mode: mode) {
+            source.displayLink(target: $0, selector: #selector(Helper.callCallback))
         }
     }
+
+    @MainActor
+    convenience init(runloop: RunLoop = .current, mode: RunLoop.Mode = .default, source: NSWindow) {
+        self.init(runloop: runloop, mode: mode) {
+            source.displayLink(target: $0, selector: #selector(Helper.callCallback))
+        }
+    }
+
+    @MainActor
+    convenience init(runloop: RunLoop = .current, mode: RunLoop.Mode = .default, source: NSView) {
+        self.init(runloop: runloop, mode: mode) {
+            source.displayLink(target: $0, selector: #selector(Helper.callCallback))
+        }
+    }
+}
 #endif
 
 @available(macOS 14, iOS 15, tvOS 16, *)

@@ -27,20 +27,20 @@ public struct SceneGraphDemoView: View, DemoView {
     }
 
     public var body: some View {
-//        let cameraNode = Binding<Node> {
-//            scene.currentCameraNode ?? Node()
-//        }
-//        set: { newValue in
-//            scene.currentCameraNode = newValue
-//        }
+        //        let cameraNode = Binding<Node> {
+        //            scene.currentCameraNode ?? Node()
+        //        }
+        //        set: { newValue in
+        //            scene.currentCameraNode = newValue
+        //        }
 
         RenderView(device: device, passes: [
             DiffuseShadingRenderPass(scene: scene),
             UnlitShadingPass(scene: scene),
             DebugRenderPass(scene: scene),
         ])
-//        .firstPersonInteractive(camera: cameraNode)
-//        .displayLink(DisplayLink2())
+        //        .firstPersonInteractive(camera: cameraNode)
+        //        .displayLink(DisplayLink2())
         .showFrameEditor()
         .onChange(of: cameraRotation, initial: true) {
             //            scene.currentCameraNode?.transform.rotation = .rollPitchYaw(cameraRotation)
@@ -60,8 +60,8 @@ public struct SceneGraphDemoView: View, DemoView {
         Task {
             do {
                 var renderer = try! OffscreenRenderer(size: [640, 480], device: device, renderPasses: [
-    //                DiffuseShadingRenderPass(scene: scene),
-    //                DebugRenderPass(scene: scene),
+                    //                DiffuseShadingRenderPass(scene: scene),
+                    //                DebugRenderPass(scene: scene),
                     UnlitShadingPass(scene: scene),
                 ])
 

@@ -708,7 +708,7 @@ public extension MTLTexture {
         }
     }
 
-//    @available(*, deprecated, message: "Deprecate if can't be provide working in unit tests.")
+    //    @available(*, deprecated, message: "Deprecate if can't be provide working in unit tests.")
     // TODO: Maybe deprecate?
     func cgImage() -> CGImage? {
         guard let pixelFormat = PixelFormat(pixelFormat) else {
@@ -759,7 +759,7 @@ public extension MTLTexture {
                 }
             }
         }
-//            // https://developer.apple.com/documentation/metal/mtltexture/1515598-newtextureviewwithpixelformat
+        //            // https://developer.apple.com/documentation/metal/mtltexture/1515598-newtextureviewwithpixelformat
         else {
             guard let srcColorSpace = pixelFormat.colorSpace else {
                 fatalError("No colorspace for \(pixelFormat)")
@@ -1010,17 +1010,17 @@ public extension MTLVertexFormat {
 
 public extension PixelFormat {
     init?(mtlPixelFormat: MTLPixelFormat) {
-//    CGBitmapContextCreate:
-//        Valid parameters for RGB color space model are:
-//        16  bits per pixel,         5  bits per component,         kCGImageAlphaNoneSkipFirst
-//        32  bits per pixel,         8  bits per component,         kCGImageAlphaNoneSkipFirst
-//        32  bits per pixel,         8  bits per component,         kCGImageAlphaNoneSkipLast
-//        32  bits per pixel,         8  bits per component,         kCGImageAlphaPremultipliedFirst
-//        32  bits per pixel,         8  bits per component,         kCGImageAlphaPremultipliedLast
-//        32  bits per pixel,         10 bits per component,         kCGImageAlphaNone|kCGImagePixelFormatRGBCIF10|kCGImageByteOrder16Little
-//        64  bits per pixel,         16 bits per component,         kCGImageAlphaPremultipliedLast
-//        64  bits per pixel,         16 bits per component,         kCGImageAlphaNoneSkipLast
-//        64  bits per pixel,         16 bits per component,         kCGImageAlphaPremultipliedLast|kCGBitmapFloatComponents|k
+        //    CGBitmapContextCreate:
+        //        Valid parameters for RGB color space model are:
+        //        16  bits per pixel,         5  bits per component,         kCGImageAlphaNoneSkipFirst
+        //        32  bits per pixel,         8  bits per component,         kCGImageAlphaNoneSkipFirst
+        //        32  bits per pixel,         8  bits per component,         kCGImageAlphaNoneSkipLast
+        //        32  bits per pixel,         8  bits per component,         kCGImageAlphaPremultipliedFirst
+        //        32  bits per pixel,         8  bits per component,         kCGImageAlphaPremultipliedLast
+        //        32  bits per pixel,         10 bits per component,         kCGImageAlphaNone|kCGImagePixelFormatRGBCIF10|kCGImageByteOrder16Little
+        //        64  bits per pixel,         16 bits per component,         kCGImageAlphaPremultipliedLast
+        //        64  bits per pixel,         16 bits per component,         kCGImageAlphaNoneSkipLast
+        //        64  bits per pixel,         16 bits per component,         kCGImageAlphaPremultipliedLast|kCGBitmapFloatComponents|k
 
         switch mtlPixelFormat {
         case .bgra8Unorm:
@@ -1039,8 +1039,8 @@ public extension PixelFormat {
             let colorSpace = CGColorSpaceCreateDeviceRGB()
             self = .init(bitsPerComponent: 32, numberOfComponents: 4, alphaInfo: .premultipliedLast, byteOrder: .order32Little, useFloatComponents: true, colorSpace: colorSpace)
         case .bgra10_xr:
-//            let colorSpace = CGColorSpaceCreateDeviceRGB()
-//            self = .init(bitsPerComponent: 10, numberOfComponents: 4, alphaInfo: .premultipliedLast, byteOrder: .order16Little, formatInfo: .RGB101010, colorSpace: colorSpace)
+            //            let colorSpace = CGColorSpaceCreateDeviceRGB()
+            //            self = .init(bitsPerComponent: 10, numberOfComponents: 4, alphaInfo: .premultipliedLast, byteOrder: .order16Little, formatInfo: .RGB101010, colorSpace: colorSpace)
             return nil
 
         default:
@@ -1062,42 +1062,42 @@ internal func fatalError(_ error: Error) -> Never {
 }
 
 #if !os(visionOS)
-    public extension MTKView {
-        var betterDebugDescription: String {
-            let attributes: [(String, String?)] = [
-                ("delegate", delegate.map { String(describing: $0) }),
-                ("device", device?.name),
-                ("currentDrawable", currentDrawable.map { String(describing: $0) }),
-                ("framebufferOnly", String(describing: framebufferOnly)),
-                ("depthStencilAttachmentTextureUsage", String(describing: depthStencilAttachmentTextureUsage)),
-                ("multisampleColorAttachmentTextureUsage", String(describing: multisampleColorAttachmentTextureUsage)),
-                ("presentsWithTransaction", String(describing: presentsWithTransaction)),
-                ("colorPixelFormat", String(describing: colorPixelFormat)),
-                ("depthStencilPixelFormat", String(describing: depthStencilPixelFormat)),
-                ("depthStencilStorageMode", String(describing: depthStencilStorageMode)),
-                ("sampleCount", sampleCount.formatted()),
-                ("clearColor", String(describing: clearColor)),
-                ("clearDepth", clearDepth.formatted()),
-                ("clearStencil", clearStencil.formatted()),
-                //            ("depthStencilTexture", String(describing: depthStencilTexture)),
-                ("multisampleColorTexture", String(describing: multisampleColorTexture)),
-                ("currentRenderPassDescriptor", String(describing: currentRenderPassDescriptor)),
-                ("preferredFramesPerSecond", String(describing: preferredFramesPerSecond)),
-                ("enableSetNeedsDisplay", String(describing: enableSetNeedsDisplay)),
-                ("autoResizeDrawable", String(describing: autoResizeDrawable)),
-                ("drawableSize", String(describing: drawableSize)),
-                ("preferredDrawableSize", String(describing: preferredDrawableSize)),
-                ("preferredDevice", preferredDevice?.name),
-                ("isPaused", String(describing: isPaused)),
-//            ("colorspace", String(describing: colorspace)),
-            ]
-            let formattedAttributes = attributes.compactMap { key, value in
-                value.map { value in "\t\(key): \(value)" }
-            }
-            .joined(separator: ",\n")
-            return "\(self) (\n\(formattedAttributes)\n)"
+public extension MTKView {
+    var betterDebugDescription: String {
+        let attributes: [(String, String?)] = [
+            ("delegate", delegate.map { String(describing: $0) }),
+            ("device", device?.name),
+            ("currentDrawable", currentDrawable.map { String(describing: $0) }),
+            ("framebufferOnly", String(describing: framebufferOnly)),
+            ("depthStencilAttachmentTextureUsage", String(describing: depthStencilAttachmentTextureUsage)),
+            ("multisampleColorAttachmentTextureUsage", String(describing: multisampleColorAttachmentTextureUsage)),
+            ("presentsWithTransaction", String(describing: presentsWithTransaction)),
+            ("colorPixelFormat", String(describing: colorPixelFormat)),
+            ("depthStencilPixelFormat", String(describing: depthStencilPixelFormat)),
+            ("depthStencilStorageMode", String(describing: depthStencilStorageMode)),
+            ("sampleCount", sampleCount.formatted()),
+            ("clearColor", String(describing: clearColor)),
+            ("clearDepth", clearDepth.formatted()),
+            ("clearStencil", clearStencil.formatted()),
+            //            ("depthStencilTexture", String(describing: depthStencilTexture)),
+            ("multisampleColorTexture", String(describing: multisampleColorTexture)),
+            ("currentRenderPassDescriptor", String(describing: currentRenderPassDescriptor)),
+            ("preferredFramesPerSecond", String(describing: preferredFramesPerSecond)),
+            ("enableSetNeedsDisplay", String(describing: enableSetNeedsDisplay)),
+            ("autoResizeDrawable", String(describing: autoResizeDrawable)),
+            ("drawableSize", String(describing: drawableSize)),
+            ("preferredDrawableSize", String(describing: preferredDrawableSize)),
+            ("preferredDevice", preferredDevice?.name),
+            ("isPaused", String(describing: isPaused)),
+            //            ("colorspace", String(describing: colorspace)),
+        ]
+        let formattedAttributes = attributes.compactMap { key, value in
+            value.map { value in "\t\(key): \(value)" }
         }
+        .joined(separator: ",\n")
+        return "\(self) (\n\(formattedAttributes)\n)"
     }
+}
 #endif
 
 public extension SIMD4<Double> {

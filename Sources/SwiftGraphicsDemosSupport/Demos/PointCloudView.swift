@@ -50,8 +50,8 @@ struct PointCloudView: View, DemoView {
             .ballRotation($modelTransform.rotation.rollPitchYaw)
             .overlay(alignment: .bottom) {
                 Text("\(pointCount)")
-                .foregroundStyle(.white)
-                .padding()
+                    .foregroundStyle(.white)
+                    .padding()
             }
     }
 }

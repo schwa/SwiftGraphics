@@ -133,11 +133,11 @@ extension Spline {
         }) else {
             return nil
         }
-//        let knots = (knots[index], knots[index + 1])
-//
-//
-//
-//        spline.knots.insert(.init(position: (knots.0.position + knots.1.position) / 2, controlPoint: .zero), at: index)
+        //        let knots = (knots[index], knots[index + 1])
+        //
+        //
+        //
+        //        spline.knots.insert(.init(position: (knots.0.position + knots.1.position) / 2, controlPoint: .zero), at: index)
 
         let knot = Knot(position: (knots[index].position + knots[index + 1].position) / 2)
 

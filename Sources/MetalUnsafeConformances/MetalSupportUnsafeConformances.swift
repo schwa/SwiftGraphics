@@ -319,7 +319,7 @@ extension MTLGPUFamily: @retroactive CaseIterable, @retroactive CustomStringConv
             .metal3,
         ]
         #if os(iOS)
-            result += [.apple9]
+        result += [.apple9]
         #endif
         return result
     }
@@ -591,14 +591,14 @@ extension MTLPixelFormat: @retroactive CaseIterable {
             .bc6H_rgbuFloat,
             .bc7_rgbaUnorm,
             .bc7_rgbaUnorm_srgb,
-//            .pvrtc_rgb_2bpp,
-//            .pvrtc_rgb_2bpp_srgb,
-//            .pvrtc_rgb_4bpp,
-//            .pvrtc_rgb_4bpp_srgb,
-//            .pvrtc_rgba_2bpp,
-//            .pvrtc_rgba_2bpp_srgb,
-//            .pvrtc_rgba_4bpp,
-//            .pvrtc_rgba_4bpp_srgb,
+            //            .pvrtc_rgb_2bpp,
+            //            .pvrtc_rgb_2bpp_srgb,
+            //            .pvrtc_rgb_4bpp,
+            //            .pvrtc_rgb_4bpp_srgb,
+            //            .pvrtc_rgba_2bpp,
+            //            .pvrtc_rgba_2bpp_srgb,
+            //            .pvrtc_rgba_4bpp,
+            //            .pvrtc_rgba_4bpp_srgb,
             .eac_r11Unorm,
             .eac_r11Snorm,
             .eac_rg11Unorm,
@@ -661,12 +661,12 @@ extension MTLPixelFormat: @retroactive CaseIterable {
         ]
 
         #if os(macOS)
-            return baseCases + [
-                .depth24Unorm_stencil8,
-                .x24_stencil8,
-            ]
+        return baseCases + [
+            .depth24Unorm_stencil8,
+            .x24_stencil8,
+        ]
         #else
-            return baseCases
+        return baseCases
         #endif
     }
 }

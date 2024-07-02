@@ -29,7 +29,7 @@ struct MyGradient {
             stop.controls = handle
             return (stop)
         }
-//        print(color(at: 0.5))
+        //        print(color(at: 0.5))
     }
 }
 
@@ -69,15 +69,15 @@ extension MyGradient {
 
 func inverseLerp(value: Float, startValue: Float, endValue: Float) -> Float {
     let result: Float
-//    if value <= startValue {
-//        result = 0
-//    }
-//    else if value >= endValue {
-//        result = 0
-//    }
-//    else {
+    //    if value <= startValue {
+    //        result = 0
+    //    }
+    //    else if value >= endValue {
+    //        result = 0
+    //    }
+    //    else {
     result = (value - startValue) / (endValue - startValue)
-//    }
+    //    }
     return result
 }
 

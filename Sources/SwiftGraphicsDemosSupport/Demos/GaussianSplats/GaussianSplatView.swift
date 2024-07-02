@@ -41,9 +41,9 @@ struct GaussianSplatView: View, DemoView {
             ValueView(value: false) { isPresented in
                 Toggle("Load", isOn: isPresented)
                     .fileImporter(isPresented: isPresented, allowedContentTypes: [.splatC, .splat]) { result in
-                    if case let .success(url) = result {
-                        viewModel = try! GaussianSplatViewModel(device: device, url: url)
-                    }
+                        if case let .success(url) = result {
+                            viewModel = try! GaussianSplatViewModel(device: device, url: url)
+                        }
                     }
             }
             ForEach(try! Bundle.module.urls(withExtension: "splatc"), id: \.self) { url in
@@ -141,35 +141,35 @@ struct GaussianSplatRenderView: View {
 
     var body: some View {
         RenderView(device: device, passes: passes)
-        .onGeometryChange(for: CGSize.self) { proxy in
-            proxy.size
-        }
-        action: { size in
-            self.size = size
-        }
-        .ballRotation($modelTransform.rotation.rollPitchYaw, pitchLimit: .radians(-.infinity) ... .radians(.infinity))
-        .overlay(alignment: .bottom) {
-            VStack {
-                Text("Size: [\(size * displayScale, format: .size)]")
-                Text("#splats: \(viewModel.splatCount)")
-                HStack {
-                    Slider(value: $cameraTransform.translation.z, in: 0.0 ... 20.0) { Text("Distance") }
-                    .frame(maxWidth: 120)
-                    TextField("Distance", value: $cameraTransform.translation.z, format: .number)
-                        .labelsHidden()
-                    .frame(maxWidth: 120)
-                }
-                Toggle("Debug Mode", isOn: $debugMode)
-                HStack {
-                    Slider(value: $sortRate.toDouble, in: 1 ... 60) { Text("Sort Rate") }
-                    .frame(maxWidth: 120)
-                    Text("\(sortRate)")
-                }
+            .onGeometryChange(for: CGSize.self) { proxy in
+                proxy.size
             }
-            .padding()
-            .background(.ultraThickMaterial).cornerRadius(8)
-            .padding()
-        }
+            action: { size in
+                self.size = size
+            }
+            .ballRotation($modelTransform.rotation.rollPitchYaw, pitchLimit: .radians(-.infinity) ... .radians(.infinity))
+            .overlay(alignment: .bottom) {
+                VStack {
+                    Text("Size: [\(size * displayScale, format: .size)]")
+                    Text("#splats: \(viewModel.splatCount)")
+                    HStack {
+                        Slider(value: $cameraTransform.translation.z, in: 0.0 ... 20.0) { Text("Distance") }
+                            .frame(maxWidth: 120)
+                        TextField("Distance", value: $cameraTransform.translation.z, format: .number)
+                            .labelsHidden()
+                            .frame(maxWidth: 120)
+                    }
+                    Toggle("Debug Mode", isOn: $debugMode)
+                    HStack {
+                        Slider(value: $sortRate.toDouble, in: 1 ... 60) { Text("Sort Rate") }
+                            .frame(maxWidth: 120)
+                        Text("\(sortRate)")
+                    }
+                }
+                .padding()
+                .background(.ultraThickMaterial).cornerRadius(8)
+                .padding()
+            }
     }
 
     var passes: [any PassProtocol] {
@@ -209,12 +209,12 @@ struct GaussianSplatRenderView: View {
 // MARK: -
 
 extension Int {
-var toDouble: Double {
-    get {
-        Double(self)
+    var toDouble: Double {
+        get {
+            Double(self)
+        }
+        set {
+            self = Int(newValue)
+        }
     }
-    set {
-        self = Int(newValue)
-    }
-}
 }

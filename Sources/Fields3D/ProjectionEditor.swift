@@ -53,8 +53,8 @@ public struct ProjectionEditor: View {
             }
             //                    let fieldOfView = Binding<SwiftUI.Angle>(get: { .degrees(projection.fovy) }, set: { projection.fovy = $0.radians })
             HStack {
-//                let binding = Binding<SwiftUI.Angle>(radians: projection.verticalAngleOfView.radians)
-//                TextField("FOVY", value: binding, format: .angle)
+                //                let binding = Binding<SwiftUI.Angle>(radians: projection.verticalAngleOfView.radians)
+                //                TextField("FOVY", value: binding, format: .angle)
                 // SliderPopoverButton(value: projection.fovy.degrees, in: 0...180, minimumValueLabel: { Image(systemName: "field.of.view.wide") }, maximumValueLabel: { Image(systemName: "field.of.view.ultrawide") })
             }
             TextField("Clipping Distance", value: projection.zClip, format: ClosedRangeFormatStyle(substyle: .number))

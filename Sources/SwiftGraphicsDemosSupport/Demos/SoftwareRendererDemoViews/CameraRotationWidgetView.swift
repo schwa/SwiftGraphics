@@ -101,11 +101,11 @@ enum Axis: CaseIterable {
     var color: Color {
         switch self {
         case .x:
-                .red
+            .red
         case .y:
-                .green
+            .green
         case .z:
-                .blue
+            .blue
         }
     }
 }

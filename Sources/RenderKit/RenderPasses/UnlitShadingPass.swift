@@ -15,7 +15,7 @@ public struct UnlitMaterialX: MaterialProtocol {
 
     public static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.baseColorFactor == rhs.baseColorFactor
-        && lhs.baseColorTexture === rhs.baseColorTexture
+            && lhs.baseColorTexture === rhs.baseColorTexture
     }
 }
 

@@ -24,20 +24,20 @@ extension DumbSVGGenerator: CustomStringConvertible {
         print(#"<?xml version="1.0" standalone="no"?>"#, to: &s)
         print(#"<svg version="1.1" xmlns="http://www.w3.org/2000/svg">"#, to: &s)
         print(#"""
-        <defs>
-        <marker id="head" orient="auto" markerWidth="3" markerHeight="4" refX="0.1" refY="2">
-        <path d="M0,0 V4 L2,2 Z"/>
-        </marker>
-        </defs>
+            <defs>
+            <marker id="head" orient="auto" markerWidth="3" markerHeight="4" refX="0.1" refY="2">
+            <path d="M0,0 V4 L2,2 Z"/>
+            </marker>
+            </defs>
         """#, to: &s)
 
-//        <path
-//          id='arrow-line'
-//          marker-end='url(#head)'
-//          stroke-width='4'
-//          fill='none' stroke='black'
-//          d='M0,0, 80 100,120'
-//          />
+        //        <path
+        //          id='arrow-line'
+        //          marker-end='url(#head)'
+        //          stroke-width='4'
+        //          fill='none' stroke='black'
+        //          d='M0,0, 80 100,120'
+        //          />
 
         for element in elements {
             print(element(), to: &s)

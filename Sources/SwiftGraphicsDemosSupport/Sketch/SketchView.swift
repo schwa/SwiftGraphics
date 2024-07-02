@@ -5,8 +5,8 @@ import SwiftUI
 
 @Observable
 class SketchModel {
-//    @ObservationIgnored
-//    @CodableAppStorage("SHAPES")
+    //    @ObservationIgnored
+    //    @CodableAppStorage("SHAPES")
     var shapes: [Identified<UUID, MyShape>] = []
 
     var selection: Set<UUID> = []
@@ -50,9 +50,9 @@ public struct SketchView: View {
                         Canvas { context, _ in
                             for shape in model.shapes {
                                 let path = Path(shape.content)
-//                                if model.selection.contains(shape.id) {
-//                                    context.stroke(path, with: .color(.accentColor), style: .init(lineWidth: 8))
-//                                }
+                                //                                if model.selection.contains(shape.id) {
+                                //                                    context.stroke(path, with: .color(.accentColor), style: .init(lineWidth: 8))
+                                //                                }
                                 context.stroke(path, with: .color(.black))
                             }
                         }

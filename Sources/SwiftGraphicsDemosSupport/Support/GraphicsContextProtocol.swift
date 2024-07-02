@@ -24,30 +24,30 @@ protocol GraphicsContextProtocol {
     typealias ShadowOptions = GraphicsContext.ShadowOptions
     typealias BlurOptions = GraphicsContext.BlurOptions
     typealias FilterOptions = GraphicsContext.FilterOptions
-//    mutating func addFilter(_ filter: Filter, options: FilterOptions)
+    //    mutating func addFilter(_ filter: Filter, options: FilterOptions)
     typealias GradientOptions = GraphicsContext.GradientOptions
-//    func resolve(_ shading: Shading) -> Shading
+    //    func resolve(_ shading: Shading) -> Shading
     func drawLayer(content: (inout Self) throws -> Void) rethrows
     func fill(_ path: Path, with shading: Shading, style: FillStyle)
     func stroke(_ path: Path, with shading: Shading, style: StrokeStyle)
     func stroke(_ path: Path, with shading: Shading, lineWidth: CGFloat)
     typealias ResolvedImage = GraphicsContext.ResolvedImage
-//    func resolve(_ image: Image) -> ResolvedImage
-//    func draw(_ image: ResolvedImage, in rect: CGRect, style: FillStyle)
-//    func draw(_ image: ResolvedImage, at point: CGPoint, anchor: UnitPoint)
+    //    func resolve(_ image: Image) -> ResolvedImage
+    //    func draw(_ image: ResolvedImage, in rect: CGRect, style: FillStyle)
+    //    func draw(_ image: ResolvedImage, at point: CGPoint, anchor: UnitPoint)
     @MainActor func draw(_ image: Image, in rect: CGRect, style: FillStyle)
     @MainActor func draw(_ image: Image, at point: CGPoint, anchor: UnitPoint)
     typealias ResolvedText = GraphicsContext.ResolvedText
-//    func resolve(_ text: Text) -> ResolvedText
-//    func draw(_ text: ResolvedText, in rect: CGRect)
-//    func draw(_ text: ResolvedText, at point: CGPoint, anchor: UnitPoint)
+    //    func resolve(_ text: Text) -> ResolvedText
+    //    func draw(_ text: ResolvedText, in rect: CGRect)
+    //    func draw(_ text: ResolvedText, at point: CGPoint, anchor: UnitPoint)
     @MainActor func draw(_ text: Text, in rect: CGRect)
-//    func draw(_ text: Text, at point: CGPoint, anchor: UnitPoint)
+    //    func draw(_ text: Text, at point: CGPoint, anchor: UnitPoint)
     typealias ResolvedSymbol = GraphicsContext.ResolvedSymbol
-//    func resolveSymbol<ID>(id: ID) -> GraphicsContext.ResolvedSymbol? where ID : Hashable
-//    func draw(_ symbol: GraphicsContext.ResolvedSymbol, in rect: CGRect)
-//    func draw(_ symbol: GraphicsContext.ResolvedSymbol, at point: CGPoint, anchor: UnitPoint)
-//
+    //    func resolveSymbol<ID>(id: ID) -> GraphicsContext.ResolvedSymbol? where ID : Hashable
+    //    func draw(_ symbol: GraphicsContext.ResolvedSymbol, in rect: CGRect)
+    //    func draw(_ symbol: GraphicsContext.ResolvedSymbol, at point: CGPoint, anchor: UnitPoint)
+    //
     func withCGContext(content: (CGContext) throws -> Void) rethrows
 }
 
@@ -60,8 +60,8 @@ extension GraphicsContextProtocol {
         try clipToLayer(opacity: opacity, options: options, content: content)
     }
 
-//    mutating func addFilter(_ filter: Filter, options: FilterOptions = FilterOptions()) {
-//    }
+    //    mutating func addFilter(_ filter: Filter, options: FilterOptions = FilterOptions()) {
+    //    }
 
     func fill(_ path: Path, with shading: Shading, style: FillStyle = FillStyle()) {
         fill(path, with: shading, style: style)
@@ -71,12 +71,12 @@ extension GraphicsContextProtocol {
         stroke(path, with: shading, style: .init(lineWidth: lineWidth))
     }
 
-//    func draw(_ image: ResolvedImage, in rect: CGRect, style: FillStyle = FillStyle()) {
-//    }
-//
-//    func draw(_ image: ResolvedImage, at point: CGPoint, anchor: UnitPoint = .center) {
-//    }
-//
+    //    func draw(_ image: ResolvedImage, in rect: CGRect, style: FillStyle = FillStyle()) {
+    //    }
+    //
+    //    func draw(_ image: ResolvedImage, at point: CGPoint, anchor: UnitPoint = .center) {
+    //    }
+    //
     @MainActor func draw(_ image: Image, in rect: CGRect, style: FillStyle = FillStyle()) {
         draw(image, in: rect, style: style)
     }
@@ -84,15 +84,15 @@ extension GraphicsContextProtocol {
     @MainActor func draw(_ image: Image, at point: CGPoint, anchor: UnitPoint = .center) {
         draw(image, at: point, anchor: anchor)
     }
-//
-//    func draw(_ text: ResolvedText, at point: CGPoint, anchor: UnitPoint = .center) {
-//    }
-//
-//    func draw(_ text: Text, at point: CGPoint, anchor: UnitPoint = .center) {
-//    }
-//
-//    func draw(_ symbol: GraphicsContext.ResolvedSymbol, at point: CGPoint, anchor: UnitPoint) {
-//    }
+    //
+    //    func draw(_ text: ResolvedText, at point: CGPoint, anchor: UnitPoint = .center) {
+    //    }
+    //
+    //    func draw(_ text: Text, at point: CGPoint, anchor: UnitPoint = .center) {
+    //    }
+    //
+    //    func draw(_ symbol: GraphicsContext.ResolvedSymbol, at point: CGPoint, anchor: UnitPoint) {
+    //    }
 }
 
 extension GraphicsContextProtocol {
