@@ -417,7 +417,7 @@ let package = Package(
         .target(
             name: "GaussianSplatShaders",
             plugins: [
-                //.plugin(name: "MetalCompilerPlugin", package: "MetalCompilerPlugin")
+                .plugin(name: "MetalCompilerPlugin", package: "MetalCompilerPlugin")
             ]
         ),
         .target(
