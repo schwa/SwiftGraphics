@@ -3,6 +3,8 @@
 #ifdef __METAL_VERSION__
 #import <metal_stdlib>
 
+using namespace metal;
+
 float3 calcCovariance2D(float3 viewPos, packed_half3 cov3Da, packed_half3 cov3Db, float4x4 viewMatrix, float4x4 projectionMatrix, float2 screenSize)
 {
     float invViewPosZ = 1 / viewPos.z;

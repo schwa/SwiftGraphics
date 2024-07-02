@@ -413,13 +413,19 @@ let package = Package(
             dependencies: ["GaussianSplatSupport"]
         ),
         .target(
-            name: "GaussianSplatShaders"
+            name: "GaussianSplatShaders",
+            plugins: [
+                //.plugin(name: "MetalCompilerPlugin", package: "MetalCompilerPlugin")
+            ]
         ),
         .target(
             name: "GaussianSplatSupport",
             dependencies: [
                 "GaussianSplatShaders",
                 "RenderKit",
+            ],
+            resources: [
+                .copy("Placeholder.txt")
             ]
         ),
     ],

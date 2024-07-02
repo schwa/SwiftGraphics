@@ -27,8 +27,8 @@ public struct GaussianSplatBitonicSortComputePass: ComputePassProtocol {
     }
 
     public func setup(device: MTLDevice) throws -> State {
-        let library = try device.makeDebugLibrary(bundle: .renderKitShaders)
-        let function = library.makeFunction(name: "GaussianSplatShader::BitonicSortSplats").forceUnwrap("No function found")
+        let library = try device.makeDebugLibrary(bundle: .gaussianSplatShaders)
+        let function = library.makeFunction(name: "GaussianSplatShaders::BitonicSortSplats").forceUnwrap("No function found")
         let (pipelineState, reflection) = try device.makeComputePipelineState(function: function, options: .bindingInfo)
         guard let reflection else {
             fatalError()
@@ -103,8 +103,8 @@ public struct GaussianSplatPreCalcComputePass: ComputePassProtocol {
     }
 
     public func setup(device: MTLDevice) throws -> State {
-        let library = try device.makeDebugLibrary(bundle: .renderKitShaders)
-        let function = library.makeFunction(name: "GaussianSplatShader::DistancePreCalc").forceUnwrap("No function found")
+        let library = try device.makeDebugLibrary(bundle: .gaussianSplatShaders)
+        let function = library.makeFunction(name: "GaussianSplatShaders::DistancePreCalc").forceUnwrap("No function found (found: \(library.functionNames))")
         let (pipelineState, reflection) = try device.makeComputePipelineState(function: function, options: .bindingInfo)
         guard let reflection else {
             fatalError()

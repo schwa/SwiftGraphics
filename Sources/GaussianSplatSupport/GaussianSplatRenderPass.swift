@@ -1,6 +1,6 @@
+import GaussianSplatShaders
 import MetalKit
 import RenderKit
-import GaussianSplatShaders
 import SIMDSupport
 import SwiftGraphicsSupport
 
@@ -45,12 +45,12 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
         let allocator = MTKMeshBufferAllocator(device: device)
         let quadMesh = try MTKMesh(mesh: MDLMesh(planeWithExtent: [2, 2, 0], segments: [1, 1], geometryType: .triangles, allocator: allocator), device: device)
 
-        let library = try device.makeDebugLibrary(bundle: .renderKitShaders)
+        let library = try device.makeDebugLibrary(bundle: .gaussianSplatShaders)
         let renderPipelineDescriptor = renderPipelineDescriptor()
         renderPipelineDescriptor.label = "\(type(of: self))"
         renderPipelineDescriptor.vertexDescriptor = MTLVertexDescriptor(oneTrueVertexDescriptor)
-        renderPipelineDescriptor.vertexFunction = library.makeFunction(name: "GaussianSplatShader::VertexShader")
-        renderPipelineDescriptor.fragmentFunction = library.makeFunction(name: "GaussianSplatShader::FragmentShader")
+        renderPipelineDescriptor.vertexFunction = library.makeFunction(name: "GaussianSplatShaders::VertexShader")
+        renderPipelineDescriptor.fragmentFunction = library.makeFunction(name: "GaussianSplatShaders::FragmentShader")
 
         renderPipelineDescriptor.colorAttachments[0].isBlendingEnabled = true
         renderPipelineDescriptor.colorAttachments[0].rgbBlendOperation = .add

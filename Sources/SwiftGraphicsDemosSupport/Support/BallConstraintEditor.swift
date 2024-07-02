@@ -1,5 +1,5 @@
 import SwiftUI
-import SwiftGraphicsSupport
+import SIMDSupport
 import Fields3D
 
 struct BallConstraintEditor: View {
