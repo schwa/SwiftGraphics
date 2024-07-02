@@ -1,6 +1,6 @@
+import GaussianSplatShaders
 import Metal
 import RenderKit
-import GaussianSplatShaders
 import simd
 import SwiftGraphicsSupport
 

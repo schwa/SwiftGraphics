@@ -1,5 +1,6 @@
 import CoreGraphicsSupport
 import Foundation
+import simd
 import SIMDSupport
 
 public struct PackedHalf3: Hashable {
@@ -15,22 +16,15 @@ public struct PackedHalf4: Hashable {
     public var w: Float16
 }
 
-public struct SplatC: Equatable {
-    public var position: PackedHalf3
-    public var color: PackedHalf4
-    public var cov_a: PackedHalf3
-    public var cov_b: PackedHalf3
-}
-
-public func max(lhs: PackedFloat3, rhs: PackedFloat3) -> PackedFloat3 {
+func max(lhs: PackedFloat3, rhs: PackedFloat3) -> PackedFloat3 {
     [max(lhs[0], rhs[0]), max(lhs[1], rhs[1]), max(lhs[2], rhs[2])]
 }
 
-public func min(lhs: PackedFloat3, rhs: PackedFloat3) -> PackedFloat3 {
+func min(lhs: PackedFloat3, rhs: PackedFloat3) -> PackedFloat3 {
     [min(lhs[0], rhs[0]), min(lhs[1], rhs[1]), min(lhs[2], rhs[2])]
 }
 
-public extension Collection where Element == PackedFloat3 {
+extension Collection where Element == PackedFloat3 {
     var bounds: (min: PackedFloat3, max: PackedFloat3) {
         (
             // swiftlint:disable:next reduce_into
@@ -65,7 +59,7 @@ extension SIMD4 where Scalar == Float {
     }
 }
 
-public extension Bundle {
+extension Bundle {
     static let gaussianSplatShaders: Bundle = {
         if let shadersBundleURL = Bundle.main.url(forResource: "SwiftGraphics_GaussianSplatShaders", withExtension: "bundle"), let bundle = Bundle(url: shadersBundleURL) {
             return bundle
@@ -75,37 +69,8 @@ public extension Bundle {
     }()
 }
 
-public extension Bundle {
-
-    func bundle(atPath path: [String]) -> Bundle? {
-        print(resourcePath)
-        print(try! childBundles().map { $0.bundleURL.lastPathComponent })
-        guard let bundleURL = url(forResource: path.first, withExtension: "bundle"), let bundle = Bundle(url: bundleURL) else {
-            return nil
-        }
-        print(bundleURL)
-        let path = path.dropFirst()
-        if path.isEmpty {
-            return bundle
-        }
-        else {
-            return bundle.bundle(atPath: Array(path))
-        }
-    }
-
-    func childBundles() throws -> [Bundle] {
-        guard let resourceURL else {
-            return []
-        }
-        let contents = try FileManager().contentsOfDirectory(at: resourceURL, includingPropertiesForKeys: [.contentTypeKey])
-        return contents.filter { url in
-            guard let contentType = try? url.resourceValues(forKeys: [.contentTypeKey]).contentType else {
-                return false
-            }
-            return contentType.conforms(to: .bundle)
-        }
-        .compactMap { url in
-            Bundle(url: url)
-        }
+extension simd_quatf {
+    var vectorRealFirst: simd_float4 {
+        [vector.w, vector.x, vector.y, vector.z]
     }
 }
