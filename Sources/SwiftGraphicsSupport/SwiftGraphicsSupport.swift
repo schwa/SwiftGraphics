@@ -156,10 +156,6 @@ public enum SwiftGraphicsSupportError: Error {
     case noLibrary
 }
 
-public func align(_ value: Int, alignment: Int) -> Int {
-    (value + alignment - 1) / alignment * alignment
-}
-
 public func hslToRgb(_ h: Float, _ s: Float, _ l: Float) -> (Float, Float, Float) {
     if s == 0 {
         return (1, 1, 1)

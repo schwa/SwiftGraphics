@@ -167,7 +167,17 @@ public extension MTLDevice {
         return try block()
     }
 
-    func makeBuffer(length: Int, options: MTLResourceOptions = []) throws -> MTLBuffer {
+
+    func makeBufferEx(bytes pointer: UnsafeRawPointer, length: Int, options: MTLResourceOptions = []) throws -> MTLBuffer {
+        guard let buffer = makeBuffer(bytes: pointer, length: length, options: options) else {
+            throw MetalSupportError.resourceCreationFailure
+        }
+        return buffer
+
+    }
+
+
+    func makeBufferEx(length: Int, options: MTLResourceOptions = []) throws -> MTLBuffer {
         guard let buffer = makeBuffer(length: length, options: options) else {
             throw MetalSupportError.resourceCreationFailure
         }
@@ -233,7 +243,80 @@ public extension MTLDevice {
             return try makeDefaultLibrary(bundle: bundle)
         }
     }
+
+    func newBufferFor2DTexture(pixelFormat: MTLPixelFormat, size: MTLSize) -> MTLBuffer {
+        assert(size.depth == 1)
+        let bytesPerPixel = pixelFormat.bits! / 8
+        let alignment = minimumLinearTextureAlignment(for: pixelFormat)
+        let bytesPerRow = align(Int(size.width) * bytesPerPixel, alignment: alignment)
+        guard let buffer = makeBuffer(length: bytesPerRow * Int(size.height), options: .storageModeShared) else {
+            fatalError("Could not create buffer.")
+        }
+        return buffer
+    }
+
+    func makeColorTexture(size: CGSize, pixelFormat: MTLPixelFormat) throws -> MTLTexture {
+        // Create a shared memory MTLBuffer for the color attachment texture. This allows us to access the pixels efficiently from CPU later on (which is likely the whole point of an offscreen renderer).
+        let colorAttachmentTextureBuffer = newBufferFor2DTexture(pixelFormat: pixelFormat, size: MTLSize(width: Int(size.width), height: Int(size.height), depth: 1))
+
+        // Now create a texture descriptor and texture from the buffer
+        let colorAttachmentTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: pixelFormat, width: Int(size.width), height: Int(size.height), mipmapped: false)
+        colorAttachmentTextureDescriptor.storageMode = .shared
+        colorAttachmentTextureDescriptor.usage = [.renderTarget]
+
+        let bytesPerPixel = pixelFormat.bits! / 8
+        let alignment = minimumLinearTextureAlignment(for: pixelFormat)
+        let bytesPerRow = align(Int(size.width) * bytesPerPixel, alignment: alignment)
+        let colorAttachmentTexture = colorAttachmentTextureBuffer.makeTexture(descriptor: colorAttachmentTextureDescriptor, offset: 0, bytesPerRow: bytesPerRow)!
+        colorAttachmentTexture.label = "Color Texture"
+        return colorAttachmentTexture
+    }
+
+    func makeDepthTexture(size: CGSize, depthStencilPixelFormat: MTLPixelFormat, memoryless: Bool) throws -> MTLTexture {
+        // ... and if we had a depth buffer - do the same... except depth buffers can be memoryless (yay) and we .dontCare about storing them later.
+        let depthTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: depthStencilPixelFormat, width: Int(size.width), height: Int(size.height), mipmapped: false)
+        depthTextureDescriptor.storageMode = .memoryless
+        depthTextureDescriptor.usage = .renderTarget
+        let depthStencilTexture = makeTexture(descriptor: depthTextureDescriptor)!
+        depthStencilTexture.label = "Depth Texture"
+        return depthStencilTexture
+    }
+
+    func makeComputePipelineState(function: MTLFunction, options: MTLPipelineOption) throws -> (MTLComputePipelineState, MTLComputePipelineReflection?) {
+        var reflection: MTLComputePipelineReflection?
+        let pipelineState = try makeComputePipelineState(function: function, options: options, reflection: &reflection)
+        return (pipelineState, reflection)
+    }
+
+    /// "To copy your data to a private texture, copy your data to a temporary texture with non-private storage, and then use an MTLBlitCommandEncoder to copy the data to the private texture for GPU use."
+    func makePrivateCopy(of source: MTLTexture) throws -> MTLTexture {
+        let textureDescriptor = MTLTextureDescriptor()
+        textureDescriptor.textureType = source.textureType
+        textureDescriptor.pixelFormat = source.pixelFormat
+        textureDescriptor.storageMode = .private
+
+        textureDescriptor.width = source.width
+        textureDescriptor.height = source.height
+        textureDescriptor.depth = source.depth
+        guard let destination = makeTexture(descriptor: textureDescriptor) else {
+            throw MetalSupportError.resourceCreationFailure
+        }
+        destination.label = source.label.map { "\($0)-private-copy" }
+
+        guard let commandQueue = makeCommandQueue() else {
+            throw MetalSupportError.resourceCreationFailure
+        }
+        try commandQueue.withCommandBuffer(waitAfterCommit: true) { commandBuffer in
+            guard let encoder = commandBuffer.makeBlitCommandEncoder() else {
+                throw MetalSupportError.resourceCreationFailure
+            }
+            encoder.copy(from: source, to: destination)
+            encoder.endEncoding()
+        }
+        return destination
+    }
 }
+
 
 public extension MTLFunctionConstantValues {
     convenience init(dictionary: [Int: Any]) {
@@ -1424,4 +1507,8 @@ public extension MTLPixelFormat {
             return nil
         }
     }
+}
+
+public func align(_ value: Int, alignment: Int) -> Int {
+    (value + alignment - 1) / alignment * alignment
 }

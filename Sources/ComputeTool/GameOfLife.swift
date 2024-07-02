@@ -8,7 +8,7 @@ import MetalSupport
 struct GameOfLife {
     let width = 16
     let height = 16
-    let device = MTLDevice.default()
+    let device = MTLCreateSystemDefaultDevice()!
 
     func main() throws {
         let textureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .r8Uint, width: width, height: height, mipmapped: false)
