@@ -59,8 +59,8 @@ public struct PathSlider: View {
     var path = Path.spiral(center: CGPoint(x: 50, y: 50), initialRadius: 0, finalRadius: 50, turns: 3)
 
     VStack {
-//        PathSlider(value: $value, in: 0...1, path: path)
-//        Slider(value: $value)
+        //        PathSlider(value: $value, in: 0...1, path: path)
+        //        Slider(value: $value)
         Path.smileyFace(in: CGRect(x: 0, y: 0, width: 100, height: 100)).stroke()
     }
     .padding()

@@ -8,11 +8,11 @@ public struct Accessor2D<Storage> where Storage: RandomAccessCollection & Mutabl
 
     public var flatStorage: Storage
 
-//    public init(repeating: Element, size: IntSize) {
-//        self.size = size
-//        let flatCount = size.width * size.height
-//        flatStorage = Storage(Array(repeating: repeating, count: flatCount))
-//    }
+    //    public init(repeating: Element, size: IntSize) {
+    //        self.size = size
+    //        let flatCount = size.width * size.height
+    //        flatStorage = Storage(Array(repeating: repeating, count: flatCount))
+    //    }
 
     public init(flatStorage: Storage, size: IntSize) {
         self.size = size

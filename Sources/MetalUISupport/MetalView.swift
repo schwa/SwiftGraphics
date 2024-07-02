@@ -60,9 +60,9 @@ public struct MetalView: View {
                     model.view = view
                     view.device = device
                     view.delegate = model
-#if os(macOS)
+                    #if os(macOS)
                     view.layer?.isOpaque = false
-#endif
+                    #endif
                     return view
                 } update: { _ in
                 }
@@ -118,9 +118,9 @@ class MetalViewModel: NSObject, MTKViewDelegate {
             try drawableSizeWillChange(device, &configuration, size)
             view.configuration = configuration
             if view.enableSetNeedsDisplay {
-#if os(macOS)
+                #if os(macOS)
                 view.needsDisplay = true
-#endif
+                #endif
             }
         }
         catch {

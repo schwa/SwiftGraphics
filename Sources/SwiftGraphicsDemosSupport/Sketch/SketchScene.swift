@@ -24,14 +24,14 @@ struct SketchScene: Scene {
             InspectorCommands()
             SidebarCommands()
             ToolbarCommands()
-//            TextEditingCommands()
-//            TextFormattingCommands()
-//            CommandGroup(after: .windowList) {
-//                Button("Demos") {
-//                    openWindow(id: "demos")
-//                }
-//                .keyboardShortcut("D", modifiers: [.command, .shift])
-//            }
+            //            TextEditingCommands()
+            //            TextFormattingCommands()
+            //            CommandGroup(after: .windowList) {
+            //                Button("Demos") {
+            //                    openWindow(id: "demos")
+            //                }
+            //                .keyboardShortcut("D", modifiers: [.command, .shift])
+            //            }
         }
     }
 }

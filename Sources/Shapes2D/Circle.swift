@@ -60,7 +60,7 @@ public extension Circle {
     }
 
     // TODO:
-//    func toBezierChain() -> BezierCurveChain {
-//        toEllipse().toBezierChain()
-//    }
+    //    func toBezierChain() -> BezierCurveChain {
+    //        toEllipse().toBezierChain()
+    //    }
 }

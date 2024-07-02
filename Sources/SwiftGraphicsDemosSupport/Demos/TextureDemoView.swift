@@ -15,18 +15,18 @@ struct TextureDemoView: View, DemoView {
 
     var body: some View {
         TextureView(named: "seamless-foods-mixed-0020", bundle: .module, options: showDebugView ? [.showInfo] : [])
-        .overlay(alignment: .bottomTrailing) {
-            Image(systemName: "contextualmenu.and.cursorarrow")
-            .foregroundColor(.white)
-            .padding()
-            .background(Circle().fill(.regularMaterial))
-            .padding()
-        }
-        .contextMenu {
-            Button("Show Info") {
-                showDebugView.toggle()
+            .overlay(alignment: .bottomTrailing) {
+                Image(systemName: "contextualmenu.and.cursorarrow")
+                    .foregroundColor(.white)
+                    .padding()
+                    .background(Circle().fill(.regularMaterial))
+                    .padding()
             }
-        }
+            .contextMenu {
+                Button("Show Info") {
+                    showDebugView.toggle()
+                }
+            }
     }
 }
 
@@ -135,7 +135,7 @@ struct TextureView: View {
                     view *= simd_float4x4.translation([-min(size.x, size.y) / 2, -min(size.x, size.y) / 2, 1])
                     view *= simd_float4x4.scaled([min(size.x, size.y), min(size.x, size.y), 1])
                     // view *= simd_float4x4.translation([-size2.x, -size2.y, 0])
-//                    view *= simd_float4x4.translation([-Float(texture.width) / 2, -Float(texture.height) / 2, 0])
+                    //                    view *= simd_float4x4.translation([-Float(texture.width) / 2, -Float(texture.height) / 2, 0])
                     let cameraUniforms = CameraUniforms(projectionMatrix: view)
 
                     let modelTransforms = ModelTransforms(modelViewMatrix: .identity, modelNormalMatrix: .identity)

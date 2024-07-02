@@ -45,39 +45,39 @@ struct VolumetricRendererDemoView: DemoView {
     var body: some View {
         RenderView(device: device, passes: [renderPass])
             .ballRotation($rollPitchYaw)
-        .onAppear {
-            updateTransferFunctionTexture()
-        }
-        .onChange(of: rollPitchYaw) {
-            renderPass.rollPitchYaw = rollPitchYaw
-        }
-        .onChange(of: redTransferFunction) {
-            updateTransferFunctionTexture()
-        }
-        .onChange(of: greenTransferFunction) {
-            updateTransferFunctionTexture()
-        }
-        .onChange(of: blueTransferFunction) {
-            updateTransferFunctionTexture()
-        }
-        .onChange(of: alphaTransferFunction) {
-            updateTransferFunctionTexture()
-        }
-        .overlay(alignment: .bottom) {
-            VStack {
-                TransferFunctionEditor(width: 1_024, values: $redTransferFunction, color: .red)
-                    .frame(maxHeight: 20)
-                TransferFunctionEditor(width: 1_024, values: $greenTransferFunction, color: .green)
-                    .frame(maxHeight: 20)
-                TransferFunctionEditor(width: 1_024, values: $blueTransferFunction, color: .blue)
-                    .frame(maxHeight: 20)
-                TransferFunctionEditor(width: 1_024, values: $alphaTransferFunction, color: .white)
-                    .frame(maxHeight: 20)
+            .onAppear {
+                updateTransferFunctionTexture()
             }
-            .background(.ultraThinMaterial)
-            .padding()
-            .controlSize(.small)
-        }
+            .onChange(of: rollPitchYaw) {
+                renderPass.rollPitchYaw = rollPitchYaw
+            }
+            .onChange(of: redTransferFunction) {
+                updateTransferFunctionTexture()
+            }
+            .onChange(of: greenTransferFunction) {
+                updateTransferFunctionTexture()
+            }
+            .onChange(of: blueTransferFunction) {
+                updateTransferFunctionTexture()
+            }
+            .onChange(of: alphaTransferFunction) {
+                updateTransferFunctionTexture()
+            }
+            .overlay(alignment: .bottom) {
+                VStack {
+                    TransferFunctionEditor(width: 1_024, values: $redTransferFunction, color: .red)
+                        .frame(maxHeight: 20)
+                    TransferFunctionEditor(width: 1_024, values: $greenTransferFunction, color: .green)
+                        .frame(maxHeight: 20)
+                    TransferFunctionEditor(width: 1_024, values: $blueTransferFunction, color: .blue)
+                        .frame(maxHeight: 20)
+                    TransferFunctionEditor(width: 1_024, values: $alphaTransferFunction, color: .white)
+                        .frame(maxHeight: 20)
+                }
+                .background(.ultraThinMaterial)
+                .padding()
+                .controlSize(.small)
+            }
     }
 
     func updateTransferFunctionTexture() {

@@ -52,7 +52,7 @@ public extension CGColor {
 extension RollPitchYaw {
     func isApproximatelyEqual(to other: Self, absoluteTolerance: Angle) -> Bool {
         roll.isApproximatelyEqual(to: other.roll, absoluteTolerance: absoluteTolerance)
-        && pitch.isApproximatelyEqual(to: other.pitch, absoluteTolerance: absoluteTolerance)
-        && yaw.isApproximatelyEqual(to: other.yaw, absoluteTolerance: absoluteTolerance)
+            && pitch.isApproximatelyEqual(to: other.pitch, absoluteTolerance: absoluteTolerance)
+            && yaw.isApproximatelyEqual(to: other.yaw, absoluteTolerance: absoluteTolerance)
     }
 }

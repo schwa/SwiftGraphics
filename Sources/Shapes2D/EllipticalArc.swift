@@ -415,11 +415,11 @@ public class EllipticalArc {
             ? (cy + a * cos(etaYMin) * sinTheta + b * sin(etaYMin) * cosTheta)
             : min(y1, y2)
         width = ((etaXMax <= eta2)
-            ? (cx + a * cos(etaXMax) * cosTheta - b * sin(etaXMax) * sinTheta)
-            : max(x1, x2)) - xLeft
+                    ? (cx + a * cos(etaXMax) * cosTheta - b * sin(etaXMax) * sinTheta)
+                    : max(x1, x2)) - xLeft
         height = ((etaYMax <= eta2)
-            ? (cy + a * cos(etaYMax) * sinTheta + b * sin(etaYMax) * cosTheta)
-            : max(y1, y2)) - yUp
+                    ? (cy + a * cos(etaYMax) * sinTheta + b * sin(etaYMax) * cosTheta)
+                    : max(y1, y2)) - yUp
     }
 
     private func computeDerivedFlatnessParameters() {
@@ -685,7 +685,7 @@ public class EllipticalArc {
 
         if isPieSlice {
             return (Self.intersect(cx, cy, x1, y1, xA, yA, xB, yB)
-                || Self.intersect(cx, cy, x2, y2, xA, yA, xB, yB))
+                        || Self.intersect(cx, cy, x2, y2, xA, yA, xB, yB))
         }
         else {
             return Self.intersect(x1, y1, x2, y2, xA, yA, xB, yB)
@@ -705,13 +705,13 @@ public class EllipticalArc {
         let xPlusW = x + w
         let yPlusH = y + h
         return (contains(x, y)
-            && contains(xPlusW, y)
-            && contains(x, yPlusH)
-            && contains(xPlusW, yPlusH)
-            && (!intersectOutline(x, y, xPlusW, y))
-            && (!intersectOutline(xPlusW, y, xPlusW, yPlusH))
-            && (!intersectOutline(xPlusW, yPlusH, x, yPlusH))
-            && (!intersectOutline(x, yPlusH, x, y)))
+                    && contains(xPlusW, y)
+                    && contains(x, yPlusH)
+                    && contains(xPlusW, yPlusH)
+                    && (!intersectOutline(x, y, xPlusW, y))
+                    && (!intersectOutline(xPlusW, y, xPlusW, yPlusH))
+                    && (!intersectOutline(xPlusW, yPlusH, x, yPlusH))
+                    && (!intersectOutline(x, yPlusH, x, y)))
     }
 
     /* Tests if a specified Point2D is inside the boundary of the Shape.

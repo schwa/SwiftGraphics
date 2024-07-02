@@ -20,10 +20,10 @@ struct ReplayableCanvas: View {
         }
         .overlay(alignment: .bottom) {
             Slider(value: $maxEvent, in: 0.0 ... Double(replayableModel.events.count))
-            .frame(maxWidth: 320)
-            .padding()
-            .background(Color.black.opacity(0.2).cornerRadius(16))
-            .padding()
+                .frame(maxWidth: 320)
+                .padding()
+                .background(Color.black.opacity(0.2).cornerRadius(16))
+                .padding()
         }
     }
 }
@@ -107,4 +107,4 @@ struct ReplayableGraphicsContext: GraphicsContextProtocol {
     func stroke(_ path: Path, with shading: GraphicsContext.Shading, style: StrokeStyle) {
         model.events.append(.stroke(path: path, shading, style: style))
     }
- }
+}

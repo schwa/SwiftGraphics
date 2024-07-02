@@ -81,85 +81,85 @@ struct SingleSplatView: View, DemoView {
 
     var body: some View {
         RenderView(device: device, passes: passes)
-        .ballRotation($ballConstraint.rollPitchYaw, updatesPitch: true, updatesYaw: true)
-        .onChange(of: ballConstraint.transform, initial: true) {
-            cameraTransform = ballConstraint.transform
-            print(cameraTransform)
-        }
-        .overlay(alignment: .topLeading) {
-            CameraRotationWidgetView(ballConstraint: $ballConstraint)
-                .frame(width: 120, height: 120)
-        }
-        .onChange(of: splat) {
-            let splats = try! device.makeBuffer(bytesOf: [SplatC(splat)], options: .storageModeShared)
-            self.splats = splats
-        }
-        .inspector(isPresented: .constant(true)) {
-            Form {
-                Section("Camera") {
-                    HStack {
-                        TextField("Roll", value: $cameraTransform.rotation.rollPitchYaw.roll.degrees, format: .number)
-                        TextField("Pitch", value: $cameraTransform.rotation.rollPitchYaw.pitch.degrees, format: .number)
-                        TextField("Yaw", value: $cameraTransform.rotation.rollPitchYaw.yaw.degrees, format: .number)
+            .ballRotation($ballConstraint.rollPitchYaw, updatesPitch: true, updatesYaw: true)
+            .onChange(of: ballConstraint.transform, initial: true) {
+                cameraTransform = ballConstraint.transform
+                print(cameraTransform)
+            }
+            .overlay(alignment: .topLeading) {
+                CameraRotationWidgetView(ballConstraint: $ballConstraint)
+                    .frame(width: 120, height: 120)
+            }
+            .onChange(of: splat) {
+                let splats = try! device.makeBuffer(bytesOf: [SplatC(splat)], options: .storageModeShared)
+                self.splats = splats
+            }
+            .inspector(isPresented: .constant(true)) {
+                Form {
+                    Section("Camera") {
+                        HStack {
+                            TextField("Roll", value: $cameraTransform.rotation.rollPitchYaw.roll.degrees, format: .number)
+                            TextField("Pitch", value: $cameraTransform.rotation.rollPitchYaw.pitch.degrees, format: .number)
+                            TextField("Yaw", value: $cameraTransform.rotation.rollPitchYaw.yaw.degrees, format: .number)
+                        }
+                        .labelsHidden()
                     }
-                    .labelsHidden()
-                }
-                Section("Position") {
-                    HStack {
-                        TextField("X", value: $splat.position.x, format: .number)
-                        TextField("Y", value: $splat.position.y, format: .number)
-                        TextField("Z", value: $splat.position.z, format: .number)
+                    Section("Position") {
+                        HStack {
+                            TextField("X", value: $splat.position.x, format: .number)
+                            TextField("Y", value: $splat.position.y, format: .number)
+                            TextField("Z", value: $splat.position.z, format: .number)
+                        }
+                        .labelsHidden()
                     }
-                    .labelsHidden()
-                }
-                Section("Scale") {
-                    HStack {
-                        TextField("X", value: $splat.scale.x, format: .number)
-                        TextField("Y", value: $splat.scale.y, format: .number)
-                        TextField("Z", value: $splat.scale.z, format: .number)
+                    Section("Scale") {
+                        HStack {
+                            TextField("X", value: $splat.scale.x, format: .number)
+                            TextField("Y", value: $splat.scale.y, format: .number)
+                            TextField("Z", value: $splat.scale.z, format: .number)
+                        }
+                        .labelsHidden()
                     }
-                    .labelsHidden()
-                }
-                Section("Color") {
-                    HStack {
-                        TextField("R", value: $splat.color.x, format: .number)
-                        TextField("G", value: $splat.color.y, format: .number)
-                        TextField("B", value: $splat.color.z, format: .number)
-                        TextField("A", value: $splat.color.w, format: .number)
+                    Section("Color") {
+                        HStack {
+                            TextField("R", value: $splat.color.x, format: .number)
+                            TextField("G", value: $splat.color.y, format: .number)
+                            TextField("B", value: $splat.color.z, format: .number)
+                            TextField("A", value: $splat.color.w, format: .number)
+                        }
+                        .labelsHidden()
                     }
-                    .labelsHidden()
-                }
-                Section("Rotation") {
-                    RotationEditor($splat.rotation)
-                }
-                Section("SplatB") {
-                    Text("\(SplatB(splat))")
-                }
-                Section("SplatC") {
-                    Text("\(SplatC(splat))")
-                }
+                    Section("Rotation") {
+                        RotationEditor($splat.rotation)
+                    }
+                    Section("SplatB") {
+                        Text("\(SplatB(splat))")
+                    }
+                    Section("SplatC") {
+                        Text("\(SplatC(splat))")
+                    }
 
-//                Section("COV_A") {
-//                    HStack {
-//                        TextField("0", value: $splat.cov_a.x, format: .number)
-//                        TextField("1", value: $splat.cov_a.y, format: .number)
-//                        TextField("2", value: $splat.cov_a.z, format: .number)
-//                    }
-//                    .labelsHidden()
-//                }
-//                Section("COV_B") {
-//                    HStack {
-//                        TextField("0", value: $splat.cov_b.x, format: .number)
-//                        TextField("1", value: $splat.cov_b.y, format: .number)
-//                        TextField("2", value: $splat.cov_b.z, format: .number)
-//                    }
-//                    .labelsHidden()
-//                }
+                    //                Section("COV_A") {
+                    //                    HStack {
+                    //                        TextField("0", value: $splat.cov_a.x, format: .number)
+                    //                        TextField("1", value: $splat.cov_a.y, format: .number)
+                    //                        TextField("2", value: $splat.cov_a.z, format: .number)
+                    //                    }
+                    //                    .labelsHidden()
+                    //                }
+                    //                Section("COV_B") {
+                    //                    HStack {
+                    //                        TextField("0", value: $splat.cov_b.x, format: .number)
+                    //                        TextField("1", value: $splat.cov_b.y, format: .number)
+                    //                        TextField("2", value: $splat.cov_b.z, format: .number)
+                    //                    }
+                    //                    .labelsHidden()
+                    //                }
+                }
+                Toggle(isOn: $debugMode) {
+                    Text("Debug")
+                }
             }
-            Toggle(isOn: $debugMode) {
-                Text("Debug")
-            }
-        }
     }
 
     var passes: [any PassProtocol] {

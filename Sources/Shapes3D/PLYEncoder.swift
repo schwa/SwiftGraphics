@@ -43,10 +43,10 @@ public struct PlyEncoder {
         case list(count: NumericalType, element: NumericalType)
     }
 
-//    element vertex 12
-//    property float x
-//    property float y
-//    property float z
+    //    element vertex 12
+    //    property float x
+    //    property float y
+    //    property float z
 
     public func encodeElementDefinition(name: String, count: Int, properties: [(Kind, String)], to output: inout Output) {
         print("element \(name) \(count)", to: &output)

@@ -21,18 +21,18 @@ protocol SimulationStorage {
 }
 
 class Simulation<Storage>: Observable where Storage: SimulationStorage {
-//    struct Parameters {
-//        var count: Int
-//        var gravity: SIMD2<Float> = [0, 100]
-//        var smoothingRadius: Float = 50
-//        var collisionDampingFactor: Float = 0.7
-//        var mass: Float = 1
-//        var targetDensity: Float = 2.75
-//        var pressureMultiplier: Float = 25
-//        var particleRadius: Float = 5
-//        var speed: Float = 1
-//        var enablePressure = true
-//    }
+    //    struct Parameters {
+    //        var count: Int
+    //        var gravity: SIMD2<Float> = [0, 100]
+    //        var smoothingRadius: Float = 50
+    //        var collisionDampingFactor: Float = 0.7
+    //        var mass: Float = 1
+    //        var targetDensity: Float = 2.75
+    //        var pressureMultiplier: Float = 25
+    //        var particleRadius: Float = 5
+    //        var speed: Float = 1
+    //        var enablePressure = true
+    //    }
 
     var count: Int
     var gravity: SIMD2<Float> = [0, 0]

@@ -13,7 +13,7 @@ struct CustomStrokeEditorDemoView: View, DemoView {
     var body: some View {
         ZStack {
             LegacyPathEditor(points: $points)
-//            PathEditor(values: Array(points.enumerated()), id: \.0, position: \.1)
+            //            PathEditor(values: Array(points.enumerated()), id: \.0, position: \.1)
             CustomStrokeView(points: points)
                 .allowsHitTesting(false)
         }
@@ -46,7 +46,7 @@ struct CustomStrokeView: View {
                         unreachable()
                     }
                 }
-                    + [segments.last!.parallel(offset: offset).end]
+                + [segments.last!.parallel(offset: offset).end]
             }
 
             for points in points {

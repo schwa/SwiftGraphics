@@ -40,7 +40,7 @@ extension CSG where Vertex == SimpleVertex {
         a.clip(to: b)
         a.dump()
 
-//        try! CSG(node: a).toPLY().write(to: URL(filePath: "intermediate-1.ply"), atomically: true, encoding: .ascii)
+        //        try! CSG(node: a).toPLY().write(to: URL(filePath: "intermediate-1.ply"), atomically: true, encoding: .ascii)
         b.clip(to: a)
         b.invert()
         b.clip(to: a)
@@ -153,47 +153,47 @@ class CSGNode<Vertex> where Vertex: VertexLike {
     // (no heuristic is used to pick a good split).
     func insert(polygons: [Polygon]) {
         temporarilyDisabled() // TODO: FIXME
-//        if polygons.isEmpty {
-//            return
-//        }
-//
-//        if plane == nil {
-//            plane = Plane3D(points: polygons[0].vertices)
-//        }
-//
-//        var front: [Polygon] = []
-//        var back: [Polygon] = []
-//
-//        for polygon in polygons {
-//            let result = polygon.split(plane: plane!)
-//            front += result.front
-//            back += result.back
-//            self.polygons += result.coplanarFront + result.coplanarBack
-//        }
-//
-//        if !front.isEmpty {
-//            if self.front == nil {
-//                self.front = Node(polygons: [])
-//            }
-//            self.front!.insert(polygons: front)
-//        }
-//
-//        if !back.isEmpty {
-//            if self.back == nil {
-//                self.back = Node(polygons: [])
-//            }
-//            self.back!.insert(polygons: back)
-//        }
+        //        if polygons.isEmpty {
+        //            return
+        //        }
+        //
+        //        if plane == nil {
+        //            plane = Plane3D(points: polygons[0].vertices)
+        //        }
+        //
+        //        var front: [Polygon] = []
+        //        var back: [Polygon] = []
+        //
+        //        for polygon in polygons {
+        //            let result = polygon.split(plane: plane!)
+        //            front += result.front
+        //            back += result.back
+        //            self.polygons += result.coplanarFront + result.coplanarBack
+        //        }
+        //
+        //        if !front.isEmpty {
+        //            if self.front == nil {
+        //                self.front = Node(polygons: [])
+        //            }
+        //            self.front!.insert(polygons: front)
+        //        }
+        //
+        //        if !back.isEmpty {
+        //            if self.back == nil {
+        //                self.back = Node(polygons: [])
+        //            }
+        //            self.back!.insert(polygons: back)
+        //        }
     }
 
     // Convert solid space to empty space and empty space to solid space.
     func invert() {
         temporarilyDisabled() // TODO: FIXME
         //        polygons = polygons.map { $0.flipped() }
-//        plane!.flip()
-//        front?.invert()
-//        back?.invert()
-//        swap(&front, &back)
+        //        plane!.flip()
+        //        front?.invert()
+        //        back?.invert()
+        //        swap(&front, &back)
     }
 
     // Recursively remove all polygons in `polygons` that are inside this BSP tree.
@@ -202,26 +202,26 @@ class CSGNode<Vertex> where Vertex: VertexLike {
         // TODO: FIXME
         fatalError("Unimplemented")
         //        guard let plane else {
-//            return []
-//        }
-//
-//        var front: [Polygon] = []
-//        var back: [Polygon] = []
-//        // TODO: FIX ME
-//        temporarilyDisabled()
-//        for polygon in polygons {
-//            let result = polygon.split(plane: plane)
-//            front += result.front + result.coplanarFront
-//            back += result.back + result.coplanarBack
-//        }
-//
-//        if self.front != nil {
-//            front = self.front!.clip(polygons: front)
-//        }
-//        if self.back != nil {
-//            back = self.back!.clip(polygons: back)
-//        }
-//        return front + back
+        //            return []
+        //        }
+        //
+        //        var front: [Polygon] = []
+        //        var back: [Polygon] = []
+        //        // TODO: FIX ME
+        //        temporarilyDisabled()
+        //        for polygon in polygons {
+        //            let result = polygon.split(plane: plane)
+        //            front += result.front + result.coplanarFront
+        //            back += result.back + result.coplanarBack
+        //        }
+        //
+        //        if self.front != nil {
+        //            front = self.front!.clip(polygons: front)
+        //        }
+        //        if self.back != nil {
+        //            back = self.back!.clip(polygons: back)
+        //        }
+        //        return front + back
     }
 
     // Remove all polygons in this BSP tree that are inside the other BSP tree.
@@ -310,35 +310,35 @@ extension Polygon3D where Vertex == SimpleVertex {
             back.append(self)
         case .spanning:
             fatalError("Unimplemented")
-            // TODO: FIXME
+        // TODO: FIXME
 
-// swiftlint:disable local_doc_comment
-            //            var f: [Vertex] = []
-//            var b: [Vertex] = []
-//            for (i, j) in zip(vertices, types).circularPairs() {
-//                let (vi, ti) = i
-//                let (vj, tj) = j
-//                if ti != .back {
-//                    f.append(vi)
-//                }
-//                if ti != .front {
-//                    b.append(vi)
-//                }
-//                temporarilyDisabled()
-//                // TODO: FIXME
-////                if ti | tj == .spanning {
-////                    let t = (splitter.w - splitter.normal.dot(vi.position)) / splitter.normal.dot(vj.position - vi.position)
-////                    let v = vi.interpolate(vj, t)
-////                    f.append(v)
-////                    b.append(v)
-////                }
-//            }
-//            if f.count >= 3 {
-//                front.append(Polygon3D(vertices: f))
-//            }
-//            if b.count >= 3 {
-//                back.append(Polygon3D(vertices: b))
-//            }
+        // swiftlint:disable local_doc_comment
+        //            var f: [Vertex] = []
+        //            var b: [Vertex] = []
+        //            for (i, j) in zip(vertices, types).circularPairs() {
+        //                let (vi, ti) = i
+        //                let (vj, tj) = j
+        //                if ti != .back {
+        //                    f.append(vi)
+        //                }
+        //                if ti != .front {
+        //                    b.append(vi)
+        //                }
+        //                temporarilyDisabled()
+        //                // TODO: FIXME
+        ////                if ti | tj == .spanning {
+        ////                    let t = (splitter.w - splitter.normal.dot(vi.position)) / splitter.normal.dot(vj.position - vi.position)
+        ////                    let v = vi.interpolate(vj, t)
+        ////                    f.append(v)
+        ////                    b.append(v)
+        ////                }
+        //            }
+        //            if f.count >= 3 {
+        //                front.append(Polygon3D(vertices: f))
+        //            }
+        //            if b.count >= 3 {
+        //                back.append(Polygon3D(vertices: b))
+        //            }
         }
         return (coplanarFront, coplanarBack, front, back)
     }

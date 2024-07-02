@@ -7,12 +7,12 @@ struct GeometrySizeChangeViewModifier: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-        .onGeometryChange(for: CGSize.self) { proxy in
-            proxy.size
-        }
-        action: { size in
-            self.size = size
-        }
+            .onGeometryChange(for: CGSize.self) { proxy in
+                proxy.size
+            }
+            action: { size in
+                self.size = size
+            }
     }
 }
 
@@ -92,10 +92,10 @@ struct RedlineModifier: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-        .geometrySize($size)
-        .overlay {
-            Text("\(size.height.formatted())").foregroundStyle(.red).font(.footnote).background(.thickMaterial)
-        }
+            .geometrySize($size)
+            .overlay {
+                Text("\(size.height.formatted())").foregroundStyle(.red).font(.footnote).background(.thickMaterial)
+            }
     }
 }
 

@@ -95,11 +95,11 @@ struct Solver {
     }
 
     mutating func solveCollisions() {
-//        var positions = objects.map(\.position_current)
+        //        var positions = objects.map(\.position_current)
 
         for i in objects.startIndex ..< objects.endIndex {
             var object_1 = objects[i]
-//            for k in objects.startIndex ..< objects.endIndex where k != i{
+            //            for k in objects.startIndex ..< objects.endIndex where k != i{
             lookup.indicesNear(point: object_1.position_current) { k in
                 if k == i {
                     return
@@ -189,9 +189,9 @@ struct Particles2DemoView: View, DemoView {
                 if solver.objects.count < 2 && frame.isMultiple(of: 27) {
                     solver.objects.append(VerletObject(id: solver.objects.count, position_current: [300, 500]))
                     solver.objects.append(VerletObject(id: solver.objects.count, position_current: [400, 500]))
-//                    solver.objects.append(VerletObject(id: solver.objects.count, position_current: [500, 500]))
-//                    solver.objects.append(VerletObject(id: solver.objects.count, position_current: [600, 500]))
-//                    solver.objects.append(VerletObject(id: solver.objects.count, position_current: [700, 500]))
+                    //                    solver.objects.append(VerletObject(id: solver.objects.count, position_current: [500, 500]))
+                    //                    solver.objects.append(VerletObject(id: solver.objects.count, position_current: [600, 500]))
+                    //                    solver.objects.append(VerletObject(id: solver.objects.count, position_current: [700, 500]))
                 }
                 solver.update(Float(delta))
                 try? await Task.sleep(for: .seconds(1.0 / 60.0))

@@ -63,7 +63,7 @@ public struct MeshSpecifier: Equatable {
         case direct(MTKMesh)
         case fileURL(URL)
         case bundleResource(BundleResourceSpecifier)
-//        case meshConvertable(MDLMeshConvertable)
+        //        case meshConvertable(MDLMeshConvertable)
     }
     private var content: Content
 
@@ -95,8 +95,8 @@ public struct MeshSpecifier: Equatable {
             }
             mesh = try load(url: url, device: device, vertexDescriptor: vertexDescriptor)
 
-//        case .meshConvertable(let meshConvertable):
-//
+        //        case .meshConvertable(let meshConvertable):
+        //
         }
         return mesh
     }
@@ -121,8 +121,8 @@ extension MeshSpecifier: CustomDebugStringConvertible {
             "MeshSpecifier.fileURL(\"\(url.standardizedFileURL)\")"
         case .bundleResource(let bundleResource):
             "MeshSpecifier.bundleResource(\(bundleResource))"
-//        case .meshConvertable:
-//            "MeshSpecifier.meshConvertable(...)"
+        //        case .meshConvertable:
+        //            "MeshSpecifier.meshConvertable(...)"
         }
     }
 }
@@ -215,18 +215,18 @@ public extension TextureSpecifier {
 }
 
 extension TextureSpecifier: CustomDebugStringConvertible {
-public var debugDescription: String {
-    switch content {
-    case .direct:
-        ".direct(**texture**)"
-    case .fileURL(let url):
-        ".fileURL(\"\(url.standardizedFileURL)\")"
-    case .bundleResource(let bundleResource):
-        ".bundleResource(\(bundleResource))"
-    case .color(let color):
-        ".color(\(color))"
+    public var debugDescription: String {
+        switch content {
+        case .direct:
+            ".direct(**texture**)"
+        case .fileURL(let url):
+            ".fileURL(\"\(url.standardizedFileURL)\")"
+        case .bundleResource(let bundleResource):
+            ".bundleResource(\(bundleResource))"
+        case .color(let color):
+            ".color(\(color))"
+        }
     }
-}
 }
 
 // MARK: -

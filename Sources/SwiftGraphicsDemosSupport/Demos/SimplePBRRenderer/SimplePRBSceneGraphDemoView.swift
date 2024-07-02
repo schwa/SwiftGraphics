@@ -90,21 +90,21 @@ extension SceneGraph {
 
         return try SceneGraph(root:
                                 Node(label: "root") {
-            Node(label: "camera")
-                .content(.camera(Camera()))
-                .transform(translation: [0, 0, 5])
-                .children {
-                    // TODO: Pano location should always be tied to camera location
-                    Node(label: "pano")
-                        .content(.geometry(mesh: panoramaMesh, materials: [UnlitMaterialX(baseColorTexture: panoramaTexture)]))
-                }
-            Node(label: "model-1")
-                .content(.geometry(mesh: sphere, materials: [SimplePBRMaterial(baseColor: [1, 0, 0], metallic: 0.5, roughness: 0.5)]))
-            Node(label: "model-2")
-                .content(.geometry(mesh: quad, materials: [UnlitMaterialX(baseColorTexture: grassTexture)]))
-                .transform(scale: [10, 10, 10])
-                .transform(.init(rotation: .rotation(angle: .degrees(90), axis: [1, 0, 0])))
-                .transform(translation: [0, -1, 0])
+                                    Node(label: "camera")
+                                        .content(.camera(Camera()))
+                                        .transform(translation: [0, 0, 5])
+                                        .children {
+                                            // TODO: Pano location should always be tied to camera location
+                                            Node(label: "pano")
+                                                .content(.geometry(mesh: panoramaMesh, materials: [UnlitMaterialX(baseColorTexture: panoramaTexture)]))
+                                        }
+                                    Node(label: "model-1")
+                                        .content(.geometry(mesh: sphere, materials: [SimplePBRMaterial(baseColor: [1, 0, 0], metallic: 0.5, roughness: 0.5)]))
+                                    Node(label: "model-2")
+                                        .content(.geometry(mesh: quad, materials: [UnlitMaterialX(baseColorTexture: grassTexture)]))
+                                        .transform(scale: [10, 10, 10])
+                                        .transform(.init(rotation: .rotation(angle: .degrees(90), axis: [1, 0, 0])))
+                                        .transform(translation: [0, -1, 0])
                                 }
         )
     }

@@ -2,10 +2,10 @@ import Foundation
 import GenericGeometryBase
 
 public struct Array2D<Element> {
-//    public enum Order {
-//        case columnMajor
-//        case rowMajor
-//    }
+    //    public enum Order {
+    //        case columnMajor
+    //        case rowMajor
+    //    }
 
     // Always row major
 

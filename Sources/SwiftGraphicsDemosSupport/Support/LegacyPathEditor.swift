@@ -30,9 +30,9 @@ struct LegacyPathEditor: View {
                     .gesture(SpatialTapGesture(coordinateSpace: coordinateSpace).onEnded { value in
                         self.points.insert(value.location, at: offset + 1)
                     })
-//                    .overlay {
-//                        (Path(line: points, width: 20, lineCap: .round).stroke(Color.black.opacity(0.2)))
-//                    }
+                    //                    .overlay {
+                    //                        (Path(line: points, width: 20, lineCap: .round).stroke(Color.black.opacity(0.2)))
+                    //                    }
                     .contextMenu {
                         Button("Split") {
                             let newPoint = (points.0 + points.1) / 2
@@ -106,9 +106,9 @@ struct LegacyPathEditor: View {
         DragGesture(coordinateSpace: coordinateSpace).onChanged { value in
             var location = value.location
             #if os(macOS)
-                if NSEvent.modifierFlags.contains(.shift) {
-                    location = location.map { round($0 / 10) * 10 }
-                }
+            if NSEvent.modifierFlags.contains(.shift) {
+                location = location.map { round($0 / 10) * 10 }
+            }
             #endif
             points[offset] = location
         }

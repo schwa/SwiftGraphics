@@ -33,7 +33,7 @@ public struct ColorPalette: View {
         Picker(selection: $color) {
             ForEach(colors, id: \.self) { color in
                 Image(color: color, size: CGSize(width: 16, height: 16))
-                .tag(color)
+                    .tag(color)
             }
         } label: {
             Text("Color")

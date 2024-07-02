@@ -39,9 +39,9 @@ public struct Arcball {
         return coord
     }
 
-//    public mutating func start(point: SIMD2<Float>) {
-//        prevPos = toScreenCoordinate(point: point)
-//    }
+    //    public mutating func start(point: SIMD2<Float>) {
+    //        prevPos = toScreenCoordinate(point: point)
+    //    }
 
     public mutating func update(point: SIMD2<Float>) {
         if prevPos == nil {
@@ -60,15 +60,15 @@ public struct Arcball {
         simd_quaternion(angle * rollSpeed, camAxis)
     }
 
-//    var modelRotation: simd_quatf {
-//        viewMa
-//    }
-//
-//    /**
-//     * Create rotation matrix within the world coordinate,
-//     * multiply this matrix with model matrix to rotate the object
-//     */
-//    glm::vec3 axis = glm::inverse(glm::mat3(view_matrix)) * camAxis;
-//    return glm::rotate( glm::degrees(angle) * rollSpeed, axis );
-//    }
+    //    var modelRotation: simd_quatf {
+    //        viewMa
+    //    }
+    //
+    //    /**
+    //     * Create rotation matrix within the world coordinate,
+    //     * multiply this matrix with model matrix to rotate the object
+    //     */
+    //    glm::vec3 axis = glm::inverse(glm::mat3(view_matrix)) * camAxis;
+    //    return glm::rotate( glm::degrees(angle) * rollSpeed, axis );
+    //    }
 }

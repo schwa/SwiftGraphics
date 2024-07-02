@@ -78,7 +78,7 @@ extension GraphicsContext {
                 path.addLines(lines)
                 path.closeSubpath()
             }
-                .applying(transform)
+            .applying(transform)
             stroke(path, with: shading)
         }
     }
@@ -100,7 +100,7 @@ extension GraphicsContext {
                 path.addLines(lines)
                 path.closeSubpath()
             }
-                .applying(transform)
+            .applying(transform)
             stroke(path, with: .color(color))
         }
         if let front = node.front {
@@ -114,8 +114,8 @@ extension GraphicsContext {
 
 extension URL {
     func reveal() {
-#if os(macOS)
+        #if os(macOS)
         NSWorkspace.shared.selectFile(path, inFileViewerRootedAtPath: "")
-#endif
+        #endif
     }
 }

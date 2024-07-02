@@ -303,39 +303,39 @@ public extension Path {
         assert(elements.count == 10)
 
         self = Path(elements: elements
-            .enumerated()
-            // swiftlint:disable:next closure_body_length
-            .map { index, element in
-                let corner: Corners
-                switch (index, element) {
-                case (2, .curve):
-                    corner = .bottomRight
-                case (4, .curve):
-                    corner = .bottomLeft
-                case (6, .curve):
-                    corner = .topLeft
-                case (8, .curve):
-                    corner = .topRight
-                default:
-                    return element
-                }
-                if !corners.contains(corner) {
-                    switch corner {
-                    case .topLeft:
-                        return .line(to: rect.minXMinY)
-                    case .topRight:
-                        return .line(to: rect.maxXMinY)
-                    case .bottomLeft:
-                        return .line(to: rect.minXMaxY)
-                    case .bottomRight:
-                        return .line(to: rect.maxXMaxY)
-                    default:
-                        fatalError("Invalid corner.")
-                    }
-                }
-                else {
-                    return element
-                }
-            })
+                        .enumerated()
+                        // swiftlint:disable:next closure_body_length
+                        .map { index, element in
+                            let corner: Corners
+                            switch (index, element) {
+                            case (2, .curve):
+                                corner = .bottomRight
+                            case (4, .curve):
+                                corner = .bottomLeft
+                            case (6, .curve):
+                                corner = .topLeft
+                            case (8, .curve):
+                                corner = .topRight
+                            default:
+                                return element
+                            }
+                            if !corners.contains(corner) {
+                                switch corner {
+                                case .topLeft:
+                                    return .line(to: rect.minXMinY)
+                                case .topRight:
+                                    return .line(to: rect.maxXMinY)
+                                case .bottomLeft:
+                                    return .line(to: rect.minXMaxY)
+                                case .bottomRight:
+                                    return .line(to: rect.maxXMaxY)
+                                default:
+                                    fatalError("Invalid corner.")
+                                }
+                            }
+                            else {
+                                return element
+                            }
+                        })
     }
 }

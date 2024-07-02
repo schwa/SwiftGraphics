@@ -4,7 +4,7 @@ import SwiftUI
 
 struct BallConstraint: Equatable {
     var radius: Float = -5
-//    var lookAt: SIMD3<Float> = .zero
+    //    var lookAt: SIMD3<Float> = .zero
     var rollPitchYaw: RollPitchYaw = .zero
 
     var transform: Transform {

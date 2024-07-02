@@ -148,7 +148,7 @@ extension YAMesh {
 private final class PrintOnceManager {
     nonisolated(unsafe) static let instance = PrintOnceManager()
 
-//    var printedAlready = OSAllocatedUnfairLock(uncheckedState: [Set<String>]())
+    //    var printedAlready = OSAllocatedUnfairLock(uncheckedState: [Set<String>]())
 
     var printedAlready: Set<String> = []
 
@@ -216,38 +216,38 @@ extension Pair: CustomDebugStringConvertible where LHS: CustomDebugStringConvert
 }
 
 #if os(macOS)
-    struct LastRightMouseDownLocationModifier: ViewModifier {
-        @Binding
-        var location: CGPoint?
+struct LastRightMouseDownLocationModifier: ViewModifier {
+    @Binding
+    var location: CGPoint?
 
-        var coordinateSpace: CoordinateSpace
+    var coordinateSpace: CoordinateSpace
 
-        init(_ location: Binding<CGPoint?>, coordinateSpace: CoordinateSpace = .local) {
-            _location = location
-            self.coordinateSpace = coordinateSpace
-        }
+    init(_ location: Binding<CGPoint?>, coordinateSpace: CoordinateSpace = .local) {
+        _location = location
+        self.coordinateSpace = coordinateSpace
+    }
 
-        func body(content: Content) -> some View {
-            GeometryReader { geometry in
-                content.onAppear {
-                    NSEvent.addLocalMonitorForEvents(matching: [.rightMouseDown]) { event in
-                        if let frame = event.window?.frame {
-                            let windowLocation = event.locationInWindow.flipVertically(within: frame)
-                            let localWindowFrame = geometry.frame(in: coordinateSpace)
-                            location = windowLocation - localWindowFrame.origin
-                        }
-                        return event
+    func body(content: Content) -> some View {
+        GeometryReader { geometry in
+            content.onAppear {
+                NSEvent.addLocalMonitorForEvents(matching: [.rightMouseDown]) { event in
+                    if let frame = event.window?.frame {
+                        let windowLocation = event.locationInWindow.flipVertically(within: frame)
+                        let localWindowFrame = geometry.frame(in: coordinateSpace)
+                        location = windowLocation - localWindowFrame.origin
                     }
+                    return event
                 }
             }
         }
     }
+}
 
-    extension View {
-        func lastRightMouseDownLocation(_ location: Binding<CGPoint?>, coordinateSpace: CoordinateSpace = .local) -> some View {
-            modifier(LastRightMouseDownLocationModifier(location, coordinateSpace: coordinateSpace))
-        }
+extension View {
+    func lastRightMouseDownLocation(_ location: Binding<CGPoint?>, coordinateSpace: CoordinateSpace = .local) -> some View {
+        modifier(LastRightMouseDownLocationModifier(location, coordinateSpace: coordinateSpace))
     }
+}
 #endif
 
 // MARK: -
@@ -578,15 +578,15 @@ struct CodableAppStorage<Value: Codable>: DynamicProperty {
 
     init(wrappedValue: Value, _ key: String) {
         do {
-        self.key = key
-        if let string = UserDefaults.standard.string(forKey: key) {
-            let data = string.data(using: .utf8)!
-            let value = try JSONDecoder().decode(Value.self, from: data)
-            _storage = .init(initialValue: value)
-        }
-        else {
-            _storage = .init(initialValue: wrappedValue)
-        }
+            self.key = key
+            if let string = UserDefaults.standard.string(forKey: key) {
+                let data = string.data(using: .utf8)!
+                let value = try JSONDecoder().decode(Value.self, from: data)
+                _storage = .init(initialValue: value)
+            }
+            else {
+                _storage = .init(initialValue: wrappedValue)
+            }
         }
         catch {
             fatalError()
@@ -947,36 +947,36 @@ extension SceneGraph {
 
         let quad = try Quad<SimpleVertex>(x: -0.5, y: -0.5, width: 1, height: 1).toMTKMesh(device: device)
 
-//        let x = try Quad<SimpleVertex>(x: 0, y: 0, width: 1, height: 1).toTrivialMesh()
-//        x.dumpIndexedPositions()
-//        try Cone3D(height: 1, radius: 0.5).write(to: URL(filePath: "test.obj"))
+        //        let x = try Quad<SimpleVertex>(x: 0, y: 0, width: 1, height: 1).toTrivialMesh()
+        //        x.dumpIndexedPositions()
+        //        try Cone3D(height: 1, radius: 0.5).write(to: URL(filePath: "test.obj"))
 
         return try SceneGraph(root:
-            Node(label: "root") {
-                Node(label: "camera")
-                    .content(.camera(Camera()))
-                    .transform(translation: [0, 0, 5])
-                    .children {
-                        // TODO: Pano location should always be tied to camera location
-                        Node(label: "pano")
-                        .content(.geometry(mesh: panoramaMesh, materials: [UnlitMaterialX(baseColorTexture: panoramaTexture)]))
-                    }
-                Node(label: "model-1")
-                    .content(.geometry(mesh: sphere, materials: [DiffuseShadingRenderPass.Material(diffuseColor: .red)]))
-                    .transform(translation: [-1, 0, 0])
-                Node(label: "model-2")
-                    .content(.geometry(mesh: cylinder, materials: [DiffuseShadingRenderPass.Material(diffuseColor: .green)]))
-                    .transform(translation: [0, 0, 0])
-                Node(label: "model-3")
-                    .content(.geometry(mesh: cone, materials: [DiffuseShadingRenderPass.Material(diffuseColor: .blue)]))
-                    .transform(translation: [1, 0, 0])
-                    .transform(.init(rotation: .rotation(angle: .degrees(45), axis: [1, 0, 0])))
-                Node(label: "model-4")
-                    .content(.geometry(mesh: quad, materials: [UnlitMaterialX(baseColorTexture: grassTexture)]))
-                    .transform(scale: [10, 10, 10])
-                    .transform(.init(rotation: .rotation(angle: .degrees(90), axis: [1, 0, 0])))
-                    .transform(translation: [0, -1, 0])
-            }
+                                Node(label: "root") {
+                                    Node(label: "camera")
+                                        .content(.camera(Camera()))
+                                        .transform(translation: [0, 0, 5])
+                                        .children {
+                                            // TODO: Pano location should always be tied to camera location
+                                            Node(label: "pano")
+                                                .content(.geometry(mesh: panoramaMesh, materials: [UnlitMaterialX(baseColorTexture: panoramaTexture)]))
+                                        }
+                                    Node(label: "model-1")
+                                        .content(.geometry(mesh: sphere, materials: [DiffuseShadingRenderPass.Material(diffuseColor: .red)]))
+                                        .transform(translation: [-1, 0, 0])
+                                    Node(label: "model-2")
+                                        .content(.geometry(mesh: cylinder, materials: [DiffuseShadingRenderPass.Material(diffuseColor: .green)]))
+                                        .transform(translation: [0, 0, 0])
+                                    Node(label: "model-3")
+                                        .content(.geometry(mesh: cone, materials: [DiffuseShadingRenderPass.Material(diffuseColor: .blue)]))
+                                        .transform(translation: [1, 0, 0])
+                                        .transform(.init(rotation: .rotation(angle: .degrees(45), axis: [1, 0, 0])))
+                                    Node(label: "model-4")
+                                        .content(.geometry(mesh: quad, materials: [UnlitMaterialX(baseColorTexture: grassTexture)]))
+                                        .transform(scale: [10, 10, 10])
+                                        .transform(.init(rotation: .rotation(angle: .degrees(90), axis: [1, 0, 0])))
+                                        .transform(translation: [0, -1, 0])
+                                }
         )
     }
 }

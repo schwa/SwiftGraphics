@@ -73,7 +73,7 @@ public extension MatrixEditor {
         self.init(matrix: Binding<Matrix> {
             .float4x4(binding.wrappedValue)
         }
-                  set: { newValue in
+        set: { newValue in
             guard case let .float4x4(matrix) = newValue else {
                 fatalError()
             }
@@ -86,7 +86,7 @@ public extension MatrixEditor {
         self.init(matrix: Binding<Matrix> {
             .float3x3(binding.wrappedValue)
         }
-                  set: { newValue in
+        set: { newValue in
             guard case let .float3x3(matrix) = newValue else {
                 fatalError()
             }
