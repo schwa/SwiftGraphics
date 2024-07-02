@@ -2,34 +2,6 @@ import CoreGraphicsSupport
 import simd
 import SIMDSupport
 
-public struct SplatB: Equatable {
-    public var position: PackedFloat3
-    public var scale: PackedFloat3
-    public var color: SIMD4<UInt8>
-    public var rotation: SIMD4<UInt8>
-}
-
-public struct SplatD: Equatable {
-    public var position: PackedFloat3
-    public var scale: PackedFloat3
-    public var color: SIMD4<Float>
-    public var rotation: Rotation
-
-    public init(position: PackedFloat3, scale: PackedFloat3, color: SIMD4<Float>, rotation: Rotation) {
-        self.position = position
-        self.scale = scale
-        self.color = color
-        self.rotation = rotation
-    }
-}
-
-// struct SplatC: Equatable {
-//    var position: PackedHalf3
-//    var color: PackedHalf4
-//    var cov_a: PackedHalf3
-//    var cov_b: PackedHalf3
-// };
-
 // buffer.write(
 //           ((rot / np.linalg.norm(rot)) * 128 + 128)
 //           .clip(0, 255)
@@ -43,12 +15,6 @@ public extension SplatB {
         let rotation_vector = other.rotation.quaternion.vectorRealFirst
         let rotation = ((rotation_vector / rotation_vector.length) * 128 + 128).clamped(to: 0...255)
         self = SplatB(position: other.position, scale: other.scale, color: color, rotation: SIMD4<UInt8>(rotation))
-    }
-}
-
-public extension simd_quatf {
-    var vectorRealFirst: simd_float4 {
-        [vector.w, vector.x, vector.y, vector.z]
     }
 }
 
