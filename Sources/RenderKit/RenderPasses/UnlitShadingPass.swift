@@ -69,13 +69,13 @@ public struct UnlitShadingPass: RenderPassProtocol {
 
     public func encode(device: MTLDevice, state: inout State, drawableSize: SIMD2<Float>, commandEncoder: any MTLRenderCommandEncoder) throws {
         let helper = try SceneGraphRenderHelper(scene: scene, drawableSize: drawableSize)
-        let elements = helper.elements(material: UnlitMaterialX.self)
+        let elements = try helper.elements()
         commandEncoder.setDepthStencilState(state.depthStencilState)
         commandEncoder.setRenderPipelineState(state.renderPipelineState)
         let bindings = state.bindings
         for element in elements {
-            guard let material = element.material else {
-                fatalError()
+            guard let geometry = element.node.geometry, let material = geometry.materials.compactMap({ $0 as? UnlitMaterialX }).first else {
+                continue
             }
             commandEncoder.withDebugGroup("Node: \(element.node.id)") {
                 commandEncoder.withDebugGroup("VertexShader") {
@@ -87,7 +87,7 @@ public struct UnlitShadingPass: RenderPassProtocol {
                 }
 
                 commandEncoder.withDebugGroup("FragmentShader") {
-                    let vertexBuffer = element.geometry.mesh.vertexBuffers[0]
+                    let vertexBuffer = geometry.mesh.vertexBuffers[0]
                     commandEncoder.setVertexBuffer(vertexBuffer.buffer, offset: vertexBuffer.offset, index: bindings.vertexBufferIndex)
                     if let texture = material.baseColorTexture {
                         commandEncoder.setFragmentBytes(of: UnlitMaterial(color: material.baseColorFactor, textureIndex: 0), index: bindings.fragmentMaterialsIndex)
@@ -98,8 +98,8 @@ public struct UnlitShadingPass: RenderPassProtocol {
                     }
                 }
 
-                assert(element.geometry.mesh.vertexBuffers.count == 1)
-                commandEncoder.draw(element.geometry.mesh)
+                assert(geometry.mesh.vertexBuffers.count == 1)
+                commandEncoder.draw(geometry.mesh)
             }
         }
     }
