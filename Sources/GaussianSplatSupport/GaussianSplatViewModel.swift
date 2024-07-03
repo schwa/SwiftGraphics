@@ -17,6 +17,13 @@ public class GaussianSplatViewModel {
     public var splatCount: Int
     public var splats: Splats<SplatC>
     public var splatDistances: MTLBuffer
+    public var cameraTransform: Transform = .translation([0, 0, 3])
+    public var cameraProjection: Projection = .perspective(.init())
+    public var modelTransform = Transform.identity.rotated(angle: .degrees(180), axis: [1, 0, 0])
+    public var debugMode: Bool = false
+    public var sortRate: Int = 10
+
+
 
     public init(device: MTLDevice, url: URL) throws {
         let data = try! Data(contentsOf: url)
