@@ -43,10 +43,7 @@ public struct GaussianSplatRenderView: View {
         )
 
         let gaussianSplatRenderPass = GaussianSplatRenderPass(
-            cameraTransform: cameraNode.transform,
-            cameraProjection: camera.projection,
-            modelTransform: splatsNode.transform,
-            splats: splats,
+            scene: scene,
             debugMode: viewModel.debugMode
         )
 

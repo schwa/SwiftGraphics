@@ -64,11 +64,9 @@ extension SceneGraph {
                     Node(label: "camera")
                         .content(Camera())
                         .transform(translation: [0, 0, 5])
-                        .children {
-                            Node(label: "pano")
-                            .content(Geometry(mesh: panoramaMesh, materials: [UnlitMaterialX(baseColorTexture: panoramaTexture)]))
-                        }
                 }
+                Node(label: "pano")
+                    .content(Geometry(mesh: panoramaMesh, materials: [UnlitMaterialX(baseColorTexture: panoramaTexture)]))
                 Node(label: "models") {
                     Node(label: "model-1")
                         .content(Geometry(mesh: sphere, materials: [DiffuseShadingRenderPass.Material(diffuseColor: .red)]))
@@ -107,19 +105,24 @@ struct SceneGraphInspector: View {
                 else {
                     Text("Node: <unnamed>")
                 }
-
             }
             .frame(minHeight: 320)
-            if let selection, let indexPath = scene.firstIndexPath(id: selection) {
-                let node = scene.root[indexPath: indexPath]
-                List {
-                    Form {
-                        LabeledContent("ID", value: "\(node.id)")
-                        LabeledContent("Label", value: node.label)
-                        TransformEditor(.constant(node.transform))
+            Group {
+                if let selection, let indexPath = scene.firstIndexPath(id: selection) {
+                    let node: Binding<Node> = $scene.binding(for: indexPath)
+    //                let node = scene.root[indexPath: indexPath]
+                    List {
+                        Form {
+                            LabeledContent("ID", value: "\(node.wrappedValue.id)")
+                            LabeledContent("Label", value: node.wrappedValue.label)
+                            TransformEditor(node.transform)
+                            VectorEditor(node.transform.translation)
+                        }
                     }
                 }
             }
+            .frame(minHeight: 320)
+
         }
     }
 }

@@ -1,7 +1,6 @@
 import simd
 
 public struct SceneGraphRenderHelper {
-
     public struct Element {
         public var node: Node
         // TODO: Some of these should be calculated on the fly.
