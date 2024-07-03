@@ -967,11 +967,76 @@ extension Node: FirstPersonCameraProtocol {
 
     var heading: Angle {
         get {
-            .zero
+            let projectedVector = transform.rotation.apply([0, 0, -1])
+            // Calculate the angle using atan2
+            // atan2(x, z) because we want angle from positive Z-axis (forward)
+            let angle = atan2(projectedVector.x, projectedVector.z)
+            // Convert to degrees and normalize to 0-360 range
+            var degrees = angle * (180 / .pi)
+            if degrees < 0 {
+                degrees += 360
+            }
+            return .degrees(Double(-degrees + 90))
         }
         // swiftlint:disable:next unused_setter_value
         set {
             fatalError()
         }
+    }
+}
+
+extension Rotation {
+    func apply(_ p: SIMD3<Float>) -> SIMD3<Float> {
+        (matrix * SIMD4<Float>(p, 1)).xyz
+    }
+}
+
+enum Axis3 {
+    case x
+    case y
+    case z
+}
+
+extension Axis3 {
+    var positiveVector: SIMD3<Float> {
+        switch self {
+        case .x:
+            [1, 0, 0]
+        case .y:
+            [0, 1, 0]
+        case .z:
+            [0, 0, 1]
+        }
+    }
+}
+
+extension SIMD3<Float> {
+    func angle(along axis: Axis3) -> Angle {
+        let axisVector = axis.positiveVector
+
+        // Project the vector onto the plane perpendicular to the axis
+        let projectedVector: SIMD3<Float>
+        switch axis {
+        case .x:
+            projectedVector = [0, self.y, self.z]
+        case .y:
+            projectedVector = [self.x, 0, self.z]
+        case .z:
+            projectedVector = [self.x, self.y, 0]
+        }
+
+        // Calculate the angle using atan2
+        let angle: Float
+        switch axis {
+        case .x:
+            angle = atan2(projectedVector.z, projectedVector.y)
+        case .y:
+            angle = atan2(projectedVector.x, projectedVector.z)
+        case .z:
+            angle = atan2(projectedVector.y, projectedVector.x)
+        }
+
+        // Convert to the desired Angle type
+        return .radians(Double(angle))
     }
 }
