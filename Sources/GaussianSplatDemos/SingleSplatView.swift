@@ -1,5 +1,6 @@
 import Everything
 import Fields3D
+import GaussianSplatSupport
 import MetalKit
 import MetalSupport
 import Observation
@@ -10,13 +11,12 @@ import SwiftFields
 import SwiftGraphicsSupport
 import SwiftUI
 import UniformTypeIdentifiers
-import GaussianSplatSupport
 
 // swiftlint:disable force_try
 
 public struct SingleSplatView: View {
     @State
-    private var cameraTransform: Transform = .translation([0, 0, 10])
+    private var cameraTransform: Transform = .translation([0, 0, 5])
 
     @State
     private var cameraProjection: Projection = .perspective(.init())
@@ -147,8 +147,7 @@ public struct SingleSplatView: View {
             cameraProjection: cameraProjection,
             modelTransform: modelTransform,
             splatCount: 1,
-            splats: Box(splats),
-            splatIndices: Box(splatIndices),
+            splats: Splats(splatBuffer: splats, indexBuffer: splatIndices),
             debugMode: debugMode
         )
         return [

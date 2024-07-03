@@ -186,7 +186,7 @@ struct Particles2DemoView: View, DemoView {
                 lastTime = now
                 dt = delta
 
-                if solver.objects.count < 2 && frame.isMultiple(of: 27) {
+                if solver.objects.count < 2 && !frame.isMultiple(of: 27) {
                     solver.objects.append(VerletObject(id: solver.objects.count, position_current: [300, 500]))
                     solver.objects.append(VerletObject(id: solver.objects.count, position_current: [400, 500]))
                     //                    solver.objects.append(VerletObject(id: solver.objects.count, position_current: [500, 500]))

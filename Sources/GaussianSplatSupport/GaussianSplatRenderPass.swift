@@ -27,17 +27,15 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
     var cameraProjection: Projection
     var modelTransform: Transform
     var splatCount: Int
-    var splats: Box<MTLBuffer>
-    var splatIndices: Box<MTLBuffer>
+    var splats: Splats<SplatC>
     var debugMode: Bool
 
-    public init(cameraTransform: Transform, cameraProjection: Projection, modelTransform: Transform, splatCount: Int, splats: Box<MTLBuffer>, splatIndices: Box<MTLBuffer>, debugMode: Bool) {
+    public init(cameraTransform: Transform, cameraProjection: Projection, modelTransform: Transform, splatCount: Int, splats: Splats<SplatC>, debugMode: Bool) {
         self.cameraTransform = cameraTransform
         self.cameraProjection = cameraProjection
         self.modelTransform = modelTransform
         self.splatCount = splatCount
         self.splats = splats
-        self.splatIndices = splatIndices
         self.debugMode = debugMode
     }
 
@@ -96,12 +94,19 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
             commandEncoder.setTriangleFillMode(.lines)
         }
 
+        let modelMatrix = modelTransform.matrix
+        let viewMatrix = cameraTransform.matrix.inverse
+        let projectionMatrix = cameraProjection.projectionMatrix(for: drawableSize)
+        let modelViewMatrix = viewMatrix * modelMatrix
+        let modelViewProjectionMatrix = projectionMatrix * viewMatrix * modelMatrix
+
         let uniforms = GaussianSplatUniforms(
-            modelViewProjectionMatrix: cameraProjection.projectionMatrix(for: drawableSize) * cameraTransform.matrix.inverse * modelTransform.matrix,
-            modelViewMatrix: cameraTransform.matrix.inverse * modelTransform.matrix,
-            projectionMatrix: cameraProjection.projectionMatrix(for: drawableSize),
-            modelMatrix: modelTransform.matrix,
-            viewMatrix: cameraTransform.matrix.inverse,
+            modelViewProjectionMatrix: modelViewProjectionMatrix,
+            modelViewMatrix: modelViewMatrix,
+            projectionMatrix: projectionMatrix,
+            modelMatrix: modelMatrix,
+            viewMatrix: viewMatrix,
+            cameraMatrix: cameraTransform.matrix,
             cameraPosition: cameraTransform.translation,
             drawableSize: drawableSize
         )
@@ -109,13 +114,14 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
         commandEncoder.withDebugGroup("VertexShader") {
             commandEncoder.setVertexBuffersFrom(mesh: state.quadMesh)
             commandEncoder.setVertexBytes(of: uniforms, index: state.bindings.vertexUniforms)
-            commandEncoder.setVertexBuffer(splats.content, offset: 0, index: state.bindings.vertexSplats)
-            commandEncoder.setVertexBuffer(splatIndices.content, offset: 0, index: state.bindings.vertexSplatIndices)
+            commandEncoder.setVertexBuffer(splats.splatBuffer, offset: 0, index: state.bindings.vertexSplats)
+            commandEncoder.setVertexBuffer(splats.indexBuffer, offset: 0, index: state.bindings.vertexSplatIndices)
         }
         commandEncoder.withDebugGroup("FragmentShader") {
             commandEncoder.setFragmentBytes(of: uniforms, index: state.bindings.fragmentUniforms)
-            commandEncoder.setFragmentBuffer(splats.content, offset: 0, index: state.bindings.fragmentSplats)
-            commandEncoder.setFragmentBuffer(splatIndices.content, offset: 0, index: state.bindings.fragmentSplatIndices)
+            commandEncoder.setFragmentBuffer(splats.splatBuffer, offset: 0, index: state.bindings.fragmentSplats)
+            commandEncoder.setFragmentBuffer(splats.indexBuffer
+                                             , offset: 0, index: state.bindings.fragmentSplatIndices)
         }
 
         //        commandEncoder.draw(pointMesh, instanceCount: splatCount)

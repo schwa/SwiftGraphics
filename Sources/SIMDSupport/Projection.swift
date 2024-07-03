@@ -15,8 +15,8 @@ public struct PerspectiveProjection: ProjectionProtocol {
     }
 
     public func projectionMatrix(for viewSize: SIMD2<Float>) -> simd_float4x4 {
-        let aspect = viewSize.x / viewSize.y
-        return .perspective(aspect: aspect, fovy: Float(verticalAngleOfView.radians), near: zClip.lowerBound, far: zClip.upperBound)
+        let aspectRatio = viewSize.x / viewSize.y
+        return .perspective(aspectRatio: aspectRatio, fovy: Float(verticalAngleOfView.radians), near: zClip.lowerBound, far: zClip.upperBound)
     }
 
     public func horizontalAngleOfView(aspectRatio: Double) -> Angle {
@@ -98,9 +98,9 @@ public extension simd_float4x4 {
         ))
     }
 
-    static func perspective(aspect: Float, fovy: Float, near: Float, far: Float) -> Self {
+    static func perspective(aspectRatio: Float, fovy: Float, near: Float, far: Float) -> Self {
         let yScale = 1 / tan(fovy * 0.5)
-        let xScale = yScale / aspect
+        let xScale = yScale / aspectRatio
         let zRange = far - near
         let zScale = -(far + near) / zRange
         let wzScale = -2 * far * near / zRange

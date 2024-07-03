@@ -1,8 +1,8 @@
 import Projection
 import simd
 import SIMDSupport
-import SwiftUI
 import SwiftGraphicsSupport
+import SwiftUI
 
 struct CameraRotationWidgetView: View {
     @Binding

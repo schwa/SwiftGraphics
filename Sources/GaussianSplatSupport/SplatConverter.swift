@@ -10,7 +10,7 @@ import SIMDSupport
 //       )
 
 public extension SplatB {
-    public init(_ other: SplatD) {
+    init(_ other: SplatD) {
         let color = SIMD4<UInt8>(other.color * 255)
         let rotation_vector = other.rotation.quaternion.vectorRealFirst
         let rotation = ((rotation_vector / rotation_vector.length) * 128 + 128).clamped(to: 0...255)
