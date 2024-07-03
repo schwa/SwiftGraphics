@@ -110,6 +110,7 @@ extension Node.Content: Equatable {
     }
 }
 
+// TODO: This should be "semi-hashable"
 extension Node: Hashable {
     public static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.id == rhs.id && lhs.generationID == rhs.generationID
