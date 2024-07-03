@@ -27,14 +27,14 @@ public struct SceneGraphRenderHelper {
             fatalError() // TODO: Throw
         }
         viewMatrix = currentCameraNode.transform.matrix.inverse
-        projectionMatrix = currentCameraNode.content!.camera!.projectionMatrix(for: drawableSize)
+        projectionMatrix = currentCameraNode.camera!.projectionMatrix(for: drawableSize)
     }
 
     public func elements() throws -> any Sequence<Element<()>> {
         // TODO: concat node's transform with parent node's transforms
 
         scene.root.allNodes().compactMap { node in
-            guard let geometry = node.content?.geometry else {
+            guard let geometry = node.geometry else {
                 return nil
             }
             // TODO: Move this all into element.
@@ -51,7 +51,7 @@ public struct SceneGraphRenderHelper {
     public func elements <Material>(material: Material.Type) -> any Sequence<Element<Material>> where Material: MaterialProtocol {
         // TODO: concat node's transform with parent node's transforms
         scene.root.allNodes().compactMap { node in
-            guard let geometry = node.content?.geometry else {
+            guard let geometry = node.geometry else {
                 return nil
             }
             // TODO: Only doing first material
@@ -72,7 +72,7 @@ public struct SceneGraphRenderHelper {
 
     public func nodes <Light>(withContentOf: Light.Type) -> [Node] where Light: LightProtocol {
         scene.root.allNodes().compactMap { node in
-            guard node.content?.light as? Light != nil else {
+            guard node.content as? Light != nil else {
                 return nil
             }
             return node
