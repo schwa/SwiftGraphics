@@ -93,29 +93,13 @@ public struct TreeIterator <Element>: IteratorProtocol {
         case breadthFirst
     }
     private let mode: Mode
-    private let children: (Element) -> [Element]?
     private var nodes: [Element]
+    private let children: (Element) -> [Element]?
 
-    public init(mode: Mode, root: Element, children: @escaping (Element) -> [Element]?) {
+    private init(mode: Mode, nodes: [Element], children: @escaping (Element) -> [Element]?) {
         self.mode = mode
-        self.nodes = [root]
+        self.nodes = nodes
         self.children = children
-    }
-
-    public init(mode: Mode, root: Element, children keyPath: KeyPath<Element, [Element]?>) {
-        self.mode = mode
-        self.nodes = [root]
-        self.children = { node -> [Element]? in
-            node[keyPath: keyPath]
-        }
-    }
-
-    public init(mode: Mode, root: Element, children keyPath: KeyPath<Element, [Element]>) {
-        self.mode = mode
-        self.nodes = [root]
-        self.children = { node -> [Element]? in
-            node[keyPath: keyPath]
-        }
     }
 
     public mutating func next() -> Element? {
@@ -137,6 +121,24 @@ public struct TreeIterator <Element>: IteratorProtocol {
             }
             return current
         }
+    }
+}
+
+public extension TreeIterator {
+    init(mode: Mode, root: Element, children: @escaping (Element) -> [Element]?) {
+        self.init(mode: mode, nodes: [root], children: children)
+    }
+
+    init(mode: Mode, root: Element, children keyPath: KeyPath<Element, [Element]?>) {
+        self.init(mode: mode, nodes: [root], children: { node -> [Element]? in
+            node[keyPath: keyPath]
+        })
+    }
+
+    init(mode: Mode, root: Element, children keyPath: KeyPath<Element, [Element]>) {
+        self.init(mode: mode, nodes: [root], children: { node -> [Element]? in
+            node[keyPath: keyPath]
+        })
     }
 }
 
