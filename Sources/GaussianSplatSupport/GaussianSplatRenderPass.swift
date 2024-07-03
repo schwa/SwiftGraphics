@@ -24,10 +24,10 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
     public var id: AnyHashable = "GaussianSplatRenderPass"
 
     var scene: SceneGraph
-//    var cameraTransform: Transform
-//    var cameraProjection: Projection
-//    var modelTransform: Transform
-//    var splats: Splats<SplatC>
+    //    var cameraTransform: Transform
+    //    var cameraProjection: Projection
+    //    var modelTransform: Transform
+    //    var splats: Splats<SplatC>
     var debugMode: Bool
 
     public init(scene: SceneGraph, debugMode: Bool) {
@@ -102,7 +102,6 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
                 continue
             }
 
-
             let modelMatrix = element.modelMatrix
             let viewMatrix = helper.viewMatrix
             let projectionMatrix = helper.projectionMatrix
@@ -134,8 +133,6 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
 
             //        commandEncoder.draw(pointMesh, instanceCount: splatCount)
             commandEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4, instanceCount: splats.splats.count)
-
         }
-
     }
 }

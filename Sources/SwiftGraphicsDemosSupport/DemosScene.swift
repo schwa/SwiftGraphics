@@ -30,7 +30,7 @@ struct DemosView: View {
             List {
                 row(for: FieldsTestBedView.self)
                 row(for: GaussianSplatView.self)
-//                row(for: SingleSplatView.self)
+                //                row(for: SingleSplatView.self)
                 row(for: SimplePBRSceneGraphDemoView.self)
                 row(for: TriangleReflectionView.self)
                 row(for: QuasiRandomTriangleView.self)

@@ -59,14 +59,14 @@ public struct Dial <Label>: View where Label: View {
         )
         #if os(macOS)
         .onMoveCommand { direction in
-            switch direction {
-            case .right, .up:
-                increment()
-            case .left, .down:
-                decrement()
-            default:
-                break
-            }
+        switch direction {
+        case .right, .up:
+        increment()
+        case .left, .down:
+        decrement()
+        default:
+        break
+        }
         }
         #endif
         .accessibilityRepresentation {

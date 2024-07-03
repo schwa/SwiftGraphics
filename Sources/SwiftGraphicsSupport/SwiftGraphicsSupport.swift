@@ -130,15 +130,15 @@ public extension TreeIterator {
     }
 
     init(mode: Mode, root: Element, children keyPath: KeyPath<Element, [Element]?>) {
-        self.init(mode: mode, nodes: [root], children: { node -> [Element]? in
+        self.init(mode: mode, nodes: [root]) { node -> [Element]? in
             node[keyPath: keyPath]
-        })
+        }
     }
 
     init(mode: Mode, root: Element, children keyPath: KeyPath<Element, [Element]>) {
-        self.init(mode: mode, nodes: [root], children: { node -> [Element]? in
+        self.init(mode: mode, nodes: [root]) { node -> [Element]? in
             node[keyPath: keyPath]
-        })
+        }
     }
 }
 

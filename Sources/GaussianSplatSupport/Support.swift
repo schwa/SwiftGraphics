@@ -77,9 +77,7 @@ extension simd_quatf {
     }
 }
 
-
 public extension MTLDevice {
-
     func makeTypedBuffer<T>(data: Data, options: MTLResourceOptions = []) throws -> TypedMTLBuffer<T> {
         if !data.count.isMultiple(of: MemoryLayout<T>.size) {
             throw MetalSupportError.illegalValue

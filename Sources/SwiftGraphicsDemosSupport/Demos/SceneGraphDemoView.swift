@@ -1,14 +1,14 @@
 import CoreGraphicsSupport
+import Fields3D
 import Metal
 import MetalKit
 import MetalSupport
 import RenderKit
 import Shapes3D
+import simd
 import SIMDSupport
 import SwiftGraphicsSupport
 import SwiftUI
-import Fields3D
-import simd
 
 // swiftlint:disable force_try
 
@@ -22,13 +22,13 @@ public struct SceneGraphDemoView: View, DemoView {
     private var cameraRotation = RollPitchYaw()
 
     @State
-    var drawableSize: SIMD2<Float>?
+    private var drawableSize: SIMD2<Float>?
 
     @State
-    var updatesPitch: Bool = true
+    private var updatesPitch: Bool = true
 
     @State
-    var updatesYaw: Bool = true
+    private var updatesYaw: Bool = true
 
     init() {
         let device = MTLCreateSystemDefaultDevice()!
@@ -43,7 +43,7 @@ public struct SceneGraphDemoView: View, DemoView {
             UnlitShadingPass(scene: scene),
             DebugRenderPass(scene: scene),
         ])
-        .onGeometryChange(for: CGSize.self, of: \.size, action: { self.drawableSize = SIMD2<Float>($0) })
+        .onGeometryChange(for: CGSize.self, of: \.size) { drawableSize = SIMD2<Float>($0) }
         .showFrameEditor()
         .onChange(of: cameraRotation, initial: true) {
             let b = BallConstraint(radius: 5, rollPitchYaw: cameraRotation)
@@ -67,7 +67,7 @@ public struct SceneGraphDemoView: View, DemoView {
                         SceneGraphMapView(scene: $scene, drawableSize: drawableSize)
                     }
                 }
-                .aspectRatio(4/3, contentMode: .fit)
+                .aspectRatio(4 / 3, contentMode: .fit)
                 .frame(width: 320)
             }
             .background(Color.black)
@@ -92,31 +92,31 @@ extension SceneGraph {
         let quad = try Quad<SimpleVertex>(x: -0.5, y: -0.5, width: 1, height: 1).toMTKMesh(device: device)
         return SceneGraph(root:
                             Node(label: "root") {
-            Node(label: "camera-ball") {
-                Node(label: "camera")
-                    .content(Camera())
-                    .transform(translation: [0, 0, 5])
-            }
-            Node(label: "pano")
-                .content(Geometry(mesh: panoramaMesh, materials: [UnlitMaterialX(baseColorTexture: panoramaTexture)]))
-            Node(label: "models") {
-                Node(label: "model-1")
-                    .content(Geometry(mesh: sphere, materials: [DiffuseShadingRenderPass.Material(diffuseColor: .red)]))
-                    .transform(translation: [-1, 0, 0])
-                Node(label: "model-2")
-                    .content(Geometry(mesh: cylinder, materials: [DiffuseShadingRenderPass.Material(diffuseColor: .green)]))
-                    .transform(translation: [0, 0, 0])
-                Node(label: "model-3")
-                    .content(Geometry(mesh: cone, materials: [DiffuseShadingRenderPass.Material(diffuseColor: .blue)]))
-                    .transform(translation: [1, 0, 0])
-                    .transform(.init(rotation: .rotation(angle: .degrees(45), axis: [1, 0, 0])))
-                Node(label: "model-4")
-                    .content(Geometry(mesh: quad, materials: [UnlitMaterialX(baseColorTexture: grassTexture)]))
-                    .transform(scale: [10, 10, 10])
-                    .transform(.init(rotation: .rotation(angle: .degrees(90), axis: [1, 0, 0])))
-                    .transform(translation: [0, -1, 0])
-            }
-        }
+                                Node(label: "camera-ball") {
+                                    Node(label: "camera")
+                                        .content(Camera())
+                                        .transform(translation: [0, 0, 5])
+                                }
+                                Node(label: "pano")
+                                    .content(Geometry(mesh: panoramaMesh, materials: [UnlitMaterialX(baseColorTexture: panoramaTexture)]))
+                                Node(label: "models") {
+                                    Node(label: "model-1")
+                                        .content(Geometry(mesh: sphere, materials: [DiffuseShadingRenderPass.Material(diffuseColor: .red)]))
+                                        .transform(translation: [-1, 0, 0])
+                                    Node(label: "model-2")
+                                        .content(Geometry(mesh: cylinder, materials: [DiffuseShadingRenderPass.Material(diffuseColor: .green)]))
+                                        .transform(translation: [0, 0, 0])
+                                    Node(label: "model-3")
+                                        .content(Geometry(mesh: cone, materials: [DiffuseShadingRenderPass.Material(diffuseColor: .blue)]))
+                                        .transform(translation: [1, 0, 0])
+                                        .transform(.init(rotation: .rotation(angle: .degrees(45), axis: [1, 0, 0])))
+                                    Node(label: "model-4")
+                                        .content(Geometry(mesh: quad, materials: [UnlitMaterialX(baseColorTexture: grassTexture)]))
+                                        .transform(scale: [10, 10, 10])
+                                        .transform(.init(rotation: .rotation(angle: .degrees(90), axis: [1, 0, 0])))
+                                        .transform(translation: [0, -1, 0])
+                                }
+                            }
         )
     }
 }
@@ -154,13 +154,12 @@ struct SceneGraphInspector: View {
                 }
             }
             .frame(minHeight: 320)
-
         }
     }
 }
 
 extension Node {
     var optionalChildren: [Node]? {
-        return children.isEmpty ? nil : children
+        children.isEmpty ? nil : children
     }
 }

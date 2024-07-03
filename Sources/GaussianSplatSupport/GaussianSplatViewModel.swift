@@ -14,10 +14,10 @@ import UniformTypeIdentifiers
 
 @Observable
 public class GaussianSplatViewModel {
-//    public var splats: Splats<SplatC>
-//    public var cameraTransform: Transform = .translation([0, 0, 3])
-//    public var cameraProjection: Projection = .perspective(.init())
-//    public var modelTransform = Transform.identity.rotated(angle: .degrees(180), axis: [1, 0, 0])
+    //    public var splats: Splats<SplatC>
+    //    public var cameraTransform: Transform = .translation([0, 0, 3])
+    //    public var cameraProjection: Projection = .perspective(.init())
+    //    public var modelTransform = Transform.identity.rotated(angle: .degrees(180), axis: [1, 0, 0])
     public var debugMode: Bool
     public var sortRate: Int
 
