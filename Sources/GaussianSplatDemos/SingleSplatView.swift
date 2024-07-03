@@ -147,7 +147,7 @@ public struct SingleSplatView: View {
             cameraProjection: cameraProjection,
             modelTransform: modelTransform,
             splatCount: 1,
-            splats: Splats(splatBuffer: splats, indexBuffer: splatIndices),
+            splats: try! Splats(device: device, splatBuffer: .init(mtlBuffer: splats)),
             debugMode: debugMode
         )
         return [

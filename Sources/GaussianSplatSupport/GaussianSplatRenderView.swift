@@ -24,17 +24,17 @@ public struct GaussianSplatRenderView: View {
 
     var passes: [any PassProtocol] {
         let preCalcComputePass = GaussianSplatPreCalcComputePass(
-            splatCount: viewModel.splatCount,
-            splatDistancesBuffer: Box(viewModel.splatDistances),
-            splatBuffer: Box(viewModel.splats.splatBuffer),
+            splatCount: viewModel.splats.splatBuffer.count,
+            splatDistancesBuffer: Box(viewModel.splats.distances.base),
+            splatBuffer: Box(viewModel.splats.splatBuffer.base),
             modelMatrix: simd_float3x3(truncating: viewModel.modelTransform.matrix),
             cameraPosition: viewModel.cameraTransform.translation
         )
 
         let gaussianSplatSortComputePass = GaussianSplatBitonicSortComputePass(
-            splatCount: viewModel.splatCount,
-            splatIndicesBuffer: Box(viewModel.splats.indexBuffer),
-            splatDistancesBuffer: Box(viewModel.splatDistances),
+            splatCount: viewModel.splats.splatBuffer.count,
+            splatIndicesBuffer: Box(viewModel.splats.indexBuffer.base),
+            splatDistancesBuffer: Box(viewModel.splats.distances.base),
             sortRate: viewModel.sortRate
         )
 
@@ -42,7 +42,7 @@ public struct GaussianSplatRenderView: View {
             cameraTransform: viewModel.cameraTransform,
             cameraProjection: viewModel.cameraProjection,
             modelTransform: viewModel.modelTransform,
-            splatCount: viewModel.splatCount,
+            splatCount: viewModel.splats.splatBuffer.count,
             splats: viewModel.splats,
             debugMode: viewModel.debugMode
         )
