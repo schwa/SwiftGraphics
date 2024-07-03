@@ -73,29 +73,29 @@ struct Renderer {
         }
         let commandBuffer = try commandQueue.makeCommandBuffer().safelyUnwrap(RenderKitError.resourceCreationFailure)
 
+        let renderPasses = passes.elements.compactMap { $0 as? any RenderPassProtocol }
+
         for pass in passes.elements {
-            //print("TODO: Fix load/store")
             switch pass {
             case let renderPass as any RenderPassProtocol:
-                // TODO: FIXME
-                //                let isFirst = index == passes.renderPasses.startIndex
-                //                let isLast = index == passes.renderPasses.endIndex - 1
-                //                if isFirst {
-                //                    renderPassDescriptor.colorAttachments[0].loadAction = .clear
-                //                    renderPassDescriptor.depthAttachment.loadAction = .clear
-                //                }
-                //                else {
-                //                    renderPassDescriptor.colorAttachments[0].loadAction = .load
-                //                    renderPassDescriptor.depthAttachment.loadAction = .load
-                //                }
-                //                if isLast {
-                //                    renderPassDescriptor.colorAttachments[0].storeAction = .store
-                //                    renderPassDescriptor.depthAttachment.storeAction = .dontCare
-                //                }
-                //                else {
-                //                    renderPassDescriptor.colorAttachments[0].storeAction = .store
-                //                    renderPassDescriptor.depthAttachment.storeAction = .store
-                //                }
+                let isFirst = pass.id == renderPasses.first?.id
+                let isLast = pass.id == renderPasses.last?.id
+                if isFirst {
+                    renderPassDescriptor.colorAttachments[0].loadAction = .clear
+                    renderPassDescriptor.depthAttachment.loadAction = .clear
+                }
+                else {
+                    renderPassDescriptor.colorAttachments[0].loadAction = .load
+                    renderPassDescriptor.depthAttachment.loadAction = .load
+                }
+                if isLast {
+                    renderPassDescriptor.colorAttachments[0].storeAction = .store
+                    renderPassDescriptor.depthAttachment.storeAction = .dontCare
+                }
+                else {
+                    renderPassDescriptor.colorAttachments[0].storeAction = .store
+                    renderPassDescriptor.depthAttachment.storeAction = .store
+                }
                 guard var state = statesByPasses[renderPass.id] else {
                     fatalError()
                 }

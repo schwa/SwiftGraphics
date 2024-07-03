@@ -1,12 +1,10 @@
 import SIMDSupport
 
 protocol Constraint {
-
 }
 
 extension SceneGraph {
     mutating func update(with: [any Constraint]) {
-
     }
 }
 
