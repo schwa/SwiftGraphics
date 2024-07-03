@@ -15,10 +15,10 @@ public struct TrivialID: Sendable, Hashable {
         var nextSerials: [Scope: Int] = [:]
     }
 
-    static let staticState: OSAllocatedUnfairLock<StaticState> = .init(initialState: .init())
+    private static let staticState: OSAllocatedUnfairLock<StaticState> = .init(initialState: .init())
 
-    struct Scope: Hashable {
-        var name: String
+    public struct Scope: Sendable, Hashable {
+        public private(set) var name: String
         var token: Int
 
         init(name: String, token: Int = .random(in: 0...0xFFFFFF)) {
@@ -35,8 +35,8 @@ public struct TrivialID: Sendable, Hashable {
         }
     }
 
-    var scope: Scope
-    var serial: Int
+    public private(set) var scope: Scope
+    public private(set) var serial: Int
 
     private init(scope: Scope, serial: Int) {
         self.scope = scope
@@ -113,7 +113,7 @@ extension TrivialID: Codable {
 }
 
 extension TrivialID.Scope: CustomDebugStringConvertible {
-    var debugDescription: String {
+    public var debugDescription: String {
         "\(name).\(String(token, radix: 16))"
     }
 }

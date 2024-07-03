@@ -29,7 +29,7 @@ public struct GaussianSplatView: View {
     var displayScale
 
     @State
-    var scene: SceneGraph
+    private var scene: SceneGraph
 
     public init() {
         let device = MTLCreateSystemDefaultDevice()!
@@ -42,6 +42,11 @@ public struct GaussianSplatView: View {
             }
             Node(label: "splats").content(splats)
         }
+
+        for event in AnySequence { TreeEventIterator(root: root, children: \.children) } {
+            print(event)
+        }
+
         self.scene = SceneGraph(root: root)
     }
 
@@ -142,4 +147,10 @@ extension Splats where Splat == SplatC {
 extension UTType {
     static let splat = UTType(filenameExtension: "splat")!
     static let splatC = UTType(filenameExtension: "splatc")!
+}
+
+extension Splats: CustomDebugStringConvertible {
+    public var debugDescription: String {
+        return "Splats()"
+    }
 }
