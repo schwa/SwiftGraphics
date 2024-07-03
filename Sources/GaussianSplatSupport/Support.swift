@@ -74,3 +74,59 @@ extension simd_quatf {
         [vector.w, vector.x, vector.y, vector.z]
     }
 }
+
+
+public extension MTLDevice {
+
+    func makeTypedBuffer<T>(data: Data, options: MTLResourceOptions = []) throws -> TypedMTLBuffer<T> {
+        if !data.count.isMultiple(of: MemoryLayout<T>.size) {
+            throw MetalSupportError.illegalValue
+        }
+        return try data.withUnsafeBytes { buffer in
+            guard let buffer = makeBuffer(bytes: buffer.baseAddress!, length: buffer.count, options: options) else {
+                throw MetalSupportError.resourceCreationFailure
+            }
+            return TypedMTLBuffer(mtlBuffer: buffer)
+        }
+    }
+
+    func makeTypedBuffer<T>(data: [T], options: MTLResourceOptions = []) throws -> TypedMTLBuffer<T> {
+        try data.withUnsafeBytes { buffer in
+            guard let buffer = makeBuffer(bytes: buffer.baseAddress!, length: buffer.count, options: options) else {
+                throw MetalSupportError.resourceCreationFailure
+            }
+            return TypedMTLBuffer(mtlBuffer: buffer)
+        }
+    }
+}
+
+public struct TypedMTLBuffer<T>: Equatable {
+    public var base: MTLBuffer
+
+    public init(mtlBuffer: MTLBuffer) {
+        assert(_isPOD(T.self))
+        self.base = mtlBuffer
+    }
+
+    public var count: Int {
+        base.length / MemoryLayout<T>.size
+    }
+
+    public func withUnsafeBuffer<R>(_ block: (UnsafeBufferPointer<T>) throws -> R) rethrows -> R {
+        let contents = base.contents()
+        let pointer = contents.bindMemory(to: T.self, capacity: count)
+        let buffer = UnsafeBufferPointer(start: pointer, count: count)
+        return try block(buffer)
+    }
+
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.base === rhs.base
+    }
+}
+
+extension TypedMTLBuffer {
+    func labelled(_ label: String) -> Self {
+        self.base.label = label
+        return self
+    }
+}
