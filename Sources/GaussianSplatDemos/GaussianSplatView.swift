@@ -22,20 +22,55 @@ extension UTType {
 
 public struct GaussianSplatView: View {
     @State
-    private var device = MTLCreateSystemDefaultDevice()!
+    private var device: MTLDevice
 
     @State
-    private var viewModel: GaussianSplatViewModel?
+    private var viewModel: GaussianSplatViewModel
+
+    @State
+    private var size: CGSize = .zero
+
+    @Environment(\.displayScale)
+    var displayScale
 
     public init() {
+        let device = MTLCreateSystemDefaultDevice()!
+        self.device = device
+        let url = Bundle.module.url(forResource: "train", withExtension: "splatc")!
+        _viewModel = .init(initialValue: try! .init(device: device, url: url))
     }
 
     public var body: some View {
-        ZStack {
-            Color.white
-            if let viewModel {
-                GaussianSplatRenderView(device: device).environment(viewModel)
+        GaussianSplatRenderView(device: device)
+            .environment(viewModel)
+        .onGeometryChange(for: CGSize.self) { proxy in
+            proxy.size
+        }
+        action: { size in
+            self.size = size
+        }
+        .ballRotation($viewModel.modelTransform.rotation.rollPitchYaw, pitchLimit: .radians(-.infinity) ... .radians(.infinity))
+        .overlay(alignment: .bottom) {
+            VStack {
+                Text("Size: [\(size * displayScale, format: .size)]")
+                Text("#splats: \(viewModel.splatCount)")
+                HStack {
+                    Slider(value: $viewModel.cameraTransform.translation.z, in: 0.0 ... 20.0) { Text("Distance") }
+                        .frame(maxWidth: 120)
+                    TextField("Distance", value: $viewModel.cameraTransform.translation.z, format: .number)
+                        .labelsHidden()
+                        .frame(maxWidth: 120)
+                }
+                Toggle("Debug Mode", isOn: $viewModel.debugMode)
+                HStack {
+                    Slider(value: $viewModel.sortRate.toDouble, in: 1 ... 60) { Text("Sort Rate") }
+                        .frame(maxWidth: 120)
+                    Text("\(viewModel.sortRate)")
+                }
             }
+            .padding()
+            .background(.ultraThickMaterial).cornerRadius(8)
+            .padding()
         }
         .toolbar {
             ValueView(value: false) { isPresented in
@@ -51,10 +86,6 @@ public struct GaussianSplatView: View {
                     viewModel = try! GaussianSplatViewModel(device: device, url: url)
                 }
             }
-        }
-        .onAppear {
-            let url = Bundle.module.url(forResource: "train", withExtension: "splatc")!
-            viewModel = try! GaussianSplatViewModel(device: device, url: url)
         }
     }
 }
