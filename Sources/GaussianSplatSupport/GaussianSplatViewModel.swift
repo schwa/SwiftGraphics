@@ -25,7 +25,6 @@ public class GaussianSplatViewModel {
         let data = try Data(contentsOf: url)
         let splats: TypedMTLBuffer<SplatC>
         if url.pathExtension == "splatc" {
-            let splatSize = 26 // TODO: hard coded
             splats = try device.makeTypedBuffer(data: data, options: .storageModeShared).labelled("Splats")
         }
         else if url.pathExtension == "splat" {
@@ -39,6 +38,6 @@ public class GaussianSplatViewModel {
         else {
             fatalError()
         }
-        self.splats = try Splats<SplatC>(device: device, splatBuffer: splats)
+        self.splats = try Splats<SplatC>(device: device, splats: splats)
     }
 }
