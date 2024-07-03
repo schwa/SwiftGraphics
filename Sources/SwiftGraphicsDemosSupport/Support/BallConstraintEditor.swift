@@ -1,6 +1,6 @@
-import SwiftUI
-import SIMDSupport
 import Fields3D
+import SIMDSupport
+import SwiftUI
 
 struct BallConstraintEditor: View {
     @Binding

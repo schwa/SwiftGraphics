@@ -6,6 +6,7 @@ struct GaussianSplatUniforms {
     simd_float4x4 projectionMatrix;
     simd_float4x4 modelMatrix;
     simd_float4x4 viewMatrix;
+    simd_float4x4 cameraMatrix;
     simd_float3 cameraPosition;
     simd_float2 drawableSize;
 };
@@ -86,8 +87,9 @@ namespace GaussianSplatShaders {
 //            return out;
 //        }
 
+        // float3 calcCovariance2D(float3 viewPos, packed_half3 cov3Da, packed_half3 cov3Db, float4x4 viewMatrix, float4x4 projectionMatrix, float2 screenSize)
         const float3 cov2D = calcCovariance2D(splatWorldSpacePosition.xyz, splat.cov_a, splat.cov_b, uniforms.viewMatrix, uniforms.projectionMatrix, uniforms.drawableSize);
-        const auto axes = decomposeCovariance(cov2D);
+        const Tuple2<float2> axes = decomposeCovariance(cov2D);
 
         const float2 projectedScreenDelta = (vertexModelSpacePosition.x * axes.v0 + vertexModelSpacePosition.y * axes.v1) * 2 * kBoundsRadius / uniforms.drawableSize;
         out.position = splatClipSpacePosition + float4(projectedScreenDelta.xy * splatClipSpacePosition.w, 0, 0);

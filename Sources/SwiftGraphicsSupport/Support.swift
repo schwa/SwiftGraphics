@@ -18,6 +18,7 @@ public protocol Labeled {
     var label: String? { get }
 }
 
+// TODO: Rename to be something less generic.
 public struct Box <Content>: Hashable where Content: AnyObject {
     public var content: Content
 
@@ -33,7 +34,6 @@ public struct Box <Content>: Hashable where Content: AnyObject {
         ObjectIdentifier(content).hash(into: &hasher)
     }
 }
-
 
 public protocol UnsafeMemoryEquatable: Equatable {
 }

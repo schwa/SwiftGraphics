@@ -156,10 +156,10 @@ struct SimplePBRMaterialEditor: View {
 
 // MARK: -
 
-extension SimplePBRLight: @retroactive LightProtocol, @retroactive @unchecked Sendable, @retroactive Equatable, UnsafeMemoryEquatable {
+extension SimplePBRLight: @retroactive LightProtocol, @retroactive @unchecked Sendable, @retroactive Equatable, @retroactive UnsafeMemoryEquatable {
 }
 
-extension SimplePBRMaterial: @retroactive MaterialProtocol, @retroactive @unchecked Sendable, @retroactive Equatable, UnsafeMemoryEquatable {
+extension SimplePBRMaterial: @retroactive MaterialProtocol, @retroactive @unchecked Sendable, @retroactive Equatable, @retroactive UnsafeMemoryEquatable {
 }
 
 // <ARL:

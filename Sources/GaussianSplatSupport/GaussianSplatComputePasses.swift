@@ -43,7 +43,7 @@ public struct GaussianSplatBitonicSortComputePass: ComputePassProtocol {
 
     public func compute(device: MTLDevice, state: inout State, commandBuffer: MTLCommandBuffer) throws {
         state.frameCount += 1
-        if sortRate > 1 && state.frameCount > 1 && state.frameCount.isMultiple(of: sortRate) {
+        if sortRate > 1 && state.frameCount > 1 && !state.frameCount.isMultiple(of: sortRate) {
             return
         }
 

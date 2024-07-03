@@ -167,15 +167,12 @@ public extension MTLDevice {
         return try block()
     }
 
-
     func makeBufferEx(bytes pointer: UnsafeRawPointer, length: Int, options: MTLResourceOptions = []) throws -> MTLBuffer {
         guard let buffer = makeBuffer(bytes: pointer, length: length, options: options) else {
             throw MetalSupportError.resourceCreationFailure
         }
         return buffer
-
     }
-
 
     func makeBufferEx(length: Int, options: MTLResourceOptions = []) throws -> MTLBuffer {
         guard let buffer = makeBuffer(length: length, options: options) else {
@@ -316,7 +313,6 @@ public extension MTLDevice {
         return destination
     }
 }
-
 
 public extension MTLFunctionConstantValues {
     convenience init(dictionary: [Int: Any]) {
