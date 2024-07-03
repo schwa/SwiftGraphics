@@ -51,14 +51,17 @@ public struct DiffuseShadingRenderPass: RenderPassProtocol {
     }
 
     public func encode(device: MTLDevice, state: inout State, drawableSize: SIMD2<Float>, commandEncoder: any MTLRenderCommandEncoder) throws {
-        let elements = try SceneGraphRenderHelper(scene: scene, drawableSize: drawableSize).elements(material: Material.self)
+        let elements = try SceneGraphRenderHelper(scene: scene, drawableSize: drawableSize).elements()
+
         commandEncoder.setDepthStencilState(state.depthStencilState)
         let lightAmbientColor = lightAmbientColor.simd.xyz
         let lightDiffuseColor = lightDiffuseColor.simd.xyz
+
         for element in elements {
-            guard let material = element.material else {
-                fatalError()
+            guard let geometry = element.node.geometry, let material = geometry.materials.compactMap({ $0 as? Material }).first else {
+                continue
             }
+
             commandEncoder.withDebugGroup("Node: \(element.node.id)") {
                 commandEncoder.setRenderPipelineState(state.renderPipelineState)
                 commandEncoder.withDebugGroup("FragmentShader") {
@@ -69,13 +72,13 @@ public struct DiffuseShadingRenderPass: RenderPassProtocol {
                 }
                 commandEncoder.withDebugGroup("Node: \(element.node.id)") {
                     commandEncoder.withDebugGroup("VertexShader") {
-                        assert(element.geometry.mesh.vertexBuffers.count == 1)
-                        let vertexBuffer = element.geometry.mesh.vertexBuffers[0]
+                        assert(geometry.mesh.vertexBuffers.count == 1)
+                        let vertexBuffer = geometry.mesh.vertexBuffers[0]
                         commandEncoder.setVertexBuffer(vertexBuffer.buffer, offset: vertexBuffer.offset, index: 0)
                         let uniforms = DiffuseShadingVertexShaderUniforms(modelViewMatrix: element.modelViewMatrix, modelViewProjectionMatrix: element.modelViewProjectionMatrix, modelNormalMatrix: element.modelNormalMatrix)
                         commandEncoder.setVertexBytes(of: uniforms, index: 1)
                     }
-                    commandEncoder.draw(element.geometry.mesh)
+                    commandEncoder.draw(geometry.mesh)
                 }
             }
         }
