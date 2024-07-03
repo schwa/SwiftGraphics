@@ -7,7 +7,10 @@ import SIMDSupport
 public extension MTLDevice {
 
     func makeTypedBuffer<T>(data: Data, options: MTLResourceOptions = []) throws -> TypedMTLBuffer<T> {
-        try data.withUnsafeBytes { buffer in
+        if !data.count.isMultiple(of: MemoryLayout<T>.size) {
+            throw MetalSupportError.illegalValue
+        }
+        return try data.withUnsafeBytes { buffer in
             guard let buffer = makeBuffer(bytes: buffer.baseAddress!, length: buffer.count, options: options) else {
                 throw MetalSupportError.resourceCreationFailure
             }
@@ -60,26 +63,26 @@ extension TypedMTLBuffer {
 
 public struct Splats <Splat>: Equatable {
     private var device: MTLDevice
-    public var splatBuffer: TypedMTLBuffer<Splat> // TODO: Rename
-    public var indexBuffer: TypedMTLBuffer<UInt32> // TODO: Rename
+    public var splats: TypedMTLBuffer<Splat> // TODO: Rename
+    public var indices: TypedMTLBuffer<UInt32> // TODO: Rename
     public var distances: TypedMTLBuffer<Float>
     public var cameraPosition: SIMD3<Float>
 
-    public init(device: MTLDevice, splatBuffer: TypedMTLBuffer<Splat>) throws {
+    public init(device: MTLDevice, splats: TypedMTLBuffer<Splat>) throws {
         self.device = device
-        self.splatBuffer = splatBuffer
+        self.splats = splats
 
-        let indices = (0 ..< splatBuffer.count).map { UInt32($0) }
-        self.indexBuffer = try device.makeTypedBuffer(data: indices, options: .storageModeShared).labelled("Splats-Indices")
-        let distances = Array(repeating: Float.zero, count: splatBuffer.count)
+        let indices = (0 ..< splats.count).map { UInt32($0) }
+        self.indices = try device.makeTypedBuffer(data: indices, options: .storageModeShared).labelled("Splats-Indices")
+        let distances = Array(repeating: Float.zero, count: splats.count)
         self.distances = try device.makeTypedBuffer(data: distances, options: .storageModeShared).labelled("Splats-Distances")
         self.cameraPosition = [.nan, .nan, .nan]
     }
 
     public static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.device === rhs.device
-        && lhs.splatBuffer == rhs.splatBuffer
-        && lhs.indexBuffer == rhs.indexBuffer
+        && lhs.splats == rhs.splats
+        && lhs.indices == rhs.indices
         && lhs.distances == rhs.distances
         && lhs.cameraPosition == rhs.cameraPosition
     }

@@ -14,15 +14,11 @@ public struct GaussianSplatBitonicSortComputePass: ComputePassProtocol {
     }
 
     public var id = AnyHashable("GaussianSplatBitonicSortComputePass")
-    var splatCount: Int
-    var splatIndicesBuffer: Box<MTLBuffer>
-    var splatDistancesBuffer: Box<MTLBuffer>
+    var splats: Splats<SplatC>
     var sortRate: Int
 
-    public init(splatCount: Int, splatIndicesBuffer: Box<MTLBuffer>, splatDistancesBuffer: Box<MTLBuffer>, sortRate: Int) {
-        self.splatCount = splatCount
-        self.splatIndicesBuffer = splatIndicesBuffer
-        self.splatDistancesBuffer = splatDistancesBuffer
+    public init(splats: Splats<SplatC>, sortRate: Int) {
+        self.splats = splats
         self.sortRate = sortRate
     }
 
@@ -53,9 +49,9 @@ public struct GaussianSplatBitonicSortComputePass: ComputePassProtocol {
         commandEncoder.withDebugGroup("GaussianSplatBitonicSortComputePass") {
             commandEncoder.setComputePipelineState(computePipelineState)
 
-            commandEncoder.setBuffer(splatIndicesBuffer.content, offset: 0, index: state.bindingsSplatIndicesIndex)
-            commandEncoder.setBuffer(splatDistancesBuffer.content, offset: 0, index: state.bindingsSplatDistancesIndex)
-
+            commandEncoder.setBuffer(splats.indices.base, offset: 0, index: state.bindingsSplatIndicesIndex)
+            commandEncoder.setBuffer(splats.distances.base, offset: 0, index: state.bindingsSplatDistancesIndex)
+            let splatCount = splats.splats.count
             let numStages = Int(log2(nextPowerOfTwo(Double(splatCount))))
             var threadgroupsPerGrid = (splatCount + computePipelineState.maxTotalThreadsPerThreadgroup - 1) / computePipelineState.maxTotalThreadsPerThreadgroup
             threadgroupsPerGrid = (threadgroupsPerGrid + computePipelineState.threadExecutionWidth - 1) / computePipelineState.threadExecutionWidth * computePipelineState.threadExecutionWidth
@@ -88,16 +84,12 @@ public struct GaussianSplatPreCalcComputePass: ComputePassProtocol {
     }
 
     public var id = AnyHashable("GaussianSplatPreCalcComputePass")
-    var splatCount: Int
-    var splatDistancesBuffer: Box<MTLBuffer>
-    var splatBuffer: Box<MTLBuffer>
+    var splats: Splats<SplatC>
     var modelMatrix: simd_float3x3
     var cameraPosition: SIMD3<Float>
 
-    public init(splatCount: Int, splatDistancesBuffer: Box<MTLBuffer>, splatBuffer: Box<MTLBuffer>, modelMatrix: simd_float3x3, cameraPosition: SIMD3<Float>) {
-        self.splatCount = splatCount
-        self.splatDistancesBuffer = splatDistancesBuffer
-        self.splatBuffer = splatBuffer
+    public init(splats: Splats<SplatC>, modelMatrix: simd_float3x3, cameraPosition: SIMD3<Float>) {
+        self.splats = splats
         self.modelMatrix = modelMatrix
         self.cameraPosition = cameraPosition
     }
@@ -127,11 +119,11 @@ public struct GaussianSplatPreCalcComputePass: ComputePassProtocol {
             commandEncoder.setComputePipelineState(computePipelineState)
             commandEncoder.setBytes(of: modelMatrix, index: state.bindingsModelMatrixIndex)
             commandEncoder.setBytes(of: cameraPosition, index: state.bindingsCameraPositionIndex)
-            commandEncoder.setBuffer(splatBuffer.content, offset: 0, index: state.bindingsSplatsIndex)
-            commandEncoder.setBytes(of: splatCount, index: state.bindingsSplatCountIndex)
-            commandEncoder.setBuffer(splatDistancesBuffer.content, offset: 0, index: state.bindingsSplatDistancesIndex)
+            commandEncoder.setBuffer(splats.splats.base, offset: 0, index: state.bindingsSplatsIndex)
+            commandEncoder.setBytes(of: UInt32(splats.splats.count), index: state.bindingsSplatCountIndex)
+            commandEncoder.setBuffer(splats.distances.base, offset: 0, index: state.bindingsSplatDistancesIndex)
             let threadsPerThreadgroup = MTLSize(width: computePipelineState.maxTotalThreadsPerThreadgroup, height: 1, depth: 1)
-            let numThreadgroups = (splatCount + threadsPerThreadgroup.width - 1) / threadsPerThreadgroup.width
+            let numThreadgroups = (splats.splats.count + threadsPerThreadgroup.width - 1) / threadsPerThreadgroup.width
             let threadgroupsPerGrid = MTLSize(width: numThreadgroups, height: 1, depth: 1)
             commandEncoder.dispatchThreadgroups(threadgroupsPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
         }
