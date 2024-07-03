@@ -74,8 +74,10 @@ struct Renderer {
         let commandBuffer = try commandQueue.makeCommandBuffer().safelyUnwrap(RenderKitError.resourceCreationFailure)
 
         for pass in passes.elements {
+            print("TODO: Fix load/store")
             switch pass {
             case let renderPass as any RenderPassProtocol:
+                // TODO: FIXME
                 //                let isFirst = index == passes.renderPasses.startIndex
                 //                let isLast = index == passes.renderPasses.endIndex - 1
                 //                if isFirst {
