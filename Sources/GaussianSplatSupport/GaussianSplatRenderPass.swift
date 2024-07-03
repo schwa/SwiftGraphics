@@ -23,17 +23,15 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
 
     public var id: AnyHashable = "GaussianSplatRenderPass"
 
-    var cameraTransform: Transform
-    var cameraProjection: Projection
-    var modelTransform: Transform
-    var splats: Splats<SplatC>
+    var scene: SceneGraph
+//    var cameraTransform: Transform
+//    var cameraProjection: Projection
+//    var modelTransform: Transform
+//    var splats: Splats<SplatC>
     var debugMode: Bool
 
-    public init(cameraTransform: Transform, cameraProjection: Projection, modelTransform: Transform, splats: Splats<SplatC>, debugMode: Bool) {
-        self.cameraTransform = cameraTransform
-        self.cameraProjection = cameraProjection
-        self.modelTransform = modelTransform
-        self.splats = splats
+    public init(scene: SceneGraph, debugMode: Bool) {
+        self.scene = scene
         self.debugMode = debugMode
     }
 
@@ -83,6 +81,9 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
     }
 
     public func encode(device: MTLDevice, state: inout State, drawableSize: SIMD2<Float>, commandEncoder: any MTLRenderCommandEncoder) throws {
+        let helper = try SceneGraphRenderHelper(scene: scene, drawableSize: drawableSize)
+        let elements = helper.elements()
+
         commandEncoder.setDepthStencilState(state.depthStencilState)
         commandEncoder.setRenderPipelineState(state.renderPipelineState)
 
@@ -92,36 +93,49 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
             commandEncoder.setTriangleFillMode(.lines)
         }
 
-        let modelMatrix = modelTransform.matrix
-        let viewMatrix = cameraTransform.matrix.inverse
-        let projectionMatrix = cameraProjection.projectionMatrix(for: drawableSize)
-        let modelViewMatrix = viewMatrix * modelMatrix
-        let modelViewProjectionMatrix = projectionMatrix * viewMatrix * modelMatrix
-
-        let uniforms = GaussianSplatUniforms(
-            modelViewProjectionMatrix: modelViewProjectionMatrix,
-            modelViewMatrix: modelViewMatrix,
-            projectionMatrix: projectionMatrix,
-            modelMatrix: modelMatrix,
-            viewMatrix: viewMatrix,
-            cameraMatrix: cameraTransform.matrix,
-            cameraPosition: cameraTransform.translation,
-            drawableSize: drawableSize
-        )
-
-        commandEncoder.withDebugGroup("VertexShader") {
-            commandEncoder.setVertexBuffersFrom(mesh: state.quadMesh)
-            commandEncoder.setVertexBytes(of: uniforms, index: state.bindings.vertexUniforms)
-            commandEncoder.setVertexBuffer(splats.splats, index: state.bindings.vertexSplats)
-            commandEncoder.setVertexBuffer(splats.indices, index: state.bindings.vertexSplatIndices)
-        }
-        commandEncoder.withDebugGroup("FragmentShader") {
-            commandEncoder.setFragmentBytes(of: uniforms, index: state.bindings.fragmentUniforms)
-            commandEncoder.setFragmentBuffer(splats.splats, index: state.bindings.fragmentSplats)
-            commandEncoder.setFragmentBuffer(splats.indices, index: state.bindings.fragmentSplatIndices)
+        guard let camera = scene.currentCameraNode else {
+            fatalError()
         }
 
-        //        commandEncoder.draw(pointMesh, instanceCount: splatCount)
-        commandEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4, instanceCount: splats.splats.count)
+        for element in elements {
+            guard let splats = element.node.content as? Splats<SplatC> else {
+                continue
+            }
+
+
+            let modelMatrix = element.modelMatrix
+            let viewMatrix = helper.viewMatrix
+            let projectionMatrix = helper.projectionMatrix
+            let modelViewMatrix = element.modelViewProjectionMatrix
+            let modelViewProjectionMatrix = element.modelViewProjectionMatrix
+
+            let uniforms = GaussianSplatUniforms(
+                modelViewProjectionMatrix: modelViewProjectionMatrix,
+                modelViewMatrix: modelViewMatrix,
+                projectionMatrix: projectionMatrix,
+                modelMatrix: modelMatrix,
+                viewMatrix: viewMatrix,
+                cameraMatrix: camera.transform.matrix,
+                cameraPosition: camera.transform.translation,
+                drawableSize: drawableSize
+            )
+
+            commandEncoder.withDebugGroup("VertexShader") {
+                commandEncoder.setVertexBuffersFrom(mesh: state.quadMesh)
+                commandEncoder.setVertexBytes(of: uniforms, index: state.bindings.vertexUniforms)
+                commandEncoder.setVertexBuffer(splats.splats, index: state.bindings.vertexSplats)
+                commandEncoder.setVertexBuffer(splats.indices, index: state.bindings.vertexSplatIndices)
+            }
+            commandEncoder.withDebugGroup("FragmentShader") {
+                commandEncoder.setFragmentBytes(of: uniforms, index: state.bindings.fragmentUniforms)
+                commandEncoder.setFragmentBuffer(splats.splats, index: state.bindings.fragmentSplats)
+                commandEncoder.setFragmentBuffer(splats.indices, index: state.bindings.fragmentSplatIndices)
+            }
+
+            //        commandEncoder.draw(pointMesh, instanceCount: splatCount)
+            commandEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4, instanceCount: splats.splats.count)
+
+        }
+
     }
 }

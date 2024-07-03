@@ -38,7 +38,9 @@ public struct GaussianSplatView: View {
         let splats = try! Splats<SplatC>(device: device, url: url)
         let root = Node(label: "root") {
             Node(label: "ball") {
-                Node(label: "camera").content(Camera())
+                Node(label: "camera")
+                    //.transform(translation: [0, 0, 04])
+                .content(Camera())
             }
             Node(label: "splats").content(splats)
         }

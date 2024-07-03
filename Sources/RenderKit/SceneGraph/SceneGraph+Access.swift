@@ -17,6 +17,26 @@ public extension Binding where Value == SceneGraph {
             wrappedValue[accessor: NodeAccessor(path: indexPath)] = $0
         }
     }
+
+    func binding(for indexPath: IndexPath) -> Binding<Node?> {
+        Binding<Node?> {
+            wrappedValue[accessor: NodeAccessor(path: indexPath)]
+        }
+        set: {
+            print("SETTING")
+            wrappedValue[accessor: NodeAccessor(path: indexPath)] = $0
+        }
+    }
+
+    func binding(for indexPath: IndexPath) -> Binding<Node> {
+        Binding<Node> {
+            wrappedValue[accessor: NodeAccessor(path: indexPath)]!
+        }
+        set: {
+            print("SETTING")
+            wrappedValue[accessor: NodeAccessor(path: indexPath)] = $0
+        }
+    }
 }
 
 // TODO: Cleanup.
