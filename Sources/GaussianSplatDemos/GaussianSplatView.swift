@@ -15,17 +15,46 @@ import UniformTypeIdentifiers
 
 // swiftlint:disable force_try
 
-extension UTType {
-    static let splat = UTType(filenameExtension: "splat")!
-    static let splatC = UTType(filenameExtension: "splatc")!
-}
-
 public struct GaussianSplatView: View {
     @State
     private var device: MTLDevice
 
     @State
-    private var viewModel: GaussianSplatViewModel
+    var splats: Splats<SplatC>
+
+    public init() {
+        let device = MTLCreateSystemDefaultDevice()!
+        let url = Bundle.module.url(forResource: "train", withExtension: "splatc")!
+        self.device = device
+        self.splats = try! .init(device: device, url: url)
+    }
+
+    public var body: some View {
+        GaussianSplatViewInner(splats: splats)
+        .toolbar {
+            ValueView(value: false) { isPresented in
+                Toggle("Load", isOn: isPresented)
+                    .fileImporter(isPresented: isPresented, allowedContentTypes: [.splatC, .splat]) { result in
+                        if case let .success(url) = result {
+                            splats = try! .init(device: device, url: url)
+                        }
+                    }
+            }
+            ForEach(try! Bundle.module.urls(withExtension: "splatc"), id: \.self) { url in
+                Button(url.lastPathComponent) {
+                    splats = try! .init(device: device, url: url)
+                }
+            }
+        }
+    }
+}
+
+public struct GaussianSplatViewInner: View {
+    @State
+    private var device: MTLDevice
+
+    @State
+    private var viewModel = GaussianSplatViewModel()
 
     @State
     private var size: CGSize = .zero
@@ -33,15 +62,21 @@ public struct GaussianSplatView: View {
     @Environment(\.displayScale)
     var displayScale
 
-    public init() {
+    @State
+    var scene: SceneGraph
+
+    public init(splats: Splats<SplatC>) {
         let device = MTLCreateSystemDefaultDevice()!
         self.device = device
-        let url = Bundle.module.url(forResource: "train", withExtension: "splatc")!
-        _viewModel = .init(initialValue: try! .init(device: device, url: url))
+        let root = try! Node(label: "root") {
+            Node(label: "camera").content(Camera())
+            Node(label: "splats").content(splats)
+        }
+        self.scene = SceneGraph(root: root)
     }
 
     public var body: some View {
-        GaussianSplatRenderView(device: device)
+        GaussianSplatRenderView(device: device, scene: scene)
             .environment(viewModel)
         .onGeometryChange(for: CGSize.self) { proxy in
             proxy.size
@@ -49,17 +84,17 @@ public struct GaussianSplatView: View {
         action: { size in
             self.size = size
         }
-        .ballRotation($viewModel.modelTransform.rotation.rollPitchYaw, pitchLimit: .radians(-.infinity) ... .radians(.infinity))
+        .ballRotation($scene.currentCameraNode.unsafeBinding().transform.rotation.rollPitchYaw, pitchLimit: .radians(-.infinity) ... .radians(.infinity))
         .overlay(alignment: .bottom) {
             VStack {
                 Text("Size: [\(size * displayScale, format: .size)]")
-                Text("#splats: \(viewModel.splats.splats.count)")
+                Text("#splats: \(scene.splatsNode.splats?.splats.count ?? 0)")
                 HStack {
-                    Slider(value: $viewModel.cameraTransform.translation.z, in: 0.0 ... 20.0) { Text("Distance") }
-                        .frame(maxWidth: 120)
-                    TextField("Distance", value: $viewModel.cameraTransform.translation.z, format: .number)
-                        .labelsHidden()
-                        .frame(maxWidth: 120)
+//                    Slider(value: $viewModel.cameraTransform.translation.z, in: 0.0 ... 20.0) { Text("Distance") }
+//                        .frame(maxWidth: 120)
+//                    TextField("Distance", value: $viewModel.cameraTransform.translation.z, format: .number)
+//                        .labelsHidden()
+//                        .frame(maxWidth: 120)
                 }
                 Toggle("Debug Mode", isOn: $viewModel.debugMode)
                 HStack {
@@ -72,41 +107,46 @@ public struct GaussianSplatView: View {
             .background(.ultraThickMaterial).cornerRadius(8)
             .padding()
         }
-        .toolbar {
-            ValueView(value: false) { isPresented in
-                Toggle("Load", isOn: isPresented)
-                    .fileImporter(isPresented: isPresented, allowedContentTypes: [.splatC, .splat]) { result in
-                        if case let .success(url) = result {
-                            viewModel = try! GaussianSplatViewModel(device: device, url: url)
-                        }
-                    }
-            }
-            ForEach(try! Bundle.module.urls(withExtension: "splatc"), id: \.self) { url in
-                Button(url.lastPathComponent) {
-                    viewModel = try! GaussianSplatViewModel(device: device, url: url)
+    }
+}
+
+extension SceneGraph {
+    var splatsNode: Node {
+        get {
+            node(for: "splats")!
+        }
+    }
+}
+
+extension Node {
+    var splats: Splats<SplatC>? {
+        content as? Splats<SplatC>
+    }
+}
+
+extension Splats where Splat == SplatC {
+    init(device: MTLDevice, url: URL) throws {
+        let data = try Data(contentsOf: url)
+        let splats: TypedMTLBuffer<SplatC>
+        if url.pathExtension == "splatc" {
+            splats = try device.makeTypedBuffer(data: data, options: .storageModeShared).labelled("Splats")
+        }
+        else if url.pathExtension == "splat" {
+            let splatArray = data.withUnsafeBytes { buffer in
+                buffer.withMemoryRebound(to: SplatB.self) { buffer in
+                    convert(buffer)
                 }
             }
+            splats = try device.makeTypedBuffer(data: splatArray, options: .storageModeShared).labelled("Splats")
         }
+        else {
+            fatalError()
+        }
+        self = try Splats<SplatC>(device: device, splats: splats)
     }
 }
 
-extension Bundle {
-    func urls(withExtension extension: String) throws -> [URL] {
-        try FileManager().contentsOfDirectory(at: resourceURL!, includingPropertiesForKeys: nil).filter {
-            $0.pathExtension == `extension`
-        }
-    }
-}
-
-// MARK: -
-
-extension Int {
-    var toDouble: Double {
-        get {
-            Double(self)
-        }
-        set {
-            self = Int(newValue)
-        }
-    }
+extension UTType {
+    static let splat = UTType(filenameExtension: "splat")!
+    static let splatC = UTType(filenameExtension: "splatc")!
 }

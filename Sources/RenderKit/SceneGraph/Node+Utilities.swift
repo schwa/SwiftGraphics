@@ -45,7 +45,7 @@ public extension Node {
         AnySequence {
             TreeIterator(mode: .depthFirst, root: (node: self, path: IndexPath())) { node, path in
                 node.children.enumerated().map { index, node in
-                    (node, path + [index])
+                    (node: node, path: path + [index])
                 }
             }
         }

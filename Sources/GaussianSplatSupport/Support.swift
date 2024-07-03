@@ -124,8 +124,8 @@ public struct TypedMTLBuffer<T>: Equatable {
     }
 }
 
-extension TypedMTLBuffer {
-    public func withUnsafeBuffer<R>(_ block: (UnsafeBufferPointer<T>) throws -> R) rethrows -> R {
+public extension TypedMTLBuffer {
+    func withUnsafeBuffer<R>(_ block: (UnsafeBufferPointer<T>) throws -> R) rethrows -> R {
         let contents = base.contents()
         let pointer = contents.bindMemory(to: T.self, capacity: count)
         let buffer = UnsafeBufferPointer(start: pointer, count: count)

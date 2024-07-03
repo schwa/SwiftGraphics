@@ -8,14 +8,15 @@ import SwiftGraphicsSupport
 import SwiftUI
 
 public struct GaussianSplatRenderView: View {
-    @State
     private var device: MTLDevice
+    private var scene: SceneGraph
 
     @Environment(GaussianSplatViewModel.self)
-    var viewModel
+    private var viewModel
 
-    public init(device: MTLDevice) {
+    public init(device: MTLDevice, scene: SceneGraph) {
         self.device = device
+        self.scene = scene
     }
 
     public var body: some View {
@@ -23,22 +24,29 @@ public struct GaussianSplatRenderView: View {
     }
 
     var passes: [any PassProtocol] {
+        guard let splatsNode = scene.node(for: "splats"), let splats = splatsNode.content as? Splats<SplatC> else {
+            return []
+        }
+        guard let cameraNode = scene.node(for: "camera"), let camera = cameraNode.camera else {
+            return []
+        }
+
         let preCalcComputePass = GaussianSplatPreCalcComputePass(
-            splats: viewModel.splats,
-            modelMatrix: simd_float3x3(truncating: viewModel.modelTransform.matrix),
-            cameraPosition: viewModel.cameraTransform.translation
+            splats: splats,
+            modelMatrix: simd_float3x3(truncating: splatsNode.transform.matrix),
+            cameraPosition: cameraNode.transform.translation
         )
 
         let gaussianSplatSortComputePass = GaussianSplatBitonicSortComputePass(
-            splats: viewModel.splats,
+            splats: splats,
             sortRate: viewModel.sortRate
         )
 
         let gaussianSplatRenderPass = GaussianSplatRenderPass(
-            cameraTransform: viewModel.cameraTransform,
-            cameraProjection: viewModel.cameraProjection,
-            modelTransform: viewModel.modelTransform,
-            splats: viewModel.splats,
+            cameraTransform: cameraNode.transform,
+            cameraProjection: camera.projection,
+            modelTransform: splatsNode.transform,
+            splats: splats,
             debugMode: viewModel.debugMode
         )
 
