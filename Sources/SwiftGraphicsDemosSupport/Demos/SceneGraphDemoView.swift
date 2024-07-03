@@ -8,6 +8,7 @@ import SIMDSupport
 import SwiftGraphicsSupport
 import SwiftUI
 import Fields3D
+import simd
 
 // swiftlint:disable force_try
 
@@ -19,6 +20,15 @@ public struct SceneGraphDemoView: View, DemoView {
 
     @State
     private var cameraRotation = RollPitchYaw()
+
+    @State
+    var drawableSize: SIMD2<Float>?
+
+    @State
+    var updatesPitch: Bool = true
+
+    @State
+    var updatesYaw: Bool = true
 
     init() {
         let device = MTLCreateSystemDefaultDevice()!
@@ -33,14 +43,36 @@ public struct SceneGraphDemoView: View, DemoView {
             UnlitShadingPass(scene: scene),
             DebugRenderPass(scene: scene),
         ])
+        .onGeometryChange(for: CGSize.self, of: \.size, action: { self.drawableSize = SIMD2<Float>($0) })
         .showFrameEditor()
         .onChange(of: cameraRotation, initial: true) {
             let b = BallConstraint(radius: 5, rollPitchYaw: cameraRotation)
             scene.currentCameraNode?.transform = b.transform
         }
-        .ballRotation($cameraRotation)
+        .ballRotation($cameraRotation, updatesPitch: updatesPitch, updatesYaw: updatesYaw)
         .inspector(isPresented: .constant(true)) {
             SceneGraphInspector(scene: $scene)
+        }
+        .overlay(alignment: .bottomLeading) {
+            VStack {
+                HStack {
+                    Toggle("Yaw?", isOn: $updatesYaw)
+                    Toggle("Pitch?", isOn: $updatesPitch)
+                }
+                .padding(2)
+                .toggleStyle(.button)
+                .controlSize(.mini)
+                ZStack {
+                    if let drawableSize, drawableSize != .zero {
+                        SceneGraphMapView(scene: $scene, drawableSize: drawableSize)
+                    }
+                }
+                .aspectRatio(4/3, contentMode: .fit)
+                .frame(width: 320)
+            }
+            .background(Color.black)
+            .cornerRadius(8)
+            .padding()
         }
     }
 }
@@ -59,32 +91,32 @@ extension SceneGraph {
 
         let quad = try Quad<SimpleVertex>(x: -0.5, y: -0.5, width: 1, height: 1).toMTKMesh(device: device)
         return SceneGraph(root:
-            Node(label: "root") {
-                Node(label: "camera-ball") {
-                    Node(label: "camera")
-                        .content(Camera())
-                        .transform(translation: [0, 0, 5])
-                }
-                Node(label: "pano")
-                    .content(Geometry(mesh: panoramaMesh, materials: [UnlitMaterialX(baseColorTexture: panoramaTexture)]))
-                Node(label: "models") {
-                    Node(label: "model-1")
-                        .content(Geometry(mesh: sphere, materials: [DiffuseShadingRenderPass.Material(diffuseColor: .red)]))
-                        .transform(translation: [-1, 0, 0])
-                    Node(label: "model-2")
-                        .content(Geometry(mesh: cylinder, materials: [DiffuseShadingRenderPass.Material(diffuseColor: .green)]))
-                        .transform(translation: [0, 0, 0])
-                    Node(label: "model-3")
-                        .content(Geometry(mesh: cone, materials: [DiffuseShadingRenderPass.Material(diffuseColor: .blue)]))
-                        .transform(translation: [1, 0, 0])
-                        .transform(.init(rotation: .rotation(angle: .degrees(45), axis: [1, 0, 0])))
-                    Node(label: "model-4")
-                        .content(Geometry(mesh: quad, materials: [UnlitMaterialX(baseColorTexture: grassTexture)]))
-                        .transform(scale: [10, 10, 10])
-                        .transform(.init(rotation: .rotation(angle: .degrees(90), axis: [1, 0, 0])))
-                        .transform(translation: [0, -1, 0])
-                }
+                            Node(label: "root") {
+            Node(label: "camera-ball") {
+                Node(label: "camera")
+                    .content(Camera())
+                    .transform(translation: [0, 0, 5])
             }
+            Node(label: "pano")
+                .content(Geometry(mesh: panoramaMesh, materials: [UnlitMaterialX(baseColorTexture: panoramaTexture)]))
+            Node(label: "models") {
+                Node(label: "model-1")
+                    .content(Geometry(mesh: sphere, materials: [DiffuseShadingRenderPass.Material(diffuseColor: .red)]))
+                    .transform(translation: [-1, 0, 0])
+                Node(label: "model-2")
+                    .content(Geometry(mesh: cylinder, materials: [DiffuseShadingRenderPass.Material(diffuseColor: .green)]))
+                    .transform(translation: [0, 0, 0])
+                Node(label: "model-3")
+                    .content(Geometry(mesh: cone, materials: [DiffuseShadingRenderPass.Material(diffuseColor: .blue)]))
+                    .transform(translation: [1, 0, 0])
+                    .transform(.init(rotation: .rotation(angle: .degrees(45), axis: [1, 0, 0])))
+                Node(label: "model-4")
+                    .content(Geometry(mesh: quad, materials: [UnlitMaterialX(baseColorTexture: grassTexture)]))
+                    .transform(scale: [10, 10, 10])
+                    .transform(.init(rotation: .rotation(angle: .degrees(90), axis: [1, 0, 0])))
+                    .transform(translation: [0, -1, 0])
+            }
+        }
         )
     }
 }
@@ -110,7 +142,7 @@ struct SceneGraphInspector: View {
             Group {
                 if let selection, let indexPath = scene.firstIndexPath(id: selection) {
                     let node: Binding<Node> = $scene.binding(for: indexPath)
-    //                let node = scene.root[indexPath: indexPath]
+                    //                let node = scene.root[indexPath: indexPath]
                     List {
                         Form {
                             LabeledContent("ID", value: "\(node.wrappedValue.id)")
