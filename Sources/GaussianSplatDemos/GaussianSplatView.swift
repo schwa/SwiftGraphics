@@ -20,40 +20,6 @@ public struct GaussianSplatView: View {
     private var device: MTLDevice
 
     @State
-    var splats: Splats<SplatC>
-
-    public init() {
-        let device = MTLCreateSystemDefaultDevice()!
-        let url = Bundle.module.url(forResource: "train", withExtension: "splatc")!
-        self.device = device
-        self.splats = try! .init(device: device, url: url)
-    }
-
-    public var body: some View {
-        GaussianSplatViewInner(splats: splats)
-        .toolbar {
-            ValueView(value: false) { isPresented in
-                Toggle("Load", isOn: isPresented)
-                    .fileImporter(isPresented: isPresented, allowedContentTypes: [.splatC, .splat]) { result in
-                        if case let .success(url) = result {
-                            splats = try! .init(device: device, url: url)
-                        }
-                    }
-            }
-            ForEach(try! Bundle.module.urls(withExtension: "splatc"), id: \.self) { url in
-                Button(url.lastPathComponent) {
-                    splats = try! .init(device: device, url: url)
-                }
-            }
-        }
-    }
-}
-
-public struct GaussianSplatViewInner: View {
-    @State
-    private var device: MTLDevice
-
-    @State
     private var viewModel = GaussianSplatViewModel()
 
     @State
@@ -65,9 +31,11 @@ public struct GaussianSplatViewInner: View {
     @State
     var scene: SceneGraph
 
-    public init(splats: Splats<SplatC>) {
+    public init() {
         let device = MTLCreateSystemDefaultDevice()!
+        let url = Bundle.module.url(forResource: "train", withExtension: "splatc")!
         self.device = device
+        let splats = try! Splats<SplatC>(device: device, url: url)
         let root = try! Node(label: "root") {
             Node(label: "camera").content(Camera())
             Node(label: "splats").content(splats)
@@ -107,6 +75,21 @@ public struct GaussianSplatViewInner: View {
             .background(.ultraThickMaterial).cornerRadius(8)
             .padding()
         }
+        .toolbar {
+            ValueView(value: false) { isPresented in
+                Toggle("Load", isOn: isPresented)
+                    .fileImporter(isPresented: isPresented, allowedContentTypes: [.splatC, .splat]) { result in
+                        if case let .success(url) = result {
+                            scene.splatsNode.content = try! Splats<SplatC>(device: device, url: url)
+                        }
+                    }
+            }
+            ForEach(try! Bundle.module.urls(withExtension: "splatc"), id: \.self) { url in
+                Button(url.lastPathComponent) {
+                    scene.splatsNode.content = try! Splats<SplatC>(device: device, url: url)
+                }
+            }
+        }
     }
 }
 
@@ -114,6 +97,10 @@ extension SceneGraph {
     var splatsNode: Node {
         get {
             node(for: "splats")!
+        }
+        set {
+            let accessor = accessor(for: "splats")!
+            self[accessor: accessor] = newValue
         }
     }
 }
