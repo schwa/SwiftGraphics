@@ -9,23 +9,6 @@ public struct SceneGraph: Equatable, Sendable {
 
     public var currentCameraPath: IndexPath?
 
-    public var currentCameraNode: Node? {
-        get {
-            guard let currentCameraPath else {
-                return nil
-            }
-            return root[indexPath: currentCameraPath]
-        }
-        set {
-            if let newValue {
-                root[indexPath: currentCameraPath!] = newValue
-            }
-            else {
-                currentCameraPath = nil
-            }
-        }
-    }
-
     public init(root: Node) {
         self.root = root
         self.currentCameraPath = root.allIndexedNodes().first { $0.0.content?.camera != nil }?.1
@@ -42,6 +25,8 @@ public struct SceneGraph: Equatable, Sendable {
         }?.1
     }
 }
+
+// MARK: -
 
 public struct Node: Identifiable, Sendable, Equatable {
     public enum Content: Sendable {
@@ -76,7 +61,7 @@ public struct Node: Identifiable, Sendable, Equatable {
 
     public var children: [Self] {
         didSet {
-            updateGeneration(new: children.map(\.generationID), old: oldValue.map(\.generationID), structural: true)
+            updateGeneration(new: children.map(\.generationID), old: oldValue.map(\.generationID))
         }
     }
 
@@ -101,12 +86,14 @@ public struct Node: Identifiable, Sendable, Equatable {
         self.children = children
     }
 
-    public mutating func updateGeneration<T>(new: T, old: T, structural: Bool = false) where T: Equatable {
+    public mutating func updateGeneration<T>(new: T, old: T) where T: Equatable {
         if new != old {
             generation += 1
         }
     }
 }
+
+// MARK: -
 
 extension Node.Content: Equatable {
     public static func == (lhs: Self, rhs: Self) -> Bool {
@@ -336,6 +323,25 @@ extension SceneGraph {
     func firstIndexPath(label: String) -> IndexPath? {
         firstIndexPath { node, _ in
             node.label == label
+        }
+    }
+}
+
+public extension SceneGraph {
+    var currentCameraNode: Node? {
+        get {
+            guard let currentCameraPath else {
+                return nil
+            }
+            return root[indexPath: currentCameraPath]
+        }
+        set {
+            if let newValue {
+                root[indexPath: currentCameraPath!] = newValue
+            }
+            else {
+                currentCameraPath = nil
+            }
         }
     }
 }
