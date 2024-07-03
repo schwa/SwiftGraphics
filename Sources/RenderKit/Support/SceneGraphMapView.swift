@@ -2,21 +2,21 @@ import CoreGraphicsSupport
 import Metal
 import MetalKit
 import MetalSupport
-import RenderKit
 import Shapes3D
 import SIMDSupport
 import SwiftGraphicsSupport
 import SwiftUI
 
-struct SceneGraphMapView: View {
+public struct SceneGraphMapView: View {
     @Binding
     var scene: SceneGraph
 
-    var drawableSize: SIMD2<Float>
+    @State
+    private var scale: CGFloat = 10
 
-    let scale: CGFloat = 10
+    let drawableSize: SIMD2<Float>
 
-    var body: some View {
+    public var body: some View {
         Canvas(opaque: true) { context, size in
             context.concatenate(CGAffineTransform.translation(CGPoint(size.width / 2, size.height / 2)))
 
@@ -44,8 +44,6 @@ struct SceneGraphMapView: View {
                     context.draw(targetImage, at: targetPosition * scale, anchor: .center)
                 case let geometry as Geometry:
                     let path = Path(ellipseIn: CGRect(center: position * scale, radius: 5))
-
-
 
                     context.stroke(path, with: .color(.red))
                 case nil:

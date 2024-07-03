@@ -39,8 +39,8 @@ public struct GaussianSplatView: View {
         let root = Node(label: "root") {
             Node(label: "ball") {
                 Node(label: "camera")
-                    //.transform(translation: [0, 0, 04])
-                .content(Camera())
+                    // .transform(translation: [0, 0, 04])
+                    .content(Camera())
             }
             Node(label: "splats").content(splats)
         }
@@ -55,54 +55,54 @@ public struct GaussianSplatView: View {
     public var body: some View {
         GaussianSplatRenderView(device: device, scene: scene)
             .environment(viewModel)
-        .onGeometryChange(for: CGSize.self) { proxy in
-            proxy.size
-        }
-        action: { size in
-            self.size = size
-        }
-        //.ballRotation($scene.binding(for: "ball").unsafeBinding().transform.rotation.rollPitchYaw, pitchLimit: .radians(-.infinity) ... .radians(.infinity))
-        .ballRotation($scene.currentCameraNode.unsafeBinding().transform.rotation.rollPitchYaw, pitchLimit: .radians(-.infinity) ... .radians(.infinity))
-        .overlay(alignment: .bottom) {
-            VStack {
-                Text("Size: [\(size * displayScale, format: .size)]")
-                Text("#splats: \(scene.splatsNode.splats?.splats.count ?? 0)")
-                HStack {
-                    Slider(value: $scene.currentCameraNode.unsafeBinding().transform.translation.z, in: 0.0 ... 20.0) { Text("Distance") }
-                        .frame(maxWidth: 120)
-                    TextField("Distance", value: $scene.currentCameraNode.unsafeBinding().transform.translation.z, format: .number)
-                        .labelsHidden()
-                        .frame(maxWidth: 120)
-                }
-                Toggle("Debug Mode", isOn: $viewModel.debugMode)
-                HStack {
-                    Slider(value: $viewModel.sortRate.toDouble, in: 1 ... 60) { Text("Sort Rate") }
-                        .frame(maxWidth: 120)
-                    Text("\(viewModel.sortRate)")
-                }
+            .onGeometryChange(for: CGSize.self) { proxy in
+                proxy.size
             }
-            .padding()
-            .background(.ultraThickMaterial).cornerRadius(8)
-            .padding()
-        }
-        .toolbar {
-            Button("Flip") {
-                scene.splatsNode.transform.rotation.rollPitchYaw.roll += .degrees(180)
+            action: { size in
+                self.size = size
             }
-            ValueView(value: false) { isPresented in
-                Toggle("Load", isOn: isPresented)
-                    .fileImporter(isPresented: isPresented, allowedContentTypes: [.splatC, .splat]) { result in
-                        if case let .success(url) = result {
-                            scene.splatsNode.content = try! Splats<SplatC>(device: device, url: url)
-                        }
+            // .ballRotation($scene.binding(for: "ball").unsafeBinding().transform.rotation.rollPitchYaw, pitchLimit: .radians(-.infinity) ... .radians(.infinity))
+            .ballRotation($scene.currentCameraNode.unsafeBinding().transform.rotation.rollPitchYaw, pitchLimit: .radians(-.infinity) ... .radians(.infinity))
+            .overlay(alignment: .bottom) {
+                VStack {
+                    Text("Size: [\(size * displayScale, format: .size)]")
+                    Text("#splats: \(scene.splatsNode.splats?.splats.count ?? 0)")
+                    HStack {
+                        Slider(value: $scene.currentCameraNode.unsafeBinding().transform.translation.z, in: 0.0 ... 20.0) { Text("Distance") }
+                            .frame(maxWidth: 120)
+                        TextField("Distance", value: $scene.currentCameraNode.unsafeBinding().transform.translation.z, format: .number)
+                            .labelsHidden()
+                            .frame(maxWidth: 120)
                     }
+                    Toggle("Debug Mode", isOn: $viewModel.debugMode)
+                    HStack {
+                        Slider(value: $viewModel.sortRate.toDouble, in: 1 ... 60) { Text("Sort Rate") }
+                            .frame(maxWidth: 120)
+                        Text("\(viewModel.sortRate)")
+                    }
+                }
+                .padding()
+                .background(.ultraThickMaterial).cornerRadius(8)
+                .padding()
             }
-            ForEach(try! Bundle.module.urls(withExtension: "splatc"), id: \.self) { url in
-                Button(url.lastPathComponent) {
-                    scene.splatsNode.content = try! Splats<SplatC>(device: device, url: url)
+            .toolbar {
+                Button("Flip") {
+                    scene.splatsNode.transform.rotation.rollPitchYaw.roll += .degrees(180)
+                }
+                ValueView(value: false) { isPresented in
+                    Toggle("Load", isOn: isPresented)
+                        .fileImporter(isPresented: isPresented, allowedContentTypes: [.splatC, .splat]) { result in
+                            if case let .success(url) = result {
+                                scene.splatsNode.content = try! Splats<SplatC>(device: device, url: url)
+                            }
+                        }
+                }
+                ForEach(try! Bundle.module.urls(withExtension: "splatc"), id: \.self) { url in
+                    Button(url.lastPathComponent) {
+                        scene.splatsNode.content = try! Splats<SplatC>(device: device, url: url)
+                    }
                 }
             }
-        }
     }
 }
 
@@ -153,6 +153,6 @@ extension UTType {
 
 extension Splats: CustomDebugStringConvertible {
     public var debugDescription: String {
-        return "Splats()"
+        "Splats()"
     }
 }

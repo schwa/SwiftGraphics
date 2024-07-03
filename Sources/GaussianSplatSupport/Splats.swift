@@ -23,27 +23,27 @@ public struct Splats <Splat>: Equatable, @unchecked Sendable {
 
     public static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.splats == rhs.splats
-        && lhs.indices == rhs.indices
-        && lhs.distances == rhs.distances
-        && lhs.cameraPosition == rhs.cameraPosition
+            && lhs.indices == rhs.indices
+            && lhs.distances == rhs.distances
+            && lhs.cameraPosition == rhs.cameraPosition
     }
 }
 
- public extension Splats where Splat == SplatC {
-     func boundingBox() -> (SIMD3<Float>, SIMD3<Float>) {
-         splats.withUnsafeBuffer { buffer in
-             let positions = buffer.map({ SIMD3<Float>($0.position) })
-             let minimums = positions.reduce([.greatestFiniteMagnitude, .greatestFiniteMagnitude, .greatestFiniteMagnitude], min)
-             let maximums = positions.reduce([-.greatestFiniteMagnitude, -.greatestFiniteMagnitude, -.greatestFiniteMagnitude], max)
-             return (minimums, maximums)
-         }
-     }
+public extension Splats where Splat == SplatC {
+    func boundingBox() -> (SIMD3<Float>, SIMD3<Float>) {
+        splats.withUnsafeBuffer { buffer in
+            let positions = buffer.map { SIMD3<Float>($0.position) }
+            let minimums = positions.reduce([.greatestFiniteMagnitude, .greatestFiniteMagnitude, .greatestFiniteMagnitude], min)
+            let maximums = positions.reduce([-.greatestFiniteMagnitude, -.greatestFiniteMagnitude, -.greatestFiniteMagnitude], max)
+            return (minimums, maximums)
+        }
+    }
 
-     func center() -> SIMD3<Float> {
-         let boundingBox = boundingBox()
-         return (boundingBox.0 + boundingBox.1) / 2
-     }
- }
+    func center() -> SIMD3<Float> {
+        let boundingBox = boundingBox()
+        return (boundingBox.0 + boundingBox.1) / 2
+    }
+}
 
 extension SIMD3 where Scalar == Float {
     init(_ other: PackedHalf3) {

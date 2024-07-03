@@ -1,20 +1,20 @@
-//import Everything
-//import Fields3D
-//import GaussianSplatSupport
-//import MetalKit
-//import MetalSupport
-//import Observation
-//import RenderKit
-//import simd
-//import SIMDSupport
-//import SwiftFields
-//import SwiftGraphicsSupport
-//import SwiftUI
-//import UniformTypeIdentifiers
+// import Everything
+// import Fields3D
+// import GaussianSplatSupport
+// import MetalKit
+// import MetalSupport
+// import Observation
+// import RenderKit
+// import simd
+// import SIMDSupport
+// import SwiftFields
+// import SwiftGraphicsSupport
+// import SwiftUI
+// import UniformTypeIdentifiers
 //
 //// swiftlint:disable force_try
 //
-//public struct SingleSplatView: View {
+// public struct SingleSplatView: View {
 //    @State
 //    private var cameraTransform: Transform = .translation([0, 0, 5])
 //
@@ -153,4 +153,4 @@
 //            gaussianSplatRenderPass
 //        ]
 //    }
-//}
+// }

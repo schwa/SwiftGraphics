@@ -37,18 +37,18 @@ public struct Wheel <Label>: View where Label: View {
                 value = 0
             }
         })
-#if os(macOS)
+        #if os(macOS)
         .onMoveCommand { direction in
-            switch direction {
-            case .right, .up:
-                increment()
-            case .left, .down:
-                decrement()
-            default:
-                break
-            }
+        switch direction {
+        case .right, .up:
+        increment()
+        case .left, .down:
+        decrement()
+        default:
+        break
         }
-#endif
+        }
+        #endif
         //        .accessibilityLabel("xxx")
         .accessibilityValue(Text("\(value.formatted())"))
         .accessibilityAddTraits(.allowsDirectInteraction)
