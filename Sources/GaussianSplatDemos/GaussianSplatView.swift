@@ -76,6 +76,10 @@ public struct GaussianSplatView: View {
             .padding()
         }
         .toolbar {
+            Button("Flip") {
+                scene.splatsNode.transform.rotation.rollPitchYaw.roll += .degrees(180)
+
+            }
             ValueView(value: false) { isPresented in
                 Toggle("Load", isOn: isPresented)
                     .fileImporter(isPresented: isPresented, allowedContentTypes: [.splatC, .splat]) { result in
