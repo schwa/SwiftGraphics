@@ -96,14 +96,14 @@ public struct TreeEventIterator<Node>: IteratorProtocol {
 
 public extension TreeEventIterator {
     init(root: Node, children keyPath: KeyPath<Node, [Node]?>) {
-        self.init(root: root, children: { node -> [Node]? in
+        self.init(root: root) { node -> [Node]? in
             node[keyPath: keyPath]
-        })
+        }
     }
 
     init(root: Node, children keyPath: KeyPath<Node, [Node]>) {
-        self.init(root: root, children: { node -> [Node]? in
+        self.init(root: root) { node -> [Node]? in
             node[keyPath: keyPath]
-        })
+        }
     }
 }
