@@ -44,14 +44,17 @@ public struct SimplePBRSceneGraphDemoView: View, DemoView {
         .inspector(isPresented: .constant(true)) {
             let path = scene.root.allIndexedNodes().first { $0.0.label == "model-1" }!.1
             let material = Binding<SimplePBRMaterial> {
-                guard let material = scene.root[indexPath: path].content!.geometry!.materials[0] as? SimplePBRMaterial else {
+                guard let geometry = scene.root[indexPath: path].geometry else {
+                    fatalError()
+                }
+                guard let material = geometry.materials[0] as? SimplePBRMaterial else {
                     fatalError()
                 }
                 return material
             }
             set: {
                 print("SET MATERIAL: \($0)")
-                scene.root[indexPath: path].content!.geometry!.materials[0] = $0
+                scene.root[indexPath: path].geometry?.materials[0] = $0
             }
             SimplePBRMaterialEditor(material: material)
         }
@@ -91,17 +94,17 @@ extension SceneGraph {
         return try SceneGraph(root:
                                 Node(label: "root") {
                                     Node(label: "camera")
-                                        .content(.camera(Camera()))
+                                        .content(Camera())
                                         .transform(translation: [0, 0, 5])
                                         .children {
                                             // TODO: Pano location should always be tied to camera location
                                             Node(label: "pano")
-                                                .content(.geometry(mesh: panoramaMesh, materials: [UnlitMaterialX(baseColorTexture: panoramaTexture)]))
+                                                .content(Geometry(mesh: panoramaMesh, materials: [UnlitMaterialX(baseColorTexture: panoramaTexture)]))
                                         }
                                     Node(label: "model-1")
-                                        .content(.geometry(mesh: sphere, materials: [SimplePBRMaterial(baseColor: [1, 0, 0], metallic: 0.5, roughness: 0.5)]))
+                                        .content(Geometry(mesh: sphere, materials: [SimplePBRMaterial(baseColor: [1, 0, 0], metallic: 0.5, roughness: 0.5)]))
                                     Node(label: "model-2")
-                                        .content(.geometry(mesh: quad, materials: [UnlitMaterialX(baseColorTexture: grassTexture)]))
+                                        .content(Geometry(mesh: quad, materials: [UnlitMaterialX(baseColorTexture: grassTexture)]))
                                         .transform(scale: [10, 10, 10])
                                         .transform(.init(rotation: .rotation(angle: .degrees(90), axis: [1, 0, 0])))
                                         .transform(translation: [0, -1, 0])

@@ -28,7 +28,7 @@ import SwiftGraphicsSupport
 }
 
 public extension Node {
-    init(label: String = "", transform: Transform = .identity, content: Content? = nil, @NodeBuilder children: () throws -> [Node]) throws {
+    init(label: String = "", transform: Transform = .identity, content: (Content)? = nil, @NodeBuilder children: () throws -> [Node]) throws {
         self.id = TrivialID(for: Self.self)
         self.isEnabled = true
         self.label = label

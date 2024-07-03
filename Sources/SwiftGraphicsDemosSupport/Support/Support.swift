@@ -954,25 +954,25 @@ extension SceneGraph {
         return try SceneGraph(root:
                                 Node(label: "root") {
                                     Node(label: "camera")
-                                        .content(.camera(Camera()))
+                                        .content(Camera())
                                         .transform(translation: [0, 0, 5])
                                         .children {
                                             // TODO: Pano location should always be tied to camera location
                                             Node(label: "pano")
-                                                .content(.geometry(mesh: panoramaMesh, materials: [UnlitMaterialX(baseColorTexture: panoramaTexture)]))
+                                                .content(Geometry(mesh: panoramaMesh, materials: [UnlitMaterialX(baseColorTexture: panoramaTexture)]))
                                         }
                                     Node(label: "model-1")
-                                        .content(.geometry(mesh: sphere, materials: [DiffuseShadingRenderPass.Material(diffuseColor: .red)]))
+                                        .content(Geometry(mesh: sphere, materials: [DiffuseShadingRenderPass.Material(diffuseColor: .red)]))
                                         .transform(translation: [-1, 0, 0])
                                     Node(label: "model-2")
-                                        .content(.geometry(mesh: cylinder, materials: [DiffuseShadingRenderPass.Material(diffuseColor: .green)]))
+                                        .content(Geometry(mesh: cylinder, materials: [DiffuseShadingRenderPass.Material(diffuseColor: .green)]))
                                         .transform(translation: [0, 0, 0])
                                     Node(label: "model-3")
-                                        .content(.geometry(mesh: cone, materials: [DiffuseShadingRenderPass.Material(diffuseColor: .blue)]))
+                                        .content(Geometry(mesh: cone, materials: [DiffuseShadingRenderPass.Material(diffuseColor: .blue)]))
                                         .transform(translation: [1, 0, 0])
                                         .transform(.init(rotation: .rotation(angle: .degrees(45), axis: [1, 0, 0])))
                                     Node(label: "model-4")
-                                        .content(.geometry(mesh: quad, materials: [UnlitMaterialX(baseColorTexture: grassTexture)]))
+                                        .content(Geometry(mesh: quad, materials: [UnlitMaterialX(baseColorTexture: grassTexture)]))
                                         .transform(scale: [10, 10, 10])
                                         .transform(.init(rotation: .rotation(angle: .degrees(90), axis: [1, 0, 0])))
                                         .transform(translation: [0, -1, 0])
@@ -1007,12 +1007,6 @@ extension Node {
         var copy = self
         copy.children = children()
         return copy
-    }
-}
-
-extension Node.Content {
-    static func geometry(mesh: MTKMesh, materials: [any MaterialProtocol]) -> Self {
-        .geometry(.init(mesh: mesh, materials: materials))
     }
 }
 

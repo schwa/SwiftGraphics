@@ -23,7 +23,7 @@ struct SceneGraphMapView: View {
             //                let color = Color(red: Double(colorVector.r), green: Double(colorVector.g), blue: Double(colorVector.b))
             //                context.fill(Path(ellipseIn: CGRect(center: position * scale, radius: 0.5 * scale)), with: .color(color.opacity(0.5)))
             //            }
-            if let cameraNode = scene.currentCameraNode, let camera = cameraNode.content?.camera {
+            if let cameraNode = scene.currentCameraNode, let camera = cameraNode.camera {
                 let cameraPosition = CGPoint(cameraNode.transform.translation.xz)
 
                 switch camera.projection {
