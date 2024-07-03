@@ -102,8 +102,9 @@ public extension MTLDevice {
     }
 }
 
+// TODO: Unchecked sendable.
 public struct TypedMTLBuffer<T>: Equatable {
-    public var base: MTLBuffer
+    private var base: MTLBuffer
 
     public init(mtlBuffer: MTLBuffer) {
         assert(_isPOD(T.self))
@@ -114,6 +115,16 @@ public struct TypedMTLBuffer<T>: Equatable {
         base.length / MemoryLayout<T>.size
     }
 
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.base === rhs.base
+    }
+
+    func withMTLBuffer<R>(_ block: (MTLBuffer) throws -> R) rethrows -> R {
+        try block(base)
+    }
+}
+
+extension TypedMTLBuffer {
     public func withUnsafeBuffer<R>(_ block: (UnsafeBufferPointer<T>) throws -> R) rethrows -> R {
         let contents = base.contents()
         let pointer = contents.bindMemory(to: T.self, capacity: count)
@@ -121,14 +132,33 @@ public struct TypedMTLBuffer<T>: Equatable {
         return try block(buffer)
     }
 
-    public static func == (lhs: Self, rhs: Self) -> Bool {
-        lhs.base === rhs.base
-    }
-}
-
-extension TypedMTLBuffer {
     func labelled(_ label: String) -> Self {
         self.base.label = label
         return self
+    }
+}
+
+extension MTLRenderCommandEncoder {
+    // TODO: Offset
+    func setVertexBuffer <T>(_ buffer: TypedMTLBuffer<T>, index: Int) {
+        buffer.withMTLBuffer {
+            setVertexBuffer($0, offset: 0, index: index)
+        }
+    }
+
+    func setFragmentBuffer <T>(_ buffer: TypedMTLBuffer<T>, index: Int) {
+        buffer.withMTLBuffer {
+            setFragmentBuffer($0, offset: 0, index: index)
+        }
+    }
+}
+
+extension MTLComputeCommandEncoder {
+    // TODO: Offset
+
+    func setBuffer <T>(_ buffer: TypedMTLBuffer<T>, index: Int) {
+        buffer.withMTLBuffer {
+            setBuffer($0, offset: 0, index: index)
+        }
     }
 }

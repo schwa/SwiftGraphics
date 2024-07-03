@@ -4,15 +4,14 @@ import MetalSupport
 import simd
 import SIMDSupport
 
-public struct Splats <Splat>: Equatable {
-    private var device: MTLDevice
-    public var splats: TypedMTLBuffer<Splat> // TODO: Rename
-    public var indices: TypedMTLBuffer<UInt32> // TODO: Rename
+// TODO: @unchecked Sendable
+public struct Splats <Splat>: Equatable, @unchecked Sendable {
+    public var splats: TypedMTLBuffer<Splat>
+    public var indices: TypedMTLBuffer<UInt32>
     public var distances: TypedMTLBuffer<Float>
     public var cameraPosition: SIMD3<Float>
 
     public init(device: MTLDevice, splats: TypedMTLBuffer<Splat>) throws {
-        self.device = device
         self.splats = splats
 
         let indices = (0 ..< splats.count).map { UInt32($0) }
@@ -23,8 +22,7 @@ public struct Splats <Splat>: Equatable {
     }
 
     public static func == (lhs: Self, rhs: Self) -> Bool {
-        lhs.device === rhs.device
-        && lhs.splats == rhs.splats
+        lhs.splats == rhs.splats
         && lhs.indices == rhs.indices
         && lhs.distances == rhs.distances
         && lhs.cameraPosition == rhs.cameraPosition
