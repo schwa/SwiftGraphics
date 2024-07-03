@@ -36,8 +36,10 @@ public struct GaussianSplatView: View {
         let url = Bundle.module.url(forResource: "train", withExtension: "splatc")!
         self.device = device
         let splats = try! Splats<SplatC>(device: device, url: url)
-        let root = try! Node(label: "root") {
-            Node(label: "camera").content(Camera())
+        let root = Node(label: "root") {
+            Node(label: "ball") {
+                Node(label: "camera").content(Camera())
+            }
             Node(label: "splats").content(splats)
         }
         self.scene = SceneGraph(root: root)
@@ -52,17 +54,18 @@ public struct GaussianSplatView: View {
         action: { size in
             self.size = size
         }
+        //.ballRotation($scene.binding(for: "ball").unsafeBinding().transform.rotation.rollPitchYaw, pitchLimit: .radians(-.infinity) ... .radians(.infinity))
         .ballRotation($scene.currentCameraNode.unsafeBinding().transform.rotation.rollPitchYaw, pitchLimit: .radians(-.infinity) ... .radians(.infinity))
         .overlay(alignment: .bottom) {
             VStack {
                 Text("Size: [\(size * displayScale, format: .size)]")
                 Text("#splats: \(scene.splatsNode.splats?.splats.count ?? 0)")
                 HStack {
-//                    Slider(value: $viewModel.cameraTransform.translation.z, in: 0.0 ... 20.0) { Text("Distance") }
-//                        .frame(maxWidth: 120)
-//                    TextField("Distance", value: $viewModel.cameraTransform.translation.z, format: .number)
-//                        .labelsHidden()
-//                        .frame(maxWidth: 120)
+                    Slider(value: $scene.currentCameraNode.unsafeBinding().transform.translation.z, in: 0.0 ... 20.0) { Text("Distance") }
+                        .frame(maxWidth: 120)
+                    TextField("Distance", value: $scene.currentCameraNode.unsafeBinding().transform.translation.z, format: .number)
+                        .labelsHidden()
+                        .frame(maxWidth: 120)
                 }
                 Toggle("Debug Mode", isOn: $viewModel.debugMode)
                 HStack {
@@ -78,7 +81,6 @@ public struct GaussianSplatView: View {
         .toolbar {
             Button("Flip") {
                 scene.splatsNode.transform.rotation.rollPitchYaw.roll += .degrees(180)
-
             }
             ValueView(value: false) { isPresented in
                 Toggle("Load", isOn: isPresented)

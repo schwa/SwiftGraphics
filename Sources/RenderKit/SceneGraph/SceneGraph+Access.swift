@@ -1,11 +1,27 @@
 import Foundation
+import SwiftUI
 
 public struct NodeAccessor: Hashable {
     var path: IndexPath
 }
 
+extension Binding where Value == SceneGraph {
+    public func binding(for label: String) -> Binding<Node?> {
+        guard let indexPath = wrappedValue.firstIndexPath(label: label) else {
+            fatalError()
+        }
+        return Binding<Node?> {
+            wrappedValue[accessor: NodeAccessor(path: indexPath)]
+        }
+        set: {
+            wrappedValue[accessor: NodeAccessor(path: indexPath)] = $0
+        }
+    }
+}
+
 // TODO: Cleanup.
 public extension SceneGraph {
+
     func firstIndexPath(matching predicate: (Node, IndexPath) -> Bool) -> IndexPath? {
         root.allIndexedNodes().first { node, indexPath in
             predicate(node, indexPath)
@@ -26,7 +42,7 @@ public extension SceneGraph {
 
     // TODO: Rename
     func node(for label: String) -> Node? {
-        root.allIndexedNodes().first(where: { $0.node.label == label })?.node
+        root.allIndexedNodes().first { $0.node.label == label }?.node
     }
 
     func accessor(for label: String) -> NodeAccessor? {
