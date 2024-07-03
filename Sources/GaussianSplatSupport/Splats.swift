@@ -1,45 +1,105 @@
 import CoreGraphicsSupport
 import Metal
+import MetalSupport
 import simd
 import SIMDSupport
 
-public struct Splats <Splat>: Equatable {
-    public var splatBuffer: MTLBuffer
-    public var indexBuffer: MTLBuffer
+public extension MTLDevice {
 
-    public init(splatBuffer: MTLBuffer, indexBuffer: MTLBuffer) {
-        self.splatBuffer = splatBuffer
-        self.indexBuffer = indexBuffer
+    func makeTypedBuffer<T>(data: Data, options: MTLResourceOptions = []) throws -> TypedMTLBuffer<T> {
+        try data.withUnsafeBytes { buffer in
+            guard let buffer = makeBuffer(bytes: buffer.baseAddress!, length: buffer.count, options: options) else {
+                throw MetalSupportError.resourceCreationFailure
+            }
+            return TypedMTLBuffer(mtlBuffer: buffer)
+        }
     }
 
-    public func withUnsafeSplatBuffer<R>(_ block: (UnsafeBufferPointer<Splat>) throws -> R) rethrows -> R {
-        let contents = splatBuffer.contents()
-        let count = splatBuffer.length / MemoryLayout<Splat>.size
-        let pointer = contents.bindMemory(to: Splat.self, capacity: count)
+    func makeTypedBuffer<T>(data: [T], options: MTLResourceOptions = []) throws -> TypedMTLBuffer<T> {
+        try data.withUnsafeBytes { buffer in
+            guard let buffer = makeBuffer(bytes: buffer.baseAddress!, length: buffer.count, options: options) else {
+                throw MetalSupportError.resourceCreationFailure
+            }
+            return TypedMTLBuffer(mtlBuffer: buffer)
+        }
+    }
+}
+
+public struct TypedMTLBuffer<T>: Equatable {
+    public var base: MTLBuffer
+
+    public init(mtlBuffer: MTLBuffer) {
+        assert(_isPOD(T.self))
+        self.base = mtlBuffer
+    }
+
+    public var count: Int {
+        base.length / MemoryLayout<T>.size
+    }
+
+    public func withUnsafeBuffer<R>(_ block: (UnsafeBufferPointer<T>) throws -> R) rethrows -> R {
+        let contents = base.contents()
+        let pointer = contents.bindMemory(to: T.self, capacity: count)
         let buffer = UnsafeBufferPointer(start: pointer, count: count)
         return try block(buffer)
     }
 
     public static func == (lhs: Self, rhs: Self) -> Bool {
-        lhs.splatBuffer === rhs.splatBuffer && lhs.indexBuffer === rhs.indexBuffer
+        lhs.base === rhs.base
     }
 }
 
-public extension Splats where Splat == SplatC {
-    func boundingBox() -> (SIMD3<Float>, SIMD3<Float>) {
-        withUnsafeSplatBuffer { buffer in
-            let positions = buffer.map({ SIMD3<Float>($0.position) })
-            let minimums = positions.reduce([.greatestFiniteMagnitude, .greatestFiniteMagnitude, .greatestFiniteMagnitude], min)
-            let maximums = positions.reduce([-.greatestFiniteMagnitude, -.greatestFiniteMagnitude, -.greatestFiniteMagnitude], max)
-            return (minimums, maximums)
-        }
-    }
-
-    func center() -> SIMD3<Float> {
-        let boundingBox = boundingBox()
-        return (boundingBox.0 + boundingBox.1) / 2
+extension TypedMTLBuffer {
+    func labelled(_ label: String) -> Self {
+        self.base.label = label
+        return self
     }
 }
+
+// MARK: -
+
+public struct Splats <Splat>: Equatable {
+    private var device: MTLDevice
+    public var splatBuffer: TypedMTLBuffer<Splat> // TODO: Rename
+    public var indexBuffer: TypedMTLBuffer<UInt32> // TODO: Rename
+    public var distances: TypedMTLBuffer<Float>
+    public var cameraPosition: SIMD3<Float>
+
+    public init(device: MTLDevice, splatBuffer: TypedMTLBuffer<Splat>) throws {
+        self.device = device
+        self.splatBuffer = splatBuffer
+
+        let indices = (0 ..< splatBuffer.count).map { UInt32($0) }
+        self.indexBuffer = try device.makeTypedBuffer(data: indices, options: .storageModeShared).labelled("Splats-Indices")
+        let distances = Array(repeating: Float.zero, count: splatBuffer.count)
+        self.distances = try device.makeTypedBuffer(data: distances, options: .storageModeShared).labelled("Splats-Distances")
+        self.cameraPosition = [.nan, .nan, .nan]
+    }
+
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.device === rhs.device
+        && lhs.splatBuffer == rhs.splatBuffer
+        && lhs.indexBuffer == rhs.indexBuffer
+        && lhs.distances == rhs.distances
+        && lhs.cameraPosition == rhs.cameraPosition
+    }
+}
+
+// public extension Splats where Splat == SplatC {
+//     func boundingBox() -> (SIMD3<Float>, SIMD3<Float>) {
+//         withUnsafeSplatBuffer { buffer in
+//             let positions = buffer.map({ SIMD3<Float>($0.position) })
+//             let minimums = positions.reduce([.greatestFiniteMagnitude, .greatestFiniteMagnitude, .greatestFiniteMagnitude], min)
+//             let maximums = positions.reduce([-.greatestFiniteMagnitude, -.greatestFiniteMagnitude, -.greatestFiniteMagnitude], max)
+//             return (minimums, maximums)
+//         }
+//     }
+//
+//     func center() -> SIMD3<Float> {
+//         let boundingBox = boundingBox()
+//         return (boundingBox.0 + boundingBox.1) / 2
+//     }
+// }
 
 extension SIMD3 where Scalar == Float {
     init(_ other: PackedHalf3) {

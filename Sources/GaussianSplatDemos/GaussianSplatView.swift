@@ -53,7 +53,7 @@ public struct GaussianSplatView: View {
         .overlay(alignment: .bottom) {
             VStack {
                 Text("Size: [\(size * displayScale, format: .size)]")
-                Text("#splats: \(viewModel.splatCount)")
+                Text("#splats: \(viewModel.splats.splatBuffer.count)")
                 HStack {
                     Slider(value: $viewModel.cameraTransform.translation.z, in: 0.0 ... 20.0) { Text("Distance") }
                         .frame(maxWidth: 120)

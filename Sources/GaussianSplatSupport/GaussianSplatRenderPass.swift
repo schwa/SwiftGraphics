@@ -114,13 +114,13 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
         commandEncoder.withDebugGroup("VertexShader") {
             commandEncoder.setVertexBuffersFrom(mesh: state.quadMesh)
             commandEncoder.setVertexBytes(of: uniforms, index: state.bindings.vertexUniforms)
-            commandEncoder.setVertexBuffer(splats.splatBuffer, offset: 0, index: state.bindings.vertexSplats)
-            commandEncoder.setVertexBuffer(splats.indexBuffer, offset: 0, index: state.bindings.vertexSplatIndices)
+            commandEncoder.setVertexBuffer(splats.splatBuffer.base, offset: 0, index: state.bindings.vertexSplats)
+            commandEncoder.setVertexBuffer(splats.indexBuffer.base, offset: 0, index: state.bindings.vertexSplatIndices)
         }
         commandEncoder.withDebugGroup("FragmentShader") {
             commandEncoder.setFragmentBytes(of: uniforms, index: state.bindings.fragmentUniforms)
-            commandEncoder.setFragmentBuffer(splats.splatBuffer, offset: 0, index: state.bindings.fragmentSplats)
-            commandEncoder.setFragmentBuffer(splats.indexBuffer
+            commandEncoder.setFragmentBuffer(splats.splatBuffer.base, offset: 0, index: state.bindings.fragmentSplats)
+            commandEncoder.setFragmentBuffer(splats.indexBuffer.base
                                              , offset: 0, index: state.bindings.fragmentSplatIndices)
         }
 
