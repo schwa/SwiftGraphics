@@ -4,18 +4,7 @@ import SIMDSupport
 import SwiftGraphicsSupport
 
 public extension Node {
-    func contains(_ indexPath: IndexPath) -> Bool {
-        guard let index = indexPath.first else {
-            return true
-        }
-        guard index < children.endIndex else {
-            return false
-        }
-        let child = children[index]
-        let indexPath = indexPath.dropFirst()
-        return child.contains(indexPath)
-    }
-
+    // TODO: Deprecate and use Accessors.
     subscript(indexPath indexPath: IndexPath) -> Node {
         get {
             guard let index = indexPath.first else {

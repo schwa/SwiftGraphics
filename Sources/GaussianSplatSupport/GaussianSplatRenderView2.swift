@@ -7,55 +7,16 @@ import SIMDSupport
 import SwiftGraphicsSupport
 import SwiftUI
 
-struct NodeAccessor {
-    var path: IndexPath
-}
-
-extension SceneGraph {
-    func accessor(for label: String) -> NodeAccessor? {
-        guard let path = root.allIndexedNodes().first(where: { $0.node.label == label })?.path else {
-            return nil
-        }
-        return .init(path: path)
-    }
-
-    subscript(accessor accessor: NodeAccessor) -> Node? {
-        get {
-            root[indexPath: accessor.path]
-        }
-        set {
-            // TODO: FIXME
-            root[indexPath: accessor.path] = newValue!
-        }
-    }
-
-    mutating func modify <R>(label: String, _ block: (inout Node?) throws -> R) rethrows -> R {
-        guard let accessor = accessor(for: label) else {
-            fatalError()
-        }
-        var node = self[accessor: accessor]
-        let result = try block(&node)
-        self[accessor: accessor] = node
-        return result
-    }
-
-    mutating func modify <R>(accessor: NodeAccessor, _ block: (inout Node?) throws -> R) rethrows -> R {
-        var node = self[accessor: accessor]
-        let result = try block(&node)
-        self[accessor: accessor] = node
-        return result
-    }
-}
 
 public struct GaussianSplatRenderView2: View {
     @State
     private var device: MTLDevice
 
-    @Environment(GaussianSplatViewModel.self)
-    var viewModel
-
     @State
-    var scene: SceneGraph
+    private var scene: SceneGraph
+
+    @Environment(GaussianSplatViewModel.self)
+    private var viewModel
 
     public init(device: MTLDevice) {
         self.device = device
@@ -77,21 +38,28 @@ public struct GaussianSplatRenderView2: View {
     }
 
     var passes: [any PassProtocol] {
+        guard let splatsNode = scene.node(for: "splats"), let splats = splatsNode.content as? Splats<SplatC> else {
+            return []
+        }
+        guard let cameraNode = scene.node(for: "camera"), let camera = cameraNode.camera else {
+            return []
+        }
+
         let preCalcComputePass = GaussianSplatPreCalcComputePass(
             splats: viewModel.splats,
-            modelMatrix: simd_float3x3(truncating: viewModel.modelTransform.matrix),
-            cameraPosition: viewModel.cameraTransform.translation
+            modelMatrix: simd_float3x3(truncating: splatsNode.transform.matrix),
+            cameraPosition: cameraNode.transform.translation
         )
 
         let gaussianSplatSortComputePass = GaussianSplatBitonicSortComputePass(
-            splats: viewModel.splats,
+            splats: splats,
             sortRate: viewModel.sortRate
         )
 
         let gaussianSplatRenderPass = GaussianSplatRenderPass(
-            cameraTransform: viewModel.cameraTransform,
-            cameraProjection: viewModel.cameraProjection,
-            modelTransform: viewModel.modelTransform,
+            cameraTransform: cameraNode.transform,
+            cameraProjection: camera.projection,
+            modelTransform: splatsNode.transform,
             splats: viewModel.splats,
             debugMode: viewModel.debugMode
         )
