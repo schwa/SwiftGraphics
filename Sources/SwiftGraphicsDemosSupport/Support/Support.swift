@@ -981,32 +981,25 @@ extension SceneGraph {
     }
 }
 
-extension Node {
-    func transform(_ transform: Transform) -> Node {
-        var copy = self
-        if copy.transform == .identity {
-            copy.transform = transform
+
+extension ComputePassProtocol {
+    func computeOnce(device: MTLDevice) throws {
+        var state = try setup(device: device)
+        let commandQueue = device.makeCommandQueue().forceUnwrap()
+        let commandBuffer = commandQueue.makeCommandBuffer( ).forceUnwrap()
+        try compute(device: device, state: &state, commandBuffer: commandBuffer)
+        commandBuffer.commit()
+        commandBuffer.waitUntilCompleted()
+        print("DONE")
+    }
+}
+
+extension Bundle {
+    func url(forResource resource: String?, withExtension extension: String?) throws -> URL {
+        guard let url = url(forResource: resource, withExtension: `extension`) else {
+            fatalError()
         }
-        else {
-            copy.transform.matrix = transform.matrix * copy.transform.matrix
-        }
-        return copy
-    }
-    func transform(translation: SIMD3<Float>) -> Node {
-        transform(.translation(translation))
-    }
-    func transform(scale: SIMD3<Float>) -> Node {
-        transform(Transform(scale: scale))
-    }
-    func content(_ content: Content) -> Node {
-        var copy = self
-        copy.content = content
-        return copy
-    }
-    func children(@NodeBuilder _  children: () -> [Node]) -> Node {
-        var copy = self
-        copy.children = children()
-        return copy
+        return url
     }
 }
 
@@ -1029,26 +1022,5 @@ extension Node: FirstPersonCameraProtocol {
         set {
             fatalError()
         }
-    }
-}
-
-extension ComputePassProtocol {
-    func computeOnce(device: MTLDevice) throws {
-        var state = try setup(device: device)
-        let commandQueue = device.makeCommandQueue().forceUnwrap()
-        let commandBuffer = commandQueue.makeCommandBuffer( ).forceUnwrap()
-        try compute(device: device, state: &state, commandBuffer: commandBuffer)
-        commandBuffer.commit()
-        commandBuffer.waitUntilCompleted()
-        print("DONE")
-    }
-}
-
-extension Bundle {
-    func url(forResource resource: String?, withExtension extension: String?) throws -> URL {
-        guard let url = url(forResource: resource, withExtension: `extension`) else {
-            fatalError()
-        }
-        return url
     }
 }
