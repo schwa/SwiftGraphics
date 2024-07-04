@@ -9,6 +9,7 @@ import simd
 import SIMDSupport
 import SwiftGraphicsSupport
 import SwiftUI
+import RenderKitSupport
 
 // swiftlint:disable force_try
 
@@ -17,18 +18,6 @@ public struct SceneGraphDemoView: View, DemoView {
 
     @State
     private var scene: SceneGraph
-
-    @State
-    private var cameraRotation = RollPitchYaw()
-
-    @State
-    private var drawableSize: SIMD2<Float>?
-
-    @State
-    private var updatesPitch: Bool = true
-
-    @State
-    private var updatesYaw: Bool = true
 
     init() {
         let device = MTLCreateSystemDefaultDevice()!
@@ -39,7 +28,7 @@ public struct SceneGraphDemoView: View, DemoView {
 
     public var body: some View {
         TimelineView(.animation) { timeline in
-            RenderView(device: device, passes: [
+            SceneGraphView(device: device, scene: $scene, passes: [
                 DiffuseShadingRenderPass(scene: scene),
                 UnlitShadingPass(scene: scene),
                 DebugRenderPass(scene: scene),
@@ -55,37 +44,6 @@ public struct SceneGraphDemoView: View, DemoView {
                     node?.transform.rotation.rollPitchYaw.yaw = .degrees((timeline.date.timeIntervalSince1970 * 30).wrapped(to: 0...360))
                 }
             }
-        }
-        .onGeometryChange(for: CGSize.self, of: \.size) { drawableSize = SIMD2<Float>($0) }
-        .showFrameEditor()
-        .onChange(of: cameraRotation, initial: true) {
-            let b = BallConstraint(radius: 5, rollPitchYaw: cameraRotation)
-            scene.currentCameraNode?.transform = b.transform
-        }
-        .ballRotation($cameraRotation, updatesPitch: updatesPitch, updatesYaw: updatesYaw)
-        .inspector(isPresented: .constant(true)) {
-            SceneGraphInspector(scene: $scene)
-        }
-        .overlay(alignment: .bottomLeading) {
-            VStack {
-                HStack {
-                    Toggle(updatesYaw ? "Yaw: On" : "Yaw: Off", isOn: $updatesYaw)
-                    Toggle(updatesPitch ? "Pitch: On" : "Pitch: Off", isOn: $updatesPitch)
-                }
-                .padding(2)
-                .toggleStyle(.button)
-                .controlSize(.mini)
-                ZStack {
-                    if let drawableSize, drawableSize != .zero {
-                        SceneGraphMapView(scene: $scene, drawableSize: drawableSize)
-                    }
-                }
-                .aspectRatio(4 / 3, contentMode: .fit)
-                .frame(width: 320)
-            }
-            .background(Color.black)
-            .cornerRadius(8)
-            .padding()
         }
     }
 }
@@ -131,48 +89,5 @@ extension SceneGraph {
                                 }
                             }
         )
-    }
-}
-
-struct SceneGraphInspector: View {
-    @Binding
-    var scene: SceneGraph
-
-    @State
-    private var selection: Node.ID?
-
-    var body: some View {
-        VSplitView {
-            List([scene.root], children: \.optionalChildren, selection: $selection) { node in
-                if !node.label.isEmpty {
-                    Text("Node: \"\(node.label)\"")
-                }
-                else {
-                    Text("Node: <unnamed>")
-                }
-            }
-            .frame(minHeight: 320)
-            Group {
-                if let selection, let indexPath = scene.firstIndexPath(id: selection) {
-                    let node: Binding<Node> = $scene.binding(for: indexPath)
-                    //                let node = scene.root[indexPath: indexPath]
-                    List {
-                        Form {
-                            LabeledContent("ID", value: "\(node.wrappedValue.id)")
-                            LabeledContent("Label", value: node.wrappedValue.label)
-                            TransformEditor(node.transform)
-                            VectorEditor(node.transform.translation)
-                        }
-                    }
-                }
-            }
-            .frame(minHeight: 320)
-        }
-    }
-}
-
-extension Node {
-    var optionalChildren: [Node]? {
-        children.isEmpty ? nil : children
     }
 }

@@ -12,6 +12,7 @@ import SwiftFormats
 import SwiftGraphicsSupport
 import SwiftUI
 import UniformTypeIdentifiers
+import RenderKitSupport
 
 // swiftlint:disable force_try
 
@@ -27,6 +28,15 @@ public struct GaussianSplatView: View {
 
     @Environment(\.displayScale)
     var displayScale
+
+    @State
+    private var drawableSize: SIMD2<Float>?
+
+    @State
+    private var updatesPitch: Bool = true
+
+    @State
+    private var updatesYaw: Bool = true
 
     @State
     private var scene: SceneGraph
@@ -50,14 +60,6 @@ public struct GaussianSplatView: View {
     public var body: some View {
         GaussianSplatRenderView(device: device, scene: scene)
             .environment(viewModel)
-            .onGeometryChange(for: CGSize.self) { proxy in
-                proxy.size
-            }
-            action: { size in
-                self.size = size
-            }
-            // .ballRotation($scene.binding(for: "ball").unsafeBinding().transform.rotation.rollPitchYaw, pitchLimit: .radians(-.infinity) ... .radians(.infinity))
-            .ballRotation($scene.currentCameraNode.unsafeBinding().transform.rotation.rollPitchYaw, pitchLimit: .radians(-.infinity) ... .radians(.infinity))
             .overlay(alignment: .bottom) {
                 VStack {
                     Text("Size: [\(size * displayScale, format: .size)]")
@@ -98,6 +100,7 @@ public struct GaussianSplatView: View {
                     }
                 }
             }
+            .modifier(SceneGraphViewModifier(device: device, scene: $scene, passes: []))
     }
 }
 

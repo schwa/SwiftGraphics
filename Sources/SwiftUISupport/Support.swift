@@ -1,8 +1,14 @@
 import SwiftUI
+import SwiftFormats
+import Everything
 
 #if !os(tvOS)
-struct MyDisclosureGroupStyle: DisclosureGroupStyle {
-    func makeBody(configuration: Configuration) -> some View {
+public struct MyDisclosureGroupStyle: DisclosureGroupStyle {
+
+    public init() {
+    }
+
+    public func makeBody(configuration: Configuration) -> some View {
         HStack {
             Button {
                 withAnimation {
@@ -20,7 +26,7 @@ struct MyDisclosureGroupStyle: DisclosureGroupStyle {
     }
 }
 
-struct SliderPopoverButton<Label, ValueLabel>: View where Label: View, ValueLabel: View {
+public struct SliderPopoverButton<Label, ValueLabel>: View where Label: View, ValueLabel: View {
     @Binding
     var value: Double
 
@@ -34,7 +40,7 @@ struct SliderPopoverButton<Label, ValueLabel>: View where Label: View, ValueLabe
     @State
     private var isPresented = false
 
-    var body: some View {
+    public var body: some View {
         Button(systemImage: "slider.horizontal.2.square") {
             isPresented = true
         }
@@ -58,20 +64,20 @@ struct SliderPopoverButton<Label, ValueLabel>: View where Label: View, ValueLabe
     }
 }
 
-extension SliderPopoverButton where Label == EmptyView, ValueLabel == EmptyView {
+public extension SliderPopoverButton where Label == EmptyView, ValueLabel == EmptyView {
     init<V>(value: Binding<V>, in bounds: ClosedRange<V> = 0 ... 1, onEditingChanged: @escaping (Bool) -> Void = { _ in }) where V: BinaryFloatingPoint, V.Stride: BinaryFloatingPoint {
         self = .init(value: value, in: bounds, label: { EmptyView() }, minimumValueLabel: { EmptyView() }, maximumValueLabel: { EmptyView() }, onEditingChanged: onEditingChanged)
     }
 }
 
-extension SliderPopoverButton where Label == EmptyView {
+public extension SliderPopoverButton where Label == EmptyView {
     init<V>(value: Binding<V>, in bounds: ClosedRange<V> = 0 ... 1, @ViewBuilder minimumValueLabel: () -> ValueLabel, @ViewBuilder maximumValueLabel: () -> ValueLabel, onEditingChanged: @escaping (Bool) -> Void = { _ in }) where V: BinaryFloatingPoint, V.Stride: BinaryFloatingPoint {
         self = .init(value: value, in: bounds, label: { EmptyView() }, minimumValueLabel: minimumValueLabel, maximumValueLabel: maximumValueLabel, onEditingChanged: onEditingChanged)
     }
 }
 #endif
 
-struct FrameEditorModifier: ViewModifier {
+public struct FrameEditorModifier: ViewModifier {
     @State
     var isExpanded = false
 
@@ -81,7 +87,7 @@ struct FrameEditorModifier: ViewModifier {
     @State
     var lockedSize: CGSize?
 
-    func body(content: Content) -> some View {
+    public func body(content: Content) -> some View {
         content
             .frame(width: lockedSize?.width, height: lockedSize?.height)
             .overlay {
@@ -121,7 +127,7 @@ struct FrameEditorModifier: ViewModifier {
     }
 }
 
-extension View {
+public extension View {
     func showFrameEditor() -> some View {
         modifier(FrameEditorModifier())
     }
