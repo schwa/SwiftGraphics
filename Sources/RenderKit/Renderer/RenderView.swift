@@ -7,7 +7,6 @@ import os.log
 import RenderKitShadersLegacy
 import simd
 import SIMDSupport
-import SwiftGraphicsSupport
 import SwiftUI
 
 /// A View that can render Metal graphics with an array of `RenderPass` types. This is a relatively low level view and should generally not be used by consumers.

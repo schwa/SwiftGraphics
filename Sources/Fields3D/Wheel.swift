@@ -1,6 +1,6 @@
 import CoreGraphicsSupport
-import SwiftGraphicsSupport
 import SwiftUI
+import SwiftUISupport
 
 public struct Wheel <Label>: View where Label: View {
     @Binding

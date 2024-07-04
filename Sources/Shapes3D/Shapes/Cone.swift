@@ -2,7 +2,6 @@ import MetalKit
 import MetalSupport
 import ModelIO
 import SIMDSupport
-import SwiftGraphicsSupport
 import SwiftUI
 
 public struct Cone3D {

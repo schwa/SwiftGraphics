@@ -1,4 +1,5 @@
 import SwiftUI
+import SwiftUISupport
 
 struct ShaderTestDemoView: View, DemoView {
     var body: some View {

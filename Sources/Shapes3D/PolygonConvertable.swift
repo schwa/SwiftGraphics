@@ -2,7 +2,7 @@ import Metal
 import MetalKit
 import MetalSupport
 import ModelIO
-import SwiftGraphicsSupport
+import BaseSupport
 
 public protocol PolygonConverterProtocol: ConverterProtocol {
     associatedtype Input

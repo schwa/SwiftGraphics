@@ -2,6 +2,7 @@ import Algorithms
 import CoreGraphicsSupport
 import Shapes2D
 import SwiftUI
+import SwiftUISupport
 
 // swiftlint:disable force_try
 

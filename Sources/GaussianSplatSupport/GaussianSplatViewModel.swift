@@ -8,7 +8,6 @@ import RenderKit
 import simd
 import SIMDSupport
 import SwiftFormats
-import SwiftGraphicsSupport
 import SwiftUI
 import UniformTypeIdentifiers
 

@@ -1,6 +1,6 @@
 import CoreGraphics
 import Metal
-import SwiftGraphicsSupport
+import BaseSupport
 
 public struct OffscreenRenderer {
     public private(set) var size: CGSize

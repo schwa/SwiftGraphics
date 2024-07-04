@@ -4,7 +4,6 @@ import ModelIO
 import os.log
 import RenderKitShadersLegacy
 import simd
-import SwiftGraphicsSupport
 import SwiftUI
 
 // extension Bundle {

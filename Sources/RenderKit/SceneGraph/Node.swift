@@ -1,7 +1,7 @@
 import Foundation
 import os
 import SIMDSupport
-import SwiftGraphicsSupport
+import BaseSupport
 
 public struct Node: Identifiable, Sendable, Equatable {
     public typealias Content = any Sendable

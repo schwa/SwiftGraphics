@@ -3,6 +3,7 @@ import simd
 import SIMDSupport
 import SwiftGraphicsSupport
 import SwiftUI
+import CoreGraphicsSupport
 
 struct CameraRotationWidgetView: View {
     @Binding
@@ -29,7 +30,7 @@ struct CameraRotationWidgetView: View {
             ZStack {
                 Canvas { context, _ in
                     context.draw3DLayer(projection: projection) { _, context3D in
-                        for axis in Axis.allCases {
+                        for axis in Axis3D.allCases {
                             context3D.stroke(path: Path3D { path in
                                 path.move(to: axis.vector * -length)
                                 path.addLine(to: axis.vector * length)
@@ -61,12 +62,12 @@ struct CameraRotationWidgetView: View {
 
     func axesInfo() -> [(label: String, longLabel: String, color: Color, keyboardShortcut: KeyboardShortcut?, vector: SIMD3<Float>)] {
         [
-            ("+\(Axis.x)", "right", Axis.x.color, KeyboardShortcut("3", modifiers: .command), Axis.x.vector * 1),
-            ("-\(Axis.x)", "left", Axis.x.color, nil, Axis.x.vector * -1),
-            ("+\(Axis.y)", "top", Axis.y.color, KeyboardShortcut("7", modifiers: .command), Axis.y.vector * 1),
-            ("-\(Axis.y)", "bottom", Axis.y.color, nil, Axis.y.vector * -1),
-            ("+\(Axis.z)", "front", Axis.z.color, KeyboardShortcut("1", modifiers: .command), Axis.z.vector * 1),
-            ("-\(Axis.z)", "back", Axis.z.color, nil, Axis.z.vector * -1),
+            ("+\(Axis3D.x)", "right", Axis3D.x.color, KeyboardShortcut("3", modifiers: .command), Axis3D.x.vector * 1),
+            ("-\(Axis3D.x)", "left", Axis3D.x.color, nil, Axis3D.x.vector * -1),
+            ("+\(Axis3D.y)", "top", Axis3D.y.color, KeyboardShortcut("7", modifiers: .command), Axis3D.y.vector * 1),
+            ("-\(Axis3D.y)", "bottom", Axis3D.y.color, nil, Axis3D.y.vector * -1),
+            ("+\(Axis3D.z)", "front", Axis3D.z.color, KeyboardShortcut("1", modifiers: .command), Axis3D.z.vector * 1),
+            ("-\(Axis3D.z)", "back", Axis3D.z.color, nil, Axis3D.z.vector * -1),
         ]
     }
 }
@@ -80,33 +81,5 @@ struct CameraWidgetButtonStyle: ButtonStyle {
                 Circle().fill(.background)
                     .opacity(configuration.isPressed ? 0.5 : 1.0)
             }
-    }
-}
-
-enum Axis: CaseIterable {
-    case x
-    case y
-    case z
-
-    var vector: SIMD3<Float> {
-        switch self {
-        case .x:
-            [1, 0, 0]
-        case .y:
-            [0, 1, 0]
-        case .z:
-            [0, 0, 1]
-        }
-    }
-
-    var color: Color {
-        switch self {
-        case .x:
-            .red
-        case .y:
-            .green
-        case .z:
-            .blue
-        }
     }
 }

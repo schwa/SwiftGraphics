@@ -2,7 +2,7 @@ import CoreGraphics
 import MetalSupport
 import ModelIO
 import simd
-import SwiftGraphicsSupport
+import BaseSupport
 
 public protocol Face {
     associatedtype Vertex: VertexLike

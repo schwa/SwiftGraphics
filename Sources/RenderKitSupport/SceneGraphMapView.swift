@@ -3,7 +3,6 @@ import Metal
 import MetalKit
 import MetalSupport
 import SIMDSupport
-import SwiftGraphicsSupport
 import SwiftUI
 import RenderKit
 

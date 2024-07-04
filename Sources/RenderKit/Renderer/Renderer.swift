@@ -7,8 +7,8 @@ import os.log
 import RenderKitShadersLegacy
 import simd
 import SIMDSupport
-import SwiftGraphicsSupport
 import SwiftUI
+import BaseSupport
 
 public protocol PassState /*: Sendable*/ {
 }

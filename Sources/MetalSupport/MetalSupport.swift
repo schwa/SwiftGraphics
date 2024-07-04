@@ -766,6 +766,10 @@ public extension MTLSize {
     init(_ width: Int, _ height: Int, _ depth: Int) {
         self = MTLSize(width: width, height: height, depth: depth)
     }
+
+    init(width: Int) {
+            self = MTLSize(width: width, height: 1, depth: 1)
+    }
 }
 
 public extension MTLTexture {

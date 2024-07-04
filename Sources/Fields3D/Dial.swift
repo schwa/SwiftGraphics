@@ -1,6 +1,6 @@
 import CoreGraphicsSupport
-import SwiftGraphicsSupport
 import SwiftUI
+import SwiftUISupport
 
 // TODO: Bug - drag does not consider center of Canvas to be center of drag if the view has a label.
 
