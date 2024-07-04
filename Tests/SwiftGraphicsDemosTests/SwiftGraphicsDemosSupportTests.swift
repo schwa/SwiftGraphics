@@ -1,7 +1,7 @@
 // import XCTest
-// @testable import SwiftGraphicsDemosSupport
+// @testable import SwiftGraphicsDemos
 //
-// final class SwiftGraphicsDemosSupportTests: XCTestCase {
+// final class SwiftGraphicsDemosTests: XCTestCase {
 //    func testExample() throws {
 //        // XCTest Documentation
 //        // https://developer.apple.com/documentation/xctest

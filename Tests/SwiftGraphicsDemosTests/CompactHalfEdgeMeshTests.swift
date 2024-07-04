@@ -1,5 +1,5 @@
 import XCTest
-@testable import SwiftGraphicsDemosSupport
+@testable import SwiftGraphicsDemos
 
 class CompactHalfEdgeMeshTests: XCTestCase {
     func test1() {

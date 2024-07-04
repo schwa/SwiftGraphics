@@ -17,7 +17,9 @@
 			<string>DirectionalGamepad</string>
 		</dict>
 	</array>
-	<key>GCSupportsControllerUserInteraction</key>
-	<true/>
+	<key>INIntentsSupported</key>
+	<array>
+		<string>Intent</string>
+	</array>
 </dict>
 </plist>

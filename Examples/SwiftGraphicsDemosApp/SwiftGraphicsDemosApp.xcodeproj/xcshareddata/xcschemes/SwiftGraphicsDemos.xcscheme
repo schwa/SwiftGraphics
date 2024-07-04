@@ -16,9 +16,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "45E5B5DE2A8EA04100B46CDC"
-               BuildableName = "SwiftGraphicsDemos.app"
-               BlueprintName = "SwiftGraphicsDemos"
-               ReferencedContainer = "container:SwiftGraphicsDemos.xcodeproj">
+               BuildableName = "SwiftGraphicsDemosApp.app"
+               BlueprintName = "SwiftGraphicsDemosApp"
+               ReferencedContainer = "container:SwiftGraphicsDemosApp.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -46,9 +46,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "45E5B5DE2A8EA04100B46CDC"
-            BuildableName = "SwiftGraphicsDemos.app"
-            BlueprintName = "SwiftGraphicsDemos"
-            ReferencedContainer = "container:SwiftGraphicsDemos.xcodeproj">
+            BuildableName = "SwiftGraphicsDemosApp.app"
+            BlueprintName = "SwiftGraphicsDemosApp"
+            ReferencedContainer = "container:SwiftGraphicsDemosApp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -63,9 +63,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "45E5B5DE2A8EA04100B46CDC"
-            BuildableName = "SwiftGraphicsDemos.app"
-            BlueprintName = "SwiftGraphicsDemos"
-            ReferencedContainer = "container:SwiftGraphicsDemos.xcodeproj">
+            BuildableName = "SwiftGraphicsDemosApp.app"
+            BlueprintName = "SwiftGraphicsDemosApp"
+            ReferencedContainer = "container:SwiftGraphicsDemosApp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4501BD6F2C37204B002CE55F /* SwiftGraphicsDemos in Frameworks */ = {isa = PBXBuildFile; productRef = 4501BD6E2C37204B002CE55F /* SwiftGraphicsDemos */; };
 		45CDB0442BF4025700096326 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 45CDB0432BF4025700096326 /* Assets.xcassets */; };
-		45CEE5992C09882F00E3F2B3 /* SwiftGraphicsDemosSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 45CEE5982C09882F00E3F2B3 /* SwiftGraphicsDemosSupport */; };
 		45DA912C2BF158380070FD0C /* Info-visionOS.plist in Resources */ = {isa = PBXBuildFile; fileRef = 45DA90B12BF158380070FD0C /* Info-visionOS.plist */; };
 		45DEA3A82C174F92007481D8 /* cube_points.pointsply in Resources */ = {isa = PBXBuildFile; fileRef = 45DEA3A72C174F68007481D8 /* cube_points.pointsply */; };
 		45E5B5E32A8EA04100B46CDC /* SwiftGraphicsDemosApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E5B5E22A8EA04100B46CDC /* SwiftGraphicsDemosApp.swift */; };
@@ -27,7 +27,7 @@
 		45DA914B2BF15B070070FD0C /* SwiftGraphicsDemos-Shared.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "SwiftGraphicsDemos-Shared.xcconfig"; sourceTree = "<group>"; };
 		45DA91582BF15D6B0070FD0C /* SwiftGraphics */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = SwiftGraphics; path = ../..; sourceTree = "<group>"; };
 		45DEA3A72C174F68007481D8 /* cube_points.pointsply */ = {isa = PBXFileReference; lastKnownFileType = text; path = cube_points.pointsply; sourceTree = "<group>"; };
-		45E5B5DF2A8EA04100B46CDC /* SwiftGraphicsDemos.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftGraphicsDemos.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		45E5B5DF2A8EA04100B46CDC /* SwiftGraphicsDemosApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftGraphicsDemosApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		45E5B5E22A8EA04100B46CDC /* SwiftGraphicsDemosApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftGraphicsDemosApp.swift; sourceTree = "<group>"; };
 		45E5B5E82A8EA04400B46CDC /* SwiftGraphicsDemos.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SwiftGraphicsDemos.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -37,7 +37,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				45CEE5992C09882F00E3F2B3 /* SwiftGraphicsDemosSupport in Frameworks */,
+				4501BD6F2C37204B002CE55F /* SwiftGraphicsDemos in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,7 +78,7 @@
 			children = (
 				459F586B2BF311C50021EBA1 /* Packages */,
 				45DA914C2BF15B070070FD0C /* xcconfig */,
-				45E5B5E12A8EA04100B46CDC /* SwiftGraphicsDemos */,
+				45E5B5E12A8EA04100B46CDC /* SwiftGraphicsDemosApp */,
 				45E5B5E02A8EA04100B46CDC /* Products */,
 				45DA8F292BF157840070FD0C /* Frameworks */,
 			);
@@ -87,12 +87,12 @@
 		45E5B5E02A8EA04100B46CDC /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				45E5B5DF2A8EA04100B46CDC /* SwiftGraphicsDemos.app */,
+				45E5B5DF2A8EA04100B46CDC /* SwiftGraphicsDemosApp.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		45E5B5E12A8EA04100B46CDC /* SwiftGraphicsDemos */ = {
+		45E5B5E12A8EA04100B46CDC /* SwiftGraphicsDemosApp */ = {
 			isa = PBXGroup;
 			children = (
 				45DEA3A72C174F68007481D8 /* cube_points.pointsply */,
@@ -102,15 +102,15 @@
 				45E5B5E82A8EA04400B46CDC /* SwiftGraphicsDemos.entitlements */,
 				45CDB0432BF4025700096326 /* Assets.xcassets */,
 			);
-			path = SwiftGraphicsDemos;
+			path = SwiftGraphicsDemosApp;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		45E5B5DE2A8EA04100B46CDC /* SwiftGraphicsDemos */ = {
+		45E5B5DE2A8EA04100B46CDC /* SwiftGraphicsDemosApp */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 45E5B6042A8EA04400B46CDC /* Build configuration list for PBXNativeTarget "SwiftGraphicsDemos" */;
+			buildConfigurationList = 45E5B6042A8EA04400B46CDC /* Build configuration list for PBXNativeTarget "SwiftGraphicsDemosApp" */;
 			buildPhases = (
 				45E5B5DB2A8EA04100B46CDC /* Sources */,
 				45E5B5DC2A8EA04100B46CDC /* Frameworks */,
@@ -121,12 +121,12 @@
 			);
 			dependencies = (
 			);
-			name = SwiftGraphicsDemos;
+			name = SwiftGraphicsDemosApp;
 			packageProductDependencies = (
-				45CEE5982C09882F00E3F2B3 /* SwiftGraphicsDemosSupport */,
+				4501BD6E2C37204B002CE55F /* SwiftGraphicsDemos */,
 			);
 			productName = StairTest;
-			productReference = 45E5B5DF2A8EA04100B46CDC /* SwiftGraphicsDemos.app */;
+			productReference = 45E5B5DF2A8EA04100B46CDC /* SwiftGraphicsDemosApp.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -144,7 +144,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 45E5B5DA2A8EA04100B46CDC /* Build configuration list for PBXProject "SwiftGraphicsDemos" */;
+			buildConfigurationList = 45E5B5DA2A8EA04100B46CDC /* Build configuration list for PBXProject "SwiftGraphicsDemosApp" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -160,7 +160,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				45E5B5DE2A8EA04100B46CDC /* SwiftGraphicsDemos */,
+				45E5B5DE2A8EA04100B46CDC /* SwiftGraphicsDemosApp */,
 			);
 		};
 /* End PBXProject section */
@@ -229,6 +229,9 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 45DA91492BF15B070070FD0C /* SwiftGraphicsDemos-Debug.xcconfig */;
 			buildSettings = {
+				INFOPLIST_KEY_GCSupportsControllerUserInteraction = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				_EXPERIMENTAL_SWIFT_EXPLICIT_MODULES = YES;
 			};
 			name = Debug;
@@ -237,6 +240,9 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 45DA914A2BF15B070070FD0C /* SwiftGraphicsDemos-Release.xcconfig */;
 			buildSettings = {
+				INFOPLIST_KEY_GCSupportsControllerUserInteraction = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				_EXPERIMENTAL_SWIFT_EXPLICIT_MODULES = YES;
 			};
 			name = Release;
@@ -244,7 +250,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		45E5B5DA2A8EA04100B46CDC /* Build configuration list for PBXProject "SwiftGraphicsDemos" */ = {
+		45E5B5DA2A8EA04100B46CDC /* Build configuration list for PBXProject "SwiftGraphicsDemosApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				45E5B6022A8EA04400B46CDC /* Debug */,
@@ -253,7 +259,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		45E5B6042A8EA04400B46CDC /* Build configuration list for PBXNativeTarget "SwiftGraphicsDemos" */ = {
+		45E5B6042A8EA04400B46CDC /* Build configuration list for PBXNativeTarget "SwiftGraphicsDemosApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				45E5B6052A8EA04400B46CDC /* Debug */,
@@ -276,9 +282,9 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		45CEE5982C09882F00E3F2B3 /* SwiftGraphicsDemosSupport */ = {
+		4501BD6E2C37204B002CE55F /* SwiftGraphicsDemos */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = SwiftGraphicsDemosSupport;
+			productName = SwiftGraphicsDemos;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
