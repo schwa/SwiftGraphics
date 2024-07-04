@@ -3,7 +3,6 @@ import Metal
 import MetalSupport
 import RenderKitShadersLegacy
 import simd
-import SwiftGraphicsSupport
 
 // swiftlint:disable conditional_returns_on_newline
 

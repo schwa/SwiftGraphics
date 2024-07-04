@@ -4,7 +4,6 @@ import MetalSupport
 import MetalUISupport
 import ModelIO
 import RenderKitShadersLegacy
-import SwiftGraphicsSupport
 import SwiftUI
 
 // swiftlint:disable force_try

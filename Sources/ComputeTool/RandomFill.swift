@@ -6,7 +6,6 @@ import Foundation
 import Metal
 import MetalSupport
 import MetalUnsafeConformances
-import SwiftGraphicsSupport
 
 struct RandomFill {
     let width = 512

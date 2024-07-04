@@ -8,7 +8,6 @@ import RenderKitShaders
 import Shapes3D
 import SIMDSupport
 import SwiftGLTF
-import SwiftGraphicsSupport
 import SwiftUI
 
 // swiftlint:disable force_try

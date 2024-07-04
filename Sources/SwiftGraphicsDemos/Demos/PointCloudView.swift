@@ -6,7 +6,6 @@ import RenderKitShaders
 import RenderKitSupport
 import Shapes3D
 import SIMDSupport
-import SwiftGraphicsSupport
 import SwiftUI
 
 // swiftlint:disable force_try

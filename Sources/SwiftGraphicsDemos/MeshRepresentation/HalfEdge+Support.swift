@@ -4,7 +4,6 @@ import Foundation
 import os
 import Shapes3D
 import simd
-import SwiftGraphicsSupport
 
 extension HalfEdgeMesh where Position == SIMD3<Float> {
     var polygons: [Shapes3D.Polygon3D<SIMD3<Float>>] {
