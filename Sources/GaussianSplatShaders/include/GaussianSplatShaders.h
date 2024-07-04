@@ -1,5 +1,7 @@
 #import <simd/simd.h>
 
+#import "GaussianSplatSupport.h"
+
 struct GaussianSplatUniforms {
     simd_float4x4 modelViewProjectionMatrix;
     simd_float4x4 modelViewMatrix;
@@ -20,7 +22,6 @@ struct GaussianSplatSortUniforms {
 
 #ifdef __METAL_VERSION__
 #import <metal_stdlib>
-#import "GaussianSplatSupport.h"
 
 namespace GaussianSplatShaders {
 
@@ -168,4 +169,4 @@ namespace GaussianSplatShaders {
         }
     }
 }
-#endif
+#endif // __METAL_VERSION__

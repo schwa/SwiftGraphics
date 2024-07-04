@@ -91,7 +91,7 @@ extension SceneGraph {
 
         let quad = try Quad<SimpleVertex>(x: -0.5, y: -0.5, width: 1, height: 1).toMTKMesh(device: device)
 
-        return try SceneGraph(root:
+        return SceneGraph(root:
                                 Node(label: "root") {
                                     Node(label: "camera")
                                         .content(Camera())
@@ -216,8 +216,8 @@ public struct SimplePBRShadingPass: RenderPassProtocol {
     }
 
     public func encode(device: MTLDevice, state: inout State, drawableSize: SIMD2<Float>, commandEncoder: any MTLRenderCommandEncoder) throws {
-        let helper = try SceneGraphRenderHelper(scene: scene, drawableSize: drawableSize)
-        let elements = try helper.elements()
+        let helper = SceneGraphRenderHelper(scene: scene, drawableSize: drawableSize)
+        let elements = helper.elements()
         commandEncoder.setDepthStencilState(state.depthStencilState)
         commandEncoder.setRenderPipelineState(state.renderPipelineState)
         let bindings = state.bindings

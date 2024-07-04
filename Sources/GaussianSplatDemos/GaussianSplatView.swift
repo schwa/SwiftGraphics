@@ -44,11 +44,6 @@ public struct GaussianSplatView: View {
             }
             Node(label: "splats").content(splats)
         }
-
-        for event in AnySequence { TreeEventIterator(root: root, children: \.children) } {
-            print(event)
-        }
-
         self.scene = SceneGraph(root: root)
     }
 
@@ -151,7 +146,7 @@ extension UTType {
     static let splatC = UTType(filenameExtension: "splatc")!
 }
 
-extension Splats: CustomDebugStringConvertible {
+extension Splats: @retroactive CustomDebugStringConvertible {
     public var debugDescription: String {
         "Splats()"
     }

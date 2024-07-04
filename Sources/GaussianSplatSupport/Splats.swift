@@ -33,7 +33,9 @@ public extension Splats where Splat == SplatC {
     func boundingBox() -> (SIMD3<Float>, SIMD3<Float>) {
         splats.withUnsafeBuffer { buffer in
             let positions = buffer.map { SIMD3<Float>($0.position) }
+            // swiftlint:disable:next reduce_into
             let minimums = positions.reduce([.greatestFiniteMagnitude, .greatestFiniteMagnitude, .greatestFiniteMagnitude], min)
+            // swiftlint:disable:next reduce_into
             let maximums = positions.reduce([-.greatestFiniteMagnitude, -.greatestFiniteMagnitude, -.greatestFiniteMagnitude], max)
             return (minimums, maximums)
         }

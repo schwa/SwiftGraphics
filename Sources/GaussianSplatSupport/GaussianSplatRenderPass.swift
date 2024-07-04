@@ -81,7 +81,7 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
     }
 
     public func encode(device: MTLDevice, state: inout State, drawableSize: SIMD2<Float>, commandEncoder: any MTLRenderCommandEncoder) throws {
-        let helper = try SceneGraphRenderHelper(scene: scene, drawableSize: drawableSize)
+        let helper = SceneGraphRenderHelper(scene: scene, drawableSize: drawableSize)
         let elements = helper.elements()
 
         commandEncoder.setDepthStencilState(state.depthStencilState)

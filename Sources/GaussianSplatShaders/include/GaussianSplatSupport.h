@@ -1,6 +1,5 @@
-#import <simd/simd.h>
-
 #ifdef __METAL_VERSION__
+#import <simd/simd.h>
 #import <metal_stdlib>
 
 using namespace metal;
@@ -77,4 +76,4 @@ Tuple2<float2> decomposeCovariance(float3 cov2D) {
     return { v1, v2 };
 }
 
-#endif
+#endif // __METAL_VERSION__
