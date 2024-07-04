@@ -30,7 +30,6 @@ let package = Package(
         .library(name: "Shapes3D", targets: ["Shapes3D"]),
         .library(name: "SIMDSupport", targets: ["SIMDSupport"]),
         .library(name: "SIMDUnsafeConformances", targets: ["SIMDUnsafeConformances"]),
-        .library(name: "SwiftGraphicsSupport", targets: ["SwiftGraphicsSupport"]),
         .library(name: "MetalUISupport", targets: ["MetalUISupport"]),
         .library(name: "Compute", targets: ["Compute"]),
         .library(name: "SwiftGraphicsDemos", targets: ["SwiftGraphicsDemos"]),
@@ -293,20 +292,6 @@ let package = Package(
             "SIMDSupport",
         ]),
 
-        // MARK: SwiftGraphicsSupport
-
-        .target(
-            name: "SwiftGraphicsSupport",
-            dependencies: [
-                "SIMDSupport",
-                "MetalSupport",
-                "RenderKitShadersLegacy",
-                .product(name: "SwiftFormats", package: "SwiftFormats"),
-            ],
-            swiftSettings: [
-            ]
-        ),
-
         // MARK: TrivialMeshCLI
 
         .executableTarget(
@@ -338,7 +323,6 @@ let package = Package(
             name: "ComputeTool",
             dependencies: [
                 "Compute",
-                "SwiftGraphicsSupport",
                 "MetalUnsafeConformances",
             ],
             resources: [
@@ -370,7 +354,6 @@ let package = Package(
                 "Shapes2D",
                 "Shapes3D",
                 "SIMDSupport",
-                "SwiftGraphicsSupport",
                 "SIMDUnsafeConformances",
                 "SwiftGLTF",
                 "WrappingHStack",
