@@ -34,7 +34,7 @@ public struct SceneGraphMapView: View {
                     case .perspective(let perspective):
                         let heading = element.node.heading
                         let viewCone = Path.arc(center: position * scale, radius: 4 * scale, midAngle: heading, width: perspective.horizontalAngleOfView(aspectRatio: Double(drawableSize.x / drawableSize.y)))
-                         context.fill(viewCone, with: .radialGradient(Gradient(colors: [.white.opacity(0.5), .white.opacity(0.0)]), center: position * scale, startRadius: 0, endRadius: 4 * scale))
+                        context.fill(viewCone, with: .radialGradient(Gradient(colors: [.white.opacity(0.5), .white.opacity(0.0)]), center: position * scale, startRadius: 0, endRadius: 4 * scale))
                         context.stroke(viewCone, with: .color(.white))
                     default:
                         break

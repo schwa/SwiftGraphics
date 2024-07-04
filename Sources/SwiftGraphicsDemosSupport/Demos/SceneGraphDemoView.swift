@@ -55,7 +55,6 @@ public struct SceneGraphDemoView: View, DemoView {
                     node?.transform.rotation.rollPitchYaw.yaw = .degrees((timeline.date.timeIntervalSince1970 * 30).wrapped(to: 0...360))
                 }
             }
-
         }
         .onGeometryChange(for: CGSize.self, of: \.size) { drawableSize = SIMD2<Float>($0) }
         .showFrameEditor()

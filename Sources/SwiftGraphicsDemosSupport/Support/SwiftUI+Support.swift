@@ -1,6 +1,5 @@
 import SwiftUI
 
-
 #if !os(tvOS)
 struct MyDisclosureGroupStyle: DisclosureGroupStyle {
     func makeBody(configuration: Configuration) -> some View {
