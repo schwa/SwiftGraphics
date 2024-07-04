@@ -9,7 +9,6 @@ import SwiftUI
 import AppKit
 #endif
 
-
 public extension MTKMesh {
     /// Total length of all buffers in MTKMesh
     var totalLength: Int {
@@ -27,14 +26,9 @@ public extension SIMD3<Float> {
 
 // MARK: -
 
-
-
 // MARK: -
 
-
-
 // MARK: -
-
 
 public enum SwiftGraphicsSupportError: Error {
     case illegalValue

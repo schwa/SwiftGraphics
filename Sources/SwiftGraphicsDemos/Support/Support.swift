@@ -1,5 +1,5 @@
-import Shapes3D
 import Projection
+import Shapes3D
 
 extension Path3D {
     init(box: Box3D) {

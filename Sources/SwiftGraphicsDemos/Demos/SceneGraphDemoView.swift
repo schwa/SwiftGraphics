@@ -4,12 +4,12 @@ import Metal
 import MetalKit
 import MetalSupport
 import RenderKit
+import RenderKitSupport
 import Shapes3D
 import simd
 import SIMDSupport
 import SwiftGraphicsSupport
 import SwiftUI
-import RenderKitSupport
 
 // swiftlint:disable force_try
 

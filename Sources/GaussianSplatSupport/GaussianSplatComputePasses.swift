@@ -1,9 +1,9 @@
+import BaseSupport
 import GaussianSplatShaders
 import Metal
+import MetalSupport
 import RenderKit
 import simd
-import BaseSupport
-import MetalSupport
 
 public struct GaussianSplatBitonicSortComputePass: ComputePassProtocol {
     public struct State: PassState {

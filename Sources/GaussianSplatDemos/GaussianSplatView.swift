@@ -6,12 +6,12 @@ import MetalKit
 import MetalSupport
 import Observation
 import RenderKit
+import RenderKitSupport
 import simd
 import SIMDSupport
 import SwiftFormats
 import SwiftUI
 import UniformTypeIdentifiers
-import RenderKitSupport
 
 // swiftlint:disable force_try
 

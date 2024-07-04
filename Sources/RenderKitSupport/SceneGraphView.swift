@@ -4,11 +4,11 @@ import Metal
 import MetalKit
 import MetalSupport
 import RenderKit
+import RenderKitSupport
 import simd
 import SIMDSupport
 import SwiftUI
 import SwiftUISupport
-import RenderKitSupport
 
 // swiftlint:disable force_try
 
@@ -28,12 +28,9 @@ public struct SceneGraphView: View {
 
     public var body: some View {
         RenderView(device: device, passes: passes)
-        .modifier(SceneGraphViewModifier(device: device, scene: $scene, passes: passes))
+            .modifier(SceneGraphViewModifier(device: device, scene: $scene, passes: passes))
     }
-
-
 }
-
 
 public struct SceneGraphViewModifier: ViewModifier {
     let device: MTLDevice
@@ -63,37 +60,37 @@ public struct SceneGraphViewModifier: ViewModifier {
 
     public func body(content: Content) -> some View {
         content
-        .onGeometryChange(for: CGSize.self, of: \.size) { drawableSize = SIMD2<Float>($0) }
-        .showFrameEditor()
-        .onChange(of: cameraRotation, initial: true) {
-            let b = BallConstraint(radius: 5, rollPitchYaw: cameraRotation)
-            scene.currentCameraNode?.transform = b.transform
-        }
-        .ballRotation($cameraRotation, updatesPitch: updatesPitch, updatesYaw: updatesYaw)
-        .inspector(isPresented: .constant(true)) {
-            SceneGraphInspector(scene: $scene)
-        }
-        .overlay(alignment: .bottomLeading) {
-            VStack {
-                HStack {
-                    Toggle(updatesYaw ? "Yaw: On" : "Yaw: Off", isOn: $updatesYaw)
-                    Toggle(updatesPitch ? "Pitch: On" : "Pitch: Off", isOn: $updatesPitch)
-                }
-                .padding(2)
-                .toggleStyle(.button)
-                .controlSize(.mini)
-                ZStack {
-                    if let drawableSize, drawableSize != .zero {
-                        SceneGraphMapView(scene: $scene, drawableSize: drawableSize)
-                    }
-                }
-                .aspectRatio(4 / 3, contentMode: .fit)
-                .frame(width: 320)
+            .onGeometryChange(for: CGSize.self, of: \.size) { drawableSize = SIMD2<Float>($0) }
+            .showFrameEditor()
+            .onChange(of: cameraRotation, initial: true) {
+                let b = BallConstraint(radius: 5, rollPitchYaw: cameraRotation)
+                scene.currentCameraNode?.transform = b.transform
             }
-            .background(Color.black)
-            .cornerRadius(8)
-            .padding()
-        }
+            .ballRotation($cameraRotation, updatesPitch: updatesPitch, updatesYaw: updatesYaw)
+            .inspector(isPresented: .constant(true)) {
+                SceneGraphInspector(scene: $scene)
+            }
+            .overlay(alignment: .bottomLeading) {
+                VStack {
+                    HStack {
+                        Toggle(updatesYaw ? "Yaw: On" : "Yaw: Off", isOn: $updatesYaw)
+                        Toggle(updatesPitch ? "Pitch: On" : "Pitch: Off", isOn: $updatesPitch)
+                    }
+                    .padding(2)
+                    .toggleStyle(.button)
+                    .controlSize(.mini)
+                    ZStack {
+                        if let drawableSize, drawableSize != .zero {
+                            SceneGraphMapView(scene: $scene, drawableSize: drawableSize)
+                        }
+                    }
+                    .aspectRatio(4 / 3, contentMode: .fit)
+                    .frame(width: 320)
+                }
+                .background(Color.black)
+                .cornerRadius(8)
+                .padding()
+            }
     }
 }
 

@@ -1,7 +1,7 @@
+import BaseSupport
 import CoreGraphics
 import Foundation
 import SwiftGraphicsSupport
-import BaseSupport
 
 // swiftlint:disable identifier_name
 

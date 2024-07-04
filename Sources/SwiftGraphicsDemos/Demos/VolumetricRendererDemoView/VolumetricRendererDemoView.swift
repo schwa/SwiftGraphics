@@ -7,10 +7,10 @@ import ModelIO
 import os
 import RenderKit
 import RenderKitShadersLegacy
+import RenderKitSupport
 import Shapes2D
 import SIMDSupport
 import SwiftUI
-import RenderKitSupport
 
 // swiftlint:disable force_try
 

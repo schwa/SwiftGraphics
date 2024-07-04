@@ -1,13 +1,13 @@
+import BaseSupport
 import MetalKit
 import MetalSupport
 import RenderKit
 import RenderKitShaders
+import RenderKitSupport
 import Shapes3D
 import SIMDSupport
 import SwiftGraphicsSupport
 import SwiftUI
-import RenderKitSupport
-import BaseSupport
 
 // swiftlint:disable force_try
 
@@ -42,14 +42,14 @@ struct PointCloudView: View, DemoView {
     var body: some View {
         let passes = [PointCloudRenderPass(scene: scene)]
         RenderView(device: device, passes: passes)
-        .modifier(SceneGraphViewModifier(device: device, scene: $scene, passes: passes))
-        .overlay(alignment: .bottom) {
-            if let node = scene.node(for: "point-cloud"), let pointCloud = node.content as? PointCloud {
-                Text("\(pointCloud.count)")
-                    .foregroundStyle(.white)
-                    .padding()
+            .modifier(SceneGraphViewModifier(device: device, scene: $scene, passes: passes))
+            .overlay(alignment: .bottom) {
+                if let node = scene.node(for: "point-cloud"), let pointCloud = node.content as? PointCloud {
+                    Text("\(pointCloud.count)")
+                        .foregroundStyle(.white)
+                        .padding()
+                }
             }
-        }
     }
 }
 
@@ -105,7 +105,6 @@ struct PointCloudRenderPass: RenderPassProtocol {
     }
 
     func encode(device: MTLDevice, state: inout State, drawableSize: SIMD2<Float>, commandEncoder: any MTLRenderCommandEncoder) throws {
-
         let helper = SceneGraphRenderHelper(scene: scene, drawableSize: drawableSize)
         let elements = helper.elements()
 

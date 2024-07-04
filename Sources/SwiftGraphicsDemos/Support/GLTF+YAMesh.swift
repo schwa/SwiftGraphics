@@ -1,10 +1,10 @@
+import BaseSupport
 import Foundation
 import MetalKit
 import MetalSupport
 import SwiftFormats
 import SwiftGLTF
 import SwiftUI
-import BaseSupport
 
 extension SwiftGLTF.Accessor {
     var vertexFormat: MTLVertexFormat? {

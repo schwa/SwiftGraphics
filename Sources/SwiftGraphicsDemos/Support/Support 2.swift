@@ -1,30 +1,22 @@
-import CoreGraphicsSupport
-import Foundation
-import Metal
-import MetalKit
-import MetalPerformanceShaders
-import ModelIO
-import os
-import simd
-import SIMDSupport
-import SwiftFormats
-import SwiftUI
+import BaseSupport
 import CoreGraphics
 import CoreGraphicsSupport
+import CoreGraphicsUnsafeConformances
 import Everything
 import Foundation
 import Metal
 import MetalKit
+import MetalPerformanceShaders
 import MetalSupport
+import ModelIO
 import os
 import Projection
 import Shapes2D
 import simd
 import SIMDSupport
+import SwiftFormats
 import SwiftUI
 import UniformTypeIdentifiers
-import BaseSupport
-import CoreGraphicsUnsafeConformances
 
 public protocol Labeled {
     var label: String? { get }
@@ -144,7 +136,6 @@ public extension SIMD3<Float> {
         return .radians(Double(angle))
     }
 }
-
 
 // swiftlint:disable identifier_name
 
@@ -360,7 +351,6 @@ struct EmptyShape: Shape {
 }
 
 // MARK: -
-
 
 // MARK: -
 
@@ -730,8 +720,6 @@ public extension RollPitchYaw {
     }
 }
 
-
-
 extension View {
     func onSpatialTap(count: Int = 1, coordinateSpace: some CoordinateSpaceProtocol = .local, handler: @escaping (CGPoint) -> Void) -> some View {
         gesture(SpatialTapGesture(count: count, coordinateSpace: coordinateSpace).onEnded { value in
@@ -867,7 +855,6 @@ extension Path3D {
 extension UTType {
     static let plyFile = UTType(importedAs: "public.polygon-file-format")
 }
-
 
 extension Bundle {
     func url(forResource resource: String?, withExtension extension: String?) throws -> URL {

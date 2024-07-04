@@ -4,8 +4,6 @@ import Shapes2D
 import SwiftFormats
 import SwiftUI
 import SwiftUISupport
-import BaseSupport
-
 @Observable
 class SketchModel {
     //    @ObservationIgnored
