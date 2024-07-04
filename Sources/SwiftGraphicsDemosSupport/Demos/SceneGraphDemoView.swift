@@ -38,11 +38,25 @@ public struct SceneGraphDemoView: View, DemoView {
     }
 
     public var body: some View {
-        RenderView(device: device, passes: [
-            DiffuseShadingRenderPass(scene: scene),
-            UnlitShadingPass(scene: scene),
-            DebugRenderPass(scene: scene),
-        ])
+        TimelineView(.animation) { timeline in
+            RenderView(device: device, passes: [
+                DiffuseShadingRenderPass(scene: scene),
+                UnlitShadingPass(scene: scene),
+                DebugRenderPass(scene: scene),
+            ])
+            .onChange(of: timeline.date) {
+                scene.modify(label: "model-1") { node in
+                    node?.transform.rotation.rollPitchYaw.roll = .degrees((timeline.date.timeIntervalSince1970 * 30).wrapped(to: 0...360))
+                }
+                scene.modify(label: "model-2") { node in
+                    node?.transform.rotation.rollPitchYaw.pitch = .degrees((timeline.date.timeIntervalSince1970 * 30).wrapped(to: 0...360))
+                }
+                scene.modify(label: "model-3") { node in
+                    node?.transform.rotation.rollPitchYaw.yaw = .degrees((timeline.date.timeIntervalSince1970 * 30).wrapped(to: 0...360))
+                }
+            }
+
+        }
         .onGeometryChange(for: CGSize.self, of: \.size) { drawableSize = SIMD2<Float>($0) }
         .showFrameEditor()
         .onChange(of: cameraRotation, initial: true) {

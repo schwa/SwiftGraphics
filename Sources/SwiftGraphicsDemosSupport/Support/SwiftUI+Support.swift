@@ -1,14 +1,5 @@
 import SwiftUI
 
-extension Path {
-    static func arc(center: CGPoint, radius: CGFloat, midAngle: SwiftUI.Angle, width: SwiftUI.Angle) -> Path {
-        Path { path in
-            path.move(to: center)
-            path.addArc(center: center, radius: radius, startAngle: midAngle - width / 2, endAngle: midAngle + width / 2, clockwise: false)
-            path.closeSubpath()
-        }
-    }
-}
 
 #if !os(tvOS)
 struct MyDisclosureGroupStyle: DisclosureGroupStyle {

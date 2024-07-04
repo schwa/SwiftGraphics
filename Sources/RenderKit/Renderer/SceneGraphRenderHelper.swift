@@ -20,7 +20,7 @@ public struct SceneGraphRenderHelper {
         self.projectionMatrix = projectionMatrix
     }
 
-    public init(scene: SceneGraph, drawableSize: SIMD2<Float>) throws {
+    public init(scene: SceneGraph, drawableSize: SIMD2<Float>) {
         guard let currentCameraNode = scene.currentCameraNode else {
             fatalError() // TODO: Throw
         }

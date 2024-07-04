@@ -2,7 +2,6 @@ import CoreGraphicsSupport
 import Metal
 import MetalKit
 import MetalSupport
-import Shapes3D
 import SIMDSupport
 import SwiftGraphicsSupport
 import SwiftUI
@@ -16,20 +15,26 @@ public struct SceneGraphMapView: View {
 
     let drawableSize: SIMD2<Float>
 
+    public init(scene: Binding<SceneGraph>, scale: CGFloat = 10, drawableSize: SIMD2<Float>) {
+        self._scene = scene
+        self.scale = scale
+        self.drawableSize = drawableSize
+    }
+
     public var body: some View {
         Canvas(opaque: true) { context, size in
             context.concatenate(CGAffineTransform.translation(CGPoint(size.width / 2, size.height / 2)))
 
-            let helper = try! SceneGraphRenderHelper(scene: scene, drawableSize: drawableSize)
+            let helper = SceneGraphRenderHelper(scene: scene, drawableSize: drawableSize)
             for element in helper.elements() {
                 let position = CGPoint(element.node.transform.translation.xz)
                 switch element.node.content {
                 case let camera as Camera:
                     switch camera.projection {
                     case .perspective(let perspective):
-                        // TODO: This is showing fovY but it should be fovX
-                        let viewCone = Path.arc(center: position * scale, radius: 4 * scale, midAngle: .radians(Double(element.node.heading.radians)), width: .radians(Double(perspective.verticalAngleOfView.radians)))
-                        // context.fill(viewCone, with: .radialGradient(Gradient(colors: [.white.opacity(0.5), .white.opacity(0.0)]), center: position * scale, startRadius: 0, endRadius: 4 * scale))
+                        let heading = element.node.heading
+                        let viewCone = Path.arc(center: position * scale, radius: 4 * scale, midAngle: heading, width: perspective.horizontalAngleOfView(aspectRatio: Double(drawableSize.x / drawableSize.y)))
+                         context.fill(viewCone, with: .radialGradient(Gradient(colors: [.white.opacity(0.5), .white.opacity(0.0)]), center: position * scale, startRadius: 0, endRadius: 4 * scale))
                         context.stroke(viewCone, with: .color(.white))
                     default:
                         break
@@ -44,7 +49,6 @@ public struct SceneGraphMapView: View {
                     context.draw(targetImage, at: targetPosition * scale, anchor: .center)
                 case let geometry as Geometry:
                     let path = Path(ellipseIn: CGRect(center: position * scale, radius: 5))
-
                     context.stroke(path, with: .color(.red))
                 case nil:
                     break
@@ -54,5 +58,36 @@ public struct SceneGraphMapView: View {
             }
         }
         .background(.black)
+    }
+}
+
+extension Node {
+    var target: SIMD3<Float> {
+        get {
+            .zero
+        }
+        // swiftlint:disable:next unused_setter_value
+        set {
+            fatalError()
+        }
+    }
+
+    var heading: Angle {
+        get {
+            let projectedVector = transform.rotation.apply([0, 0, -1])
+            // Calculate the angle using atan2
+            // atan2(x, z) because we want angle from positive Z-axis (forward)
+            let angle = atan2(projectedVector.x, projectedVector.z)
+            // Convert to degrees and normalize to 0-360 range
+            var degrees = angle * (180 / .pi)
+            if degrees < 0 {
+                degrees += 360
+            }
+            return .degrees(Double(-degrees + 90))
+        }
+        // swiftlint:disable:next unused_setter_value
+        set {
+            fatalError()
+        }
     }
 }
