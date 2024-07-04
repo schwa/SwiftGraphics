@@ -66,11 +66,12 @@ public struct SceneGraphViewModifier: ViewModifier {
                 let b = BallConstraint(radius: 5, rollPitchYaw: cameraRotation)
                 scene.currentCameraNode?.transform = b.transform
             }
+            .firstPersonInteractive(camera: $scene.currentCameraNode.unsafeBinding())
             .ballRotation($cameraRotation, updatesPitch: updatesPitch, updatesYaw: updatesYaw)
             .inspector(isPresented: .constant(true)) {
                 SceneGraphInspector(scene: $scene)
             }
-            .overlay(alignment: .bottomLeading) {
+            .overlay(alignment: .bottomTrailing) {
                 VStack {
                     HStack {
                         Toggle(updatesYaw ? "Yaw: On" : "Yaw: Off", isOn: $updatesYaw)

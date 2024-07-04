@@ -27,3 +27,29 @@ public func nextPowerOfTwo(_ value: Double) -> Double {
 public func nextPowerOfTwo(_ value: Int) -> Int {
     Int(nextPowerOfTwo(Double(value)))
 }
+
+public protocol Labeled {
+    var label: String? { get }
+}
+
+// TODO: Rename to be something less generic.
+public struct Box <Content>: Identifiable, Hashable where Content: AnyObject {
+
+    public var id: ObjectIdentifier {
+        ObjectIdentifier(content)
+    }
+
+    public var content: Content
+
+    public init(_ content: Content) {
+        self.content = content
+    }
+
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.content === rhs.content
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        ObjectIdentifier(content).hash(into: &hasher)
+    }
+}

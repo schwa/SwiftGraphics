@@ -32,7 +32,6 @@ class MovementController: @unchecked Sendable {
         }
     }
 
-
     var logger: Logger?
     var focused = false
 
