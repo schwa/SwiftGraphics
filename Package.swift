@@ -23,6 +23,7 @@ let package = Package(
         .library(name: "Projection", targets: ["Projection"]),
         .library(name: "Raster", targets: ["Raster"]),
         .library(name: "RenderKit", targets: ["RenderKit"]),
+        .library(name: "RenderKitSupport", targets: ["RenderKitSupport"]),
         .library(name: "RenderKitShaders", targets: ["RenderKitShaders"]),
         .library(name: "RenderKitShadersLegacy", targets: ["RenderKitShadersLegacy"]),
         .library(name: "Shapes2D", targets: ["Shapes2D"]),
@@ -36,6 +37,7 @@ let package = Package(
 
         .library(name: "GaussianSplatDemos", targets: ["GaussianSplatDemos"]),
         .library(name: "GaussianSplatSupport", targets: ["GaussianSplatSupport"]),
+        .library(name: "SwiftUISupport", targets: ["SwiftUISupport"]),
 
     ],
     dependencies: [
@@ -224,6 +226,13 @@ let package = Package(
             swiftSettings: [
             ]
         ),
+        .target(
+            name: "RenderKitSupport",
+            dependencies: [
+                "RenderKit",
+                "SwiftUISupport",
+            ]
+        ),
 
         // MARK: Shapes2D
 
@@ -368,6 +377,8 @@ let package = Package(
                 "Fields3D",
                 .product(name: "SwiftFields", package: "swiftfields"),
                 "GaussianSplatDemos",
+                "RenderKitSupport",
+                "SwiftUISupport",
             ],
             resources: [
                 .process("Resources/Assets.xcassets"),
@@ -425,9 +436,15 @@ let package = Package(
             dependencies: [
                 "GaussianSplatShaders",
                 "RenderKit",
+                "RenderKitSupport",
             ],
             resources: [
                 .copy("Placeholder.txt")
+            ]
+        ),
+        .target(
+            name: "SwiftUISupport",
+            dependencies: [
             ]
         ),
     ],
