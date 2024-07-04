@@ -11,7 +11,7 @@ import Metal
 // Data source:    acquired on a General Electric CT Scanner and provided
 //                courtesy of North Carolina Memorial Hospital
 
-struct VolumeData {
+struct VolumeData: Sendable {
     var name: String
     var archive: TarArchive
     var size: MTLSize

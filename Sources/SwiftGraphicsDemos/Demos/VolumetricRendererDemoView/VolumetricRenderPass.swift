@@ -15,14 +15,14 @@ import SwiftUI
 struct VolumetricRenderPass: RenderPassProtocol {
     let id: AnyHashable = "VolumetricRenderPass"
     var cache = Cache<String, Any>()
-    var rollPitchYaw: RollPitchYaw = .zero
+
+    var scene: SceneGraph
     var transferFunctionTexture: MTLTexture
-    var logger: Logger?
     var texture: MTLTexture
 
     // TODO: WORKAROUND
     static func == (lhs: Self, rhs: Self) -> Bool {
-        lhs.id == rhs.id && lhs.rollPitchYaw == rhs.rollPitchYaw
+        lhs.id == rhs.id && lhs.scene == rhs.scene
     }
 
     struct State: PassState {
@@ -30,8 +30,7 @@ struct VolumetricRenderPass: RenderPassProtocol {
         var depthStencilState: MTLDepthStencilState
     }
 
-    init() throws {
-        print(#function)
+    init(scene: SceneGraph) throws {
         let device = MTLCreateSystemDefaultDevice()! // TODO: Naughty
         let volumeData = try VolumeData(named: "CThead", in: Bundle.module, size: [256, 256, 113]) // TODO: Hardcoded
         //        let volumeData = VolumeData(named: "MRBrain", size: [256, 256, 109])
@@ -50,6 +49,8 @@ struct VolumetricRenderPass: RenderPassProtocol {
         let texture = try device.makeTexture(descriptor: textureDescriptor).safelyUnwrap(GeneralError.generic("Could not create texture"))
         texture.label = "transfer function"
         transferFunctionTexture = texture
+
+        self.scene = scene
     }
 
     func setup(device: MTLDevice, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State {
@@ -81,59 +82,69 @@ struct VolumetricRenderPass: RenderPassProtocol {
     }
 
     func encode(device: MTLDevice, state: inout State, drawableSize: SIMD2<Float>, commandEncoder encoder: MTLRenderCommandEncoder) throws {
+
+        let helper = SceneGraphRenderHelper(scene: scene, drawableSize: drawableSize)
+
+
         encoder.setRenderPipelineState(state.renderPipelineState)
         encoder.setDepthStencilState(state.depthStencilState)
 
-        let cameraProjection: Projection = .perspective(PerspectiveProjection(verticalAngleOfView: .degrees(90), zClip: 0.01 ... 10))
-        let cameraTransform: Transform = .init(translation: [0, 0, 2])
+        for element in helper.elements() {
 
-        let modelTransform = Transform(scale: [2, 2, 2], rotation: .rollPitchYaw(rollPitchYaw))
-
-        let mesh2 = try cache.get(key: "mesh2", of: YAMesh.self) {
-            let rect = CGRect(center: .zero, radius: 0.5)
-            let circle = Shapes2D.Circle(containing: rect)
-            let triangle = Triangle(containing: circle)
-            return try YAMesh.triangle(label: "triangle", triangle: triangle, device: device) {
-                SIMD2<Float>($0) + [0.5, 0.5]
+            guard let volumeData = element.node.content as? VolumeData else {
+                continue
             }
-        }
-        encoder.setVertexBuffers(mesh2)
 
-        // Vertex Buffer Index 1
-        let cameraUniforms = CameraUniforms(projectionMatrix: cameraProjection.projectionMatrix(for: drawableSize))
-        encoder.setVertexBytes(of: cameraUniforms, index: 1)
-
-        // Vertex Buffer Index 2
-        let modelUniforms = VolumeTransforms(
-            modelViewMatrix: cameraTransform.matrix.inverse * modelTransform.matrix,
-            textureMatrix: simd_float4x4(translate: [0.5, 0.5, 0.5]) * rollPitchYaw.matrix4x4 * simd_float4x4(translate: [-0.5, -0.5, -0.5])
-        )
-        encoder.setVertexBytes(of: modelUniforms, index: 2)
-
-        // Vertex Buffer Index 3
-
-        let instanceCount = 256 // TODO: Random - numbers as low as 32 - but you will see layering in the image.
-
-        let instances = try cache.get(key: "instance_data", of: MTLBuffer.self) {
-            let instances = (0 ..< instanceCount).map { slice in
-                let z = Float(slice) / Float(instanceCount - 1)
-                return VolumeInstance(offsetZ: z - 0.5, textureZ: 1 - z)
+            guard let cameraNode = scene.node(for: "camera"), let camera = cameraNode.content as? Camera else {
+                fatalError("No camera")
             }
-            let buffer = try device.makeBuffer(bytesOf: instances, options: .storageModeShared)
-            buffer.label = "instances"
-            assert(buffer.length == 8 * instanceCount)
-            return buffer
+
+            let mesh2 = try cache.get(key: "mesh2", of: YAMesh.self) {
+                let rect = CGRect(center: .zero, radius: 0.5)
+                let circle = Shapes2D.Circle(containing: rect)
+                let triangle = Triangle(containing: circle)
+                return try YAMesh.triangle(label: "triangle", triangle: triangle, device: device) {
+                    SIMD2<Float>($0) + [0.5, 0.5]
+                }
+            }
+            encoder.setVertexBuffers(mesh2)
+
+            // Vertex Buffer Index 1
+            let cameraUniforms = CameraUniforms(projectionMatrix: helper.projectionMatrix)
+            encoder.setVertexBytes(of: cameraUniforms, index: 1)
+
+            // Vertex Buffer Index 2
+            let modelUniforms = VolumeTransforms(
+                modelViewMatrix: element.modelViewMatrix,
+                textureMatrix: simd_float4x4(translate: [0.5, 0.5, 0.5]) * cameraNode.transform.matrix * simd_float4x4(translate: [-0.5, -0.5, -0.5])
+            )
+            encoder.setVertexBytes(of: modelUniforms, index: 2)
+
+            // Vertex Buffer Index 3
+
+            let instanceCount = 256 // TODO: Random - numbers as low as 32 - but you will see layering in the image.
+
+            let instances = try cache.get(key: "instance_data", of: MTLBuffer.self) {
+                let instances = (0 ..< instanceCount).map { slice in
+                    let z = Float(slice) / Float(instanceCount - 1)
+                    return VolumeInstance(offsetZ: z - 0.5, textureZ: 1 - z)
+                }
+                let buffer = try device.makeBuffer(bytesOf: instances, options: .storageModeShared)
+                buffer.label = "instances"
+                assert(buffer.length == 8 * instanceCount)
+                return buffer
+            }
+            encoder.setVertexBuffer(instances, offset: 0, index: 3)
+
+            encoder.setFragmentTexture(texture, index: 0)
+            encoder.setFragmentTexture(transferFunctionTexture, index: 1)
+
+            // TODO: Hard coded
+            let fragmentUniforms = VolumeFragmentUniforms(instanceCount: UInt16(instanceCount), maxValue: 3_272, alpha: 10.0)
+            encoder.setFragmentBytes(of: fragmentUniforms, index: 0)
+
+            encoder.draw(mesh2, instanceCount: instanceCount)
         }
-        encoder.setVertexBuffer(instances, offset: 0, index: 3)
-
-        encoder.setFragmentTexture(texture, index: 0)
-        encoder.setFragmentTexture(transferFunctionTexture, index: 1)
-
-        // TODO: Hard coded
-        let fragmentUniforms = VolumeFragmentUniforms(instanceCount: UInt16(instanceCount), maxValue: 3_272, alpha: 10.0)
-        encoder.setFragmentBytes(of: fragmentUniforms, index: 0)
-
-        encoder.draw(mesh2, instanceCount: instanceCount)
     }
 }
 

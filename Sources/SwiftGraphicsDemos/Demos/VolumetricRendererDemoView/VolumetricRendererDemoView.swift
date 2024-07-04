@@ -10,6 +10,7 @@ import RenderKitShadersLegacy
 import Shapes2D
 import SIMDSupport
 import SwiftUI
+import RenderKitSupport
 
 // swiftlint:disable force_try
 
@@ -17,13 +18,7 @@ import SwiftUI
 
 struct VolumetricRendererDemoView: DemoView {
     @State
-    var renderPass = try! VolumetricRenderPass()
-
-    @State
-    var rollPitchYaw = RollPitchYaw.zero
-
-    @State
-    var volumeData = try! VolumeData(named: "CThead", in: Bundle.module, size: MTLSize(256, 256, 113))
+    var renderPass: VolumetricRenderPass
 
     @State
     var redTransferFunction: [Float] = Array(repeating: 1.0, count: 256)
@@ -39,17 +34,24 @@ struct VolumetricRendererDemoView: DemoView {
 
     let device = MTLCreateSystemDefaultDevice()!
 
+    @State
+    var scene: SceneGraph
+
     init() {
+        var scene = SceneGraph.basicScene
+        let volumeData = try! VolumeData(named: "CThead", in: Bundle.module, size: MTLSize(256, 256, 113))
+        let node = Node(label: "Volume", content: volumeData)
+        scene.root.children.append(node)
+        self.scene = scene
+
+        self.renderPass = try! VolumetricRenderPass(scene: scene)
     }
 
     var body: some View {
         RenderView(device: device, passes: [renderPass])
-            .ballRotation($rollPitchYaw)
+            .modifier(SceneGraphViewModifier(device: device, scene: $scene, passes: [renderPass]))
             .onAppear {
                 updateTransferFunctionTexture()
-            }
-            .onChange(of: rollPitchYaw) {
-                renderPass.rollPitchYaw = rollPitchYaw
             }
             .onChange(of: redTransferFunction) {
                 updateTransferFunctionTexture()
