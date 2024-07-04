@@ -2,11 +2,15 @@ import Fields3D
 import SIMDSupport
 import SwiftUI
 
-struct BallConstraintEditor: View {
+public struct BallConstraintEditor: View {
     @Binding
     var ballConstraint: BallConstraint
 
-    var body: some View {
+    public init(ballConstraint: Binding<BallConstraint>) {
+        self._ballConstraint = ballConstraint
+    }
+
+    public var body: some View {
         TextField("Radius", value: $ballConstraint.radius, format: .number)
         //        TextField("Look AT", value: $ballConstraint.lookAt, format: .vector)
         RollPitchYawEditor($ballConstraint.rollPitchYaw)
