@@ -6,30 +6,22 @@ import Shapes3D
 import SIMDSupport
 import SwiftGraphicsSupport
 import SwiftUI
+import RenderKitSupport
 
 // swiftlint:disable force_try
 
+extension SceneGraph {
+    static let basicScene = SceneGraph(root: Node(label: "Root", children: [
+        Node(label: "camera", content: Camera())
+    ]))
+}
+
 struct PointCloudView: View, DemoView {
-    @State
-    private var pointCount: Int
-
-    @State
-    private var points: MTLBuffer
-
-    @State
-    private var cameraTransform: Transform = .translation([0, 0, 2])
-
-    @State
-    private var cameraProjection: Projection = .perspective(.init())
-
-    @State
-    private var modelTransform: Transform = .init(scale: [1, 1, 1])
-
     @State
     private var device: MTLDevice
 
     @State
-    private var cube: MTKMesh
+    private var scene: SceneGraph
 
     init() {
         let device = MTLCreateSystemDefaultDevice()!
@@ -38,22 +30,40 @@ struct PointCloudView: View, DemoView {
         let points = try! ply.points
 
         self.device = device
-        self.pointCount = points.count
-        self.points = try! device.makeBuffer(bytesOf: points, options: .storageModeShared)
+
+        var scene = SceneGraph.basicScene
 
         let size: Float = 0.001
-        cube = try! Box3D(min: [-size, -size, -size], max: [size, size, size]).toMTKMesh(device: device)
+        let pointMesh = try! Box3D(min: [-size, -size, -size], max: [size, size, size]).toMTKMesh(device: device)
+
+        let cloud = PointCloud(count: points.count, points: Box(try! device.makeBuffer(bytesOf: points, options: .storageModeShared)), pointMesh: pointMesh)
+
+        let node = Node(label: "point-cloud", content: cloud)
+        scene.root.children.append(node)
+
+        self.scene = scene
     }
 
     var body: some View {
-        RenderView(device: device, passes: [PointCloudRenderPass(cameraTransform: cameraTransform, cameraProjection: cameraProjection, modelTransform: modelTransform, pointCount: pointCount, points: Box(points), pointMesh: cube)])
-            .ballRotation($modelTransform.rotation.rollPitchYaw)
-            .overlay(alignment: .bottom) {
-                Text("\(pointCount)")
+        let passes = [PointCloudRenderPass(scene: scene)]
+        RenderView(device: device, passes: passes)
+        .modifier(SceneGraphViewModifier(device: device, scene: $scene, passes: passes))
+        .overlay(alignment: .bottom) {
+            if let node = scene.node(for: "point-cloud"), let pointCloud = node.content as? PointCloud {
+                Text("\(pointCloud.count)")
                     .foregroundStyle(.white)
                     .padding()
             }
+        }
     }
+}
+
+// TODO; Unchecked
+struct PointCloud: Equatable, @unchecked Sendable {
+    var count: Int
+    // TODO: used typed buffer
+    var points: Box<MTLBuffer>
+    var pointMesh: MTKMesh
 }
 
 struct PointCloudRenderPass: RenderPassProtocol {
@@ -71,12 +81,7 @@ struct PointCloudRenderPass: RenderPassProtocol {
 
     var id: AnyHashable = "PointCloudRenderPass"
 
-    var cameraTransform: Transform
-    var cameraProjection: Projection
-    var modelTransform: Transform
-    var pointCount: Int
-    var points: Box<MTLBuffer>
-    var pointMesh: MTKMesh
+    var scene: SceneGraph
 
     func setup(device: MTLDevice, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State {
         let library = try device.makeDebugLibrary(bundle: .renderKitShaders)
@@ -105,23 +110,33 @@ struct PointCloudRenderPass: RenderPassProtocol {
     }
 
     func encode(device: MTLDevice, state: inout State, drawableSize: SIMD2<Float>, commandEncoder: any MTLRenderCommandEncoder) throws {
-        commandEncoder.setDepthStencilState(state.depthStencilState)
-        commandEncoder.setRenderPipelineState(state.renderPipelineState)
 
-        commandEncoder.withDebugGroup("VertexShader") {
-            commandEncoder.setVertexBuffersFrom(mesh: pointMesh)
+        let helper = SceneGraphRenderHelper(scene: scene, drawableSize: drawableSize)
+        let elements = helper.elements()
 
-            var vertexUniforms = PointCloudVertexUniforms()
-            vertexUniforms.modelViewProjectionMatrix = cameraProjection.projectionMatrix(for: drawableSize) * cameraTransform.matrix.inverse * modelTransform.matrix
-            commandEncoder.setVertexBytes(of: vertexUniforms, index: state.bindings.vertexUniforms)
+        for element in elements {
+            guard let pointCloud = element.node.content as? PointCloud else {
+                continue
+            }
 
-            commandEncoder.setVertexBuffer(points.content, offset: 0, index: state.bindings.vertexInstancePositions)
+            commandEncoder.setDepthStencilState(state.depthStencilState)
+            commandEncoder.setRenderPipelineState(state.renderPipelineState)
+
+            commandEncoder.withDebugGroup("VertexShader") {
+                commandEncoder.setVertexBuffersFrom(mesh: pointCloud.pointMesh)
+
+                var vertexUniforms = PointCloudVertexUniforms()
+                vertexUniforms.modelViewProjectionMatrix = element.modelViewProjectionMatrix
+                commandEncoder.setVertexBytes(of: vertexUniforms, index: state.bindings.vertexUniforms)
+
+                commandEncoder.setVertexBuffer(pointCloud.points.content, offset: 0, index: state.bindings.vertexInstancePositions)
+            }
+            commandEncoder.withDebugGroup("FragmentShader") {
+                let fragmentUniforms = PointCloudFragmentUniforms()
+                commandEncoder.setFragmentBytes(of: fragmentUniforms, index: state.bindings.fragmentUniforms)
+            }
+
+            commandEncoder.draw(pointCloud.pointMesh, instanceCount: pointCloud.count)
         }
-        commandEncoder.withDebugGroup("FragmentShader") {
-            let fragmentUniforms = PointCloudFragmentUniforms()
-            commandEncoder.setFragmentBytes(of: fragmentUniforms, index: state.bindings.fragmentUniforms)
-        }
-
-        commandEncoder.draw(pointMesh, instanceCount: pointCount)
     }
 }
