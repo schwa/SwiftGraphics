@@ -91,3 +91,36 @@ public extension Rotation {
         self = .quaternion(.init(angle: angle, axis: axis))
     }
 }
+
+public extension Rotation {
+    func apply(_ p: SIMD3<Float>) -> SIMD3<Float> {
+        (matrix * SIMD4<Float>(p, 1)).xyz
+    }
+}
+
+public extension Rotation {
+    func converted(to base: Rotation.Storage.Base) -> Rotation {
+        switch base {
+        case .quaternion:
+            Rotation(quaternion: quaternion)
+        case .rollPitchYaw:
+            Rotation(rollPitchYaw: rollPitchYaw)
+        }
+    }
+}
+
+public extension Rotation.Storage {
+    enum Base {
+        case quaternion
+        case rollPitchYaw
+    }
+
+    var base: Base {
+        switch self {
+        case .quaternion:
+            .quaternion
+        case .rollPitchYaw:
+            .rollPitchYaw
+        }
+    }
+}

@@ -14,3 +14,15 @@ internal extension ComputePassProtocol {
         untypedState = state
     }
 }
+
+public extension ComputePassProtocol {
+    func computeOnce(device: MTLDevice) throws {
+        var state = try setup(device: device)
+        let commandQueue = device.makeCommandQueue().forceUnwrap()
+        let commandBuffer = commandQueue.makeCommandBuffer( ).forceUnwrap()
+        try compute(device: device, state: &state, commandBuffer: commandBuffer)
+        commandBuffer.commit()
+        commandBuffer.waitUntilCompleted()
+        print("DONE")
+    }
+}

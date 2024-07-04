@@ -48,12 +48,6 @@ extension Collection where Element: Comparable {
     }
 }
 
-public extension MTLSize {
-    init(width: Int) {
-        self = MTLSize(width: width, height: 1, depth: 1)
-    }
-}
-
 extension MTLTexture {
     func toString() -> String {
         assert(pixelFormat == .r8Uint)

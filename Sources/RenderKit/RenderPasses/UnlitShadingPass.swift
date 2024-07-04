@@ -1,7 +1,6 @@
 @preconcurrency import Metal
 import MetalSupport
 import RenderKitShadersLegacy
-import SwiftGraphicsSupport
 
 // TODO: Rename
 public struct UnlitMaterialX: MaterialProtocol {

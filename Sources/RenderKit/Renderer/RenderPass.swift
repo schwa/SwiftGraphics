@@ -1,6 +1,5 @@
 import Foundation
 import Metal
-import SwiftGraphicsSupport
 
 public protocol RenderPassProtocol: PassProtocol {
     func setup(device: MTLDevice, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State

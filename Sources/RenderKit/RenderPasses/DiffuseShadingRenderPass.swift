@@ -1,7 +1,7 @@
 import MetalKit
 import RenderKitShadersLegacy
-import SwiftGraphicsSupport
 import SwiftUI
+import MetalSupport
 
 public struct DiffuseShadingRenderPass: RenderPassProtocol {
     // TODO: Move out

@@ -1,5 +1,6 @@
 import Shapes2D
 import SwiftUI
+import BaseSupport
 
 enum Tool {
     case select

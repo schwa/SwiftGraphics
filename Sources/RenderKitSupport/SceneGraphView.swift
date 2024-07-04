@@ -6,7 +6,6 @@ import MetalSupport
 import RenderKit
 import simd
 import SIMDSupport
-import SwiftGraphicsSupport
 import SwiftUI
 import SwiftUISupport
 import RenderKitSupport

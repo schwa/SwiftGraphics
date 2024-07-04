@@ -2,6 +2,7 @@ import Metal
 import MetalKit
 import MetalSupport
 import ModelIO
+import BaseSupport
 // typealias SemanticSet = Set<Semantic> // TODO: Use BitSet<UIntX>
 //
 // enum BufferRole: Hashable, Sendable {

@@ -7,6 +7,7 @@ import SIMDSupport
 import SwiftGraphicsSupport
 import SwiftUI
 import RenderKitSupport
+import BaseSupport
 
 // swiftlint:disable force_try
 
@@ -98,7 +99,7 @@ struct PointCloudRenderPass: RenderPassProtocol {
         )
 
         let depthStencilDescriptor = MTLDepthStencilDescriptor(depthCompareFunction: .less, isDepthWriteEnabled: true)
-        let depthStencilState = try device.makeDepthStencilState(descriptor: depthStencilDescriptor).safelyUnwrap(RenderKitError.generic("Could not create depth stencil state"))
+        let depthStencilState = try device.makeDepthStencilState(descriptor: depthStencilDescriptor).safelyUnwrap(BaseError.generic("Could not create depth stencil state"))
 
         return State(bindings: bindings, depthStencilState: depthStencilState, renderPipelineState: renderPipelineState)
     }

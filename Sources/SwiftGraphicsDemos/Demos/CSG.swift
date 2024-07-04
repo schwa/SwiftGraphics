@@ -6,6 +6,7 @@ import Shapes3D
 import simd
 import SIMDSupport
 import SwiftGraphicsSupport
+import BaseSupport
 
 struct CSG<Vertex> where Vertex: VertexLike {
     typealias Polygon = Polygon3D<Vertex>

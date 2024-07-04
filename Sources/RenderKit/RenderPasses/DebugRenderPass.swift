@@ -3,7 +3,7 @@ import MetalKit
 import Observation
 import RenderKitShadersLegacy
 import simd
-import SwiftGraphicsSupport
+import MetalSupport
 
 public struct DebugRenderPass: RenderPassProtocol {
     public var id: AnyHashable = "DebugRenderPass2"

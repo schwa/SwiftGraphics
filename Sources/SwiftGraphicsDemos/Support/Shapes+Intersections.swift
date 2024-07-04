@@ -1,6 +1,6 @@
 import Shapes3D
 import simd
-import SwiftGraphicsSupport
+import BaseSupport
 
 extension LineSegment3D {
     func intersection(with other: LineSegment3D) -> LineSegment3D? {

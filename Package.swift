@@ -38,6 +38,7 @@ let package = Package(
         .library(name: "GaussianSplatDemos", targets: ["GaussianSplatDemos"]),
         .library(name: "GaussianSplatSupport", targets: ["GaussianSplatSupport"]),
         .library(name: "SwiftUISupport", targets: ["SwiftUISupport"]),
+        .library(name: "BaseSupport", targets: ["SwiftUISupport"]),
 
     ],
     dependencies: [
@@ -111,8 +112,8 @@ let package = Package(
             dependencies: [
                 "CoreGraphicsSupport",
                 "SIMDSupport",
+                "SwiftUISupport",
                 .product(name: "SwiftFormats", package: "SwiftFormats"),
-                "SwiftGraphicsSupport"
             ],
             swiftSettings: [
             ]
@@ -134,7 +135,10 @@ let package = Package(
 
         .target(
             name: "MetalSupport",
-            dependencies: ["SIMDSupport",],
+            dependencies: [
+                "BaseSupport",
+                "SIMDSupport",
+            ],
             swiftSettings: [
             ]
         ),
@@ -216,8 +220,8 @@ let package = Package(
                 "SIMDSupport",
                 "MetalSupport",
                 "MetalUISupport",
-                "SwiftGraphicsSupport",
                 .product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
+                "BaseSupport",
             ],
             resources: [
                 .process("Placeholder.txt"),
@@ -263,7 +267,6 @@ let package = Package(
                 "MetalSupport",
                 "Shapes2D",
                 "SIMDSupport",
-                "SwiftGraphicsSupport",
             ],
             swiftSettings: [
                 .interoperabilityMode(.Cxx)
@@ -443,6 +446,16 @@ let package = Package(
         ),
         .target(
             name: "SwiftUISupport",
+            dependencies: [
+                .product(name: "SwiftFormats", package: "SwiftFormats"),
+                .product(name: "Everything", package: "Everything"),
+                "CoreGraphicsSupport",
+                "SIMDSupport",
+                "BaseSupport",
+            ]
+        ),
+        .target(
+            name: "BaseSupport",
             dependencies: [
                 .product(name: "SwiftFormats", package: "SwiftFormats"),
                 .product(name: "Everything", package: "Everything"),

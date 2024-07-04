@@ -9,6 +9,7 @@ import SIMDSupport
 import SwiftGLTF
 import SwiftGraphicsSupport
 import SwiftUI
+import BaseSupport
 
 // swiftlint:disable force_try
 
@@ -159,10 +160,10 @@ struct SimplePBRMaterialEditor: View {
 
 // MARK: -
 
-extension SimplePBRLight: @retroactive LightProtocol, @retroactive @unchecked Sendable, @retroactive Equatable, @retroactive UnsafeMemoryEquatable {
+extension SimplePBRLight: @retroactive LightProtocol, @retroactive @unchecked Sendable, @retroactive Equatable, UnsafeMemoryEquatable {
 }
 
-extension SimplePBRMaterial: @retroactive MaterialProtocol, @retroactive @unchecked Sendable, @retroactive Equatable, @retroactive UnsafeMemoryEquatable {
+extension SimplePBRMaterial: @retroactive MaterialProtocol, @retroactive @unchecked Sendable, @retroactive Equatable, UnsafeMemoryEquatable {
 }
 
 // <ARL:
@@ -195,7 +196,7 @@ public struct SimplePBRShadingPass: RenderPassProtocol {
         renderPipelineDescriptor.vertexFunction = library.makeFunction(name: "SimplePBRShader::VertexShader")!
         renderPipelineDescriptor.fragmentFunction = library.makeFunction(name: "SimplePBRShader::FragmentShader")!
         let depthStencilDescriptor = MTLDepthStencilDescriptor(depthCompareFunction: .less, isDepthWriteEnabled: true)
-        let depthStencilState = try device.makeDepthStencilState(descriptor: depthStencilDescriptor).safelyUnwrap(RenderKitError.generic("Could not create depth stencil state"))
+        let depthStencilState = try device.makeDepthStencilState(descriptor: depthStencilDescriptor).safelyUnwrap(BaseError.generic("Could not create depth stencil state"))
         renderPipelineDescriptor.label = "\(type(of: self))"
 
         renderPipelineDescriptor.vertexDescriptor = MTLVertexDescriptor(oneTrueVertexDescriptor)

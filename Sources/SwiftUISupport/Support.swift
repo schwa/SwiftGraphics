@@ -132,3 +132,11 @@ public extension View {
         modifier(FrameEditorModifier())
     }
 }
+
+
+/// A view modifier that does nothing.
+public struct EmptyViewModifier: ViewModifier {
+    public func body(content: Content) -> some View {
+        content
+    }
+}

@@ -1,8 +1,9 @@
 import GaussianSplatShaders
 import MetalKit
+import MetalSupport
 import RenderKit
 import SIMDSupport
-import SwiftGraphicsSupport
+import BaseSupport
 
 public struct GaussianSplatRenderPass: RenderPassProtocol {
     public struct State: PassState {
@@ -75,7 +76,7 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
         )
 
         let depthStencilDescriptor = MTLDepthStencilDescriptor(depthCompareFunction: .always, isDepthWriteEnabled: true)
-        let depthStencilState = try device.makeDepthStencilState(descriptor: depthStencilDescriptor).safelyUnwrap(RenderKitError.generic("Could not create depth stencil state"))
+        let depthStencilState = try device.makeDepthStencilState(descriptor: depthStencilDescriptor).safelyUnwrap(BaseError.generic("Could not create depth stencil state"))
 
         return State(quadMesh: quadMesh, bindings: bindings, depthStencilState: depthStencilState, renderPipelineState: renderPipelineState)
     }

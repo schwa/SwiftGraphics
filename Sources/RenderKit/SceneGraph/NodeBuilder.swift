@@ -1,5 +1,5 @@
 import SIMDSupport
-import SwiftGraphicsSupport
+import BaseSupport
 
 @resultBuilder public enum NodeBuilder {
     public static func buildBlock(_ nodes: [Node]...) -> [Node] {

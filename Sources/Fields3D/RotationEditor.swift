@@ -44,32 +44,6 @@ public struct RotationEditor: View {
     }
 }
 
-extension Rotation {
-    func converted(to base: Rotation.Storage.Base) -> Rotation {
-        switch base {
-        case .quaternion:
-            Rotation(quaternion: quaternion)
-        case .rollPitchYaw:
-            Rotation(rollPitchYaw: rollPitchYaw)
-        }
-    }
-}
-extension Rotation.Storage {
-    enum Base {
-        case quaternion
-        case rollPitchYaw
-    }
-
-    var base: Base {
-        switch self {
-        case .quaternion:
-            .quaternion
-        case .rollPitchYaw:
-            .rollPitchYaw
-        }
-    }
-}
-
 #Preview {
     @Previewable @State var rotation = Rotation.identity
     RotationEditor($rotation)

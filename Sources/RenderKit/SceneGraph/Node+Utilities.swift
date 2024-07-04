@@ -1,7 +1,7 @@
 import Foundation
 import simd
 import SIMDSupport
-import SwiftGraphicsSupport
+import BaseSupport
 
 public extension Node {
     // TODO: Deprecate and use Accessors.

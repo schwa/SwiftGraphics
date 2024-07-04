@@ -3,8 +3,8 @@ import MetalKit
 import MetalSupport
 import SwiftFormats
 import SwiftGLTF
-import SwiftGraphicsSupport
 import SwiftUI
+import BaseSupport
 
 extension SwiftGLTF.Accessor {
     var vertexFormat: MTLVertexFormat? {
@@ -54,7 +54,7 @@ extension YAMesh {
             return buffer
         }
 
-        var bufferViews: [SwiftGraphicsSupport.BufferView] = []
+        var bufferViews: [SwiftGraphicsDemos.BufferView] = []
 
         let semantics: [(SwiftGLTF.Mesh.Primitive.Semantic, VertexDescriptor.Attribute.Semantic, Int)] = [
             (.POSITION, .position, 10),
