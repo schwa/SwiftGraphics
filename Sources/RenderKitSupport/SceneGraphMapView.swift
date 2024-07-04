@@ -5,6 +5,7 @@ import MetalSupport
 import SIMDSupport
 import SwiftGraphicsSupport
 import SwiftUI
+import RenderKit
 
 public struct SceneGraphMapView: View {
     @Binding
