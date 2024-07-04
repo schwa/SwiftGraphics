@@ -1,8 +1,10 @@
 import AsyncAlgorithms
+import BaseSupport
 import Foundation
 import GameController
 import Observation
 import SwiftUI
+import os.log
 
 // TODO: This needs to be massively cleaned-up and turned into an actor.
 // TODO: We need good support for pausing/resuming inputs
@@ -30,6 +32,8 @@ class MovementController: @unchecked Sendable {
         }
     }
 
+
+    var logger: Logger?
     var focused = false
 
     @ObservationIgnored
@@ -70,20 +74,20 @@ class MovementController: @unchecked Sendable {
         NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
             // If we're not focused return everything.
             guard self?.focused == true else {
-                logger?.debug("Ignoring event, not focused.")
+                self?.logger?.debug("Ignoring event, not focused.")
                 return event
             }
             // If a modifier is down
             guard event.modifierFlags.isDisjoint(with: [.command, .shift, .control, .option]) else {
-                logger?.debug("Ignoring event, modifier down.")
+                self?.logger?.debug("Ignoring event, modifier down.")
                 return event
             }
             // If we're not a WASD key
             guard ["w", "a", "s", "d"].contains(event.characters) else {
-                logger?.debug("Ignoring key that wasn't a movement key.")
+                self?.logger?.debug("Ignoring key that wasn't a movement key.")
                 return event
             }
-            logger?.debug("Got movement key.")
+            self?.logger?.debug("Got movement key.")
             // Consume the key
             return nil
         }
@@ -199,7 +203,7 @@ class MovementController: @unchecked Sendable {
 
             for await _ in displayLink.events() {
                 guard self?.focused == true else {
-                    logger?.debug("Skipping event, not focused")
+                    self?.logger?.debug("Skipping event, not focused")
                     return
                 }
                 capturedInput.setStateFromPhysicalInput(keyboardInput)
