@@ -69,8 +69,8 @@ public struct SceneGraphDemoView: View, DemoView {
         .overlay(alignment: .bottomLeading) {
             VStack {
                 HStack {
-                    Toggle("Yaw?", isOn: $updatesYaw)
-                    Toggle("Pitch?", isOn: $updatesPitch)
+                    Toggle(updatesYaw ? "Yaw: On" : "Yaw: Off", isOn: $updatesYaw)
+                    Toggle(updatesPitch ? "Pitch: On" : "Pitch: Off", isOn: $updatesPitch)
                 }
                 .padding(2)
                 .toggleStyle(.button)

@@ -51,7 +51,7 @@ public struct DiffuseShadingRenderPass: RenderPassProtocol {
     }
 
     public func encode(device: MTLDevice, state: inout State, drawableSize: SIMD2<Float>, commandEncoder: any MTLRenderCommandEncoder) throws {
-        let elements = try SceneGraphRenderHelper(scene: scene, drawableSize: drawableSize).elements()
+        let elements = SceneGraphRenderHelper(scene: scene, drawableSize: drawableSize).elements()
 
         commandEncoder.setDepthStencilState(state.depthStencilState)
         let lightAmbientColor = lightAmbientColor.simd.xyz

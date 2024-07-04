@@ -27,7 +27,7 @@ public struct GaussianSplatRenderView: View {
         guard let splatsNode = scene.node(for: "splats"), let splats = splatsNode.content as? Splats<SplatC> else {
             return []
         }
-        guard let cameraNode = scene.node(for: "camera"), let camera = cameraNode.camera else {
+        guard let cameraNode = scene.node(for: "camera") else {
             return []
         }
 

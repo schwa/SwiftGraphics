@@ -18,7 +18,6 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 // swiftlint:disable identifier_name
-// swiftlint:disable file_length
 
 // TODO: Move
 extension CGVector {
