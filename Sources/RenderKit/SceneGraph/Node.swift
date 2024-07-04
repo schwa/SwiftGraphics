@@ -1,7 +1,7 @@
+import BaseSupport
 import Foundation
 import os
 import SIMDSupport
-import BaseSupport
 
 public struct Node: Identifiable, Sendable, Equatable {
     public typealias Content = any Sendable

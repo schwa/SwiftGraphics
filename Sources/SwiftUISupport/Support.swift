@@ -1,10 +1,9 @@
-import SwiftUI
-import SwiftFormats
 import Everything
+import SwiftFormats
+import SwiftUI
 
 #if !os(tvOS)
 public struct MyDisclosureGroupStyle: DisclosureGroupStyle {
-
     public init() {
     }
 
@@ -132,7 +131,6 @@ public extension View {
         modifier(FrameEditorModifier())
     }
 }
-
 
 /// A view modifier that does nothing.
 public struct EmptyViewModifier: ViewModifier {

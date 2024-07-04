@@ -1,5 +1,5 @@
-import SwiftUI
 import simd
+import SwiftUI
 
 public enum Axis3D: CaseIterable {
     case x

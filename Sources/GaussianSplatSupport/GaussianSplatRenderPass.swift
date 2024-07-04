@@ -1,9 +1,9 @@
+import BaseSupport
 import GaussianSplatShaders
 import MetalKit
 import MetalSupport
 import RenderKit
 import SIMDSupport
-import BaseSupport
 
 public struct GaussianSplatRenderPass: RenderPassProtocol {
     public struct State: PassState {

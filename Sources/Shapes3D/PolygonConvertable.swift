@@ -1,8 +1,8 @@
+import BaseSupport
 import Metal
 import MetalKit
 import MetalSupport
 import ModelIO
-import BaseSupport
 
 public protocol PolygonConverterProtocol: ConverterProtocol {
     associatedtype Input

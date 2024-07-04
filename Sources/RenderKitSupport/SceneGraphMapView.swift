@@ -2,9 +2,9 @@ import CoreGraphicsSupport
 import Metal
 import MetalKit
 import MetalSupport
+import RenderKit
 import SIMDSupport
 import SwiftUI
-import RenderKit
 
 public struct SceneGraphMapView: View {
     @Binding

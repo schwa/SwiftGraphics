@@ -1,9 +1,9 @@
 import Algorithms
+import BaseSupport
 import Foundation
 import Shapes3D
 import simd
 import SwiftGraphicsSupport
-import BaseSupport
 
 // TODO: Replace pointers with indices - See: Alumbaugh, T. J., & Jiao, X. (2005). Compact array-based mesh data structures. In Proceedings of the 14th International Meshing Roundtable (pp. pages). Publisher. Also https://link.springer.com/article/10.1007/s00366-014-0378-6#citeas
 // TODO: As a value type we're completing borking CoW

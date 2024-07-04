@@ -82,15 +82,12 @@ struct VolumetricRenderPass: RenderPassProtocol {
     }
 
     func encode(device: MTLDevice, state: inout State, drawableSize: SIMD2<Float>, commandEncoder encoder: MTLRenderCommandEncoder) throws {
-
         let helper = SceneGraphRenderHelper(scene: scene, drawableSize: drawableSize)
-
 
         encoder.setRenderPipelineState(state.renderPipelineState)
         encoder.setDepthStencilState(state.depthStencilState)
 
         for element in helper.elements() {
-
             guard let volumeData = element.node.content as? VolumeData else {
                 continue
             }

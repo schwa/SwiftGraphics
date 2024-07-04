@@ -54,14 +54,14 @@ public extension Pair where LHS == RHS {
     }
 }
 
-//extension Pair: Equatable where LHS: Equatable, RHS: Equatable {
-//}
+// extension Pair: Equatable where LHS: Equatable, RHS: Equatable {
+// }
 //
-//extension Pair: Hashable where LHS: Hashable, RHS: Hashable {
-//}
+// extension Pair: Hashable where LHS: Hashable, RHS: Hashable {
+// }
 //
-//extension Pair: CustomDebugStringConvertible where LHS: CustomDebugStringConvertible, RHS: CustomDebugStringConvertible {
+// extension Pair: CustomDebugStringConvertible where LHS: CustomDebugStringConvertible, RHS: CustomDebugStringConvertible {
 //    var debugDescription: String {
 //        "(\(lhs), \(rhs))"
 //    }
-//}
+// }

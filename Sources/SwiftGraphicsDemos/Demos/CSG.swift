@@ -1,12 +1,12 @@
 // from https://github.com/evanw/csg.js/blob/master/csg.js
 
+import BaseSupport
 import Foundation
 import MetalSupport
 import Shapes3D
 import simd
 import SIMDSupport
 import SwiftGraphicsSupport
-import BaseSupport
 
 struct CSG<Vertex> where Vertex: VertexLike {
     typealias Polygon = Polygon3D<Vertex>

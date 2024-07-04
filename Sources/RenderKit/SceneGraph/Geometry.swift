@@ -1,8 +1,8 @@
+import BaseSupport
 import Foundation
 @preconcurrency import MetalKit
 import os
 import SIMDSupport
-import BaseSupport
 
 public protocol MaterialProtocol: Sendable, Equatable {
 }

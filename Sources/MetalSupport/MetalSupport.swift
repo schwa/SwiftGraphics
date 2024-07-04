@@ -768,7 +768,7 @@ public extension MTLSize {
     }
 
     init(width: Int) {
-            self = MTLSize(width: width, height: 1, depth: 1)
+        self = MTLSize(width: width, height: 1, depth: 1)
     }
 }
 

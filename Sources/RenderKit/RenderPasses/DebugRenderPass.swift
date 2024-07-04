@@ -1,9 +1,9 @@
 import Metal
 import MetalKit
+import MetalSupport
 import Observation
 import RenderKitShadersLegacy
 import simd
-import MetalSupport
 
 public struct DebugRenderPass: RenderPassProtocol {
     public var id: AnyHashable = "DebugRenderPass2"

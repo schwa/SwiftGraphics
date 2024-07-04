@@ -1,5 +1,5 @@
-import Foundation
 import Everything
+import Foundation
 
 public struct Identified<ID, Content>: Identifiable where ID: Hashable {
     public var id: ID

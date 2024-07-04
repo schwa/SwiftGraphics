@@ -1,3 +1,4 @@
+import BaseSupport
 import Combine
 import MetalKit
 import MetalSupport
@@ -8,7 +9,6 @@ import RenderKitShadersLegacy
 import simd
 import SIMDSupport
 import SwiftUI
-import BaseSupport
 
 public protocol PassState /*: Sendable*/ {
 }
