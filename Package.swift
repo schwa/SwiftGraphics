@@ -33,7 +33,7 @@ let package = Package(
         .library(name: "SwiftGraphicsSupport", targets: ["SwiftGraphicsSupport"]),
         .library(name: "MetalUISupport", targets: ["MetalUISupport"]),
         .library(name: "Compute", targets: ["Compute"]),
-        .library(name: "SwiftGraphicsDemosSupport", targets: ["SwiftGraphicsDemosSupport"]),
+        .library(name: "SwiftGraphicsDemos", targets: ["SwiftGraphicsDemos"]),
 
         .library(name: "GaussianSplatDemos", targets: ["GaussianSplatDemos"]),
         .library(name: "GaussianSplatSupport", targets: ["GaussianSplatSupport"]),
@@ -117,7 +117,6 @@ let package = Package(
             swiftSettings: [
             ]
         ),
-
 
         // MARK: GenericGeometryBase
 
@@ -349,10 +348,10 @@ let package = Package(
             ]
         ),
 
-        // MARK: SwiftGraphicsDemosSupport
+        // MARK: SwiftGraphicsDemos
 
         .target(
-            name: "SwiftGraphicsDemosSupport",
+            name: "SwiftGraphicsDemos",
             dependencies: [
                 "Array2D",
                 "CoreGraphicsSupport",
@@ -395,18 +394,18 @@ let package = Package(
             ]
         ),
         .testTarget(
-            name: "SwiftGraphicsDemosSupportTests",
-            dependencies: ["SwiftGraphicsDemosSupport"],
+            name: "SwiftGraphicsDemosTests",
+            dependencies: ["SwiftGraphicsDemos"],
             swiftSettings: [
                 .interoperabilityMode(.Cxx)
             ]
         ),
 
         .executableTarget(
-            name: "SwiftGraphicsDemosSupportCLI",
+            name: "SwiftGraphicsDemosCLI",
             dependencies: [
                 "MetalSupport",
-                "SwiftGraphicsDemosSupport",
+                "SwiftGraphicsDemos",
             ],
             resources: [
                 .copy("CubeBinary.ply"),
@@ -445,11 +444,10 @@ let package = Package(
         .target(
             name: "SwiftUISupport",
             dependencies: [
+                .product(name: "SwiftFormats", package: "SwiftFormats"),
+                .product(name: "Everything", package: "Everything"),
             ]
         ),
     ],
     swiftLanguageVersions: [.v6]
-
-
-
 )

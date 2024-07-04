@@ -1,4 +1,4 @@
-import SwiftGraphicsDemosSupport
+import SwiftGraphicsDemos
 import SwiftUI
 
 @main

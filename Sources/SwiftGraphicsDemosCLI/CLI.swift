@@ -1,5 +1,5 @@
 import Foundation
-import SwiftGraphicsDemosSupport
+import SwiftGraphicsDemos
 
 @main
 enum Main {
