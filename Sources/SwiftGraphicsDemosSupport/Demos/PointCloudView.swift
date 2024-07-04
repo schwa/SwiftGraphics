@@ -10,12 +10,6 @@ import RenderKitSupport
 
 // swiftlint:disable force_try
 
-extension SceneGraph {
-    static let basicScene = SceneGraph(root: Node(label: "Root", children: [
-        Node(label: "camera", content: Camera())
-    ]))
-}
-
 struct PointCloudView: View, DemoView {
     @State
     private var device: MTLDevice
