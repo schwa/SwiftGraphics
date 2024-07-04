@@ -1,12 +1,5 @@
 # SwiftGraphics
 
-A 2D & 3D related Swift utility package.
+This branch is my development branch.
 
-## Libraries
-
-### CoreGraphicsSupport
-
-### MetalSupport
-
-### SIMDSupport
-
+Nothing to see here.
