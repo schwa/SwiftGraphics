@@ -6,7 +6,7 @@ import MetalKit
 import MetalSupport
 import Observation
 import RenderKit
-import RenderKitSupport
+import RenderKitUISupport
 import simd
 import SIMDSupport
 import SwiftFormats
