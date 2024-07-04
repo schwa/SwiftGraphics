@@ -1,12 +1,12 @@
 import Foundation
 
 // https://en.wikipedia.org/wiki/Tar_(computing)
-struct TarArchive {
+struct TarArchive: Sendable {
     enum Error: Swift.Error {
         case generic(String)
     }
 
-    struct Header<Buffer> where Buffer: DataProtocol, Buffer.Index == Int {
+    struct Header<Buffer>: Sendable where Buffer: DataProtocol & Sendable, Buffer.Index == Int {
         var buffer: Buffer
     }
 
