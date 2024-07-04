@@ -4,7 +4,7 @@ import Metal
 import MetalKit
 import MetalSupport
 import RenderKit
-import RenderKitSupport
+import RenderKitUISupport
 import Shapes3D
 import simd
 import SIMDSupport

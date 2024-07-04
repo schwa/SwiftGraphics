@@ -23,7 +23,7 @@ let package = Package(
         .library(name: "Projection", targets: ["Projection"]),
         .library(name: "Raster", targets: ["Raster"]),
         .library(name: "RenderKit", targets: ["RenderKit"]),
-        .library(name: "RenderKitSupport", targets: ["RenderKitSupport"]),
+        .library(name: "RenderKitUISupport", targets: ["RenderKitUISupport"]),
         .library(name: "RenderKitShaders", targets: ["RenderKitShaders"]),
         .library(name: "RenderKitShadersLegacy", targets: ["RenderKitShadersLegacy"]),
         .library(name: "Shapes2D", targets: ["Shapes2D"]),
@@ -229,7 +229,7 @@ let package = Package(
             ]
         ),
         .target(
-            name: "RenderKitSupport",
+            name: "RenderKitUISupport",
             dependencies: [
                 "RenderKit",
                 "SwiftUISupport",
@@ -362,7 +362,7 @@ let package = Package(
                 "Fields3D",
                 .product(name: "SwiftFields", package: "swiftfields"),
                 "GaussianSplatDemos",
-                "RenderKitSupport",
+                "RenderKitUISupport",
                 "SwiftUISupport",
             ],
             resources: [
@@ -421,7 +421,7 @@ let package = Package(
             dependencies: [
                 "GaussianSplatShaders",
                 "RenderKit",
-                "RenderKitSupport",
+                "RenderKitUISupport",
             ],
             resources: [
                 .copy("Placeholder.txt")
@@ -432,8 +432,6 @@ let package = Package(
             dependencies: [
                 .product(name: "SwiftFormats", package: "SwiftFormats"),
                 .product(name: "Everything", package: "Everything"),
-                "CoreGraphicsSupport",
-                "SIMDSupport",
                 "BaseSupport",
             ]
         ),

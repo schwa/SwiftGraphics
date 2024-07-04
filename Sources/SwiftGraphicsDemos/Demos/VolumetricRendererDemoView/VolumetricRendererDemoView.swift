@@ -7,7 +7,7 @@ import ModelIO
 import os
 import RenderKit
 import RenderKitShadersLegacy
-import RenderKitSupport
+import RenderKitUISupport
 import Shapes2D
 import SIMDSupport
 import SwiftUI
