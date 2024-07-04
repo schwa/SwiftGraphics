@@ -93,10 +93,6 @@ struct FirstPersonInteractiveViewModifier <FirstPersonCamera: FirstPersonCameraP
                 GameControllerWidget()
                     .padding()
             }
-            .overlay(alignment: .bottomLeading) {
-                GameControllerWidget()
-                    .padding()
-            }
     }
 }
 

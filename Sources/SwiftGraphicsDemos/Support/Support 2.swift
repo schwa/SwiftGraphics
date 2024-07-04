@@ -18,26 +18,6 @@ import SwiftFormats
 import SwiftUI
 import UniformTypeIdentifiers
 
-public protocol Labeled {
-    var label: String? { get }
-}
-
-// TODO: Rename to be something less generic.
-public struct Box <Content>: Hashable where Content: AnyObject {
-    public var content: Content
-
-    public init(_ content: Content) {
-        self.content = content
-    }
-
-    public static func == (lhs: Self, rhs: Self) -> Bool {
-        lhs.content === rhs.content
-    }
-
-    public func hash(into hasher: inout Hasher) {
-        ObjectIdentifier(content).hash(into: &hasher)
-    }
-}
 
 public protocol UnsafeMemoryEquatable: Equatable {
 }

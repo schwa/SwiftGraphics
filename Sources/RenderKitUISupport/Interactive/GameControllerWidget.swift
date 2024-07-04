@@ -1,6 +1,7 @@
 import Foundation
-import GameController
+@preconcurrency import GameController
 import SwiftUI
+import BaseSupport
 
 // swiftlint:disable force_try
 
@@ -21,24 +22,11 @@ public extension Notification.Name {
 
 struct GameControllerWidget: View {
     @Observable
+    @MainActor
     class GameControllerWidgetModel: @unchecked Sendable {
         var scanning = false
 
-        struct DeviceBox: Hashable, Identifiable {
-            var id: ObjectIdentifier {
-                ObjectIdentifier(device)
-            }
-
-            static func == (lhs: GameControllerWidget.GameControllerWidgetModel.DeviceBox, rhs: GameControllerWidget.GameControllerWidgetModel.DeviceBox) -> Bool {
-                lhs.device === rhs.device
-            }
-
-            func hash(into hasher: inout Hasher) {
-                id.hash(into: &hasher)
-            }
-
-            let device: any GCDevice
-        }
+        typealias DeviceBox = Box<any GCDevice>
 
         var devices: Set<DeviceBox> = []
 
@@ -57,33 +45,45 @@ struct GameControllerWidget: View {
                 await withDiscardingTaskGroup { [weak self] group in
                     let notificationCenter = NotificationCenter.default
                     group.addTask { [weak self] in
-                        for await device in notificationCenter.notifications(named: .GCControllerDidConnect).compactMap(\.object).cast(to: GCDevice.self) {
-                            self?.devices.insert(DeviceBox(device: device!))
+                        for await notification in notificationCenter.notifications(named: .GCControllerDidConnect) {
+                            if let device = notification.object as? GCDevice {
+                                self?.addDevice(device)
+                            }
                         }
                     }
                     group.addTask { [weak self] in
-                        for await device in notificationCenter.notifications(named: .GCControllerDidDisconnect).compactMap(\.object).cast(to: GCDevice.self) {
-                            self?.devices.remove(DeviceBox(device: device!))
+                        for await notification in notificationCenter.notifications(named: .GCControllerDidDisconnect) {
+                            if let device = notification.object as? GCDevice {
+                                self?.removeDevice(device)
+                            }
                         }
                     }
                     group.addTask { [weak self] in
-                        for await device in notificationCenter.notifications(named: .GCKeyboardDidConnect).compactMap(\.object).cast(to: GCDevice.self) {
-                            self?.devices.insert(DeviceBox(device: device!))
+                        for await notification in notificationCenter.notifications(named: .GCKeyboardDidConnect) {
+                            if let device = notification.object as? GCDevice {
+                                self?.addDevice(device)
+                            }
                         }
                     }
                     group.addTask { [weak self] in
-                        for await device in notificationCenter.notifications(named: .GCKeyboardDidDisconnect).compactMap(\.object).cast(to: GCDevice.self) {
-                            self?.devices.remove(DeviceBox(device: device!))
+                        for await notification in notificationCenter.notifications(named: .GCKeyboardDidDisconnect) {
+                            if let device = notification.object as? GCDevice {
+                                self?.removeDevice(device)
+                            }
                         }
                     }
                     group.addTask { [weak self] in
-                        for await device in notificationCenter.notifications(named: .GCMouseDidConnect).compactMap(\.object).cast(to: GCDevice.self) {
-                            self?.devices.insert(DeviceBox(device: device!))
+                        for await notification in notificationCenter.notifications(named: .GCMouseDidConnect) {
+                            if let device = notification.object as? GCDevice {
+                                self?.addDevice(device)
+                            }
                         }
                     }
                     group.addTask { [weak self] in
-                        for await device in notificationCenter.notifications(named: .GCMouseDidDisconnect).compactMap(\.object).cast(to: GCDevice.self) {
-                            self?.devices.remove(DeviceBox(device: device!))
+                        for await notification in notificationCenter.notifications(named: .GCMouseDidDisconnect) {
+                            if let device = notification.object as? GCDevice {
+                                self?.removeDevice(device)
+                            }
                         }
                     }
                 }
@@ -93,6 +93,22 @@ struct GameControllerWidget: View {
 
         deinit {
             monitorTask?.cancel()
+        }
+
+        nonisolated
+        func addDevice(_ device: any GCDevice) {
+            MainActor.runTask {
+                let box = DeviceBox(device)
+                self.devices.insert(box)
+            }
+        }
+
+        nonisolated
+        func removeDevice(_ device: any GCDevice) {
+            MainActor.runTask {
+                let box = DeviceBox(device)
+                self.devices.remove(box)
+            }
         }
 
         func startDiscovery() {
@@ -164,12 +180,15 @@ struct GameControllerWidget: View {
                     Divider()
                     ForEach(Array(model.devices), id: \.self) { box in
                         Label {
-                            let isCurrent = (box.device as? GCController) === GCController.current
-                            Text("\(box.device.productCategory) / \(box.device.vendorName ?? "unknown controller")") + (isCurrent ? Text(" (current)") : Text(""))
+                            let isCurrent = (box.content as? GCController) === GCController.current
+                            Text("\(box.content.productCategory) / \(box.content.vendorName ?? "unknown controller")") + (isCurrent ? Text(" (current)") : Text(""))
                         } icon: {
-                            box.device.sfSymbolName.map { Image(systemName: $0) } ?? Image(systemName: "questionmark.square.dashed")
+                            box.content.sfSymbolName.map { Image(systemName: $0) } ?? Image(systemName: "questionmark.square.dashed")
                         }
                     }
+                }
+                Button("More Info…") {
+
                 }
 
                 //                Button(action: {}, label: {
