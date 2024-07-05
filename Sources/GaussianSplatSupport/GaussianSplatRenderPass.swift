@@ -41,6 +41,8 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
         renderPipelineDescriptor.vertexDescriptor = MTLVertexDescriptor(oneTrueVertexDescriptor)
         renderPipelineDescriptor.vertexFunction = library.makeFunction(name: "GaussianSplatShaders::VertexShader")
         renderPipelineDescriptor.fragmentFunction = library.makeFunction(name: "GaussianSplatShaders::FragmentShader")
+//        renderPipelineDescriptor.vertexFunction = library.makeFunction(name: "GaussianSplatShaders::VertexPointShader")
+//        renderPipelineDescriptor.fragmentFunction = library.makeFunction(name: "GaussianSplatShaders::FragmentPointShader")
 
         renderPipelineDescriptor.colorAttachments[0].isBlendingEnabled = true
         renderPipelineDescriptor.colorAttachments[0].rgbBlendOperation = .add
@@ -78,8 +80,8 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
         commandEncoder.setDepthStencilState(state.depthStencilState)
         commandEncoder.setRenderPipelineState(state.renderPipelineState)
 
-        commandEncoder.setCullMode(.back) // default is .none
-        commandEncoder.setFrontFacing(.clockwise) // default is .clockwise
+//        commandEncoder.setCullMode(.back) // default is .none
+//        commandEncoder.setFrontFacing(.clockwise) // default is .clockwise
         if debugMode {
             commandEncoder.setTriangleFillMode(.lines)
         }
