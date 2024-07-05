@@ -53,3 +53,20 @@ public struct Box <Content>: Identifiable, Hashable where Content: AnyObject {
         ObjectIdentifier(content).hash(into: &hasher)
     }
 }
+
+public extension Array {
+    var mutableLast: Element? {
+        get {
+            last
+        }
+        set {
+            precondition(last != nil)
+            if let newValue {
+                self[index(before: endIndex)] = newValue
+            }
+            else {
+                _ = popLast()
+            }
+        }
+    }
+}

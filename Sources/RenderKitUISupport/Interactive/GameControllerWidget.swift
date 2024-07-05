@@ -5,127 +5,7 @@ import BaseSupport
 
 // swiftlint:disable force_try
 
-// Working for C++ Interop caused problem. https://github.com/apple/swift/issues/69914
-public extension Notification.Name {
-    static let GCControllerDidConnect = Self(rawValue: "GCControllerDidConnectNotification")
-    static let GCControllerDidDisconnect = Self(rawValue: "GCControllerDidDisconnectNotification")
-    static let GCControllerDidBecomeCurrent = Self(rawValue: "GCControllerDidBecomeCurrentNotification")
-    static let GCControllerDidStopBeingCurrent = Self(rawValue: "GCControllerDidStopBeingCurrentNotification")
-    static let GCControllerUserCustomizationsDidChange = Self(rawValue: "GCControllerUserCustomizationsDidChangeNotification")
-
-    static let GCKeyboardDidConnect = Self(rawValue: "GCKeyboardDidConnectNotification")
-    static let GCKeyboardDidDisconnect = Self(rawValue: "GCKeyboardDidDisconnectNotification")
-
-    static let GCMouseDidConnect = Self(rawValue: "GCMouseDidConnectNotification")
-    static let GCMouseDidDisconnect = Self(rawValue: "GCMouseDidDisconnectNotification")
-}
-
 struct GameControllerWidget: View {
-    @Observable
-    @MainActor
-    class GameControllerWidgetModel: @unchecked Sendable {
-        var scanning = false
-
-        typealias DeviceBox = Box<any GCDevice>
-
-        var devices: Set<DeviceBox> = []
-
-        #if os(iOS)
-        var virtualController: GCVirtualController?
-        // Temporary workaround for FB12509166
-        #endif
-
-        @ObservationIgnored
-        var monitorTask: Task<Void, Never>?
-
-        init() {
-            devices.formUnion(GCController.controllers().map(DeviceBox.init))
-
-            monitorTask = Task { [weak self] in
-                await withDiscardingTaskGroup { [weak self] group in
-                    let notificationCenter = NotificationCenter.default
-                    group.addTask { [weak self] in
-                        for await notification in notificationCenter.notifications(named: .GCControllerDidConnect) {
-                            if let device = notification.object as? GCDevice {
-                                self?.addDevice(device)
-                            }
-                        }
-                    }
-                    group.addTask { [weak self] in
-                        for await notification in notificationCenter.notifications(named: .GCControllerDidDisconnect) {
-                            if let device = notification.object as? GCDevice {
-                                self?.removeDevice(device)
-                            }
-                        }
-                    }
-                    group.addTask { [weak self] in
-                        for await notification in notificationCenter.notifications(named: .GCKeyboardDidConnect) {
-                            if let device = notification.object as? GCDevice {
-                                self?.addDevice(device)
-                            }
-                        }
-                    }
-                    group.addTask { [weak self] in
-                        for await notification in notificationCenter.notifications(named: .GCKeyboardDidDisconnect) {
-                            if let device = notification.object as? GCDevice {
-                                self?.removeDevice(device)
-                            }
-                        }
-                    }
-                    group.addTask { [weak self] in
-                        for await notification in notificationCenter.notifications(named: .GCMouseDidConnect) {
-                            if let device = notification.object as? GCDevice {
-                                self?.addDevice(device)
-                            }
-                        }
-                    }
-                    group.addTask { [weak self] in
-                        for await notification in notificationCenter.notifications(named: .GCMouseDidDisconnect) {
-                            if let device = notification.object as? GCDevice {
-                                self?.removeDevice(device)
-                            }
-                        }
-                    }
-                }
-            }
-            startDiscovery()
-        }
-
-        deinit {
-            monitorTask?.cancel()
-        }
-
-        nonisolated
-        func addDevice(_ device: any GCDevice) {
-            MainActor.runTask {
-                let box = DeviceBox(device)
-                self.devices.insert(box)
-            }
-        }
-
-        nonisolated
-        func removeDevice(_ device: any GCDevice) {
-            MainActor.runTask {
-                let box = DeviceBox(device)
-                self.devices.remove(box)
-            }
-        }
-
-        func startDiscovery() {
-            guard scanning == false else {
-                return
-            }
-            scanning = true
-            GCController.startWirelessControllerDiscovery { [weak self] in
-                self?.scanning = false
-            }
-        }
-
-        func stopDiscovery() {
-            GCController.stopWirelessControllerDiscovery()
-            scanning = false
-        }
-    }
 
     @State
     private var model = GameControllerWidgetModel()
@@ -214,6 +94,112 @@ struct GameControllerWidget: View {
         }
     }
 }
+
+@Observable
+@MainActor
+class GameControllerWidgetModel: @unchecked Sendable {
+    var scanning = false
+
+    typealias DeviceBox = Box<any GCDevice>
+
+    var devices: Set<DeviceBox> = []
+
+    #if os(iOS)
+    var virtualController: GCVirtualController?
+    // Temporary workaround for FB12509166
+    #endif
+
+    @ObservationIgnored
+    var monitorTask: Task<Void, Never>?
+
+    init() {
+        devices.formUnion(GCController.controllers().map(DeviceBox.init))
+        monitorTask = Task { [weak self] in
+            await withDiscardingTaskGroup { [weak self] group in
+                let notificationCenter = NotificationCenter.default
+                group.addTask { [weak self] in
+                    for await notification in notificationCenter.notifications(named: .GCControllerDidConnect) {
+                        if let device = notification.object as? GCDevice {
+                            self?.addDevice(device)
+                        }
+                    }
+                }
+                group.addTask { [weak self] in
+                    for await notification in notificationCenter.notifications(named: .GCControllerDidDisconnect) {
+                        if let device = notification.object as? GCDevice {
+                            self?.removeDevice(device)
+                        }
+                    }
+                }
+                group.addTask { [weak self] in
+                    for await notification in notificationCenter.notifications(named: .GCKeyboardDidConnect) {
+                        if let device = notification.object as? GCDevice {
+                            self?.addDevice(device)
+                        }
+                    }
+                }
+                group.addTask { [weak self] in
+                    for await notification in notificationCenter.notifications(named: .GCKeyboardDidDisconnect) {
+                        if let device = notification.object as? GCDevice {
+                            self?.removeDevice(device)
+                        }
+                    }
+                }
+                group.addTask { [weak self] in
+                    for await notification in notificationCenter.notifications(named: .GCMouseDidConnect) {
+                        if let device = notification.object as? GCDevice {
+                            self?.addDevice(device)
+                        }
+                    }
+                }
+                group.addTask { [weak self] in
+                    for await notification in notificationCenter.notifications(named: .GCMouseDidDisconnect) {
+                        if let device = notification.object as? GCDevice {
+                            self?.removeDevice(device)
+                        }
+                    }
+                }
+            }
+        }
+        startDiscovery()
+    }
+
+    deinit {
+        monitorTask?.cancel()
+    }
+
+    nonisolated
+    func addDevice(_ device: any GCDevice) {
+        MainActor.runTask {
+            let box = DeviceBox(device)
+            self.devices.insert(box)
+        }
+    }
+
+    nonisolated
+    func removeDevice(_ device: any GCDevice) {
+        MainActor.runTask {
+            let box = DeviceBox(device)
+            self.devices.remove(box)
+        }
+    }
+
+    func startDiscovery() {
+        guard scanning == false else {
+            return
+        }
+        scanning = true
+        GCController.startWirelessControllerDiscovery { [weak self] in
+            self?.scanning = false
+        }
+    }
+
+    func stopDiscovery() {
+        GCController.stopWirelessControllerDiscovery()
+        scanning = false
+    }
+}
+
 
 extension GCDevice {
     var sfSymbolName: String? {

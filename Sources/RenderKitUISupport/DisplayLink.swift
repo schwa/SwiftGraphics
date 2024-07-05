@@ -105,12 +105,12 @@ extension DisplayLink2 {
 
 @available(macOS 14, iOS 15, tvOS 16, *)
 struct DisplayLinkKey: EnvironmentKey {
-    nonisolated(unsafe) static let defaultValue: DisplayLink2? = nil
+    nonisolated(unsafe) static let defaultValue: DisplayLink2 = .init()
 }
 
 @available(macOS 14, iOS 15, tvOS 16, *)
 extension EnvironmentValues {
-    var displayLink: DisplayLink2? {
+    var displayLink: DisplayLink2 {
         get {
             self[DisplayLinkKey.self]
         }

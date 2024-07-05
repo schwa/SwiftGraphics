@@ -26,12 +26,14 @@ struct FirstPersonInteractiveViewModifier <FirstPersonCamera: FirstPersonCameraP
     @Binding
     var camera: FirstPersonCamera
 
+    init(camera: Binding<FirstPersonCamera>) {
+        self._camera = camera
+        print("INIT")
+    }
+
     func body(content: Content) -> some View {
         content
             .task {
-                guard let displayLink else {
-                    return
-                }
                 let movementController = MovementController(displayLink: displayLink)
                 movementController.focused = renderViewFocused
                 self.movementController = movementController
