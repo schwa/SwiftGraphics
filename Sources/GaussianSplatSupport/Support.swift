@@ -43,7 +43,6 @@ public extension SIMD3 where Scalar == Float {
     }
 }
 
-
 extension PackedHalf3 {
     init(_ other: SIMD3<Float>) {
         self = PackedHalf3(x: Float16(other.x), y: Float16(other.y), z: Float16(other.z))

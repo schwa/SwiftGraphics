@@ -1,8 +1,8 @@
 import Foundation
-import RenderKit
-import UniformTypeIdentifiers
 import GaussianSplatSupport
 import Metal
+import RenderKit
+import UniformTypeIdentifiers
 
 extension Bundle {
     func urls(withExtension extension: String) throws -> [URL] {
@@ -24,7 +24,6 @@ extension Int {
         }
     }
 }
-
 
 extension SceneGraph {
     var splatsNode: Node {
