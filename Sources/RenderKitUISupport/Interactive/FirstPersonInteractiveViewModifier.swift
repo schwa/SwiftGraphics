@@ -28,7 +28,6 @@ struct FirstPersonInteractiveViewModifier <FirstPersonCamera: FirstPersonCameraP
 
     init(camera: Binding<FirstPersonCamera>) {
         self._camera = camera
-        print("INIT")
     }
 
     func body(content: Content) -> some View {

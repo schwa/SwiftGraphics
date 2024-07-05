@@ -69,7 +69,6 @@ extension Node: FirstPersonCameraProtocol {
         }
         // swiftlint:disable:next unused_setter_value
         set {
-            print(newValue)
         }
     }
 
@@ -88,7 +87,6 @@ extension Node: FirstPersonCameraProtocol {
         }
         // swiftlint:disable:next unused_setter_value
         set {
-            print(newValue)
         }
     }
 }

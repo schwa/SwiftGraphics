@@ -2,6 +2,7 @@ import BaseSupport
 import Foundation
 @preconcurrency import GameController
 import SwiftUI
+import SwiftUISupport
 
 // swiftlint:disable force_try
 
@@ -111,13 +112,20 @@ class GameControllerWidgetModel: @unchecked Sendable {
     var monitorTask: Task<Void, Never>?
 
     init() {
+        InlineNotificationsManager.shared.post(.init(title: "GameControllerWidgetModel.init()"))
+
         devices.formUnion(GCController.controllers().map(DeviceBox.init))
+
+        InlineNotificationsManager.shared.post(.init(title: "Devices: \(devices)"))
+
+
         monitorTask = Task { [weak self] in
             await withDiscardingTaskGroup { [weak self] group in
                 let notificationCenter = NotificationCenter.default
                 group.addTask { [weak self] in
                     for await notification in notificationCenter.notifications(named: .GCControllerDidConnect) {
                         if let device = notification.object as? GCDevice {
+                            InlineNotificationsManager.shared.post(.init(title: "Got device", message: "\(device)"))
                             self?.addDevice(device)
                         }
                     }
@@ -132,6 +140,7 @@ class GameControllerWidgetModel: @unchecked Sendable {
                 group.addTask { [weak self] in
                     for await notification in notificationCenter.notifications(named: .GCKeyboardDidConnect) {
                         if let device = notification.object as? GCDevice {
+                            InlineNotificationsManager.shared.post(.init(title: "Got device", message: "\(device)"))
                             self?.addDevice(device)
                         }
                     }
@@ -146,6 +155,7 @@ class GameControllerWidgetModel: @unchecked Sendable {
                 group.addTask { [weak self] in
                     for await notification in notificationCenter.notifications(named: .GCMouseDidConnect) {
                         if let device = notification.object as? GCDevice {
+                            InlineNotificationsManager.shared.post(.init(title: "Got device", message: "\(device)"))
                             self?.addDevice(device)
                         }
                     }

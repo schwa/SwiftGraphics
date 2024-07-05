@@ -28,7 +28,7 @@ public struct SceneGraphView: View {
 
     public var body: some View {
         RenderView(device: device, passes: passes)
-            .modifier(SceneGraphViewModifier(device: device, scene: $scene, passes: passes))
+        .modifier(SceneGraphViewModifier(device: device, scene: $scene, passes: passes))
     }
 }
 
@@ -60,13 +60,13 @@ public struct SceneGraphViewModifier: ViewModifier {
 
     public func body(content: Content) -> some View {
         content
+            .firstPersonInteractive(camera: $scene.currentCameraNode.unsafeBinding())
             .onGeometryChange(for: CGSize.self, of: \.size) { drawableSize = SIMD2<Float>($0) }
             .showFrameEditor()
             .onChange(of: cameraRotation, initial: true) {
                 let b = BallConstraint(radius: 5, rollPitchYaw: cameraRotation)
                 scene.currentCameraNode?.transform = b.transform
             }
-            .firstPersonInteractive(camera: $scene.currentCameraNode.unsafeBinding())
             .ballRotation($cameraRotation, updatesPitch: updatesPitch, updatesYaw: updatesYaw)
             .inspector(isPresented: .constant(true)) {
                 SceneGraphInspector(scene: $scene)

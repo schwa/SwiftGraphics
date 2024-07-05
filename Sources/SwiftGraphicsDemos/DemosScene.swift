@@ -1,6 +1,7 @@
 import Everything
 import GaussianSplatDemos
 import SwiftUI
+import SwiftUISupport
 
 public struct DemosScene: Scene {
     public init() {
@@ -75,6 +76,7 @@ struct DemosView: View {
                 }
             }
         }
+        .inlineNotificationOverlay()
     }
 
     func row(for type: any DemoView.Type) -> some View {
