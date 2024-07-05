@@ -6,11 +6,11 @@ import MetalKit
 import MetalSupport
 import Observation
 import RenderKit
+import RenderKitUISupport
 import simd
 import SIMDSupport
 import SwiftFormats
 import SwiftUI
-import RenderKitUISupport
 
 // swiftlint:disable force_try
 
@@ -32,7 +32,7 @@ public struct GaussianSplatView: View {
         let root = Node(label: "root") {
             Node(label: "ball") {
                 Node(label: "camera")
-                // .transform(translation: [0, 0, 04])
+                    // .transform(translation: [0, 0, 04])
                     .content(Camera())
             }
             Node(label: "splats").content(splats)
@@ -41,7 +41,7 @@ public struct GaussianSplatView: View {
     }
 
     @State
-    var more = false
+    private var more = false
 
     public var body: some View {
         GaussianSplatRenderView(device: device, scene: scene)
@@ -50,13 +50,8 @@ public struct GaussianSplatView: View {
                     more = true
                 }
                 .sheet(isPresented: $more) {
-
                     OptionsView(scene: $scene, device: device)
-
                 }
-
-
-
             }
             .modifier(SceneGraphViewModifier(device: device, scene: $scene, passes: []))
             .environment(viewModel)
@@ -98,7 +93,6 @@ struct OptionsView: View {
                             }
                         }
                         .toggleStyle(.button)
-
                 }
                 HStack {
                     ForEach(try! Bundle.module.urls(withExtension: "splatc"), id: \.self) { url in
@@ -118,7 +112,5 @@ struct OptionsView: View {
             }
         }
         .padding()
-
     }
-
 }

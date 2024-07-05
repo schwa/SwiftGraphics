@@ -3,8 +3,8 @@ import GaussianSplatShaders
 import MetalKit
 import MetalSupport
 import RenderKit
-import SIMDSupport
 import Shapes3D
+import SIMDSupport
 
 public struct GaussianSplatRenderPass: RenderPassProtocol {
     public struct State: PassState {
@@ -34,17 +34,16 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
 
     public func setup(device: MTLDevice, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State {
         let allocator = MTKMeshBufferAllocator(device: device)
-//        let mesh = try MTKMesh(mesh: MDLMesh(planeWithExtent: [2, 2, 0], segments: [1, 1], geometryType: .triangles, allocator: allocator), device: device)
+        //        let mesh = try MTKMesh(mesh: MDLMesh(planeWithExtent: [2, 2, 0], segments: [1, 1], geometryType: .triangles, allocator: allocator), device: device)
         let size: Float = 0.001
         let mesh = try! Box3D(min: [-size, -size, -size], max: [size, size, size]).toMTKMesh(device: device)
-
 
         let library = try device.makeDebugLibrary(bundle: .gaussianSplatShaders)
         let renderPipelineDescriptor = renderPipelineDescriptor()
         renderPipelineDescriptor.label = "\(type(of: self))"
         renderPipelineDescriptor.vertexDescriptor = MTLVertexDescriptor(oneTrueVertexDescriptor)
-//        renderPipelineDescriptor.vertexFunction = library.makeFunction(name: "GaussianSplatShaders::VertexShader")
-//        renderPipelineDescriptor.fragmentFunction = library.makeFunction(name: "GaussianSplatShaders::FragmentShader")
+        //        renderPipelineDescriptor.vertexFunction = library.makeFunction(name: "GaussianSplatShaders::VertexShader")
+        //        renderPipelineDescriptor.fragmentFunction = library.makeFunction(name: "GaussianSplatShaders::FragmentShader")
         renderPipelineDescriptor.vertexFunction = library.makeFunction(name: "GaussianSplatShaders::VertexPointShader")
         renderPipelineDescriptor.fragmentFunction = library.makeFunction(name: "GaussianSplatShaders::FragmentPointShader")
 
@@ -84,8 +83,8 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
         commandEncoder.setDepthStencilState(state.depthStencilState)
         commandEncoder.setRenderPipelineState(state.renderPipelineState)
 
-//        commandEncoder.setCullMode(.back) // default is .none
-//        commandEncoder.setFrontFacing(.clockwise) // default is .clockwise
+        //        commandEncoder.setCullMode(.back) // default is .none
+        //        commandEncoder.setFrontFacing(.clockwise) // default is .clockwise
         if debugMode {
             commandEncoder.setTriangleFillMode(.lines)
         }
@@ -129,7 +128,7 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
             }
 
             commandEncoder.draw(state.mesh, instanceCount: splats.splats.count)
-//            commandEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4, instanceCount: splats.splats.count)
+            //            commandEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4, instanceCount: splats.splats.count)
         }
     }
 }

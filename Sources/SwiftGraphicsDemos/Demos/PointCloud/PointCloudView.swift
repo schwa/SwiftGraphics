@@ -1,4 +1,5 @@
 import BaseSupport
+import GaussianSplatSupport
 import MetalKit
 import MetalSupport
 import RenderKit
@@ -7,7 +8,6 @@ import RenderKitUISupport
 import Shapes3D
 import SIMDSupport
 import SwiftUI
-import GaussianSplatSupport
 
 // swiftlint:disable force_try
 
@@ -44,11 +44,11 @@ struct PointCloudView: View, DemoView {
     var body: some View {
         let passes = [PointCloudRenderPass(scene: scene)]
         RenderView(device: device, passes: passes)
-        .onChange(of: pointCloud, initial: true) {
-            scene.modify(label: "point-cloud") { node in
-                node!.content = pointCloud
+            .onChange(of: pointCloud, initial: true) {
+                scene.modify(label: "point-cloud") { node in
+                    node!.content = pointCloud
+                }
             }
-        }
             .overlay(alignment: .bottom) {
                 if let node = scene.node(for: "point-cloud"), let pointCloud = node.content as? PointCloud {
                     Text("\(pointCloud.count)")
@@ -58,22 +58,17 @@ struct PointCloudView: View, DemoView {
             }
             .toolbar {
                 Button("Load Splat") {
-
                     let gaussianSplatsDemoBundle = Bundle.bundle(forProject: "SwiftGraphics", target: "GaussianSplatDemos")!
 
                     let url = gaussianSplatsDemoBundle.url(forResource: "train", withExtension: "splatc")!
                     let data = try! Data(contentsOf: url)
-                    let points = data.withUnsafeBytes{ buffer in
+                    let points = data.withUnsafeBytes { buffer in
                         let splats = buffer.bindMemory(to: SplatC.self)
-                        return splats.map { SIMD3<Float>($0.position)}
+                        return splats.map { SIMD3<Float>($0.position) }
                     }
 
-
-
-                    self.pointCloud = PointCloud(count: points.count, points: .init(try! device.makeBuffer(bytesOf: points, options: .storageModeShared)), pointMesh: pointMesh)
-
+                    pointCloud = PointCloud(count: points.count, points: .init(try! device.makeBuffer(bytesOf: points, options: .storageModeShared)), pointMesh: pointMesh)
                 }
-
             }
             .modifier(SceneGraphViewModifier(device: device, scene: $scene, passes: passes))
     }
@@ -166,7 +161,6 @@ struct PointCloudRenderPass: RenderPassProtocol {
 extension Bundle {
     static func bundle(forProject project: String, target: String) -> Bundle? {
         let url = Bundle.main.url(forResource: "\(project)_\(target)", withExtension: "bundle")!
-        let bundle = Bundle(url: url)
-        return bundle
+        return Bundle(url: url)
     }
 }
