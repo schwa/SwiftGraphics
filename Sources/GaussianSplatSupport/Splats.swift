@@ -46,12 +46,6 @@ public extension Splats {
     }
 }
 
-extension SIMD3 where Scalar == Float {
-    init(_ other: PackedHalf3) {
-        self = SIMD3(Scalar(other.x), Scalar(other.y), Scalar(other.z))
-    }
-}
-
 public struct SplatB: Equatable {
     public var position: PackedFloat3
     public var scale: PackedFloat3
