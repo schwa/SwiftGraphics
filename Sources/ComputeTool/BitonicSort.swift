@@ -21,8 +21,6 @@ public struct BitonicSortDemo {
         }
         print("Preparing compute.", stopWatch)
 
-        print(Bundle.module.bundlePath)
-
         let function = ShaderLibrary.bundle(.module).bitonicSort
         let numStages = Int(log2(nextPowerOfTwo(Double(numEntries))))
 

@@ -12,19 +12,23 @@ extension AnyTransition {
     }
 }
 
-struct InlineNotificationsView: View {
+public struct InlineNotificationsView: View {
     @Environment(\.inlineNotificationsManager)
     private var inlineNotificationsManager
 
     @State
     private var visibleNotifications: [InlineNotification] = []
 
-    let limit = 3
+    @State
+    private var repeatCounts: [InlineNotification.Payload: Int] = [:]
 
-    var body: some View {
+    public let limit = 3
+    public let lifespan: TimeInterval = 10.0
+
+    public var body: some View {
         VStack(spacing: 2) {
             ForEach(visibleNotifications) { notification in
-                InlineNotificationView(notification: notification) { notification in
+                InlineNotificationView(notification: notification, repeatCount: repeatCounts[notification.payload] ?? 0) { notification in
                     withAnimation {
                         visibleNotifications.remove(contentsOf: [notification])
                     }
@@ -38,7 +42,7 @@ struct InlineNotificationsView: View {
                 await consume()
             }
         }
-        .onChange(of: inlineNotificationsManager.notifications) {
+        .onChange(of: inlineNotificationsManager.notifications, initial: true) {
             Task {
                 await consume()
             }
@@ -46,62 +50,155 @@ struct InlineNotificationsView: View {
     }
 
     private func consume() async {
-        let newNotifications = inlineNotificationsManager.consume(upto: limit - visibleNotifications.count)
-        withAnimation {
-            visibleNotifications.append(contentsOf: newNotifications)
-        }
-        _ = Task.delayed(byTimeInterval: 60) {
-            MainActor.runTask {
-                withAnimation {
-                    visibleNotifications.remove(contentsOf: newNotifications)
+        inlineNotificationsManager.consume { newNotifications in
+            outerloop:
+            for newNotification in newNotifications {
+                for (index, visibleNotification) in visibleNotifications.enumerated() where newNotification.payload == visibleNotification.payload {
+                    repeatCounts[newNotification.payload, default: 0] += 1
+                    visibleNotifications[index].posted = newNotification.posted
+                    newNotifications.remove(contentsOf: [newNotification])
+                    continue outerloop
                 }
-                Task {
-                    await consume()
+                if visibleNotifications.count < limit {
+                    newNotifications.remove(contentsOf: [newNotification])
+                    withAnimation {
+                        visibleNotifications.append(newNotification)
+                    }
+                    Task.delayed(byTimeInterval: lifespan) {
+                        await prune()
+                    }
                 }
             }
         }
     }
+
+    private func prune() {
+        let expiredNotifications = visibleNotifications.filter { Date.now.timeIntervalSince($0.posted) >= lifespan }
+        withAnimation {
+            visibleNotifications.remove(contentsOf: expiredNotifications)
+        }
+    }
 }
 
-extension EnvironmentValues {
+public extension EnvironmentValues {
     @Entry
-    var inlineNotificationsManager: InlineNotificationsManager = .init()
+    var inlineNotificationsManager: InlineNotificationsManager = .shared
 }
 
-struct InlineNotification: Identifiable, Sendable, Equatable {
-    var id = UUID()
-    var posted: Date = .now
-    var title: String
-    var message: String?
-    var image: Image?
+public struct InlineNotification: Identifiable, Sendable, Equatable {
+    public var id = UUID()
+    public var posted: Date = .now
+    public var title: String
+    public var message: String?
+    public var image: Image?
 
-    init(title: String, message: String? = nil, image: Image? = nil) {
+    public init(title: String, message: String? = nil, image: Image? = nil) {
         self.title = title
         self.message = message
         self.image = image
     }
 }
 
+extension InlineNotification {
+    struct Payload: Hashable {
+        var title: String
+        var message: String?
+    }
+
+    var payload: Payload {
+        .init(title: title, message: message)
+    }
+}
+
 @Observable
-final class InlineNotificationsManager: @unchecked Sendable {
+public final class InlineNotificationsManager: @unchecked Sendable {
+    public static let shared = InlineNotificationsManager()
+
     @MainActor
     private(set) var notifications: [InlineNotification] = []
 
-    init() {
+    public init() {
     }
 
     nonisolated
-    func post(_ notification: InlineNotification) {
+    public func post(_ notification: InlineNotification) {
         MainActor.runTask {
             self.notifications.append(notification)
         }
     }
 
     @MainActor
-    func consume(upto count: Int) -> [InlineNotification] {
-        let consumed = notifications.prefix(count)
-        notifications = Array(notifications.dropFirst(count))
-        return Array(consumed)
+    internal func consume(_ callback: (inout [InlineNotification]) -> Void) {
+        callback(&notifications)
+    }
+}
+
+struct InlineNotificationView: View {
+    var notification: InlineNotification
+
+    var repeatCount: Int
+    var remove: (InlineNotification) -> Void
+
+    @State
+    private var onHover: Bool = false
+
+    var body: some View {
+        ZStack(alignment: .topLeading) {
+            HStack {
+                notification.image?
+                    .resizable()
+                    .aspectRatio(1.0, contentMode: .fit)
+                    .frame(maxHeight: 32)
+                HStack(alignment: .firstTextBaseline) {
+                    VStack(alignment: .leading) {
+                        HStack(alignment: .firstTextBaseline) {
+                            Text(notification.title).font(.headline)
+                            if repeatCount > 1 {
+                                Text("(repeated \(repeatCount) times)")
+                            }
+                        }
+                        if let message = notification.message {
+                            Text(message).font(.subheadline)
+                        }
+                    }
+                    .textSelection(.enabled)
+                    Spacer()
+                    TimelineView(.periodic(from: notification.posted, by: onHover ? 1.0 : 5.0)) { _ in
+                        let string = "\(notification.posted, format: .relative(presentation: .named))"
+                        Text(string)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            }
+            .padding(8)
+            .background(.regularMaterial)
+            .cornerRadius(8)
+            .shadow(radius: 1)
+            .padding([.top, .leading, .trailing], 4)
+
+            if onHover {
+                Button {
+                    remove(notification)
+                } label: {
+                    Image(systemName: "x.circle")
+                        .background(Circle().fill(.white))
+                }
+                .buttonStyle(.borderless)
+            }
+        }
+        .frame(maxWidth: 320)
+        .onHover {
+            onHover = $0
+        }
+    }
+}
+
+public extension View {
+    func inlineNotificationOverlay() -> some View {
+        overlay(alignment: .top) {
+             InlineNotificationsView()
+        }
     }
 }
 
@@ -119,91 +216,8 @@ final class InlineNotificationsManager: @unchecked Sendable {
             n += 1
         }
     }
-    .overlay(alignment: .top) {
-        InlineNotificationsView()
-    }
+    .inlineNotificationOverlay()
     .onAppear {
         inlineNotificationsManager.post(.init(title: "hello world", message: "hello world again", image: .init(systemName: "gear")))
-    }
-}
-
-extension Task where Failure == Error {
-    static func delayed(
-        byTimeInterval delayInterval: TimeInterval,
-        priority: TaskPriority? = nil,
-        operation: @escaping @Sendable () async throws -> Success
-    ) -> Task {
-        Task(priority: priority) {
-            let delay = UInt64(delayInterval * 1_000_000_000)
-            try await Task<Never, Never>.sleep(nanoseconds: delay)
-            return try await operation()
-        }
-    }
-
-    static func scheduled(at date: Date, priority: TaskPriority? = nil,
-                          operation: @escaping @Sendable () async throws -> Success) async -> Task {
-        let now = Date()
-        return Task(priority: priority) {
-            let interval = date.timeIntervalSince(now)
-            await withCheckedContinuation { continuation in
-                Timer.scheduledTimer(withTimeInterval: interval, repeats: false) { _ in
-                    continuation.resume()
-                }
-            }
-            return try await operation()
-        }
-    }
-}
-
-struct InlineNotificationView: View {
-    var notification: InlineNotification
-
-    var remove: (InlineNotification) -> Void
-
-    @State
-    private var onHover: Bool = false
-
-    var body: some View {
-        ZStack(alignment: .topLeading) {
-            HStack {
-                notification.image?
-                    .resizable()
-                    .aspectRatio(1.0, contentMode: .fit)
-                    .frame(maxHeight: 32)
-                HStack(alignment: .firstTextBaseline) {
-                    VStack(alignment: .leading) {
-                        Text(notification.title).font(.headline)
-                        if let message = notification.message {
-                            Text(message).font(.subheadline)
-                        }
-                    }
-                    Spacer()
-                    TimelineView(.periodic(from: notification.posted, by: onHover ? 1.0 : 5.0)) { _ in
-                        let string = "\(notification.posted, format: .relative(presentation: .named))"
-                        Text(string)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                }
-            }
-            .padding(4)
-            .background(.thickMaterial)
-            .cornerRadius(8)
-            .shadow(radius: 1)
-            .padding([.top, .leading, .trailing], 4)
-
-            if onHover {
-                Button {
-                    remove(notification)
-                } label: {
-                    Image(systemName: "x.circle")
-                        .background(Circle().fill(.white))
-                }
-                .buttonStyle(.borderless)
-            }
-        }
-        .onHover {
-            onHover = $0
-        }
     }
 }

@@ -72,7 +72,6 @@ public struct Wheel <Label>: View where Label: View {
                 lastDragValue = drag.translation.width
             }
             .onEnded { drag in
-                print(drag.predictedEndTranslation)
                 if drag.predictedEndTranslation.width > 200 {
                     withAnimation(.easeOut) {
                         value += (drag.predictedEndTranslation.width - lastDragValue) / size.width * rate
