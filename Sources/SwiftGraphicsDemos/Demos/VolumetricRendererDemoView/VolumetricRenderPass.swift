@@ -13,43 +13,11 @@ import SwiftUI
 
 struct VolumetricRenderPass: RenderPassProtocol {
     let id: AnyHashable = "VolumetricRenderPass"
-    var cache = Cache<String, Any>()
-
     var scene: SceneGraph
-    var transferFunctionTexture: MTLTexture
-    var texture: MTLTexture
-
-    // TODO: WORKAROUND
-    static func == (lhs: Self, rhs: Self) -> Bool {
-        lhs.id == rhs.id && lhs.scene == rhs.scene
-    }
 
     struct State: PassState {
         var renderPipelineState: MTLRenderPipelineState
         var depthStencilState: MTLDepthStencilState
-    }
-
-    init(scene: SceneGraph) throws {
-        let device = MTLCreateSystemDefaultDevice()! // TODO: Naughty
-        let volumeData = try VolumeData(named: "CThead", in: Bundle.module, size: [256, 256, 113]) // TODO: Hardcoded
-        //        let volumeData = VolumeData(named: "MRBrain", size: [256, 256, 109])
-        let load = try volumeData.load()
-        texture = try load(device)
-
-        // TODO: Hardcoded
-        let textureDescriptor = MTLTextureDescriptor()
-        // We actually only need this texture to be 1D but Metal doesn't allow buffer backed 1D textures which seems assinine. Maybe we don't need it to be buffer backed and just need to call texture.copy each update?
-        textureDescriptor.textureType = .type1D
-        textureDescriptor.width = 256 // TODO: Hardcoded
-        textureDescriptor.height = 1
-        textureDescriptor.depth = 1
-        textureDescriptor.pixelFormat = .rgba8Unorm
-        textureDescriptor.storageMode = .shared
-        let texture = try device.makeTexture(descriptor: textureDescriptor).safelyUnwrap(GeneralError.generic("Could not create texture"))
-        texture.label = "transfer function"
-        transferFunctionTexture = texture
-
-        self.scene = scene
     }
 
     func setup(device: MTLDevice, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State {
@@ -81,65 +49,37 @@ struct VolumetricRenderPass: RenderPassProtocol {
     }
 
     func encode(device: MTLDevice, state: inout State, drawableSize: SIMD2<Float>, commandEncoder encoder: MTLRenderCommandEncoder) throws {
-        let helper = SceneGraphRenderHelper(scene: scene, drawableSize: drawableSize)
-
         encoder.setRenderPipelineState(state.renderPipelineState)
         encoder.setDepthStencilState(state.depthStencilState)
 
+        let helper = SceneGraphRenderHelper(scene: scene, drawableSize: drawableSize)
         for element in helper.elements() {
-            guard let volumeData = element.node.content as? VolumeData else {
+            guard let volumeRepresentation = element.node.content as? VolumeRepresentation else {
                 continue
             }
-
-            guard let cameraNode = scene.node(for: "camera"), let camera = cameraNode.content as? Camera else {
+            guard let cameraNode = scene.currentCameraNode else {
                 fatalError("No camera")
             }
-
-            let mesh2 = try cache.get(key: "mesh2", of: YAMesh.self) {
-                let rect = CGRect(center: .zero, radius: 0.5)
-                let circle = Shapes2D.Circle(containing: rect)
-                let triangle = Triangle(containing: circle)
-                return try YAMesh.triangle(label: "triangle", triangle: triangle, device: device) {
-                    SIMD2<Float>($0) + [0.5, 0.5]
-                }
-            }
-            encoder.setVertexBuffers(mesh2)
-
+            // TODO: we need to remove this.
+            let rollPitchYaw = cameraNode.transform.rotation.rollPitchYaw
+            encoder.setVertexBuffers(volumeRepresentation.mesh)
             // Vertex Buffer Index 1
             let cameraUniforms = CameraUniforms(projectionMatrix: helper.projectionMatrix)
             encoder.setVertexBytes(of: cameraUniforms, index: 1)
-
             // Vertex Buffer Index 2
             let modelUniforms = VolumeTransforms(
                 modelViewMatrix: element.modelViewMatrix,
-                textureMatrix: simd_float4x4(translate: [0.5, 0.5, 0.5]) * cameraNode.transform.matrix * simd_float4x4(translate: [-0.5, -0.5, -0.5])
+                textureMatrix: simd_float4x4(translate: [0.5, 0.5, 0.5]) * rollPitchYaw.matrix4x4 * simd_float4x4(translate: [-0.5, -0.5, -0.5])
             )
             encoder.setVertexBytes(of: modelUniforms, index: 2)
-
             // Vertex Buffer Index 3
-
-            let instanceCount = 256 // TODO: Random - numbers as low as 32 - but you will see layering in the image.
-
-            let instances = try cache.get(key: "instance_data", of: MTLBuffer.self) {
-                let instances = (0 ..< instanceCount).map { slice in
-                    let z = Float(slice) / Float(instanceCount - 1)
-                    return VolumeInstance(offsetZ: z - 0.5, textureZ: 1 - z)
-                }
-                let buffer = try device.makeBuffer(bytesOf: instances, options: .storageModeShared)
-                buffer.label = "instances"
-                assert(buffer.length == 8 * instanceCount)
-                return buffer
-            }
-            encoder.setVertexBuffer(instances, offset: 0, index: 3)
-
-            encoder.setFragmentTexture(texture, index: 0)
-            encoder.setFragmentTexture(transferFunctionTexture, index: 1)
-
+            encoder.setVertexBuffer(volumeRepresentation.instanceBuffer, offset: 0, index: 3)
+            encoder.setFragmentTexture(volumeRepresentation.texture, index: 0)
+            encoder.setFragmentTexture(volumeRepresentation.transferFunctionTexture, index: 1)
             // TODO: Hard coded
-            let fragmentUniforms = VolumeFragmentUniforms(instanceCount: UInt16(instanceCount), maxValue: 3_272, alpha: 10.0)
+            let fragmentUniforms = VolumeFragmentUniforms(instanceCount: UInt16(volumeRepresentation.instanceCount), maxValue: 3_272, alpha: 10.0)
             encoder.setFragmentBytes(of: fragmentUniforms, index: 0)
-
-            encoder.draw(mesh2, instanceCount: instanceCount)
+            encoder.draw(volumeRepresentation.mesh, instanceCount: volumeRepresentation.instanceCount)
         }
     }
 }

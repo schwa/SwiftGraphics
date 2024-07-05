@@ -13,13 +13,11 @@ import SIMDSupport
 import SwiftUI
 
 // swiftlint:disable force_try
+// swiftlint:disable force_cast
 
 // https://www.youtube.com/watch?v=y4KdxaMC69w&t=1761s
 
 struct VolumetricRendererDemoView: DemoView {
-    @State
-    var renderPass: VolumetricRenderPass
-
     @State
     var redTransferFunction: [Float] = Array(repeating: 1.0, count: 256)
 
@@ -35,54 +33,57 @@ struct VolumetricRendererDemoView: DemoView {
     let device = MTLCreateSystemDefaultDevice()!
 
     @State
-    var scene: SceneGraph
+    var scene: SceneGraph = .basicScene
 
     init() {
-        var scene = SceneGraph.basicScene
-        let volumeData = try! VolumeData(named: "CThead", in: Bundle.module, size: MTLSize(256, 256, 113))
-        let node = Node(label: "Volume", content: volumeData)
-        scene.root.children.append(node)
-        self.scene = scene
-
-        self.renderPass = try! VolumetricRenderPass(scene: scene)
     }
 
     var body: some View {
-        RenderView(device: device, passes: [renderPass])
-            .modifier(SceneGraphViewModifier(device: device, scene: $scene, passes: [renderPass]))
+        let renderPasses = [VolumetricRenderPass(scene: scene)]
+        RenderView(device: device, passes: renderPasses)
             .onAppear {
-                updateTransferFunctionTexture()
+                print("ON APPEAR")
+                let volumeData = try! VolumeData(named: "CThead", in: Bundle.module, size: MTLSize(256, 256, 113))
+                let volumeRepresentation = try! VolumeRepresentation(device: device, volumeData: volumeData)
+
+                var scene = SceneGraph.basicScene
+                let node = Node(label: "volume", content: volumeRepresentation)
+                scene.root.children.append(node)
+                updateTransferFunctionTexture(&scene)
+                self.scene = scene
             }
             .onChange(of: redTransferFunction) {
-                updateTransferFunctionTexture()
+                updateTransferFunctionTexture(&scene)
             }
             .onChange(of: greenTransferFunction) {
-                updateTransferFunctionTexture()
+                updateTransferFunctionTexture(&scene)
             }
             .onChange(of: blueTransferFunction) {
-                updateTransferFunctionTexture()
+                updateTransferFunctionTexture(&scene)
             }
             .onChange(of: alphaTransferFunction) {
-                updateTransferFunctionTexture()
+                updateTransferFunctionTexture(&scene)
             }
             .overlay(alignment: .bottom) {
                 VStack {
-                    TransferFunctionEditor(width: 1_024, values: $redTransferFunction, color: .red)
+                    TransferFunctionSingleChannelEditor(width: 1_024, values: $redTransferFunction, color: .red)
                         .frame(maxHeight: 20)
-                    TransferFunctionEditor(width: 1_024, values: $greenTransferFunction, color: .green)
+                    TransferFunctionSingleChannelEditor(width: 1_024, values: $greenTransferFunction, color: .green)
                         .frame(maxHeight: 20)
-                    TransferFunctionEditor(width: 1_024, values: $blueTransferFunction, color: .blue)
+                    TransferFunctionSingleChannelEditor(width: 1_024, values: $blueTransferFunction, color: .blue)
                         .frame(maxHeight: 20)
-                    TransferFunctionEditor(width: 1_024, values: $alphaTransferFunction, color: .white)
+                    TransferFunctionSingleChannelEditor(width: 1_024, values: $alphaTransferFunction, color: .white)
                         .frame(maxHeight: 20)
                 }
+                .frame(maxWidth: 320)
                 .background(.ultraThinMaterial)
                 .padding()
                 .controlSize(.small)
             }
+            .modifier(SceneGraphViewModifier(device: device, scene: $scene, passes: renderPasses))
     }
 
-    func updateTransferFunctionTexture() {
+    func updateTransferFunctionTexture(_ scene: inout SceneGraph) {
         let values = (0 ... 255).map { value in
             SIMD4<Float>(
                 redTransferFunction[value],
@@ -95,15 +96,22 @@ struct VolumetricRendererDemoView: DemoView {
         .map { SIMD4<UInt8>($0) }
 
         values.withUnsafeBytes { buffer in
+            guard scene.node(for: "volume") != nil else {
+                return
+            }
+
             let region = MTLRegion(origin: [0, 0, 0], size: [256, 1, 1]) // TODO: Hardcoded
             let bytesPerRow = 256 * MemoryLayout<SIMD4<UInt8>>.stride
-
-            renderPass.transferFunctionTexture.replace(region: region, mipmapLevel: 0, slice: 0, withBytes: buffer.baseAddress!, bytesPerRow: bytesPerRow, bytesPerImage: 0)
+            scene.modify(label: "volume") { node in
+                var volumeRepresentation = node!.content as! VolumeRepresentation
+                volumeRepresentation.transferFunctionTexture.replace(region: region, mipmapLevel: 0, slice: 0, withBytes: buffer.baseAddress!, bytesPerRow: bytesPerRow, bytesPerImage: 0)
+                node!.content = volumeRepresentation
+            }
         }
     }
 }
 
-struct TransferFunctionEditor: View {
+struct TransferFunctionSingleChannelEditor: View {
     let width: Int
 
     @Binding

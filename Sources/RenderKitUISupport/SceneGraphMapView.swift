@@ -53,7 +53,7 @@ public struct SceneGraphMapView: View {
                 case nil:
                     break
                 default:
-                    context.draw(Text("?"), at: position * scale)
+                    context.draw(Text("?").foregroundColor(.white), at: position * scale)
                 }
             }
         }
