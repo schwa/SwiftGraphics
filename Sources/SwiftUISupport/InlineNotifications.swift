@@ -197,7 +197,7 @@ struct InlineNotificationView: View {
 public extension View {
     func inlineNotificationOverlay() -> some View {
         overlay(alignment: .top) {
-             InlineNotificationsView()
+            InlineNotificationsView()
         }
     }
 }

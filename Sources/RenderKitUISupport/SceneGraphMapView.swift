@@ -62,11 +62,11 @@ public struct SceneGraphMapView: View {
                     viewCone.stroke(Color.blue).offset(x: viewConeRadius, y: viewConeRadius)
                 }
                 Image(systemName: "camera.circle.fill").foregroundStyle(.black, .yellow)
-                .gesture(DragGesture().onChanged({ value in
-                    scene.modify(label: node.label) { node in
-                        node?.transform.translation.xz = SIMD2<Float>(value.location / scale)
-                    }
-                }))
+                    .gesture(DragGesture().onChanged { value in
+                        scene.modify(label: node.label) { node in
+                            node?.transform.translation.xz = SIMD2<Float>(value.location / scale)
+                        }
+                    })
             }
             .frame(width: viewConeRadius * 2, height: viewConeRadius * 2)
             .zIndex(1)

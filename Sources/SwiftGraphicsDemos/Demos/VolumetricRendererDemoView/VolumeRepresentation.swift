@@ -1,10 +1,9 @@
-import Metal
 import BaseSupport
-import Shapes2D
+import Metal
 import RenderKitShadersLegacy
+import Shapes2D
 
 struct VolumeRepresentation: @unchecked Sendable {
-
     var volumeData: VolumeData
 
     var transferFunctionTexture: MTLTexture
@@ -14,7 +13,7 @@ struct VolumeRepresentation: @unchecked Sendable {
     var instanceBuffer: MTLBuffer
 
     init(device: MTLDevice, volumeData: VolumeData) throws {
-//        let volumeData = try VolumeData(named: "CThead", in: Bundle.module, size: [256, 256, 113]) // TODO: Hardcoded
+        //        let volumeData = try VolumeData(named: "CThead", in: Bundle.module, size: [256, 256, 113]) // TODO: Hardcoded
         let load = try volumeData.load()
         texture = try load(device)
 
@@ -30,7 +29,6 @@ struct VolumeRepresentation: @unchecked Sendable {
         let texture = try device.makeTexture(descriptor: textureDescriptor).safelyUnwrap(BaseError.generic("Could not create texture"))
         texture.label = "transfer function"
         self.transferFunctionTexture = texture
-
 
         let rect = CGRect(center: .zero, radius: 0.5)
         let circle = Shapes2D.Circle(containing: rect)
