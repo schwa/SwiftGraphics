@@ -34,7 +34,6 @@ public protocol Labeled {
 
 // TODO: Rename to be something less generic.
 public struct Box <Content>: Identifiable, Hashable where Content: AnyObject {
-
     public var id: ObjectIdentifier {
         ObjectIdentifier(content)
     }

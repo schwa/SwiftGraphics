@@ -1,5 +1,3 @@
-import Projection
-import Shapes3D
 import BaseSupport
 import CoreGraphics
 import CoreGraphicsSupport
@@ -14,12 +12,12 @@ import ModelIO
 import os
 import Projection
 import Shapes2D
+import Shapes3D
 import simd
 import SIMDSupport
 import SwiftFormats
 import SwiftUI
 import UniformTypeIdentifiers
-
 
 extension Path3D {
     init(box: Box3D) {
@@ -50,7 +48,6 @@ extension Path3D {
         }
     }
 }
-
 
 public protocol UnsafeMemoryEquatable: Equatable {
 }
@@ -827,7 +824,6 @@ public extension MDLMeshConvertable {
         return try YAMesh(label: "\(type(of: self))", mdlMesh: mdlMesh, device: device)
     }
 }
-
 
 extension Path3D {
     init(path: Path) {

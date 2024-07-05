@@ -1,7 +1,7 @@
-import SwiftUI
-import Observation
-import Everything
 import BaseSupport
+import Everything
+import Observation
+import SwiftUI
 
 extension AnyTransition {
     static var moveAndFade: AnyTransition {
@@ -161,7 +161,7 @@ struct InlineNotificationView: View {
     var remove: (InlineNotification) -> Void
 
     @State
-    var onHover: Bool = false
+    private var onHover: Bool = false
 
     var body: some View {
         ZStack(alignment: .topLeading) {
@@ -178,14 +178,13 @@ struct InlineNotificationView: View {
                         }
                     }
                     Spacer()
-                    TimelineView(.periodic(from: notification.posted, by: onHover ? 1.0 : 5.0)) { timeline in
-                            let string = "\(notification.posted, format: .relative(presentation: .named))"
-                            Text(string)
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-
+                    TimelineView(.periodic(from: notification.posted, by: onHover ? 1.0 : 5.0)) { _ in
+                        let string = "\(notification.posted, format: .relative(presentation: .named))"
+                        Text(string)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
                     }
+                }
             }
             .padding(4)
             .background(.thickMaterial)
@@ -206,6 +205,5 @@ struct InlineNotificationView: View {
         .onHover {
             onHover = $0
         }
-
     }
 }

@@ -3,8 +3,8 @@ import BaseSupport
 import Foundation
 import GameController
 import Observation
-import SwiftUI
 import os.log
+import SwiftUI
 
 // TODO: This needs to be massively cleaned-up and turned into an actor.
 // TODO: We need good support for pausing/resuming inputs
