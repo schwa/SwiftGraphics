@@ -1,12 +1,11 @@
+import BaseSupport
 import Foundation
 @preconcurrency import GameController
 import SwiftUI
-import BaseSupport
 
 // swiftlint:disable force_try
 
 struct GameControllerWidget: View {
-
     @State
     private var model = GameControllerWidgetModel()
 
@@ -68,7 +67,6 @@ struct GameControllerWidget: View {
                     }
                 }
                 Button("More Info…") {
-
                 }
 
                 //                Button(action: {}, label: {
@@ -199,7 +197,6 @@ class GameControllerWidgetModel: @unchecked Sendable {
         scanning = false
     }
 }
-
 
 extension GCDevice {
     var sfSymbolName: String? {
