@@ -2,7 +2,6 @@ import Everything
 import Foundation
 import Metal
 
-
 struct VolumeData: Sendable {
     var name: String
     var archive: TarArchive
@@ -78,7 +77,6 @@ struct VolumeData: Sendable {
 
 extension VolumeData: CustomDebugStringConvertible {
     var debugDescription: String {
-        return "VolumeData()"
+        "VolumeData()"
     }
-
 }

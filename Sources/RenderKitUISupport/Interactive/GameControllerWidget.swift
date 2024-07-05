@@ -118,7 +118,6 @@ class GameControllerWidgetModel: @unchecked Sendable {
 
         InlineNotificationsManager.shared.post(.init(title: "Devices: \(devices)"))
 
-
         monitorTask = Task { [weak self] in
             await withDiscardingTaskGroup { [weak self] group in
                 let notificationCenter = NotificationCenter.default
