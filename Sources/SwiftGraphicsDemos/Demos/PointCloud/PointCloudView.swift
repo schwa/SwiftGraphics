@@ -41,8 +41,6 @@ struct PointCloudView: View, DemoView {
         self.pointCloud = PointCloud(count: points.count, points: .init(try! device.makeBuffer(bytesOf: points, options: .storageModeShared)), pointMesh: pointMesh)
     }
 
-
-
     var body: some View {
         let passes = [PointCloudRenderPass(scene: scene)]
         RenderView(device: device, passes: passes)
@@ -80,6 +78,8 @@ struct PointCloudView: View, DemoView {
             .modifier(SceneGraphViewModifier(device: device, scene: $scene, passes: passes))
     }
 }
+
+// MARK: -
 
 // TODO; Unchecked
 struct PointCloud: Equatable, @unchecked Sendable {
