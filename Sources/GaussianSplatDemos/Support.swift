@@ -1,4 +1,8 @@
 import Foundation
+import RenderKit
+import UniformTypeIdentifiers
+import GaussianSplatSupport
+import Metal
 
 extension Bundle {
     func urls(withExtension extension: String) throws -> [URL] {
@@ -18,5 +22,57 @@ extension Int {
         set {
             self = Int(newValue)
         }
+    }
+}
+
+
+extension SceneGraph {
+    var splatsNode: Node {
+        get {
+            node(for: "splats")!
+        }
+        set {
+            let accessor = accessor(for: "splats")!
+            self[accessor: accessor] = newValue
+        }
+    }
+}
+
+extension Node {
+    var splats: Splats? {
+        content as? Splats
+    }
+}
+
+extension Splats {
+    init(device: MTLDevice, url: URL) throws {
+        let data = try Data(contentsOf: url)
+        let splats: TypedMTLBuffer<SplatC>
+        if url.pathExtension == "splatc" {
+            splats = try device.makeTypedBuffer(data: data, options: .storageModeShared).labelled("Splats")
+        }
+        else if url.pathExtension == "splat" {
+            let splatArray = data.withUnsafeBytes { buffer in
+                buffer.withMemoryRebound(to: SplatB.self) { buffer in
+                    convert(buffer)
+                }
+            }
+            splats = try device.makeTypedBuffer(data: splatArray, options: .storageModeShared).labelled("Splats")
+        }
+        else {
+            fatalError()
+        }
+        self = try Splats(device: device, splats: splats)
+    }
+}
+
+extension UTType {
+    static let splat = UTType(filenameExtension: "splat")!
+    static let splatC = UTType(filenameExtension: "splatc")!
+}
+
+extension Splats: @retroactive CustomDebugStringConvertible {
+    public var debugDescription: String {
+        "Splats()"
     }
 }

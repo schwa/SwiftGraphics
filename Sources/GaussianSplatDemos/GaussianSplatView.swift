@@ -11,7 +11,6 @@ import simd
 import SIMDSupport
 import SwiftFormats
 import SwiftUI
-import UniformTypeIdentifiers
 
 // swiftlint:disable force_try
 
@@ -21,21 +20,6 @@ public struct GaussianSplatView: View {
 
     @State
     private var viewModel = GaussianSplatViewModel()
-
-    @State
-    private var size: CGSize = .zero
-
-    @Environment(\.displayScale)
-    var displayScale
-
-    @State
-    private var drawableSize: SIMD2<Float>?
-
-    @State
-    private var updatesPitch: Bool = true
-
-    @State
-    private var updatesYaw: Bool = true
 
     @State
     private var scene: SceneGraph
@@ -48,7 +32,7 @@ public struct GaussianSplatView: View {
         let root = Node(label: "root") {
             Node(label: "ball") {
                 Node(label: "camera")
-                    // .transform(translation: [0, 0, 04])
+                // .transform(translation: [0, 0, 04])
                     .content(Camera())
             }
             Node(label: "splats").content(splats)
@@ -56,100 +40,85 @@ public struct GaussianSplatView: View {
         self.scene = SceneGraph(root: root)
     }
 
+    @State
+    var more = false
+
     public var body: some View {
         GaussianSplatRenderView(device: device, scene: scene)
-            .environment(viewModel)
-            .overlay(alignment: .bottom) {
-                VStack {
-                    Text("Size: [\(size * displayScale, format: .size)]")
-                    Text("#splats: \(scene.splatsNode.splats?.splats.count ?? 0)")
-                    HStack {
-                        Slider(value: $scene.currentCameraNode.unsafeBinding().transform.translation.z, in: 0.0 ... 20.0) { Text("Distance") }
-                            .frame(maxWidth: 120)
-                        TextField("Distance", value: $scene.currentCameraNode.unsafeBinding().transform.translation.z, format: .number)
-                            .labelsHidden()
-                            .frame(maxWidth: 120)
-                    }
-                    Toggle("Debug Mode", isOn: $viewModel.debugMode)
-                    HStack {
-                        Slider(value: $viewModel.sortRate.toDouble, in: 1 ... 60) { Text("Sort Rate") }
-                            .frame(maxWidth: 120)
-                        Text("\(viewModel.sortRate)")
-                    }
-                }
-                .padding()
-                .background(.ultraThickMaterial).cornerRadius(8)
-                .padding()
-            }
             .toolbar {
+                Button("More") {
+                    more = true
+                }
+                .sheet(isPresented: $more) {
+
+                    OptionsView(scene: $scene, device: device)
+
+                }
+
+
+
+            }
+            .modifier(SceneGraphViewModifier(device: device, scene: $scene, passes: []))
+            .environment(viewModel)
+    }
+}
+struct OptionsView: View {
+    @Environment(\.dismiss)
+    var dismiss
+
+    @Binding
+    var scene: SceneGraph
+
+    @Environment(GaussianSplatViewModel.self)
+    private var viewModel
+
+    var device: MTLDevice
+
+    var body: some View {
+        VStack {
+            Form {
+                @Bindable
+                var viewModel = viewModel
+
+                Text("#splats: \(scene.splatsNode.splats?.splats.count ?? 0)")
+                Toggle("Debug Mode", isOn: $viewModel.debugMode)
+                HStack {
+                    Slider(value: $viewModel.sortRate.toDouble, in: 1 ... 60) { Text("Sort Rate") }
+                        .frame(maxWidth: 120)
+                    Text("\(viewModel.sortRate)")
+                }
                 Button("Flip") {
                     scene.splatsNode.transform.rotation.rollPitchYaw.roll += .degrees(180)
                 }
                 ValueView(value: false) { isPresented in
-                    Toggle("Load", isOn: isPresented)
+                    Toggle("Load…", isOn: isPresented)
                         .fileImporter(isPresented: isPresented, allowedContentTypes: [.splatC, .splat]) { result in
                             if case let .success(url) = result {
                                 scene.splatsNode.content = try! Splats(device: device, url: url)
                             }
                         }
+                        .toggleStyle(.button)
+
                 }
-                ForEach(try! Bundle.module.urls(withExtension: "splatc"), id: \.self) { url in
-                    Button(url.lastPathComponent) {
-                        scene.splatsNode.content = try! Splats(device: device, url: url)
+                HStack {
+                    ForEach(try! Bundle.module.urls(withExtension: "splatc"), id: \.self) { url in
+                        Button(url.lastPathComponent) {
+                            scene.splatsNode.content = try! Splats(device: device, url: url)
+                        }
                     }
                 }
             }
-            .modifier(SceneGraphViewModifier(device: device, scene: $scene, passes: []))
-    }
-}
-
-extension SceneGraph {
-    var splatsNode: Node {
-        get {
-            node(for: "splats")!
-        }
-        set {
-            let accessor = accessor(for: "splats")!
-            self[accessor: accessor] = newValue
-        }
-    }
-}
-
-extension Node {
-    var splats: Splats? {
-        content as? Splats
-    }
-}
-
-extension Splats {
-    init(device: MTLDevice, url: URL) throws {
-        let data = try Data(contentsOf: url)
-        let splats: TypedMTLBuffer<SplatC>
-        if url.pathExtension == "splatc" {
-            splats = try device.makeTypedBuffer(data: data, options: .storageModeShared).labelled("Splats")
-        }
-        else if url.pathExtension == "splat" {
-            let splatArray = data.withUnsafeBytes { buffer in
-                buffer.withMemoryRebound(to: SplatB.self) { buffer in
-                    convert(buffer)
+            .formStyle(.grouped)
+            HStack {
+                Spacer()
+                Button("OK") {
+                    dismiss()
                 }
+                .keyboardShortcut(.defaultAction)
             }
-            splats = try device.makeTypedBuffer(data: splatArray, options: .storageModeShared).labelled("Splats")
         }
-        else {
-            fatalError()
-        }
-        self = try Splats(device: device, splats: splats)
-    }
-}
+        .padding()
 
-extension UTType {
-    static let splat = UTType(filenameExtension: "splat")!
-    static let splatC = UTType(filenameExtension: "splatc")!
-}
-
-extension Splats: @retroactive CustomDebugStringConvertible {
-    public var debugDescription: String {
-        "Splats()"
     }
+
 }
