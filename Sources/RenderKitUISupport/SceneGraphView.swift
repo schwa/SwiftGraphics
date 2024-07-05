@@ -49,6 +49,9 @@ public struct SceneGraphViewModifier: ViewModifier {
     @State
     private var updatesYaw: Bool = true
 
+    @State
+    private var mapScale: Double = 10
+
     public init(device: MTLDevice, scene: Binding<SceneGraph>, passes: [any PassProtocol]) {
         self.device = device
         self._scene = scene
@@ -61,13 +64,10 @@ public struct SceneGraphViewModifier: ViewModifier {
             .onGeometryChange(for: CGSize.self, of: \.size) { drawableSize = SIMD2<Float>($0) }
             .showFrameEditor()
             .onChange(of: cameraRotation, initial: true) {
-                let b = BallConstraint(radius: 5, rollPitchYaw: cameraRotation)
+                let b = BallConstraint(radius: 10, rollPitchYaw: cameraRotation)
                 scene.currentCameraNode?.transform = b.transform
             }
             .ballRotation($cameraRotation, updatesPitch: updatesPitch, updatesYaw: updatesYaw)
-            .inspector(isPresented: .constant(true)) {
-                SceneGraphInspector(scene: $scene)
-            }
             .overlay(alignment: .bottomTrailing) {
                 VStack {
                     HStack {
@@ -77,17 +77,36 @@ public struct SceneGraphViewModifier: ViewModifier {
                     .padding(2)
                     .toggleStyle(.button)
                     .controlSize(.mini)
+
                     ZStack {
                         if let drawableSize, drawableSize != .zero {
-                            SceneGraphMapView(scene: $scene, drawableSize: drawableSize)
+                            SceneGraphMapView(scene: $scene, scale: mapScale, drawableSize: drawableSize)
                         }
                     }
-                    .aspectRatio(4 / 3, contentMode: .fit)
-                    .frame(width: 320)
+                    .frame(width: 320, height: 320)
+                    .fixedSize()
+
+                    HStack {
+                        Button("-") {
+                            mapScale = max(mapScale - 1, 1)
+                        }
+                        TextField("Scale", value: $mapScale, format: .number)
+                            .labelsHidden()
+                            .frame(maxWidth: 30)
+                        Button("+") {
+                            mapScale += 1
+                        }
+                    }
+                    .controlSize(.mini)
+                    .padding(.bottom, 4)
                 }
                 .background(Color.black)
                 .cornerRadius(8)
+                .border(Color.white)
                 .padding()
+            }
+            .inspector(isPresented: .constant(true)) {
+                SceneGraphInspector(scene: $scene)
             }
     }
 }
