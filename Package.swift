@@ -233,6 +233,7 @@ let package = Package(
             dependencies: [
                 "RenderKit",
                 "SwiftUISupport",
+                "GaussianSplatSupport",
             ]
         ),
 
@@ -421,7 +422,6 @@ let package = Package(
             dependencies: [
                 "GaussianSplatShaders",
                 "RenderKit",
-                "RenderKitUISupport",
             ],
             resources: [
                 .copy("Placeholder.txt")
