@@ -6,6 +6,7 @@ import Projection
 import RenderKitUISupport
 import Shapes2D
 import Shapes3D
+import Shapes3DTessellation
 import SIMDSupport
 import SwiftFormats
 import SwiftUI

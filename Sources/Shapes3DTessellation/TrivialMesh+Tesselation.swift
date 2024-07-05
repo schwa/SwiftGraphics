@@ -1,6 +1,7 @@
 import CoreGraphics
 import Earcut
 import simd
+import Shapes3D
 
 public extension TrivialMesh where Vertex == SIMD3<Float> {
     init(polygon: [CGPoint], z: Float) {
