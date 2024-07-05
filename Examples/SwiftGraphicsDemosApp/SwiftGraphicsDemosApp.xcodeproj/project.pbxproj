@@ -115,7 +115,7 @@
 				45E5B5DB2A8EA04100B46CDC /* Sources */,
 				45E5B5DC2A8EA04100B46CDC /* Frameworks */,
 				45E5B5DD2A8EA04100B46CDC /* Resources */,
-				455E029F2C33550B0065093A /* ShellScript */,
+				455E029F2C33550B0065093A /* Run Script: Swiftlint */,
 			);
 			buildRules = (
 			);
@@ -179,7 +179,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		455E029F2C33550B0065093A /* ShellScript */ = {
+		455E029F2C33550B0065093A /* Run Script: Swiftlint */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
@@ -189,13 +189,15 @@
 			);
 			inputPaths = (
 			);
+			name = "Run Script: Swiftlint";
 			outputFileListPaths = (
 			);
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd ../..\n/opt/homebrew/bin/swiftlint --quiet --config .swiftlint.yml\n";
+			shellScript = "#!/bin/bash\n\ncd ../..\n\nswiftlint_paths=(\n    /opt/homebrew/bin/swiftlint\n    /usr/local/bin/swiftlint\n    /usr/bin/swiftlint\n)\n\nfor path in \"${swiftlint_paths[@]}\"\ndo\n    if [ -x \"$path\" ]; then\n        \"$path\" --quiet --config .swiftlint.yml\n        exit 0\n    fi\ndone\n\necho \"WARNING: swiftlint not found in the specified locations.\"\nexit 0\n";
+			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
