@@ -4,6 +4,7 @@ import Earcut
 import MetalSupport
 import Shapes2D
 import simd
+import Shapes3D
 
 // swiftlint:disable force_unwrapping
 

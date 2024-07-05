@@ -4,6 +4,7 @@ import MetalKit
 import MetalSupport
 import RenderKit
 import SIMDSupport
+import Shapes3D
 
 public struct GaussianSplatRenderPass: RenderPassProtocol {
     public struct State: PassState {
@@ -16,7 +17,7 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
             var fragmentSplats: Int
             var fragmentSplatIndices: Int
         }
-        var quadMesh: MTKMesh
+        var mesh: MTKMesh
         var bindings: Bindings
         var depthStencilState: MTLDepthStencilState
         var renderPipelineState: MTLRenderPipelineState
@@ -33,16 +34,19 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
 
     public func setup(device: MTLDevice, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State {
         let allocator = MTKMeshBufferAllocator(device: device)
-        let quadMesh = try MTKMesh(mesh: MDLMesh(planeWithExtent: [2, 2, 0], segments: [1, 1], geometryType: .triangles, allocator: allocator), device: device)
+//        let mesh = try MTKMesh(mesh: MDLMesh(planeWithExtent: [2, 2, 0], segments: [1, 1], geometryType: .triangles, allocator: allocator), device: device)
+        let size: Float = 0.001
+        let mesh = try! Box3D(min: [-size, -size, -size], max: [size, size, size]).toMTKMesh(device: device)
+
 
         let library = try device.makeDebugLibrary(bundle: .gaussianSplatShaders)
         let renderPipelineDescriptor = renderPipelineDescriptor()
         renderPipelineDescriptor.label = "\(type(of: self))"
         renderPipelineDescriptor.vertexDescriptor = MTLVertexDescriptor(oneTrueVertexDescriptor)
-        renderPipelineDescriptor.vertexFunction = library.makeFunction(name: "GaussianSplatShaders::VertexShader")
-        renderPipelineDescriptor.fragmentFunction = library.makeFunction(name: "GaussianSplatShaders::FragmentShader")
-//        renderPipelineDescriptor.vertexFunction = library.makeFunction(name: "GaussianSplatShaders::VertexPointShader")
-//        renderPipelineDescriptor.fragmentFunction = library.makeFunction(name: "GaussianSplatShaders::FragmentPointShader")
+//        renderPipelineDescriptor.vertexFunction = library.makeFunction(name: "GaussianSplatShaders::VertexShader")
+//        renderPipelineDescriptor.fragmentFunction = library.makeFunction(name: "GaussianSplatShaders::FragmentShader")
+        renderPipelineDescriptor.vertexFunction = library.makeFunction(name: "GaussianSplatShaders::VertexPointShader")
+        renderPipelineDescriptor.fragmentFunction = library.makeFunction(name: "GaussianSplatShaders::FragmentPointShader")
 
         renderPipelineDescriptor.colorAttachments[0].isBlendingEnabled = true
         renderPipelineDescriptor.colorAttachments[0].rgbBlendOperation = .add
@@ -70,7 +74,7 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
         let depthStencilDescriptor = MTLDepthStencilDescriptor(depthCompareFunction: .always, isDepthWriteEnabled: true)
         let depthStencilState = try device.makeDepthStencilState(descriptor: depthStencilDescriptor).safelyUnwrap(BaseError.generic("Could not create depth stencil state"))
 
-        return State(quadMesh: quadMesh, bindings: bindings, depthStencilState: depthStencilState, renderPipelineState: renderPipelineState)
+        return State(mesh: mesh, bindings: bindings, depthStencilState: depthStencilState, renderPipelineState: renderPipelineState)
     }
 
     public func encode(device: MTLDevice, state: inout State, drawableSize: SIMD2<Float>, commandEncoder: any MTLRenderCommandEncoder) throws {
@@ -113,7 +117,7 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
             )
 
             commandEncoder.withDebugGroup("VertexShader") {
-                commandEncoder.setVertexBuffersFrom(mesh: state.quadMesh)
+                commandEncoder.setVertexBuffersFrom(mesh: state.mesh)
                 commandEncoder.setVertexBytes(of: uniforms, index: state.bindings.vertexUniforms)
                 commandEncoder.setVertexBuffer(splats.splats, index: state.bindings.vertexSplats)
                 commandEncoder.setVertexBuffer(splats.indices, index: state.bindings.vertexSplatIndices)
@@ -124,8 +128,8 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
                 commandEncoder.setFragmentBuffer(splats.indices, index: state.bindings.fragmentSplatIndices)
             }
 
-            //        commandEncoder.draw(pointMesh, instanceCount: splatCount)
-            commandEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4, instanceCount: splats.splats.count)
+            commandEncoder.draw(state.mesh, instanceCount: splats.splats.count)
+//            commandEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4, instanceCount: splats.splats.count)
         }
     }
 }

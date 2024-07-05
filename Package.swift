@@ -28,6 +28,7 @@ let package = Package(
         .library(name: "RenderKitShadersLegacy", targets: ["RenderKitShadersLegacy"]),
         .library(name: "Shapes2D", targets: ["Shapes2D"]),
         .library(name: "Shapes3D", targets: ["Shapes3D"]),
+        .library(name: "Shapes3DTessellation", targets: ["Shapes3DTessellation"]),
         .library(name: "SIMDSupport", targets: ["SIMDSupport"]),
         .library(name: "SIMDUnsafeConformances", targets: ["SIMDUnsafeConformances"]),
         .library(name: "MetalUISupport", targets: ["MetalUISupport"]),
@@ -89,9 +90,11 @@ let package = Package(
         // MARK: Earcut
 
         .target(
-            name: "Earcut", dependencies: [
+            name: "Earcut",
+            dependencies: [
                 "earcut_cpp",
-            ], swiftSettings: [
+            ],
+            swiftSettings: [
                 .interoperabilityMode(.Cxx),
             ]
         ),
@@ -207,9 +210,6 @@ let package = Package(
                 "CoreGraphicsSupport",
                 "CoreGraphicsUnsafeConformances",
                 "MetalUnsafeConformances",
-            ],
-            swiftSettings: [
-                .interoperabilityMode(.Cxx)
             ]
         ),
         .target(
@@ -263,9 +263,19 @@ let package = Package(
             dependencies: [
                 .product(name: "Algorithms", package: "swift-algorithms"),
                 "CoreGraphicsSupport",
-                "Earcut",
                 "MetalSupport",
                 "Shapes2D",
+                "SIMDSupport",
+            ]
+        ),
+
+        .target(
+            name: "Shapes3DTessellation",
+            dependencies: [
+                .product(name: "Algorithms", package: "swift-algorithms"),
+                "CoreGraphicsSupport",
+                "Earcut",
+                "Shapes3D",
                 "SIMDSupport",
             ],
             swiftSettings: [
@@ -315,9 +325,6 @@ let package = Package(
                 "MetalSupport",
                 "MetalUISupport",
                 "CoreGraphicsSupport",
-            ],
-            swiftSettings: [
-                .interoperabilityMode(.Cxx)
             ]
         ),
         .executableTarget(
@@ -330,9 +337,6 @@ let package = Package(
                 .process("BitonicSort.metal"),
                 .process("GameOfLife.metal"),
                 .process("RandomFill.metal"),
-            ],
-            swiftSettings: [
-                .interoperabilityMode(.Cxx)
             ]
         ),
 
@@ -344,7 +348,6 @@ let package = Package(
                 "Array2D",
                 "CoreGraphicsSupport",
                 "CoreGraphicsUnsafeConformances",
-                "Earcut",
                 "GenericGeometryBase",
                 "MetalSupport",
                 "Projection",
@@ -354,6 +357,7 @@ let package = Package(
                 "RenderKitShadersLegacy",
                 "Shapes2D",
                 "Shapes3D",
+                "Shapes3DTessellation",
                 "SIMDSupport",
                 "SIMDUnsafeConformances",
                 "SwiftGLTF",
@@ -382,10 +386,7 @@ let package = Package(
         ),
         .testTarget(
             name: "SwiftGraphicsDemosTests",
-            dependencies: ["SwiftGraphicsDemos"],
-            swiftSettings: [
-                .interoperabilityMode(.Cxx)
-            ]
+            dependencies: ["SwiftGraphicsDemos"]
         ),
 
         .executableTarget(
@@ -397,15 +398,12 @@ let package = Package(
             resources: [
                 .copy("CubeBinary.ply"),
                 .copy("test-splat.3-points-from-train.ply"),
-            ],
-            swiftSettings: [
-                .interoperabilityMode(.Cxx)
             ]
         ),
 
         .target(
             name: "GaussianSplatDemos",
-            dependencies: ["GaussianSplatSupport"],
+            dependencies: ["GaussianSplatSupport", "RenderKitUISupport"],
             resources: [
                 .copy("Resources/train.splatc"),
                 .copy("Resources/6_20_2024.splatc"),
@@ -422,6 +420,7 @@ let package = Package(
             dependencies: [
                 "GaussianSplatShaders",
                 "RenderKit",
+                "Shapes3D",
             ],
             resources: [
                 .copy("Placeholder.txt")
