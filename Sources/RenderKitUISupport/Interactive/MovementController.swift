@@ -184,13 +184,12 @@ class MovementController: @unchecked Sendable {
             guard let displayLink = self?.displayLink else {
                 return
             }
-            // TODO: Move to MovementController
-            // TODO: FIXME
-
-            //            for await _ in NotificationCenter.default.notifications(named: .GCKeyboardDidConnect) {
-            //                break
-            //            }
-            guard let keyboard = GCKeyboard.coalesced, let keyboardInput = keyboard.keyboardInput else {
+            guard let keyboard = GCKeyboard.coalesced else {
+                print("No keyboard")
+                return
+            }
+            guard let keyboardInput = keyboard.keyboardInput else {
+                print("No keyboard input")
                 return
             }
             let capturedInput = keyboardInput.capture()

@@ -64,16 +64,12 @@ public struct SceneGraphMapView: View {
 extension Node: FirstPersonCameraProtocol {
     var target: SIMD3<Float> {
         get {
-
-
-
             //transform.translation.xz
             return .zero
-
         }
         // swiftlint:disable:next unused_setter_value
         set {
-            fatalError()
+            print(newValue)
         }
     }
 
@@ -92,7 +88,7 @@ extension Node: FirstPersonCameraProtocol {
         }
         // swiftlint:disable:next unused_setter_value
         set {
-            fatalError()
+            print(newValue)
         }
     }
 }
