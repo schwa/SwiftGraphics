@@ -6,6 +6,17 @@ import simd
 import SIMDSupport
 import SwiftUI
 
+@Observable
+public class GaussianSplatViewModel {
+    public var debugMode: Bool
+    public var sortRate: Int
+
+    public init(debugMode: Bool = false, sortRate: Int = 1) {
+        self.debugMode = debugMode
+        self.sortRate = sortRate
+    }
+}
+
 public struct GaussianSplatRenderView: View {
     private var device: MTLDevice
     private var scene: SceneGraph
@@ -29,23 +40,19 @@ public struct GaussianSplatRenderView: View {
         guard let cameraNode = scene.node(for: "camera") else {
             return []
         }
-
         let preCalcComputePass = GaussianSplatPreCalcComputePass(
             splats: splats,
             modelMatrix: simd_float3x3(truncating: splatsNode.transform.matrix),
             cameraPosition: cameraNode.transform.translation
         )
-
         let gaussianSplatSortComputePass = GaussianSplatBitonicSortComputePass(
             splats: splats,
             sortRate: viewModel.sortRate
         )
-
         let gaussianSplatRenderPass = GaussianSplatRenderPass(
             scene: scene,
             debugMode: viewModel.debugMode
         )
-
         return [
             preCalcComputePass,
             gaussianSplatSortComputePass,
