@@ -1,4 +1,5 @@
 import CoreGraphicsSupport
+import GaussianSplatSupport
 import Metal
 import MetalKit
 import MetalSupport
@@ -24,12 +25,14 @@ public struct SceneGraphMapView: View {
     public var body: some View {
         VStack {
             ZStack {
+                //                canvas()
                 let helper = SceneGraphRenderHelper(scene: scene, drawableSize: drawableSize)
                 ForEach(Array(helper.elements()), id: \.node.id) { element in
                     let position = CGPoint(element.node.transform.translation.xz)
                     let view = view(for: element.node)
                     view.offset(position * scale)
                 }
+                .foregroundColor(.white)
             }
             .frame(width: 480, height: 320)
 
@@ -54,18 +57,38 @@ public struct SceneGraphMapView: View {
     func view(for node: Node) -> some View {
         switch node.content {
         case let camera as Camera:
-            let viewConeRadius = 4 * scale
-            ZStack {
-                if case let .perspective(perspective) = camera.projection {
-                    let heading = node.heading
-                    let viewCone = Path.arc(center: .zero, radius: viewConeRadius, midAngle: heading, width: perspective.horizontalAngleOfView(aspectRatio: Double(drawableSize.x / drawableSize.y)))
-                    viewCone.stroke(Color.blue).offset(x: viewConeRadius, y: viewConeRadius)
+            Image(systemName: "camera.circle.fill").foregroundStyle(.black, .yellow)
+                .frame(width: 32, height: 32)
+                .gesture(dragGesture(for: node))
+                .background(alignment: .center) {
+                    if case let .perspective(perspective) = camera.projection {
+                        let heading = node.heading
+                        ZStack {
+                            Path.arc(center: .zero, radius: Double(perspective.zClip.upperBound) * scale, midAngle: heading, width: perspective.horizontalAngleOfView(aspectRatio: Double(drawableSize.x / drawableSize.y))).stroke(.white.opacity(0.2))
+                            Path.arc(center: .zero, radius: 4 * scale, midAngle: heading, width: perspective.horizontalAngleOfView(aspectRatio: Double(drawableSize.x / drawableSize.y))).stroke(.blue)
+                        }
+                        .offset(x: 16, y: 16)
+                    }
                 }
-                Image(systemName: "camera.circle.fill").foregroundStyle(.black, .yellow)
-                    .gesture(dragGesture(for: node))
-            }
-            .frame(width: viewConeRadius * 2, height: viewConeRadius * 2)
-            .zIndex(1)
+                .zIndex(1)
+        case let splats as Splats:
+            Image(systemName: "questionmark.circle.fill").foregroundStyle(.black, Color(red: 1, green: 0, blue: 1))
+                .frame(width: 32, height: 32)
+                .background {
+                    let p0 = CGPoint(splats.boundingBox.0.xz) * scale
+                    let p1 = CGPoint(splats.boundingBox.1.xz) * scale
+                    let bounds = CGRect(
+                        origin: p0,
+                        size: CGSize(p1 - p0)
+                    )
+                    Path { path in
+                        path.addPath(Path(bounds))
+                        path.addLines([CGPoint(x: bounds.minX, y: bounds.minY), CGPoint(x: bounds.maxX, y: bounds.maxY)])
+                        path.addLines([CGPoint(x: bounds.minX, y: bounds.maxY), CGPoint(x: bounds.maxX, y: bounds.minY)])
+                    }.stroke(Color.red)
+                    .offset(x: 16, y: 16)
+                }
+                .gesture(dragGesture(for: node))
         case nil:
             EmptyView()
         default:
@@ -78,6 +101,45 @@ public struct SceneGraphMapView: View {
         DragGesture().onChanged { value in
             scene.modify(label: node.label) { node in
                 node!.transform.translation.xz = SIMD2<Float>(value.location / scale)
+            }
+        }
+    }
+
+    @ViewBuilder
+    func canvas() -> some View {
+        let helper = SceneGraphRenderHelper(scene: scene, drawableSize: drawableSize)
+        Canvas(opaque: true) { context, size in
+            context.concatenate(CGAffineTransform.translation(CGPoint(size.width / 2, size.height / 2)))
+
+            for element in helper.elements() {
+                let position = CGPoint(element.node.transform.translation.xz)
+                switch element.node.content {
+                case let camera as Camera:
+                    switch camera.projection {
+                    case .perspective(let perspective):
+                        let heading = element.node.heading
+                        let viewCone = Path.arc(center: position * scale, radius: 4 * scale, midAngle: heading, width: perspective.horizontalAngleOfView(aspectRatio: Double(drawableSize.x / drawableSize.y)))
+                        context.fill(viewCone, with: .radialGradient(Gradient(colors: [.white.opacity(0.5), .white.opacity(0.0)]), center: position * scale, startRadius: 0, endRadius: 4 * scale))
+                        context.stroke(viewCone, with: .color(.white))
+                    default:
+                        break
+                    }
+                    var cameraImage = context.resolve(Image(systemName: "camera.circle.fill"))
+                    cameraImage.shading = .color(.mint)
+                    context.draw(cameraImage, at: position * scale, anchor: .center)
+
+                    let targetPosition = position + CGPoint(element.node.target.xz)
+                    var targetImage = context.resolve(Image(systemName: "scope"))
+                    targetImage.shading = .color(.white)
+                    context.draw(targetImage, at: targetPosition * scale, anchor: .center)
+                case let geometry as Geometry:
+                    let path = Path(ellipseIn: CGRect(center: position * scale, radius: 5))
+                    context.stroke(path, with: .color(.red))
+                case nil:
+                    break
+                default:
+                    context.draw(Text("?"), at: position * scale)
+                }
             }
         }
     }

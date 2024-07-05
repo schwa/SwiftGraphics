@@ -34,7 +34,7 @@ public struct GaussianSplatRenderView: View {
     }
 
     var passes: [any PassProtocol] {
-        guard let splatsNode = scene.node(for: "splats"), let splats = splatsNode.content as? Splats<SplatC> else {
+        guard let splatsNode = scene.node(for: "splats"), let splats = splatsNode.content as? Splats else {
             return []
         }
         guard let cameraNode = scene.node(for: "camera") else {

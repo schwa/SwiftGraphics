@@ -44,7 +44,7 @@ public struct GaussianSplatView: View {
         let device = MTLCreateSystemDefaultDevice()!
         let url = Bundle.module.url(forResource: "train", withExtension: "splatc")!
         self.device = device
-        let splats = try! Splats<SplatC>(device: device, url: url)
+        let splats = try! Splats(device: device, url: url)
         let root = Node(label: "root") {
             Node(label: "ball") {
                 Node(label: "camera")
@@ -89,13 +89,13 @@ public struct GaussianSplatView: View {
                     Toggle("Load", isOn: isPresented)
                         .fileImporter(isPresented: isPresented, allowedContentTypes: [.splatC, .splat]) { result in
                             if case let .success(url) = result {
-                                scene.splatsNode.content = try! Splats<SplatC>(device: device, url: url)
+                                scene.splatsNode.content = try! Splats(device: device, url: url)
                             }
                         }
                 }
                 ForEach(try! Bundle.module.urls(withExtension: "splatc"), id: \.self) { url in
                     Button(url.lastPathComponent) {
-                        scene.splatsNode.content = try! Splats<SplatC>(device: device, url: url)
+                        scene.splatsNode.content = try! Splats(device: device, url: url)
                     }
                 }
             }
@@ -116,12 +116,12 @@ extension SceneGraph {
 }
 
 extension Node {
-    var splats: Splats<SplatC>? {
-        content as? Splats<SplatC>
+    var splats: Splats? {
+        content as? Splats
     }
 }
 
-extension Splats where Splat == SplatC {
+extension Splats {
     init(device: MTLDevice, url: URL) throws {
         let data = try Data(contentsOf: url)
         let splats: TypedMTLBuffer<SplatC>
@@ -139,7 +139,7 @@ extension Splats where Splat == SplatC {
         else {
             fatalError()
         }
-        self = try Splats<SplatC>(device: device, splats: splats)
+        self = try Splats(device: device, splats: splats)
     }
 }
 

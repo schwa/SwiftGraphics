@@ -28,7 +28,7 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
     //    var cameraTransform: Transform
     //    var cameraProjection: Projection
     //    var modelTransform: Transform
-    //    var splats: Splats<SplatC>
+    //    var splats: Splats
     var debugMode: Bool
 
     public init(scene: SceneGraph, debugMode: Bool) {
@@ -99,7 +99,7 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
         }
 
         for element in elements {
-            guard let splats = element.node.content as? Splats<SplatC> else {
+            guard let splats = element.node.content as? Splats else {
                 continue
             }
 
