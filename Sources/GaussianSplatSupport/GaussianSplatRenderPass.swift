@@ -23,12 +23,7 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
     }
 
     public var id: AnyHashable = "GaussianSplatRenderPass"
-
     var scene: SceneGraph
-    //    var cameraTransform: Transform
-    //    var cameraProjection: Projection
-    //    var modelTransform: Transform
-    //    var splats: Splats
     var debugMode: Bool
 
     public init(scene: SceneGraph, debugMode: Bool) {
@@ -54,11 +49,6 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
         renderPipelineDescriptor.colorAttachments[0].sourceAlphaBlendFactor = .one
         renderPipelineDescriptor.colorAttachments[0].destinationRGBBlendFactor = .oneMinusSourceAlpha
         renderPipelineDescriptor.colorAttachments[0].destinationAlphaBlendFactor = .oneMinusSourceAlpha
-
-        //        renderPipelineDescriptor.colorAttachments[0].sourceRGBBlendFactor = .oneMinusDestinationAlpha
-        //        renderPipelineDescriptor.colorAttachments[0].sourceAlphaBlendFactor = .oneMinusDestinationAlpha
-        //        renderPipelineDescriptor.colorAttachments[0].destinationRGBBlendFactor = .one
-        //        renderPipelineDescriptor.colorAttachments[0].destinationAlphaBlendFactor = .one
 
         let (renderPipelineState, reflection) = try device.makeRenderPipelineState(descriptor: renderPipelineDescriptor, options: [.bindingInfo])
         guard let reflection else {

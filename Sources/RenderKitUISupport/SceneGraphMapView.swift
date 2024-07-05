@@ -11,46 +11,27 @@ public struct SceneGraphMapView: View {
     @Binding
     var scene: SceneGraph
 
-    @State
-    private var scale: Double = 10
+    private var scale: Double
 
     let drawableSize: SIMD2<Float>
 
-    public init(scene: Binding<SceneGraph>, scale: CGFloat = 10, drawableSize: SIMD2<Float>) {
+    public init(scene: Binding<SceneGraph>, scale: CGFloat, drawableSize: SIMD2<Float>) {
         self._scene = scene
         self.scale = scale
         self.drawableSize = drawableSize
     }
 
     public var body: some View {
-        VStack {
-            ZStack {
-                //                canvas()
-                let helper = SceneGraphRenderHelper(scene: scene, drawableSize: drawableSize)
-                ForEach(Array(helper.elements()), id: \.node.id) { element in
-                    let position = CGPoint(element.node.transform.translation.xz)
-                    let view = view(for: element.node)
-                    view.offset(position * scale)
-                }
-                .foregroundColor(.white)
+        ZStack {
+            //                canvas()
+            let helper = SceneGraphRenderHelper(scene: scene, drawableSize: drawableSize)
+            ForEach(Array(helper.elements()), id: \.node.id) { element in
+                let position = CGPoint(element.node.transform.translation.xz)
+                let view = view(for: element.node)
+                view.offset(position * scale)
             }
-            .frame(width: 480, height: 320)
-
-            HStack {
-                Button("-") {
-                    scale = max(scale - 1, 1)
-                }
-                TextField("Scale", value: $scale, format: .number)
-                    .labelsHidden()
-                    .frame(maxWidth: 30)
-                Button("+") {
-                    scale += 1
-                }
-            }
-            .controlSize(.mini)
-            .padding(.bottom, 4)
+            .foregroundColor(.white)
         }
-        .background(.black)
     }
 
     @ViewBuilder
