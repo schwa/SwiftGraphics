@@ -62,7 +62,7 @@ public struct SceneGraphMapView: View {
                     viewCone.stroke(Color.blue).offset(x: viewConeRadius, y: viewConeRadius)
                 }
                 Image(systemName: "camera.circle.fill").foregroundStyle(.black, .yellow)
-                .gesture(dragGesture(for: node))
+                    .gesture(dragGesture(for: node))
             }
             .frame(width: viewConeRadius * 2, height: viewConeRadius * 2)
             .zIndex(1)
@@ -70,7 +70,7 @@ public struct SceneGraphMapView: View {
             EmptyView()
         default:
             Image(systemName: "questionmark.circle.fill").foregroundStyle(.black, Color(red: 1, green: 0, blue: 1))
-            .gesture(dragGesture(for: node))
+                .gesture(dragGesture(for: node))
         }
     }
 

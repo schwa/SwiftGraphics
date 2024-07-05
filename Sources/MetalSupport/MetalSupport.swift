@@ -10,7 +10,6 @@ import simd
 import SIMDSupport
 import SwiftUI
 
-
 // swiftlint:disable cyclomatic_complexity
 // swiftlint:disable file_length
 
@@ -719,7 +718,7 @@ public extension MTLRenderCommandEncoder {
         return try block()
     }
 
-    //@available(*, deprecated, message: "Deprecated. Clean this up.")
+    // @available(*, deprecated, message: "Deprecated. Clean this up.")
     func setVertexBuffersFrom(mesh: MTKMesh) {
         for (index, element) in mesh.vertexDescriptor.layouts.enumerated() {
             guard let layout = element as? MDLVertexBufferLayout else {
@@ -733,7 +732,7 @@ public extension MTLRenderCommandEncoder {
         }
     }
 
-    //@available(*, deprecated, message: "Deprecated. Clean this up.")
+    // @available(*, deprecated, message: "Deprecated. Clean this up.")
     func draw(_ mesh: MTKMesh, setVertexBuffers: Bool = true) {
         if setVertexBuffers {
             for (index, vertexBuffer) in mesh.vertexBuffers.enumerated() {
@@ -745,14 +744,14 @@ public extension MTLRenderCommandEncoder {
         }
     }
 
-    //@available(*, deprecated, message: "Deprecated. Clean this up.")
+    // @available(*, deprecated, message: "Deprecated. Clean this up.")
     func draw(_ mesh: MTKMesh, instanceCount: Int) {
         for submesh in mesh.submeshes {
             drawIndexedPrimitives(type: submesh.primitiveType, indexCount: submesh.indexCount, indexType: submesh.indexType, indexBuffer: submesh.indexBuffer.buffer, indexBufferOffset: submesh.indexBuffer.offset, instanceCount: instanceCount)
         }
     }
 
-    //@available(*, deprecated, message: "Deprecated. Clean this up.")
+    // @available(*, deprecated, message: "Deprecated. Clean this up.")
     func setVertexBuffer(_ mesh: MTKMesh, startingIndex: Int) {
         for (index, vertexBuffer) in mesh.vertexBuffers.enumerated() {
             setVertexBuffer(vertexBuffer.buffer, offset: vertexBuffer.offset, index: startingIndex + index)
