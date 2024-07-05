@@ -37,6 +37,13 @@ extension Collection where Element == PackedFloat3 {
     }
 }
 
+public extension SIMD3 where Scalar == Float {
+    init(_ other: PackedHalf3) {
+        self = SIMD3(Scalar(other.x), Scalar(other.y), Scalar(other.z))
+    }
+}
+
+
 extension PackedHalf3 {
     init(_ other: SIMD3<Float>) {
         self = PackedHalf3(x: Float16(other.x), y: Float16(other.y), z: Float16(other.z))
