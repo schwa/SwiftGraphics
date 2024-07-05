@@ -118,7 +118,7 @@ public extension Axis3 {
 
 public extension SIMD3<Float> {
     func angle(along axis: Axis3) -> Angle {
-        let axisVector = axis.positiveVector
+///        let axisVector = axis.positiveVector
 
         // Project the vector onto the plane perpendicular to the axis
         let projectedVector: SIMD3<Float>

@@ -4,13 +4,10 @@ import Metal
 import MetalKit
 import MetalSupport
 import RenderKit
-import RenderKitUISupport
 import simd
 import SIMDSupport
 import SwiftUI
 import SwiftUISupport
-
-// swiftlint:disable force_try
 
 public struct SceneGraphView: View {
     let device: MTLDevice
