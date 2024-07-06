@@ -52,6 +52,9 @@ public struct SceneGraphViewModifier: ViewModifier {
     @State
     private var mapScale: Double = 10
 
+    @State
+    private var ballConstraint = BallConstraint()
+
     public init(device: MTLDevice, scene: Binding<SceneGraph>, passes: [any PassProtocol]) {
         self.device = device
         self._scene = scene
@@ -64,8 +67,10 @@ public struct SceneGraphViewModifier: ViewModifier {
             .onGeometryChange(for: CGSize.self, of: \.size) { drawableSize = SIMD2<Float>($0) }
             .showFrameEditor()
             .onChange(of: cameraRotation, initial: true) {
-                let b = BallConstraint(radius: 10, rollPitchYaw: cameraRotation)
-                scene.currentCameraNode?.transform = b.transform
+                ballConstraint.rollPitchYaw = cameraRotation
+            }
+            .onChange(of: ballConstraint, initial: true) {
+                scene.currentCameraNode?.transform = ballConstraint.transform
             }
             .ballRotation($cameraRotation, updatesPitch: updatesPitch, updatesYaw: updatesYaw)
             .overlay(alignment: .bottomTrailing) {
@@ -106,50 +111,25 @@ public struct SceneGraphViewModifier: ViewModifier {
                 .padding()
             }
             .inspector(isPresented: .constant(true)) {
-                SceneGraphInspector(scene: $scene)
-            }
-    }
-}
+                VStack {
+                    //                    HStack {
+                    //                        Toggle("x", systemImage: "gear", isOn: .constant(true))
+                    //                        Toggle("y", systemImage: "gear", isOn: .constant(false))
+                    //                        Toggle("z", systemImage: "gear", isOn: .constant(false))
+                    //                    }
+                    //                    .toggleStyle(.switch)
+                    //                    .labelsHidden()
+                    //                    Divider()
 
-struct SceneGraphInspector: View {
-    @Binding
-    var scene: SceneGraph
-
-    @State
-    private var selection: Node.ID?
-
-    var body: some View {
-        VSplitView {
-            List([scene.root], children: \.optionalChildren, selection: $selection) { node in
-                if !node.label.isEmpty {
-                    Text("Node: \"\(node.label)\"")
-                }
-                else {
-                    Text("Node: <unnamed>")
-                }
-            }
-            .frame(minHeight: 320)
-            Group {
-                if let selection, let indexPath = scene.firstIndexPath(id: selection) {
-                    let node: Binding<Node> = $scene.binding(for: indexPath)
-                    //                let node = scene.root[indexPath: indexPath]
-                    List {
-                        Form {
-                            LabeledContent("ID", value: "\(node.wrappedValue.id)")
-                            LabeledContent("Label", value: node.wrappedValue.label)
-                            TransformEditor(node.transform)
-                            VectorEditor(node.transform.translation)
+                    // SceneGraphInspector(scene: $scene)
+                    Form {
+                        Section("Ball Constaint") {
+                            BallConstraintEditor(ballConstraint: $ballConstraint)
+                                .controlSize(.small)
                         }
                     }
+                    .formStyle(.grouped)
                 }
             }
-            .frame(minHeight: 320)
-        }
-    }
-}
-
-extension Node {
-    var optionalChildren: [Node]? {
-        children.isEmpty ? nil : children
     }
 }
