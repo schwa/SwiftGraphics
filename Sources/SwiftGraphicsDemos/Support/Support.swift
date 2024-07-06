@@ -855,3 +855,10 @@ extension Bundle {
         return url
     }
 }
+
+extension Bundle {
+    static func bundle(forProject project: String, target: String) -> Bundle? {
+        let url = Bundle.main.url(forResource: "\(project)_\(target)", withExtension: "bundle")!
+        return Bundle(url: url)
+    }
+}

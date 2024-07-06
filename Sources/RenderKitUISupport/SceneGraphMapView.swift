@@ -23,14 +23,15 @@ public struct SceneGraphMapView: View {
 
     public var body: some View {
         ZStack {
-            //                canvas()
-            let helper = SceneGraphRenderHelper(scene: scene, drawableSize: drawableSize)
-            ForEach(Array(helper.elements()), id: \.node.id) { element in
-                let position = CGPoint(element.node.transform.translation.xz)
-                let view = view(for: element.node)
-                view.offset(position * scale)
+            if drawableSize.x != 0 && drawableSize.y != 0 {
+                let helper = SceneGraphRenderHelper(scene: scene, drawableSize: drawableSize)
+                ForEach(Array(helper.elements()), id: \.node.id) { element in
+                    let position = CGPoint(element.node.transform.translation.xz)
+                    let view = view(for: element.node)
+                    view.offset(position * scale)
+                }
+                .foregroundColor(.white)
             }
-            .foregroundColor(.white)
         }
     }
 

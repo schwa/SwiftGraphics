@@ -34,18 +34,18 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
 
     public func setup(device: MTLDevice, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State {
         let allocator = MTKMeshBufferAllocator(device: device)
-        //        let mesh = try MTKMesh(mesh: MDLMesh(planeWithExtent: [2, 2, 0], segments: [1, 1], geometryType: .triangles, allocator: allocator), device: device)
-        let size: Float = 0.001
-        let mesh = try! Box3D(min: [-size, -size, -size], max: [size, size, size]).toMTKMesh(device: device)
+        let mesh = try MTKMesh(mesh: MDLMesh(planeWithExtent: [2, 2, 0], segments: [1, 1], geometryType: .triangles, allocator: allocator), device: device)
+        //        let size: Float = 0.001
+        //        let mesh = try! Box3D(min: [-size, -size, -size], max: [size, size, size]).toMTKMesh(device: device)
 
         let library = try device.makeDebugLibrary(bundle: .gaussianSplatShaders)
         let renderPipelineDescriptor = renderPipelineDescriptor()
         renderPipelineDescriptor.label = "\(type(of: self))"
         renderPipelineDescriptor.vertexDescriptor = MTLVertexDescriptor(oneTrueVertexDescriptor)
-        //        renderPipelineDescriptor.vertexFunction = library.makeFunction(name: "GaussianSplatShaders::VertexShader")
-        //        renderPipelineDescriptor.fragmentFunction = library.makeFunction(name: "GaussianSplatShaders::FragmentShader")
-        renderPipelineDescriptor.vertexFunction = library.makeFunction(name: "GaussianSplatShaders::VertexPointShader")
-        renderPipelineDescriptor.fragmentFunction = library.makeFunction(name: "GaussianSplatShaders::FragmentPointShader")
+        renderPipelineDescriptor.vertexFunction = library.makeFunction(name: "GaussianSplatShaders::VertexShader")
+        renderPipelineDescriptor.fragmentFunction = library.makeFunction(name: "GaussianSplatShaders::FragmentShader")
+        //        renderPipelineDescriptor.vertexFunction = library.makeFunction(name: "GaussianSplatShaders::VertexPointShader")
+        //        renderPipelineDescriptor.fragmentFunction = library.makeFunction(name: "GaussianSplatShaders::FragmentPointShader")
 
         renderPipelineDescriptor.colorAttachments[0].isBlendingEnabled = true
         renderPipelineDescriptor.colorAttachments[0].rgbBlendOperation = .add
