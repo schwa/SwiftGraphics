@@ -5,24 +5,12 @@
 #ifdef __METAL_VERSION__
 #import <metal_stdlib>
 
-//struct GaussianSplatUniforms {
-//    simd_float4x4 modelViewProjectionMatrix;
-//    simd_float4x4 modelViewMatrix;
-//    simd_float4x4 projectionMatrix;
-//    simd_float4x4 modelMatrix;
-//    simd_float4x4 viewMatrix;
-//    simd_float4x4 cameraMatrix;
-//    simd_float3 cameraPosition;
-//    simd_float2 drawableSize;
-//};
-
-
 namespace GaussianSplatShaders {
 
     using namespace metal;
 
     struct VertexIn {
-        float3 position  [[attribute(0)]];
+        float3 position [[attribute(0)]];
     };
 
     struct VertexOut {

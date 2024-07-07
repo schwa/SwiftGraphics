@@ -36,7 +36,7 @@ public struct GaussianSplatView: View {
                     // .transform(translation: [0, 0, 04])
                     .content(Camera())
             }
-            Node(label: "splats").content(splats)
+            Node(label: "splats").content(splats).transform(rotation: .init(RollPitchYaw(pitch: .degrees(180))))
         }
         self.scene = SceneGraph(root: root)
     }
