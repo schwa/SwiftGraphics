@@ -87,14 +87,13 @@ struct GaussianSplatRenderPass: RenderPassProtocol {
             commandEncoder.setTriangleFillMode(.lines)
         }
         let helper = SceneGraphRenderHelper(scene: scene, drawableSize: drawableSize)
-        guard let cameraNode = scene.currentCameraNode else {
+        guard let cameraTransform = scene.currentCameraNode?.transform else {
             fatalError("No camera")
         }
         for element in helper.elements() {
             guard let splats = element.node.splats else {
                 continue
             }
-            let cameraTransform = cameraNode.transform
             let uniforms = GaussianSplatUniforms(
                 modelViewProjectionMatrix: element.modelViewProjectionMatrix,
                 modelViewMatrix: element.modelViewMatrix,
@@ -108,13 +107,13 @@ struct GaussianSplatRenderPass: RenderPassProtocol {
             commandEncoder.withDebugGroup("VertexShader") {
                 commandEncoder.setVertexBuffersFrom(mesh: state.quadMesh)
                 commandEncoder.setVertexBytes(of: uniforms, index: state.bindings.vertexUniforms)
-                commandEncoder.setVertexBuffer(splats.splats.base, offset: 0, index: state.bindings.vertexSplats)
-                commandEncoder.setVertexBuffer(splats.indices.base, offset: 0, index: state.bindings.vertexSplatIndices)
+                commandEncoder.setVertexBuffer(splats.splats, index: state.bindings.vertexSplats)
+                commandEncoder.setVertexBuffer(splats.indices, index: state.bindings.vertexSplatIndices)
             }
             commandEncoder.withDebugGroup("FragmentShader") {
                 commandEncoder.setFragmentBytes(of: uniforms, index: state.bindings.fragmentUniforms)
-                commandEncoder.setFragmentBuffer(splats.splats.base, offset: 0, index: state.bindings.fragmentSplats)
-                commandEncoder.setFragmentBuffer(splats.indices.base, offset: 0, index: state.bindings.fragmentSplatIndices)
+                commandEncoder.setFragmentBuffer(splats.splats, index: state.bindings.fragmentSplats)
+                commandEncoder.setFragmentBuffer(splats.indices, index: state.bindings.fragmentSplatIndices)
             }
             //        commandEncoder.draw(pointMesh, instanceCount: splatCount)
             commandEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4, instanceCount: splats.splats.count)
