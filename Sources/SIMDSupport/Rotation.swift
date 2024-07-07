@@ -33,20 +33,20 @@ extension Rotation: Equatable {
 }
 
 public extension Rotation {
-    init(quaternion: simd_quatf) {
+    init(_ quaternion: simd_quatf) {
         storage = .quaternion(quaternion)
     }
 
-    init(rollPitchYaw: RollPitchYaw) {
+    init(_ rollPitchYaw: RollPitchYaw) {
         storage = .rollPitchYaw(rollPitchYaw)
     }
 
     static func quaternion(_ quaternion: simd_quatf) -> Self {
-        .init(quaternion: quaternion)
+        .init(quaternion)
     }
 
     static func rollPitchYaw(_ rollPitchYaw: RollPitchYaw) -> Self {
-        .init(rollPitchYaw: rollPitchYaw)
+        .init(rollPitchYaw)
     }
 }
 
@@ -102,9 +102,9 @@ public extension Rotation {
     func converted(to base: Rotation.Storage.Base) -> Rotation {
         switch base {
         case .quaternion:
-            Rotation(quaternion: quaternion)
+            Rotation(quaternion)
         case .rollPitchYaw:
-            Rotation(rollPitchYaw: rollPitchYaw)
+            Rotation(rollPitchYaw)
         }
     }
 }

@@ -77,11 +77,14 @@ public extension Node {
         }
         return copy
     }
-    func transform(translation: SIMD3<Float>) -> Node {
-        transform(.translation(translation))
-    }
     func transform(scale: SIMD3<Float>) -> Node {
         transform(Transform(scale: scale))
+    }
+    func transform(rotation: Rotation) -> Node {
+        transform(Transform(rotation: rotation))
+    }
+    func transform(translation: SIMD3<Float>) -> Node {
+        transform(.translation(translation))
     }
     func content(_ content: Content) -> Node {
         var copy = self

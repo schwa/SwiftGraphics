@@ -74,7 +74,7 @@ public extension View {
     }
 
     func ballRotation(_ rollPitchYaw: Binding<RollPitchYaw>, updatesPitch: Bool, updatesYaw: Bool, interactionScale: CGVector = BallRotationModifier.defaultInteractionScale) -> some View {
-        let pitchLimit: ClosedRange<Angle> = updatesPitch ? .degrees(-90) ... .degrees(90) : .zero ... .zero
+        let pitchLimit: ClosedRange<Angle> = updatesPitch ? .degrees(-.infinity) ... .degrees(.infinity) : .zero ... .zero
         let yawLimit: ClosedRange<Angle> = updatesYaw ? .degrees(-.infinity) ... .degrees(.infinity) : .zero ... .zero
         return modifier(BallRotationModifier(rollPitchYaw: rollPitchYaw, pitchLimit: pitchLimit, yawLimit: yawLimit, interactionScale: interactionScale))
     }
