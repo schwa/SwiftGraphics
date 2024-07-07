@@ -1,4 +1,5 @@
 import CoreGraphics
+import SwiftUI
 
 public extension CGSize {
     init(_ width: CGFloat, _ height: CGFloat) {
@@ -176,5 +177,33 @@ public extension CGSize {
 public extension CGSize {
     static func / (lhs: CGFloat, rhs: CGSize) -> CGSize {
         CGSize(width: lhs / rhs.width, height: lhs / rhs.height)
+    }
+}
+
+public extension CGSize {
+    init(distance d: CGFloat, angle: Angle) {
+        self = CGSize(width: Darwin.cos(angle.radians) * d, height: sin(angle.radians) * d)
+    }
+
+    var angle: Angle {
+        get {
+            .radians(atan2(height, width))
+        }
+        set(v) {
+            self = .init(distance: length, angle: v)
+        }
+    }
+
+    var length: CGFloat {
+        get {
+            sqrt(lengthSquared)
+        }
+        set {
+            self = .init(distance: newValue, angle: angle)
+        }
+    }
+
+    var lengthSquared: CGFloat {
+        width * width + height * height
     }
 }
