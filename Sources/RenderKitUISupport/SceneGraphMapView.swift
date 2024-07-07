@@ -11,12 +11,16 @@ public struct SceneGraphMapView: View {
     @Binding
     var scene: SceneGraph
 
+    @Binding
+    var ballConstraint: BallConstraint
+
     private var scale: Double
 
     let drawableSize: SIMD2<Float>
 
-    public init(scene: Binding<SceneGraph>, scale: CGFloat, drawableSize: SIMD2<Float>) {
+    public init(scene: Binding<SceneGraph>, ballConstraint: Binding<BallConstraint>, scale: CGFloat, drawableSize: SIMD2<Float>) {
         self._scene = scene
+        self._ballConstraint = ballConstraint
         self.scale = scale
         self.drawableSize = drawableSize
     }
@@ -41,7 +45,7 @@ public struct SceneGraphMapView: View {
         case let camera as Camera:
             Image(systemName: "camera.circle.fill").foregroundStyle(.black, .yellow)
                 .frame(width: 32, height: 32)
-                .gesture(dragGesture(for: node))
+                .gesture(cameraDragGesture(for: node))
                 .background(alignment: .center) {
                     if case let .perspective(perspective) = camera.projection {
                         let heading = node.heading
@@ -77,6 +81,15 @@ public struct SceneGraphMapView: View {
             Image(systemName: "questionmark.circle.fill").foregroundStyle(.black, Color(red: 1, green: 0, blue: 1))
                 .gesture(dragGesture(for: node))
         }
+    }
+
+    func cameraDragGesture(for node: Node) -> some Gesture {
+        dragGesture(for: node)
+// TODO: FIXME
+        //        DragGesture().onChanged { value in
+//            let distance = value.translation.length
+//            ballConstraint.radius = Float(distance)
+//        }
     }
 
     func dragGesture(for node: Node) -> some Gesture {

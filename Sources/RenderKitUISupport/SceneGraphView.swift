@@ -85,7 +85,7 @@ public struct SceneGraphViewModifier: ViewModifier {
 
                     ZStack {
                         if let drawableSize, drawableSize != .zero {
-                            SceneGraphMapView(scene: $scene, scale: mapScale, drawableSize: drawableSize)
+                            SceneGraphMapView(scene: $scene, ballConstraint: $ballConstraint, scale: mapScale, drawableSize: drawableSize)
                         }
                     }
                     .frame(width: 320, height: 320)

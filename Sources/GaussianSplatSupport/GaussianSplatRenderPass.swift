@@ -37,7 +37,6 @@ struct GaussianSplatRenderPass: RenderPassProtocol {
         let quadMesh = try MTKMesh(mesh: MDLMesh(planeWithExtent: [2, 2, 0], segments: [1, 1], geometryType: .triangles, allocator: allocator), device: device)
 
         let library = try device.makeDebugLibrary(bundle: .gaussianSplatShaders)
-        print(library.functionNames)
         let renderPipelineDescriptor = renderPipelineDescriptor()
         renderPipelineDescriptor.label = "\(type(of: self))"
         renderPipelineDescriptor.vertexDescriptor = MTLVertexDescriptor(oneTrueVertexDescriptor)
