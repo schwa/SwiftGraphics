@@ -1,13 +1,17 @@
-import BaseSupport
-import GaussianSplatShaders
 import MetalKit
 import MetalSupport
+import Observation
 import RenderKit
+import GaussianSplatShaders
 import Shapes3D
+import simd
 import SIMDSupport
+import SwiftUI
+import UniformTypeIdentifiers
+import BaseSupport
 
-public struct GaussianSplatRenderPass: RenderPassProtocol {
-    public struct State: PassState {
+struct GaussianSplatRenderPass: RenderPassProtocol {
+    struct State: PassState {
         struct Bindings {
             var vertexBuffer0: Int
             var vertexUniforms: Int
@@ -17,35 +21,33 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
             var fragmentSplats: Int
             var fragmentSplatIndices: Int
         }
-        var mesh: MTKMesh
+        var quadMesh: MTKMesh
         var bindings: Bindings
         var depthStencilState: MTLDepthStencilState
         var renderPipelineState: MTLRenderPipelineState
     }
 
-    public var id: AnyHashable = "GaussianSplatRenderPass"
-    var scene: SceneGraph
+    var id: AnyHashable = "GaussianSplatRenderPass"
+
+    var cameraTransform: Transform
+    var cameraProjection: Projection
+    var modelTransform: Transform
+    var splatCount: Int
+    var splats: Box<MTLBuffer>
+    var splatIndices: Box<MTLBuffer>
     var debugMode: Bool
 
-    public init(scene: SceneGraph, debugMode: Bool) {
-        self.scene = scene
-        self.debugMode = debugMode
-    }
-
-    public func setup(device: MTLDevice, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State {
+    func setup(device: MTLDevice, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State {
         let allocator = MTKMeshBufferAllocator(device: device)
-        let mesh = try MTKMesh(mesh: MDLMesh(planeWithExtent: [2, 2, 0], segments: [1, 1], geometryType: .triangles, allocator: allocator), device: device)
-        //        let size: Float = 0.001
-        //        let mesh = try! Box3D(min: [-size, -size, -size], max: [size, size, size]).toMTKMesh(device: device)
+        let quadMesh = try MTKMesh(mesh: MDLMesh(planeWithExtent: [2, 2, 0], segments: [1, 1], geometryType: .triangles, allocator: allocator), device: device)
 
         let library = try device.makeDebugLibrary(bundle: .gaussianSplatShaders)
+        print(library.functionNames)
         let renderPipelineDescriptor = renderPipelineDescriptor()
         renderPipelineDescriptor.label = "\(type(of: self))"
         renderPipelineDescriptor.vertexDescriptor = MTLVertexDescriptor(oneTrueVertexDescriptor)
         renderPipelineDescriptor.vertexFunction = library.makeFunction(name: "GaussianSplatShaders::VertexShader")
         renderPipelineDescriptor.fragmentFunction = library.makeFunction(name: "GaussianSplatShaders::FragmentShader")
-        //        renderPipelineDescriptor.vertexFunction = library.makeFunction(name: "GaussianSplatShaders::VertexPointShader")
-        //        renderPipelineDescriptor.fragmentFunction = library.makeFunction(name: "GaussianSplatShaders::FragmentPointShader")
 
         renderPipelineDescriptor.colorAttachments[0].isBlendingEnabled = true
         renderPipelineDescriptor.colorAttachments[0].rgbBlendOperation = .add
@@ -54,6 +56,11 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
         renderPipelineDescriptor.colorAttachments[0].sourceAlphaBlendFactor = .one
         renderPipelineDescriptor.colorAttachments[0].destinationRGBBlendFactor = .oneMinusSourceAlpha
         renderPipelineDescriptor.colorAttachments[0].destinationAlphaBlendFactor = .oneMinusSourceAlpha
+
+        //        renderPipelineDescriptor.colorAttachments[0].sourceRGBBlendFactor = .oneMinusDestinationAlpha
+        //        renderPipelineDescriptor.colorAttachments[0].sourceAlphaBlendFactor = .oneMinusDestinationAlpha
+        //        renderPipelineDescriptor.colorAttachments[0].destinationRGBBlendFactor = .one
+        //        renderPipelineDescriptor.colorAttachments[0].destinationAlphaBlendFactor = .one
 
         let (renderPipelineState, reflection) = try device.makeRenderPipelineState(descriptor: renderPipelineDescriptor, options: [.bindingInfo])
         guard let reflection else {
@@ -73,62 +80,43 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
         let depthStencilDescriptor = MTLDepthStencilDescriptor(depthCompareFunction: .always, isDepthWriteEnabled: true)
         let depthStencilState = try device.makeDepthStencilState(descriptor: depthStencilDescriptor).safelyUnwrap(BaseError.generic("Could not create depth stencil state"))
 
-        return State(mesh: mesh, bindings: bindings, depthStencilState: depthStencilState, renderPipelineState: renderPipelineState)
+        return State(quadMesh: quadMesh, bindings: bindings, depthStencilState: depthStencilState, renderPipelineState: renderPipelineState)
     }
 
-    public func encode(device: MTLDevice, state: inout State, drawableSize: SIMD2<Float>, commandEncoder: any MTLRenderCommandEncoder) throws {
-        let helper = SceneGraphRenderHelper(scene: scene, drawableSize: drawableSize)
-        let elements = helper.elements()
-
+    func encode(device: MTLDevice, state: inout State, drawableSize: SIMD2<Float>, commandEncoder: any MTLRenderCommandEncoder) throws {
         commandEncoder.setDepthStencilState(state.depthStencilState)
         commandEncoder.setRenderPipelineState(state.renderPipelineState)
 
-        //        commandEncoder.setCullMode(.back) // default is .none
-        //        commandEncoder.setFrontFacing(.clockwise) // default is .clockwise
+        commandEncoder.setCullMode(.back) // default is .none
+        commandEncoder.setFrontFacing(.clockwise) // default is .clockwise
         if debugMode {
             commandEncoder.setTriangleFillMode(.lines)
         }
 
-        guard let camera = scene.currentCameraNode else {
-            fatalError()
+        let uniforms = GaussianSplatUniforms(
+            modelViewProjectionMatrix: cameraProjection.projectionMatrix(for: drawableSize) * cameraTransform.matrix.inverse * modelTransform.matrix,
+            modelViewMatrix: cameraTransform.matrix.inverse * modelTransform.matrix,
+            projectionMatrix: cameraProjection.projectionMatrix(for: drawableSize),
+            modelMatrix: modelTransform.matrix,
+            viewMatrix: cameraTransform.matrix.inverse,
+            cameraMatrix: cameraTransform.matrix,
+            cameraPosition: cameraTransform.translation,
+            drawableSize: drawableSize
+        )
+
+        commandEncoder.withDebugGroup("VertexShader") {
+            commandEncoder.setVertexBuffersFrom(mesh: state.quadMesh)
+            commandEncoder.setVertexBytes(of: uniforms, index: state.bindings.vertexUniforms)
+            commandEncoder.setVertexBuffer(splats.content, offset: 0, index: state.bindings.vertexSplats)
+            commandEncoder.setVertexBuffer(splatIndices.content, offset: 0, index: state.bindings.vertexSplatIndices)
+        }
+        commandEncoder.withDebugGroup("FragmentShader") {
+            commandEncoder.setFragmentBytes(of: uniforms, index: state.bindings.fragmentUniforms)
+            commandEncoder.setFragmentBuffer(splats.content, offset: 0, index: state.bindings.fragmentSplats)
+            commandEncoder.setFragmentBuffer(splatIndices.content, offset: 0, index: state.bindings.fragmentSplatIndices)
         }
 
-        for element in elements {
-            guard let splats = element.node.content as? Splats else {
-                continue
-            }
-
-            let modelMatrix = element.modelMatrix
-            let viewMatrix = helper.viewMatrix
-            let projectionMatrix = helper.projectionMatrix
-            let modelViewMatrix = element.modelViewProjectionMatrix
-            let modelViewProjectionMatrix = element.modelViewProjectionMatrix
-
-            let uniforms = GaussianSplatUniforms(
-                modelViewProjectionMatrix: modelViewProjectionMatrix,
-                modelViewMatrix: modelViewMatrix,
-                projectionMatrix: projectionMatrix,
-                modelMatrix: modelMatrix,
-                viewMatrix: viewMatrix,
-                cameraMatrix: camera.transform.matrix,
-                cameraPosition: camera.transform.translation,
-                drawableSize: drawableSize
-            )
-
-            commandEncoder.withDebugGroup("VertexShader") {
-                commandEncoder.setVertexBuffersFrom(mesh: state.mesh)
-                commandEncoder.setVertexBytes(of: uniforms, index: state.bindings.vertexUniforms)
-                commandEncoder.setVertexBuffer(splats.splats, index: state.bindings.vertexSplats)
-                commandEncoder.setVertexBuffer(splats.indices, index: state.bindings.vertexSplatIndices)
-            }
-            commandEncoder.withDebugGroup("FragmentShader") {
-                commandEncoder.setFragmentBytes(of: uniforms, index: state.bindings.fragmentUniforms)
-                commandEncoder.setFragmentBuffer(splats.splats, index: state.bindings.fragmentSplats)
-                commandEncoder.setFragmentBuffer(splats.indices, index: state.bindings.fragmentSplatIndices)
-            }
-
-            commandEncoder.draw(state.mesh, instanceCount: splats.splats.count)
-            //            commandEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4, instanceCount: splats.splats.count)
-        }
+        //        commandEncoder.draw(pointMesh, instanceCount: splatCount)
+        commandEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4, instanceCount: splatCount)
     }
 }
