@@ -72,7 +72,7 @@ public struct Rasterizer {
         let fragments = fragments
             .filter {
                 // TODO: Do actual frustrum culling.
-                $0.clipSpaceMin.z <= 0
+                $0.clipSpaceMin.z > 0
             }
             .sorted { lhs, rhs in
                 compare(lhs.clipSpaceMin.reverseTuple, rhs.clipSpaceMin.reverseTuple) == .orderedAscending

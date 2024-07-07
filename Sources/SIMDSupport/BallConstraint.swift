@@ -10,7 +10,7 @@ public struct BallConstraint: Equatable {
         Transform((rollPitchYaw.matrix4x4 * simd_float4x4(translate: [0, 0, radius])))
     }
 
-    public init(radius: Float = -5, rollPitchYaw: RollPitchYaw = .zero) {
+    public init(radius: Float = 5, rollPitchYaw: RollPitchYaw = .zero) {
         self.radius = radius
         self.rollPitchYaw = rollPitchYaw
     }
