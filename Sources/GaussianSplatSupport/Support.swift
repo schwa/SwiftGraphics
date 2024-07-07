@@ -108,7 +108,8 @@ public extension MTLDevice {
 
 // TODO: Unchecked sendable.
 public struct TypedMTLBuffer<T>: Equatable {
-    private var base: MTLBuffer
+    // TODO: Make private.
+    public var base: MTLBuffer
 
     public init(mtlBuffer: MTLBuffer) {
         assert(_isPOD(T.self))
