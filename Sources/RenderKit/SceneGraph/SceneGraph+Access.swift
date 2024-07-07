@@ -81,6 +81,14 @@ public extension SceneGraph {
         return .init(path: path)
     }
 
+    // @available(*, deprecated, message: "Deprecated")
+    func accessor(for id: Node.ID) -> NodeAccessor? {
+        guard let path = root.allIndexedNodes().first(where: { $0.node.id == id })?.path else {
+            return nil
+        }
+        return .init(path: path)
+    }
+
     subscript(accessor accessor: NodeAccessor) -> Node? {
         get {
             root[indexPath: accessor.path]
@@ -101,6 +109,29 @@ public extension SceneGraph {
         self[accessor: accessor] = node
         return result
     }
+
+    // @available(*, deprecated, message: "Deprecated")
+    mutating func modify <R>(id: Node.ID, _ block: (inout Node?) throws -> R) rethrows -> R {
+        guard let accessor = accessor(for: id) else {
+            fatalError()
+        }
+        var node = self[accessor: accessor]
+        let result = try block(&node)
+        self[accessor: accessor] = node
+        return result
+    }
+
+    // @available(*, deprecated, message: "Deprecated")
+    mutating func modify <R>(node: Node, _ block: (inout Node?) throws -> R) rethrows -> R {
+        guard let accessor = accessor(for: node.id) else {
+            fatalError()
+        }
+        var node = self[accessor: accessor]
+        let result = try block(&node)
+        self[accessor: accessor] = node
+        return result
+    }
+
 
     // @available(*, deprecated, message: "Deprecated")
     mutating func modify <R>(accessor: NodeAccessor, _ block: (inout Node?) throws -> R) rethrows -> R {

@@ -94,7 +94,7 @@ public struct SceneGraphMapView: View {
 
     func dragGesture(for node: Node) -> some Gesture {
         DragGesture().onChanged { value in
-            scene.modify(label: node.label) { node in
+            scene.modify(node: node) { node in
                 node!.transform.translation.xz = SIMD2<Float>(value.location / scale)
             }
         }
@@ -167,5 +167,24 @@ extension Node: FirstPersonCameraProtocol {
         // swiftlint:disable:next unused_setter_value
         set {
         }
+    }
+}
+
+struct DragProxyViewModifier: ViewModifier {
+
+    func body(content: Content) -> some View {
+        content
+    }
+
+    func dragGesture() -> some Gesture {
+        DragGesture()
+        .onChanged { value in
+        }
+    }
+}
+
+extension View {
+    func dragProxy() -> some View {
+        modifier(DragProxyViewModifier())
     }
 }
