@@ -1,3 +1,4 @@
+import BaseSupport
 import CoreGraphicsSupport
 import MetalKit
 import MetalSupport
@@ -5,7 +6,6 @@ import RenderKit
 import simd
 import SIMDSupport
 import SwiftUI
-import BaseSupport
 
 @Observable
 public class GaussianSplatViewModel {
@@ -50,17 +50,12 @@ public struct GaussianSplatRenderView: View {
             splats: splats,
             sortRate: viewModel.sortRate
         )
-//        let gaussianSplatRenderPass = GaussianSplatRenderPass(
-//            scene: scene,
-//            debugMode: viewModel.debugMode
-//        )
+        //        let gaussianSplatRenderPass = GaussianSplatRenderPass(
+        //            scene: scene,
+        //            debugMode: viewModel.debugMode
+        //        )
         let gaussianSplatRenderPass = GaussianSplatRenderPass(
-            cameraTransform: cameraNode.transform,
-            cameraProjection: cameraNode.camera!.projection,
-            modelTransform: .identity,
-            splatCount: splats.splats.count,
-            splats: Box(splats.splats.base),
-            splatIndices: Box(splats.indices.base),
+            scene: scene,
             debugMode: false)
         return [
             preCalcComputePass,
