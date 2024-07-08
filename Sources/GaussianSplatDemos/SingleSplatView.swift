@@ -39,6 +39,9 @@ public struct SingleSplatView: View {
     private var splat: SplatD
 
     @State
+    private var randomSplats: [SplatD]
+
+    @State
     private var passes: [any PassProtocol] = []
 
     public init() {
@@ -50,6 +53,26 @@ public struct SingleSplatView: View {
 
         self.device = device
         self.splat = splat
+
+        var randomSplats: [SplatD] = []
+        for z: Float in stride(from: -1, through: 1, by: 1) {
+            for y: Float in stride(from: -1, through: 1, by: 1) {
+                for x: Float in stride(from: -1, through: 1, by: 1) {
+//                    let color: SIMD4<Float> = [Float.random(in: 0 ... 1), Float.random(in: 0 ... 1), Float.random(in: 0 ... 1), 1]
+                    let color = SIMD4<Float>(1, 1, 1, 1)
+
+                    let rotation = Rotation(.init(
+                        roll: .degrees(Double(x) * 45),
+                        pitch: .degrees(Double(y) * 0),
+                        yaw: .degrees(Double(z) * 0)
+                    ))
+
+                    let randomSplat = SplatD(position: .init([x, y, z]), scale: .init([0.2, 0.1, 0.05]), color: color, rotation: rotation)
+                    randomSplats.append(randomSplat)
+                }
+            }
+        }
+        self.randomSplats = randomSplats
     }
 
     public var body: some View {
@@ -137,12 +160,18 @@ public struct SingleSplatView: View {
     }
 
     func makeSplats() -> [SplatD] {
-        [
-            splat,
-            .init(position: .init([-2, 0.01, 0.01]), scale: .init([0.5, 0.5, 0.5]), color: [1, 0, 1, 1], rotation: .identity),
-            .init(position: .init([2, 0.01, 0.01]), scale: .init([0.5, 0.5, 0.5]), color: [1, 1, 0, 1], rotation: .identity),
-            .init(position: .init([-3.01, 0.01, 0.01]), scale: .init([0.5, 0.5, 0.5]), color: [0, 1, 1, 1], rotation: .rollPitchYaw(.init(yaw: .degrees(90)))),
-        ]
+//        var splats = [
+//            splat,
+//        ] + randomSplats
+
+        randomSplats
+//            .init(position: .init([-2, 0.01, 0.01]), scale: .init([0.5, 0.5, 0.5]), color: [1, 0, 1, 1], rotation: .identity),
+//            .init(position: .init([2, 0.01, 0.01]), scale: .init([0.5, 0.5, 0.5]), color: [1, 1, 0, 1], rotation: .identity),
+//            .init(position: .init([-3.01, 0.01, 0.01]), scale: .init([0.5, 0.5, 0.5]), color: [0, 1, 1, 1], rotation: .rollPitchYaw(.init(yaw: .degrees(90)))),
+
+
+//    return splats
+
     }
 
     func makePasses() -> [any PassProtocol] {

@@ -2,13 +2,6 @@ import CoreGraphicsSupport
 import simd
 import SIMDSupport
 
-// buffer.write(
-//           ((rot / np.linalg.norm(rot)) * 128 + 128)
-//           .clip(0, 255)
-//           .astype(np.uint8)
-//           .tobytes()
-//       )
-
 public extension SplatB {
     init(_ other: SplatD) {
         let color = SIMD4<UInt8>(other.color * 255)
