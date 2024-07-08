@@ -177,6 +177,7 @@ struct PointCloudRenderPass: RenderPassProtocol {
 
 extension Collection where Element == SIMD3<Float> {
     var bounds: (min: SIMD3<Float>, max: SIMD3<Float>) {
+        // swiftlint:disable reduce_into
         ( reduce([Float.greatestFiniteMagnitude, Float.greatestFiniteMagnitude, Float.greatestFiniteMagnitude], SIMD3<Float>.min),
           reduce([-Float.greatestFiniteMagnitude, -Float.greatestFiniteMagnitude, -Float.greatestFiniteMagnitude], SIMD3<Float>.max) )
     }

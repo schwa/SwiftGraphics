@@ -10,8 +10,8 @@ import SIMDSupport
 import SwiftUI
 import UniformTypeIdentifiers
 
-struct GaussianSplatRenderPass: RenderPassProtocol {
-    struct State: PassState {
+public struct GaussianSplatRenderPass: RenderPassProtocol {
+    public struct State: PassState {
         struct Bindings {
             var vertexBuffer0: Int
             var vertexUniforms: Int
@@ -27,12 +27,16 @@ struct GaussianSplatRenderPass: RenderPassProtocol {
         var renderPipelineState: MTLRenderPipelineState
     }
 
-    var id: AnyHashable = "GaussianSplatRenderPass"
+    public var id: AnyHashable = "GaussianSplatRenderPass"
+    public var scene: SceneGraph
+    public var debugMode: Bool
 
-    var scene: SceneGraph
-    var debugMode: Bool
+    public init(scene: SceneGraph, debugMode: Bool) {
+        self.scene = scene
+        self.debugMode = debugMode
+    }
 
-    func setup(device: MTLDevice, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State {
+    public func setup(device: MTLDevice, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State {
         let allocator = MTKMeshBufferAllocator(device: device)
         let quadMesh = try MTKMesh(mesh: MDLMesh(planeWithExtent: [2, 2, 0], segments: [1, 1], geometryType: .triangles, allocator: allocator), device: device)
 
@@ -77,7 +81,7 @@ struct GaussianSplatRenderPass: RenderPassProtocol {
         return State(quadMesh: quadMesh, bindings: bindings, depthStencilState: depthStencilState, renderPipelineState: renderPipelineState)
     }
 
-    func encode(device: MTLDevice, state: inout State, drawableSize: SIMD2<Float>, commandEncoder: any MTLRenderCommandEncoder) throws {
+    public func encode(device: MTLDevice, state: inout State, drawableSize: SIMD2<Float>, commandEncoder: any MTLRenderCommandEncoder) throws {
         commandEncoder.setDepthStencilState(state.depthStencilState)
         commandEncoder.setRenderPipelineState(state.renderPipelineState)
         commandEncoder.setCullMode(.back) // default is .none

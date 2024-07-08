@@ -1,155 +1,238 @@
-// import Everything
-// import Fields3D
-// import GaussianSplatSupport
-// import MetalKit
-// import MetalSupport
-// import Observation
-// import RenderKit
-// import simd
-// import SIMDSupport
-// import SwiftFields
-// // import SwiftUI
-// import UniformTypeIdentifiers
-//
-//// swiftlint:disable force_try
-//
-// public struct SingleSplatView: View {
-//    @State
-//    private var cameraTransform: Transform = .translation([0, 0, 5])
-//
-//    @State
-//    private var cameraProjection: Projection = .perspective(.init())
-//
-//    @State
-//    private var ballConstraint = BallConstraint(radius: 5)
-//
-//    @State
-//    private var modelTransform: Transform = .init(scale: [1, 1, 1])
-//
-//    @State
-//    private var device: MTLDevice
-//
-//    @State
-//    private var debugMode: Bool = false
-//
-//    @State
-//    private var splats: MTLBuffer
-//
-//    @State
-//    private var splatIndices: MTLBuffer
-//
-//    @State
-//    private var splat: SplatD
-//
-//    public init() {
-//        let device = MTLCreateSystemDefaultDevice()!
-//
-//        assert(MemoryLayout<SplatC>.size == 26)
-//
-//        let splat = SplatD(position: [0, 0, 0], scale: [0.1, 0.1, 0.1], color: [1, 0, 0, 1], rotation: .init(angle: .zero, axis: [0, 0, 0]))
-//
-//        let splats = try! device.makeBuffer(bytesOf: [splat], options: .storageModeShared)
-//        let splatIndices = try! device.makeBuffer(bytesOf: [UInt32.zero], options: .storageModeShared)
-//
-//        self.device = device
-//        self.splat = splat
-//        self.splats = splats
-//        self.splatIndices = splatIndices
-//    }
-//
-//    public var body: some View {
-//        RenderView(device: device, passes: passes)
-//            .ballRotation($ballConstraint.rollPitchYaw, updatesPitch: true, updatesYaw: true)
-//            .onChange(of: ballConstraint.transform, initial: true) {
-//                cameraTransform = ballConstraint.transform
-//                print(cameraTransform)
-//            }
-////            .overlay(alignment: .topLeading) {
-////                CameraRotationWidgetView(ballConstraint: $ballConstraint)
-////                    .frame(width: 120, height: 120)
-////            }
-//            .onChange(of: splat) {
-//                let splats = try! device.makeBuffer(bytesOf: [SplatC(splat)], options: .storageModeShared)
-//                self.splats = splats
-//            }
-//            .inspector(isPresented: .constant(true)) {
-//                Form {
-//                    Section("Camera") {
-//                        HStack {
-//                            TextField("Roll", value: $cameraTransform.rotation.rollPitchYaw.roll.degrees, format: .number)
-//                            TextField("Pitch", value: $cameraTransform.rotation.rollPitchYaw.pitch.degrees, format: .number)
-//                            TextField("Yaw", value: $cameraTransform.rotation.rollPitchYaw.yaw.degrees, format: .number)
-//                        }
-//                        .labelsHidden()
-//                    }
-//                    Section("Position") {
-//                        HStack {
-//                            TextField("X", value: $splat.position.x, format: .number)
-//                            TextField("Y", value: $splat.position.y, format: .number)
-//                            TextField("Z", value: $splat.position.z, format: .number)
-//                        }
-//                        .labelsHidden()
-//                    }
-//                    Section("Scale") {
-//                        HStack {
-//                            TextField("X", value: $splat.scale.x, format: .number)
-//                            TextField("Y", value: $splat.scale.y, format: .number)
-//                            TextField("Z", value: $splat.scale.z, format: .number)
-//                        }
-//                        .labelsHidden()
-//                    }
-//                    Section("Color") {
-//                        HStack {
-//                            TextField("R", value: $splat.color.x, format: .number)
-//                            TextField("G", value: $splat.color.y, format: .number)
-//                            TextField("B", value: $splat.color.z, format: .number)
-//                            TextField("A", value: $splat.color.w, format: .number)
-//                        }
-//                        .labelsHidden()
-//                    }
-//                    Section("Rotation") {
-//                        RotationEditor($splat.rotation)
-//                    }
-//                    Section("SplatB") {
-//                        Text("\(SplatB(splat))")
-//                    }
-//                    Section("SplatC") {
-//                        Text("\(SplatC(splat))")
-//                    }
-//
-//                    //                Section("COV_A") {
-//                    //                    HStack {
-//                    //                        TextField("0", value: $splat.cov_a.x, format: .number)
-//                    //                        TextField("1", value: $splat.cov_a.y, format: .number)
-//                    //                        TextField("2", value: $splat.cov_a.z, format: .number)
-//                    //                    }
-//                    //                    .labelsHidden()
-//                    //                }
-//                    //                Section("COV_B") {
-//                    //                    HStack {
-//                    //                        TextField("0", value: $splat.cov_b.x, format: .number)
-//                    //                        TextField("1", value: $splat.cov_b.y, format: .number)
-//                    //                        TextField("2", value: $splat.cov_b.z, format: .number)
-//                    //                    }
-//                    //                    .labelsHidden()
-//                    //                }
-//                }
-//                Toggle(isOn: $debugMode) {
-//                    Text("Debug")
-//                }
-//            }
-//    }
-//
-//    var passes: [any PassProtocol] {
-//        let gaussianSplatRenderPass = GaussianSplatRenderPass(
-//            cameraTransform: cameraTransform,
-//            cameraProjection: cameraProjection,
-//            modelTransform: modelTransform,
-//            splats: try! Splats(device: device, splats: .init(mtlBuffer: splats)),
-//            debugMode: debugMode
-//        )
-//        return [
-//            gaussianSplatRenderPass
-//        ]
-//    }
-// }
+import BaseSupport
+import Everything
+import Fields3D
+import GaussianSplatShaders
+import GaussianSplatSupport
+import MetalKit
+import MetalSupport
+import Observation
+import RenderKit
+import Shapes3D
+import simd
+import SIMDSupport
+import SwiftFields
+import SwiftUI
+import UniformTypeIdentifiers
+
+// swiftlint:disable force_try
+
+public struct SingleSplatView: View {
+    @State
+    private var cameraTransform: Transform = .translation([0, 0, 5])
+
+    @State
+    private var cameraProjection: Projection = .perspective(.init())
+
+    @State
+    private var ballConstraint = BallConstraint(radius: 5)
+
+    @State
+    private var modelTransform: Transform = .init(scale: [1, 1, 1])
+
+    @State
+    private var device: MTLDevice
+
+    @State
+    private var debugMode: Bool = false
+
+    @State
+    private var splat: SplatD
+
+    @State
+    private var passes: [any PassProtocol] = []
+
+    public init() {
+        let device = MTLCreateSystemDefaultDevice()!
+
+        assert(MemoryLayout<SplatC>.size == 26)
+
+        let splat = SplatD(position: [0, 0, 0], scale: [1, 1, 1], color: [1, 0, 0, 1], rotation: .init(angle: .zero, axis: [0, 0, 0]))
+
+        self.device = device
+        self.splat = splat
+    }
+
+    public var body: some View {
+        RenderView(device: device, passes: passes)
+            .ballRotation($ballConstraint.rollPitchYaw, updatesPitch: true, updatesYaw: true)
+            .onChange(of: ballConstraint.transform, initial: true) {
+                cameraTransform = ballConstraint.transform
+                passes = [makePass()]
+            }
+            .onChange(of: splat, initial: true) {
+                passes = [makePass()]
+            }
+            .inspector(isPresented: .constant(true)) {
+                Form {
+                    ValueView(value: false) { expanded in
+                        DisclosureGroup("Camera Transform", isExpanded: expanded) {
+                            TransformEditor($cameraTransform)
+                        }
+                    }
+
+                    ValueView(value: true) { expanded in
+                        DisclosureGroup("Splat", isExpanded: expanded) {
+                            Section("Splat Position") {
+                                HStack {
+                                    TextField("X", value: $splat.position.x, format: .number)
+                                    TextField("Y", value: $splat.position.y, format: .number)
+                                    TextField("Z", value: $splat.position.z, format: .number)
+                                }
+                                .labelsHidden()
+                            }
+                            Section("Splat Scale") {
+                                HStack {
+                                    TextField("X", value: $splat.scale.x, format: .number)
+                                    TextField("Y", value: $splat.scale.y, format: .number)
+                                    TextField("Z", value: $splat.scale.z, format: .number)
+                                }
+                                .labelsHidden()
+                            }
+                            Section("Splat Color") {
+                                HStack {
+                                    TextField("R", value: $splat.color.x, format: .number)
+                                    TextField("G", value: $splat.color.y, format: .number)
+                                    TextField("B", value: $splat.color.z, format: .number)
+                                    TextField("A", value: $splat.color.w, format: .number)
+                                }
+                                .labelsHidden()
+                            }
+                            Section("Splat Rotation") {
+                                RollPitchYawEditor($splat.rotation.rollPitchYaw)
+                            }
+                        }
+                    }
+
+                    ValueView(value: false) { expanded in
+                        DisclosureGroup("Debug", isExpanded: expanded) {
+                            Section("SplatB") {
+                                Text("\(SplatB(splat))").monospaced()
+                            }
+                            Section("SplatC") {
+                                Text("\(SplatC(splat))").monospaced()
+                            }
+                            Section("SplatD") {
+                                Text("\(splat)").monospaced()
+                            }
+                        }
+                    }
+                }
+                Toggle(isOn: $debugMode) {
+                    Text("Debug")
+                }
+            }
+    }
+
+    func makePass() -> SingleGaussianSplatRenderPass {
+        // TODO: we shouldn't allocate this so much - but hey.
+        let splatC = SplatC(splat)
+        print(splat)
+        let splatsBuffer = try! device.makeBuffer(bytesOf: [splatC], options: .storageModeShared)
+        let splats = try! Splats(device: device, splats: .init(mtlBuffer: splatsBuffer))
+        return SingleGaussianSplatRenderPass(cameraTransform: cameraTransform, cameraProjection: cameraProjection, modelTransform: modelTransform, splats: splats, debugMode: debugMode)
+    }
+}
+
+struct SingleGaussianSplatRenderPass: RenderPassProtocol {
+    struct State: PassState {
+        struct Bindings {
+            var vertexBuffer0: Int
+            var vertexUniforms: Int
+            var vertexSplats: Int
+            var vertexSplatIndices: Int
+            var fragmentUniforms: Int
+            var fragmentSplats: Int
+            var fragmentSplatIndices: Int
+        }
+        var quadMesh: MTKMesh
+        var bindings: Bindings
+        var depthStencilState: MTLDepthStencilState
+        var renderPipelineState: MTLRenderPipelineState
+    }
+
+    var id: AnyHashable = "GaussianSplatRenderPass"
+    var cameraTransform: Transform
+    var cameraProjection: Projection
+    var modelTransform: Transform
+    var splats: Splats
+    var debugMode: Bool
+
+    func setup(device: MTLDevice, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State {
+        let allocator = MTKMeshBufferAllocator(device: device)
+        let quadMesh = try MTKMesh(mesh: MDLMesh(planeWithExtent: [2, 2, 0], segments: [1, 1], geometryType: .triangles, allocator: allocator), device: device)
+
+        let library = try device.makeDebugLibrary(bundle: .gaussianSplatShaders)
+        let renderPipelineDescriptor = renderPipelineDescriptor()
+        renderPipelineDescriptor.label = "\(type(of: self))"
+        renderPipelineDescriptor.vertexDescriptor = MTLVertexDescriptor(oneTrueVertexDescriptor)
+        renderPipelineDescriptor.vertexFunction = library.makeFunction(name: "GaussianSplatShaders::VertexShader")
+        renderPipelineDescriptor.fragmentFunction = library.makeFunction(name: "GaussianSplatShaders::FragmentShader")
+        renderPipelineDescriptor.colorAttachments[0].isBlendingEnabled = true
+        renderPipelineDescriptor.colorAttachments[0].rgbBlendOperation = .add
+        renderPipelineDescriptor.colorAttachments[0].alphaBlendOperation = .add
+        renderPipelineDescriptor.colorAttachments[0].sourceRGBBlendFactor = .one
+        renderPipelineDescriptor.colorAttachments[0].sourceAlphaBlendFactor = .one
+        renderPipelineDescriptor.colorAttachments[0].destinationRGBBlendFactor = .oneMinusSourceAlpha
+        renderPipelineDescriptor.colorAttachments[0].destinationAlphaBlendFactor = .oneMinusSourceAlpha
+
+        let (renderPipelineState, reflection) = try device.makeRenderPipelineState(descriptor: renderPipelineDescriptor, options: [.bindingInfo])
+        guard let reflection else {
+            fatalError()
+        }
+
+        let bindings = State.Bindings(
+            vertexBuffer0: try reflection.binding(for: "vertexBuffer.0", of: .vertex),
+            vertexUniforms: try reflection.binding(for: "uniforms", of: .vertex),
+            vertexSplats: try reflection.binding(for: "splats", of: .vertex),
+            vertexSplatIndices: try reflection.binding(for: "splatIndices", of: .vertex),
+            fragmentUniforms: try reflection.binding(for: "uniforms", of: .fragment),
+            fragmentSplats: try reflection.binding(for: "splats", of: .fragment),
+            fragmentSplatIndices: try reflection.binding(for: "splatIndices", of: .fragment)
+        )
+
+        let depthStencilDescriptor = MTLDepthStencilDescriptor(depthCompareFunction: .always, isDepthWriteEnabled: true)
+        let depthStencilState = try device.makeDepthStencilState(descriptor: depthStencilDescriptor).safelyUnwrap(BaseError.generic("Could not create depth stencil state"))
+
+        return State(quadMesh: quadMesh, bindings: bindings, depthStencilState: depthStencilState, renderPipelineState: renderPipelineState)
+    }
+
+    func encode(device: MTLDevice, state: inout State, drawableSize: SIMD2<Float>, commandEncoder: any MTLRenderCommandEncoder) throws {
+        commandEncoder.setDepthStencilState(state.depthStencilState)
+        commandEncoder.setRenderPipelineState(state.renderPipelineState)
+        commandEncoder.setCullMode(.back) // default is .none
+        commandEncoder.setFrontFacing(.clockwise) // default is .clockwise
+        if debugMode {
+            commandEncoder.setTriangleFillMode(.lines)
+        }
+
+        let projectionMatrix = cameraProjection.projectionMatrix(for: drawableSize)
+        let viewMatrix = cameraTransform.matrix.inverse
+        let modelMatrix = modelTransform.matrix
+
+        let modelViewProjectionMatrix = projectionMatrix * viewMatrix * modelMatrix
+        let modelViewMatrix = viewMatrix * modelMatrix
+
+        let uniforms = GaussianSplatUniforms(
+            modelViewProjectionMatrix: modelViewProjectionMatrix,
+            modelViewMatrix: modelViewMatrix,
+            projectionMatrix: projectionMatrix,
+            modelMatrix: modelTransform.matrix,
+            viewMatrix: viewMatrix,
+            cameraMatrix: cameraTransform.matrix,
+            cameraPosition: cameraTransform.translation,
+            drawableSize: drawableSize
+        )
+        commandEncoder.withDebugGroup("VertexShader") {
+            commandEncoder.setVertexBuffersFrom(mesh: state.quadMesh)
+            commandEncoder.setVertexBytes(of: uniforms, index: state.bindings.vertexUniforms)
+            commandEncoder.setVertexBuffer(splats.splats.base, offset: 0, index: state.bindings.vertexSplats)
+            commandEncoder.setVertexBuffer(splats.indices.base, offset: 0, index: state.bindings.vertexSplatIndices)
+        }
+        commandEncoder.withDebugGroup("FragmentShader") {
+            commandEncoder.setFragmentBytes(of: uniforms, index: state.bindings.fragmentUniforms)
+            commandEncoder.setFragmentBuffer(splats.splats.base, offset: 0, index: state.bindings.fragmentSplats)
+            commandEncoder.setFragmentBuffer(splats.indices.base, offset: 0, index: state.bindings.fragmentSplatIndices)
+        }
+        commandEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4, instanceCount: splats.splats.count)
+    }
+}

@@ -2,7 +2,6 @@ import simd
 import SwiftUI
 
 public struct BallConstraint: Equatable {
-
     public var radius: Float
     public var lookAt: SIMD3<Float>
     public var rollPitchYaw: RollPitchYaw
