@@ -53,7 +53,7 @@ extension Splats {
         else if url.pathExtension == "splat" {
             let splatArray = data.withUnsafeBytes { buffer in
                 buffer.withMemoryRebound(to: SplatB.self) { buffer in
-                    convert(buffer)
+                    convert_b_to_c(buffer)
                 }
             }
             splats = try device.makeTypedBuffer(data: splatArray, options: .storageModeShared).labelled("Splats")

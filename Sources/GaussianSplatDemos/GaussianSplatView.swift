@@ -58,6 +58,7 @@ public struct GaussianSplatView: View {
             .environment(viewModel)
     }
 }
+
 struct OptionsView: View {
     @Environment(\.dismiss)
     var dismiss

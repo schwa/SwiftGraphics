@@ -139,9 +139,9 @@ public struct SingleSplatView: View {
     func makeSplats() -> [SplatD] {
         [
             splat,
-            .init(position: .init([-2, 0, 0]), scale: .init([0.5, 0.5, 0.5]), color: [1, 0, 1, 1], rotation: .identity),
-            .init(position: .init([2, 0, 0]), scale: .init([0.5, 0.5, 0.5]), color: [1, 1, 0, 1], rotation: .identity),
-            .init(position: .init([-3, 0, 0]), scale: .init([0.5, 0.5, 0.5]), color: [0, 1, 1, 1], rotation: .rollPitchYaw(.init(yaw: .degrees(90)))),
+            .init(position: .init([-2, 0.01, 0.01]), scale: .init([0.5, 0.5, 0.5]), color: [1, 0, 1, 1], rotation: .identity),
+            .init(position: .init([2, 0.01, 0.01]), scale: .init([0.5, 0.5, 0.5]), color: [1, 1, 0, 1], rotation: .identity),
+            .init(position: .init([-3.01, 0.01, 0.01]), scale: .init([0.5, 0.5, 0.5]), color: [0, 1, 1, 1], rotation: .rollPitchYaw(.init(yaw: .degrees(90)))),
         ]
     }
 
