@@ -67,7 +67,7 @@ extension SIMD4 where Scalar == Float {
     }
 }
 
-extension Bundle {
+public extension Bundle {
     static let gaussianSplatShaders: Bundle = {
         if let shadersBundleURL = Bundle.main.url(forResource: "SwiftGraphics_GaussianSplatShaders", withExtension: "bundle"), let bundle = Bundle(url: shadersBundleURL) {
             return bundle

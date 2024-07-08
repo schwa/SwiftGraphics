@@ -144,7 +144,7 @@ struct Renderer {
             lhs.id == rhs.id
         }
         if !difference.isEmpty {
-            logger?.info("Passes content changed.")
+            logger?.info("\(#function): Passes content changed.")
         }
         for pass in difference.removals.map(\.element) {
             logger?.info("Pass removed: \(pass.id)")
