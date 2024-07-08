@@ -32,6 +32,12 @@ public struct Splats: Equatable, @unchecked Sendable {
         }
     }
 
+    public init(device: MTLDevice, splats: [Splat]) throws {
+        let mtlBuffer = try device.makeBuffer(bytesOf: splats, options: .storageModeShared)
+        let typedMTLBuffer = TypedMTLBuffer<Splat>(mtlBuffer: mtlBuffer)
+        try self.init(device: device, splats: typedMTLBuffer)
+    }
+
     public static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.splats == rhs.splats
             && lhs.indices == rhs.indices
