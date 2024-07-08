@@ -33,6 +33,8 @@ struct PointCloudView: View, DemoView {
         let url: URL = try! Bundle.main.url(forResource: "cube_points", withExtension: "pointsply")
         var ply = try! Ply(url: url)
         let points = try! ply.points
+        let bounds = points.bounds
+        boundingBox = Box3D(min: bounds.min, max: bounds.max)
         self.device = device
         var scene = SceneGraph.basicScene
         let size: Float = 0.001
@@ -42,6 +44,7 @@ struct PointCloudView: View, DemoView {
         self.scene = scene
         self.pointMesh = pointMesh
         self.pointCloud = PointCloud(count: points.count, points: .init(try! device.makeBuffer(bytesOf: points, options: .storageModeShared)), pointMesh: pointMesh)
+        print(boundingBox)
     }
 
     var body: some View {
@@ -169,5 +172,21 @@ struct PointCloudRenderPass: RenderPassProtocol {
             }
             commandEncoder.draw(pointCloud.pointMesh, instanceCount: pointCloud.count)
         }
+    }
+}
+
+extension Collection where Element == SIMD3<Float> {
+    var bounds: (min: SIMD3<Float>, max: SIMD3<Float>) {
+        ( reduce([Float.greatestFiniteMagnitude, Float.greatestFiniteMagnitude, Float.greatestFiniteMagnitude], SIMD3<Float>.min),
+          reduce([-Float.greatestFiniteMagnitude, -Float.greatestFiniteMagnitude, -Float.greatestFiniteMagnitude], SIMD3<Float>.max) )
+    }
+}
+
+extension SIMD3<Float> {
+    static func min(_ lhs: Self, _ rhs: Self) -> Self {
+        [Swift.min(lhs.x, rhs.x), Swift.min(lhs.y, rhs.y), Swift.min(lhs.z, rhs.z)]
+    }
+    static func max(_ lhs: Self, _ rhs: Self) -> Self {
+        [Swift.max(lhs.x, rhs.x), Swift.max(lhs.y, rhs.y), Swift.max(lhs.z, rhs.z)]
     }
 }

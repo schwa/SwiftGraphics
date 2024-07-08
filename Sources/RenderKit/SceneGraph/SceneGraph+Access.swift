@@ -132,7 +132,6 @@ public extension SceneGraph {
         return result
     }
 
-
     // @available(*, deprecated, message: "Deprecated")
     mutating func modify <R>(accessor: NodeAccessor, _ block: (inout Node?) throws -> R) rethrows -> R {
         var node = self[accessor: accessor]
