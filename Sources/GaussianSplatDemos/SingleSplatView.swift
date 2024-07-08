@@ -46,7 +46,7 @@ public struct SingleSplatView: View {
 
         assert(MemoryLayout<SplatC>.size == 26)
 
-        let splat = SplatD(position: [0, 0, 0], scale: [1, 1, 1], color: [1, 0, 0, 1], rotation: .init(angle: .zero, axis: [0, 0, 0]))
+        let splat = SplatD(position: [0, 0, 0], scale: [1, 1, 1], color: [1, 1, 1, 1], rotation: .init(angle: .zero, axis: [0, 0, 0]))
 
         self.device = device
         self.splat = splat
@@ -57,19 +57,32 @@ public struct SingleSplatView: View {
             .ballRotation($ballConstraint.rollPitchYaw, updatesPitch: true, updatesYaw: true)
             .onChange(of: ballConstraint.transform, initial: true) {
                 cameraTransform = ballConstraint.transform
-                passes = [makePass()]
+                passes = makePasses()
             }
             .onChange(of: splat, initial: true) {
-                passes = [makePass()]
+                passes = makePasses()
             }
             .inspector(isPresented: .constant(true)) {
                 Form {
+                    ValueView(value: false) { isPresented in
+                        ValueView(value: Optional<Data>.none) { data in
+                            Button("Save Splat") {
+                                let splats = makeSplats().map(SplatB.init)
+                                splats.withUnsafeBytes { buffer in
+                                    data.wrappedValue = Data(buffer)
+                                }
+                                isPresented.wrappedValue = true
+                            }
+                            .fileExporter(isPresented: isPresented, item: data.wrappedValue/*, contentTypes: [.splat]*/) { result in
+                                print(result)
+                            }
+                        }
+                    }
                     ValueView(value: false) { expanded in
                         DisclosureGroup("Camera Transform", isExpanded: expanded) {
                             TransformEditor($cameraTransform)
                         }
                     }
-
                     ValueView(value: true) { expanded in
                         DisclosureGroup("Splat", isExpanded: expanded) {
                             Section("Splat Position") {
@@ -123,13 +136,29 @@ public struct SingleSplatView: View {
             }
     }
 
-    func makePass() -> SingleGaussianSplatRenderPass {
-        // TODO: we shouldn't allocate this so much - but hey.
-        let splatC = SplatC(splat)
-        print(splat)
-        let splatsBuffer = try! device.makeBuffer(bytesOf: [splatC], options: .storageModeShared)
-        let splats = try! Splats(device: device, splats: .init(mtlBuffer: splatsBuffer))
-        return SingleGaussianSplatRenderPass(cameraTransform: cameraTransform, cameraProjection: cameraProjection, modelTransform: modelTransform, splats: splats, debugMode: debugMode)
+    func makeSplats() -> [SplatD] {
+        [
+            splat,
+            .init(position: .init([-2, 0, 0]), scale: .init([0.5, 0.5, 0.5]), color: [1, 0, 1, 1], rotation: .identity),
+            .init(position: .init([2, 0, 0]), scale: .init([0.5, 0.5, 0.5]), color: [1, 1, 0, 1], rotation: .identity),
+            .init(position: .init([-3, 0, 0]), scale: .init([0.5, 0.5, 0.5]), color: [0, 1, 1, 1], rotation: .rollPitchYaw(.init(yaw: .degrees(90)))),
+        ]
+    }
+
+    func makePasses() -> [any PassProtocol] {
+        let splats = try! Splats(device: device, splats: makeSplats().map(SplatC.init))
+
+        let preCalcComputePass = GaussianSplatPreCalcComputePass(
+            splats: splats,
+            modelMatrix: simd_float3x3(truncating: .identity),
+            cameraPosition: cameraTransform.translation
+        )
+        let gaussianSplatSortComputePass = GaussianSplatBitonicSortComputePass(
+            splats: splats,
+            sortRate: 1
+        )
+        let renderPass = SingleGaussianSplatRenderPass(cameraTransform: cameraTransform, cameraProjection: cameraProjection, modelTransform: modelTransform, splats: splats, debugMode: debugMode)
+        return [preCalcComputePass, gaussianSplatSortComputePass, renderPass]
     }
 }
 
