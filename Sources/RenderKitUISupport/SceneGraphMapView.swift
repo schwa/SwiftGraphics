@@ -18,6 +18,8 @@ public struct SceneGraphMapView: View {
 
     let drawableSize: SIMD2<Float>
 
+    let coordinateSpace = NamedCoordinateSpace.named("MapCoordinateSpace")
+
     public init(scene: Binding<SceneGraph>, ballConstraint: Binding<BallConstraint>, scale: CGFloat, drawableSize: SIMD2<Float>) {
         self._scene = scene
         self._ballConstraint = ballConstraint
@@ -37,6 +39,7 @@ public struct SceneGraphMapView: View {
                 .foregroundColor(.white)
             }
         }
+        .coordinateSpace(coordinateSpace)
     }
 
     @ViewBuilder
@@ -44,8 +47,8 @@ public struct SceneGraphMapView: View {
         switch node.content {
         case let camera as Camera:
             Image(systemName: "camera.circle.fill").foregroundStyle(.black, .yellow)
+                .border(Color.yellow)
                 .frame(width: 32, height: 32)
-                .gesture(cameraDragGesture(for: node))
                 .background(alignment: .center) {
                     if case let .perspective(perspective) = camera.projection {
                         let heading = node.heading
@@ -56,7 +59,9 @@ public struct SceneGraphMapView: View {
                         .offset(x: 16, y: 16)
                     }
                 }
+                .border(Color.red)
                 .zIndex(1)
+                .gesture(cameraDragGesture(for: node))
         case let splats as Splats:
             Image(systemName: "questionmark.circle.fill").foregroundStyle(.black, Color(red: 1, green: 0, blue: 1))
                 .frame(width: 32, height: 32)
@@ -84,18 +89,16 @@ public struct SceneGraphMapView: View {
     }
 
     func cameraDragGesture(for node: Node) -> some Gesture {
-        dragGesture(for: node)
-// TODO: FIXME
-        //        DragGesture().onChanged { value in
-//            let distance = value.translation.length
-//            ballConstraint.radius = Float(distance)
-//        }
+        DragGesture(coordinateSpace: coordinateSpace).onChanged { value in
+            ballConstraint.radius = Float(max(0, value.location.distance(to: CGPoint(ballConstraint.lookAt.xz) * scale) / scale))
+        }
     }
 
     func dragGesture(for node: Node) -> some Gesture {
-        DragGesture().onChanged { value in
+        DragGesture(coordinateSpace: coordinateSpace).onChanged { value in
             scene.modify(node: node) { node in
                 node!.transform.translation.xz = SIMD2<Float>(value.location / scale)
+                print(value.location / scale, node!.transform.translation.xz)
             }
         }
     }
@@ -167,24 +170,5 @@ extension Node: FirstPersonCameraProtocol {
         // swiftlint:disable:next unused_setter_value
         set {
         }
-    }
-}
-
-struct DragProxyViewModifier: ViewModifier {
-
-    func body(content: Content) -> some View {
-        content
-    }
-
-    func dragGesture() -> some Gesture {
-        DragGesture()
-        .onChanged { value in
-        }
-    }
-}
-
-extension View {
-    func dragProxy() -> some View {
-        modifier(DragProxyViewModifier())
     }
 }
