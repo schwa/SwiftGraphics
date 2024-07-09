@@ -109,7 +109,6 @@ public struct SingleSplatView: View {
                                 isPresented.wrappedValue = true
                             }
                             .fileExporter(isPresented: isPresented, item: data.wrappedValue/*, contentTypes: [.splat]*/) { result in
-                                print(result)
                             }
                         }
                     }
