@@ -101,9 +101,7 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
                 modelViewProjectionMatrix: element.modelViewProjectionMatrix,
                 modelViewMatrix: element.modelViewMatrix,
                 projectionMatrix: helper.projectionMatrix,
-                modelMatrix: element.modelMatrix,
                 viewMatrix: helper.viewMatrix,
-                cameraMatrix: cameraTransform.matrix,
                 cameraPosition: cameraTransform.translation,
                 drawableSize: drawableSize
             )
