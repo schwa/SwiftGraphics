@@ -53,13 +53,11 @@ public struct SimplePBRSceneGraphDemoView: View, DemoView {
                 return material
             }
             set: {
-                print("SET MATERIAL: \($0)")
                 scene.root[indexPath: path].geometry?.materials[0] = $0
             }
             SimplePBRMaterialEditor(material: material)
         }
         .onChange(of: scene) {
-            print("Scene did change")
         }
     }
 }
@@ -74,11 +72,9 @@ public struct SimplePBRSceneGraphDemoView: View, DemoView {
 //    guard let node = try scene.nodes.first?.resolve(in: document) else {
 //        fatalError()
 //    }
-//    print(node)
 //    guard let mesh = try node.mesh?.resolve(in: document) else {
 //        fatalError()
 //    }
-//    print(mesh)
 // }
 
 extension SceneGraph {

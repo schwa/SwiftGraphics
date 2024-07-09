@@ -1504,7 +1504,6 @@ public extension MTLPixelFormat {
         case (3, 8, false, .byteOrder32Little, .premultipliedLast, "kCGColorSpaceDeviceRGB"):
             self = .bgra8Unorm
         default:
-            print("NO MATCH")
             return nil
         }
     }

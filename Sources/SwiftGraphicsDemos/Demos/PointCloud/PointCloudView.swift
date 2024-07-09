@@ -44,7 +44,6 @@ struct PointCloudView: View, DemoView {
         self.scene = scene
         self.pointMesh = pointMesh
         self.pointCloud = PointCloud(count: points.count, points: .init(try! device.makeBuffer(bytesOf: points, options: .storageModeShared)), pointMesh: pointMesh)
-        print(boundingBox)
     }
 
     var body: some View {

@@ -34,7 +34,6 @@ struct AngleDemoView: View, DemoView {
                 let a = (p1 - p0).normalized
                 let b = (p1 - p2).normalized
                 let c = (a + b).normalized
-                print(a, b, c)
 
                 path.move(to: p1)
                 path.addLine(to: p1 + c * 50)

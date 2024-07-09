@@ -29,7 +29,6 @@ public extension Binding where Value == SceneGraph {
             wrappedValue[accessor: NodeAccessor(path: indexPath)]
         }
         set: {
-            print("SETTING")
             wrappedValue[accessor: NodeAccessor(path: indexPath)] = $0
         }
     }
@@ -39,7 +38,6 @@ public extension Binding where Value == SceneGraph {
             wrappedValue[accessor: NodeAccessor(path: indexPath)]!
         }
         set: {
-            print("SETTING")
             wrappedValue[accessor: NodeAccessor(path: indexPath)] = $0
         }
     }

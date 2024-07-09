@@ -42,7 +42,6 @@ struct VolumetricRendererDemoView: DemoView {
         let renderPasses = [VolumetricRenderPass(scene: scene)]
         RenderView(device: device, passes: renderPasses)
             .onAppear {
-                print("ON APPEAR")
                 let volumeData = try! VolumeData(named: "CThead", in: Bundle.module, size: MTLSize(256, 256, 113))
                 let volumeRepresentation = try! VolumeRepresentation(device: device, volumeData: volumeData)
 

@@ -25,7 +25,6 @@ struct GameOfLife {
         var gameOfLifePassA = try compute.makePass(function: library.gameOfLife_uint, constants: ["wrap": .bool(false)])
         gameOfLifePassA.arguments.inputTexture = .texture(textureA)
         gameOfLifePassA.arguments.outputTexture = .texture(textureB)
-        //        print(gameOfLifePassA)
 
         var gameOfLifePassB = gameOfLifePassA
         gameOfLifePassB.arguments.inputTexture = .texture(textureB)
@@ -50,12 +49,6 @@ struct GameOfLife {
 
         assetWriter.startWriting()
 
-        print(assetWriterPixelBufferInput)
-        //        guard let pixelBufferPool = assetWriterPixelBufferInput.pixelBufferPool else {
-        //            fatalError()
-        //        }
-        //                print(pixelBufferPool)
-
         try compute.task { task in
             try task { dispatch in
                 try dispatch(pass: randomFillPass, threadgroupsPerGrid: MTLSize(width: width, height: height, depth: 1), threadsPerThreadgroup: MTLSize(width: 1, height: 1, depth: 1))
@@ -75,8 +68,5 @@ struct GameOfLife {
                 }
             }
         }
-
-        print(textureA.toString())
-        print(textureB.toString())
     }
 }

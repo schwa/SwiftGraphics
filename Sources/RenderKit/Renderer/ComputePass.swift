@@ -23,6 +23,5 @@ public extension ComputePassProtocol {
         try compute(device: device, state: &state, commandBuffer: commandBuffer)
         commandBuffer.commit()
         commandBuffer.waitUntilCompleted()
-        print("DONE")
     }
 }

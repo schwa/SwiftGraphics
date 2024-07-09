@@ -5,7 +5,6 @@ import SwiftUISupport
 
 public struct DemosScene: Scene {
     public init() {
-        print(Bundle.module)
     }
 
     public var body: some Scene {
