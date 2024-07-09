@@ -20,7 +20,6 @@ struct TrivialMeshCLI: ParsableCommand {
 
         let mesh = TrivialMesh.generatePlane(extent: [10, 10], segments: [4, 4])
         let ply = mesh.toPLY()
-        print(ply)
 
         let url = URL(fileURLWithPath: "/tmp/mesh.stl")
         try mesh.write(to: url)

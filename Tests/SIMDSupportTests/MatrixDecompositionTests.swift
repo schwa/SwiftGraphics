@@ -19,7 +19,6 @@ class MatrixDecompositionTests: XCTestCase {
         XCTAssertTrue(matrix.isAffine)
         let (scale, rotatation, translation) = matrix.decompose
         let decomposed = SRT(scale: scale, rotation: rotatation, translation: translation)
-        print(decomposed.matrix)
         XCTAssertEqual(srt, decomposed)
     }
 
