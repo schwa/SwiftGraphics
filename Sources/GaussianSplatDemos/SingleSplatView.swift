@@ -74,12 +74,12 @@ public struct SingleSplatView: View {
                     }
 
                     let rotation = Rotation(.init(
-                        roll: .degrees(Double(x) * 45),
+                        roll: .degrees(Double(x) * 0),
                         pitch: .degrees(Double(y) * 0),
                         yaw: .degrees(Double(z) * 0)
                     ))
 
-                    let randomSplat = SplatD(position: .init([x, y, z]), scale: .init([0.2, 0.1, 0.05]), color: color, rotation: rotation)
+                    let randomSplat = SplatD(position: .init([x, y, z] + [1, 1, 1]), scale: .init([0.2, 0.0, 0.0]), color: color, rotation: rotation)
                     randomSplats.append(randomSplat)
                 }
             }
