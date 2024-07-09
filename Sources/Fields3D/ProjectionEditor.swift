@@ -12,9 +12,12 @@ public struct ProjectionEditor: View {
     @Binding
     var projection: Projection
 
-    public init(_ projection: Binding<Projection>) {
+    var drawableSize: SIMD2<Float>?
+
+    public init(_ projection: Binding<Projection>, drawableSize: SIMD2<Float>? = nil) {
         type = projection.wrappedValue.meta
         _projection = projection
+        self.drawableSize = drawableSize
     }
 
     public var body: some View {
@@ -38,25 +41,20 @@ public struct ProjectionEditor: View {
             }
         }
         switch projection {
-        case .matrix:
-            //            let projection = Binding {
-            //                projection
-            //            } set: { newValue in
-            //                self.projection = .matrix(newValue)
-            //            }
-            Text("UNIMPLEMENTED")
+        case .matrix(let projection):
+            let projection = Binding {
+                projection
+            } set: { newValue in
+                self.projection = .matrix(newValue)
+            }
+            MatrixEditor(projection)
         case .perspective(let projection):
             let projection = Binding {
                 projection
             } set: { newValue in
                 self.projection = .perspective(newValue)
             }
-            //                    let fieldOfView = Binding<SwiftUI.Angle>(get: { .degrees(projection.fovy) }, set: { projection.fovy = $0.radians })
-            HStack {
-                //                let binding = Binding<SwiftUI.Angle>(radians: projection.verticalAngleOfView.radians)
-                //                TextField("FOVY", value: binding, format: .angle)
-                // SliderPopoverButton(value: projection.fovy.degrees, in: 0...180, minimumValueLabel: { Image(systemName: "field.of.view.wide") }, maximumValueLabel: { Image(systemName: "field.of.view.ultrawide") })
-            }
+            TextField("Angle of View (Vertical)", value: projection.verticalAngleOfView, format: .angle)
             TextField("Clipping Distance", value: projection.zClip, format: ClosedRangeFormatStyle(substyle: .number))
         case .orthographic(let projection):
             let projection = Binding {
@@ -70,6 +68,10 @@ public struct ProjectionEditor: View {
             TextField("Top", value: projection.top, format: .number)
             TextField("Near", value: projection.near, format: .number)
             TextField("Far", value: projection.far, format: .number)
+        }
+        if let drawableSize {
+            let matrix = projection.projectionMatrix(for: drawableSize)
+            MatrixView(matrix)
         }
     }
 }

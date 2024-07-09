@@ -73,7 +73,7 @@ public extension MatrixEditor {
         self.init(matrix: Binding<Matrix> {
             .float4x4(binding.wrappedValue)
         }
-        set: { newValue in
+                  set: { newValue in
             guard case let .float4x4(matrix) = newValue else {
                 fatalError()
             }
@@ -86,7 +86,7 @@ public extension MatrixEditor {
         self.init(matrix: Binding<Matrix> {
             .float3x3(binding.wrappedValue)
         }
-        set: { newValue in
+                  set: { newValue in
             guard case let .float3x3(matrix) = newValue else {
                 fatalError()
             }
@@ -96,9 +96,40 @@ public extension MatrixEditor {
     }
 }
 
+// MARK: -
+
+public struct MatrixView <Matrix>: View where Matrix: FormattableMatrix, Matrix.Scalar == Float {
+    var matrix: Matrix
+
+    public init(_ matrix: Matrix) {
+        self.matrix = matrix
+    }
+
+    public var body: some View {
+        Group {
+            Grid {
+                ForEach(0..<matrix.columnCount, id: \.self) { column in
+                    GridRow {
+                        ForEach(0..<matrix.rowCount, id: \.self) { row in
+                            let value = matrix[column, row]
+                            let color: Color = value == 0 ? .primary : (value < 0 ? .red : .green)
+                            Text(value, format: .number)
+                            .lineLimit(1)
+                            .monospacedDigit()
+                            .frame(maxWidth: .infinity, alignment: .trailing)
+                            .foregroundStyle(color)
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 #Preview {
     @Previewable @State var matrix = simd_float4x4()
     Form {
         MatrixEditor($matrix)
+        MatrixView(matrix)
     }
 }

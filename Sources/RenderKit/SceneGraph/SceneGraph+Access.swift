@@ -158,4 +158,13 @@ public extension SceneGraph {
             }
         }
     }
+
+    var currentCamera: Camera? {
+        get {
+            currentCameraNode?.camera
+        }
+        set {
+            currentCameraNode?.camera = newValue
+        }
+    }
 }

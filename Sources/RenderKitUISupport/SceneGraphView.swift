@@ -111,24 +111,35 @@ public struct SceneGraphViewModifier: ViewModifier {
                 .padding()
             }
             .inspector(isPresented: .constant(true)) {
-                VStack {
-                    //                    HStack {
-                    //                        Toggle("x", systemImage: "gear", isOn: .constant(true))
-                    //                        Toggle("y", systemImage: "gear", isOn: .constant(false))
-                    //                        Toggle("z", systemImage: "gear", isOn: .constant(false))
-                    //                    }
-                    //                    .toggleStyle(.switch)
-                    //                    .labelsHidden()
-                    //                    Divider()
-
-                    // SceneGraphInspector(scene: $scene)
+                TabView {
+                    Color.clear
+                    .tabItem {
+                        Text("Empty!")
+                    }
                     Form {
                         Section("Ball Constaint") {
                             BallConstraintEditor(ballConstraint: $ballConstraint)
                                 .controlSize(.small)
+                            Button("Reset") {
+                                ballConstraint.rollPitchYaw = .zero
+                            }
+                        }
+                        Section("Camera") {
+                            MatrixEditor($scene.currentCameraNode.unsafeBinding().transform.matrix)
+                        }
+                        Section("Projection") {
+                            ProjectionEditor($scene.currentCamera.unsafeBinding().projection, drawableSize: drawableSize)
                         }
                     }
                     .formStyle(.grouped)
+                    .tabItem {
+                        Text("Camera")
+                    }
+
+                    SceneGraphInspector(scene: $scene)
+                    .tabItem {
+                        Text("Scene Graph")
+                    }
                 }
             }
     }
