@@ -44,11 +44,7 @@ struct CSGDemoView_: View {
 
         //        let plane = Plane(normal: [0, 1, 0], w: 5)
         //        let csg = sphere.toCSG()
-        //        print(csg.polygons.count)
         //        let (a, b) = csg.split(plane: plane)
-        //        print(a.polygons.count)
-        //        print(b.polygons.count)
-        //        print(a.polygons.count + b.polygons.count)
     }
 
     var body: some View {

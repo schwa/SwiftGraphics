@@ -23,7 +23,6 @@ public struct WrappingHStack: Layout {
     }
 
     public func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout Cache) -> CGSize {
-        print(proposal)
         var x: CGFloat = 0
         var y: CGFloat = 0
         var lineHeight: CGFloat = 0
@@ -41,8 +40,6 @@ public struct WrappingHStack: Layout {
             lineHeight = max(lineHeight, size.height)
             maxWidth = max(maxWidth, x)
         }
-
-        print(CGSize(width: maxWidth, height: y + lineHeight))
         return CGSize(width: maxWidth, height: y + lineHeight)
     }
 

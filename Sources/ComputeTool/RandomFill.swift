@@ -58,10 +58,6 @@ struct RandomFill {
         let destination = try ImageDestination(url: url)
         destination.addImage(image)
         try destination.finalize()
-
-        let displayColorSpace = NSScreen.main!.colorSpace!
-        print(displayColorSpace.localizedName)
-        print(displayColorSpace.colorSpaceModel)
     }
 }
 

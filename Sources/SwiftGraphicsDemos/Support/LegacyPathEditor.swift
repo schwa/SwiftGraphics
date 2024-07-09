@@ -19,7 +19,6 @@ struct LegacyPathEditor: View {
         ZStack(alignment: .topLeading) {
             Color.white
                 .gesture(SpatialTapGesture(coordinateSpace: coordinateSpace).onEnded { value in
-                    print(value.location)
                     points.append(value.location)
                 })
 

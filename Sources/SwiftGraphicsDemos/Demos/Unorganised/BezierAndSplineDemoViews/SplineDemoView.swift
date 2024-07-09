@@ -31,7 +31,6 @@ struct SplineDemoView: View, DemoView {
                     .contextMenu {
                         Button("Split") {
                             guard let lastRightMouseDownLocation else {
-                                print("FAILED")
                                 return
                             }
                             if let spline = spline.split(at: lastRightMouseDownLocation) {
@@ -194,7 +193,6 @@ struct LineManipulatorModifier: ViewModifier {
     func drag() -> some Gesture {
         DragGesture(minimumDistance: 0, coordinateSpace: .local)
             .onChanged { value in
-                print(value)
             }
             .onEnded { _ in
             }

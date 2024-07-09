@@ -135,7 +135,6 @@ import XCTest
 //                svg.add(result, color: "blue", arrow: true)
 //            }
 //        }
-//        print(svg)
 //        try! svg.description.write(to: URL(filePath: "/tmp/test.svg"), atomically: true, encoding: .utf8)
 //
 ////        XCTAssertEqual(segment.line.lineSegment(bounds: bounds), LineSegment([100, 140], [140, 100]))

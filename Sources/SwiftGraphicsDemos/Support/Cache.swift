@@ -22,11 +22,8 @@ class Cache<Key, Value> where Key: Hashable {
         //                let event:DispatchSource.MemoryPressureEvent  = source.mask
         //                switch event {
         //                case DispatchSource.MemoryPressureEvent.normal:
-        //                    print("normal")
         //                case DispatchSource.MemoryPressureEvent.warning:
-        //                    print("warning")
         //                case DispatchSource.MemoryPressureEvent.critical:
-        //                    print("critical")
         //                default:
         //                    break
         //                }

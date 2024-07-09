@@ -80,7 +80,6 @@ struct HalfEdge3DDemoView: View, DemoView {
             }
             .ballRotation($ballConstraint.rollPitchYaw)
             .onChange(of: ballConstraint) {
-                print("Ball constraint: \(ballConstraint)")
                 cameraTransform = ballConstraint.transform
             }
         }

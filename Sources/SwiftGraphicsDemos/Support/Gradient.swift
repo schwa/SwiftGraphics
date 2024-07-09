@@ -29,7 +29,6 @@ struct MyGradient {
             stop.controls = handle
             return (stop)
         }
-        //        print(color(at: 0.5))
     }
 }
 

@@ -22,7 +22,6 @@ extension HalfEdgeMesh {
         //            }
         //        }
         //
-        //        print(stream.makeAtom().description)
 
         /*
          Mesh:
