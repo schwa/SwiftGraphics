@@ -46,7 +46,7 @@ class ReplayableModel {
         ReplayableGraphicsContext(model: self)
     }
 
-    func replay(context: some GraphicsContextProtocol, range: Range<Int>? = nil) {
+    func replay(context: some GraphicsContextProtocol2, range: Range<Int>? = nil) {
         let range = range ?? 0..<events.count
         for event in events[range] {
             switch event {
@@ -59,7 +59,7 @@ class ReplayableModel {
     }
 }
 
-struct ReplayableGraphicsContext: GraphicsContextProtocol {
+struct ReplayableGraphicsContext: GraphicsContextProtocol2 {
     enum Event {
         case stroke(path: Path, GraphicsContext.Shading, style: StrokeStyle)
         case fill(path: Path, GraphicsContext.Shading, style: FillStyle)

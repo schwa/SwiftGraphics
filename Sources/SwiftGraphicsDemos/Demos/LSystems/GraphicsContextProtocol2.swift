@@ -1,6 +1,7 @@
 import SwiftUI
 
-protocol GraphicsContextProtocol {
+// TODO: Deprecate
+protocol GraphicsContextProtocol2 {
     var opacity: Double { get set }
     var blendMode: GraphicsContext.BlendMode { get set }
     var environment: EnvironmentValues { get }
@@ -19,11 +20,11 @@ protocol GraphicsContextProtocol {
     func stroke(_ path: Path, with shading: GraphicsContext.Shading, style: StrokeStyle)
 }
 
-extension GraphicsContextProtocol {
+extension GraphicsContextProtocol2 {
     func stroke(_ path: Path, with shading: GraphicsContext.Shading) {
         stroke(path, with: shading, style: .init())
     }
 }
 
-extension GraphicsContext: GraphicsContextProtocol {
+extension GraphicsContext: GraphicsContextProtocol2 {
 }

@@ -3,7 +3,7 @@ import Foundation
 import SwiftUI
 
 struct GraphicsContextTurtle: TurtleProtocol {
-    var context: any GraphicsContextProtocol
+    var context: any GraphicsContextProtocol2
     var stack: [(CGPoint, Angle)] = []
     var position = CGPoint.zero
     var angle = Angle(degrees: 0)
