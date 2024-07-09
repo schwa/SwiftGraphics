@@ -11,7 +11,7 @@ public extension SplatB {
     }
 }
 
-//extension DotSplatSceneReader.EncodedSplatPoint {
+// extension DotSplatSceneReader.EncodedSplatPoint {
 //    var splatScenePoint: SplatScenePoint {
 //        SplatScenePoint(position: position,
 //                        normal: nil,
@@ -23,7 +23,7 @@ public extension SplatB {
 //                                                           z: Float(rot[3]) - 128,
 //                                                           w: Float(rot[0]) - 128)).normalized)
 //    }
-//}
+// }
 
 //    init(position: SIMD3<Float>,
 //         color: SIMD4<Float>,
