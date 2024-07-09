@@ -58,8 +58,20 @@ public struct SingleSplatView: View {
         for z: Float in stride(from: -1, through: 1, by: 1) {
             for y: Float in stride(from: -1, through: 1, by: 1) {
                 for x: Float in stride(from: -1, through: 1, by: 1) {
-//                    let color: SIMD4<Float> = [Float.random(in: 0 ... 1), Float.random(in: 0 ... 1), Float.random(in: 0 ... 1), 1]
-                    let color = SIMD4<Float>(1, 1, 1, 1)
+                    //                    let color: SIMD4<Float> = [Float.random(in: 0 ... 1), Float.random(in: 0 ... 1), Float.random(in: 0 ... 1), 1]
+                    var color: SIMD4<Float> = [1, 1, 1, 1]
+                    if x == -1 {
+                        color = [1, 0, 0, 1]
+                    }
+                    if x == 0 {
+                        color = [0, 1, 0, 1]
+                        if y == -1 {
+                            color = [1, 1, 1, 1]
+                        }
+                    }
+                    if x == 1 {
+                        color = [0, 0, 1, 1]
+                    }
 
                     let rotation = Rotation(.init(
                         roll: .degrees(Double(x) * 45),
@@ -160,17 +172,16 @@ public struct SingleSplatView: View {
     }
 
     func makeSplats() -> [SplatD] {
-//        var splats = [
-//            splat,
-//        ] + randomSplats
+        //        var splats = [
+        //            splat,
+        //        ] + randomSplats
 
         randomSplats
-//            .init(position: .init([-2, 0.01, 0.01]), scale: .init([0.5, 0.5, 0.5]), color: [1, 0, 1, 1], rotation: .identity),
-//            .init(position: .init([2, 0.01, 0.01]), scale: .init([0.5, 0.5, 0.5]), color: [1, 1, 0, 1], rotation: .identity),
-//            .init(position: .init([-3.01, 0.01, 0.01]), scale: .init([0.5, 0.5, 0.5]), color: [0, 1, 1, 1], rotation: .rollPitchYaw(.init(yaw: .degrees(90)))),
+        //            .init(position: .init([-2, 0.01, 0.01]), scale: .init([0.5, 0.5, 0.5]), color: [1, 0, 1, 1], rotation: .identity),
+        //            .init(position: .init([2, 0.01, 0.01]), scale: .init([0.5, 0.5, 0.5]), color: [1, 1, 0, 1], rotation: .identity),
+        //            .init(position: .init([-3.01, 0.01, 0.01]), scale: .init([0.5, 0.5, 0.5]), color: [0, 1, 1, 1], rotation: .rollPitchYaw(.init(yaw: .degrees(90)))),
 
-
-//    return splats
+        //    return splats
 
     }
 
