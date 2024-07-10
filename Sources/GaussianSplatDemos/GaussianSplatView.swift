@@ -27,7 +27,7 @@ public struct GaussianSplatView: View {
     public init() {
         let device = MTLCreateSystemDefaultDevice()!
         //        let url = Bundle.module.url(forResource: "6_20_2024", withExtension: "splatc")!
-        let url = Bundle.module.url(forResource: "train", withExtension: "splatc")!
+        let url = Bundle.module.url(forResource: "train", withExtension: "splat")!
         self.device = device
         let splats = try! Splats(device: device, url: url)
         let root = Node(label: "root") {

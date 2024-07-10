@@ -405,8 +405,9 @@ let package = Package(
             name: "GaussianSplatDemos",
             dependencies: ["GaussianSplatSupport", "RenderKitUISupport"],
             resources: [
-                .copy("Resources/train.splatc"),
-                .copy("Resources/6_20_2024.splatc"),
+                .copy("Resources/lastchance.splat"),
+                .copy("Resources/train.splat"),               
+                .copy("Resources/winter_fountain.splat"),
             ]
         ),
         .target(
