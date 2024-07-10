@@ -49,7 +49,7 @@ public struct SingleSplatView: View {
 
         assert(MemoryLayout<SplatC>.size == 26)
 
-        let splat = SplatD(position: [0, 0, 0], scale: [1, 1, 1], color: [1, 1, 1, 1], rotation: .init(angle: .zero, axis: [0, 0, 0]))
+        let splat = SplatD(position: [0, 0, 0], scale: [1, 0.5, 0.25], color: [1, 0, 1, 1], rotation: .init(angle: .zero, axis: [0, 0, 0]))
 
         self.device = device
         self.splat = splat
@@ -108,7 +108,7 @@ public struct SingleSplatView: View {
                                 }
                                 isPresented.wrappedValue = true
                             }
-                            .fileExporter(isPresented: isPresented, item: data.wrappedValue/*, contentTypes: [.splat]*/) { result in
+                            .fileExporter(isPresented: isPresented, item: data.wrappedValue/*, contentTypes: [.splat]*/) { _ in
                             }
                         }
                     }
@@ -171,17 +171,15 @@ public struct SingleSplatView: View {
     }
 
     func makeSplats() -> [SplatD] {
-        //        var splats = [
-        //            splat,
-        //        ] + randomSplats
+        //        + randomSplats
 
-        randomSplats
         //            .init(position: .init([-2, 0.01, 0.01]), scale: .init([0.5, 0.5, 0.5]), color: [1, 0, 1, 1], rotation: .identity),
         //            .init(position: .init([2, 0.01, 0.01]), scale: .init([0.5, 0.5, 0.5]), color: [1, 1, 0, 1], rotation: .identity),
         //            .init(position: .init([-3.01, 0.01, 0.01]), scale: .init([0.5, 0.5, 0.5]), color: [0, 1, 1, 1], rotation: .rollPitchYaw(.init(yaw: .degrees(90)))),
 
-        //    return splats
-
+        [
+            splat,
+        ]
     }
 
     func makePasses() -> [any PassProtocol] {
@@ -197,7 +195,11 @@ public struct SingleSplatView: View {
             sortRate: 1
         )
         let renderPass = SingleGaussianSplatRenderPass(cameraTransform: cameraTransform, cameraProjection: cameraProjection, modelTransform: modelTransform, splats: splats, debugMode: debugMode)
-        return [preCalcComputePass, gaussianSplatSortComputePass, renderPass]
+        return [
+            //            preCalcComputePass,
+            //            gaussianSplatSortComputePass,
+            renderPass
+        ]
     }
 }
 
@@ -267,8 +269,7 @@ struct SingleGaussianSplatRenderPass: RenderPassProtocol {
     func encode(device: MTLDevice, state: inout State, drawableSize: SIMD2<Float>, commandEncoder: any MTLRenderCommandEncoder) throws {
         commandEncoder.setDepthStencilState(state.depthStencilState)
         commandEncoder.setRenderPipelineState(state.renderPipelineState)
-        commandEncoder.setCullMode(.back) // default is .none
-        commandEncoder.setFrontFacing(.clockwise) // default is .clockwise
+
         if debugMode {
             commandEncoder.setTriangleFillMode(.lines)
         }
@@ -281,13 +282,9 @@ struct SingleGaussianSplatRenderPass: RenderPassProtocol {
         let modelViewMatrix = viewMatrix * modelMatrix
 
         let uniforms = GaussianSplatUniforms(
-            modelViewProjectionMatrix: modelViewProjectionMatrix,
             modelViewMatrix: modelViewMatrix,
             projectionMatrix: projectionMatrix,
-            modelMatrix: modelTransform.matrix,
             viewMatrix: viewMatrix,
-            cameraMatrix: cameraTransform.matrix,
-            cameraPosition: cameraTransform.translation,
             drawableSize: drawableSize
         )
         commandEncoder.withDebugGroup("VertexShader") {
@@ -301,6 +298,8 @@ struct SingleGaussianSplatRenderPass: RenderPassProtocol {
             commandEncoder.setFragmentBuffer(splats.splats.base, offset: 0, index: state.bindings.fragmentSplats)
             commandEncoder.setFragmentBuffer(splats.indices.base, offset: 0, index: state.bindings.fragmentSplatIndices)
         }
-        commandEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4, instanceCount: splats.splats.count)
+        commandEncoder.draw(state.quadMesh, instanceCount: splats.splats.count)
+
+        //        commandEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4, instanceCount: splats.splats.count)
     }
 }
