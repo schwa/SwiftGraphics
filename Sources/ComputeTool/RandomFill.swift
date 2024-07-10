@@ -19,7 +19,6 @@ struct RandomFill {
         try outImage?.write(to: URL(filePath: "/tmp/out.png"))
 
         try testPixelFormats()
-        return
 
         let textureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .r8Uint, width: width, height: height, mipmapped: false)
         textureDescriptor.usage = [.shaderWrite]
@@ -29,7 +28,7 @@ struct RandomFill {
         }
         let bufferSize = bytesPerRow * height
         let buffer = try device.makeBufferEx(length: bufferSize, options: [.storageModeShared])
-        let alignment = device.minimumLinearTextureAlignment(for: textureDescriptor.pixelFormat)
+        //let alignment = device.minimumLinearTextureAlignment(for: textureDescriptor.pixelFormat)
         let texture = buffer.makeTexture(descriptor: textureDescriptor, offset: 0, bytesPerRow: bytesPerRow)!
 
         let compute = try Compute(device: device)

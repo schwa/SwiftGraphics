@@ -12,13 +12,13 @@ class RotationTests: XCTestCase {
 
     func testQuaternionInitialization() {
         let quaternion = simd_quatf(angle: .pi / 4, axis: SIMD3<Float>(0, 0, 1))
-        let rotation = Rotation(quaternion: quaternion)
+        let rotation = Rotation(quaternion)
         XCTAssertEqual(rotation.quaternion, quaternion)
     }
 
     func testRollPitchYawInitialization() {
         let rollPitchYaw = RollPitchYaw(roll: .radians(.pi / 2), pitch: .radians(.pi / 4), yaw: .radians(.pi))
-        let rotation = Rotation(rollPitchYaw: rollPitchYaw)
+        let rotation = Rotation(rollPitchYaw)
         XCTAssertEqual(rotation.rollPitchYaw, rollPitchYaw)
     }
 

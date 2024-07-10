@@ -40,12 +40,12 @@ struct GameOfLife {
         assetWriterVideoInput.expectsMediaDataInRealTime = false
         assetWriter.add(assetWriterVideoInput)
 
-        let assetWriterPixelBufferInput = AVAssetWriterInputPixelBufferAdaptor(assetWriterInput: assetWriterVideoInput, sourcePixelBufferAttributes: [
-            kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA,
-            kCVPixelBufferWidthKey as String: width,
-            kCVPixelBufferHeightKey as String: height,
-            kCVPixelBufferMetalCompatibilityKey as String: true,
-        ])
+//        let assetWriterPixelBufferInput = AVAssetWriterInputPixelBufferAdaptor(assetWriterInput: assetWriterVideoInput, sourcePixelBufferAttributes: [
+//            kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA,
+//            kCVPixelBufferWidthKey as String: width,
+//            kCVPixelBufferHeightKey as String: height,
+//            kCVPixelBufferMetalCompatibilityKey as String: true,
+//        ])
 
         assetWriter.startWriting()
 
