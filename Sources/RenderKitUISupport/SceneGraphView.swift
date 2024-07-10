@@ -76,9 +76,9 @@ public struct SceneGraphViewModifier: ViewModifier {
                 scene.currentCameraNode?.transform = ballConstraint.transform
             }
             .ballRotation($cameraRotation, updatesPitch: updatesPitch, updatesYaw: updatesYaw)
-            .gesture(MagnifyGesture().onChanged({ value in
+            .gesture(MagnifyGesture().onChanged { value in
                 ballConstraint.radius = Float(5 * value.magnification)
-            }))
+            })
             .overlay(alignment: .bottomTrailing) {
                 VStack {
                     HStack {
@@ -89,7 +89,6 @@ public struct SceneGraphViewModifier: ViewModifier {
                     .padding(2)
                     .toggleStyle(.button)
                     .controlSize(.mini)
-
 
                     ZStack {
                         if let drawableSize, drawableSize != .zero {

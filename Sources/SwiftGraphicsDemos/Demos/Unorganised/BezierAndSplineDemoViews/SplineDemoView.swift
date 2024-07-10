@@ -192,7 +192,7 @@ struct LineManipulatorModifier: ViewModifier {
 
     func drag() -> some Gesture {
         DragGesture(minimumDistance: 0, coordinateSpace: .local)
-            .onChanged { value in
+            .onChanged { _ in
             }
             .onEnded { _ in
             }

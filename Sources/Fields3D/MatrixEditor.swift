@@ -111,7 +111,6 @@ public struct MatrixEditor <Matrix>: View where Matrix: FormattableMatrix & Matr
         Divider()
         Toggle("Format Sign", isOn: $formatSign)
         Toggle("Scientific Notation", isOn: $scientificNotation)
-
     }
 }
 
@@ -176,7 +175,6 @@ extension String {
 
 extension FormattableMatrix where Scalar == Float {
     init(tabularPasteboardRepresentation string: String) throws {
-
         // TODO: Terrible :-)
         self.init()
         for (row, line) in string.lines.enumerated() {
@@ -206,8 +204,7 @@ extension FormattableMatrix where Scalar == Float {
                 self[column, row].formatted()
             }.joined(separator: ",")
         }.map { "[\($0)]" }.joined(separator: ",")
-        let string = "simd_float\(columnCount)x\(rowCount)([\(values)])"
-        return string
+        return "simd_float\(columnCount)x\(rowCount)([\(values)])"
     }
 }
 
@@ -220,7 +217,6 @@ extension FormattableMatrix where Scalar == Float {
 }
 
 extension UndoManager {
-
     func registerUndo(handler: @escaping () -> Void) {
         registerUndo(withTarget: self) { _ in
             handler()
@@ -234,10 +230,10 @@ extension UndoManager {
         }
     }
 
-//    func registerUndo<Root, Value>(root: inout Root, keyPath: WritableKeyPath<Root, Value>) {
-//        let copy = root[keyPath: keyPath]
-//        registerUndo(withTarget: self) { _ in
-//            root[keyPath: keyPath] = copy
-//        }
-//    }
+    //    func registerUndo<Root, Value>(root: inout Root, keyPath: WritableKeyPath<Root, Value>) {
+    //        let copy = root[keyPath: keyPath]
+    //        registerUndo(withTarget: self) { _ in
+    //            root[keyPath: keyPath] = copy
+    //        }
+    //    }
 }
