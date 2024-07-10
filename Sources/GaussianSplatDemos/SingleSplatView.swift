@@ -280,11 +280,12 @@ struct SingleGaussianSplatRenderPass: RenderPassProtocol {
 
         let modelViewProjectionMatrix = projectionMatrix * viewMatrix * modelMatrix
         let modelViewMatrix = viewMatrix * modelMatrix
-
         let uniforms = GaussianSplatUniforms(
+            modelViewProjectionMatrix: modelViewProjectionMatrix,
             modelViewMatrix: modelViewMatrix,
             projectionMatrix: projectionMatrix,
             viewMatrix: viewMatrix,
+            cameraPosition: cameraTransform.matrix.translation,
             drawableSize: drawableSize
         )
         commandEncoder.withDebugGroup("VertexShader") {
