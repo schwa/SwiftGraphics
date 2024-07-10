@@ -98,11 +98,14 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
                 continue
             }
             let uniforms = GaussianSplatUniforms(
-                modelViewMatrix: element.modelViewMatrix,
+                modelViewProjectionMatrix: helper.projectionMatrix * cameraTransform.matrix.inverse * element.modelMatrix,
+                modelViewMatrix: helper.cameraMatrix.inverse * element.modelMatrix,
                 projectionMatrix: helper.projectionMatrix,
-                viewMatrix: helper.viewMatrix,
+                viewMatrix: helper.cameraMatrix.inverse,
+                cameraPosition: helper.cameraMatrix.translation,
                 drawableSize: drawableSize
             )
+
             commandEncoder.withDebugGroup("VertexShader") {
                 commandEncoder.setVertexBuffersFrom(mesh: state.quadMesh)
                 commandEncoder.setVertexBytes(of: uniforms, index: state.bindings.vertexUniforms)
