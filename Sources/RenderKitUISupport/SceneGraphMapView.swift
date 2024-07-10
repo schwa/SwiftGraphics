@@ -47,7 +47,6 @@ public struct SceneGraphMapView: View {
         switch node.content {
         case let camera as Camera:
             Image(systemName: "camera.circle.fill").foregroundStyle(.black, .yellow)
-                .border(Color.yellow)
                 .frame(width: 32, height: 32)
                 .background(alignment: .center) {
                     if case let .perspective(perspective) = camera.projection {
@@ -59,7 +58,6 @@ public struct SceneGraphMapView: View {
                         .offset(x: 16, y: 16)
                     }
                 }
-                .border(Color.red)
                 .zIndex(1)
                 .gesture(cameraDragGesture(for: node))
         case let splats as Splats:
@@ -98,7 +96,6 @@ public struct SceneGraphMapView: View {
         DragGesture(coordinateSpace: coordinateSpace).onChanged { value in
             scene.modify(node: node) { node in
                 node!.transform.translation.xz = SIMD2<Float>(value.location / scale)
-                print(value.location / scale, node!.transform.translation.xz)
             }
         }
     }

@@ -4,14 +4,14 @@ import SwiftUI
 
 struct FieldsTestBedView: View, DemoView {
     @State
-    var m = Measurement(value: 90, unit: UnitAngle.degrees)
+    private var m = Measurement(value: 90, unit: UnitAngle.degrees)
 
     var body: some View {
         MeasurementField(measurement: $m, units: [UnitAngle.degrees, UnitAngle.radians, UnitAngle.revolutions, UnitAngle.arcMinutes, UnitAngle.arcSeconds, UnitAngle.gradians])
     }
 }
 
-//struct FieldsTestBedView: View, DemoView {
+// struct FieldsTestBedView: View, DemoView {
 //    @State
 //    private var value = 0.0
 //
@@ -57,4 +57,4 @@ struct FieldsTestBedView: View, DemoView {
 //            //            }
 //        }
 //    }
-//}
+// }
