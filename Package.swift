@@ -13,46 +13,43 @@ let package = Package(
     ],
     products: [
         .library(name: "Array2D", targets: ["Array2D"]),
+        .library(name: "BaseSupport", targets: ["SwiftUISupport"]),
+        .library(name: "Compute", targets: ["Compute"]),
         .library(name: "CoreGraphicsSupport", targets: ["CoreGraphicsSupport"]),
         .library(name: "CoreGraphicsUnsafeConformances", targets: ["CoreGraphicsUnsafeConformances"]),
         .library(name: "Earcut", targets: ["Earcut"]),
         .library(name: "Fields3D", targets: ["Fields3D"]),
+        .library(name: "GaussianSplatDemos", targets: ["GaussianSplatDemos"]),
+        .library(name: "GaussianSplatSupport", targets: ["GaussianSplatSupport"]),
         .library(name: "GenericGeometryBase", targets: ["GenericGeometryBase"]),
         .library(name: "MetalSupport", targets: ["MetalSupport"]),
+        .library(name: "MetalUISupport", targets: ["MetalUISupport"]),
         .library(name: "MetalUnsafeConformances", targets: ["MetalUnsafeConformances"]),
         .library(name: "Projection", targets: ["Projection"]),
         .library(name: "Raster", targets: ["Raster"]),
         .library(name: "RenderKit", targets: ["RenderKit"]),
-        .library(name: "RenderKitUISupport", targets: ["RenderKitUISupport"]),
         .library(name: "RenderKitShaders", targets: ["RenderKitShaders"]),
         .library(name: "RenderKitShadersLegacy", targets: ["RenderKitShadersLegacy"]),
+        .library(name: "RenderKitUISupport", targets: ["RenderKitUISupport"]),
         .library(name: "Shapes2D", targets: ["Shapes2D"]),
         .library(name: "Shapes3D", targets: ["Shapes3D"]),
         .library(name: "Shapes3DTessellation", targets: ["Shapes3DTessellation"]),
         .library(name: "SIMDSupport", targets: ["SIMDSupport"]),
         .library(name: "SIMDUnsafeConformances", targets: ["SIMDUnsafeConformances"]),
-        .library(name: "MetalUISupport", targets: ["MetalUISupport"]),
-        .library(name: "Compute", targets: ["Compute"]),
         .library(name: "SwiftGraphicsDemos", targets: ["SwiftGraphicsDemos"]),
-
-        .library(name: "GaussianSplatDemos", targets: ["GaussianSplatDemos"]),
-        .library(name: "GaussianSplatSupport", targets: ["GaussianSplatSupport"]),
         .library(name: "SwiftUISupport", targets: ["SwiftUISupport"]),
-        .library(name: "BaseSupport", targets: ["SwiftUISupport"]),
-
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-algorithms", from: "1.1.0"),
         .package(url: "https://github.com/apple/swift-argument-parser", from: "1.3.0"),
         .package(url: "https://github.com/apple/swift-async-algorithms", from: "0.1.0"),
+        .package(url: "https://github.com/ksemianov/WrappingHStack", from: "0.2.0"),
         .package(url: "https://github.com/schwa/ApproximateEquality", from: "0.2.1"),
         .package(url: "https://github.com/schwa/Everything", from: "1.1.0"),
         .package(url: "https://github.com/schwa/MetalCompilerPlugin", branch: "jwight/develop"),
         .package(url: "https://github.com/schwa/swiftfields", from: "0.0.1"),
         .package(url: "https://github.com/schwa/swiftformats", from: "0.3.5"),
         .package(url: "https://github.com/schwa/SwiftGLTF", branch: "main"),
-        .package(url: "https://github.com/ksemianov/WrappingHStack", from: "0.2.0"),
-
     ],
     targets: [
         // MARK: Array2D
@@ -386,7 +383,8 @@ let package = Package(
         ),
         .testTarget(
             name: "SwiftGraphicsDemosTests",
-            dependencies: ["SwiftGraphicsDemos"]
+            dependencies: ["SwiftGraphicsDemos"],
+            swiftSettings: [.interoperabilityMode(.Cxx)]
         ),
 
         .executableTarget(
@@ -398,7 +396,8 @@ let package = Package(
             resources: [
                 .copy("CubeBinary.ply"),
                 .copy("test-splat.3-points-from-train.ply"),
-            ]
+            ],
+            swiftSettings: [.interoperabilityMode(.Cxx)]
         ),
 
         .target(
