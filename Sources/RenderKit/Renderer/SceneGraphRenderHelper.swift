@@ -11,12 +11,14 @@ public struct SceneGraphRenderHelper {
     }
 
     public var scene: SceneGraph
+    public var cameraMatrix: simd_float4x4
     public var viewMatrix: simd_float4x4
     public var projectionMatrix: simd_float4x4
 
-    public init(scene: SceneGraph, viewMatrix: simd_float4x4, projectionMatrix: simd_float4x4) {
+    public init(scene: SceneGraph, cameraMatrix: simd_float4x4, viewMatrix: simd_float4x4? = nil, projectionMatrix: simd_float4x4) {
         self.scene = scene
-        self.viewMatrix = viewMatrix
+        self.cameraMatrix = cameraMatrix
+        self.viewMatrix = viewMatrix ?? cameraMatrix.inverse
         self.projectionMatrix = projectionMatrix
     }
 
@@ -25,9 +27,10 @@ public struct SceneGraphRenderHelper {
             fatalError() // TODO: Throw
         }
         assert(drawableSize.x > 0 && drawableSize.y > 0)
-        let viewMatrix = currentCameraNode.transform.matrix.inverse
+        let cameraMatrix = currentCameraNode.transform.matrix
+        let viewMatrix = cameraMatrix.inverse
         let projectionMatrix = currentCameraNode.camera!.projectionMatrix(for: drawableSize)
-        self.init(scene: scene, viewMatrix: viewMatrix, projectionMatrix: projectionMatrix)
+        self.init(scene: scene, cameraMatrix: cameraMatrix, viewMatrix: viewMatrix, projectionMatrix: projectionMatrix)
     }
 
     public func elements() -> any Sequence<Element> {
