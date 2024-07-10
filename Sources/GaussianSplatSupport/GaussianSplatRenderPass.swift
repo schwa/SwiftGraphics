@@ -84,8 +84,8 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
     public func encode(device: MTLDevice, state: inout State, drawableSize: SIMD2<Float>, commandEncoder: any MTLRenderCommandEncoder) throws {
         commandEncoder.setDepthStencilState(state.depthStencilState)
         commandEncoder.setRenderPipelineState(state.renderPipelineState)
-        commandEncoder.setCullMode(.back) // default is .none
-        commandEncoder.setFrontFacing(.clockwise) // default is .clockwise
+        //        commandEncoder.setCullMode(.back) // default is .none
+        //        commandEncoder.setFrontFacing(.counterClockwise) // default is .clockwise
         if debugMode {
             commandEncoder.setTriangleFillMode(.lines)
         }
@@ -98,11 +98,9 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
                 continue
             }
             let uniforms = GaussianSplatUniforms(
-                modelViewProjectionMatrix: element.modelViewProjectionMatrix,
                 modelViewMatrix: element.modelViewMatrix,
                 projectionMatrix: helper.projectionMatrix,
                 viewMatrix: helper.viewMatrix,
-                cameraPosition: cameraTransform.translation,
                 drawableSize: drawableSize
             )
             commandEncoder.withDebugGroup("VertexShader") {
@@ -116,8 +114,7 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
                 commandEncoder.setFragmentBuffer(splats.splats, index: state.bindings.fragmentSplats)
                 commandEncoder.setFragmentBuffer(splats.indices, index: state.bindings.fragmentSplatIndices)
             }
-            //        commandEncoder.draw(pointMesh, instanceCount: splatCount)
-            commandEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4, instanceCount: splats.splats.count)
+            commandEncoder.draw(state.quadMesh, instanceCount: splats.splats.count)
         }
     }
 }
