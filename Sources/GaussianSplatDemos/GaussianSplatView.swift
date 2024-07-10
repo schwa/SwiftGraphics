@@ -102,6 +102,11 @@ struct OptionsView: View {
                             scene.splatsNode.content = try! Splats(device: device, url: url)
                         }
                     }
+                    ForEach(try! Bundle.module.urls(withExtension: "splatc"), id: \.self) { url in
+                        Button(url.lastPathComponent) {
+                            scene.splatsNode.content = try! Splats(device: device, url: url)
+                        }
+                    }
                 }
             }
             .formStyle(.grouped)
