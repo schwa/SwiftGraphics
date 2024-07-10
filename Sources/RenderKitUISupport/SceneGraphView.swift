@@ -55,6 +55,9 @@ public struct SceneGraphViewModifier: ViewModifier {
     @State
     private var ballConstraint = BallConstraint()
 
+    @State
+    private var smallMap = false
+
     public init(device: MTLDevice, scene: Binding<SceneGraph>, passes: [any PassProtocol]) {
         self.device = device
         self._scene = scene
@@ -73,22 +76,27 @@ public struct SceneGraphViewModifier: ViewModifier {
                 scene.currentCameraNode?.transform = ballConstraint.transform
             }
             .ballRotation($cameraRotation, updatesPitch: updatesPitch, updatesYaw: updatesYaw)
+            .gesture(MagnifyGesture().onChanged({ value in
+                ballConstraint.radius = Float(5 * value.magnification)
+            }))
             .overlay(alignment: .bottomTrailing) {
                 VStack {
                     HStack {
                         Toggle(updatesYaw ? "Yaw: On" : "Yaw: Off", isOn: $updatesYaw)
                         Toggle(updatesPitch ? "Pitch: On" : "Pitch: Off", isOn: $updatesPitch)
+                        Toggle(smallMap ? "Big" : "Small", isOn: $smallMap)
                     }
                     .padding(2)
                     .toggleStyle(.button)
                     .controlSize(.mini)
+
 
                     ZStack {
                         if let drawableSize, drawableSize != .zero {
                             SceneGraphMapView(scene: $scene, ballConstraint: $ballConstraint, scale: mapScale, drawableSize: drawableSize)
                         }
                     }
-                    .frame(width: 320, height: 320)
+                    .frame(width: smallMap ? 120 : 320, height: smallMap ? 120 : 320)
                     .fixedSize()
 
                     HStack {
