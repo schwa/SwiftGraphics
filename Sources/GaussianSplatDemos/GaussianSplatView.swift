@@ -27,7 +27,7 @@ public struct GaussianSplatView: View {
     public init() {
         let device = MTLCreateSystemDefaultDevice()!
         //        let url = Bundle.module.url(forResource: "6_20_2024", withExtension: "splatc")!
-        let url = Bundle.module.url(forResource: "train", withExtension: "splat")!
+        let url = Bundle.module.url(forResource: "winter_fountain", withExtension: "splat")!
         self.device = device
         let splats = try! Splats(device: device, url: url)
         let root = Node(label: "root") {
@@ -36,7 +36,7 @@ public struct GaussianSplatView: View {
                     // .transform(translation: [0, 0, 04])
                     .content(Camera())
             }
-            Node(label: "splats").content(splats).transform(rotation: .init(RollPitchYaw(pitch: .degrees(180))))
+            Node(label: "splats").content(splats)
         }
         self.scene = SceneGraph(root: root)
     }
@@ -97,7 +97,7 @@ struct OptionsView: View {
                         .toggleStyle(.button)
                 }
                 HStack {
-                    ForEach(try! Bundle.module.urls(withExtension: "splatc"), id: \.self) { url in
+                    ForEach(try! Bundle.module.urls(withExtension: "splat"), id: \.self) { url in
                         Button(url.lastPathComponent) {
                             scene.splatsNode.content = try! Splats(device: device, url: url)
                         }

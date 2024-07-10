@@ -18,29 +18,26 @@ public struct MeasurementField <UnitType>: View where UnitType: Dimension {
                 .textFieldStyle(.plain)
                 .multilineTextAlignment(.trailing)
                 .monospacedDigit()
-//                .border(Color.red)
+                //                .border(Color.red)
                 .clipped()
                 .frame(maxWidth: 60)
                 .truncationMode(.tail)
-//            Text(measurement.unit.symbol)
+            //            Text(measurement.unit.symbol)
             Menu(measurement.unit.symbol) {
                 ForEach(units, id: \.self) { unit in
                     Button("\(unit.symbol)") {
-                        print(unit)
-                        print(UnitType.baseUnit())
                         let originalValue = measurement.value
                         let baseValue = measurement.unit.converter.baseUnitValue(fromValue: originalValue)
 
                         let value = unit.converter.value(fromBaseUnitValue: baseValue)
 
                         measurement = Measurement(value: value, unit: unit)
-                        print(originalValue, baseValue, value)
                     }
                 }
             }
-//            .border(Color.red)
-//            .menuStyle(.borderlessButton)
-//            .menuIndicator(.hidden)
+            //            .border(Color.red)
+            //            .menuStyle(.borderlessButton)
+            //            .menuIndicator(.hidden)
             .frame(maxWidth: 20)
         }
         .contextMenu {
@@ -61,11 +58,11 @@ public struct MeasurementField <UnitType>: View where UnitType: Dimension {
     var measurement = Measurement(value: 90, unit: UnitAngle.degrees)
 
     let units = [
-       UnitAngle.degrees,
-       UnitAngle.radians,
-       UnitAngle.gradians,
-       UnitAngle.revolutions,
-   ]
+        UnitAngle.degrees,
+        UnitAngle.radians,
+        UnitAngle.gradians,
+        UnitAngle.revolutions,
+    ]
     MeasurementField(measurement: $measurement, units: units)
-    .padding(20)
+        .padding(20)
 }

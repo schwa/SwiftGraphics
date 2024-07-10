@@ -406,7 +406,7 @@ let package = Package(
             dependencies: ["GaussianSplatSupport", "RenderKitUISupport"],
             resources: [
                 .copy("Resources/lastchance.splat"),
-                .copy("Resources/train.splat"),               
+                .copy("Resources/train.splat"),
                 .copy("Resources/winter_fountain.splat"),
             ]
         ),
