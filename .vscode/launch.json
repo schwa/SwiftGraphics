@@ -95,6 +95,30 @@
             "name": "Release ComputeTool",
             "program": "${workspaceFolder:SwiftGraphics}/.build/release/ComputeTool",
             "preLaunchTask": "swift: Build Release ComputeTool"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "sourceLanguages": [
+                "swift"
+            ],
+            "args": [],
+            "cwd": "${workspaceFolder:SwiftGraphics}",
+            "name": "Debug SwiftGraphicsDemosCLI",
+            "program": "${workspaceFolder:SwiftGraphics}/.build/debug/SwiftGraphicsDemosCLI",
+            "preLaunchTask": "swift: Build Debug SwiftGraphicsDemosCLI"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "sourceLanguages": [
+                "swift"
+            ],
+            "args": [],
+            "cwd": "${workspaceFolder:SwiftGraphics}",
+            "name": "Release SwiftGraphicsDemosCLI",
+            "program": "${workspaceFolder:SwiftGraphics}/.build/release/SwiftGraphicsDemosCLI",
+            "preLaunchTask": "swift: Build Release SwiftGraphicsDemosCLI"
         }
     ]
 }

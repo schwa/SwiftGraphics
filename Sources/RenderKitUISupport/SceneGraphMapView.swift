@@ -127,7 +127,7 @@ public struct SceneGraphMapView: View {
                     var targetImage = context.resolve(Image(systemName: "scope"))
                     targetImage.shading = .color(.white)
                     context.draw(targetImage, at: targetPosition * scale, anchor: .center)
-                case let geometry as Geometry:
+                case _ as Geometry:
                     let path = Path(ellipseIn: CGRect(center: position * scale, radius: 5))
                     context.stroke(path, with: .color(.red))
                 case nil:

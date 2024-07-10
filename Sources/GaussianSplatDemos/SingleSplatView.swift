@@ -196,8 +196,8 @@ public struct SingleSplatView: View {
         )
         let renderPass = SingleGaussianSplatRenderPass(cameraTransform: cameraTransform, cameraProjection: cameraProjection, modelTransform: modelTransform, splats: splats, debugMode: debugMode)
         return [
-            //            preCalcComputePass,
-            //            gaussianSplatSortComputePass,
+            preCalcComputePass,
+            gaussianSplatSortComputePass,
             renderPass
         ]
     }
