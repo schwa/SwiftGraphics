@@ -42,7 +42,12 @@ public extension SplatC {
         let position = PackedHalf3(SIMD3<Float>(other.position))
 
         // TODO: SRGB to Linear
-        let color = PackedHalf4(x: Float16(other.color.x) / 255, y: Float16(other.color.y) / 255, z: Float16(other.color.z) / 255, w: Float16(other.color.w) / 255)
+
+        //        let color = other.color.xyz.sRGBToLinear()
+        let rgb = (SIMD3<Float>(other.color.xyz) / 255).sRGBToLinear()
+        let alpha = Float(other.color[3]) / 255
+
+        let color = PackedHalf4(SIMD4<Float>(rgb, alpha))
 
         let rotation = simd_quatf(vector: SIMD4(x: Float(other.rotation[1]) - 128,
                                                 y: Float(other.rotation[2]) - 128,
@@ -71,5 +76,11 @@ public func convert_b_to_c <C>(_ splats: C) -> [SplatC] where C: Collection, C.E
     assert(MemoryLayout<SplatB>.size == 32)
     return splats.map { splat in
         SplatC(splat)
+    }
+}
+
+private extension SIMD3<Float> {
+    func sRGBToLinear() -> SIMD3<Float> {
+        SIMD3(x: pow(x, 2.2), y: pow(y, 2.2), z: pow(z, 2.2))
     }
 }
