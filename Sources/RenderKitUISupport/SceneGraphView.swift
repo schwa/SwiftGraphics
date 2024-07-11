@@ -75,7 +75,7 @@ public struct SceneGraphViewModifier: ViewModifier {
                     }
                 }
             }
-        //            .firstPersonInteractive(camera: $scene.currentCameraNode.unsafeBinding())
+            //            .firstPersonInteractive(camera: $scene.currentCameraNode.unsafeBinding())
             .onGeometryChange(for: CGSize.self, of: \.size) { drawableSize = SIMD2<Float>($0) }
             .showFrameEditor()
             .onChange(of: cameraRotation, initial: true) {
@@ -159,5 +159,4 @@ public struct SceneGraphViewModifier: ViewModifier {
                 }
             }
     }
-
 }
