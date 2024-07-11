@@ -32,6 +32,12 @@ public struct GaussianSplatRenderView: View {
 
     public var body: some View {
         RenderView(device: device, passes: passes)
+        .toolbar {
+            // TODO: this should not be here.
+            Button("Screenshot") {
+                screenshot()
+            }
+        }
     }
 
     var passes: [any PassProtocol] {
@@ -63,4 +69,23 @@ public struct GaussianSplatRenderView: View {
             gaussianSplatRenderPass
         ]
     }
+
+    func screenshot() {
+        do {
+            var offscreenRenderer = try OffscreenRenderer(device: device, size: CGSize(width: 1600, height: 1200), passes: passes)
+            try offscreenRenderer.configure()
+            try offscreenRenderer.render()
+            guard let targetTexture = offscreenRenderer.targetTexture else {
+                fatalError()
+            }
+            guard let cgImage = targetTexture.cgImage() else {
+                fatalError()
+            }
+            try cgImage.write(to: URL(filePath: "/tmp/test.png"))
+        }
+        catch {
+            print(error)
+        }
+    }
+
 }

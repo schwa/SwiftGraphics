@@ -25,17 +25,17 @@ public struct SceneGraphView: View {
 
     public var body: some View {
         RenderView(device: device, passes: passes)
-            .modifier(SceneGraphViewModifier(device: device, scene: $scene, passes: passes))
+            .modifier(SceneGraphViewModifier(device: device, scene: $scene))
     }
 }
+
+// MARK: -
 
 public struct SceneGraphViewModifier: ViewModifier {
     let device: MTLDevice
 
     @Binding
     private var scene: SceneGraph
-
-    let passes: [any PassProtocol]
 
     @State
     private var cameraRotation = RollPitchYaw()
@@ -58,15 +58,24 @@ public struct SceneGraphViewModifier: ViewModifier {
     @State
     private var smallMap = false
 
-    public init(device: MTLDevice, scene: Binding<SceneGraph>, passes: [any PassProtocol]) {
+    @State
+    private var isInspectorPresented = true
+
+    public init(device: MTLDevice, scene: Binding<SceneGraph>) {
         self.device = device
         self._scene = scene
-        self.passes = passes
     }
 
     public func body(content: Content) -> some View {
         content
-            //            .firstPersonInteractive(camera: $scene.currentCameraNode.unsafeBinding())
+            .toolbar {
+                ToolbarItem {
+                    Toggle(isOn: $isInspectorPresented) {
+                        Image(systemName: "sidebar.trailing")
+                    }
+                }
+            }
+        //            .firstPersonInteractive(camera: $scene.currentCameraNode.unsafeBinding())
             .onGeometryChange(for: CGSize.self, of: \.size) { drawableSize = SIMD2<Float>($0) }
             .showFrameEditor()
             .onChange(of: cameraRotation, initial: true) {
@@ -117,7 +126,7 @@ public struct SceneGraphViewModifier: ViewModifier {
                 .border(Color.white)
                 .padding()
             }
-            .inspector(isPresented: .constant(true)) {
+            .inspector(isPresented: $isInspectorPresented) {
                 TabView {
                     Color.clear
                         .tabItem {
@@ -150,4 +159,5 @@ public struct SceneGraphViewModifier: ViewModifier {
                 }
             }
     }
+
 }
