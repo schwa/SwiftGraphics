@@ -58,7 +58,7 @@ public struct GaussianSplatView: View {
                     OptionsView(scene: $scene, device: device)
                 }
             }
-            .modifier(SceneGraphViewModifier(device: device, scene: $scene, passes: []))
+            .modifier(SceneGraphViewModifier(device: device, scene: $scene))
             .environment(viewModel)
             .onDrop(of: [.splat], isTargeted: $isTargeted) { items in
                 if let item = items.first {
@@ -143,4 +143,5 @@ struct OptionsView: View {
         }
         .padding()
     }
+
 }

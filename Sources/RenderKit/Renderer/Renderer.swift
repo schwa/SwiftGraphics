@@ -66,15 +66,12 @@ struct Renderer <MetalConfiguration> where MetalConfiguration: MetalConfiguratio
         }
     }
 
-    mutating func draw(commandQueue: MTLCommandQueue, renderPassDescriptor: MTLRenderPassDescriptor, drawable: MTLDrawable, drawableSize: CGSize) throws {
+    mutating func render(commandBuffer: MTLCommandBuffer, renderPassDescriptor: MTLRenderPassDescriptor, drawableSize: CGSize) throws {
         assert(state == .configured(sizeKnown: true) || state == .rendering)
         if state != .rendering {
             state = .rendering
         }
-        let commandBuffer = try commandQueue.makeCommandBuffer().safelyUnwrap(RenderKitError.resourceCreationFailure)
-
         let renderPasses = passes.elements.compactMap { $0 as? any RenderPassProtocol }
-
         for pass in passes.elements {
             switch pass {
             case let renderPass as any RenderPassProtocol:
@@ -111,6 +108,11 @@ struct Renderer <MetalConfiguration> where MetalConfiguration: MetalConfiguratio
                 fatalError()
             }
         }
+    }
+
+    mutating func draw(commandQueue: MTLCommandQueue, renderPassDescriptor: MTLRenderPassDescriptor, drawable: MTLDrawable, drawableSize: CGSize) throws {
+        let commandBuffer = try commandQueue.makeCommandBuffer().safelyUnwrap(RenderKitError.resourceCreationFailure)
+        try render(commandBuffer: commandBuffer, renderPassDescriptor: renderPassDescriptor, drawableSize: drawableSize)
         commandBuffer.present(drawable)
         commandBuffer.commit()
     }

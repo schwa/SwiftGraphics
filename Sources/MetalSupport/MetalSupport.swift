@@ -1191,7 +1191,7 @@ public extension SIMD4<Double> {
 }
 
 public extension PixelFormat {
-    // TODO: Test endianness.
+    // TODO: Test endianness. // TODO: This is clearly very broken and desparately needs offscreen rendering unit tests.
     // swiftlint:disable:next cyclomatic_complexity
     init?(_ pixelFormat: MTLPixelFormat) {
         switch pixelFormat {
@@ -1279,7 +1279,7 @@ public extension PixelFormat {
             self = .init(bitsPerComponent: 8, numberOfComponents: 4, alphaInfo: .premultipliedLast, byteOrder: .order32Little, colorSpace: colorSpace)
         case .bgra8Unorm_srgb:
             let colorSpace = CGColorSpace(name: CGColorSpace.sRGB)
-            self = .init(bitsPerComponent: 8, numberOfComponents: 4, alphaInfo: .premultipliedLast, byteOrder: .order32Little, colorSpace: colorSpace)
+            self = .init(bitsPerComponent: 8, numberOfComponents: 4, alphaInfo: .premultipliedLast, byteOrder: .order32Big, colorSpace: colorSpace)
         case .rgb10a2Unorm:
             return nil
         case .rgb10a2Uint:
