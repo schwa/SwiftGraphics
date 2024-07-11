@@ -12,9 +12,6 @@ import Shapes2D
 import SIMDSupport
 import SwiftUI
 
-// swiftlint:disable force_try
-// swiftlint:disable force_cast
-
 // https://www.youtube.com/watch?v=y4KdxaMC69w&t=1761s
 
 struct VolumetricRendererDemoView: DemoView {

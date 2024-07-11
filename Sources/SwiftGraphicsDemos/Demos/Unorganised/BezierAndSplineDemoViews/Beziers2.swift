@@ -2,8 +2,6 @@ import BaseSupport
 import CoreGraphics
 import Foundation
 
-// swiftlint:disable identifier_name
-
 //// Representation of a quadratic BÃ©zier curve. p0 is the start point, p1 is the control point, p2 is the end point.
 // let quadBezControlPoints = {
 //  p0: { x: 10, y: 10 },

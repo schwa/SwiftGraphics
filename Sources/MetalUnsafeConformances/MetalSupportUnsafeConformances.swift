@@ -190,7 +190,6 @@ extension MTLPixelFormat: @retroactive CustomStringConvertible {
 extension MTLVertexFormat: @retroactive CustomStringConvertible {
     public var description: String {
         switch self {
-        // swiftlint:disable switch_case_on_newline
         case .invalid: "invalid"
         case .uchar2: "uchar2"
         case .uchar3: "uchar3"

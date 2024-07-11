@@ -6,8 +6,6 @@ import ModelIO
 import RenderKitShadersLegacy
 import SwiftUI
 
-// swiftlint:disable force_try
-
 struct TextureDemoView: View, DemoView {
     @State
     private var showDebugView = false

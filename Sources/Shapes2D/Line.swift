@@ -5,6 +5,8 @@ import CoreGraphicsSupport
 import Foundation
 import SwiftUI
 
+// swiftlint:disable force_unwrapping
+
 // public typealias Line = Line
 // https://www.desmos.com/calculator/gtdbajcu41
 // https://www.wolframalpha.com/input?i=line

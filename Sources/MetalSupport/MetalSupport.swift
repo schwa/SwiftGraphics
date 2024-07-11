@@ -1,3 +1,5 @@
+// swiftlint:disable file_length
+
 import CoreGraphics
 import CoreGraphicsSupport
 import Foundation
@@ -9,9 +11,6 @@ import os
 import simd
 import SIMDSupport
 import SwiftUI
-
-// swiftlint:disable cyclomatic_complexity
-// swiftlint:disable file_length
 
 // TODO: This file is a mess.
 // TODO: Take note of the deprecations here.
@@ -1022,6 +1021,7 @@ public extension MTLVertexFormat {
         }
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     init?(dataType: MTLDataType) {
         switch dataType {
         case .float2:

@@ -145,8 +145,6 @@ public extension SIMD3<Float> {
     }
 }
 
-// swiftlint:disable identifier_name
-
 // TODO: Move
 extension CGVector {
     init(_ dx: CGFloat, _ dy: CGFloat) {

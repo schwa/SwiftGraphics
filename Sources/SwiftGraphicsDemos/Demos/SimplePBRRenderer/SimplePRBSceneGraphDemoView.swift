@@ -10,8 +10,6 @@ import SIMDSupport
 import SwiftGLTF
 import SwiftUI
 
-// swiftlint:disable force_try
-
 public struct SimplePBRSceneGraphDemoView: View, DemoView {
     let device: MTLDevice
 

@@ -1,4 +1,5 @@
 import Algorithms
+import BaseSupport
 import MetalSupport
 import ModelIO
 import SIMDSupport
@@ -17,7 +18,7 @@ public extension TrivialMesh where Vertex == SIMD3<Float> {
         let positions = try mesh.positions
         // TODO: confirm that these are triangles.
         // TODO: confirm that index is uint32
-        guard let submesh = mesh.submeshes![0] as? MDLSubmesh else {
+        guard let submesh = mesh.submeshes?[0] as? MDLSubmesh else {
             throw TrivialMeshError.generic("No submesh.")
         }
         let indexBuffer = submesh.indexBuffer
@@ -46,8 +47,9 @@ public extension TrivialMesh where Vertex == SimpleVertex {
 
         // TODO: confirm that these are triangles.
         // TODO: confirm that index is uint32
-        // swiftlint:disable:next force_cast
-        let submesh = mesh.submeshes![0] as! MDLSubmesh
+        guard let submesh = mesh.submeshes?[0] as? MDLSubmesh else {
+            fatalError()
+        }
         let indexBuffer = submesh.indexBuffer
         let indexBytes = UnsafeRawBufferPointer(start: indexBuffer.map().bytes, count: indexBuffer.length)
         let indices = indexBytes.bindMemory(to: UInt32.self).map { Int($0) }
@@ -120,8 +122,8 @@ public extension MDLMesh {
     // TODO: FIX bangs
     convenience init(trivialMesh mesh: TrivialMesh<SimpleVertex>, allocator: MDLMeshBufferAllocator? = nil) throws {
         let allocator = allocator ?? MDLMeshBufferDataAllocator()
-        let vertexBuffer = mesh.vertices.withUnsafeBytes { buffer in
-            allocator.newBuffer(from: nil, data: Data(buffer), type: .vertex)!
+        let vertexBuffer = try mesh.vertices.withUnsafeBytes { buffer in
+            try allocator.newBuffer(from: nil, data: Data(buffer), type: .vertex).safelyUnwrap(MetalSupportError.resourceCreationFailure)
         }
         let descriptor = MDLVertexDescriptor()
         // TODO: hard coded.
@@ -136,20 +138,20 @@ public extension MDLMesh {
         case 0 ..< 256:
             indexType = .uInt8
             let indices = mesh.indices.map { UInt8($0) }
-            indexBuffer = indices.withUnsafeBytes { buffer in
-                allocator.newBuffer(from: nil, data: Data(buffer), type: .index)!
+            indexBuffer = try indices.withUnsafeBytes { buffer in
+                try allocator.newBuffer(from: nil, data: Data(buffer), type: .index).safelyUnwrap(MetalSupportError.resourceCreationFailure)
             }
         case 256 ..< 65_536:
             indexType = .uInt16
             let indices = mesh.indices.map { UInt16($0) }
-            indexBuffer = indices.withUnsafeBytes { buffer in
-                allocator.newBuffer(from: nil, data: Data(buffer), type: .index)!
+            indexBuffer = try indices.withUnsafeBytes { buffer in
+                try allocator.newBuffer(from: nil, data: Data(buffer), type: .index).safelyUnwrap(MetalSupportError.resourceCreationFailure)
             }
         case 65_536 ..< 4_294_967_296:
             indexType = .uInt32
             let indices = mesh.indices.map { UInt32($0) }
-            indexBuffer = indices.withUnsafeBytes { buffer in
-                allocator.newBuffer(from: nil, data: Data(buffer), type: .index)!
+            indexBuffer = try indices.withUnsafeBytes { buffer in
+                try allocator.newBuffer(from: nil, data: Data(buffer), type: .index).safelyUnwrap(MetalSupportError.resourceCreationFailure)
             }
         default:
             fatalError()

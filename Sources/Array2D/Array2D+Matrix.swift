@@ -7,7 +7,6 @@ public extension Array2D where Element == Float {
     static func * (lhs: Self, rhs: Self) -> Self {
         var result = Array2D(repeating: 0, size: [lhs.size.height, rhs.size.height])
         // Stride: https://developer.apple.com/documentation/accelerate/controlling_vdsp_operations_with_stride
-        // swiftlint:disable multiline_arguments
         vDSP_mmul(
             lhs.flatStorage, 1,
             rhs.flatStorage, 1,

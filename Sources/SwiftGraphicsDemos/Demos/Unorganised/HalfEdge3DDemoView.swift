@@ -7,8 +7,6 @@ import simd
 import SIMDSupport
 import SwiftUI
 
-// swiftlint:disable force_try
-
 struct HalfEdge3DDemoView: View, DemoView {
     @State
     private var mesh: HalfEdgeMesh<SIMD3<Float>>

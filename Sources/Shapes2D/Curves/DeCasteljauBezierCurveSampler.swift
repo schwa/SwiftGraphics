@@ -26,7 +26,10 @@ public struct DeCasteljauBezierCurveSampler {
         var points = controlPoints
         while points.count > 1 {
             points = points.windows(ofCount: 2).map { points in
-                lerp(from: points.first!, to: points.last!, by: t)
+                guard let first = points.first, let last = points.last else {
+                    fatalError("No first or last points.")
+                }
+                return lerp(from: first, to: last, by: t)
             }
         }
         return points[0]

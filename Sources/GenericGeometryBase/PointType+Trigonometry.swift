@@ -1,5 +1,4 @@
-//// swiftlint:disable identifier_name
-//
+////
 // import ApproximateEquality
 // import CoreGraphics
 // import SwiftUI

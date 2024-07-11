@@ -6,8 +6,6 @@ import Shapes2D
 import Shapes3D
 import simd
 
-// swiftlint:disable force_unwrapping
-
 public enum ExtrusionAxis {
     case x
     case y
@@ -30,8 +28,11 @@ public extension ExtrusionAxis {
 public extension PolygonalChain {
     func extrude(min: Float, max: Float, axis: ExtrusionAxis = .z) -> TrivialMesh<SimpleVertex> {
         let quads: [Quad<SimpleVertex>] = vertices.windows(ofCount: 2).reduce(into: []) { result, window in
-            let from = SIMD2<Float>(x: Float(window.first!.x), y: Float(window.first!.y))
-            let to = SIMD2<Float>(x: Float(window.last!.x), y: Float(window.last!.y))
+            guard let first = window.first, let last = window.last else {
+                fatalError("No first or last vertices.")
+            }
+            let from = SIMD2<Float>(x: Float(first.x), y: Float(first.y))
+            let to = SIMD2<Float>(x: Float(last.x), y: Float(last.y))
             let transform = axis.transform
 
             let vertices = (

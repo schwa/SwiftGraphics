@@ -6,8 +6,6 @@ import Shapes3D
 import SIMDSupport
 import SwiftUI
 
-// swiftlint:disable force_try
-
 struct PointCloudSoftwareRenderView: View, DemoView {
     @State
     private var cameraTransform: Transform = .translation([0, 0, -5])

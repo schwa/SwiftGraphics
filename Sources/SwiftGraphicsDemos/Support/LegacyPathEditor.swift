@@ -4,8 +4,6 @@ import Shapes2D
 import SwiftUI
 import SwiftUISupport
 
-// swiftlint:disable force_try
-
 struct LegacyPathEditor: View {
     @Binding
     var points: [CGPoint]
