@@ -11,6 +11,7 @@ import simd
 import SIMDSupport
 import SwiftFormats
 import SwiftUI
+import UniformTypeIdentifiers
 
 // swiftlint:disable force_try
 
@@ -24,6 +25,9 @@ public struct GaussianSplatView: View {
     @State
     private var scene: SceneGraph
 
+    @State
+    private var isTargeted = false
+
     public init() {
         let device = MTLCreateSystemDefaultDevice()!
         //        let url = Bundle.module.url(forResource: "6_20_2024", withExtension: "splatc")!
@@ -33,7 +37,7 @@ public struct GaussianSplatView: View {
         let root = Node(label: "root") {
             Node(label: "ball") {
                 Node(label: "camera")
-                    // .transform(translation: [0, 0, 04])
+                // .transform(translation: [0, 0, 04])
                     .content(Camera())
             }
             Node(label: "splats").content(splats)
@@ -56,6 +60,25 @@ public struct GaussianSplatView: View {
             }
             .modifier(SceneGraphViewModifier(device: device, scene: $scene, passes: []))
             .environment(viewModel)
+            .onDrop(of: [.splat], isTargeted: $isTargeted) { items in
+                if let item = items.first {
+                    item.loadItem(forTypeIdentifier: UTType.splat.identifier, options: nil) { data, _ in
+                        guard let url = data as? URL else {
+                            print("No url")
+                            return
+                        }
+                        Task {
+                            await MainActor.run {
+                                scene.splatsNode.content = try! Splats(device: device, url: url)
+                            }
+                        }
+                    }
+                    return true
+                } else {
+                    return false
+                }
+            }
+            .border(isTargeted ? Color.accentColor : .clear, width: isTargeted ? 4 : 0)
     }
 }
 
