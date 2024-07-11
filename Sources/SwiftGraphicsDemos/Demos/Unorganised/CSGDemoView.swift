@@ -107,11 +107,3 @@ extension GraphicsContext {
         }
     }
 }
-
-extension URL {
-    func reveal() {
-        #if os(macOS)
-        NSWorkspace.shared.selectFile(path, inFileViewerRootedAtPath: "")
-        #endif
-    }
-}

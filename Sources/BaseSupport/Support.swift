@@ -1,4 +1,7 @@
 import Foundation
+#if os(macOS)
+import AppKit
+#endif
 
 public extension NSCopying {
     func typedCopy() -> Self {
@@ -67,5 +70,13 @@ public extension Array {
                 _ = popLast()
             }
         }
+    }
+}
+
+public extension URL {
+    func reveal() {
+        #if os(macOS)
+        NSWorkspace.shared.selectFile(path, inFileViewerRootedAtPath: "")
+        #endif
     }
 }

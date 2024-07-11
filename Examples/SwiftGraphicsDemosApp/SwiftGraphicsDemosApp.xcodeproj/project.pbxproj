@@ -196,7 +196,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#!/bin/bash\n\ncd ../..\n\nswiftlint_paths=(\n    /opt/homebrew/bin/swiftlint\n    /usr/local/bin/swiftlint\n    /usr/bin/swiftlint\n)\n\nfor path in \"${swiftlint_paths[@]}\"\ndo\n    if [ -x \"$path\" ]; then\n        \"$path\" --quiet --config .swiftlint.yml\n        exit 0\n    fi\ndone\n\necho \"WARNING: swiftlint not found in the specified locations.\"\nexit 0\n";
+			shellScript = "#!/bin/bash\n\nswiftlint_paths=(\n    /opt/homebrew/bin/swiftlint\n    /usr/local/bin/swiftlint\n    /usr/bin/swiftlint\n)\n\ncd ../..\nfor path in \"${swiftlint_paths[@]}\"\ndo\n    if [ -x \"$path\" ]; then\n        \"$path\" --quiet\n        exit 0\n    fi\ndone\n\necho \"WARNING: swiftlint not found in the specified locations.\"\nexit 0\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */

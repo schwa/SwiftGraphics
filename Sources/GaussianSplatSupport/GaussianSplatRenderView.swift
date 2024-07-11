@@ -81,7 +81,9 @@ public struct GaussianSplatRenderView: View {
             guard let cgImage = targetTexture.cgImage() else {
                 fatalError()
             }
-            try cgImage.write(to: URL(filePath: "/tmp/test.png"))
+            let url = URL(filePath: "/tmp/test.png")
+            try cgImage.write(to: url)
+            url.reveal()
         }
         catch {
             print(error)
