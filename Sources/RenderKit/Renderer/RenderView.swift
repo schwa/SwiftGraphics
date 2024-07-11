@@ -23,7 +23,7 @@ public struct RenderView: View {
     private var commandQueue: MTLCommandQueue?
 
     @State
-    private var renderer: Renderer?
+    private var renderer: Renderer<MetalViewConfiguration>?
 
     @Environment(\.renderErrorHandler)
     var renderErrorHandler

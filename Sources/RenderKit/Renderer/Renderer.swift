@@ -18,11 +18,11 @@ public protocol PassProtocol: Equatable/*, Sendable*/ {
     var id: AnyHashable { get }
 }
 
-struct Renderer {
+struct Renderer <MetalConfiguration> where MetalConfiguration: MetalConfigurationProtocol {
     private var device: MTLDevice
     private var passes: PassCollection
     private var statesByPasses: [AnyHashable: any PassState] = [:]
-    private var configuration: MetalViewConfiguration?
+    private var configuration: MetalConfiguration?
     private var drawableSize: CGSize = .zero
     private var logger: Logger? = Logger(subsystem: "com.swiftui.metal", category: "Renderer")
 
@@ -44,7 +44,7 @@ struct Renderer {
         self.state = .initialized
     }
 
-    mutating func configure(_ configuration: inout MetalViewConfiguration) throws {
+    mutating func configure(_ configuration: inout MetalConfiguration) throws {
         assert(state == .initialized)
         self.state = .configured(sizeKnown: false)
         configuration.colorPixelFormat = .bgra8Unorm_srgb
