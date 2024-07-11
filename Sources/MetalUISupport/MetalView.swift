@@ -5,7 +5,7 @@ import MetalSupport
 import Observation
 import SwiftUI
 
-public protocol MetalConfiguration {
+public protocol MetalConfigurationProtocol {
     var colorPixelFormat: MTLPixelFormat { get set }
     var clearColor: MTLClearColor { get set }
     var depthStencilPixelFormat: MTLPixelFormat { get set }
@@ -13,7 +13,7 @@ public protocol MetalConfiguration {
     var clearDepth: Double { get set }
 }
 
-public struct MetalViewConfiguration: MetalConfiguration {
+public struct MetalViewConfiguration: MetalConfigurationProtocol {
     // TODO: Fully expand this.
     public var colorPixelFormat: MTLPixelFormat
     public var clearColor: MTLClearColor
