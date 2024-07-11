@@ -35,7 +35,10 @@ public extension Binding where Value == SceneGraph {
 
     func binding(for indexPath: IndexPath) -> Binding<Node> {
         Binding<Node> {
-            wrappedValue[accessor: NodeAccessor(path: indexPath)]!
+            guard let node = wrappedValue[accessor: NodeAccessor(path: indexPath)] else {
+                fatalError("No node at indexPath \(indexPath)")
+            }
+            return node
         }
         set: {
             wrappedValue[accessor: NodeAccessor(path: indexPath)] = $0
@@ -92,8 +95,11 @@ public extension SceneGraph {
             root[indexPath: accessor.path]
         }
         set {
-            // TODO: FIXME
-            root[indexPath: accessor.path] = newValue!
+            guard let newValue else {
+                // TODO: There's no reason we can't delete the node here.
+                fatalError("Cannot set node to nil")
+            }
+            root[indexPath: accessor.path] = newValue
         }
     }
 
@@ -149,7 +155,10 @@ public extension SceneGraph {
         }
         set {
             if let newValue {
-                root[indexPath: currentCameraPath!] = newValue
+                guard let currentCameraPath else {
+                    fatalError("Trying to set current camera node, but no path for existing camera")
+                }
+                root[indexPath: currentCameraPath] = newValue
             }
             else {
                 currentCameraPath = nil

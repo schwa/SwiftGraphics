@@ -23,7 +23,7 @@ public struct RenderView: View {
     private var commandQueue: MTLCommandQueue?
 
     @State
-    private var renderer: Renderer<MetalViewConfiguration>?
+    private var renderer: Renderer<MetalViewConfiguration>
 
     @Environment(\.renderErrorHandler)
     var renderErrorHandler
@@ -33,16 +33,17 @@ public struct RenderView: View {
 
     public init(device: MTLDevice, passes: [any PassProtocol], configure: @escaping Configure = { _ in }, sizeWillChange: @escaping SizeWillChange = { _ in }) {
         self.device = device
-        self.passes = .init(passes)
         self.configure = configure
         self.sizeWillChange = sizeWillChange
+        let passes = PassCollection(passes)
+        self.passes = passes
+        self.renderer = Renderer<MetalViewConfiguration>(device: device, passes: passes)
     }
 
     public var body: some View {
         MetalView { device, configuration in
             do {
-                renderer = Renderer(device: device, passes: passes)
-                try renderer!.configure(&configuration)
+                try renderer.configure(&configuration)
                 configure(configuration)
                 commandQueue = device.makeCommandQueue()
             } catch {
@@ -50,7 +51,7 @@ public struct RenderView: View {
             }
         } drawableSizeWillChange: { _, _, size in
             do {
-                try renderer!.sizeWillChange(size)
+                try renderer.sizeWillChange(size)
                 sizeWillChange(size)
             } catch {
                 renderErrorHandler.send(error, logger: logger)
@@ -60,14 +61,14 @@ public struct RenderView: View {
                 guard let commandQueue else {
                     fatalError()
                 }
-                try renderer!.draw(commandQueue: commandQueue, renderPassDescriptor: renderPassDescriptor, drawable: drawable, drawableSize: size)
+                try renderer.draw(commandQueue: commandQueue, renderPassDescriptor: renderPassDescriptor, drawable: drawable, drawableSize: size)
             } catch {
                 renderErrorHandler.send(error, logger: logger)
             }
         }
         .onChange(of: passes) {
             do {
-                try renderer!.updateRenderPasses(passes)
+                try renderer.updateRenderPasses(passes)
             } catch {
                 renderErrorHandler.send(error, logger: logger)
             }

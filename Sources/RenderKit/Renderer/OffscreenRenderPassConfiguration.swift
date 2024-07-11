@@ -26,7 +26,7 @@ public struct OffscreenRenderPassConfiguration: MetalConfigurationProtocol {
         self.size = size
     }
 
-    public mutating func update() {
+    public mutating func update() throws {
         currentRenderPassDescriptor = nil
         targetTexture = nil
         let currentRenderPassDescriptor = MTLRenderPassDescriptor()
@@ -34,7 +34,7 @@ public struct OffscreenRenderPassConfiguration: MetalConfigurationProtocol {
         let targetTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: colorPixelFormat, width: Int(size.width), height: Int(size.height), mipmapped: false)
         targetTextureDescriptor.storageMode = .shared
         targetTextureDescriptor.usage = [.renderTarget, .shaderRead, .shaderWrite]
-        let targetTexture = device.makeTexture(descriptor: targetTextureDescriptor)!
+        let targetTexture = try device.makeTexture(descriptor: targetTextureDescriptor).safelyUnwrap(MetalSupportError.resourceCreationFailure)
         targetTexture.label = "Target Texture"
         currentRenderPassDescriptor.colorAttachments[0].texture = targetTexture
         currentRenderPassDescriptor.colorAttachments[0].loadAction = .clear
@@ -46,7 +46,7 @@ public struct OffscreenRenderPassConfiguration: MetalConfigurationProtocol {
             let depthTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: depthStencilPixelFormat, width: Int(size.width), height: Int(size.height), mipmapped: false)
             depthTextureDescriptor.storageMode = depthStencilStorageMode
             depthTextureDescriptor.usage = [.renderTarget, .shaderRead, .shaderWrite]
-            let depthStencilTexture = device.makeTexture(descriptor: depthTextureDescriptor)!
+            let depthStencilTexture = try device.makeTexture(descriptor: depthTextureDescriptor).safelyUnwrap(MetalSupportError.resourceCreationFailure)
             depthStencilTexture.label = "Depth Texture"
             currentRenderPassDescriptor.depthAttachment.texture = depthStencilTexture
             currentRenderPassDescriptor.depthAttachment.loadAction = .clear

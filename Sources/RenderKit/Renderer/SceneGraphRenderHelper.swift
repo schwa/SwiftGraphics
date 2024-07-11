@@ -29,7 +29,9 @@ public struct SceneGraphRenderHelper {
         assert(drawableSize.x > 0 && drawableSize.y > 0)
         let cameraMatrix = currentCameraNode.transform.matrix
         let viewMatrix = cameraMatrix.inverse
-        let projectionMatrix = currentCameraNode.camera!.projectionMatrix(for: drawableSize)
+        guard let projectionMatrix = currentCameraNode.camera?.projectionMatrix(for: drawableSize) else {
+            fatalError("No camera in scene")
+        }
         self.init(scene: scene, cameraMatrix: cameraMatrix, viewMatrix: viewMatrix, projectionMatrix: projectionMatrix)
     }
 
@@ -46,7 +48,9 @@ public struct SceneGraphRenderHelper {
                         transformStack = [modelMatrix]
                     }
                     else {
-                        let parentTransform = transformStack.last!
+                        guard let parentTransform = transformStack.last else {
+                            fatalError("Popping from empty transform stack")
+                        }
                         modelMatrix = parentTransform * node.transform.matrix
                         transformStack.append(modelMatrix)
                     }
