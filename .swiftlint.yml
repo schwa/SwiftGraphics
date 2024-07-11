@@ -13,8 +13,6 @@ function_body_length:
 file_length:
   warning: 1000
   error: 10000
-force_try:
-  severity: warning
 only_rules:
 #  - accessibility_label_for_image # 8 violations
 #  - accessibility_trait_for_button # 6 violations
@@ -89,8 +87,8 @@ only_rules:
   - first_where
   - flatmap_over_map_reduce
   - for_where
-  - force_cast
-  - force_try
+#   - force_cast
+#   - force_try
 #  - force_unwrapping # 265 violations
   - function_body_length
 #  - function_default_parameter_at_end # 52 violations

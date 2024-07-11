@@ -14,8 +14,6 @@ import SwiftFields
 import SwiftUI
 import UniformTypeIdentifiers
 
-// swiftlint:disable force_try
-
 public struct SingleSplatView: View {
     @State
     private var cameraTransform: Transform = .translation([0, 0, 5])

@@ -11,8 +11,6 @@ import SIMDSupport
 import SwiftFormats
 import SwiftUI
 
-// swiftlint:disable force_try
-
 struct SoftwareRendererMeshDemoView: View, DemoView {
     enum Source: Hashable {
         case file(String)

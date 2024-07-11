@@ -10,8 +10,6 @@ import Shapes3D
 import SIMDSupport
 import SwiftUI
 
-// swiftlint:disable force_try
-
 struct PointCloudView: View, DemoView {
     @State
     private var device: MTLDevice

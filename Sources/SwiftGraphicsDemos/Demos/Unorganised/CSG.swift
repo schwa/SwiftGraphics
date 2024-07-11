@@ -312,7 +312,6 @@ extension Polygon3D where Vertex == SimpleVertex {
             fatalError("Unimplemented")
         // TODO: FIXME
 
-        // swiftlint:disable local_doc_comment
         //            var f: [Vertex] = []
         //            var b: [Vertex] = []
         //            for (i, j) in zip(vertices, types).circularPairs() {
@@ -326,13 +325,13 @@ extension Polygon3D where Vertex == SimpleVertex {
         //                }
         //                temporarilyDisabled()
         //                // TODO: FIXME
-        ////                if ti | tj == .spanning {
-        ////                    let t = (splitter.w - splitter.normal.dot(vi.position)) / splitter.normal.dot(vj.position - vi.position)
-        ////                    let v = vi.interpolate(vj, t)
-        ////                    f.append(v)
-        ////                    b.append(v)
-        ////                }
-        //            }
+        // //                if ti | tj == .spanning {
+        // //                    let t = (splitter.w - splitter.normal.dot(vi.position)) / splitter.normal.dot(vj.position - vi.position)
+        // //                    let v = vi.interpolate(vj, t)
+        // //                    f.append(v)
+        // //                    b.append(v)
+        // //                }
+        //             }
         //            if f.count >= 3 {
         //                front.append(Polygon3D(vertices: f))
         //            }

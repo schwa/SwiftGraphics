@@ -1,7 +1,6 @@
 // Sense a theme here?:
 // swiftlint:disable type_body_length
 // swiftlint:disable function_parameter_count
-// swiftlint:disable identifier_name
 // swiftlint:disable multiline_parameters
 // swiftlint:disable indentation_width
 // swiftlint:disable implicitly_unwrapped_optional

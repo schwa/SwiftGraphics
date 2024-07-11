@@ -1,5 +1,3 @@
-// swiftlint:disable identifier_name
-
 import CoreGraphics
 import CoreGraphicsSupport
 import SwiftUI

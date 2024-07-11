@@ -10,8 +10,6 @@ import simd
 import SIMDSupport
 import SwiftUI
 
-// swiftlint:disable force_try
-
 public struct SceneGraphDemoView: View, DemoView {
     let device: MTLDevice
 

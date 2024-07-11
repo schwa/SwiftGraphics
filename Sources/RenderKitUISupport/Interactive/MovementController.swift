@@ -6,6 +6,8 @@ import Observation
 import os.log
 import SwiftUI
 
+// swiftlint:disable force_unwrapping
+
 // TODO: This needs to be massively cleaned-up and turned into an actor.
 // TODO: We need good support for pausing/resuming inputs
 // TODO: we need to be able to reliably find devices and handle disconnect/reconnect gracefully

@@ -5,8 +5,6 @@ import MetalSupport
 import MetalUnsafeConformances
 import SwiftUI
 
-// swiftlint:disable force_try
-
 struct PixelFormatsDemoView: View, DemoView {
     @Environment(\.metalDevice)
     var device

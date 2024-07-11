@@ -48,8 +48,8 @@ public struct Arcball {
             prevPos = toScreenCoordinate(point: point)
         }
         currPos = toScreenCoordinate(point: point)
-        angle = acos(min(1, dot(prevPos!, currPos)))
-        camAxis = cross(prevPos!, currPos)
+        angle = acos(min(1, dot(prevPos ?? currPos, currPos)))
+        camAxis = cross(prevPos ?? currPos, currPos)
     }
 
     public mutating func reset() {

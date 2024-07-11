@@ -1,5 +1,3 @@
-// swiftlint:disable identifier_name
-
 import CoreGraphics
 import CoreGraphicsSupport
 
@@ -57,7 +55,10 @@ public extension Polygon {
             .map { Array(vertices[$0 ..< $0 + 2]) }
             .map { ($0[0], $0[1]) }
             .map { LineSegment($0, $1) }
-        return segments + [LineSegment(vertices.last!, vertices.first!)]
+        guard let first = vertices.last, let last = vertices.first else {
+            return []
+        }
+        return segments + [LineSegment(last, first)]
     }
 }
 

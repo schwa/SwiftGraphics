@@ -4,8 +4,6 @@ import Shapes3D
 import simd
 import SwiftUI
 
-// swiftlint:disable force_try
-
 struct CSGDemoView: View, DemoView {
     var body: some View {
         CSGDemoView_()

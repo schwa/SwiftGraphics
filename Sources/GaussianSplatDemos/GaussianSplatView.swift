@@ -13,8 +13,6 @@ import SwiftFormats
 import SwiftUI
 import UniformTypeIdentifiers
 
-// swiftlint:disable force_try
-
 public struct GaussianSplatView: View {
     @State
     private var device: MTLDevice

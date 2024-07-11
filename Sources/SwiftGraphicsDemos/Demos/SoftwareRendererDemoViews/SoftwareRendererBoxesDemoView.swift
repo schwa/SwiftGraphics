@@ -6,8 +6,6 @@ import Shapes3D
 import SIMDSupport
 import SwiftUI
 
-// swiftlint:disable force_try
-
 struct SoftwareRendererBoxesDemoView: View, DemoView {
     @State
     private var models: [any PolygonConvertable]
