@@ -161,7 +161,7 @@ extension View {
             Text("Horizontal Examples").font(.headline)
             TickMarks(range: 0...100, majorDistance: 10, minorDistance: 2, orientation: .horizontal)
                 .frame(width: 300, height: 20)
-                    .border(Color.red)
+                .border(Color.red)
             TickMarks(range: 0...1, majorDistance: 0.2, minorDistance: 0.05, orientation: .horizontal)
                 .frame(width: 300, height: 20)
             TickMarks(from: 100, to: 0, majorDistance: 10, minorDistance: 2, orientation: .horizontal)

@@ -37,7 +37,7 @@ public struct GaussianSplatView: View {
         let root = Node(label: "root") {
             Node(label: "ball") {
                 Node(label: "camera")
-                // .transform(translation: [0, 0, 04])
+                    // .transform(translation: [0, 0, 04])
                     .content(Camera())
             }
             Node(label: "splats").content(splats)
@@ -143,5 +143,4 @@ struct OptionsView: View {
         }
         .padding()
     }
-
 }

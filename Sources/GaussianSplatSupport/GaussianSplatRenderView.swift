@@ -32,12 +32,12 @@ public struct GaussianSplatRenderView: View {
 
     public var body: some View {
         RenderView(device: device, passes: passes)
-        .toolbar {
-            // TODO: this should not be here.
-            Button("Screenshot") {
-                screenshot()
+            .toolbar {
+                // TODO: this should not be here.
+                Button("Screenshot") {
+                    screenshot()
+                }
             }
-        }
     }
 
     var passes: [any PassProtocol] {
@@ -87,5 +87,4 @@ public struct GaussianSplatRenderView: View {
             print(error)
         }
     }
-
 }

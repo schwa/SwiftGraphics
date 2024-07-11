@@ -25,7 +25,6 @@ public struct OffscreenRenderer {
         renderer = Renderer<OffscreenRenderPassConfiguration>(device: device, passes: .init(passes))
     }
 
-
     public mutating func configure() throws {
         try renderer.configure(&offscreenConfiguration)
         try renderer.sizeWillChange(size)
