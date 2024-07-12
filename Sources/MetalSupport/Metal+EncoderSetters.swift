@@ -1,5 +1,7 @@
 import Metal
 
+// swiftlint:disable force_unwrapping
+
 public extension MTLArgumentEncoder {
     func setBytes(of value: some Any, index: Int) {
         withUnsafeBytes(of: value) { buffer in

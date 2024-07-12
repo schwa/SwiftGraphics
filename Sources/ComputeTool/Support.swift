@@ -6,6 +6,8 @@ import Foundation
 import Metal
 import MetalSupport
 
+// swiftlint:disable force_unwrapping
+
 // TODO: MOVE
 
 class StopWatch: CustomStringConvertible {

@@ -5,6 +5,8 @@ import Foundation
 import Metal
 import MetalSupport
 
+// swiftlint:disable force_unwrapping
+
 struct GameOfLife {
     let width = 16
     let height = 16

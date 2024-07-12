@@ -1,6 +1,8 @@
 import Foundation
 import SwiftUI
 
+// swiftlint:disable force_unwrapping
+
 public struct MeasurementField <Label, UnitType>: View where Label: View, UnitType: Dimension {
     @Binding
     private var measurement: Measurement<UnitType>
@@ -20,8 +22,8 @@ public struct MeasurementField <Label, UnitType>: View where Label: View, UnitTy
             HStack {
                 label
                 TextField(value: $measurement.value, format: .number, prompt: prompt) { EmptyView() }
-                .foregroundColor(.primary.opacity(0.5))
-                .labelsHidden()
+                    .foregroundColor(.primary.opacity(0.5))
+                    .labelsHidden()
             }
             .textFieldStyle(.plain)
             .multilineTextAlignment(.trailing)
@@ -55,14 +57,14 @@ public struct MeasurementField <Label, UnitType>: View where Label: View, UnitTy
         .padding(2)
         .background(.secondary.opacity(0.1))
         .cornerRadius(4)
-//        .onScrollWheelUp { direction in
-//            if direction == .up {
-//                measurement.value += 1
-//            }
-//            if direction == .down {
-//                measurement.value += 1
-//            }
-//        }
+        //        .onScrollWheelUp { direction in
+        //            if direction == .up {
+        //                measurement.value += 1
+        //            }
+        //            if direction == .down {
+        //                measurement.value += 1
+        //            }
+        //        }
     }
 }
 
@@ -93,9 +95,9 @@ public extension MeasurementField where Label == Text {
         .padding(20)
 }
 
-//import Combine
+// import Combine
 //
-//struct ScrollWheelModifier: ViewModifier {
+// struct ScrollWheelModifier: ViewModifier {
 //
 //    enum Direction {
 //        case up, down, left, right
@@ -137,10 +139,10 @@ public extension MeasurementField where Label == Text {
 //            }
 //            .store(in: &subs)
 //    }
-//}
+// }
 //
-//extension View {
+// extension View {
 //    func onScrollWheelUp(action: @escaping (ScrollWheelModifier.Direction) -> Void) -> some View {
 //        modifier(ScrollWheelModifier(action: action) )
 //    }
-//}
+// }

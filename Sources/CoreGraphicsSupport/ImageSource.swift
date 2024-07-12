@@ -1,3 +1,4 @@
+import BaseSupport
 import Foundation
 import ImageIO
 import UniformTypeIdentifiers
@@ -71,7 +72,9 @@ import AppKit
 
 public extension CGImage {
     static func image(contentsOf url: URL) throws -> CGImage {
-        let nsImage = NSImage(contentsOf: url)! // TODO: Bang
+        guard let nsImage = NSImage(contentsOf: url) else {
+            throw BaseError.generic("URL not found: \(url)")
+        }
         return nsImage.cgImage
     }
 }
