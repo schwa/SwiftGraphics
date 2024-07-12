@@ -17,8 +17,11 @@ public struct MeasurementField <Label, UnitType>: View where Label: View, UnitTy
 
     public var body: some View {
         HStack(spacing: 2) {
-            TextField(value: $measurement.value, format: .number, prompt: prompt) {
+            HStack {
                 label
+                TextField(value: $measurement.value, format: .number, prompt: prompt) { EmptyView() }
+                .foregroundColor(.primary.opacity(0.5))
+                .labelsHidden()
             }
             .textFieldStyle(.plain)
             .multilineTextAlignment(.trailing)
@@ -27,6 +30,7 @@ public struct MeasurementField <Label, UnitType>: View where Label: View, UnitTy
             .truncationMode(.tail)
             if units.count == 1 {
                 Text(measurement.unit.symbol)
+                    .foregroundColor(.primary.opacity(0.5))
             }
             else {
                 Menu(measurement.unit.symbol) {
@@ -51,6 +55,14 @@ public struct MeasurementField <Label, UnitType>: View where Label: View, UnitTy
         .padding(2)
         .background(.secondary.opacity(0.1))
         .cornerRadius(4)
+//        .onScrollWheelUp { direction in
+//            if direction == .up {
+//                measurement.value += 1
+//            }
+//            if direction == .down {
+//                measurement.value += 1
+//            }
+//        }
     }
 }
 
@@ -80,3 +92,55 @@ public extension MeasurementField where Label == Text {
         .frame(width: 120)
         .padding(20)
 }
+
+//import Combine
+//
+//struct ScrollWheelModifier: ViewModifier {
+//
+//    enum Direction {
+//        case up, down, left, right
+//    }
+//
+//    @State private var subs = Set<AnyCancellable>() // Cancel onDisappear
+//
+//    var action: (Direction) -> Void
+//
+//    func body(content: Content) -> some View {
+//        content
+//            .onAppear { trackScrollWheel() }
+//    }
+//
+//    func trackScrollWheel() {
+//        NSApp.publisher(for: \.currentEvent)
+//            .filter { event in event?.type == .scrollWheel }
+//            .throttle(for: .milliseconds(200),
+//                      scheduler: DispatchQueue.main,
+//                      latest: true)
+//            .sink {
+//                if let event = $0 {
+//                    if event.deltaX > 0 {
+//                        action(.right)
+//                    }
+//
+//                    if event.deltaX < 0 {
+//                        action(.left)
+//                    }
+//
+//                    if event.deltaY > 0 {
+//                        action(.down)
+//                    }
+//
+//                    if event.deltaY < 0 {
+//                        action(.up)
+//                    }
+//                }
+//            }
+//            .store(in: &subs)
+//    }
+//}
+//
+//extension View {
+//    func onScrollWheelUp(action: @escaping (ScrollWheelModifier.Direction) -> Void) -> some View {
+//        modifier(ScrollWheelModifier(action: action) )
+//    }
+//}
