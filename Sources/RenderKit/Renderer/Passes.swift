@@ -11,6 +11,12 @@ public protocol PassState /*: Sendable*/ {
 
 // MARK: -
 
+public protocol ShaderPassProtocol: PassProtocol {
+    associatedtype State: PassState
+}
+
+// MARK: -
+
 public protocol ComputePassProtocol: ShaderPassProtocol {
     func setup(device: MTLDevice) throws -> State
     func compute(device: MTLDevice, state: inout State, commandBuffer: MTLCommandBuffer) throws
