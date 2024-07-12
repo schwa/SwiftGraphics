@@ -439,7 +439,7 @@ extension MTLResourceUsage: Codable {
             "write": MTLResourceUsage.write,
         ]
         assert(!strings.contains("sample"))
-        let usages: [MTLResourceUsage] = try strings.map { try mapping[$0].safelyUnwrap(BaseError.generic("TODO")) }
+        let usages: [MTLResourceUsage] = try strings.map { try mapping[$0].safelyUnwrap(BaseError.unknown) }
         self = MTLResourceUsage(usages)
     }
 

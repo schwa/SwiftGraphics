@@ -4,7 +4,7 @@ import Metal
 public extension MTLComputePipelineReflection {
     func binding(for name: String) throws -> Int {
         guard let binding = bindings.first(where: { $0.name == name }) else {
-            throw BaseError.generic("Missing binding: \(name)")
+            throw BaseError.missingValue
         }
         return binding.index
     }
@@ -26,7 +26,7 @@ public extension MTLRenderPipelineReflection {
             fatalError("Unimplemented")
         }
         guard let binding = bindings.first(where: { $0.name == name }) else {
-            throw BaseError.generic("Missing binding: \(name)")
+            throw BaseError.missingValue
         }
         return binding.index
     }

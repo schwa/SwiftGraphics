@@ -1,26 +1,25 @@
 import BaseSupport
 import Metal
-import RenderKit
 import MetalFX
 
-struct SpatialUpscalingPass: GeneralPassProtocol {
-    struct State: PassState {
+public struct SpatialUpscalingPass: GeneralPassProtocol {
+    public struct State: PassState {
         var spatialScaler: MTLFXSpatialScaler
     }
 
-    var id: AnyHashable
-    var inputTexture: Box<MTLTexture>
-    var outputTexture: Box<MTLTexture>
-    var colorProcessingMode: MTLFXSpatialScalerColorProcessingMode
+    public var id: AnyHashable
+    public var inputTexture: Box<MTLTexture>
+    public var outputTexture: Box<MTLTexture>
+    public var colorProcessingMode: MTLFXSpatialScalerColorProcessingMode
 
-    init(id: AnyHashable, inputTexture: MTLTexture, outputTexture: MTLTexture, colorProcessingMode: MTLFXSpatialScalerColorProcessingMode) {
+    public init(id: AnyHashable, inputTexture: MTLTexture, outputTexture: MTLTexture, colorProcessingMode: MTLFXSpatialScalerColorProcessingMode) {
         self.id = id
         self.inputTexture = Box(inputTexture)
         self.outputTexture = Box(outputTexture)
         self.colorProcessingMode = colorProcessingMode
     }
 
-    func setup(device: MTLDevice) throws -> State {
+    public func setup(device: MTLDevice) throws -> State {
         let spatialScalerDescriptor = MTLFXSpatialScalerDescriptor()
         spatialScalerDescriptor.inputWidth = inputTexture().width
         spatialScalerDescriptor.inputHeight = inputTexture().height
@@ -30,14 +29,14 @@ struct SpatialUpscalingPass: GeneralPassProtocol {
         spatialScalerDescriptor.outputTextureFormat = outputTexture().pixelFormat
         spatialScalerDescriptor.colorProcessingMode = colorProcessingMode
 
-        let spatialScaler = try spatialScalerDescriptor.makeSpatialScaler(device: device).safelyUnwrap(BaseError.generic("OOPS"))
+        let spatialScaler = try spatialScalerDescriptor.makeSpatialScaler(device: device).safelyUnwrap(BaseError.resourceCreationFailure)
         spatialScaler.colorTexture = inputTexture.content
         spatialScaler.outputTexture = outputTexture.content
 
         return State(spatialScaler: spatialScaler)
     }
 
-    func encode(device: MTLDevice, state: inout State, commandBuffer: MTLCommandBuffer) throws {
+    public func encode(device: MTLDevice, state: inout State, commandBuffer: MTLCommandBuffer) throws {
         state.spatialScaler.encode(commandBuffer: commandBuffer)
     }
 }

@@ -26,7 +26,7 @@ struct VolumeRepresentation: @unchecked Sendable {
         textureDescriptor.depth = 1
         textureDescriptor.pixelFormat = .rgba8Unorm
         textureDescriptor.storageMode = .shared
-        let texture = try device.makeTexture(descriptor: textureDescriptor).safelyUnwrap(BaseError.generic("Could not create texture"))
+        let texture = try device.makeTexture(descriptor: textureDescriptor).safelyUnwrap(BaseError.resourceCreationFailure)
         texture.label = "transfer function"
         self.transferFunctionTexture = texture
 

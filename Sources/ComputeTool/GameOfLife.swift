@@ -1,4 +1,5 @@
 import AVFoundation
+import BaseSupport
 import Compute
 import Everything
 import Foundation
@@ -15,9 +16,9 @@ struct GameOfLife {
     func main() throws {
         let textureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .r8Uint, width: width, height: height, mipmapped: false)
         textureDescriptor.usage = [.shaderRead, .shaderWrite]
-        let textureA = try device.makeTexture(descriptor: textureDescriptor).safelyUnwrap(GeneralError.unknown)
+        let textureA = try device.makeTexture(descriptor: textureDescriptor).safelyUnwrap(BaseError.unknown)
         textureA.label = "texture-a"
-        let textureB = try device.makeTexture(descriptor: textureDescriptor).safelyUnwrap(GeneralError.unknown)
+        let textureB = try device.makeTexture(descriptor: textureDescriptor).safelyUnwrap(BaseError.unknown)
         textureB.label = "texture-b"
         let compute = try Compute(device: device)
         let library = ShaderLibrary.bundle(.module)
