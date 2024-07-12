@@ -1,13 +1,13 @@
 import BaseSupport
 import CoreGraphicsSupport
 import Metal
+import MetalFX
 import MetalKit
 import MetalSupport
 import RenderKit
 import simd
 import SIMDSupport
 import SwiftUI
-import MetalFX
 
 @Observable
 public class GaussianSplatViewModel {
@@ -128,8 +128,8 @@ public struct GaussianSplatRenderView: View {
             try offscreenRenderer.configure()
             try offscreenRenderer.render()
 
-            try targetTexture.cgImage()!.write(to: URL(filePath: "/tmp/test.png"))
-            try upscaledSharedTexture.cgImage()!.write(to: URL(filePath: "/tmp/test-upscaled.png"))
+            try targetTexture.cgImage().write(to: URL(filePath: "/tmp/test.png"))
+            try upscaledSharedTexture.cgImage().write(to: URL(filePath: "/tmp/test-upscaled.png"))
             URL(filePath: "/tmp/test.png").reveal()
         }
         catch {

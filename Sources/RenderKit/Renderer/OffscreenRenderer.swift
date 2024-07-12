@@ -43,14 +43,13 @@ public struct OffscreenRenderPassConfiguration: MetalConfigurationProtocol {
     public var clearDepth: Double = 1.0
 
     public init() {
-
     }
 
-//    public var currentRenderPassDescriptor: MTLRenderPassDescriptor?
-////    public var targetTexture: MTLTexture? // TODO: Rename - this is too vague
-//
-//    public mutating func update() throws {
-//        currentRenderPassDescriptor = nil
-//        targetTexture = nil
-//    }
+    //    public var currentRenderPassDescriptor: MTLRenderPassDescriptor?
+    ////    public var targetTexture: MTLTexture? // TODO: Rename - this is too vague
+    //
+    //    public mutating func update() throws {
+    //        currentRenderPassDescriptor = nil
+    //        targetTexture = nil
+    //    }
 }
