@@ -4,22 +4,18 @@ import MetalSupport
 import ModelIO
 import SIMDSupport
 
-enum TrivialMeshError: Error {
-    case generic(String)
-}
-
 public extension TrivialMesh where Vertex == SIMD3<Float> {
     init(url: URL) throws {
         let asset = MDLAsset(url: url)
 
         guard let mesh = asset.object(at: 0) as? MDLMesh else {
-            throw TrivialMeshError.generic("No object.")
+            throw BaseError.generic("No object.")
         }
         let positions = try mesh.positions
         // TODO: confirm that these are triangles.
         // TODO: confirm that index is uint32
         guard let submesh = mesh.submeshes?[0] as? MDLSubmesh else {
-            throw TrivialMeshError.generic("No submesh.")
+            throw BaseError.generic("No submesh.")
         }
         let indexBuffer = submesh.indexBuffer
         let indexBytes = UnsafeRawBufferPointer(start: indexBuffer.map().bytes, count: indexBuffer.length)
@@ -62,13 +58,13 @@ extension MDLMesh {
     var positions: [PackedFloat3] {
         get throws {
             guard let attribute = vertexDescriptor.attributes.compactMap({ $0 as? MDLVertexAttribute }).first(where: { $0.name == MDLVertexAttributePosition }) else {
-                throw TrivialMeshError.generic("MDLMesh does not specify positions attribute.")
+                throw BaseError.generic("MDLMesh does not specify positions attribute.")
             }
             guard attribute.format == .float3 else {
-                throw TrivialMeshError.generic("Expected attribute to be .float3")
+                throw BaseError.generic("Expected attribute to be .float3")
             }
             guard let bufferLayout = vertexDescriptor.layouts[attribute.bufferIndex] as? MDLVertexBufferLayout else {
-                throw TrivialMeshError.generic("No layout.")
+                throw BaseError.generic("No layout.")
             }
             let buffer = vertexBuffers[attribute.bufferIndex]
             let bytes = UnsafeRawBufferPointer(start: buffer.map().bytes, count: buffer.length)
@@ -88,13 +84,13 @@ extension MDLMesh {
     var normals: [PackedFloat3] {
         get throws {
             guard let attribute = vertexDescriptor.attributes.compactMap({ $0 as? MDLVertexAttribute }).first(where: { $0.name == MDLVertexAttributeNormal }) else {
-                throw TrivialMeshError.generic("MDLMesh does not specify normals attribute.")
+                throw BaseError.generic("MDLMesh does not specify normals attribute.")
             }
             guard attribute.format == .float3 else {
-                throw TrivialMeshError.generic("Expected attribute to be .float3")
+                throw BaseError.generic("Expected attribute to be .float3")
             }
             guard let bufferLayout = vertexDescriptor.layouts[attribute.bufferIndex] as? MDLVertexBufferLayout else {
-                throw TrivialMeshError.generic("No layout.")
+                throw BaseError.generic("No layout.")
             }
             let buffer = vertexBuffers[attribute.bufferIndex]
             let bytes = UnsafeRawBufferPointer(start: buffer.map().bytes, count: buffer.length)
@@ -123,7 +119,7 @@ public extension MDLMesh {
     convenience init(trivialMesh mesh: TrivialMesh<SimpleVertex>, allocator: MDLMeshBufferAllocator? = nil) throws {
         let allocator = allocator ?? MDLMeshBufferDataAllocator()
         let vertexBuffer = try mesh.vertices.withUnsafeBytes { buffer in
-            try allocator.newBuffer(from: nil, data: Data(buffer), type: .vertex).safelyUnwrap(MetalSupportError.resourceCreationFailure)
+            try allocator.newBuffer(from: nil, data: Data(buffer), type: .vertex).safelyUnwrap(BaseError.resourceCreationFailure)
         }
         let descriptor = MDLVertexDescriptor()
         // TODO: hard coded.
@@ -139,19 +135,19 @@ public extension MDLMesh {
             indexType = .uInt8
             let indices = mesh.indices.map { UInt8($0) }
             indexBuffer = try indices.withUnsafeBytes { buffer in
-                try allocator.newBuffer(from: nil, data: Data(buffer), type: .index).safelyUnwrap(MetalSupportError.resourceCreationFailure)
+                try allocator.newBuffer(from: nil, data: Data(buffer), type: .index).safelyUnwrap(BaseError.resourceCreationFailure)
             }
         case 256 ..< 65_536:
             indexType = .uInt16
             let indices = mesh.indices.map { UInt16($0) }
             indexBuffer = try indices.withUnsafeBytes { buffer in
-                try allocator.newBuffer(from: nil, data: Data(buffer), type: .index).safelyUnwrap(MetalSupportError.resourceCreationFailure)
+                try allocator.newBuffer(from: nil, data: Data(buffer), type: .index).safelyUnwrap(BaseError.resourceCreationFailure)
             }
         case 65_536 ..< 4_294_967_296:
             indexType = .uInt32
             let indices = mesh.indices.map { UInt32($0) }
             indexBuffer = try indices.withUnsafeBytes { buffer in
-                try allocator.newBuffer(from: nil, data: Data(buffer), type: .index).safelyUnwrap(MetalSupportError.resourceCreationFailure)
+                try allocator.newBuffer(from: nil, data: Data(buffer), type: .index).safelyUnwrap(BaseError.resourceCreationFailure)
             }
         default:
             fatalError()

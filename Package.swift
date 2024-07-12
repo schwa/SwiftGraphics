@@ -13,7 +13,7 @@ let package = Package(
     ],
     products: [
         .library(name: "Array2D", targets: ["Array2D"]),
-        .library(name: "BaseSupport", targets: ["SwiftUISupport"]),
+        .library(name: "BaseSupport", targets: ["BaseSupport"]),
         .library(name: "Compute", targets: ["Compute"]),
         .library(name: "CoreGraphicsSupport", targets: ["CoreGraphicsSupport"]),
         .library(name: "CoreGraphicsUnsafeConformances", targets: ["CoreGraphicsUnsafeConformances"]),
@@ -70,7 +70,8 @@ let package = Package(
         .target(
             name: "CoreGraphicsSupport",
             dependencies: [
-                "ApproximateEquality"
+                "ApproximateEquality",
+                "BaseSupport",
             ],
             swiftSettings: [
             ]
@@ -143,6 +144,9 @@ let package = Package(
         ),
         .target(
             name: "MetalUnsafeConformances",
+            dependencies: [
+                "BaseSupport"
+            ],
             swiftSettings: [
             ]
         ),
@@ -437,7 +441,6 @@ let package = Package(
         .target(
             name: "BaseSupport",
             dependencies: [
-                .product(name: "SwiftFormats", package: "SwiftFormats"),
                 .product(name: "Everything", package: "Everything"),
             ]
         ),

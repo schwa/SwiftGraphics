@@ -1,5 +1,6 @@
 // swiftlint:disable file_length
 
+import BaseSupport
 import CoreGraphics
 import CoreGraphicsSupport
 import Foundation
@@ -16,13 +17,6 @@ import SwiftUI
 
 // TODO: This file is a mess.
 // TODO: Take note of the deprecations here.
-
-public enum MetalSupportError: Error {
-    case generic(String)
-    case illegalValue
-    case resourceCreationFailure
-    case missingBinding(String)
-}
 
 public extension MTKMesh {
     func labelBuffers(_ label: String) {
@@ -172,14 +166,14 @@ public extension MTLDevice {
 
     func makeBufferEx(bytes pointer: UnsafeRawPointer, length: Int, options: MTLResourceOptions = []) throws -> MTLBuffer {
         guard let buffer = makeBuffer(bytes: pointer, length: length, options: options) else {
-            throw MetalSupportError.resourceCreationFailure
+            throw BaseError.resourceCreationFailure
         }
         return buffer
     }
 
     func makeBufferEx(length: Int, options: MTLResourceOptions = []) throws -> MTLBuffer {
         guard let buffer = makeBuffer(length: length, options: options) else {
-            throw MetalSupportError.resourceCreationFailure
+            throw BaseError.resourceCreationFailure
         }
         return buffer
     }
@@ -187,7 +181,7 @@ public extension MTLDevice {
     func makeBuffer(data: Data, options: MTLResourceOptions) throws -> MTLBuffer {
         try data.withUnsafeBytes { buffer in
             guard let buffer = makeBuffer(bytes: buffer.baseAddress!, length: buffer.count, options: options) else {
-                throw MetalSupportError.resourceCreationFailure
+                throw BaseError.resourceCreationFailure
             }
             return buffer
         }
@@ -196,7 +190,7 @@ public extension MTLDevice {
     func makeBuffer(bytesOf content: some Any, options: MTLResourceOptions) throws -> MTLBuffer {
         try withUnsafeBytes(of: content) { buffer in
             guard let buffer = makeBuffer(bytes: buffer.baseAddress!, length: buffer.count, options: options) else {
-                throw MetalSupportError.resourceCreationFailure
+                throw BaseError.resourceCreationFailure
             }
             return buffer
         }
@@ -205,7 +199,7 @@ public extension MTLDevice {
     func makeBuffer(bytesOf content: [some Any], options: MTLResourceOptions) throws -> MTLBuffer {
         try content.withUnsafeBytes { buffer in
             guard let buffer = makeBuffer(bytes: buffer.baseAddress!, length: buffer.count, options: options) else {
-                throw MetalSupportError.resourceCreationFailure
+                throw BaseError.resourceCreationFailure
             }
             return buffer
         }
@@ -299,16 +293,16 @@ public extension MTLDevice {
         textureDescriptor.height = source.height
         textureDescriptor.depth = source.depth
         guard let destination = makeTexture(descriptor: textureDescriptor) else {
-            throw MetalSupportError.resourceCreationFailure
+            throw BaseError.resourceCreationFailure
         }
         destination.label = source.label.map { "\($0)-private-copy" }
 
         guard let commandQueue = makeCommandQueue() else {
-            throw MetalSupportError.resourceCreationFailure
+            throw BaseError.resourceCreationFailure
         }
         try commandQueue.withCommandBuffer(waitAfterCommit: true) { commandBuffer in
             guard let encoder = commandBuffer.makeBlitCommandEncoder() else {
-                throw MetalSupportError.resourceCreationFailure
+                throw BaseError.resourceCreationFailure
             }
             encoder.copy(from: source, to: destination)
             encoder.endEncoding()
@@ -343,7 +337,7 @@ public extension MTLIndexType {
         case .uint32:
             MemoryLayout<UInt32>.size
         default:
-            fatalError(MetalSupportError.illegalValue)
+            fatalError(BaseError.illegalValue)
         }
     }
 }
@@ -700,7 +694,7 @@ public extension MTLPrimitiveType {
         case .triangle:
             3
         default:
-            fatalError(MetalSupportError.illegalValue)
+            fatalError(BaseError.illegalValue)
         }
     }
 }
@@ -796,7 +790,7 @@ public extension MTLTexture {
 
     func convert(destinationColorSpace: CGColorSpace, sourceAlpha: MPSAlphaType, destinationAlpha: MPSAlphaType) throws -> MTLTexture {
         guard let sourceColorSpace = pixelFormat.colorSpace else {
-            throw MetalSupportError.illegalValue
+            throw BaseError.illegalValue
         }
         let destinationTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba32Float, width: width, height: height, mipmapped: false)
         destinationTextureDescriptor.usage = [.shaderRead, .shaderWrite]
@@ -816,14 +810,14 @@ public extension MTLTexture {
     func cgImage(colorSpace: CGColorSpace? = nil) throws -> CGImage {
         if let pixelFormat = PixelFormat(mtlPixelFormat: pixelFormat) {
             guard let context = CGContext.bitmapContext(definition: .init(width: width, height: height, pixelFormat: pixelFormat)) else {
-                throw MetalSupportError.resourceCreationFailure
+                throw BaseError.resourceCreationFailure
             }
             guard let pixelBytes = context.data else {
-                throw MetalSupportError.resourceCreationFailure
+                throw BaseError.resourceCreationFailure
             }
             getBytes(pixelBytes, bytesPerRow: context.bytesPerRow, from: MTLRegion(origin: .zero, size: MTLSize(width, height, 1)), mipmapLevel: 0)
             guard let image = context.makeImage() else {
-                throw MetalSupportError.resourceCreationFailure
+                throw BaseError.resourceCreationFailure
             }
             return image
         }

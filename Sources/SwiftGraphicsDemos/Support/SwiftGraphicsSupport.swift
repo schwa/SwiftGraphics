@@ -1,3 +1,4 @@
+import BaseSupport
 import CoreGraphics
 import CoreGraphicsSupport
 import Foundation
@@ -29,13 +30,6 @@ public extension SIMD3<Float> {
 // MARK: -
 
 // MARK: -
-
-public enum SwiftGraphicsSupportError: Error {
-    case illegalValue
-    case resourceCreationFailure
-    case optionalUnwrapFailure
-    case noLibrary
-}
 
 public func hslToRgb(_ h: Float, _ s: Float, _ l: Float) -> (Float, Float, Float) {
     if s == 0 {
@@ -90,23 +84,20 @@ public extension View {
     }
 }
 
-public struct ImageLoadError: Error {
-    let string: String
-}
 
 public extension Image {
     init(url: URL) throws {
         if try url.checkResourceIsReachable() == false {
-            throw ImageLoadError(string: "Resource does not exist at: \(url)")
+            throw BaseError.generic("Resource does not exist at: \(url)")
         }
         #if os(macOS)
         guard let nsImage = NSImage(contentsOf: url) else {
-            throw ImageLoadError(string: "Cannot load resource at \(url), maybe sandbox issues.")
+            throw BaseError.generic("Cannot load resource at \(url), maybe sandbox issues.")
         }
         self = Image(nsImage: nsImage)
         #elseif os(iOS)
         guard let uiImage = UIImage(contentsOfFile: url.path) else {
-            throw ImageLoadError(string: "Cannot load resource at \(url), maybe sandbox issues.")
+            throw BaseError.generic("Cannot load resource at \(url), maybe sandbox issues.")
         }
         self = Image(uiImage: uiImage)
         #endif

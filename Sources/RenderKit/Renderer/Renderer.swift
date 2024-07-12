@@ -27,8 +27,11 @@ public protocol PassState /*: Sendable*/ {
 }
 
 public protocol PassProtocol: Equatable/*, Sendable*/ {
-    associatedtype State: PassState
     var id: AnyHashable { get }
+}
+
+public protocol ShaderPassProtocol: PassProtocol {
+    associatedtype State: PassState
 }
 
 struct Renderer <MetalConfiguration> where MetalConfiguration: MetalConfigurationProtocol {
@@ -84,8 +87,12 @@ struct Renderer <MetalConfiguration> where MetalConfiguration: MetalConfiguratio
         if state != .rendering {
             state = .rendering
         }
-        let renderPasses = passes.elements.compactMap { $0 as? any RenderPassProtocol }
-        for pass in passes.elements {
+
+        let passes = try expand(passes: passes.elements)
+
+        let renderPasses = passes.compactMap { $0 as? any RenderPassProtocol }
+
+        for pass in passes {
             switch pass {
             case let pass as any RenderPassProtocol:
                 let isFirst = pass.id == renderPasses.first?.id
@@ -130,16 +137,28 @@ struct Renderer <MetalConfiguration> where MetalConfiguration: MetalConfiguratio
     }
 
     mutating func draw(commandQueue: MTLCommandQueue, renderPassDescriptor: MTLRenderPassDescriptor, drawable: MTLDrawable, drawableSize: CGSize) throws {
-        let commandBuffer = try commandQueue.makeCommandBuffer().safelyUnwrap(RenderKitError.resourceCreationFailure)
+        let commandBuffer = try commandQueue.makeCommandBuffer().safelyUnwrap(BaseError.resourceCreationFailure)
         try render(commandBuffer: commandBuffer, renderPassDescriptor: renderPassDescriptor, drawableSize: drawableSize)
         commandBuffer.present(drawable)
         commandBuffer.commit()
+    }
+
+    func expand(passes: [any PassProtocol]) throws -> [any PassProtocol] {
+        try passes.flatMap { pass in
+            switch pass {
+            case let pass as any CompositePassProtocol:
+                return try expand(passes: pass.children())
+            default:
+                return [pass]
+            }
+        }
     }
 
     mutating func setupPasses(passes: [any PassProtocol]) throws {
         guard let configuration else {
             fatalError()
         }
+        let passes = try expand(passes: passes)
         for pass in passes {
             switch pass {
             case let pass as any RenderPassProtocol:
@@ -164,7 +183,10 @@ struct Renderer <MetalConfiguration> where MetalConfiguration: MetalConfiguratio
     }
 
     mutating func updateRenderPasses(_ passes: PassCollection) throws {
-        let difference = passes.elements.difference(from: self.passes.elements) { lhs, rhs in
+        // Expansion makes this overly complex.
+        let currentExpandedPasses = try expand(passes: self.passes.elements)
+        let newExpandedPasses = try expand(passes: passes.elements)
+        let difference = newExpandedPasses.difference(from: currentExpandedPasses) { lhs, rhs in
             lhs.id == rhs.id
         }
         if !difference.isEmpty {

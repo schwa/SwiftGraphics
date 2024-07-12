@@ -1,6 +1,6 @@
 import Metal
 
-public protocol ComputePassProtocol: PassProtocol {
+public protocol ComputePassProtocol: ShaderPassProtocol {
     func setup(device: MTLDevice) throws -> State
     func compute(device: MTLDevice, state: inout State, commandBuffer: MTLCommandBuffer) throws
 }

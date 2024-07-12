@@ -76,62 +76,6 @@ public extension SliderPopoverButton where Label == EmptyView {
 }
 #endif
 
-public struct FrameEditorModifier: ViewModifier {
-    @State
-    var isExpanded = false
-
-    @State
-    var locked = false
-
-    @State
-    var lockedSize: CGSize?
-
-    public func body(content: Content) -> some View {
-        content
-            .frame(width: lockedSize?.width, height: lockedSize?.height)
-            .overlay {
-                GeometryReader { proxy in
-                    DisclosureGroup(isExpanded: $isExpanded) {
-                        HStack {
-                            VStack {
-                                if let lockedSize {
-                                    TextField("Size", value: .constant(lockedSize), format: .size)
-                                        .foregroundStyle(.black)
-                                        .frame(maxWidth: 120)
-                                    //                                Text("\(proxy.size.width / proxy.size.height, format: .number)")
-                                }
-                                else {
-                                    Text("\(proxy.size, format: .size)")
-                                    Text("\(proxy.size.width / proxy.size.height, format: .number)")
-                                }
-                            }
-                            Button(systemImage: locked ? "lock" : "lock.open") {
-                                withAnimation {
-                                    locked.toggle()
-                                    lockedSize = locked ? proxy.size : nil
-                                }
-                            }
-                            .buttonStyle(.borderless)
-                        }
-                    } label: {
-                        Image(systemName: "rectangle.split.2x2")
-                    }
-                    .disclosureGroupStyle(MyDisclosureGroupStyle())
-                    .foregroundStyle(Color.white)
-                    .background(RoundedRectangle(cornerRadius: 4).fill(Color.mint))
-                    .padding()
-                    .frame(alignment: .topLeading)
-                }
-            }
-    }
-}
-
-public extension View {
-    func showFrameEditor() -> some View {
-        modifier(FrameEditorModifier())
-    }
-}
-
 /// A view modifier that does nothing.
 public struct EmptyViewModifier: ViewModifier {
     public func body(content: Content) -> some View {

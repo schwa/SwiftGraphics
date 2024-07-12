@@ -11,7 +11,7 @@ public extension MTLPrimitiveType {
             self = .triangle
         @unknown
         default:
-            fatalError(MetalSupportError.illegalValue)
+            fatalError(BaseError.illegalValue)
         }
     }
 }

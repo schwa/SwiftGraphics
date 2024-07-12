@@ -1,3 +1,4 @@
+import BaseSupport
 import MetalKit
 import MetalSupport
 import RenderKitShadersLegacy
@@ -41,7 +42,7 @@ public struct DiffuseShadingRenderPass: RenderPassProtocol {
         renderPipelineDescriptor.vertexFunction = try library.makeFunction(name: "DiffuseShadingVertexShader", constantValues: constantValues)
         renderPipelineDescriptor.fragmentFunction = try library.makeFunction(name: "DiffuseShadingFragmentShader", constantValues: constantValues)
         let depthStencilDescriptor = MTLDepthStencilDescriptor(depthCompareFunction: .less, isDepthWriteEnabled: true)
-        let depthStencilState = try device.makeDepthStencilState(descriptor: depthStencilDescriptor).safelyUnwrap(RenderKitError.generic("Could not create depth stencil state"))
+        let depthStencilState = try device.makeDepthStencilState(descriptor: depthStencilDescriptor).safelyUnwrap(BaseError.generic("Could not create depth stencil state"))
         renderPipelineDescriptor.label = "\(type(of: self))"
 
         renderPipelineDescriptor.vertexDescriptor = vertexDescriptor
