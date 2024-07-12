@@ -17,8 +17,8 @@ struct RandomFill {
     func main() throws {
         let testImage = CGImage.makeTestImage(width: 512, height: 512)!
         let testTexture = try device.newTexture(with: testImage)
-        let outImage = testTexture.cgImage()
-        try outImage?.write(to: URL(filePath: "/tmp/out.png"))
+        let outImage = try testTexture.cgImage()
+        try outImage.write(to: URL(filePath: "/tmp/out.png"))
 
         try testPixelFormats()
 
