@@ -23,8 +23,8 @@ public struct OffscreenRenderer {
         try renderer.sizeWillChange(size)
     }
 
-    public mutating func render() throws {
-        try device.capture(enabled: false) {
+    public mutating func render(capture: Bool = false) throws {
+        try device.capture(enabled: capture) {
             let commandQueue = try device.makeCommandQueue().safelyUnwrap(BaseError.resourceCreationFailure)
             try commandQueue.withCommandBuffer(waitAfterCommit: true) { commandBuffer in
                 try renderer.render(commandBuffer: commandBuffer, renderPassDescriptor: renderPassDescriptor, drawableSize: size)
