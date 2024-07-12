@@ -10,7 +10,6 @@ import simd
 import SIMDSupport
 import SwiftUI
 
-
 public protocol MetalConfigurationProtocol {
     var colorPixelFormat: MTLPixelFormat { get set }
     var clearColor: MTLClearColor { get set }
@@ -22,6 +21,8 @@ public protocol MetalConfigurationProtocol {
 extension MetalViewConfiguration: MetalConfigurationProtocol {
 }
 
+// TODO: Make sendable.
+// TODO: Allow for empty state - make Never or () conform to PassState???
 public protocol PassState /*: Sendable*/ {
 }
 
