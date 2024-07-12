@@ -39,7 +39,7 @@ public struct DebugRenderPass: RenderPassProtocol {
         let renderPipelineState = try device.makeRenderPipelineState(descriptor: renderPipelineDescriptor)
 
         let depthStencilDescriptor = MTLDepthStencilDescriptor(depthCompareFunction: .less, isDepthWriteEnabled: true)
-        let depthStencilState = try device.makeDepthStencilState(descriptor: depthStencilDescriptor).safelyUnwrap(BaseError.generic("Could not create depth stencil state"))
+        let depthStencilState = try device.makeDepthStencilState(descriptor: depthStencilDescriptor).safelyUnwrap(BaseError.resourceCreationFailure)
 
         return State(depthStencilState: depthStencilState, renderPipelineState: renderPipelineState)
     }

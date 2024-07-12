@@ -9,13 +9,13 @@ public extension TrivialMesh where Vertex == SIMD3<Float> {
         let asset = MDLAsset(url: url)
 
         guard let mesh = asset.object(at: 0) as? MDLMesh else {
-            throw BaseError.generic("No object.")
+            throw BaseError.missingValue
         }
         let positions = try mesh.positions
         // TODO: confirm that these are triangles.
         // TODO: confirm that index is uint32
         guard let submesh = mesh.submeshes?[0] as? MDLSubmesh else {
-            throw BaseError.generic("No submesh.")
+            throw BaseError.missingValue
         }
         let indexBuffer = submesh.indexBuffer
         let indexBytes = UnsafeRawBufferPointer(start: indexBuffer.map().bytes, count: indexBuffer.length)
@@ -61,10 +61,10 @@ extension MDLMesh {
                 throw BaseError.generic("MDLMesh does not specify positions attribute.")
             }
             guard attribute.format == .float3 else {
-                throw BaseError.generic("Expected attribute to be .float3")
+                throw BaseError.typeMismatch
             }
             guard let bufferLayout = vertexDescriptor.layouts[attribute.bufferIndex] as? MDLVertexBufferLayout else {
-                throw BaseError.generic("No layout.")
+                throw BaseError.missingValue
             }
             let buffer = vertexBuffers[attribute.bufferIndex]
             let bytes = UnsafeRawBufferPointer(start: buffer.map().bytes, count: buffer.length)
@@ -87,10 +87,10 @@ extension MDLMesh {
                 throw BaseError.generic("MDLMesh does not specify normals attribute.")
             }
             guard attribute.format == .float3 else {
-                throw BaseError.generic("Expected attribute to be .float3")
+                throw BaseError.typeMismatch
             }
             guard let bufferLayout = vertexDescriptor.layouts[attribute.bufferIndex] as? MDLVertexBufferLayout else {
-                throw BaseError.generic("No layout.")
+                throw BaseError.missingValue
             }
             let buffer = vertexBuffers[attribute.bufferIndex]
             let bytes = UnsafeRawBufferPointer(start: buffer.map().bytes, count: buffer.length)

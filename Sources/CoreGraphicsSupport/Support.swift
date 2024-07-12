@@ -16,7 +16,7 @@ public extension CGColor {
 
         return try bytes.withUnsafeMutableBytes { buffer in
             let bitmapInfo = CGImageAlphaInfo.premultipliedFirst.rawValue | CGBitmapInfo.byteOrder32Little.rawValue
-            let context = CGContext(data: try buffer.baseAddress.safelyUnwrap(BaseError.generic("TODO")), width: 1, height: 1, bitsPerComponent: 8, bytesPerRow: 4, space: colorSpace, bitmapInfo: bitmapInfo)
+            let context = CGContext(data: try buffer.baseAddress.safelyUnwrap(BaseError.resourceCreationFailure), width: 1, height: 1, bitsPerComponent: 8, bytesPerRow: 4, space: colorSpace, bitmapInfo: bitmapInfo)
             guard let image = context?.makeImage() else {
                 fatalError("Could not make image.")
             }

@@ -1,10 +1,4 @@
-//
-//  File.swift
-//  SwiftGraphics
-//
-//  Created by Jonathan Wight on 7/12/24.
-//
-
+import Metal
 
 internal extension ComputePassProtocol {
     func compute(device: MTLDevice, untypedState: inout any PassState, commandBuffer: MTLCommandBuffer) throws {

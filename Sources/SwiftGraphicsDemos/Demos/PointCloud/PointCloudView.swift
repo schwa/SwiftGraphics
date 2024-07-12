@@ -141,7 +141,7 @@ struct PointCloudRenderPass: RenderPassProtocol {
         )
 
         let depthStencilDescriptor = MTLDepthStencilDescriptor(depthCompareFunction: .less, isDepthWriteEnabled: true)
-        let depthStencilState = try device.makeDepthStencilState(descriptor: depthStencilDescriptor).safelyUnwrap(BaseError.generic("Could not create depth stencil state"))
+        let depthStencilState = try device.makeDepthStencilState(descriptor: depthStencilDescriptor).safelyUnwrap(BaseError.resourceCreationFailure)
 
         return State(bindings: bindings, depthStencilState: depthStencilState, renderPipelineState: renderPipelineState)
     }

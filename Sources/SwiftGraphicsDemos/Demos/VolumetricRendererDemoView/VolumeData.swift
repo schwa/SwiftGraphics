@@ -1,3 +1,4 @@
+import BaseSupport
 import Everything
 import Foundation
 import Metal
@@ -62,7 +63,7 @@ struct VolumeData: Sendable {
             textureDescriptor.width = size.width
             textureDescriptor.height = size.height
             textureDescriptor.depth = size.depth
-            let texture = try device.makeTexture(descriptor: textureDescriptor).safelyUnwrap(GeneralError.generic("Could not create texture"))
+            let texture = try device.makeTexture(descriptor: textureDescriptor).safelyUnwrap(BaseError.resourceCreationFailure)
             // texture.label = directoryURL.lastPathComponent
             let bytesPerRow = size.width * 2
             let bytesPerImage = size.width * size.height * 2

@@ -87,12 +87,12 @@ public struct GaussianSplatRenderView: View {
             upscaledPrivateTextureDescriptor.height = height * 2
             upscaledPrivateTextureDescriptor.storageMode = .private
             upscaledPrivateTextureDescriptor.usage = [.renderTarget, .shaderRead, .shaderWrite]
-            let upscaledPrivateTexture = try device.makeTexture(descriptor: upscaledPrivateTextureDescriptor).safelyUnwrap(BaseError.generic("OOPS"))
+            let upscaledPrivateTexture = try device.makeTexture(descriptor: upscaledPrivateTextureDescriptor).safelyUnwrap(BaseError.resourceCreationFailure)
             let spatialUpscalingPass = SpatialUpscalingPass(id: "SpatialUpscalingPass", inputTexture: targetTexture, outputTexture: upscaledPrivateTexture, colorProcessingMode: .perceptual)
 
             let upscaledSharedTextureDescriptor = upscaledPrivateTextureDescriptor
             upscaledSharedTextureDescriptor.storageMode = .shared
-            let upscaledSharedTexture = try device.makeTexture(descriptor: upscaledSharedTextureDescriptor).safelyUnwrap(BaseError.generic("OOPS"))
+            let upscaledSharedTexture = try device.makeTexture(descriptor: upscaledSharedTextureDescriptor).safelyUnwrap(BaseError.resourceCreationFailure)
 
             let blitPass = BlitTexturePass(id: "BlitTexturePass", source: upscaledPrivateTexture, destination: upscaledSharedTexture)
 
