@@ -3,4 +3,5 @@ public enum BaseError: Error {
     case resourceCreationFailure
     case illegalValue
     case optionalUnwrapFailure
+    case initializationFailure
 }

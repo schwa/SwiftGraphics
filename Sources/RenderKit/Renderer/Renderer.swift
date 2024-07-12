@@ -146,7 +146,7 @@ struct Renderer <MetalConfiguration> where MetalConfiguration: MetalConfiguratio
     func expand(passes: [any PassProtocol]) throws -> [any PassProtocol] {
         try passes.flatMap { pass in
             switch pass {
-            case let pass as any CompositePassProtocol:
+            case let pass as any GroupPassProtocol:
                 return try expand(passes: pass.children())
             default:
                 return [pass]
