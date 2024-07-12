@@ -1,19 +1,11 @@
-#if !os(visionOS)
 import Everything
 import MetalKit
 import MetalSupport
 import Observation
 import SwiftUI
 
-public protocol MetalConfigurationProtocol {
-    var colorPixelFormat: MTLPixelFormat { get set }
-    var clearColor: MTLClearColor { get set }
-    var depthStencilPixelFormat: MTLPixelFormat { get set }
-    var depthStencilStorageMode: MTLStorageMode { get set }
-    var clearDepth: Double { get set }
-}
-
-public struct MetalViewConfiguration: MetalConfigurationProtocol {
+#if !os(visionOS)
+public struct MetalViewConfiguration {
     // TODO: Fully expand this.
     public var colorPixelFormat: MTLPixelFormat
     public var clearColor: MTLClearColor

@@ -10,6 +10,18 @@ import simd
 import SIMDSupport
 import SwiftUI
 
+
+public protocol MetalConfigurationProtocol {
+    var colorPixelFormat: MTLPixelFormat { get set }
+    var clearColor: MTLClearColor { get set }
+    var depthStencilPixelFormat: MTLPixelFormat { get set }
+    var depthStencilStorageMode: MTLStorageMode { get set }
+    var clearDepth: Double { get set }
+}
+
+extension MetalViewConfiguration: MetalConfigurationProtocol {
+}
+
 public protocol PassState /*: Sendable*/ {
 }
 
@@ -74,7 +86,7 @@ struct Renderer <MetalConfiguration> where MetalConfiguration: MetalConfiguratio
         let renderPasses = passes.elements.compactMap { $0 as? any RenderPassProtocol }
         for pass in passes.elements {
             switch pass {
-            case let renderPass as any RenderPassProtocol:
+            case let pass as any RenderPassProtocol:
                 let isFirst = pass.id == renderPasses.first?.id
                 let isLast = pass.id == renderPasses.last?.id
                 if isFirst {
@@ -93,17 +105,23 @@ struct Renderer <MetalConfiguration> where MetalConfiguration: MetalConfiguratio
                     renderPassDescriptor.colorAttachments[0].storeAction = .store
                     renderPassDescriptor.depthAttachment.storeAction = .store
                 }
-                guard var state = statesByPasses[renderPass.id] else {
+                guard var state = statesByPasses[pass.id] else {
                     fatalError()
                 }
-                try renderPass.render(device: device, untypedState: &state, drawableSize: SIMD2<Float>(drawableSize), renderPassDescriptor: renderPassDescriptor, commandBuffer: commandBuffer)
-                statesByPasses[renderPass.id] = state
-            case let computePass as any ComputePassProtocol:
-                guard var state = statesByPasses[computePass.id] else {
+                try pass.render(device: device, untypedState: &state, drawableSize: SIMD2<Float>(drawableSize), renderPassDescriptor: renderPassDescriptor, commandBuffer: commandBuffer)
+                statesByPasses[pass.id] = state
+            case let pass as any ComputePassProtocol:
+                guard var state = statesByPasses[pass.id] else {
                     fatalError()
                 }
-                try computePass.compute(device: device, untypedState: &state, commandBuffer: commandBuffer)
-                statesByPasses[computePass.id] = state
+                try pass.compute(device: device, untypedState: &state, commandBuffer: commandBuffer)
+                statesByPasses[pass.id] = state
+            case let pass as any GeneralPassProtocol:
+                guard var state = statesByPasses[pass.id] else {
+                    fatalError()
+                }
+                try pass.encode(device: device, untypedState: &state, commandBuffer: commandBuffer)
+                statesByPasses[pass.id] = state
             default:
                 fatalError()
             }
@@ -123,18 +141,21 @@ struct Renderer <MetalConfiguration> where MetalConfiguration: MetalConfiguratio
         }
         for pass in passes {
             switch pass {
-            case let renderPass as any RenderPassProtocol:
+            case let pass as any RenderPassProtocol:
                 let renderPipelineDescriptor = {
                     let renderPipelineDescriptor = MTLRenderPipelineDescriptor()
                     renderPipelineDescriptor.colorAttachments[0].pixelFormat = configuration.colorPixelFormat
                     renderPipelineDescriptor.depthAttachmentPixelFormat = configuration.depthStencilPixelFormat
                     return renderPipelineDescriptor
                 }
-                let state = try renderPass.setup(device: device, renderPipelineDescriptor: renderPipelineDescriptor)
-                statesByPasses[renderPass.id] = state
-            case let computePass as any ComputePassProtocol:
-                let state = try computePass.setup(device: device)
-                statesByPasses[computePass.id] = state
+                let state = try pass.setup(device: device, renderPipelineDescriptor: renderPipelineDescriptor)
+                statesByPasses[pass.id] = state
+            case let pass as any ComputePassProtocol:
+                let state = try pass.setup(device: device)
+                statesByPasses[pass.id] = state
+            case let pass as any GeneralPassProtocol:
+                let state = try pass.setup(device: device)
+                statesByPasses[pass.id] = state
             default:
                 fatalError("Unsupported pass type: \(pass).")
             }
