@@ -5,6 +5,8 @@ import MetalSupport
 import simd
 import SIMDSupport
 
+// swiftlint:disable force_unwrapping
+
 public struct PackedHalf3: Hashable {
     public var x: Float16
     public var y: Float16

@@ -12,10 +12,13 @@ import simd
 import SIMDSupport
 import SwiftUI
 
+// swiftlint:disable force_unwrapping
+
 // TODO: This file is a mess.
 // TODO: Take note of the deprecations here.
 
 public enum MetalSupportError: Error {
+    case generic(String)
     case illegalValue
     case resourceCreationFailure
     case missingBinding(String)
@@ -791,56 +794,38 @@ public extension MTLTexture {
         }
     }
 
-    //    @available(*, deprecated, message: "Deprecate if can't be provide working in unit tests.")
-    // TODO: Maybe deprecate?
-    func cgImage() -> CGImage? {
-        guard let pixelFormat = PixelFormat(pixelFormat) else {
-            return nil
+    func convert(destinationColorSpace: CGColorSpace, sourceAlpha: MPSAlphaType, destinationAlpha: MPSAlphaType) throws -> MTLTexture {
+        guard let sourceColorSpace = pixelFormat.colorSpace else {
+            throw MetalSupportError.illegalValue
         }
-        guard let context = CGContext.bitmapContext(definition: .init(width: width, height: height, pixelFormat: pixelFormat)) else {
-            return nil
+        let destinationTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba32Float, width: width, height: height, mipmapped: false)
+        destinationTextureDescriptor.usage = [.shaderRead, .shaderWrite]
+        guard let destinationTexture = device.makeTexture(descriptor: destinationTextureDescriptor) else {
+            fatalError()
         }
-        guard let pixelBytes = context.data else {
-            return nil
-        }
-        getBytes(pixelBytes, bytesPerRow: context.bytesPerRow, from: MTLRegion(origin: .zero, size: MTLSize(width, height, 1)), mipmapLevel: 0)
-        return context.makeImage()
+        let conversionInfo = CGColorConversionInfo(src: sourceColorSpace, dst: destinationColorSpace)
+        let conversion = MPSImageConversion(device: device, srcAlpha: sourceAlpha, destAlpha: destinationAlpha, backgroundColor: nil, conversionInfo: conversionInfo)
+        let commandQueue = device.makeCommandQueue()!
+        let commandBuffer = commandQueue.makeCommandBuffer()!
+        conversion.encode(commandBuffer: commandBuffer, sourceTexture: self, destinationTexture: destinationTexture)
+        commandBuffer.commit()
+        commandBuffer.waitUntilCompleted()
+        return destinationTexture
     }
 
-    @available(*, deprecated, message: "Deprecate if can't be provide working in unit tests.")
-    func cgImage(colorSpace: CGColorSpace? = nil) async throws -> CGImage {
+    func cgImage(colorSpace: CGColorSpace? = nil) throws -> CGImage {
         if let pixelFormat = PixelFormat(mtlPixelFormat: pixelFormat) {
-            let bitmapDefinition = BitmapDefinition(width: width, height: height, pixelFormat: pixelFormat)
-            if let buffer {
-                let buffer = UnsafeMutableRawBufferPointer(start: buffer.contents(), count: buffer.length)
-                guard let context = CGContext.bitmapContext(data: buffer, definition: bitmapDefinition) else {
-                    fatalError()
-                }
-                guard let image = context.makeImage() else {
-                    throw MetalSupportError.resourceCreationFailure
-                }
-                return image
+            guard let context = CGContext.bitmapContext(definition: .init(width: width, height: height, pixelFormat: pixelFormat)) else {
+                throw MetalSupportError.resourceCreationFailure
             }
-            else {
-                let bytesPerRow = bufferBytesPerRow != 0 ? bufferBytesPerRow : width * pixelFormat.bytesPerPixel
-                var data = Data(count: bytesPerRow * height)
-                data.withUnsafeMutableBytes { buffer in
-                    guard let baseAddress = buffer.baseAddress else {
-                        fatalError()
-                    }
-                    let region = MTLRegion(origin: MTLOrigin(x: 0, y: 0, z: 0), size: MTLSize(width: width, height: height, depth: 1))
-                    return getBytes(baseAddress, bytesPerRow: bytesPerRow, from: region, mipmapLevel: 0)
-                }
-                return try data.withUnsafeMutableBytes { data in
-                    guard let context = CGContext.bitmapContext(data: data, definition: bitmapDefinition) else {
-                        fatalError()
-                    }
-                    guard let image = context.makeImage() else {
-                        throw MetalSupportError.resourceCreationFailure
-                    }
-                    return image
-                }
+            guard let pixelBytes = context.data else {
+                throw MetalSupportError.resourceCreationFailure
             }
+            getBytes(pixelBytes, bytesPerRow: context.bytesPerRow, from: MTLRegion(origin: .zero, size: MTLSize(width, height, 1)), mipmapLevel: 0)
+            guard let image = context.makeImage() else {
+                throw MetalSupportError.resourceCreationFailure
+            }
+            return image
         }
         //            // https://developer.apple.com/documentation/metal/mtltexture/1515598-newtextureviewwithpixelformat
         else {
@@ -863,7 +848,7 @@ public extension MTLTexture {
             conversion.encode(commandBuffer: commandBuffer, sourceTexture: self, destinationTexture: destinationTexture)
             commandBuffer.commit()
             commandBuffer.waitUntilCompleted()
-            return try await destinationTexture.cgImage()
+            return try destinationTexture.cgImage()
         }
     }
 
@@ -1276,7 +1261,7 @@ public extension PixelFormat {
             return nil
         case .bgra8Unorm:
             let colorSpace = CGColorSpace(name: CGColorSpace.sRGB)
-            self = .init(bitsPerComponent: 8, numberOfComponents: 4, alphaInfo: .premultipliedLast, byteOrder: .order32Little, colorSpace: colorSpace)
+            self = .init(bitsPerComponent: 8, numberOfComponents: 4, alphaInfo: .premultipliedLast, byteOrder: .order32Big, colorSpace: colorSpace)
         case .bgra8Unorm_srgb:
             let colorSpace = CGColorSpace(name: CGColorSpace.sRGB)
             self = .init(bitsPerComponent: 8, numberOfComponents: 4, alphaInfo: .premultipliedLast, byteOrder: .order32Big, colorSpace: colorSpace)

@@ -4,6 +4,8 @@ import Metal
 import RenderKit
 import UniformTypeIdentifiers
 
+// swiftlint:disable force_unwrapping
+
 extension Bundle {
     func urls(withExtension extension: String) throws -> [URL] {
         try FileManager().contentsOfDirectory(at: resourceURL!, includingPropertiesForKeys: nil).filter {
