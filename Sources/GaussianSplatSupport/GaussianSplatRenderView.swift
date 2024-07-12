@@ -48,8 +48,8 @@ public struct GaussianSplatRenderView: View {
 
     func screenshot() {
         do {
-            let width = 640
-            let height = 480
+            let width = 1280
+            let height = 960
             let pixelFormat = MTLPixelFormat.bgra8Unorm_srgb
 
             var offscreenConfiguration = OffscreenRenderPassConfiguration()
@@ -81,6 +81,8 @@ public struct GaussianSplatRenderView: View {
             renderPassDescriptor.depthAttachment.storeAction = .store
             renderPassDescriptor.depthAttachment.clearDepth = 1
 
+            var passes = passes
+
             let upscaledPrivateTextureDescriptor = MTLTextureDescriptor()
             upscaledPrivateTextureDescriptor.pixelFormat = pixelFormat
             upscaledPrivateTextureDescriptor.width = width * 2
@@ -96,11 +98,13 @@ public struct GaussianSplatRenderView: View {
 
             let blitPass = BlitTexturePass(id: "BlitTexturePass", source: upscaledPrivateTexture, destination: upscaledSharedTexture)
 
-            let passes = passes + [spatialUpscalingPass, blitPass]
+            passes += [spatialUpscalingPass, blitPass]
 
-            var offscreenRenderer = try OffscreenRenderer(device: device, size: CGSize(width: width, height: height), offscreenConfiguration: offscreenConfiguration, renderPassDescriptor: renderPassDescriptor, passes: passes + [spatialUpscalingPass])
+            print(renderPassDescriptor)
+
+            var offscreenRenderer = try OffscreenRenderer(device: device, size: CGSize(width: width, height: height), offscreenConfiguration: offscreenConfiguration, renderPassDescriptor: renderPassDescriptor, passes: passes)
             try offscreenRenderer.configure()
-            try offscreenRenderer.render()
+            try offscreenRenderer.render(capture: false)
 
             try targetTexture.cgImage().write(to: URL(filePath: "/tmp/test.png"))
             try upscaledSharedTexture.cgImage().write(to: URL(filePath: "/tmp/test-upscaled.png"))
