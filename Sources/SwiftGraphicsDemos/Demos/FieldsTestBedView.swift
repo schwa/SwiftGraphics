@@ -7,7 +7,9 @@ struct FieldsTestBedView: View, DemoView {
     private var m = Measurement(value: 90, unit: UnitAngle.degrees)
 
     var body: some View {
-        MeasurementField(measurement: $m, units: [UnitAngle.degrees, UnitAngle.radians, UnitAngle.revolutions, UnitAngle.arcMinutes, UnitAngle.arcSeconds, UnitAngle.gradians])
+        MeasurementField(title: "Angle", measurement: $m, units: [UnitAngle.degrees, UnitAngle.radians, UnitAngle.revolutions, UnitAngle.arcMinutes, UnitAngle.arcSeconds, UnitAngle.gradians])
+            .frame(maxWidth: 120)
+            .padding()
     }
 }
 
