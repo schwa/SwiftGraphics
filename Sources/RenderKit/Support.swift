@@ -6,13 +6,6 @@ import RenderKitShadersLegacy
 import simd
 import SwiftUI
 
-// extension Bundle {
-//    static var renderKitShaders: Bundle {
-//        let url = Bundle.module.bundleURL.appendingPathComponent("../SwiftGraphics_RenderKitShaders.bundle")
-//        return Bundle(url: url)!
-//    }
-// }
-
 public extension Bundle {
     static let renderKitShadersLegacy: Bundle = {
         // Step 1. Find the bundle as a child of main bundle.
