@@ -74,20 +74,9 @@ public struct GaussianSplatRenderView: View {
 
     func screenshot() {
         do {
-            let width = 1600
-            let height = 1200
+            let width = 640
+            let height = 480
             let pixelFormat = MTLPixelFormat.bgra8Unorm_srgb
-
-            let outputTextureDescriptor = MTLTextureDescriptor()
-            outputTextureDescriptor.pixelFormat = pixelFormat
-            outputTextureDescriptor.storageMode = .private
-            outputTextureDescriptor.usage = [.renderTarget, .shaderRead, .shaderWrite]
-            outputTextureDescriptor.width = width * 2
-            outputTextureDescriptor.height = height * 2
-
-            let outputTexture = device.makeTexture(descriptor: outputTextureDescriptor)!
-            outputTexture.label = "Upscaled Texture"
-            print(outputTexture)
 
             var offscreenConfiguration = OffscreenRenderPassConfiguration()
             offscreenConfiguration.clearColor = .init(red: 0, green: 0, blue: 0, alpha: 0)
@@ -96,45 +85,52 @@ public struct GaussianSplatRenderView: View {
             offscreenConfiguration.clearDepth = 1
             offscreenConfiguration.colorPixelFormat = pixelFormat
 
-            let currentRenderPassDescriptor = MTLRenderPassDescriptor()
+            let renderPassDescriptor = MTLRenderPassDescriptor()
 
             let targetTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: pixelFormat, width: width, height: height, mipmapped: false)
             targetTextureDescriptor.storageMode = .shared
             targetTextureDescriptor.usage = [.renderTarget, .shaderRead, .shaderWrite]
             let targetTexture = try device.makeTexture(descriptor: targetTextureDescriptor).safelyUnwrap(MetalSupportError.resourceCreationFailure)
             targetTexture.label = "Target Texture"
-            currentRenderPassDescriptor.colorAttachments[0].texture = targetTexture
-            currentRenderPassDescriptor.colorAttachments[0].loadAction = .clear
-            currentRenderPassDescriptor.colorAttachments[0].storeAction = .store
-            currentRenderPassDescriptor.colorAttachments[0].clearColor = MTLClearColor(red: 0, green: 0, blue: 0, alpha: 1)
-
+            renderPassDescriptor.colorAttachments[0].texture = targetTexture
+            renderPassDescriptor.colorAttachments[0].loadAction = .clear
+            renderPassDescriptor.colorAttachments[0].storeAction = .store
+            renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColor(red: 0, green: 0, blue: 0, alpha: 1)
 
             let depthTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .depth32Float, width: width, height: height, mipmapped: false)
             depthTextureDescriptor.storageMode = .memoryless
             depthTextureDescriptor.usage = [.renderTarget, .shaderRead, .shaderWrite]
             let depthStencilTexture = try device.makeTexture(descriptor: depthTextureDescriptor).safelyUnwrap(MetalSupportError.resourceCreationFailure)
             depthStencilTexture.label = "Depth Texture"
-            currentRenderPassDescriptor.depthAttachment.texture = depthStencilTexture
-            currentRenderPassDescriptor.depthAttachment.loadAction = .clear
-            currentRenderPassDescriptor.depthAttachment.storeAction = .store
-            currentRenderPassDescriptor.depthAttachment.clearDepth = 1
+            renderPassDescriptor.depthAttachment.texture = depthStencilTexture
+            renderPassDescriptor.depthAttachment.loadAction = .clear
+            renderPassDescriptor.depthAttachment.storeAction = .store
+            renderPassDescriptor.depthAttachment.clearDepth = 1
 
-            let spatialUpscalingPass = SpatialUpscalingPass(id: "SpatialUpscalingPass", inputTexture: Box(targetTexture), outputPixelFormat: pixelFormat, outputSize: CGSize(width: width * 2, height: height * 2))
+            let upscaledPrivateTextureDescriptor = MTLTextureDescriptor()
+            upscaledPrivateTextureDescriptor.pixelFormat = pixelFormat
+            upscaledPrivateTextureDescriptor.width = width * 2
+            upscaledPrivateTextureDescriptor.height = height * 2
+            upscaledPrivateTextureDescriptor.storageMode = .private
+            upscaledPrivateTextureDescriptor.usage = [.renderTarget, .shaderRead, .shaderWrite]
+            let upscaledPrivateTexture = device.makeTexture(descriptor: upscaledPrivateTextureDescriptor)! // TODO: BANG
+            let spatialUpscalingPass = SpatialUpscalingPass(id: "SpatialUpscalingPass", inputTexture: targetTexture, outputTexture: upscaledPrivateTexture)
 
+            let upscaledSharedTextureDescriptor = upscaledPrivateTextureDescriptor
+            upscaledSharedTextureDescriptor.storageMode = .shared
+            let upscaledSharedTexture = device.makeTexture(descriptor: upscaledSharedTextureDescriptor)! // TODO: Bang
 
-            var offscreenRenderer = try OffscreenRenderer(device: device, size: CGSize(width: width, height: height), offscreenConfiguration: offscreenConfiguration, renderPassDescriptor: currentRenderPassDescriptor, passes: passes + [spatialUpscalingPass])
+            let blitPass = BlitTexturePass(id: "BlitTexturePass", source: upscaledPrivateTexture, destination: upscaledSharedTexture)
+
+            let passes = passes + [spatialUpscalingPass, blitPass]
+
+            var offscreenRenderer = try OffscreenRenderer(device: device, size: CGSize(width: width, height: height), offscreenConfiguration: offscreenConfiguration, renderPassDescriptor: renderPassDescriptor, passes: passes + [spatialUpscalingPass])
             try offscreenRenderer.configure()
             try offscreenRenderer.render()
 
-            guard let targetTexture = offscreenRenderer.targetTexture else {
-                fatalError()
-            }
-            guard let cgImage = targetTexture.cgImage() else {
-                fatalError()
-            }
-            let url = URL(filePath: "/tmp/test.png")
-            try cgImage.write(to: url)
-            url.reveal()
+            try targetTexture.cgImage()!.write(to: URL(filePath: "/tmp/test.png"))
+            try upscaledSharedTexture.cgImage()!.write(to: URL(filePath: "/tmp/test-upscaled.png"))
+            URL(filePath: "/tmp/test.png").reveal()
         }
         catch {
             print(error)
@@ -142,36 +138,67 @@ public struct GaussianSplatRenderView: View {
     }
 }
 
+// MARK: -
+
+struct BlitTexturePass: GeneralPassProtocol {
+    let id: AnyHashable
+
+    struct State: PassState {
+    }
+
+    let source: Box<MTLTexture>
+    let destination: Box<MTLTexture>
+
+    init(id: AnyHashable, source: MTLTexture, destination: MTLTexture) {
+        self.id = id
+        self.source = Box(source)
+        self.destination = Box(destination)
+    }
+
+    func setup(device: MTLDevice) throws -> (State) {
+        State()
+    }
+
+    func encode(device: MTLDevice, state: inout State, commandBuffer: MTLCommandBuffer) throws {
+        let blitCommandEncoder = try commandBuffer.makeBlitCommandEncoder().safelyUnwrap(BaseError.generic("TODO")) // TODO: Sanitize error types.
+        blitCommandEncoder.label = "BlitTexturePass(\(id))"
+        blitCommandEncoder.copy(from: source(), to: destination())
+        blitCommandEncoder.endEncoding()
+    }
+}
+
+// MARK: -
+
 struct SpatialUpscalingPass: GeneralPassProtocol {
     struct State: PassState {
-        var outputTexture: MTLTexture
         var spatialScaler: MTLFXSpatialScaler
     }
 
-    let id: AnyHashable
+    var id: AnyHashable
+    var inputTexture: Box<MTLTexture>
+    var outputTexture: Box<MTLTexture>
 
-    let inputTexture: Box<MTLTexture>
-    let outputPixelFormat: MTLPixelFormat
-    let outputSize: CGSize
+    init(id: AnyHashable, inputTexture: MTLTexture, outputTexture: MTLTexture) {
+        self.id = id
+        self.inputTexture = Box(inputTexture)
+        self.outputTexture = Box(outputTexture)
+    }
 
     func setup(device: MTLDevice) throws -> State {
-        let outputTextureDescriptor = MTLTextureDescriptor()
-        outputTextureDescriptor.pixelFormat = outputPixelFormat
-        outputTextureDescriptor.width = Int(outputSize.width)
-        outputTextureDescriptor.height = Int(outputSize.height)
-        let outputTexture = device.makeTexture(descriptor: outputTextureDescriptor)!
         let spatialScalerDescriptor = MTLFXSpatialScalerDescriptor()
-        spatialScalerDescriptor.inputWidth = inputTexture.content.width
-        spatialScalerDescriptor.inputHeight = inputTexture.content.height
-        spatialScalerDescriptor.outputWidth = outputTexture.width
-        spatialScalerDescriptor.outputHeight = outputTexture.height
-        spatialScalerDescriptor.colorTextureFormat = inputTexture.content.pixelFormat
-        spatialScalerDescriptor.outputTextureFormat = outputPixelFormat
+        spatialScalerDescriptor.inputWidth = inputTexture().width
+        spatialScalerDescriptor.inputHeight = inputTexture().height
+        spatialScalerDescriptor.outputWidth = outputTexture().width
+        spatialScalerDescriptor.outputHeight = outputTexture().height
+        spatialScalerDescriptor.colorTextureFormat = inputTexture().pixelFormat
+        spatialScalerDescriptor.outputTextureFormat = outputTexture().pixelFormat
         spatialScalerDescriptor.colorProcessingMode = .perceptual
+
         let spatialScaler = spatialScalerDescriptor.makeSpatialScaler(device: device)!
         spatialScaler.colorTexture = inputTexture.content
-        spatialScaler.outputTexture = outputTexture
-        return State(outputTexture: outputTexture, spatialScaler: spatialScaler)
+        spatialScaler.outputTexture = outputTexture.content
+
+        return State(spatialScaler: spatialScaler)
     }
 
     func encode(device: MTLDevice, state: inout State, commandBuffer: MTLCommandBuffer) throws {

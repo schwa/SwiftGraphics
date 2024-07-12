@@ -10,10 +10,6 @@ public struct OffscreenRenderer {
     var renderPassDescriptor: MTLRenderPassDescriptor
     var renderer: Renderer<OffscreenRenderPassConfiguration>
 
-    public var targetTexture: MTLTexture? {
-        fatalError()
-    }
-
     public init(device: MTLDevice, size: CGSize, offscreenConfiguration: OffscreenRenderPassConfiguration, renderPassDescriptor: MTLRenderPassDescriptor, passes: [any PassProtocol]) throws {
         self.device = device
         self.size = size
