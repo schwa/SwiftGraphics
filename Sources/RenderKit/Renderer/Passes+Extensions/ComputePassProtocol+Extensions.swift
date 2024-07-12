@@ -1,9 +1,10 @@
-import Metal
+//
+//  File.swift
+//  SwiftGraphics
+//
+//  Created by Jonathan Wight on 7/12/24.
+//
 
-public protocol ComputePassProtocol: ShaderPassProtocol {
-    func setup(device: MTLDevice) throws -> State
-    func compute(device: MTLDevice, state: inout State, commandBuffer: MTLCommandBuffer) throws
-}
 
 internal extension ComputePassProtocol {
     func compute(device: MTLDevice, untypedState: inout any PassState, commandBuffer: MTLCommandBuffer) throws {

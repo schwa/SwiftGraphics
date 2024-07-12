@@ -2,15 +2,6 @@ import BaseSupport
 import Foundation
 import Metal
 
-public protocol RenderPassProtocol: ShaderPassProtocol {
-    func setup(device: MTLDevice, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State
-    func sizeWillChange(device: MTLDevice, state: inout State, size: CGSize) throws
-    func render(device: MTLDevice, state: inout State, drawableSize: SIMD2<Float>, renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) throws
-    func encode(device: MTLDevice, state: inout State, drawableSize: SIMD2<Float>, commandEncoder: MTLRenderCommandEncoder) throws
-}
-
-// MARK: -
-
 public extension RenderPassProtocol {
     func sizeWillChange(device: MTLDevice, state: inout State, size: CGSize) throws {
     }

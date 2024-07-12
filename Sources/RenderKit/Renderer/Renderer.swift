@@ -21,18 +21,6 @@ public protocol MetalConfigurationProtocol {
 extension MetalViewConfiguration: MetalConfigurationProtocol {
 }
 
-// TODO: Make sendable.
-// TODO: Allow for empty state - make Never or () conform to PassState???
-public protocol PassState /*: Sendable*/ {
-}
-
-public protocol PassProtocol: Equatable/*, Sendable*/ {
-    var id: AnyHashable { get }
-}
-
-public protocol ShaderPassProtocol: PassProtocol {
-    associatedtype State: PassState
-}
 
 struct Renderer <MetalConfiguration> where MetalConfiguration: MetalConfigurationProtocol {
     private var device: MTLDevice
