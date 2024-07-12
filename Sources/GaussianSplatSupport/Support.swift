@@ -1,4 +1,5 @@
-import CoreGraphicsSupport
+import BaseSupport
+∑import CoreGraphicsSupport
 import Foundation
 import Metal
 import MetalSupport
@@ -88,11 +89,11 @@ extension simd_quatf {
 public extension MTLDevice {
     func makeTypedBuffer<T>(data: Data, options: MTLResourceOptions = []) throws -> TypedMTLBuffer<T> {
         if !data.count.isMultiple(of: MemoryLayout<T>.size) {
-            throw MetalSupportError.illegalValue
+            throw BaseError.illegalValue
         }
         return try data.withUnsafeBytes { buffer in
             guard let buffer = makeBuffer(bytes: buffer.baseAddress!, length: buffer.count, options: options) else {
-                throw MetalSupportError.resourceCreationFailure
+                throw BaseError.resourceCreationFailure
             }
             return TypedMTLBuffer(mtlBuffer: buffer)
         }
@@ -101,7 +102,7 @@ public extension MTLDevice {
     func makeTypedBuffer<T>(data: [T], options: MTLResourceOptions = []) throws -> TypedMTLBuffer<T> {
         try data.withUnsafeBytes { buffer in
             guard let buffer = makeBuffer(bytes: buffer.baseAddress!, length: buffer.count, options: options) else {
-                throw MetalSupportError.resourceCreationFailure
+                throw BaseError.resourceCreationFailure
             }
             return TypedMTLBuffer(mtlBuffer: buffer)
         }

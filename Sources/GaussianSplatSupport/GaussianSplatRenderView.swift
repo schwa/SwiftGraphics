@@ -43,33 +43,7 @@ public struct GaussianSplatRenderView: View {
     }
 
     var passes: [any PassProtocol] {
-        guard let splatsNode = scene.node(for: "splats"), let splats = splatsNode.content as? Splats else {
-            return []
-        }
-        guard let cameraNode = scene.node(for: "camera") else {
-            return []
-        }
-        let preCalcComputePass = GaussianSplatPreCalcComputePass(
-            splats: splats,
-            modelMatrix: simd_float3x3(truncating: splatsNode.transform.matrix),
-            cameraPosition: cameraNode.transform.translation
-        )
-        let gaussianSplatSortComputePass = GaussianSplatBitonicSortComputePass(
-            splats: splats,
-            sortRate: viewModel.sortRate
-        )
-        //        let gaussianSplatRenderPass = GaussianSplatRenderPass(
-        //            scene: scene,
-        //            debugMode: viewModel.debugMode
-        //        )
-        let gaussianSplatRenderPass = GaussianSplatRenderPass(
-            scene: scene,
-            debugMode: false)
-        return [
-            preCalcComputePass,
-            gaussianSplatSortComputePass,
-            gaussianSplatRenderPass
-        ]
+        [GaussianSplatCompositePass(id: "GaussianSplatCompositePass", scene: scene, sortRate: viewModel.sortRate)]
     }
 
     func screenshot() {
@@ -90,7 +64,7 @@ public struct GaussianSplatRenderView: View {
             let targetTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: pixelFormat, width: width, height: height, mipmapped: false)
             targetTextureDescriptor.storageMode = .shared
             targetTextureDescriptor.usage = [.renderTarget, .shaderRead, .shaderWrite]
-            let targetTexture = try device.makeTexture(descriptor: targetTextureDescriptor).safelyUnwrap(MetalSupportError.resourceCreationFailure)
+            let targetTexture = try device.makeTexture(descriptor: targetTextureDescriptor).safelyUnwrap(BaseError.resourceCreationFailure)
             targetTexture.label = "Target Texture"
             renderPassDescriptor.colorAttachments[0].texture = targetTexture
             renderPassDescriptor.colorAttachments[0].loadAction = .clear
@@ -100,7 +74,7 @@ public struct GaussianSplatRenderView: View {
             let depthTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .depth32Float, width: width, height: height, mipmapped: false)
             depthTextureDescriptor.storageMode = .memoryless
             depthTextureDescriptor.usage = [.renderTarget, .shaderRead, .shaderWrite]
-            let depthStencilTexture = try device.makeTexture(descriptor: depthTextureDescriptor).safelyUnwrap(MetalSupportError.resourceCreationFailure)
+            let depthStencilTexture = try device.makeTexture(descriptor: depthTextureDescriptor).safelyUnwrap(BaseError.resourceCreationFailure)
             depthStencilTexture.label = "Depth Texture"
             renderPassDescriptor.depthAttachment.texture = depthStencilTexture
             renderPassDescriptor.depthAttachment.loadAction = .clear
@@ -113,12 +87,12 @@ public struct GaussianSplatRenderView: View {
             upscaledPrivateTextureDescriptor.height = height * 2
             upscaledPrivateTextureDescriptor.storageMode = .private
             upscaledPrivateTextureDescriptor.usage = [.renderTarget, .shaderRead, .shaderWrite]
-            let upscaledPrivateTexture = device.makeTexture(descriptor: upscaledPrivateTextureDescriptor)! // TODO: BANG
-            let spatialUpscalingPass = SpatialUpscalingPass(id: "SpatialUpscalingPass", inputTexture: targetTexture, outputTexture: upscaledPrivateTexture)
+            let upscaledPrivateTexture = try device.makeTexture(descriptor: upscaledPrivateTextureDescriptor).safelyUnwrap(BaseError.generic("OOPS"))
+            let spatialUpscalingPass = SpatialUpscalingPass(id: "SpatialUpscalingPass", inputTexture: targetTexture, outputTexture: upscaledPrivateTexture, colorProcessingMode: .perceptual)
 
             let upscaledSharedTextureDescriptor = upscaledPrivateTextureDescriptor
             upscaledSharedTextureDescriptor.storageMode = .shared
-            let upscaledSharedTexture = device.makeTexture(descriptor: upscaledSharedTextureDescriptor)! // TODO: Bang
+            let upscaledSharedTexture = try device.makeTexture(descriptor: upscaledSharedTextureDescriptor).safelyUnwrap(BaseError.generic("OOPS"))
 
             let blitPass = BlitTexturePass(id: "BlitTexturePass", source: upscaledPrivateTexture, destination: upscaledSharedTexture)
 
@@ -177,11 +151,13 @@ struct SpatialUpscalingPass: GeneralPassProtocol {
     var id: AnyHashable
     var inputTexture: Box<MTLTexture>
     var outputTexture: Box<MTLTexture>
+    var colorProcessingMode: MTLFXSpatialScalerColorProcessingMode
 
-    init(id: AnyHashable, inputTexture: MTLTexture, outputTexture: MTLTexture) {
+    init(id: AnyHashable, inputTexture: MTLTexture, outputTexture: MTLTexture, colorProcessingMode: MTLFXSpatialScalerColorProcessingMode) {
         self.id = id
         self.inputTexture = Box(inputTexture)
         self.outputTexture = Box(outputTexture)
+        self.colorProcessingMode = colorProcessingMode
     }
 
     func setup(device: MTLDevice) throws -> State {
@@ -192,9 +168,9 @@ struct SpatialUpscalingPass: GeneralPassProtocol {
         spatialScalerDescriptor.outputHeight = outputTexture().height
         spatialScalerDescriptor.colorTextureFormat = inputTexture().pixelFormat
         spatialScalerDescriptor.outputTextureFormat = outputTexture().pixelFormat
-        spatialScalerDescriptor.colorProcessingMode = .perceptual
+        spatialScalerDescriptor.colorProcessingMode = colorProcessingMode
 
-        let spatialScaler = spatialScalerDescriptor.makeSpatialScaler(device: device)!
+        let spatialScaler = try spatialScalerDescriptor.makeSpatialScaler(device: device).safelyUnwrap(BaseError.generic("OOPS"))
         spatialScaler.colorTexture = inputTexture.content
         spatialScaler.outputTexture = outputTexture.content
 
@@ -203,5 +179,38 @@ struct SpatialUpscalingPass: GeneralPassProtocol {
 
     func encode(device: MTLDevice, state: inout State, commandBuffer: MTLCommandBuffer) throws {
         state.spatialScaler.encode(commandBuffer: commandBuffer)
+    }
+}
+
+struct GaussianSplatCompositePass: CompositePassProtocol {
+    var id: AnyHashable
+    var scene: SceneGraph
+    var sortRate: Int
+
+    func children() throws -> [any PassProtocol] {
+        guard let splatsNode = scene.node(for: "splats"), let splats = splatsNode.content as? Splats else {
+            return []
+        }
+        guard let cameraNode = scene.node(for: "camera") else {
+            return []
+        }
+        let preCalcComputePass = GaussianSplatPreCalcComputePass(
+            splats: splats,
+            modelMatrix: simd_float3x3(truncating: splatsNode.transform.matrix),
+            cameraPosition: cameraNode.transform.translation
+        )
+        let gaussianSplatSortComputePass = GaussianSplatBitonicSortComputePass(
+            splats: splats,
+            sortRate: sortRate
+        )
+        let gaussianSplatRenderPass = GaussianSplatRenderPass(
+            scene: scene,
+            debugMode: false
+        )
+        return [
+            preCalcComputePass,
+            gaussianSplatSortComputePass,
+            gaussianSplatRenderPass
+        ]
     }
 }

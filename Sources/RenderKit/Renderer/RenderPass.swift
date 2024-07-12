@@ -1,7 +1,8 @@
+import BaseSupport
 import Foundation
 import Metal
 
-public protocol RenderPassProtocol: PassProtocol {
+public protocol RenderPassProtocol: ShaderPassProtocol {
     func setup(device: MTLDevice, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State
     func sizeWillChange(device: MTLDevice, state: inout State, size: CGSize) throws
     func render(device: MTLDevice, state: inout State, drawableSize: SIMD2<Float>, renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) throws
@@ -15,7 +16,7 @@ public extension RenderPassProtocol {
     }
 
     func render(device: MTLDevice, state: inout State, drawableSize: SIMD2<Float>, renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) throws {
-        let commandEncoder = try commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor).safelyUnwrap(RenderKitError.resourceCreationFailure)
+        let commandEncoder = try commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor).safelyUnwrap(BaseError.resourceCreationFailure)
         defer {
             commandEncoder.endEncoding()
         }

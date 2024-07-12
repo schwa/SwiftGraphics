@@ -1,9 +1,6 @@
+import BaseSupport
 import Everything
 import Foundation
-
-public enum PlyError: Error {
-    case generic(String)
-}
 
 public struct Ply {
     public struct Header {
@@ -83,7 +80,7 @@ public struct Ply {
                 var scanner = CollectionScanner(elements: elementData)
                 let elements = try header.elements.map { definition in
                     guard let element = try scanner.scanPLYElement(definition: definition, format: header.format) else {
-                        throw PlyError.generic("Failed to scan element data.")
+                        throw BaseError.generic("Failed to scan element data.")
                     }
                     return element
                 }
@@ -97,7 +94,7 @@ public struct Ply {
         var scanner = CollectionScanner(elements: data)
 
         guard let header = try scanner.scanPLYHeader() else {
-            throw PlyError.generic("Failed to scan ply header.")
+            throw BaseError.generic("Failed to scan ply header.")
         }
         self.header = header
         self.elementData = data[scanner.current ..< data.endIndex]
@@ -117,7 +114,7 @@ public struct Ply {
 public extension Ply {
     init(string: String, processElements: Bool = false) throws {
         guard let data = string.data(using: .utf8) else {
-            throw PlyError.generic("Could not encode string.")
+            throw BaseError.generic("Could not encode string.")
         }
         try self.init(data: data, processElements: processElements)
     }
@@ -332,11 +329,11 @@ public extension Ply.Header.Element.Specification {
 public extension Ply.Header {
     init(source: String) throws {
         guard let data = source.data(using: .utf8) else {
-            throw PlyError.generic("Could not convert data.")
+            throw BaseError.generic("Could not convert data.")
         }
         var scanner = CollectionScanner(elements: data)
         guard let header = try scanner.scanPLYHeader() else {
-            throw PlyError.generic("Could not scan PLY header")
+            throw BaseError.generic("Could not scan PLY header")
         }
         self = header
     }
@@ -380,20 +377,20 @@ extension CollectionScanner where Element == UInt8 {
     mutating func scanPLYHeader() throws -> Ply.Header? {
         try scan_ { scanner in
             guard scanner.scanPrefixedLine(prefix: "ply") != nil else {
-                throw PlyError.generic("Data does not start with \"ply\"")
+                throw BaseError.generic("Data does not start with \"ply\"")
             }
             guard let format = scanner.scanPrefixedLine(prefix: "format") else {
-                throw PlyError.generic("Failed to scan format")
+                throw BaseError.generic("Failed to scan format")
             }
             // TODO: Version can be _anything_
             let pattern = #/^(?<format>(ascii|binary_little_endian))\s+(?<version>.+)\s*$/#
             guard let match = format.firstMatch(of: pattern) else {
-                throw PlyError.generic("Unknown format line.")
+                throw BaseError.generic("Unknown format line.")
             }
             //  ascii 1.0\n
 
             guard let format = Ply.Header.Format(rawValue: String(match.output.format)) else {
-                throw PlyError.generic("Unknown format.")
+                throw BaseError.generic("Unknown format.")
             }
             let version = String(match.output.version)
             var elements: [Ply.Header.Element] = []
@@ -419,11 +416,11 @@ extension CollectionScanner where Element == UInt8 {
             }
             let pattern = #/^(?<name>[A-Za-z]+)\s+(?<count>\d+)\s*$/#
             guard let match = line.firstMatch(of: pattern) else {
-                throw PlyError.generic("Could not parse element.")
+                throw BaseError.generic("Could not parse element.")
             }
             let name = String(match.output.name)
             guard let count = Int(match.output.count) else {
-                throw PlyError.generic("Could not get count of properties")
+                throw BaseError.generic("Could not get count of properties")
             }
             guard let specification = try scanner.scanPLYHeaderElementSpecification() else {
                 return nil
@@ -443,10 +440,10 @@ extension CollectionScanner where Element == UInt8 {
                 return nil
             }
             guard let countType = Ply.ScalarType(rawValue: String(match.output.count_type)) else {
-                throw PlyError.generic("Unknown scalar type \"\(match.output.count_type)\".")
+                throw BaseError.generic("Unknown scalar type \"\(match.output.count_type)\".")
             }
             guard let valueType = Ply.ScalarType(rawValue: String(match.output.value_type)) else {
-                throw PlyError.generic("Unknown scalar type \"\(match.output.value_type)\".")
+                throw BaseError.generic("Unknown scalar type \"\(match.output.value_type)\".")
             }
             let name = String(match.output.name)
             return .list(.init(name: name, countType: countType, valueType: valueType))
@@ -467,7 +464,7 @@ extension CollectionScanner where Element == UInt8 {
                 }
                 let name = String(match.output.name)
                 guard let valueType = Ply.ScalarType(rawValue: String(match.output.value_type)) else {
-                    throw PlyError.generic("Unknown scalar type \"\(match.output.value_type)\".")
+                    throw BaseError.generic("Unknown scalar type \"\(match.output.value_type)\".")
                 }
                 properties.append(.init(name: name, valueType: valueType))
             }
@@ -515,7 +512,7 @@ extension CollectionScanner where Element == UInt8 {
         switch format {
         case .ascii:
             guard let word = scanWord(), let scalar = Ply.ScalarValue(type: type, string: word) else {
-                throw PlyError.generic("Could not scan value of type \"\(type)\".")
+                throw BaseError.generic("Could not scan value of type \"\(type)\".")
             }
             return scalar
         case .binaryLittleEndian:

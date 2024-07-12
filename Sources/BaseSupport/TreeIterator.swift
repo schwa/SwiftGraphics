@@ -1,10 +1,3 @@
-//
-//  TreeIterator.swift
-//
-//
-//  Created by Jonathan Wight on 7/4/24.
-//
-
 public struct TreeIterator <Element>: IteratorProtocol {
     public enum Mode {
         case depthFirst

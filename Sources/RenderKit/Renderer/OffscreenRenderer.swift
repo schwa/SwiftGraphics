@@ -25,7 +25,7 @@ public struct OffscreenRenderer {
 
     public mutating func render() throws {
         try device.capture(enabled: false) {
-            let commandQueue = try device.makeCommandQueue().safelyUnwrap(MetalSupportError.resourceCreationFailure)
+            let commandQueue = try device.makeCommandQueue().safelyUnwrap(BaseError.resourceCreationFailure)
             try commandQueue.withCommandBuffer(waitAfterCommit: true) { commandBuffer in
                 try renderer.render(commandBuffer: commandBuffer, renderPassDescriptor: renderPassDescriptor, drawableSize: size)
             }

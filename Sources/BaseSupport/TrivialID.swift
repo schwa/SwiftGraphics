@@ -1,10 +1,3 @@
-//
-//  TrivialID.swift
-//  CacheTest
-//
-//  Created by Jonathan Wight on 5/10/24.
-//
-
 import Foundation
 import os
 

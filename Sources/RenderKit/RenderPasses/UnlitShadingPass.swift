@@ -1,3 +1,4 @@
+import BaseSupport
 @preconcurrency import Metal
 import MetalSupport
 import RenderKitShadersLegacy
@@ -46,7 +47,7 @@ public struct UnlitShadingPass: RenderPassProtocol {
         renderPipelineDescriptor.vertexFunction = library.makeFunction(name: "unlitVertexShader")
         renderPipelineDescriptor.fragmentFunction = library.makeFunction(name: "unlitFragmentShader")
         let depthStencilDescriptor = MTLDepthStencilDescriptor(depthCompareFunction: .less, isDepthWriteEnabled: true)
-        let depthStencilState = try device.makeDepthStencilState(descriptor: depthStencilDescriptor).safelyUnwrap(RenderKitError.generic("Could not create depth stencil state"))
+        let depthStencilState = try device.makeDepthStencilState(descriptor: depthStencilDescriptor).safelyUnwrap(BaseError.generic("Could not create depth stencil state"))
         renderPipelineDescriptor.label = "\(type(of: self))"
 
         renderPipelineDescriptor.vertexDescriptor = MTLVertexDescriptor(oneTrueVertexDescriptor)

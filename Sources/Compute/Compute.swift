@@ -1,3 +1,4 @@
+import BaseSupport
 import Metal
 import MetalSupport
 
@@ -10,7 +11,7 @@ public struct Compute {
     public init(device: MTLDevice) throws {
         self.device = device
         guard let commandQueue = device.makeCommandQueue() else {
-            throw MetalSupportError.resourceCreationFailure
+            throw BaseError.resourceCreationFailure
         }
         self.commandQueue = commandQueue
     }

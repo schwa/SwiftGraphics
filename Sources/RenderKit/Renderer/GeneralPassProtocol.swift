@@ -1,6 +1,7 @@
 import Metal
 
 public protocol GeneralPassProtocol: PassProtocol {
+    associatedtype State: PassState
     func setup(device: MTLDevice) throws -> State
     func encode(device: MTLDevice, state: inout State, commandBuffer: MTLCommandBuffer) throws // TODO: Rename
 }
