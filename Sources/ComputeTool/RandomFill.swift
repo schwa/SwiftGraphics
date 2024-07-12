@@ -7,6 +7,8 @@ import Metal
 import MetalSupport
 import MetalUnsafeConformances
 
+// swiftlint:disable force_unwrapping
+
 struct RandomFill {
     let width = 512
     let height = 512

@@ -1,5 +1,7 @@
 import Metal
 
+// swiftlint:disable force_unwrapping
+
 @dynamicMemberLookup
 public struct ShaderLibrary: Sendable {
     public static let `default` = Self.bundle(.main)

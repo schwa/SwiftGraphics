@@ -4,6 +4,8 @@ import CoreGraphicsSupport
 import CoreGraphicsUnsafeConformances
 import GenericGeometryBase
 
+// swiftlint:disable force_unwrapping
+
 private extension Array2D {
     mutating func draw(image: CGImage, definition: BitmapDefinition) {
         flatStorage.withUnsafeMutableBytes { buffer in

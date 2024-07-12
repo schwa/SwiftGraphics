@@ -23,7 +23,9 @@ public extension NSImage {
 #if os(macOS)
 public extension CGContext {
     func makeImage(size: CGSize) -> NSImage {
-        let image = makeImage()!
+        guard let image = makeImage() else {
+            fatalError()
+        }
         return NSImage(cgImage: image, size: size)
     }
 }

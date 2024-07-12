@@ -1,3 +1,4 @@
+import BaseSupport
 import Metal
 import ModelIO
 
@@ -438,7 +439,7 @@ extension MTLResourceUsage: Codable {
             "write": MTLResourceUsage.write,
         ]
         assert(!strings.contains("sample"))
-        let usages: [MTLResourceUsage] = strings.map { mapping[$0]! }
+        let usages: [MTLResourceUsage] = try strings.map { try mapping[$0].safelyUnwrap(BaseError.generic("TODO")) }
         self = MTLResourceUsage(usages)
     }
 

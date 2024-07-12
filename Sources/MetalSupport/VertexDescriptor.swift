@@ -2,6 +2,8 @@ import Metal
 import MetalKit
 import ModelIO
 
+// swiftlint:disable force_unwrapping
+
 public struct VertexDescriptor: Hashable, Sendable {
     public struct Layout: Hashable, Sendable {
         public var label: String?

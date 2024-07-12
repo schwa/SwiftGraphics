@@ -1,6 +1,8 @@
 import Metal
 import MetalSupport
 
+// swiftlint:disable force_unwrapping
+
 public struct Compute {
     public let device: MTLDevice
     let commandQueue: MTLCommandQueue

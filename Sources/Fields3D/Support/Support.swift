@@ -1,3 +1,4 @@
+import BaseSupport
 import CoreGraphicsSupport
 import SwiftUI
 
@@ -63,7 +64,9 @@ public extension FloatingPoint {
 extension Image {
     @MainActor
     init(color: Color, size: CGSize) {
-        let nsImage = ImageRenderer(content: color.frame(width: size.width, height: size.height)).nsImage!
+        guard let nsImage = ImageRenderer(content: color.frame(width: size.width, height: size.height)).nsImage else {
+            fatalError("Failed to create image from color")
+        }
         self = .init(nsImage: nsImage)
     }
 }

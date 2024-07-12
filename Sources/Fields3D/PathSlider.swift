@@ -45,7 +45,9 @@ public struct PathSlider: View {
             let points = cachedPoints.sorted { lhs, rhs in
                 lhs.1.distance(to: value.location) < rhs.1.distance(to: value.location)
             }
-            self.value = points.first!.0
+            if let first = points.first {
+                self.value = first.0
+            }
         })
         .frame(width: bounds.width, height: bounds.height)
     }

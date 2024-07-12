@@ -2,6 +2,8 @@ import Compute
 import Metal
 import MetalSupport
 
+// swiftlint:disable force_unwrapping
+
 public struct BitonicSortDemo {
     public init() {
     }

@@ -58,7 +58,7 @@ public struct Box <Content>: Identifiable, Hashable where Content: AnyObject {
 
 public extension Box {
     func callAsFunction() -> Content {
-        return content
+        content
     }
 }
 

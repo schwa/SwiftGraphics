@@ -1,6 +1,8 @@
 import CoreGraphicsSupport
 import SwiftUI
 
+// swiftlint:disable force_unwrapping
+
 public struct WrappingHStack: Layout {
     public struct Cache {
         var origins: [Int: CGPoint] = [:]

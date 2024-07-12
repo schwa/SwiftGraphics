@@ -16,7 +16,9 @@ public extension CGPath {
 
 public extension CGPath {
     static func + (lhs: CGPath, rhs: CGPath) -> CGPath {
-        let path = lhs.mutableCopy()!
+        guard let path = lhs.mutableCopy() else {
+            fatalError()
+        }
         path.addPath(rhs)
         return path
     }
