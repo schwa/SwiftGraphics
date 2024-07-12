@@ -1,5 +1,5 @@
 import BaseSupport
-∑import CoreGraphicsSupport
+import CoreGraphicsSupport
 import Foundation
 import Metal
 import MetalSupport
