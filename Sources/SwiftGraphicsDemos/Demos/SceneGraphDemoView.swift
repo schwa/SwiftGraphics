@@ -11,21 +11,18 @@ import SIMDSupport
 import SwiftUI
 
 public struct SceneGraphDemoView: View, DemoView {
-    let device: MTLDevice
-
     @State
     private var scene: SceneGraph
 
     init() {
         let device = MTLCreateSystemDefaultDevice()!
         let scene = try! SceneGraph.demo(device: device)
-        self.device = device
         self.scene = scene
     }
 
     public var body: some View {
         //        TimelineView(.animation) { timeline in
-        SceneGraphView(device: device, scene: $scene, passes: [
+        SceneGraphView(scene: $scene, passes: [
             DiffuseShadingRenderPass(scene: scene),
             UnlitShadingPass(scene: scene),
             DebugRenderPass(scene: scene),

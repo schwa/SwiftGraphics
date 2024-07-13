@@ -37,7 +37,7 @@ struct VolumetricRendererDemoView: DemoView {
 
     var body: some View {
         let renderPasses = [VolumetricRenderPass(scene: scene)]
-        RenderView(device: device, passes: renderPasses)
+        RenderView(passes: renderPasses)
             .onAppear {
                 let volumeData = try! VolumeData(named: "CThead", in: Bundle.module, size: MTLSize(256, 256, 113))
                 let volumeRepresentation = try! VolumeRepresentation(device: device, volumeData: volumeData)
@@ -76,7 +76,7 @@ struct VolumetricRendererDemoView: DemoView {
                 .padding()
                 .controlSize(.small)
             }
-            .modifier(SceneGraphViewModifier(device: device, scene: $scene))
+            .modifier(SceneGraphViewModifier(scene: $scene))
     }
 
     func updateTransferFunctionTexture(_ scene: inout SceneGraph) {

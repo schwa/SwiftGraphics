@@ -10,30 +10,25 @@ import SwiftUI
 import SwiftUISupport
 
 public struct SceneGraphView: View {
-    let device: MTLDevice
-
     @Binding
     private var scene: SceneGraph
 
     let passes: [any PassProtocol]
 
-    public init(device: MTLDevice, scene: Binding<SceneGraph>, passes: [any PassProtocol]) {
-        self.device = device
+    public init(scene: Binding<SceneGraph>, passes: [any PassProtocol]) {
         self._scene = scene
         self.passes = passes
     }
 
     public var body: some View {
-        RenderView(device: device, passes: passes)
-            .modifier(SceneGraphViewModifier(device: device, scene: $scene))
+        RenderView(passes: passes)
+            .modifier(SceneGraphViewModifier(scene: $scene))
     }
 }
 
 // MARK: -
 
 public struct SceneGraphViewModifier: ViewModifier {
-    let device: MTLDevice
-
     @Binding
     private var scene: SceneGraph
 
@@ -61,8 +56,7 @@ public struct SceneGraphViewModifier: ViewModifier {
     @State
     private var isInspectorPresented = false
 
-    public init(device: MTLDevice, scene: Binding<SceneGraph>) {
-        self.device = device
+    public init(scene: Binding<SceneGraph>) {
         self._scene = scene
     }
 

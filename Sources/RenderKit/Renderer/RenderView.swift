@@ -1,8 +1,7 @@
-import Combine
-import MetalKit
 import MetalSupport
 import MetalUISupport
 import ModelIO
+import Observation
 import os.log
 import RenderKitShadersLegacy
 import simd
@@ -14,56 +13,62 @@ public struct RenderView: View {
     public typealias Configure = (MetalViewConfiguration) -> Void
     public typealias SizeWillChange = (CGSize) -> Void
 
-    var device: MTLDevice
-    var commandQueue: MTLCommandQueue
     var passes: PassCollection
     var configure: Configure
     var sizeWillChange: SizeWillChange
 
-    @State
-    private var renderer: Renderer<MetalViewConfiguration>
+    @Environment(\.metalDevice)
+    var device
 
-    @Environment(\.renderErrorHandler)
-    var renderErrorHandler
+    @State
+    private var renderer: Renderer<MetalViewConfiguration>?
+
+    @State
+    var commandQueue: MTLCommandQueue?
 
     @State
     private var logger = Logger(subsystem: "RenderView", category: "RenderView")
 
-    public init(device: MTLDevice, passes: [any PassProtocol], configure: @escaping Configure = { _ in }, sizeWillChange: @escaping SizeWillChange = { _ in }) {
-        self.device = device
-        self.commandQueue = device.makeCommandQueue().forceUnwrap("Could not create command queue.")
+    @Environment(\.renderErrorHandler)
+    var renderErrorHandler
+
+    public init(passes: [any PassProtocol], configure: @escaping Configure = { _ in }, sizeWillChange: @escaping SizeWillChange = { _ in }) {
         self.configure = configure
         self.sizeWillChange = sizeWillChange
         let passes = PassCollection(passes)
         self.passes = passes
-        self.renderer = Renderer<MetalViewConfiguration>(device: device, passes: passes)
     }
 
     public var body: some View {
         MetalView { _, configuration in
             do {
-                try renderer.configure(&configuration)
+                self.commandQueue = device.makeCommandQueue().forceUnwrap("Could not create command queue.")
+                self.renderer = Renderer<MetalViewConfiguration>(device: device, passes: passes)
+                try renderer?.configure(&configuration)
                 configure(configuration)
             } catch {
                 renderErrorHandler.send(error, logger: logger)
             }
         } drawableSizeWillChange: { _, _, size in
             do {
-                try renderer.sizeWillChange(size)
+                try renderer?.sizeWillChange(size)
                 sizeWillChange(size)
             } catch {
                 renderErrorHandler.send(error, logger: logger)
             }
         } draw: { _, _, size, drawable, renderPassDescriptor in
             do {
-                try renderer.draw(commandQueue: commandQueue, renderPassDescriptor: renderPassDescriptor, drawable: drawable, drawableSize: size)
+                guard let commandQueue else {
+                    fatalError()
+                }
+                try renderer?.draw(commandQueue: commandQueue, renderPassDescriptor: renderPassDescriptor, drawable: drawable, drawableSize: size)
             } catch {
                 renderErrorHandler.send(error, logger: logger)
             }
         }
         .onChange(of: passes) {
             do {
-                try renderer.updateRenderPasses(passes)
+                try renderer?.updateRenderPasses(passes)
             } catch {
                 renderErrorHandler.send(error, logger: logger)
             }
