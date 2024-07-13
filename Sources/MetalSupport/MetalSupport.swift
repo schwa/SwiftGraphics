@@ -125,12 +125,12 @@ public extension MTLCommandQueue {
         return try block(commandBuffer)
     }
 
-    func withCommandBuffer<R>(drawable: @autoclosure () -> (any MTLDrawable)?, block: (MTLCommandBuffer) throws -> R) rethrows -> R {
+    func withCommandBuffer<R>(drawable: (any MTLDrawable)? = nil, block: (MTLCommandBuffer) throws -> R) rethrows -> R {
         guard let commandBuffer = makeCommandBuffer() else {
             fatalError("Failed to make command buffer.")
         }
         defer {
-            if let drawable = drawable() {
+            if let drawable {
                 commandBuffer.present(drawable)
             }
             commandBuffer.commit()

@@ -15,12 +15,10 @@ public struct RenderView: View {
     public typealias SizeWillChange = (CGSize) -> Void
 
     var device: MTLDevice
+    var commandQueue: MTLCommandQueue
     var passes: PassCollection
     var configure: Configure
     var sizeWillChange: SizeWillChange
-
-    @State
-    private var commandQueue: MTLCommandQueue?
 
     @State
     private var renderer: Renderer<MetalViewConfiguration>
@@ -33,6 +31,7 @@ public struct RenderView: View {
 
     public init(device: MTLDevice, passes: [any PassProtocol], configure: @escaping Configure = { _ in }, sizeWillChange: @escaping SizeWillChange = { _ in }) {
         self.device = device
+        self.commandQueue = device.makeCommandQueue().forceUnwrap("Could not create command queue.")
         self.configure = configure
         self.sizeWillChange = sizeWillChange
         let passes = PassCollection(passes)
@@ -45,7 +44,6 @@ public struct RenderView: View {
             do {
                 try renderer.configure(&configuration)
                 configure(configuration)
-                commandQueue = device.makeCommandQueue()
             } catch {
                 renderErrorHandler.send(error, logger: logger)
             }
@@ -58,9 +56,6 @@ public struct RenderView: View {
             }
         } draw: { _, _, size, drawable, renderPassDescriptor in
             do {
-                guard let commandQueue else {
-                    fatalError()
-                }
                 try renderer.draw(commandQueue: commandQueue, renderPassDescriptor: renderPassDescriptor, drawable: drawable, drawableSize: size)
             } catch {
                 renderErrorHandler.send(error, logger: logger)

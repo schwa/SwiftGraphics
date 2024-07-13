@@ -1,5 +1,6 @@
 import simd
 
+// TODO: Rename.
 public struct SceneGraphRenderHelper {
     public struct Element {
         public var node: Node

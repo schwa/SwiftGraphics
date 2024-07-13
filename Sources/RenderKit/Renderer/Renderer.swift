@@ -35,12 +35,7 @@ struct Renderer <MetalConfiguration> where MetalConfiguration: MetalConfiguratio
         case configured(sizeKnown: Bool)
         case rendering
     }
-    var state: State {
-        didSet {
-            //            let state = state
-            //            logger?.info("State change: \(String(describing: oldValue)) -> \(String(describing: state))")
-        }
-    }
+    var state: State
 
     init(device: MTLDevice, passes: PassCollection) {
         self.device = device
