@@ -34,7 +34,6 @@ public struct GaussianSplatView: View {
     @State
     private var ballConstraint = BallConstraint()
 
-
     public init() {
         let device = MTLCreateSystemDefaultDevice()!
         let url = Bundle.module.url(forResource: "train", withExtension: "splat")!
@@ -98,7 +97,7 @@ struct OptionsView: View {
     var scene: SceneGraph
 
     @State
-    var bitsPerPositionScalar = 16
+    private var bitsPerPositionScalar = 16
 
     @Binding
     var debugMode: Bool
@@ -120,8 +119,6 @@ struct OptionsView: View {
                     scene.splatsNode.transform.rotation.rollPitchYaw.roll += .degrees(180)
                 }
                 TextField("Bits per position scalar", value: $bitsPerPositionScalar, format: .number)
-
-
 
                 ValueView(value: false) { isPresented in
                     Toggle("Load…", isOn: isPresented)
