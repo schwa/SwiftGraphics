@@ -40,7 +40,7 @@ public struct RenderView: View {
     }
 
     public var body: some View {
-        MetalView { device, configuration in
+        MetalView { _, configuration in
             do {
                 try renderer.configure(&configuration)
                 configure(configuration)

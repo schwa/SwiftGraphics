@@ -21,7 +21,6 @@ public protocol MetalConfigurationProtocol {
 extension MetalViewConfiguration: MetalConfigurationProtocol {
 }
 
-
 struct Renderer <MetalConfiguration> where MetalConfiguration: MetalConfigurationProtocol {
     private var device: MTLDevice
     private var passes: PassCollection

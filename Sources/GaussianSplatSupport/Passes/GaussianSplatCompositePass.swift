@@ -9,7 +9,7 @@ struct GaussianSplatCompositePass: GroupPassProtocol {
     var sortRate: Int
 
     func children() throws -> [any PassProtocol] {
-        guard let splatsNode = scene.node(for: "splats"), let splats = splatsNode.content as? Splats else {
+        guard let splatsNode = scene.node(for: "splats"), let splats = splatsNode.content as? SplatCloud else {
             return []
         }
         guard let cameraNode = scene.node(for: "camera") else {

@@ -60,7 +60,7 @@ public struct SceneGraphMapView: View {
                 }
                 .zIndex(1)
                 .gesture(cameraDragGesture(for: node))
-        case let splats as Splats:
+        case let splats as SplatCloud:
             Image(systemName: "questionmark.circle.fill").foregroundStyle(.black, Color(red: 1, green: 0, blue: 1))
                 .frame(width: 32, height: 32)
                 .background {

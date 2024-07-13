@@ -15,10 +15,10 @@ public struct GaussianSplatBitonicSortComputePass: ComputePassProtocol {
     }
 
     public var id = AnyHashable("GaussianSplatBitonicSortComputePass")
-    var splats: Splats
+    var splats: SplatCloud
     var sortRate: Int
 
-    public init(splats: Splats, sortRate: Int) {
+    public init(splats: SplatCloud, sortRate: Int) {
         self.splats = splats
         self.sortRate = sortRate
     }
@@ -85,11 +85,11 @@ public struct GaussianSplatPreCalcComputePass: ComputePassProtocol {
     }
 
     public var id = AnyHashable("GaussianSplatPreCalcComputePass")
-    var splats: Splats
+    var splats: SplatCloud
     var modelMatrix: simd_float3x3
     var cameraPosition: SIMD3<Float>
 
-    public init(splats: Splats, modelMatrix: simd_float3x3, cameraPosition: SIMD3<Float>) {
+    public init(splats: SplatCloud, modelMatrix: simd_float3x3, cameraPosition: SIMD3<Float>) {
         self.splats = splats
         self.modelMatrix = modelMatrix
         self.cameraPosition = cameraPosition

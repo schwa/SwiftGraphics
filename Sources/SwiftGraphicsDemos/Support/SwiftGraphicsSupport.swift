@@ -84,7 +84,6 @@ public extension View {
     }
 }
 
-
 public extension Image {
     init(url: URL) throws {
         if try url.checkResourceIsReachable() == false {

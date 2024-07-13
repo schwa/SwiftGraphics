@@ -32,7 +32,7 @@ public struct GaussianSplatView: View {
         let device = MTLCreateSystemDefaultDevice()!
         let url = Bundle.module.url(forResource: "train", withExtension: "splat")!
         self.device = device
-        let splats = try! Splats(device: device, url: url)
+        let splats = try! SplatCloud(device: device, url: url)
         let root = Node(label: "root") {
             Node(label: "ball") {
                 Node(label: "camera")
@@ -68,7 +68,7 @@ public struct GaussianSplatView: View {
                         }
                         Task {
                             await MainActor.run {
-                                scene.splatsNode.content = try! Splats(device: device, url: url)
+                                scene.splatsNode.content = try! SplatCloud(device: device, url: url)
                             }
                         }
                     }
@@ -91,6 +91,9 @@ struct OptionsView: View {
     @Environment(GaussianSplatViewModel.self)
     private var viewModel
 
+    @State
+    var bitsPerPositionScalar = 16
+
     var device: MTLDevice
 
     var body: some View {
@@ -109,11 +112,15 @@ struct OptionsView: View {
                 Button("Flip") {
                     scene.splatsNode.transform.rotation.rollPitchYaw.roll += .degrees(180)
                 }
+                TextField("Bits per position scalar", value: $bitsPerPositionScalar, format: .number)
+
+
+
                 ValueView(value: false) { isPresented in
                     Toggle("Load…", isOn: isPresented)
                         .fileImporter(isPresented: isPresented, allowedContentTypes: [.splatC, .splat]) { result in
                             if case let .success(url) = result {
-                                scene.splatsNode.content = try! Splats(device: device, url: url)
+                                scene.splatsNode.content = try! SplatCloud(device: device, url: url, bitsPerPositionScalar: bitsPerPositionScalar)
                             }
                         }
                         .toggleStyle(.button)
@@ -121,12 +128,12 @@ struct OptionsView: View {
                 HStack {
                     ForEach(try! Bundle.module.urls(withExtension: "splat"), id: \.self) { url in
                         Button(url.lastPathComponent) {
-                            scene.splatsNode.content = try! Splats(device: device, url: url)
+                            scene.splatsNode.content = try! SplatCloud(device: device, url: url)
                         }
                     }
                     ForEach(try! Bundle.module.urls(withExtension: "splatc"), id: \.self) { url in
                         Button(url.lastPathComponent) {
-                            scene.splatsNode.content = try! Splats(device: device, url: url)
+                            scene.splatsNode.content = try! SplatCloud(device: device, url: url)
                         }
                     }
                 }
