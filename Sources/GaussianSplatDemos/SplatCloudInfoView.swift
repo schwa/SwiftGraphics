@@ -38,7 +38,6 @@ public struct SplatCloudInfoView: View {
                     return "\(minimums, format: .vector) ... \(maximums, format: .vector), size: (\(size, format: .vector))"
                 }
 
-
                 TaskView(id: splats) {
                     Set(splats.map(\.color.xyz))
                 }
@@ -72,42 +71,42 @@ public struct SplatCloudInfoView: View {
                     }
                 }
             }
-        .onAppear {
-            let url = Bundle.module.url(forResource: "train", withExtension: "splat")!
-            splats = try! load(url: url)
-        }
-        .fileImporter(isPresented: $isPresented, allowedContentTypes: [.splat]) { result in
-            if case let .success(url) = result {
-                do {
-                    splats = try load(url: url)
-                }
-                catch {
-                    print(error)
+            .onAppear {
+                let url = Bundle.module.url(forResource: "train", withExtension: "splat")!
+                splats = try! load(url: url)
+            }
+            .fileImporter(isPresented: $isPresented, allowedContentTypes: [.splat]) { result in
+                if case let .success(url) = result {
+                    do {
+                        splats = try load(url: url)
+                    }
+                    catch {
+                        print(error)
+                    }
                 }
             }
-        }
-        .onDrop(of: [.splat], isTargeted: $isTargeted) { items in
-            if let item = items.first {
-                item.loadItem(forTypeIdentifier: UTType.splat.identifier, options: nil) { data, _ in
-                    guard let url = data as? URL else {
-                        print("No url")
-                        return
-                    }
-                    Task {
-                        await MainActor.run {
-                            splats = try! load(url: url)
+            .onDrop(of: [.splat], isTargeted: $isTargeted) { items in
+                if let item = items.first {
+                    item.loadItem(forTypeIdentifier: UTType.splat.identifier, options: nil) { data, _ in
+                        guard let url = data as? URL else {
+                            print("No url")
+                            return
+                        }
+                        Task {
+                            await MainActor.run {
+                                splats = try! load(url: url)
+                            }
                         }
                     }
+                    return true
+                } else {
+                    return false
                 }
-                return true
-            } else {
-                return false
             }
-        }
-        .border(isTargeted ? Color.accentColor : .clear, width: isTargeted ? 4 : 0)
-        .onChange(of: splats) {
-            print("SPLAT CHANGE")
-        }
+            .border(isTargeted ? Color.accentColor : .clear, width: isTargeted ? 4 : 0)
+            .onChange(of: splats) {
+                print("SPLAT CHANGE")
+            }
         }
     }
 }

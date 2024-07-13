@@ -28,7 +28,6 @@ public struct GaussianSplatMinimalView: View {
     @State
     private var ballConstraint = BallConstraint()
 
-
     public init() {
         let device = MTLCreateSystemDefaultDevice()!
         let url = Bundle.module.url(forResource: "train", withExtension: "splat")!
@@ -56,6 +55,5 @@ public struct GaussianSplatMinimalView: View {
             .gesture(MagnifyGesture().onChanged { value in
                 ballConstraint.radius = Float(5 * value.magnification)
             })
-
     }
 }

@@ -10,5 +10,4 @@ extension SplatCloudInfoView: DemoView {
 }
 
 extension GaussianSplatMinimalView: DemoView {
-
 }

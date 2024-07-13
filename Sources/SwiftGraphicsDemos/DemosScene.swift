@@ -28,7 +28,7 @@ struct DemosView: View {
     var body: some View {
         NavigationView {
             List {
-//                row(for: FieldsTestBedView.self)
+                //                row(for: FieldsTestBedView.self)
                 row(for: GaussianSplatMinimalView.self)
                 row(for: GaussianSplatView.self)
                 row(for: SplatCloudInfoView.self)
