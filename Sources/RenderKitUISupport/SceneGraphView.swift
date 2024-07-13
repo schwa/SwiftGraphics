@@ -56,10 +56,10 @@ public struct SceneGraphViewModifier: ViewModifier {
     private var ballConstraint = BallConstraint()
 
     @State
-    private var smallMap = false
+    private var smallMap = true
 
     @State
-    private var isInspectorPresented = true
+    private var isInspectorPresented = false
 
     public init(device: MTLDevice, scene: Binding<SceneGraph>) {
         self.device = device

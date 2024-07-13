@@ -14,7 +14,7 @@ public class GaussianSplatViewModel {
     public var debugMode: Bool
     public var sortRate: Int
 
-    public init(debugMode: Bool = false, sortRate: Int = 1) {
+    public init(debugMode: Bool = false, sortRate: Int = 8) {
         self.debugMode = debugMode
         self.sortRate = sortRate
     }

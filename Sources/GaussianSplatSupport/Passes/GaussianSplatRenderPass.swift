@@ -123,7 +123,7 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
 }
 
 extension Node {
-    var splats: Splats? {
-        content as? Splats
+    var splats: SplatCloud? {
+        content as? SplatCloud
     }
 }

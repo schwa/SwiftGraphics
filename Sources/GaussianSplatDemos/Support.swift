@@ -40,13 +40,13 @@ extension SceneGraph {
 }
 
 extension Node {
-    var splats: Splats? {
-        content as? Splats
+    var splats: SplatCloud? {
+        content as? SplatCloud
     }
 }
 
-extension Splats {
-    init(device: MTLDevice, url: URL) throws {
+extension SplatCloud {
+    init(device: MTLDevice, url: URL, bitsPerPositionScalar: Int? = nil) throws {
         let data = try Data(contentsOf: url)
         let splats: TypedMTLBuffer<SplatC>
         if url.pathExtension == "splatc" {
@@ -54,8 +54,14 @@ extension Splats {
         }
         else if url.pathExtension == "splat" {
             let splatArray = data.withUnsafeBytes { buffer in
-                buffer.withMemoryRebound(to: SplatB.self) { buffer in
-                    convert_b_to_c(buffer)
+                buffer.withMemoryRebound(to: SplatB.self) { splats in
+                    let splats = if let bitsPerPositionScalar {
+                        splats.downsamplePositions(bits: bitsPerPositionScalar)
+                    }
+                    else {
+                        Array(splats)
+                    }
+                    return convert_b_to_c(splats)
                 }
             }
             splats = try device.makeTypedBuffer(data: splatArray, options: .storageModeShared).labelled("Splats")
@@ -63,7 +69,7 @@ extension Splats {
         else {
             fatalError()
         }
-        self = try Splats(device: device, splats: splats)
+        self = try SplatCloud(device: device, splats: splats)
     }
 }
 
@@ -72,7 +78,7 @@ extension UTType {
     static let splatC = UTType(filenameExtension: "splatc")!
 }
 
-extension Splats: @retroactive CustomDebugStringConvertible {
+extension SplatCloud: @retroactive CustomDebugStringConvertible {
     public var debugDescription: String {
         "Splats()"
     }

@@ -5,7 +5,7 @@ import simd
 import SIMDSupport
 
 // TODO: @unchecked Sendable
-public struct Splats: Equatable, @unchecked Sendable {
+public struct SplatCloud: Equatable, @unchecked Sendable {
     public typealias Splat = SplatC
     public var splats: TypedMTLBuffer<Splat>
     public var indices: TypedMTLBuffer<UInt32>
@@ -46,13 +46,13 @@ public struct Splats: Equatable, @unchecked Sendable {
     }
 }
 
-public extension Splats {
+public extension SplatCloud {
     func center() -> SIMD3<Float> {
         (boundingBox.0 + boundingBox.1) / 2
     }
 }
 
-public struct SplatB: Equatable {
+public struct SplatB: Equatable, Sendable {
     public var position: PackedFloat3
     public var scale: PackedFloat3
     public var color: SIMD4<UInt8>

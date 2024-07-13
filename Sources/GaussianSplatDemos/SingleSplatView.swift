@@ -181,7 +181,7 @@ public struct SingleSplatView: View {
     }
 
     func makePasses() -> [any PassProtocol] {
-        let splats = try! Splats(device: device, splats: makeSplats().map(SplatC.init))
+        let splats = try! SplatCloud(device: device, splats: makeSplats().map(SplatC.init))
 
         let preCalcComputePass = GaussianSplatPreCalcComputePass(
             splats: splats,
@@ -222,7 +222,7 @@ struct SingleGaussianSplatRenderPass: RenderPassProtocol {
     var cameraTransform: Transform
     var cameraProjection: Projection
     var modelTransform: Transform
-    var splats: Splats
+    var splats: SplatCloud
     var debugMode: Bool
 
     func setup(device: MTLDevice, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State {
