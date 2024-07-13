@@ -47,7 +47,7 @@ struct PointCloudView: View, DemoView {
     var body: some View {
         let passes = [PointCloudRenderPass(scene: scene)]
         ZStack {
-            RenderView(device: device, passes: passes)
+            RenderView(passes: passes)
             Canvas { context, size in
                 guard let cameraNode = scene.currentCameraNode, let camera = cameraNode.camera else {
                     return
@@ -89,7 +89,7 @@ struct PointCloudView: View, DemoView {
                 pointCloud = PointCloud(count: points.count, points: .init(try! device.makeBuffer(bytesOf: points, options: .storageModeShared)), pointMesh: pointMesh)
             }
         }
-        .modifier(SceneGraphViewModifier(device: device, scene: $scene))
+        .modifier(SceneGraphViewModifier(scene: $scene))
     }
 }
 

@@ -27,7 +27,7 @@ public struct SimplePBRSceneGraphDemoView: View, DemoView {
     }
 
     public var body: some View {
-        RenderView(device: device, passes: [
+        RenderView(passes: [
             DiffuseShadingRenderPass(scene: scene),
             UnlitShadingPass(scene: scene),
             SimplePBRShadingPass(scene: scene),

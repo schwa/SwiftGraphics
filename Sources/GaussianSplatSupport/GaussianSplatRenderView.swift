@@ -9,31 +9,19 @@ import simd
 import SIMDSupport
 import SwiftUI
 
-@Observable
-public class GaussianSplatViewModel {
-    public var debugMode: Bool
-    public var sortRate: Int
+public struct GaussianSplatRenderView: View {
+    private let scene: SceneGraph
+    private let debugMode: Bool
+    private let sortRate: Int
 
-    public init(debugMode: Bool = false, sortRate: Int = 8) {
+    public init(scene: SceneGraph, debugMode: Bool, sortRate: Int) {
+        self.scene = scene
         self.debugMode = debugMode
         self.sortRate = sortRate
     }
-}
-
-public struct GaussianSplatRenderView: View {
-    private var device: MTLDevice
-    private var scene: SceneGraph
-
-    @Environment(GaussianSplatViewModel.self)
-    private var viewModel
-
-    public init(device: MTLDevice, scene: SceneGraph) {
-        self.device = device
-        self.scene = scene
-    }
 
     public var body: some View {
-        RenderView(device: device, passes: passes)
+        RenderView(passes: passes)
             .toolbar {
                 // TODO: this should not be here.
                 Button("Screenshot") {
@@ -43,11 +31,12 @@ public struct GaussianSplatRenderView: View {
     }
 
     var passes: [any PassProtocol] {
-        [GaussianSplatCompositePass(id: "GaussianSplatCompositePass", scene: scene, sortRate: viewModel.sortRate)]
+        [GaussianSplatCompositePass(id: "GaussianSplatCompositePass", scene: scene, sortRate: sortRate)]
     }
 
     func screenshot() {
         do {
+            let device = MTLCreateSystemDefaultDevice()!
             let width = 1280
             let height = 960
             let pixelFormat = MTLPixelFormat.bgra8Unorm_srgb

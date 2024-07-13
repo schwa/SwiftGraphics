@@ -31,11 +31,11 @@ public struct BallRotationModifier: ViewModifier {
     public func body(content: Content) -> some View {
         content
             .coordinateSpace(name: coordinateSpace)
-            .simultaneousGesture(dragGesture())
-            .onChange(of: pitchLimit) {
+            .gesture(dragGesture())
+            .onChange(of: pitchLimit, initial: true) {
                 rollPitchYaw.pitch = clamp(rollPitchYaw.pitch, in: pitchLimit)
             }
-            .onChange(of: yawLimit) {
+            .onChange(of: yawLimit, initial: true) {
                 rollPitchYaw.yaw = clamp(rollPitchYaw.yaw, in: yawLimit)
             }
     }

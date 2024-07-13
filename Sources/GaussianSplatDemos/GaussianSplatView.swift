@@ -20,13 +20,20 @@ public struct GaussianSplatView: View {
     private var device: MTLDevice
 
     @State
-    private var viewModel = GaussianSplatViewModel()
-
-    @State
     private var scene: SceneGraph
 
     @State
     private var isTargeted = false
+
+    @State
+    private var debugMode: Bool = false
+
+    @State
+    private var sortRate: Int = 8
+
+    @State
+    private var ballConstraint = BallConstraint()
+
 
     public init() {
         let device = MTLCreateSystemDefaultDevice()!
@@ -48,17 +55,16 @@ public struct GaussianSplatView: View {
     private var more = false
 
     public var body: some View {
-        GaussianSplatRenderView(device: device, scene: scene)
+        GaussianSplatRenderView(scene: scene, debugMode: debugMode, sortRate: sortRate)
             .toolbar {
                 Button("More") {
                     more = true
                 }
                 .sheet(isPresented: $more) {
-                    OptionsView(scene: $scene, device: device)
+                    OptionsView(scene: $scene, debugMode: $debugMode, sortRate: $sortRate)
                 }
             }
-            .modifier(SceneGraphViewModifier(device: device, scene: $scene))
-            .environment(viewModel)
+            .modifier(SceneGraphViewModifier(scene: $scene))
             .onDrop(of: [.splat], isTargeted: $isTargeted) { items in
                 if let item = items.first {
                     item.loadItem(forTypeIdentifier: UTType.splat.identifier, options: nil) { data, _ in
@@ -85,29 +91,30 @@ struct OptionsView: View {
     @Environment(\.dismiss)
     var dismiss
 
+    @Environment(\.metalDevice)
+    var device
+
     @Binding
     var scene: SceneGraph
-
-    @Environment(GaussianSplatViewModel.self)
-    private var viewModel
 
     @State
     var bitsPerPositionScalar = 16
 
-    var device: MTLDevice
+    @Binding
+    var debugMode: Bool
+
+    @Binding
+    var sortRate: Int
 
     var body: some View {
         VStack {
             Form {
-                @Bindable
-                var viewModel = viewModel
-
                 Text("#splats: \(scene.splatsNode.splats?.splats.count ?? 0)")
-                Toggle("Debug Mode", isOn: $viewModel.debugMode)
+                Toggle("Debug Mode", isOn: $debugMode)
                 HStack {
-                    Slider(value: $viewModel.sortRate.toDouble, in: 1 ... 60) { Text("Sort Rate") }
+                    Slider(value: $sortRate.toDouble, in: 1 ... 60) { Text("Sort Rate") }
                         .frame(maxWidth: 120)
-                    Text("\(viewModel.sortRate)")
+                    Text("\(sortRate)")
                 }
                 Button("Flip") {
                     scene.splatsNode.transform.rotation.rollPitchYaw.roll += .degrees(180)

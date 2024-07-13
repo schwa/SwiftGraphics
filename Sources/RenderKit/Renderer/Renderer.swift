@@ -37,6 +37,7 @@ struct Renderer <MetalConfiguration> where MetalConfiguration: MetalConfiguratio
     var state: State
 
     init(device: MTLDevice, passes: PassCollection) {
+        print("INIT: \(type(of: self))")
         self.device = device
         self.passes = passes
         self.state = .initialized
