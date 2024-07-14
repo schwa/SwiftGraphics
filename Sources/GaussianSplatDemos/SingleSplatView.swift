@@ -264,7 +264,7 @@ struct SingleGaussianSplatRenderPass: RenderPassProtocol {
         return State(quadMesh: quadMesh, bindings: bindings, depthStencilState: depthStencilState, renderPipelineState: renderPipelineState)
     }
 
-    func encode(commandEncoder: any MTLRenderCommandEncoder, info: PassInfo, state: inout State) throws {
+    func encode(commandEncoder: any MTLRenderCommandEncoder, info: PassInfo, state: State) throws {
         commandEncoder.setDepthStencilState(state.depthStencilState)
         commandEncoder.setRenderPipelineState(state.renderPipelineState)
 

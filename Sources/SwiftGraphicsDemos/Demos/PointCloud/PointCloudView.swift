@@ -146,7 +146,7 @@ struct PointCloudRenderPass: RenderPassProtocol {
         return State(bindings: bindings, depthStencilState: depthStencilState, renderPipelineState: renderPipelineState)
     }
 
-    func encode(commandEncoder: any MTLRenderCommandEncoder, info: PassInfo, state: inout State) throws {
+    func encode(commandEncoder: any MTLRenderCommandEncoder, info: PassInfo, state: State) throws {
         let helper = SceneGraphRenderHelper(scene: scene, drawableSize: info.drawableSize)
         let elements = helper.elements()
 

@@ -191,7 +191,6 @@ struct TaskView <ID, Value, Content>: View where ID: Equatable, Value: Sendable,
         .task(id: id) {
             value = nil
             Task.detached {
-                let uuid = UUID()
                 let value = closure()
                 await MainActor.run {
                     self.value = value
