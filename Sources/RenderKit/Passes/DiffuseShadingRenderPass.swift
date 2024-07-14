@@ -51,7 +51,7 @@ public struct DiffuseShadingRenderPass: RenderPassProtocol {
         return .init(renderPipelineState: renderPipelineState, depthStencilState: depthStencilState)
     }
 
-    public func encode(state: inout State, drawableSize: SIMD2<Float>, commandEncoder: any MTLRenderCommandEncoder) throws {
+    public func encode(commandEncoder: any MTLRenderCommandEncoder, state: inout State, drawableSize: SIMD2<Float>) {
         let elements = SceneGraphRenderHelper(scene: scene, drawableSize: drawableSize).elements()
 
         commandEncoder.setDepthStencilState(state.depthStencilState)
