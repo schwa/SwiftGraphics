@@ -36,7 +36,7 @@ public struct SpatialUpscalingPass: GeneralPassProtocol {
         return State(spatialScaler: spatialScaler)
     }
 
-    public func encode(device: MTLDevice, state: inout State, commandBuffer: MTLCommandBuffer) throws {
+    public func encode(state: inout State, commandBuffer: MTLCommandBuffer) throws {
         state.spatialScaler.encode(commandBuffer: commandBuffer)
     }
 }
