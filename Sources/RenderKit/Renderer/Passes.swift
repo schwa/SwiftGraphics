@@ -9,6 +9,15 @@ public protocol PassProtocol: Equatable/*, Sendable*/ {
 public protocol PassState /*: Sendable*/ {
 }
 
+public struct PassInfo {
+    public var drawableSize: SIMD2<Float>
+    public var frame: Int
+    public var start: TimeInterval
+    public var time: TimeInterval
+    public var deltaTime: TimeInterval
+}
+
+
 // MARK: -
 
 public protocol ShaderPassProtocol: PassProtocol {
@@ -19,16 +28,16 @@ public protocol ShaderPassProtocol: PassProtocol {
 
 public protocol ComputePassProtocol: ShaderPassProtocol {
     func setup(device: MTLDevice) throws -> State
-    func compute(commandBuffer: MTLCommandBuffer, state: inout State) throws
+    func compute(commandBuffer: MTLCommandBuffer, info: PassInfo, state: inout State) throws
 }
 
 // MARK: -
 
 public protocol RenderPassProtocol: ShaderPassProtocol {
     func setup(device: MTLDevice, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State
-    func sizeWillChange(device: MTLDevice, state: inout State, size: CGSize) throws
-    func render(commandBuffer: MTLCommandBuffer, state: inout State, drawableSize: SIMD2<Float>, renderPassDescriptor: MTLRenderPassDescriptor) throws
-    func encode(commandEncoder: MTLRenderCommandEncoder, state: inout State, drawableSize: SIMD2<Float>) throws
+    func sizeWillChange(device: MTLDevice, size: SIMD2<Float>, state: inout State) throws
+    func render(commandBuffer: MTLCommandBuffer, renderPassDescriptor: MTLRenderPassDescriptor, info: PassInfo, state: inout State) throws
+    func encode(commandEncoder: MTLRenderCommandEncoder, info: PassInfo, state: inout State) throws
 }
 
 // MARK: -
@@ -36,7 +45,7 @@ public protocol RenderPassProtocol: ShaderPassProtocol {
 public protocol GeneralPassProtocol: PassProtocol {
     associatedtype State: PassState
     func setup(device: MTLDevice) throws -> State
-    func encode(commandBuffer: MTLCommandBuffer, state: inout State) throws // TODO: Rename
+    func encode(commandBuffer: MTLCommandBuffer, info: PassInfo,state: inout State) throws // TODO: Rename
 }
 
 // MARK: -

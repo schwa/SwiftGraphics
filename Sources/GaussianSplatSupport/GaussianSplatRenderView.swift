@@ -91,7 +91,7 @@ public struct GaussianSplatRenderView: View {
 
             print(renderPassDescriptor)
 
-            var offscreenRenderer = try OffscreenRenderer(device: device, size: CGSize(width: width, height: height), offscreenConfiguration: offscreenConfiguration, renderPassDescriptor: renderPassDescriptor, passes: passes)
+            var offscreenRenderer = try OffscreenRenderer(device: device, size: SIMD2<Float>(Float(width), Float(height)), offscreenConfiguration: offscreenConfiguration, renderPassDescriptor: renderPassDescriptor, passes: passes)
             try offscreenRenderer.configure()
             try offscreenRenderer.render(capture: false)
 
