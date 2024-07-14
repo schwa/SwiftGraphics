@@ -45,7 +45,7 @@ public extension Line {
         }
         set {
             guard let newValue else {
-                fatalError()
+                fatalError("Cannot set slopeInterceptForm to nil")
             }
             self = .init(slopeInterceptForm: newValue)
         }

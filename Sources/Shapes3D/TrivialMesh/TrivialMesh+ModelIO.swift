@@ -44,7 +44,7 @@ public extension TrivialMesh where Vertex == SimpleVertex {
         // TODO: confirm that these are triangles.
         // TODO: confirm that index is uint32
         guard let submesh = mesh.submeshes?[0] as? MDLSubmesh else {
-            fatalError()
+            fatalError("Expected a submesh.")
         }
         let indexBuffer = submesh.indexBuffer
         let indexBytes = UnsafeRawBufferPointer(start: indexBuffer.map().bytes, count: indexBuffer.length)
@@ -150,7 +150,7 @@ public extension MDLMesh {
                 try allocator.newBuffer(from: nil, data: Data(buffer), type: .index).safelyUnwrap(BaseError.resourceCreationFailure)
             }
         default:
-            fatalError()
+            fatalError("Unsupported index count: \(mesh.indices.count)")
         }
         let submesh = MDLSubmesh(indexBuffer: indexBuffer, indexCount: mesh.indices.count, indexType: indexType, geometryType: .triangles, material: nil)
         self.init(vertexBuffer: vertexBuffer, vertexCount: mesh.vertices.count, descriptor: descriptor, submeshes: [submesh])

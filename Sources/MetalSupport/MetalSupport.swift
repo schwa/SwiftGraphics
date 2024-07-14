@@ -211,18 +211,19 @@ public extension MTLDevice {
     }
 
     func newTexture(with image: CGImage) throws -> MTLTexture {
+        // TODO: Throw.
         guard let bitmapDefinition = BitmapDefinition(from: image) else {
-            fatalError()
+            fatalError("Failed to create bitmap definition")
         }
         guard let context = CGContext.bitmapContext(with: image), let data = context.data else {
-            fatalError()
+            fatalError("Failed to create bitmap context")
         }
         guard let pixelFormat = MTLPixelFormat(from: bitmapDefinition.pixelFormat) else {
-            fatalError()
+            fatalError("Failed to create pixel format")
         }
         let textureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: pixelFormat, width: image.width, height: image.height, mipmapped: true)
         guard let texture = makeTexture(descriptor: textureDescriptor) else {
-            fatalError()
+            fatalError("Failed to create texture")
         }
         texture.replace(region: MTLRegion(origin: .zero, size: MTLSize(image.width, image.height, 1)), mipmapLevel: 0, slice: 0, withBytes: data, bytesPerRow: bitmapDefinition.bytesPerRow, bytesPerImage: bitmapDefinition.bytesPerRow * image.height)
         return texture
@@ -795,7 +796,7 @@ public extension MTLTexture {
         let destinationTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba32Float, width: width, height: height, mipmapped: false)
         destinationTextureDescriptor.usage = [.shaderRead, .shaderWrite]
         guard let destinationTexture = device.makeTexture(descriptor: destinationTextureDescriptor) else {
-            fatalError()
+            fatalError("Failed to create destination texture")
         }
         let conversionInfo = CGColorConversionInfo(src: sourceColorSpace, dst: destinationColorSpace)
         let conversion = MPSImageConversion(device: device, srcAlpha: sourceAlpha, destAlpha: destinationAlpha, backgroundColor: nil, conversionInfo: conversionInfo)
@@ -827,12 +828,12 @@ public extension MTLTexture {
                 fatalError("No colorspace for \(pixelFormat)")
             }
             guard let dstColorSpace = colorSpace else {
-                fatalError()
+                fatalError("No colorspace")
             }
             let destinationTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba32Float, width: width, height: height, mipmapped: false)
             destinationTextureDescriptor.usage = [.shaderRead, .shaderWrite]
             guard let destinationTexture = device.makeTexture(descriptor: destinationTextureDescriptor) else {
-                fatalError()
+                fatalError("Failed to create destination texture")
             }
             let conversionInfo = CGColorConversionInfo(src: srcColorSpace, dst: dstColorSpace)
             // TODO: we're just assuming premultiplied here.
@@ -850,7 +851,7 @@ public extension MTLTexture {
         let filter = MPSImageHistogram(device: device)
         let size = filter.histogramSize(forSourceFormat: pixelFormat)
         guard let histogram = device.makeBuffer(length: size) else {
-            fatalError()
+            fatalError("Failed to create histogram buffer")
         }
         let commandQueue = device.makeCommandQueue()!
         let commandBuffer = commandQueue.makeCommandBuffer()!

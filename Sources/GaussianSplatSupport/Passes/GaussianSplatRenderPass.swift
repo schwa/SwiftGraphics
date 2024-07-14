@@ -62,7 +62,7 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
 
         let (renderPipelineState, reflection) = try device.makeRenderPipelineState(descriptor: renderPipelineDescriptor, options: [.bindingInfo])
         guard let reflection else {
-            fatalError()
+            fatalError("Failed to create render pipeline state")
         }
 
         let bindings = State.Bindings(

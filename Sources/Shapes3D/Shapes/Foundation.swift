@@ -119,7 +119,7 @@ public extension PolygonalChain3D {
     }
 
     var isSelfIntersecting: Bool {
-        fatalError()
+        fatalError("Not implemented")
     }
 }
 

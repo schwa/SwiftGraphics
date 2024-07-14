@@ -131,7 +131,7 @@ public extension Compute {
                 encoder.setBuffer(buffer, offset: offset, index: index)
             }
             constantValue: { _, _ in
-                fatalError()
+                fatalError("TODO: buffer")
             }
         }
 
@@ -140,7 +140,7 @@ public extension Compute {
                 encoder.setTexture(texture, index: index)
             }
             constantValue: { _, _ in
-                fatalError()
+                fatalError("TODO: texture")
             }
         }
     }

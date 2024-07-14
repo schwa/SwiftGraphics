@@ -284,7 +284,7 @@ extension MTLVertexStepFunction {
         case .perPatch: return "perPatch"
         case .perPatchControlPoint: return "perPatchControlPoint"
         @unknown default:
-            fatalError()
+            fatalError("Unhandled case: \(self)")
         }
     }
 }
@@ -347,7 +347,7 @@ extension MTLVertexFormat {
         case .floatRG11B10: return "floatRG11B10"
         case .floatRGB9E5: return "floatRGB9E5"
         @unknown default:
-            fatalError()
+            fatalError("Unhandled MTLVertexFormat: \(self)")
         }
     }
 }

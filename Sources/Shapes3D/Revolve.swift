@@ -48,6 +48,6 @@ public extension Line3D {
 
     @available(*, unavailable)
     func intersects(plane: Plane3D) -> SIMD3<Float> {
-        fatalError()
+        fatalError("Not implemented")
     }
 }

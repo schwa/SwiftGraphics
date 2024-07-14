@@ -236,9 +236,9 @@ public extension Path {
                 current.append(point)
                 lastPoint = point
             case .quadCurve:
-                fatalError()
+                fatalError("Not implemented")
             case .curve:
-                fatalError()
+                fatalError("Not implemented")
             case .closeSubpath:
                 if let first = current.first {
                     current.append(first)
