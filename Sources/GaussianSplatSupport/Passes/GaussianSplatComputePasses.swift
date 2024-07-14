@@ -38,9 +38,8 @@ public struct GaussianSplatBitonicSortComputePass: ComputePassProtocol {
         )
     }
 
-    public func compute(commandBuffer: MTLCommandBuffer, info: PassInfo, state: inout State) throws {
-        state.frameCount += 1
-        if sortRate > 1 && state.frameCount > 1 && !state.frameCount.isMultiple(of: sortRate) {
+    public func compute(commandBuffer: MTLCommandBuffer, info: PassInfo, state: State) throws {
+        if sortRate > 1 && info.frame > 1 && !info.frame.isMultiple(of: sortRate) {
             return
         }
 
@@ -112,7 +111,7 @@ public struct GaussianSplatPreCalcComputePass: ComputePassProtocol {
         )
     }
 
-    public func compute(commandBuffer: MTLCommandBuffer, info: PassInfo, state: inout State) throws {
+    public func compute(commandBuffer: MTLCommandBuffer, info: PassInfo, state: State) throws {
         let computePipelineState = state.pipelineState
         let commandEncoder = commandBuffer.makeComputeCommandEncoder().forceUnwrap()
         commandEncoder.label = "GaussianSplatPreCalcComputePass"

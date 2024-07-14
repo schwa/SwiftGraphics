@@ -44,7 +44,7 @@ public struct DebugRenderPass: RenderPassProtocol {
         return State(depthStencilState: depthStencilState, renderPipelineState: renderPipelineState)
     }
 
-    public func encode(commandEncoder: MTLRenderCommandEncoder, info: PassInfo, state: inout State) throws {
+    public func encode(commandEncoder: MTLRenderCommandEncoder, info: PassInfo, state: State) throws {
         let elements = SceneGraphRenderHelper(scene: scene, drawableSize: info.drawableSize).elements()
 
         commandEncoder.setDepthStencilState(state.depthStencilState)

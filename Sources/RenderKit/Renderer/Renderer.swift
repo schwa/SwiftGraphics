@@ -111,23 +111,20 @@ struct Renderer <MetalConfiguration> where MetalConfiguration: MetalConfiguratio
                     renderPassDescriptor.colorAttachments[0].storeAction = .store
                     renderPassDescriptor.depthAttachment.storeAction = .store
                 }
-                guard var state = statesByPasses[pass.id] else {
+                guard let state = statesByPasses[pass.id] else {
                     fatalError()
                 }
-                try pass.render(commandBuffer: commandBuffer, renderPassDescriptor: renderPassDescriptor, info: info, untypedState: &state)
-                statesByPasses[pass.id] = state
+                try pass.render(commandBuffer: commandBuffer, renderPassDescriptor: renderPassDescriptor, info: info, untypedState: state)
             case let pass as any ComputePassProtocol:
-                guard var state = statesByPasses[pass.id] else {
+                guard let state = statesByPasses[pass.id] else {
                     fatalError()
                 }
-                try pass.compute(commandBuffer: commandBuffer, info: info, untypedState: &state)
-                statesByPasses[pass.id] = state
+                try pass.compute(commandBuffer: commandBuffer, info: info, untypedState: state)
             case let pass as any GeneralPassProtocol:
-                guard var state = statesByPasses[pass.id] else {
+                guard let state = statesByPasses[pass.id] else {
                     fatalError()
                 }
-                try pass.encode(commandBuffer: commandBuffer, info: info, untypedState: &state)
-                statesByPasses[pass.id] = state
+                try pass.encode(commandBuffer: commandBuffer, info: info, untypedState: state)
             default:
                 fatalError()
             }
