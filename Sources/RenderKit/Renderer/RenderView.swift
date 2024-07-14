@@ -51,7 +51,7 @@ public struct RenderView: View {
             }
         } drawableSizeWillChange: { _, _, size in
             do {
-                try renderer?.sizeWillChange(size)
+                try renderer?.sizeWillChange(SIMD2<Float>(size))
                 sizeWillChange(size)
             } catch {
                 renderErrorHandler.send(error, logger: logger)
@@ -61,7 +61,7 @@ public struct RenderView: View {
                 guard let commandQueue else {
                     fatalError()
                 }
-                try renderer?.draw(commandQueue: commandQueue, renderPassDescriptor: renderPassDescriptor, drawable: drawable, drawableSize: size)
+                try renderer?.draw(commandQueue: commandQueue, renderPassDescriptor: renderPassDescriptor, drawable: drawable, drawableSize: SIMD2<Float>(size))
             } catch {
                 renderErrorHandler.send(error, logger: logger)
             }

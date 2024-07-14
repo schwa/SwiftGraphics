@@ -81,7 +81,7 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
         return State(quadMesh: quadMesh, bindings: bindings, depthStencilState: depthStencilState, renderPipelineState: renderPipelineState)
     }
 
-    public func encode(commandEncoder: any MTLRenderCommandEncoder, state: inout State, drawableSize: SIMD2<Float>) {
+    public func encode(commandEncoder: any MTLRenderCommandEncoder, info: PassInfo, state: inout State) {
         commandEncoder.setDepthStencilState(state.depthStencilState)
         commandEncoder.setRenderPipelineState(state.renderPipelineState)
         //        commandEncoder.setCullMode(.back) // default is .none
@@ -89,7 +89,7 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
         if debugMode {
             commandEncoder.setTriangleFillMode(.lines)
         }
-        let helper = SceneGraphRenderHelper(scene: scene, drawableSize: drawableSize)
+        let helper = SceneGraphRenderHelper(scene: scene, drawableSize: info.drawableSize)
         guard let cameraTransform = scene.currentCameraNode?.transform else {
             fatalError("No camera")
         }
@@ -103,7 +103,7 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
                 projectionMatrix: helper.projectionMatrix,
                 viewMatrix: helper.cameraMatrix.inverse,
                 cameraPosition: helper.cameraMatrix.translation,
-                drawableSize: drawableSize
+                drawableSize: info.drawableSize
             )
 
             commandEncoder.withDebugGroup("VertexShader") {

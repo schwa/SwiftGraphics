@@ -26,49 +26,64 @@ struct Renderer <MetalConfiguration> where MetalConfiguration: MetalConfiguratio
     private var passes: PassCollection
     private var statesByPasses: [AnyHashable: any PassState] = [:]
     private var configuration: MetalConfiguration?
-    private var drawableSize: CGSize = .zero
+    private var drawableSize: SIMD2<Float> = .zero
     private var logger: Logger? = Logger(subsystem: "com.swiftui.metal", category: "Renderer")
 
-    enum State: Equatable {
+    private var info: PassInfo?
+
+    enum Phase: Equatable {
         case initialized
         case configured(sizeKnown: Bool)
         case rendering
     }
-    var state: State
+    var phase: Phase
 
     init(device: MTLDevice, passes: PassCollection) {
-        print("INIT: \(type(of: self))")
         self.device = device
         self.passes = passes
-        self.state = .initialized
+        self.phase = .initialized
     }
 
     mutating func configure(_ configuration: inout MetalConfiguration) throws {
-        assert(state == .initialized)
-        self.state = .configured(sizeKnown: false)
+        assert(phase == .initialized)
+        self.phase = .configured(sizeKnown: false)
         configuration.colorPixelFormat = .bgra8Unorm_srgb
         configuration.depthStencilPixelFormat = .depth32Float
         self.configuration = configuration
         try setupPasses(passes: passes.elements)
     }
 
-    mutating func sizeWillChange(_ size: CGSize) throws {
-        assert(state != .initialized)
-        state = .configured(sizeKnown: true)
+    mutating func sizeWillChange(_ size: SIMD2<Float>) throws {
+        assert(phase != .initialized)
+        phase = .configured(sizeKnown: true)
         drawableSize = size
         for renderPass in passes.renderPasses {
             guard var state = statesByPasses[renderPass.id] else {
                 fatalError()
             }
-            try renderPass.sizeWillChange(device: device, untypedState: &state, size: size)
+            try renderPass.sizeWillChange(device: device, size: size, untypedState: &state)
             statesByPasses[renderPass.id] = state
         }
     }
 
-    mutating func render(commandBuffer: MTLCommandBuffer, renderPassDescriptor: MTLRenderPassDescriptor, drawableSize: CGSize) throws {
-        assert(state == .configured(sizeKnown: true) || state == .rendering)
-        if state != .rendering {
-            state = .rendering
+    mutating func render(commandBuffer: MTLCommandBuffer, renderPassDescriptor: MTLRenderPassDescriptor, drawableSize: SIMD2<Float>) throws {
+        assert(phase == .configured(sizeKnown: true) || phase == .rendering)
+        if phase != .rendering {
+            phase = .rendering
+        }
+
+        let now = Date().timeIntervalSinceReferenceDate
+        if var info {
+            info.frame += 1
+            info.deltaTime = now - info.time
+            info.time = now
+            info.drawableSize = drawableSize
+        }
+        else {
+            info = PassInfo(drawableSize: drawableSize, frame: 0, start: now, time: now, deltaTime: 0)
+        }
+        guard let info else {
+            fatalError()
         }
 
         let passes = try expand(passes: passes.elements)
@@ -99,19 +114,19 @@ struct Renderer <MetalConfiguration> where MetalConfiguration: MetalConfiguratio
                 guard var state = statesByPasses[pass.id] else {
                     fatalError()
                 }
-                try pass.render(commandBuffer: commandBuffer, untypedState: &state, drawableSize: SIMD2<Float>(drawableSize), renderPassDescriptor: renderPassDescriptor)
+                try pass.render(commandBuffer: commandBuffer, renderPassDescriptor: renderPassDescriptor, info: info, untypedState: &state)
                 statesByPasses[pass.id] = state
             case let pass as any ComputePassProtocol:
                 guard var state = statesByPasses[pass.id] else {
                     fatalError()
                 }
-                try pass.compute(untypedState: &state, commandBuffer: commandBuffer)
+                try pass.compute(commandBuffer: commandBuffer, info: info, untypedState: &state)
                 statesByPasses[pass.id] = state
             case let pass as any GeneralPassProtocol:
                 guard var state = statesByPasses[pass.id] else {
                     fatalError()
                 }
-                try pass.encode(untypedState: &state, commandBuffer: commandBuffer)
+                try pass.encode(commandBuffer: commandBuffer, info: info, untypedState: &state)
                 statesByPasses[pass.id] = state
             default:
                 fatalError()
@@ -119,7 +134,7 @@ struct Renderer <MetalConfiguration> where MetalConfiguration: MetalConfiguratio
         }
     }
 
-    mutating func draw(commandQueue: MTLCommandQueue, renderPassDescriptor: MTLRenderPassDescriptor, drawable: MTLDrawable, drawableSize: CGSize) throws {
+    mutating func draw(commandQueue: MTLCommandQueue, renderPassDescriptor: MTLRenderPassDescriptor, drawable: MTLDrawable, drawableSize: SIMD2<Float>) throws {
         let commandBuffer = try commandQueue.makeCommandBuffer().safelyUnwrap(BaseError.resourceCreationFailure)
         try render(commandBuffer: commandBuffer, renderPassDescriptor: renderPassDescriptor, drawableSize: drawableSize)
         commandBuffer.present(drawable)

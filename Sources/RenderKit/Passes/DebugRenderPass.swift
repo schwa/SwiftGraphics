@@ -44,8 +44,8 @@ public struct DebugRenderPass: RenderPassProtocol {
         return State(depthStencilState: depthStencilState, renderPipelineState: renderPipelineState)
     }
 
-    public func encode(commandEncoder: MTLRenderCommandEncoder, state: inout State, drawableSize: SIMD2<Float>) throws {
-        let elements = SceneGraphRenderHelper(scene: scene, drawableSize: drawableSize).elements()
+    public func encode(commandEncoder: MTLRenderCommandEncoder, info: PassInfo, state: inout State) throws {
+        let elements = SceneGraphRenderHelper(scene: scene, drawableSize: info.drawableSize).elements()
 
         commandEncoder.setDepthStencilState(state.depthStencilState)
         commandEncoder.setCullMode(cullMode)
@@ -59,7 +59,7 @@ public struct DebugRenderPass: RenderPassProtocol {
             }
             try commandEncoder.withDebugGroup("Node: \(element.node.id)") {
                 commandEncoder.withDebugGroup("FragmentShader") {
-                    let fragmentUniforms = DebugFragmentShaderUniforms(windowSize: drawableSize)
+                    let fragmentUniforms = DebugFragmentShaderUniforms(windowSize: info.drawableSize)
                     commandEncoder.setFragmentBytes(of: fragmentUniforms, index: 0)
                 }
                 try commandEncoder.withDebugGroup("Node: \(element.node.id)") {

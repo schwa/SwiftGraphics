@@ -48,11 +48,11 @@ struct VolumetricRenderPass: RenderPassProtocol {
         return .init(renderPipelineState: renderPipelineState, depthStencilState: depthStencilState)
     }
 
-    func encode(commandEncoder: MTLRenderCommandEncoder, state: inout State, drawableSize: SIMD2<Float>) {
+    func encode(commandEncoder: MTLRenderCommandEncoder, info: PassInfo, state: inout State) {
         commandEncoder.setRenderPipelineState(state.renderPipelineState)
         commandEncoder.setDepthStencilState(state.depthStencilState)
 
-        let helper = SceneGraphRenderHelper(scene: scene, drawableSize: drawableSize)
+        let helper = SceneGraphRenderHelper(scene: scene, drawableSize: info.drawableSize)
         for element in helper.elements() {
             guard let volumeRepresentation = element.node.content as? VolumeRepresentation else {
                 continue

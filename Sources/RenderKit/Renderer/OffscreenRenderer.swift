@@ -5,12 +5,12 @@ import MetalSupport
 
 public struct OffscreenRenderer {
     var device: MTLDevice
-    var size: CGSize
+    var size: SIMD2<Float>
     var offscreenConfiguration: OffscreenRenderPassConfiguration
     var renderPassDescriptor: MTLRenderPassDescriptor
     var renderer: Renderer<OffscreenRenderPassConfiguration>
 
-    public init(device: MTLDevice, size: CGSize, offscreenConfiguration: OffscreenRenderPassConfiguration, renderPassDescriptor: MTLRenderPassDescriptor, passes: [any PassProtocol]) throws {
+    public init(device: MTLDevice, size: SIMD2<Float>, offscreenConfiguration: OffscreenRenderPassConfiguration, renderPassDescriptor: MTLRenderPassDescriptor, passes: [any PassProtocol]) throws {
         self.device = device
         self.size = size
         self.offscreenConfiguration = offscreenConfiguration

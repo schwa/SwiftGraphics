@@ -264,7 +264,7 @@ struct SingleGaussianSplatRenderPass: RenderPassProtocol {
         return State(quadMesh: quadMesh, bindings: bindings, depthStencilState: depthStencilState, renderPipelineState: renderPipelineState)
     }
 
-    func encode(commandEncoder: any MTLRenderCommandEncoder, state: inout State, drawableSize: SIMD2<Float>) throws {
+    func encode(commandEncoder: any MTLRenderCommandEncoder, info: PassInfo, state: inout State) throws {
         commandEncoder.setDepthStencilState(state.depthStencilState)
         commandEncoder.setRenderPipelineState(state.renderPipelineState)
 
@@ -272,7 +272,7 @@ struct SingleGaussianSplatRenderPass: RenderPassProtocol {
             commandEncoder.setTriangleFillMode(.lines)
         }
 
-        let projectionMatrix = cameraProjection.projectionMatrix(for: drawableSize)
+        let projectionMatrix = cameraProjection.projectionMatrix(for: info.drawableSize)
         let viewMatrix = cameraTransform.matrix.inverse
         let modelMatrix = modelTransform.matrix
 
@@ -284,7 +284,7 @@ struct SingleGaussianSplatRenderPass: RenderPassProtocol {
             projectionMatrix: projectionMatrix,
             viewMatrix: viewMatrix,
             cameraPosition: cameraTransform.matrix.translation,
-            drawableSize: drawableSize
+            drawableSize: info.drawableSize
         )
         commandEncoder.withDebugGroup("VertexShader") {
             commandEncoder.setVertexBuffersFrom(mesh: state.quadMesh)
