@@ -28,6 +28,9 @@ public struct GaussianSplatMinimalView: View {
     @State
     private var ballConstraint = BallConstraint()
 
+    @State
+    private var isTargeted = false
+
     public init() {
         let device = MTLCreateSystemDefaultDevice()!
         let url = Bundle.module.url(forResource: "train", withExtension: "splat")!
@@ -51,9 +54,29 @@ public struct GaussianSplatMinimalView: View {
             .onChange(of: ballConstraint, initial: true) {
                 scene.currentCameraNode?.transform = ballConstraint.transform
             }
-            .ballRotation($cameraRotation)
+            .ballRotation($cameraRotation, pitchLimit: .degrees(-.infinity) ... .degrees(.infinity))
             .gesture(MagnifyGesture().onChanged { value in
                 ballConstraint.radius = Float(5 * value.magnification)
             })
+            .onDrop(of: [.splat], isTargeted: $isTargeted) { items in
+                if let item = items.first {
+                    item.loadItem(forTypeIdentifier: UTType.splat.identifier, options: nil) { data, _ in
+                        guard let url = data as? URL else {
+                            print("No url")
+                            return
+                        }
+                        Task {
+                            await MainActor.run {
+                                scene.splatsNode.content = try! SplatCloud(device: device, url: url)
+                            }
+                        }
+                    }
+                    return true
+                } else {
+                    return false
+                }
+            }
+            .border(isTargeted ? Color.accentColor : .clear, width: isTargeted ? 4 : 0)
+
     }
 }

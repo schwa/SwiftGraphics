@@ -56,7 +56,7 @@ extension SplatCloud {
             let splatArray = data.withUnsafeBytes { buffer in
                 buffer.withMemoryRebound(to: SplatB.self) { splats in
                     let splats = if let bitsPerPositionScalar {
-                        splats.downsamplePositions(bits: bitsPerPositionScalar)
+                        splats.downsamplePositions(bits: bitsPerPositionScalar).downsampleScale(bits: bitsPerPositionScalar).downsampleColor()
                     }
                     else {
                         Array(splats)
