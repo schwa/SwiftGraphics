@@ -60,7 +60,7 @@ public extension VectorEditor {
         }
         set: {
             guard case let .float2(value) = $0 else {
-                fatalError()
+                fatalError("Invalid vector type")
             }
             vector.wrappedValue = value
         }
@@ -72,7 +72,7 @@ public extension VectorEditor {
         }
         set: {
             guard case let .float3(value) = $0 else {
-                fatalError()
+                fatalError("Invalid vector type")
             }
             vector.wrappedValue = value
         }
@@ -84,7 +84,7 @@ public extension VectorEditor {
         }
         set: {
             guard case let .float4(value) = $0 else {
-                fatalError()
+                fatalError("Invalid vector type")
             }
             vector.wrappedValue = value
         }

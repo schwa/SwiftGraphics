@@ -14,7 +14,7 @@ public struct Polygon {
     }
 
     public var complexity: Complexity {
-        fatalError()
+        fatalError("Not implemented")
     }
 
     public func isConvex() -> Bool {

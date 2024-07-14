@@ -86,7 +86,7 @@ internal class MetalViewModel: NSObject, MTKViewDelegate {
 
     func doSetup() {
         guard let view, let device = view.device, let setup else {
-            fatalError()
+            fatalError("No device or setup in `\(#function)`.")
         }
         do {
             var configuration = view.configuration
@@ -122,7 +122,7 @@ internal class MetalViewModel: NSObject, MTKViewDelegate {
 
     func draw(in view: MTKView) {
         guard let device = view.device, let currentDrawable = view.currentDrawable, let currentRenderPassDescriptor = view.currentRenderPassDescriptor, let draw else {
-            fatalError()
+            fatalError("No device, drawable, or draw in `\(#function)`.")
         }
         do {
             try draw(device, view.configuration, view.drawableSize, currentDrawable, currentRenderPassDescriptor)

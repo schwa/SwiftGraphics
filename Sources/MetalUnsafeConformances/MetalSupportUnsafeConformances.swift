@@ -12,7 +12,7 @@ extension MDLMeshBufferType: @retroactive CustomStringConvertible {
         case .custom:
             "custom"
         @unknown default:
-            fatalError()
+            fatalError("Unhandled case: \(self)")
         }
     }
 }
@@ -33,7 +33,7 @@ extension MDLGeometryType: @retroactive CustomStringConvertible {
         case .variableTopology:
             return "variableTopology"
         @unknown default:
-            fatalError()
+            fatalError("Unhandled case: \(self)")
         }
     }
 }

@@ -24,7 +24,7 @@ public extension NSImage {
 public extension CGContext {
     func makeImage(size: CGSize) -> NSImage {
         guard let image = makeImage() else {
-            fatalError()
+            fatalError("Failed to create image")
         }
         return NSImage(cgImage: image, size: size)
     }

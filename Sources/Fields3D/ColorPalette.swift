@@ -41,7 +41,7 @@ public struct ColorPalette: View {
         }
         .pickerStyle(.segmented)
         #else
-        fatalError()
+        fatalError("ColorPalette is not supported on iOS.")
         #endif
     }
 }

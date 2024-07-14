@@ -87,7 +87,7 @@ public struct MatrixEditor <Matrix>: View where Matrix: FormattableMatrix & Matr
             let pasteboard = NSPasteboard.general
             let string = pasteboard.string(forType: .tabularText) ?? ""
             guard let matrix = try? Matrix(tabularPasteboardRepresentation: string) else {
-                fatalError()
+                fatalError("Failed to parse pasted matrix")
             }
             self.matrix = matrix
         }
@@ -180,10 +180,10 @@ extension FormattableMatrix where Scalar == Float {
         for (row, line) in string.lines.enumerated() {
             for (column, cell) in line.split(separator: "\t").enumerated() {
                 if column >= columnCount || row >= rowCount {
-                    fatalError()
+                    fatalError("Invalid matrix size")
                 }
                 guard let value = Float(cell) else {
-                    fatalError() // TODO: FIXME
+                    fatalError("Invalid cell value")
                 }
                 self[column, row] = value
             }
