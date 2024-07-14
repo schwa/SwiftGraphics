@@ -14,7 +14,7 @@ public struct NodeAccessor: Hashable {
 public extension Binding where Value == SceneGraph {
     func binding(for label: String) -> Binding<Node?> {
         guard let indexPath = wrappedValue.firstIndexPath(label: label) else {
-            fatalError()
+            fatalError("No node with label \(label) found in scene graph.")
         }
         return Binding<Node?> {
             wrappedValue[accessor: NodeAccessor(path: indexPath)]
@@ -106,7 +106,7 @@ public extension SceneGraph {
     // @available(*, deprecated, message: "Deprecated")
     mutating func modify <R>(label: String, _ block: (inout Node?) throws -> R) rethrows -> R {
         guard let accessor = accessor(for: label) else {
-            fatalError()
+            fatalError("No node with label: \(label)")
         }
         var node = self[accessor: accessor]
         let result = try block(&node)
@@ -117,7 +117,7 @@ public extension SceneGraph {
     // @available(*, deprecated, message: "Deprecated")
     mutating func modify <R>(id: Node.ID, _ block: (inout Node?) throws -> R) rethrows -> R {
         guard let accessor = accessor(for: id) else {
-            fatalError()
+            fatalError("No node with id: \(id)")
         }
         var node = self[accessor: accessor]
         let result = try block(&node)
@@ -128,7 +128,7 @@ public extension SceneGraph {
     // @available(*, deprecated, message: "Deprecated")
     mutating func modify <R>(node: Node, _ block: (inout Node?) throws -> R) rethrows -> R {
         guard let accessor = accessor(for: node.id) else {
-            fatalError()
+            fatalError("No node with id: \(node.id)")
         }
         var node = self[accessor: accessor]
         let result = try block(&node)

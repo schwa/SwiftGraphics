@@ -59,7 +59,7 @@ struct Renderer <MetalConfiguration> where MetalConfiguration: MetalConfiguratio
         drawableSize = size
         for renderPass in passes.renderPasses {
             guard var state = statesByPasses[renderPass.id] else {
-                fatalError()
+                fatalError("Could not get state for render pass.")
             }
             try renderPass.sizeWillChange(device: device, size: size, untypedState: &state)
             statesByPasses[renderPass.id] = state
@@ -83,7 +83,7 @@ struct Renderer <MetalConfiguration> where MetalConfiguration: MetalConfiguratio
             info = PassInfo(drawableSize: drawableSize, frame: 0, start: now, time: now, deltaTime: 0)
         }
         guard let info else {
-            fatalError()
+            fatalError("Could not unwrap info.")
         }
 
         let passes = try expand(passes: passes.elements)
@@ -91,6 +91,9 @@ struct Renderer <MetalConfiguration> where MetalConfiguration: MetalConfiguratio
         let renderPasses = passes.compactMap { $0 as? any RenderPassProtocol }
 
         for pass in passes {
+            guard let state = statesByPasses[pass.id] else {
+                fatalError("Could not get state for pass")
+            }
             switch pass {
             case let pass as any RenderPassProtocol:
                 let isFirst = pass.id == renderPasses.first?.id
@@ -111,22 +114,13 @@ struct Renderer <MetalConfiguration> where MetalConfiguration: MetalConfiguratio
                     renderPassDescriptor.colorAttachments[0].storeAction = .store
                     renderPassDescriptor.depthAttachment.storeAction = .store
                 }
-                guard let state = statesByPasses[pass.id] else {
-                    fatalError()
-                }
                 try pass.render(commandBuffer: commandBuffer, renderPassDescriptor: renderPassDescriptor, info: info, untypedState: state)
             case let pass as any ComputePassProtocol:
-                guard let state = statesByPasses[pass.id] else {
-                    fatalError()
-                }
                 try pass.compute(commandBuffer: commandBuffer, info: info, untypedState: state)
             case let pass as any GeneralPassProtocol:
-                guard let state = statesByPasses[pass.id] else {
-                    fatalError()
-                }
                 try pass.encode(commandBuffer: commandBuffer, info: info, untypedState: state)
             default:
-                fatalError()
+                fatalError("Unknown pass type.")
             }
         }
     }
@@ -151,7 +145,7 @@ struct Renderer <MetalConfiguration> where MetalConfiguration: MetalConfiguratio
 
     mutating func setupPasses(passes: [any PassProtocol]) throws {
         guard let configuration else {
-            fatalError()
+            fatalError("No MetalConfiguration set.")
         }
         let passes = try expand(passes: passes)
         for pass in passes {

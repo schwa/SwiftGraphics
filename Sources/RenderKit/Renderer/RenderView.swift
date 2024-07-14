@@ -59,7 +59,7 @@ public struct RenderView: View {
         } draw: { _, _, size, drawable, renderPassDescriptor in
             do {
                 guard let commandQueue else {
-                    fatalError()
+                    fatalError("No command queue")
                 }
                 try renderer?.draw(commandQueue: commandQueue, renderPassDescriptor: renderPassDescriptor, drawable: drawable, drawableSize: SIMD2<Float>(size))
             } catch {
