@@ -49,15 +49,15 @@ namespace GaussianSplatShaders {
         const float4 splatWorldSpacePosition = uniforms.modelViewMatrix * float4(float3(splat.position), 1);
         const float4 splatClipSpacePosition = uniforms.projectionMatrix * splatWorldSpacePosition;
 
-//        const auto bounds = 1.2 * splatClipSpacePosition.w;
-//        if (splatClipSpacePosition.z < -splatClipSpacePosition.w
-//            || splatClipSpacePosition.x < -bounds
-//            || splatClipSpacePosition.x > bounds
-//            || splatClipSpacePosition.y < -bounds
-//            || splatClipSpacePosition.y > bounds) {
-//            out.position = float4(1, 1, 0, 1);
-//            return out;
-//        }
+        const auto bounds = 1.2 * splatClipSpacePosition.w;
+        if (splatClipSpacePosition.z < -splatClipSpacePosition.w
+            || splatClipSpacePosition.x < -bounds
+            || splatClipSpacePosition.x > bounds
+            || splatClipSpacePosition.y < -bounds
+            || splatClipSpacePosition.y > bounds) {
+            out.position = float4(1, 1, 0, 1);
+            return out;
+        }
 
         // float3 calcCovariance2D(float3 viewPos, packed_half3 cov3Da, packed_half3 cov3Db, float4x4 viewMatrix, float4x4 projectionMatrix, float2 screenSize)
         const float3 cov2D = calcCovariance2D(splatWorldSpacePosition.xyz, splat.cov_a, splat.cov_b, uniforms.viewMatrix, uniforms.projectionMatrix, uniforms.drawableSize);
