@@ -28,17 +28,15 @@ public struct SplatCloudInfoView: View {
                 Divider()
                 LabeledContent("# splats", value: splats.count, format: .number)
 
-//                TaskView(id: splats, "Bounding box") {
-//                    let positions = splats.map { SIMD3<Float>($0.position) }
-//                    // swiftlint:disable:next reduce_into
-//                    let minimums = positions.reduce([.greatestFiniteMagnitude, .greatestFiniteMagnitude, .greatestFiniteMagnitude], min)
-//                    // swiftlint:disable:next reduce_into
-//                    let maximums = positions.reduce([-.greatestFiniteMagnitude, -.greatestFiniteMagnitude, -.greatestFiniteMagnitude], max)
-//                    let size = maximums - minimums
-//                    return "\(minimums, format: .vector) ... \(maximums, format: .vector), size: (\(size, format: .vector))"
-//                }
-
-
+                //                TaskView(id: splats, "Bounding box") {
+                //                    let positions = splats.map { SIMD3<Float>($0.position) }
+                //                    // swiftlint:disable:next reduce_into
+                //                    let minimums = positions.reduce([.greatestFiniteMagnitude, .greatestFiniteMagnitude, .greatestFiniteMagnitude], min)
+                //                    // swiftlint:disable:next reduce_into
+                //                    let maximums = positions.reduce([-.greatestFiniteMagnitude, -.greatestFiniteMagnitude, -.greatestFiniteMagnitude], max)
+                //                    let size = maximums - minimums
+                //                    return "\(minimums, format: .vector) ... \(maximums, format: .vector), size: (\(size, format: .vector))"
+                //                }
 
                 Text("Splat size: \(bytes(splats.count * MemoryLayout<SplatB>.stride).formatted())")
                 TaskView(id: splats, "Low Hanging Fruit Size") {
@@ -61,10 +59,10 @@ public struct SplatCloudInfoView: View {
                     LabeledContent("# unique (RGBA) colors (bits)", value: log2(Double(uniqueColors.count)), format: .number)
                 }
 
-//                TaskView(id: splats, "# unique position") { Set(splats.map(\.position)).count }
-//                TaskView(id: splats, "# unique x") { Set(splats.map(\.position.x)).count }
-//                TaskView(id: splats, "# unique y") { Set(splats.map(\.position.y)).count }
-//                TaskView(id: splats, "# unique z") { Set(splats.map(\.position.z)).count }
+                //                TaskView(id: splats, "# unique position") { Set(splats.map(\.position)).count }
+                //                TaskView(id: splats, "# unique x") { Set(splats.map(\.position.x)).count }
+                //                TaskView(id: splats, "# unique y") { Set(splats.map(\.position.y)).count }
+                //                TaskView(id: splats, "# unique z") { Set(splats.map(\.position.z)).count }
 
                 TaskView(id: splats) {
                     channelInfo(splats: splats)
@@ -122,7 +120,6 @@ public struct SplatCloudInfoView: View {
 
 func bytes(_ bytes: Int) -> Measurement<UnitInformationStorage> {
     Measurement(value: Double(bytes), unit: UnitInformationStorage.bytes)
-
 }
 
 struct ChannelInfo: Sendable {
@@ -211,13 +208,12 @@ extension TaskView where Content == LabeledContent<Text, Text> {
 }
 
 func computeLowHangingFruitSize(splats: [SplatB]) -> Int {
-//    public var position: PackedFloat3    = 3 * 10
-//    public var scale: PackedFloat3       = 3 * 10
-//    public var color: SIMD4<UInt8>       = 20 (5/6/5/4)
-//    public var rotation: SIMD4<UInt8>    = 32
+    //    public var position: PackedFloat3    = 3 * 10
+    //    public var scale: PackedFloat3       = 3 * 10
+    //    public var color: SIMD4<UInt8>       = 20 (5/6/5/4)
+    //    public var rotation: SIMD4<UInt8>    = 32
     let splatSize: Double = (3 * 12 + 3 * 12 + 20 + 28)
     print(splatSize / 8)
-
 
     return Int(ceil(splatSize / 8)) * splats.count
 }

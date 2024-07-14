@@ -77,6 +77,5 @@ public struct GaussianSplatMinimalView: View {
                 }
             }
             .border(isTargeted ? Color.accentColor : .clear, width: isTargeted ? 4 : 0)
-
     }
 }
