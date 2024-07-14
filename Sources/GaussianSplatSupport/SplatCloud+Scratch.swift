@@ -44,7 +44,7 @@ public extension Collection where Element == SplatB {
     }
 
     func downsampleColor() -> [SplatB] {
-        return self.map { splat in
+        self.map { splat in
             var splat = splat
             splat.color.x = ((splat.color.x >> 3) & 0b0001_1111) << 3
             splat.color.y = ((splat.color.y >> 2) & 0b0011_1111) << 2

@@ -17,7 +17,6 @@ public struct PassInfo {
     public var deltaTime: TimeInterval
 }
 
-
 // MARK: -
 
 public protocol ShaderPassProtocol: PassProtocol {
