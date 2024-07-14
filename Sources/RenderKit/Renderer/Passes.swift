@@ -19,7 +19,7 @@ public protocol ShaderPassProtocol: PassProtocol {
 
 public protocol ComputePassProtocol: ShaderPassProtocol {
     func setup(device: MTLDevice) throws -> State
-    func compute(device: MTLDevice, state: inout State, commandBuffer: MTLCommandBuffer) throws
+    func compute(state: inout State, commandBuffer: MTLCommandBuffer) throws
 }
 
 // MARK: -
@@ -27,8 +27,8 @@ public protocol ComputePassProtocol: ShaderPassProtocol {
 public protocol RenderPassProtocol: ShaderPassProtocol {
     func setup(device: MTLDevice, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State
     func sizeWillChange(device: MTLDevice, state: inout State, size: CGSize) throws
-    func render(device: MTLDevice, state: inout State, drawableSize: SIMD2<Float>, renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) throws
-    func encode(device: MTLDevice, state: inout State, drawableSize: SIMD2<Float>, commandEncoder: MTLRenderCommandEncoder) throws
+    func render(state: inout State, drawableSize: SIMD2<Float>, renderPassDescriptor: MTLRenderPassDescriptor, commandBuffer: MTLCommandBuffer) throws
+    func encode(state: inout State, drawableSize: SIMD2<Float>, commandEncoder: MTLRenderCommandEncoder) throws
 }
 
 // MARK: -
@@ -36,7 +36,7 @@ public protocol RenderPassProtocol: ShaderPassProtocol {
 public protocol GeneralPassProtocol: PassProtocol {
     associatedtype State: PassState
     func setup(device: MTLDevice) throws -> State
-    func encode(device: MTLDevice, state: inout State, commandBuffer: MTLCommandBuffer) throws // TODO: Rename
+    func encode(state: inout State, commandBuffer: MTLCommandBuffer) throws // TODO: Rename
 }
 
 // MARK: -

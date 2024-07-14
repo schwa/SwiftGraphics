@@ -99,19 +99,19 @@ struct Renderer <MetalConfiguration> where MetalConfiguration: MetalConfiguratio
                 guard var state = statesByPasses[pass.id] else {
                     fatalError()
                 }
-                try pass.render(device: device, untypedState: &state, drawableSize: SIMD2<Float>(drawableSize), renderPassDescriptor: renderPassDescriptor, commandBuffer: commandBuffer)
+                try pass.render(untypedState: &state, drawableSize: SIMD2<Float>(drawableSize), renderPassDescriptor: renderPassDescriptor, commandBuffer: commandBuffer)
                 statesByPasses[pass.id] = state
             case let pass as any ComputePassProtocol:
                 guard var state = statesByPasses[pass.id] else {
                     fatalError()
                 }
-                try pass.compute(device: device, untypedState: &state, commandBuffer: commandBuffer)
+                try pass.compute(untypedState: &state, commandBuffer: commandBuffer)
                 statesByPasses[pass.id] = state
             case let pass as any GeneralPassProtocol:
                 guard var state = statesByPasses[pass.id] else {
                     fatalError()
                 }
-                try pass.encode(device: device, untypedState: &state, commandBuffer: commandBuffer)
+                try pass.encode(untypedState: &state, commandBuffer: commandBuffer)
                 statesByPasses[pass.id] = state
             default:
                 fatalError()

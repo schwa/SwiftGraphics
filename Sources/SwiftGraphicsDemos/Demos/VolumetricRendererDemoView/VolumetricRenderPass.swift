@@ -48,7 +48,7 @@ struct VolumetricRenderPass: RenderPassProtocol {
         return .init(renderPipelineState: renderPipelineState, depthStencilState: depthStencilState)
     }
 
-    func encode(device: MTLDevice, state: inout State, drawableSize: SIMD2<Float>, commandEncoder encoder: MTLRenderCommandEncoder) throws {
+    func encode(state: inout State, drawableSize: SIMD2<Float>, commandEncoder encoder: MTLRenderCommandEncoder) throws {
         encoder.setRenderPipelineState(state.renderPipelineState)
         encoder.setDepthStencilState(state.depthStencilState)
 

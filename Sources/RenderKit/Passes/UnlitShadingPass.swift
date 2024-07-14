@@ -67,7 +67,7 @@ public struct UnlitShadingPass: RenderPassProtocol {
         return State(renderPipelineState: renderPipelineState, depthStencilState: depthStencilState, bindings: bindings)
     }
 
-    public func encode(device: MTLDevice, state: inout State, drawableSize: SIMD2<Float>, commandEncoder: any MTLRenderCommandEncoder) throws {
+    public func encode(state: inout State, drawableSize: SIMD2<Float>, commandEncoder: any MTLRenderCommandEncoder) throws {
         let helper = SceneGraphRenderHelper(scene: scene, drawableSize: drawableSize)
         let elements = helper.elements()
         commandEncoder.setDepthStencilState(state.depthStencilState)

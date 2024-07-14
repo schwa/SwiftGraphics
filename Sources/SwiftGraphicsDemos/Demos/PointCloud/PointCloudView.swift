@@ -146,7 +146,7 @@ struct PointCloudRenderPass: RenderPassProtocol {
         return State(bindings: bindings, depthStencilState: depthStencilState, renderPipelineState: renderPipelineState)
     }
 
-    func encode(device: MTLDevice, state: inout State, drawableSize: SIMD2<Float>, commandEncoder: any MTLRenderCommandEncoder) throws {
+    func encode(state: inout State, drawableSize: SIMD2<Float>, commandEncoder: any MTLRenderCommandEncoder) throws {
         let helper = SceneGraphRenderHelper(scene: scene, drawableSize: drawableSize)
         let elements = helper.elements()
 
