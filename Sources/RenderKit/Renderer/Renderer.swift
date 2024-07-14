@@ -99,7 +99,7 @@ struct Renderer <MetalConfiguration> where MetalConfiguration: MetalConfiguratio
                 guard var state = statesByPasses[pass.id] else {
                     fatalError()
                 }
-                try pass.render(untypedState: &state, drawableSize: SIMD2<Float>(drawableSize), renderPassDescriptor: renderPassDescriptor, commandBuffer: commandBuffer)
+                try pass.render(commandBuffer: commandBuffer, untypedState: &state, drawableSize: SIMD2<Float>(drawableSize), renderPassDescriptor: renderPassDescriptor)
                 statesByPasses[pass.id] = state
             case let pass as any ComputePassProtocol:
                 guard var state = statesByPasses[pass.id] else {

@@ -209,7 +209,7 @@ public struct SimplePBRShadingPass: RenderPassProtocol {
         return State(renderPipelineState: renderPipelineState, depthStencilState: depthStencilState, bindings: bindings)
     }
 
-    public func encode(state: inout State, drawableSize: SIMD2<Float>, commandEncoder: any MTLRenderCommandEncoder) throws {
+    public func encode(commandEncoder: any MTLRenderCommandEncoder, state: inout State, drawableSize: SIMD2<Float>) throws {
         let helper = SceneGraphRenderHelper(scene: scene, drawableSize: drawableSize)
         let elements = helper.elements()
         commandEncoder.setDepthStencilState(state.depthStencilState)
