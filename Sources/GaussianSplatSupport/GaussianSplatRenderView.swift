@@ -36,7 +36,7 @@ public struct GaussianSplatRenderView: View {
 
     func screenshot() {
         do {
-            let device = MTLCreateSystemDefaultDevice()!
+            let device = MTLCreateSystemDefaultDevice().forceUnwrap()
             let width = 1280
             let height = 960
             let pixelFormat = MTLPixelFormat.bgra8Unorm_srgb

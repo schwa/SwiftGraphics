@@ -23,7 +23,7 @@ public extension RenderPassProtocol {
 public extension RenderPassProtocol {
     func sizeWillChange(device: MTLDevice, size: SIMD2<Float>, untypedState: inout any PassState) throws {
         guard var state = untypedState as? State else {
-            fatalError()
+            fatalError("Could not cast state to `State`, are two passes using same identifier?")
         }
         try sizeWillChange(device: device, size: size, state: &state)
         untypedState = state
@@ -31,7 +31,7 @@ public extension RenderPassProtocol {
 
     func render(commandBuffer: MTLCommandBuffer, renderPassDescriptor: MTLRenderPassDescriptor, info: PassInfo, untypedState: any PassState) throws {
         guard let state = untypedState as? State else {
-            fatalError()
+            fatalError("Could not cast state to `State`, are two passes using same identifier?")
         }
         try render(commandBuffer: commandBuffer, renderPassDescriptor: renderPassDescriptor, info: info, state: state)
     }

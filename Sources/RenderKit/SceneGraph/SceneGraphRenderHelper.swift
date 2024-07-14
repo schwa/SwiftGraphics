@@ -25,7 +25,7 @@ public struct SceneGraphRenderHelper {
 
     public init(scene: SceneGraph, drawableSize: SIMD2<Float>) {
         guard let currentCameraNode = scene.currentCameraNode else {
-            fatalError() // TODO: Throw
+            fatalError("No current camera node in scene")
         }
         assert(drawableSize.x > 0 && drawableSize.y > 0)
         let cameraMatrix = currentCameraNode.transform.matrix
