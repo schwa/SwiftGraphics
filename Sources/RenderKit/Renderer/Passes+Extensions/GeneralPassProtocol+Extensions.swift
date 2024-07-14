@@ -5,7 +5,7 @@ internal extension GeneralPassProtocol {
         guard var state = untypedState as? State else {
             fatalError()
         }
-        try encode(state: &state, commandBuffer: commandBuffer)
+        try encode(commandBuffer: commandBuffer, state: &state)
         untypedState = state
     }
 }

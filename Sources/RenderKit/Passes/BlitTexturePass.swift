@@ -19,7 +19,7 @@ public struct BlitTexturePass: GeneralPassProtocol {
         State()
     }
 
-    public func encode(state: inout State, commandBuffer: MTLCommandBuffer) throws {
+    public func encode(commandBuffer: MTLCommandBuffer, state: inout State) throws {
         let blitCommandEncoder = try commandBuffer.makeBlitCommandEncoder().safelyUnwrap(BaseError.resourceCreationFailure)
         blitCommandEncoder.label = "BlitTexturePass(\(id))"
         blitCommandEncoder.copy(from: source(), to: destination())
