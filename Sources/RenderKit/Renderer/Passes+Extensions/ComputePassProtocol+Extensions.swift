@@ -5,7 +5,7 @@ internal extension ComputePassProtocol {
         guard var state = untypedState as? State else {
             fatalError()
         }
-        try compute(state: &state, commandBuffer: commandBuffer)
+        try compute(commandBuffer: commandBuffer, state: &state)
         untypedState = state
     }
 }
@@ -15,7 +15,7 @@ public extension ComputePassProtocol {
         var state = try setup(device: device)
         let commandQueue = device.makeCommandQueue().forceUnwrap()
         let commandBuffer = commandQueue.makeCommandBuffer( ).forceUnwrap()
-        try compute(state: &state, commandBuffer: commandBuffer)
+        try compute(commandBuffer: commandBuffer, state: &state)
         commandBuffer.commit()
         commandBuffer.waitUntilCompleted()
     }
