@@ -72,6 +72,7 @@ public struct MatrixEditor <Matrix>: View where Matrix: FormattableMatrix & Matr
 
     @ViewBuilder
     func actions() -> some View {
+        #if os(macOS)
         Button("Copy") {
             let pasteboard = NSPasteboard.general
             pasteboard.declareTypes([.tabularText, .string], owner: nil)
@@ -92,6 +93,7 @@ public struct MatrixEditor <Matrix>: View where Matrix: FormattableMatrix & Matr
             self.matrix = matrix
         }
         Divider()
+        #endif // os(macOS)
         Button("Zero") {
             undoManager?.registerUndoValue($matrix)
             matrix = Matrix.zero
