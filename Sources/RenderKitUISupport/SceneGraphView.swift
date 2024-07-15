@@ -122,10 +122,6 @@ public struct SceneGraphViewModifier: ViewModifier {
             }
             .inspector(isPresented: $isInspectorPresented) {
                 TabView {
-                    Color.clear
-                        .tabItem {
-                            Text("Empty!")
-                        }
                     Form {
                         Section("Ball Constaint") {
                             BallConstraintEditor(ballConstraint: $ballConstraint)
