@@ -11,7 +11,7 @@ import SwiftUI
 /// A View that can render Metal graphics with an array of `RenderPass` types. This is a relatively low level view and should generally not be used by consumers.
 public struct RenderView: View {
     public typealias Configure = (inout MetalViewConfiguration) -> Void
-    public typealias SizeWillChange = (CGSize) -> Void
+    public typealias SizeWillChange = (MTLDevice, inout MetalViewConfiguration, CGSize) -> Void
 
     var passes: PassCollection
     var configure: Configure
@@ -32,7 +32,7 @@ public struct RenderView: View {
     @Environment(\.renderErrorHandler)
     var renderErrorHandler
 
-    public init(passes: [any PassProtocol], configure: @escaping Configure = { _ in }, sizeWillChange: @escaping SizeWillChange = { _ in }) {
+    public init(passes: [any PassProtocol], configure: @escaping Configure = { _ in }, sizeWillChange: @escaping SizeWillChange = { _, _, _ in }) {
         self.configure = configure
         self.sizeWillChange = sizeWillChange
         let passes = PassCollection(passes)
@@ -49,19 +49,19 @@ public struct RenderView: View {
             } catch {
                 renderErrorHandler.send(error, logger: logger)
             }
-        } drawableSizeWillChange: { _, _, size in
+        } drawableSizeWillChange: { device, configuration, size in
             do {
                 try renderer?.sizeWillChange(SIMD2<Float>(size))
-                sizeWillChange(size)
+                sizeWillChange(device, &configuration, size)
             } catch {
                 renderErrorHandler.send(error, logger: logger)
             }
-        } draw: { _, _, size, drawable, renderPassDescriptor in
+        } draw: { _, _, size, currentDrawable, currentRenderPassDescriptor in
             do {
                 guard let commandQueue else {
                     fatalError("No command queue")
                 }
-                try renderer?.draw(commandQueue: commandQueue, renderPassDescriptor: renderPassDescriptor, drawable: drawable, drawableSize: SIMD2<Float>(size))
+                try renderer?.draw(commandQueue: commandQueue, currentRenderPassDescriptor: currentRenderPassDescriptor, currentDrawable: currentDrawable, drawableSize: SIMD2<Float>(size))
             } catch {
                 renderErrorHandler.send(error, logger: logger)
             }
