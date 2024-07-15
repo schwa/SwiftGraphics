@@ -10,14 +10,14 @@ struct SceneGraphInspector: View {
     private var selection: Node.ID?
 
     var body: some View {
-#if os(macOS)
+        #if os(macOS)
         VSplitView {
             sceneList
                 .frame(minHeight: 320)
             sceneDetail
                 .frame(minHeight: 320)
         }
-#endif
+        #endif
     }
 
     @ViewBuilder
@@ -47,7 +47,7 @@ struct SceneGraphInspector: View {
             }
         }
         else {
-            ContentUnavailableView(label: { Text("No node selected") })
+            ContentUnavailableView { Text("No node selected") }
         }
     }
 }

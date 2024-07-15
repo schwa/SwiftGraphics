@@ -49,7 +49,7 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
         assert(phase == .initialized)
         self.phase = .configured(sizeKnown: false)
         configuration.colorPixelFormat = .bgra8Unorm_srgb
-        //configuration.depthStencilPixelFormat = .depth32Float
+        // configuration.depthStencilPixelFormat = .depth32Float
         try setupPasses(passes: passes.elements, configuration: &configuration)
         self.configuration = configuration
     }
@@ -82,7 +82,7 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
             self.info = info
         }
         else {
-            guard let configuration = configuration else {
+            guard let configuration else {
                 fatalError("Could not unwrap configuration.")
             }
             info = PassInfo(drawableSize: drawableSize, frame: 0, start: now, time: now, deltaTime: 0, configuration: configuration)
@@ -193,7 +193,7 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
             statesByPasses[pass.id] = nil
         }
         let insertions = difference.insertions.map(\.element)
-        guard var configuration = configuration else {
+        guard var configuration else {
             fatalError("Configuration must not be nil.")
         }
         try setupPasses(passes: insertions, configuration: &configuration)
