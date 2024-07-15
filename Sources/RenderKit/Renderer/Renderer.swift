@@ -67,7 +67,7 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
         }
     }
 
-    mutating func render(commandBuffer: MTLCommandBuffer, renderPassDescriptor: MTLRenderPassDescriptor, drawableSize: SIMD2<Float>) throws {
+    mutating func render(commandBuffer: MTLCommandBuffer, currentRenderPassDescriptor: MTLRenderPassDescriptor, drawableSize: SIMD2<Float>) throws {
         assert(phase == .configured(sizeKnown: true) || phase == .rendering)
         if phase != .rendering {
             phase = .rendering
@@ -90,10 +90,10 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
         guard let info else {
             fatalError("Could not unwrap info.")
         }
-        try _render(commandBuffer: commandBuffer, renderPassDescriptor: renderPassDescriptor, passes: passes, info: info)
+        try _render(commandBuffer: commandBuffer, currentRenderPassDescriptor: currentRenderPassDescriptor, passes: passes, info: info)
     }
 
-    private func _render(commandBuffer: MTLCommandBuffer, renderPassDescriptor: MTLRenderPassDescriptor, passes: PassCollection, info: PassInfo) throws {
+    private func _render(commandBuffer: MTLCommandBuffer, currentRenderPassDescriptor: MTLRenderPassDescriptor, passes: PassCollection, info: PassInfo) throws {
         assert(phase == .configured(sizeKnown: true) || phase == .rendering)
 
         let passes = try expand(passes: passes.elements)
@@ -109,22 +109,22 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
                 let isFirst = pass.id == renderPasses.first?.id
                 let isLast = pass.id == renderPasses.last?.id
                 if isFirst {
-                    renderPassDescriptor.colorAttachments[0].loadAction = .clear
-                    renderPassDescriptor.depthAttachment.loadAction = .clear
+                    currentRenderPassDescriptor.colorAttachments[0].loadAction = .clear
+                    currentRenderPassDescriptor.depthAttachment.loadAction = .clear
                 }
                 else {
-                    renderPassDescriptor.colorAttachments[0].loadAction = .load
-                    renderPassDescriptor.depthAttachment.loadAction = .load
+                    currentRenderPassDescriptor.colorAttachments[0].loadAction = .load
+                    currentRenderPassDescriptor.depthAttachment.loadAction = .load
                 }
                 if isLast {
-                    renderPassDescriptor.colorAttachments[0].storeAction = .store
-                    renderPassDescriptor.depthAttachment.storeAction = .dontCare
+                    currentRenderPassDescriptor.colorAttachments[0].storeAction = .store
+                    currentRenderPassDescriptor.depthAttachment.storeAction = .dontCare
                 }
                 else {
-                    renderPassDescriptor.colorAttachments[0].storeAction = .store
-                    renderPassDescriptor.depthAttachment.storeAction = .store
+                    currentRenderPassDescriptor.colorAttachments[0].storeAction = .store
+                    currentRenderPassDescriptor.depthAttachment.storeAction = .store
                 }
-                try pass.render(commandBuffer: commandBuffer, renderPassDescriptor: renderPassDescriptor, info: info, untypedState: state)
+                try pass.render(commandBuffer: commandBuffer, renderPassDescriptor: currentRenderPassDescriptor, info: info, untypedState: state)
             case let pass as any ComputePassProtocol:
                 try pass.compute(commandBuffer: commandBuffer, info: info, untypedState: state)
             case let pass as any GeneralPassProtocol:
@@ -135,10 +135,10 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
         }
     }
 
-    mutating func draw(commandQueue: MTLCommandQueue, renderPassDescriptor: MTLRenderPassDescriptor, drawable: MTLDrawable, drawableSize: SIMD2<Float>) throws {
+    mutating func draw(commandQueue: MTLCommandQueue, currentRenderPassDescriptor: MTLRenderPassDescriptor, currentDrawable: MTLDrawable, drawableSize: SIMD2<Float>) throws {
         let commandBuffer = try commandQueue.makeCommandBuffer().safelyUnwrap(BaseError.resourceCreationFailure)
-        try render(commandBuffer: commandBuffer, renderPassDescriptor: renderPassDescriptor, drawableSize: drawableSize)
-        commandBuffer.present(drawable)
+        try render(commandBuffer: commandBuffer, currentRenderPassDescriptor: currentRenderPassDescriptor, drawableSize: drawableSize)
+        commandBuffer.present(currentDrawable)
         commandBuffer.commit()
     }
 

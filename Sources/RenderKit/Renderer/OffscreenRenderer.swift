@@ -27,7 +27,7 @@ public struct OffscreenRenderer {
         try device.capture(enabled: capture) {
             let commandQueue = try device.makeCommandQueue().safelyUnwrap(BaseError.resourceCreationFailure)
             try commandQueue.withCommandBuffer(waitAfterCommit: true) { commandBuffer in
-                try renderer.render(commandBuffer: commandBuffer, renderPassDescriptor: renderPassDescriptor, drawableSize: size)
+                try renderer.render(commandBuffer: commandBuffer, currentRenderPassDescriptor: renderPassDescriptor, drawableSize: size)
             }
         }
     }

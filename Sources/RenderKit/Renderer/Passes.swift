@@ -69,3 +69,17 @@ public protocol GeneralPassProtocol: PassProtocol {
 public protocol GroupPassProtocol: PassProtocol {
     func children() throws -> [any PassProtocol]
 }
+
+public struct GroupPass: GroupPassProtocol {
+    public var id: PassID
+    internal var _children: PassCollection
+
+    public init(id: PassID, children: [any PassProtocol]) {
+        self.id = id
+        self._children = PassCollection(children)
+    }
+
+    public func children() throws -> [any PassProtocol] {
+        _children.elements
+    }
+}
