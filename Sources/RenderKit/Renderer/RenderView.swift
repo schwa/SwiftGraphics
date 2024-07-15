@@ -10,7 +10,7 @@ import SwiftUI
 
 /// A View that can render Metal graphics with an array of `RenderPass` types. This is a relatively low level view and should generally not be used by consumers.
 public struct RenderView: View {
-    public typealias Configure = (MetalViewConfiguration) -> Void
+    public typealias Configure = (inout MetalViewConfiguration) -> Void
     public typealias SizeWillChange = (CGSize) -> Void
 
     var passes: PassCollection
@@ -42,10 +42,10 @@ public struct RenderView: View {
     public var body: some View {
         MetalView { _, configuration in
             do {
+                configure(&configuration)
                 commandQueue = device.makeCommandQueue().forceUnwrap("Could not create command queue.")
                 renderer = Renderer<MetalViewConfiguration>(device: device, passes: passes)
                 try renderer?.configure(&configuration)
-                configure(configuration)
             } catch {
                 renderErrorHandler.send(error, logger: logger)
             }

@@ -49,9 +49,9 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
         assert(phase == .initialized)
         self.phase = .configured(sizeKnown: false)
         configuration.colorPixelFormat = .bgra8Unorm_srgb
-        configuration.depthStencilPixelFormat = .depth32Float
+        //configuration.depthStencilPixelFormat = .depth32Float
+        try setupPasses(passes: passes.elements, configuration: &configuration)
         self.configuration = configuration
-        try setupPasses(passes: passes.elements)
     }
 
     mutating func sizeWillChange(_ size: SIMD2<Float>) throws {
@@ -82,7 +82,10 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
             self.info = info
         }
         else {
-            info = PassInfo(drawableSize: drawableSize, frame: 0, start: now, time: now, deltaTime: 0)
+            guard let configuration = configuration else {
+                fatalError("Could not unwrap configuration.")
+            }
+            info = PassInfo(drawableSize: drawableSize, frame: 0, start: now, time: now, deltaTime: 0, configuration: configuration)
         }
         guard let info else {
             fatalError("Could not unwrap info.")
@@ -150,10 +153,7 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
         }
     }
 
-    mutating func setupPasses(passes: [any PassProtocol]) throws {
-        guard let configuration else {
-            fatalError("No MetalConfiguration set.")
-        }
+    mutating func setupPasses(passes: [any PassProtocol], configuration: inout MetalConfiguration) throws {
         let passes = try expand(passes: passes)
         for pass in passes {
             switch pass {
@@ -193,7 +193,11 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
             statesByPasses[pass.id] = nil
         }
         let insertions = difference.insertions.map(\.element)
-        try setupPasses(passes: insertions)
+        guard var configuration = configuration else {
+            fatalError("Configuration must not be nil.")
+        }
+        try setupPasses(passes: insertions, configuration: &configuration)
+        self.configuration = configuration
         self.passes = passes
     }
 }
