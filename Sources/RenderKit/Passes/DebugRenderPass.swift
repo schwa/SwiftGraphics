@@ -1,5 +1,5 @@
 import BaseSupport
-import Metal
+@preconcurrency import Metal
 import MetalKit
 import MetalSupport
 import Observation

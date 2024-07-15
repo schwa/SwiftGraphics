@@ -1,5 +1,5 @@
 import BaseSupport
-import MetalKit
+@preconcurrency import MetalKit
 import MetalSupport
 import RenderKitShadersLegacy
 import SwiftUI

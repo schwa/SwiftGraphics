@@ -16,7 +16,7 @@ extension PassID: ExpressibleByStringLiteral {
     }
 }
 
-public protocol PassProtocol: Equatable/*, Sendable*/ {
+public protocol PassProtocol: Equatable, Sendable {
     var id: PassID { get }
 }
 
