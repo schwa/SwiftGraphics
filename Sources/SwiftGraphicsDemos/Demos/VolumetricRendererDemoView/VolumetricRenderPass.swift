@@ -12,7 +12,7 @@ import SIMDSupport
 import SwiftUI
 
 struct VolumetricRenderPass: RenderPassProtocol {
-    let id: AnyHashable = "VolumetricRenderPass"
+    let id: PassID = "VolumetricRenderPass"
     var scene: SceneGraph
 
     struct State: PassState {

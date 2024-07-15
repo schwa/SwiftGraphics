@@ -1,7 +1,23 @@
 import Metal
 
+public struct PassID: Hashable, Sendable {
+    var rawValue: String
+}
+
+extension PassID: CustomDebugStringConvertible {
+    public var debugDescription: String {
+        rawValue
+    }
+}
+
+extension PassID: ExpressibleByStringLiteral {
+    public init(stringLiteral value: String) {
+        self.rawValue = value
+    }
+}
+
 public protocol PassProtocol: Equatable/*, Sendable*/ {
-    var id: AnyHashable { get }
+    var id: PassID { get }
 }
 
 // TODO: Make sendable.

@@ -14,7 +14,7 @@ public struct GaussianSplatBitonicSortComputePass: ComputePassProtocol {
         var frameCount: Int = 0
     }
 
-    public var id = AnyHashable("GaussianSplatBitonicSortComputePass")
+    public var id = PassID("GaussianSplatBitonicSortComputePass")
     var splats: SplatCloud
     var sortRate: Int
 
@@ -83,7 +83,7 @@ public struct GaussianSplatPreCalcComputePass: ComputePassProtocol {
         var bindingsSplatDistancesIndex: Int
     }
 
-    public var id = AnyHashable("GaussianSplatPreCalcComputePass")
+    public var id = PassID("GaussianSplatPreCalcComputePass")
     var splats: SplatCloud
     var modelMatrix: simd_float3x3
     var cameraPosition: SIMD3<Float>

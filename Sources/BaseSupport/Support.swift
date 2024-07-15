@@ -62,6 +62,9 @@ public extension Box {
     }
 }
 
+extension Box: Sendable where Content: Sendable {
+}
+
 public extension Array {
     var mutableLast: Element? {
         get {

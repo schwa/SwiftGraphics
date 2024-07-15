@@ -34,7 +34,7 @@ public struct UnlitShadingPass: RenderPassProtocol {
         var bindings: Bindings
     }
 
-    public var id: AnyHashable = "UnlitShadingPass"
+    public var id: PassID = "UnlitShadingPass"
     public var scene: SceneGraph
 
     public init(scene: SceneGraph) {

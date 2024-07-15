@@ -218,7 +218,7 @@ struct SingleGaussianSplatRenderPass: RenderPassProtocol {
         var renderPipelineState: MTLRenderPipelineState
     }
 
-    var id: AnyHashable = "GaussianSplatRenderPass"
+    var id: PassID = "GaussianSplatRenderPass"
     var cameraTransform: Transform
     var cameraProjection: Projection
     var modelTransform: Transform

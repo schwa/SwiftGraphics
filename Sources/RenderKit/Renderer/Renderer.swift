@@ -24,7 +24,7 @@ extension MetalViewConfiguration: MetalConfigurationProtocol {
 struct Renderer <MetalConfiguration> where MetalConfiguration: MetalConfigurationProtocol {
     private var device: MTLDevice
     private var passes: PassCollection
-    private var statesByPasses: [AnyHashable: any PassState] = [:]
+    private var statesByPasses: [PassID: any PassState] = [:]
     private var configuration: MetalConfiguration?
     private var drawableSize: SIMD2<Float> = .zero
     private var logger: Logger? = Logger(subsystem: "com.swiftui.metal", category: "Renderer")
@@ -187,7 +187,7 @@ struct Renderer <MetalConfiguration> where MetalConfiguration: MetalConfiguratio
             logger?.info("\(#function): Passes content changed.")
         }
         for pass in difference.removals.map(\.element) {
-            logger?.info("Pass removed: \(pass.id)")
+            logger?.info("Pass removed: \(pass.id.debugDescription)")
             statesByPasses[pass.id] = nil
         }
         let insertions = difference.insertions.map(\.element)
