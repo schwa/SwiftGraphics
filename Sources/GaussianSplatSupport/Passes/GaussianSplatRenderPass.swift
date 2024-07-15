@@ -1,6 +1,7 @@
 import BaseSupport
 import GaussianSplatShaders
-import MetalKit
+@preconcurrency import Metal
+@preconcurrency import MetalKit
 import MetalSupport
 import Observation
 import RenderKit

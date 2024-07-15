@@ -1,6 +1,6 @@
 import BaseSupport
 import GaussianSplatShaders
-import Metal
+@preconcurrency import Metal
 import MetalSupport
 import RenderKit
 import simd

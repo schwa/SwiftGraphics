@@ -1,6 +1,6 @@
 import BaseSupport
 @preconcurrency import Metal
-import MetalFX
+@preconcurrency import MetalFX
 
 public struct SpatialUpscalingPass: GeneralPassProtocol {
     public struct State: PassState {
