@@ -56,11 +56,6 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
         renderPipelineDescriptor.colorAttachments[0].destinationRGBBlendFactor = .oneMinusSourceAlpha
         renderPipelineDescriptor.colorAttachments[0].destinationAlphaBlendFactor = .oneMinusSourceAlpha
 
-        //        renderPipelineDescriptor.colorAttachments[0].sourceRGBBlendFactor = .oneMinusDestinationAlpha
-        //        renderPipelineDescriptor.colorAttachments[0].sourceAlphaBlendFactor = .oneMinusDestinationAlpha
-        //        renderPipelineDescriptor.colorAttachments[0].destinationRGBBlendFactor = .one
-        //        renderPipelineDescriptor.colorAttachments[0].destinationAlphaBlendFactor = .one
-
         let (renderPipelineState, reflection) = try device.makeRenderPipelineState(descriptor: renderPipelineDescriptor, options: [.bindingInfo])
         guard let reflection else {
             fatalError("Failed to create render pipeline state")
@@ -83,7 +78,9 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
     }
 
     public func encode(commandEncoder: any MTLRenderCommandEncoder, info: PassInfo, state: State) {
-        commandEncoder.setDepthStencilState(state.depthStencilState)
+        if info.configuration.depthStencilPixelFormat != .invalid {
+            commandEncoder.setDepthStencilState(state.depthStencilState)
+        }
         commandEncoder.setRenderPipelineState(state.renderPipelineState)
         //        commandEncoder.setCullMode(.back) // default is .none
         //        commandEncoder.setFrontFacing(.counterClockwise) // default is .clockwise

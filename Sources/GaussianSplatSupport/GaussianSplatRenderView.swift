@@ -21,7 +21,11 @@ public struct GaussianSplatRenderView: View {
     }
 
     public var body: some View {
-        RenderView(passes: passes)
+        RenderView(passes: passes, configure: { configuration in
+            configuration.colorPixelFormat = .bgra8Unorm_srgb
+            configuration.depthStencilPixelFormat = .invalid
+
+        })
             .toolbar {
                 // TODO: this should not be here.
                 Button("Screenshot") {

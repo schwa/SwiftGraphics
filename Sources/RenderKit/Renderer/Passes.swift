@@ -31,6 +31,7 @@ public struct PassInfo: Sendable {
     public var start: TimeInterval
     public var time: TimeInterval
     public var deltaTime: TimeInterval
+    public var configuration: any MetalConfigurationProtocol
 }
 
 // MARK: -

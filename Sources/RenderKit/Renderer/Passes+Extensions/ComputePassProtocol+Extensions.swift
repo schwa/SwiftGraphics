@@ -15,7 +15,8 @@ public extension ComputePassProtocol {
         let commandQueue = device.makeCommandQueue().forceUnwrap()
         let commandBuffer = commandQueue.makeCommandBuffer( ).forceUnwrap()
         let now = Date.now.timeIntervalSince1970
-        let info = PassInfo(drawableSize: .zero, frame: 0, start: now, time: now, deltaTime: 0)
+        let configuration = OffscreenRenderPassConfiguration()
+        let info = PassInfo(drawableSize: .zero, frame: 0, start: now, time: now, deltaTime: 0, configuration: configuration)
         try compute(commandBuffer: commandBuffer, info: info, state: state)
         commandBuffer.commit()
         commandBuffer.waitUntilCompleted()
