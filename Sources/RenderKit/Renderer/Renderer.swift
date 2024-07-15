@@ -79,6 +79,7 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
             info.deltaTime = now - info.time
             info.time = now
             info.drawableSize = drawableSize
+            self.info = info
         }
         else {
             info = PassInfo(drawableSize: drawableSize, frame: 0, start: now, time: now, deltaTime: 0)
