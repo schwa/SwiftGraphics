@@ -1,5 +1,5 @@
 import BaseSupport
-import Metal
+@preconcurrency import Metal
 
 public struct BlitTexturePass: GeneralPassProtocol {
     public struct State: PassState {
