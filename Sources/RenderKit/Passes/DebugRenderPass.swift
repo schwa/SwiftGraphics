@@ -7,7 +7,7 @@ import RenderKitShadersLegacy
 import simd
 
 public struct DebugRenderPass: RenderPassProtocol {
-    public var id: AnyHashable = "DebugRenderPass2"
+    public var id: PassID = "DebugRenderPass2"
 
     public var positionOffset: SIMD3<Float> = [0, 0, -0.001]
     public var cullMode: MTLCullMode = .back
@@ -16,7 +16,7 @@ public struct DebugRenderPass: RenderPassProtocol {
     public var clipspaceOffset: SIMD3<Float> = .zero
     public var scene: SceneGraph
 
-    var vertexDescritor = MTLVertexDescriptor(oneTrueVertexDescriptor)
+    let vertexDescriptor = MTLVertexDescriptor(oneTrueVertexDescriptor)
 
     public struct State: PassState {
         var depthStencilState: MTLDepthStencilState
@@ -34,7 +34,7 @@ public struct DebugRenderPass: RenderPassProtocol {
         renderPipelineDescriptor.fragmentFunction = library.makeFunction(name: "DebugFragmentShader")
         renderPipelineDescriptor.label = "\(type(of: self))"
 
-        renderPipelineDescriptor.vertexDescriptor = vertexDescritor
+        renderPipelineDescriptor.vertexDescriptor = vertexDescriptor
 
         let renderPipelineState = try device.makeRenderPipelineState(descriptor: renderPipelineDescriptor)
 

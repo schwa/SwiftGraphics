@@ -176,7 +176,7 @@ public struct SimplePBRShadingPass: RenderPassProtocol {
         var bindings: Bindings
     }
 
-    public var id: AnyHashable = "SimplePBRShadingPass"
+    public var id: PassID = "SimplePBRShadingPass"
     public var scene: SceneGraph
 
     public init(scene: SceneGraph) {

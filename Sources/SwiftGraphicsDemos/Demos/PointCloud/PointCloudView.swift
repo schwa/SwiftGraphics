@@ -116,7 +116,7 @@ struct PointCloudRenderPass: RenderPassProtocol {
         var renderPipelineState: MTLRenderPipelineState
     }
 
-    var id: AnyHashable = "PointCloudRenderPass"
+    var id: PassID = "PointCloudRenderPass"
 
     var scene: SceneGraph
 

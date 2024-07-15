@@ -27,7 +27,7 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
         var renderPipelineState: MTLRenderPipelineState
     }
 
-    public var id: AnyHashable = "GaussianSplatRenderPass"
+    public var id: PassID = "GaussianSplatRenderPass"
     public var scene: SceneGraph
     public var debugMode: Bool
 

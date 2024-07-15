@@ -4,7 +4,7 @@ import RenderKit
 import simd
 
 struct GaussianSplatCompositePass: GroupPassProtocol {
-    var id: AnyHashable
+    var id: PassID
     var scene: SceneGraph
     var sortRate: Int
 

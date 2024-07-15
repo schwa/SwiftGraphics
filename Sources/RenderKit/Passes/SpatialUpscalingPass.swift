@@ -7,12 +7,12 @@ public struct SpatialUpscalingPass: GeneralPassProtocol {
         var spatialScaler: MTLFXSpatialScaler
     }
 
-    public var id: AnyHashable
+    public var id: PassID
     public var inputTexture: Box<MTLTexture>
     public var outputTexture: Box<MTLTexture>
     public var colorProcessingMode: MTLFXSpatialScalerColorProcessingMode
 
-    public init(id: AnyHashable, inputTexture: MTLTexture, outputTexture: MTLTexture, colorProcessingMode: MTLFXSpatialScalerColorProcessingMode) {
+    public init(id: PassID, inputTexture: MTLTexture, outputTexture: MTLTexture, colorProcessingMode: MTLFXSpatialScalerColorProcessingMode) {
         self.id = id
         self.inputTexture = Box(inputTexture)
         self.outputTexture = Box(outputTexture)

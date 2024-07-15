@@ -17,7 +17,7 @@ public struct DiffuseShadingRenderPass: RenderPassProtocol {
         }
     }
 
-    public var id: AnyHashable = "SceneGraph3RenderPass"
+    public var id: PassID = "SceneGraph3RenderPass"
     public var scene: SceneGraph
     let vertexDescriptor = MTLVertexDescriptor(oneTrueVertexDescriptor)
     let lightAmbientColor = CGColor(gray: 1.0, alpha: 1.0)
