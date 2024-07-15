@@ -96,7 +96,6 @@ public struct SplatCloudInfoView: View {
                 if let item = items.first {
                     item.loadItem(forTypeIdentifier: UTType.splat.identifier, options: nil) { data, _ in
                         guard let url = data as? URL else {
-                            print("No url")
                             return
                         }
                         Task {
@@ -111,9 +110,6 @@ public struct SplatCloudInfoView: View {
                 }
             }
             .border(isTargeted ? Color.accentColor : .clear, width: isTargeted ? 4 : 0)
-            .onChange(of: splats) {
-                print("SPLAT CHANGE")
-            }
         }
     }
 }

@@ -3,7 +3,6 @@ import SwiftUI
 
 struct MTLDeviceKey: EnvironmentKey {
     static let defaultValue: MTLDevice = {
-        print("DEFAULT VALUE CALLED")
         guard let device = MTLCreateSystemDefaultDevice() else {
             fatalError("No default metal device found.")
         }
