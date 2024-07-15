@@ -85,6 +85,11 @@ struct Renderer <MetalConfiguration> where MetalConfiguration: MetalConfiguratio
         guard let info else {
             fatalError("Could not unwrap info.")
         }
+        try _render(commandBuffer: commandBuffer, renderPassDescriptor: renderPassDescriptor, passes: passes, info: info)
+    }
+
+    private func _render(commandBuffer: MTLCommandBuffer, renderPassDescriptor: MTLRenderPassDescriptor, passes: PassCollection, info: PassInfo) throws {
+        assert(phase == .configured(sizeKnown: true) || phase == .rendering)
 
         let passes = try expand(passes: passes.elements)
 

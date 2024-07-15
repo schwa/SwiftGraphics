@@ -9,7 +9,7 @@ public protocol PassProtocol: Equatable/*, Sendable*/ {
 public protocol PassState /*: Sendable*/ {
 }
 
-public struct PassInfo {
+public struct PassInfo: Sendable {
     public var drawableSize: SIMD2<Float>
     public var frame: Int
     public var start: TimeInterval
