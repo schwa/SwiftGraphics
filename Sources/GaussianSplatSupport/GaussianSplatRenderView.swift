@@ -8,11 +8,20 @@ import RenderKit
 import simd
 import SIMDSupport
 import SwiftUI
+#if os(iOS)
+import UIKit
+#endif
 
 public struct GaussianSplatRenderView: View {
     private let scene: SceneGraph
     private let debugMode: Bool
     private let sortRate: Int
+
+    @State
+    private var size: CGSize = .zero
+
+    @State
+    private var colorTexture: MTLTexture?
 
     public init(scene: SceneGraph, debugMode: Bool, sortRate: Int) {
         self.scene = scene
@@ -21,17 +30,35 @@ public struct GaussianSplatRenderView: View {
     }
 
     public var body: some View {
-        RenderView(passes: passes, configure: { configuration in
+        RenderView(passes: passes) { configuration in
             configuration.colorPixelFormat = .bgra8Unorm_srgb
             configuration.depthStencilPixelFormat = .invalid
-
-        })
-            .toolbar {
-                // TODO: this should not be here.
-                Button("Screenshot") {
-                    screenshot()
-                }
+            #if os(iOS)
+            // TODO: FIXME
+            print("### WARNING: isIdleTimerDisabled = true")
+            UIApplication.shared.isIdleTimerDisabled = true
+            #endif
+            //            print(size)
+        }
+        sizeWillChange: { device, configuration, size in
+            do {
+                let colorTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: configuration.colorPixelFormat, width: Int(ceil(size.width / 2)), height: Int(ceil(size.height / 2)), mipmapped: false)
+                colorTextureDescriptor.storageMode = .private
+                let colorTexture = try device.makeTexture(descriptor: colorTextureDescriptor).safelyUnwrap(BaseError.resourceCreationFailure)
+                colorTexture.label = "reduce-resolution-color"
+                self.colorTexture = colorTexture
             }
+            catch {
+                fatalError("Failed to create texture.")
+            }
+        }
+        .onGeometryChange(for: CGSize.self, of: \.size) { size = $0 }
+        //            .toolbar {
+        //                // TODO: this should not be here.
+        //                Button("Screenshot") {
+        //                    screenshot()
+        //                }
+        //            }
     }
 
     var passes: [any PassProtocol] {
@@ -93,8 +120,6 @@ public struct GaussianSplatRenderView: View {
 
             passes += [spatialUpscalingPass, blitPass]
 
-            print(renderPassDescriptor)
-
             var offscreenRenderer = try OffscreenRenderer(device: device, size: SIMD2<Float>(Float(width), Float(height)), offscreenConfiguration: offscreenConfiguration, renderPassDescriptor: renderPassDescriptor, passes: passes)
             try offscreenRenderer.configure()
             try offscreenRenderer.render(capture: false)
@@ -104,7 +129,7 @@ public struct GaussianSplatRenderView: View {
             URL(filePath: "/tmp/test.png").reveal()
         }
         catch {
-            print(error)
+            fatalError("\(error)")
         }
     }
 }

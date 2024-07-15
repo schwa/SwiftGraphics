@@ -82,8 +82,6 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
             commandEncoder.setDepthStencilState(state.depthStencilState)
         }
         commandEncoder.setRenderPipelineState(state.renderPipelineState)
-        //        commandEncoder.setCullMode(.back) // default is .none
-        //        commandEncoder.setFrontFacing(.counterClockwise) // default is .clockwise
         if debugMode {
             commandEncoder.setTriangleFillMode(.lines)
         }
