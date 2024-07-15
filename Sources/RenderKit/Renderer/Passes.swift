@@ -22,7 +22,7 @@ public protocol PassProtocol: Equatable, Sendable {
 
 // TODO: Make sendable.
 // TODO: Allow for empty state - make Never or () conform to PassState???
-public protocol PassState /*: Sendable*/ {
+public protocol PassState: Sendable {
 }
 
 public struct PassInfo: Sendable {

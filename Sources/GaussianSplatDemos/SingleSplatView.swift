@@ -3,7 +3,8 @@ import Everything
 import Fields3D
 import GaussianSplatShaders
 import GaussianSplatSupport
-import MetalKit
+@preconcurrency import Metal
+@preconcurrency import MetalKit
 import MetalSupport
 import Observation
 import RenderKit

@@ -1,5 +1,6 @@
 import BaseSupport
 import GaussianSplatSupport
+@preconcurrency import Metal
 import MetalKit
 import MetalSupport
 import Projection

@@ -1,5 +1,5 @@
 import Everything
-import Metal
+@preconcurrency import Metal
 import MetalKit
 import MetalSupport
 import MetalUISupport

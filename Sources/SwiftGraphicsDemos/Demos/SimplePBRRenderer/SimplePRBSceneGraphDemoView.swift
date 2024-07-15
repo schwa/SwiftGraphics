@@ -1,6 +1,6 @@
 import BaseSupport
 import CoreGraphicsSupport
-import Metal
+@preconcurrency import Metal
 import MetalKit
 import MetalSupport
 import RenderKit
