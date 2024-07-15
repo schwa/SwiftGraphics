@@ -1,11 +1,12 @@
 import Everything
+import Metal
 import MetalKit
 import MetalSupport
 import Observation
 import SwiftUI
 
 #if !os(visionOS)
-public struct MetalViewConfiguration {
+public struct MetalViewConfiguration: Sendable {
     // TODO: Fully expand this.
     public var colorPixelFormat: MTLPixelFormat
     public var clearColor: MTLClearColor

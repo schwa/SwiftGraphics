@@ -1,5 +1,6 @@
 import BaseSupport
 import Combine
+@preconcurrency import Metal
 import MetalKit
 import MetalSupport
 import MetalUISupport
@@ -10,7 +11,7 @@ import simd
 import SIMDSupport
 import SwiftUI
 
-public protocol MetalConfigurationProtocol {
+public protocol MetalConfigurationProtocol: Sendable {
     var colorPixelFormat: MTLPixelFormat { get set }
     var clearColor: MTLClearColor { get set }
     var depthStencilPixelFormat: MTLPixelFormat { get set }
@@ -21,7 +22,7 @@ public protocol MetalConfigurationProtocol {
 extension MetalViewConfiguration: MetalConfigurationProtocol {
 }
 
-struct Renderer <MetalConfiguration> where MetalConfiguration: MetalConfigurationProtocol {
+struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalConfigurationProtocol {
     private var device: MTLDevice
     private var passes: PassCollection
     private var statesByPasses: [PassID: any PassState] = [:]
