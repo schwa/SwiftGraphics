@@ -209,7 +209,7 @@ func computeLowHangingFruitSize(splats: [SplatB]) -> Int {
     //    public var color: SIMD4<UInt8>       = 20 (5/6/5/4)
     //    public var rotation: SIMD4<UInt8>    = 32
     let splatSize: Double = (3 * 12 + 3 * 12 + 20 + 28)
-//    print(splatSize / 8)
+    //    print(splatSize / 8)
 
     return Int(ceil(splatSize / 8)) * splats.count
 }

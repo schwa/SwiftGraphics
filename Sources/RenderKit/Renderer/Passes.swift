@@ -77,23 +77,23 @@ public struct GroupPass: GroupPassProtocol {
     internal var _children: PassCollection
     public var renderPassDescriptor: MTLRenderPassDescriptor?
 
-//    public init(id: PassID, renderPassDescriptor: MTLRenderPassDescriptor? = nil, children: [any PassProtocol]) {
-//        self.id = id
-//        self.renderPassDescriptor = renderPassDescriptor
-//        self._children = PassCollection(children)
-//    }
+    //    public init(id: PassID, renderPassDescriptor: MTLRenderPassDescriptor? = nil, children: [any PassProtocol]) {
+    //        self.id = id
+    //        self.renderPassDescriptor = renderPassDescriptor
+    //        self._children = PassCollection(children)
+    //    }
 
     public func children() throws -> [any PassProtocol] {
         _children.elements
     }
 }
 
-//public struct EmptyPass: GeneralPassProtocol {
+// public struct EmptyPass: GeneralPassProtocol {
 //    public struct State {
 //    }
 //
 //    public let id = PassID(rawValue: "\(UUID())")
-//}
+// }
 
 public extension GroupPass {
     init(id: PassID, renderPassDescriptor: MTLRenderPassDescriptor? = nil, @RenderPassBuilder content: () -> [any PassProtocol]) {
@@ -106,7 +106,6 @@ public extension GroupPass {
 @MainActor
 @resultBuilder
 public enum RenderPassBuilder {
-
     public static func buildBlock(_ passes: [any PassProtocol]...) -> [any PassProtocol] {
         Array(passes.joined())
     }
@@ -118,7 +117,6 @@ public enum RenderPassBuilder {
     public static func buildExpression(_ passes: [any PassProtocol]) -> [any PassProtocol] {
         passes
     }
-
 
     public static func buildOptional(_ passes: [any PassProtocol]?) -> [any PassProtocol] {
         passes ?? []

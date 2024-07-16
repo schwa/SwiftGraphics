@@ -6,7 +6,6 @@ import os
 // swiftlint:disable force_unwrapping
 
 public struct BitonicSortDemo {
-
     let logger: Logger? = Logger()
 
     public init() {
