@@ -47,7 +47,7 @@ public struct GaussianSplatMinimalView: View {
     }
 
     public var body: some View {
-        GaussianSplatRenderView(scene: scene, debugMode: false, sortRate: 15)
+        GaussianSplatRenderView(scene: scene, debugMode: false, sortRate: 30)
             .onChange(of: cameraRotation, initial: true) {
                 ballConstraint.rollPitchYaw = cameraRotation
             }

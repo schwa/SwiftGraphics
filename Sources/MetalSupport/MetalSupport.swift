@@ -90,9 +90,12 @@ public extension MTLBuffer {
 }
 
 public extension MTLCommandBuffer {
-    func withRenderCommandEncoder<R>(descriptor: MTLRenderPassDescriptor, block: (MTLRenderCommandEncoder) throws -> R) rethrows -> R {
+    func withRenderCommandEncoder<R>(descriptor: MTLRenderPassDescriptor, label: String? = nil, block: (MTLRenderCommandEncoder) throws -> R) rethrows -> R {
         guard let renderCommandEncoder = makeRenderCommandEncoder(descriptor: descriptor) else {
             fatalError("Failed to make render command encoder.")
+        }
+        if let label {
+            renderCommandEncoder.label = label
         }
         defer {
             renderCommandEncoder.endEncoding()

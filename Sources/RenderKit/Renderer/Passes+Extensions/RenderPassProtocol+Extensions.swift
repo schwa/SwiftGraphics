@@ -1,19 +1,17 @@
 import BaseSupport
 import Foundation
 import Metal
+import MetalSupport
 
 public extension RenderPassProtocol {
     func sizeWillChange(device: MTLDevice, size: SIMD2<Float>, state: inout State) throws {
     }
 
     func render(commandBuffer: MTLCommandBuffer, renderPassDescriptor: MTLRenderPassDescriptor, info: PassInfo, state: State) throws {
-        let commandEncoder = try commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor).safelyUnwrap(BaseError.resourceCreationFailure)
-        defer {
-            commandEncoder.endEncoding()
-        }
-        try commandEncoder.withDebugGroup("Start encoding for \(type(of: self))") {
-            commandEncoder.label = "\(type(of: self))"
-            try encode(commandEncoder: commandEncoder, info: info, state: state)
+        try commandBuffer.withRenderCommandEncoder(descriptor: renderPassDescriptor, label: "\(type(of: self))") { commandEncoder in
+            try commandEncoder.withDebugGroup("Start encoding for \(type(of: self))") {
+                try encode(commandEncoder: commandEncoder, info: info, state: state)
+            }
         }
     }
 }

@@ -17,6 +17,7 @@ public protocol MetalConfigurationProtocol: Sendable {
     var depthStencilPixelFormat: MTLPixelFormat { get set }
     var depthStencilStorageMode: MTLStorageMode { get set }
     var clearDepth: Double { get set }
+    var framebufferOnly: Bool { get set }
 }
 
 extension MetalViewConfiguration: MetalConfigurationProtocol {
@@ -90,45 +91,53 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
         guard let info else {
             fatalError("Could not unwrap info.")
         }
-        try _render(commandBuffer: commandBuffer, currentRenderPassDescriptor: currentRenderPassDescriptor, passes: passes, info: info)
+        try _render(commandBuffer: commandBuffer, renderPassDescriptor: currentRenderPassDescriptor, passes: passes.elements, info: info)
     }
 
-    private func _render(commandBuffer: MTLCommandBuffer, currentRenderPassDescriptor: MTLRenderPassDescriptor, passes: PassCollection, info: PassInfo) throws {
+    private func _render(commandBuffer: MTLCommandBuffer, renderPassDescriptor: MTLRenderPassDescriptor, passes: [any PassProtocol], info: PassInfo) throws {
         assert(phase == .configured(sizeKnown: true) || phase == .rendering)
 
-        let passes = try expand(passes: passes.elements)
-
-        let renderPasses = passes.compactMap { $0 as? any RenderPassProtocol }
+        var info = info
+        info.currentRenderPassDescriptor = renderPassDescriptor
 
         for pass in passes {
-            guard let state = statesByPasses[pass.id] else {
-                fatalError("Could not get state for pass")
-            }
             switch pass {
             case let pass as any RenderPassProtocol:
-                let isFirst = pass.id == renderPasses.first?.id
-                let isLast = pass.id == renderPasses.last?.id
-                if isFirst {
-                    currentRenderPassDescriptor.colorAttachments[0].loadAction = .clear
-                    currentRenderPassDescriptor.depthAttachment.loadAction = .clear
+//                let isFirst = pass.id == renderPasses.first?.id
+//                let isLast = pass.id == renderPasses.last?.id
+//                if isFirst {
+//                    currentRenderPassDescriptor.colorAttachments[0].loadAction = .clear
+//                    currentRenderPassDescriptor.depthAttachment.loadAction = .clear
+//                }
+//                else {
+//                    currentRenderPassDescriptor.colorAttachments[0].loadAction = .load
+//                    currentRenderPassDescriptor.depthAttachment.loadAction = .load
+//                }
+//                if isLast {
+//                    currentRenderPassDescriptor.colorAttachments[0].storeAction = .store
+//                    currentRenderPassDescriptor.depthAttachment.storeAction = .dontCare
+//                }
+//                else {
+//                    currentRenderPassDescriptor.colorAttachments[0].storeAction = .store
+//                    currentRenderPassDescriptor.depthAttachment.storeAction = .store
+//                }
+                guard let state = statesByPasses[pass.id] else {
+                    fatalError("Could not get state for pass")
                 }
-                else {
-                    currentRenderPassDescriptor.colorAttachments[0].loadAction = .load
-                    currentRenderPassDescriptor.depthAttachment.loadAction = .load
-                }
-                if isLast {
-                    currentRenderPassDescriptor.colorAttachments[0].storeAction = .store
-                    currentRenderPassDescriptor.depthAttachment.storeAction = .dontCare
-                }
-                else {
-                    currentRenderPassDescriptor.colorAttachments[0].storeAction = .store
-                    currentRenderPassDescriptor.depthAttachment.storeAction = .store
-                }
-                try pass.render(commandBuffer: commandBuffer, renderPassDescriptor: currentRenderPassDescriptor, info: info, untypedState: state)
+                try pass.render(commandBuffer: commandBuffer, renderPassDescriptor: renderPassDescriptor, info: info, untypedState: state)
             case let pass as any ComputePassProtocol:
+                guard let state = statesByPasses[pass.id] else {
+                    fatalError("Could not get state for pass")
+                }
                 try pass.compute(commandBuffer: commandBuffer, info: info, untypedState: state)
             case let pass as any GeneralPassProtocol:
+                guard let state = statesByPasses[pass.id] else {
+                    fatalError("Could not get state for pass")
+                }
                 try pass.encode(commandBuffer: commandBuffer, info: info, untypedState: state)
+            case let pass as any GroupPassProtocol:
+                let children = try pass.children()
+                try _render(commandBuffer: commandBuffer, renderPassDescriptor: pass.renderPassDescriptor ?? renderPassDescriptor, passes: children, info: info)
             default:
                 fatalError("Unknown pass type.")
             }
