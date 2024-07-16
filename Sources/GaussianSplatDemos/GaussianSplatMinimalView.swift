@@ -69,7 +69,6 @@ public struct GaussianSplatMinimalView: View {
                     item.loadItem(forTypeIdentifier: UTType.splat.identifier, options: nil) { data, _ in
                         guard let url = data as? URL else {
                             fatalError("No url")
-                            return
                         }
                         Task {
                             await MainActor.run {
@@ -84,18 +83,9 @@ public struct GaussianSplatMinimalView: View {
             }
             .border(isTargeted ? Color.accentColor : .clear, width: isTargeted ? 4 : 0)
             .toolbar {
-                Button("1") {
-                    metalFXRate = 1
-                }
-                Button("2") {
-                    metalFXRate = 2
-                }
-                Button("4") {
-                    metalFXRate = 4
-                }
-                Button("8") {
-                    metalFXRate = 8
-                }
+                TextField("MetalFX Rate", value: $metalFXRate, format: .number)
+                Slider(value: $metalFXRate, in: 1...16, step: 0.25)
+                    .frame(width: 120)
             }
     }
 }

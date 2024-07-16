@@ -21,6 +21,9 @@ public struct GaussianSplatRenderView: View {
     @Environment(\.metalDevice)
     var device
 
+    @Environment(\.logger)
+    var logger
+
     @State
     private var colorTexture: MTLTexture? // TODO: RENAME
 
@@ -38,7 +41,7 @@ public struct GaussianSplatRenderView: View {
     }
 
     public var body: some View {
-        RenderView(pass: pass) { configuration in
+        RenderView(pass: try! makePass()) { configuration in
             configuration.colorPixelFormat = .bgra8Unorm_srgb
             configuration.depthStencilPixelFormat = .invalid
             configuration.framebufferOnly = false
@@ -50,8 +53,12 @@ public struct GaussianSplatRenderView: View {
         }
         sizeWillChange: { device, configuration, size in
             do {
+                let size = SIMD2<Float>(size)
+                guard drawableSize != size else {
+                    return
+                }
                 drawableSize = SIMD2<Float>(size)
-                print("sizeWillChange: \(drawableSize)")
+                logger?.debug("\(type(of: self)).\(#function): \(drawableSize)")
                 try makeMetalFXTextures(device: device, pixelFormat: configuration.colorPixelFormat, size: drawableSize)
             }
             catch {
@@ -59,13 +66,19 @@ public struct GaussianSplatRenderView: View {
             }
         }
         .onChange(of: metalFXRate) {
-            try! makeMetalFXTextures(device: device, pixelFormat: .bgra8Unorm_srgb, size: drawableSize)
+            do {
+                try makeMetalFXTextures(device: device, pixelFormat: .bgra8Unorm_srgb, size: drawableSize)
+            }
+            catch {
+                logger?.error("Failed to make metal textures: \(error)")
+            }
         }
     }
 
-    var pass: GroupPass? {
+    func makePass() throws -> GroupPass? {
+        logger?.debug("\(type(of: self)).\(#function)")
         guard let colorTexture, let upscaledTexture else {
-            print("No texture(s)")
+            logger?.warning("No texture(s)")
             return nil
         }
         guard let splatsNode = scene.node(for: "splats"), let splats = splatsNode.content as? SplatCloud else {
@@ -81,7 +94,7 @@ public struct GaussianSplatRenderView: View {
         offscreenRenderPassDescriptor.colorAttachments[0].loadAction = .clear
         offscreenRenderPassDescriptor.colorAttachments[0].storeAction = .store
 
-        return GroupPass(id: "TODO-1") {
+        return try GroupPass(id: "TODO-1") {
             GroupPass(id: "GaussianSplatRenderGroup", renderPassDescriptor: metalFXRate != 1 ? offscreenRenderPassDescriptor : nil) {
                 GaussianSplatPreCalcComputePass(
                     splats: splats,
@@ -98,27 +111,28 @@ public struct GaussianSplatRenderView: View {
                 )
             }
             if metalFXRate != 1 {
-                SpatialUpscalingPass(id: "TODO-2", source: colorTexture, destination: upscaledTexture, colorProcessingMode: .perceptual)
+                try SpatialUpscalingPass(id: "TODO-2", device: device, source: colorTexture, destination: upscaledTexture, colorProcessingMode: .perceptual)
                 BlitTexturePass(id: "TODO-3", source: upscaledTexture, destination: nil)
             }
         }
     }
 
     func makeMetalFXTextures(device: MTLDevice, pixelFormat: MTLPixelFormat, size: SIMD2<Float>) throws {
+        logger?.debug("makeMetalFXTextures - \(size) \(metalFXRate)")
         let downscaledSize = SIMD2<Int>(ceil(size / metalFXRate))
 
         let colorTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: pixelFormat, width: downscaledSize.x, height: downscaledSize.y, mipmapped: false)
         colorTextureDescriptor.storageMode = .private
         colorTextureDescriptor.usage = [.renderTarget, .shaderRead]
         let colorTexture = try device.makeTexture(descriptor: colorTextureDescriptor).safelyUnwrap(BaseError.resourceCreationFailure)
-        colorTexture.label = "reduce-resolution-color"
+        colorTexture.label = "reduce-resolution-color-\(colorTexture.size.shortDescription)"
         self.colorTexture = colorTexture
 
         let upscaledTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: pixelFormat, width: Int(ceil(size.x)), height: Int(ceil(size.y)), mipmapped: false)
         upscaledTextureDescriptor.storageMode = .private
         upscaledTextureDescriptor.usage = .renderTarget
         let upscaledTexture = try device.makeTexture(descriptor: upscaledTextureDescriptor).safelyUnwrap(BaseError.resourceCreationFailure)
-        upscaledTexture.label = "reduce-resolution-upscaled"
+        upscaledTexture.label = "reduce-resolution-upscaled-\(upscaledTexture.size.shortDescription)"
         self.upscaledTexture = upscaledTexture
     }
 
@@ -188,5 +202,11 @@ public struct GaussianSplatRenderView: View {
         //        catch {
         //            fatalError("\(error)")
         //        }
+    }
+}
+
+extension MTLSize {
+    var shortDescription: String {
+        depth == 1 ? "\(width)x\(height)" : "\(width)x\(height)x\(depth)"
     }
 }
