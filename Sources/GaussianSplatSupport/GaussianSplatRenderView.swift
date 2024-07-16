@@ -33,7 +33,7 @@ public struct GaussianSplatRenderView: View {
     }
 
     public var body: some View {
-        RenderView(passes: pass.map({[$0]}) ?? []) { configuration in
+        RenderView(passes: pass.map { [$0] }?? []) { configuration in
             configuration.colorPixelFormat = .bgra8Unorm_srgb
             configuration.depthStencilPixelFormat = .invalid
             configuration.framebufferOnly = false
@@ -151,7 +151,7 @@ public struct GaussianSplatRenderView: View {
             renderPassDescriptor.depthAttachment.storeAction = .store
             renderPassDescriptor.depthAttachment.clearDepth = 1
 
-//            var passes: [any PassProtocol] = [pass]
+            //            var passes: [any PassProtocol] = [pass]
 
             let upscaledPrivateTextureDescriptor = MTLTextureDescriptor()
             upscaledPrivateTextureDescriptor.pixelFormat = pixelFormat
@@ -160,23 +160,23 @@ public struct GaussianSplatRenderView: View {
             upscaledPrivateTextureDescriptor.storageMode = .private
             upscaledPrivateTextureDescriptor.usage = [.renderTarget, .shaderRead, .shaderWrite]
             let upscaledPrivateTexture = try device.makeTexture(descriptor: upscaledPrivateTextureDescriptor).safelyUnwrap(BaseError.resourceCreationFailure)
-//            let spatialUpscalingPass = SpatialUpscalingPass(id: "SpatialUpscalingPass", inputTexture: targetTexture, outputTexture: upscaledPrivateTexture, colorProcessingMode: .perceptual)
-//
-//            let upscaledSharedTextureDescriptor = upscaledPrivateTextureDescriptor
-//            upscaledSharedTextureDescriptor.storageMode = .shared
-//            let upscaledSharedTexture = try device.makeTexture(descriptor: upscaledSharedTextureDescriptor).safelyUnwrap(BaseError.resourceCreationFailure)
-//
-//            let blitPass = BlitTexturePass(id: "BlitTexturePass", source: upscaledPrivateTexture, destination: upscaledSharedTexture)
+            //            let spatialUpscalingPass = SpatialUpscalingPass(id: "SpatialUpscalingPass", inputTexture: targetTexture, outputTexture: upscaledPrivateTexture, colorProcessingMode: .perceptual)
+            //
+            //            let upscaledSharedTextureDescriptor = upscaledPrivateTextureDescriptor
+            //            upscaledSharedTextureDescriptor.storageMode = .shared
+            //            let upscaledSharedTexture = try device.makeTexture(descriptor: upscaledSharedTextureDescriptor).safelyUnwrap(BaseError.resourceCreationFailure)
+            //
+            //            let blitPass = BlitTexturePass(id: "BlitTexturePass", source: upscaledPrivateTexture, destination: upscaledSharedTexture)
 
-//            passes += [spatialUpscalingPass, blitPass]
+            //            passes += [spatialUpscalingPass, blitPass]
 
-//            var offscreenRenderer = try OffscreenRenderer(device: device, size: SIMD2<Float>(Float(width), Float(height)), offscreenConfiguration: offscreenConfiguration, renderPassDescriptor: renderPassDescriptor, passes: passes)
-//            try offscreenRenderer.configure()
-//            try offscreenRenderer.render(capture: false)
-//
-//            try targetTexture.cgImage().write(to: URL(filePath: "/tmp/test.png"))
-//            try upscaledSharedTexture.cgImage().write(to: URL(filePath: "/tmp/test-upscaled.png"))
-//            URL(filePath: "/tmp/test.png").reveal()
+            //            var offscreenRenderer = try OffscreenRenderer(device: device, size: SIMD2<Float>(Float(width), Float(height)), offscreenConfiguration: offscreenConfiguration, renderPassDescriptor: renderPassDescriptor, passes: passes)
+            //            try offscreenRenderer.configure()
+            //            try offscreenRenderer.render(capture: false)
+            //
+            //            try targetTexture.cgImage().write(to: URL(filePath: "/tmp/test.png"))
+            //            try upscaledSharedTexture.cgImage().write(to: URL(filePath: "/tmp/test-upscaled.png"))
+            //            URL(filePath: "/tmp/test.png").reveal()
         }
         catch {
             fatalError("\(error)")
