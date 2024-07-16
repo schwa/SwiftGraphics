@@ -69,11 +69,9 @@ public struct GaussianSplatRenderView: View {
             return nil
         }
         guard let splatsNode = scene.node(for: "splats"), let splats = splatsNode.content as? SplatCloud else {
-            print("No splats")
             return nil
         }
         guard let cameraNode = scene.node(for: "camera") else {
-            print("No camera")
             return nil
         }
 
