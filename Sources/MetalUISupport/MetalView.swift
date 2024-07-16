@@ -1,4 +1,6 @@
+import BaseSupport
 import Everything
+import os
 import Metal
 import MetalKit
 import MetalSupport
@@ -32,6 +34,9 @@ public struct MetalView: View {
     @State
     private var error: Error?
 
+    @State
+    private var view: MTKView?
+
     let setup: Self.Setup
     let drawableSizeWillChange: Self.DrawableSizeWillChange
     let draw: Self.Draw
@@ -55,23 +60,27 @@ public struct MetalView: View {
                 ViewAdaptor<MTKView> {
                     logger?.debug("ViewAdaptor.Make")
                     let view = MTKView()
-                    model.view = view
                     view.device = device
                     view.delegate = model
                     #if os(macOS)
                     view.layer?.isOpaque = false
                     #endif
+                    model.view = view
                     return view
                 } update: { _ in
-                }
-                .onAppear {
-                    model.setup = setup
-                    model.drawableSizeWillChange = drawableSizeWillChange
-                    model.draw = draw
-                    model.doSetup() // TODO: Error handling
+//                    logger?.debug("ViewAdaptor.Update")
                 }
             }
         }
+        .onChange(of: model, initial: true) {
+            logger?.debug("ViewAdaptor.onChange(of: model)")
+            model.logger = logger
+            model.setupCallback = setup
+            model.drawableSizeWillChangeCallback = drawableSizeWillChange
+            model.drawCallback = draw
+            model.doSetup()
+        }
+
         .onChange(of: model.error.0) {
             error = model.error.1
         }
@@ -82,39 +91,25 @@ public struct MetalView: View {
 @MainActor
 internal class MetalViewModel: NSObject, MTKViewDelegate {
     var view: MTKView?
-    var setup: MetalView.Setup?
-    var drawableSizeWillChange: MetalView.DrawableSizeWillChange?
-    var draw: MetalView.Draw?
     var error: (Int, Error?) = (0, nil)
+    var logger: Logger?
+    var setupCallback: MetalView.Setup?
+    var drawableSizeWillChangeCallback: MetalView.DrawableSizeWillChange?
+    var drawCallback: MetalView.Draw?
 
-    override init() {
-    }
-
-    func doSetup() {
-        guard let view, let device = view.device, let setup else {
-            fatalError("No device or setup in `\(#function)`.")
-        }
-        do {
-            var configuration = view.configuration
-            try setup(device, &configuration)
-            view.configuration = configuration
-        }
-        catch {
-            set(error: error)
-        }
-    }
+    // MARK: MTKViewDelegate
 
     func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
         logger?.debug("MetalViewModel.\(#function)")
         guard let device = view.device else {
             fatalError("No device in `\(#function)`.")
         }
-        guard let drawableSizeWillChange else {
+        guard let drawableSizeWillChangeCallback else {
             return
         }
         do {
             var configuration = view.configuration
-            try drawableSizeWillChange(device, &configuration, size)
+            try drawableSizeWillChangeCallback(device, &configuration, size)
             view.configuration = configuration
             if view.enableSetNeedsDisplay {
                 #if os(macOS)
@@ -128,11 +123,30 @@ internal class MetalViewModel: NSObject, MTKViewDelegate {
     }
 
     func draw(in view: MTKView) {
-        guard let device = view.device, let currentDrawable = view.currentDrawable, let currentRenderPassDescriptor = view.currentRenderPassDescriptor, let draw else {
+        //logger?.debug("MetalViewModel.\(#function)")
+        guard let device = view.device, let currentDrawable = view.currentDrawable, let currentRenderPassDescriptor = view.currentRenderPassDescriptor, let drawCallback else {
             fatalError("No device, drawable, or draw in `\(#function)`.")
         }
         do {
-            try draw(device, view.configuration, view.drawableSize, currentDrawable, currentRenderPassDescriptor)
+            try drawCallback(device, view.configuration, view.drawableSize, currentDrawable, currentRenderPassDescriptor)
+        }
+        catch {
+            set(error: error)
+        }
+    }
+
+    // MARK: -
+
+    func doSetup() {
+        logger?.debug("MetalViewModel.\(#function)")
+        guard let view, let device = view.device, let setupCallback else {
+            fatalError("No device or setup in `\(#function)`.")
+        }
+        do {
+            var configuration = view.configuration
+            try setupCallback(device, &configuration)
+            try drawableSizeWillChangeCallback?(device, &configuration, view.drawableSize)
+            view.configuration = configuration
         }
         catch {
             set(error: error)
