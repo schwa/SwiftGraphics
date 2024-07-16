@@ -34,7 +34,6 @@ public struct GaussianSplatMinimalView: View {
     @State
     private var metalFXRate: Float = 1
 
-
     public init() {
         let device = MTLCreateSystemDefaultDevice()!
         let url = Bundle.module.url(forResource: "train", withExtension: "splat")!
@@ -82,19 +81,18 @@ public struct GaussianSplatMinimalView: View {
             }
             .border(isTargeted ? Color.accentColor : .clear, width: isTargeted ? 4 : 0)
             .toolbar {
-                    Button("1") {
-                        metalFXRate = 1
-                    }
-                    Button("2") {
-                        metalFXRate = 2
-                    }
-                    Button("4") {
-                        metalFXRate = 4
-                    }
-                    Button("8") {
-                        metalFXRate = 8
-                    }
-
+                Button("1") {
+                    metalFXRate = 1
+                }
+                Button("2") {
+                    metalFXRate = 2
+                }
+                Button("4") {
+                    metalFXRate = 4
+                }
+                Button("8") {
+                    metalFXRate = 8
+                }
             }
     }
 }
