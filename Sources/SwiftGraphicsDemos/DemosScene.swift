@@ -1,5 +1,6 @@
 import Everything
 import GaussianSplatDemos
+import os
 import SwiftUI
 import SwiftUISupport
 
@@ -81,6 +82,7 @@ struct DemosView: View {
                 }
             }
         }
+        .logger(Logger())
         .inlineNotificationOverlay()
     }
 

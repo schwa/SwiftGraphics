@@ -36,6 +36,9 @@ public struct MetalView: View {
     let drawableSizeWillChange: Self.DrawableSizeWillChange
     let draw: Self.Draw
 
+    @Environment(\.logger)
+    private var logger
+
     public init(setup: @escaping Setup, drawableSizeWillChange: @escaping DrawableSizeWillChange, draw: @escaping Draw) {
         self.setup = setup
         self.drawableSizeWillChange = drawableSizeWillChange
@@ -50,6 +53,7 @@ public struct MetalView: View {
             }
             else {
                 ViewAdaptor<MTKView> {
+                    logger?.debug("ViewAdaptor.Make")
                     let view = MTKView()
                     model.view = view
                     view.device = device
@@ -101,6 +105,7 @@ internal class MetalViewModel: NSObject, MTKViewDelegate {
     }
 
     func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
+        logger?.debug("MetalViewModel.\(#function)")
         guard let device = view.device else {
             fatalError("No device in `\(#function)`.")
         }
@@ -135,6 +140,7 @@ internal class MetalViewModel: NSObject, MTKViewDelegate {
     }
 
     func set(error: Error) {
+        logger?.debug("MetalViewModel.\(#function)")
         self.error = (self.error.0 + 1, error)
     }
 }

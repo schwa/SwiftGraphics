@@ -26,8 +26,8 @@ public struct RenderView: View {
     @State
     private var commandQueue: MTLCommandQueue?
 
-    @State
-    private var logger = Logger(subsystem: "RenderView", category: "RenderView")
+    @Environment(\.logger)
+    private var logger
 
     @Environment(\.renderErrorHandler)
     var renderErrorHandler
@@ -44,7 +44,7 @@ public struct RenderView: View {
             do {
                 configure(&configuration)
                 commandQueue = device.makeCommandQueue().forceUnwrap("Could not create command queue.")
-                renderer = Renderer<MetalViewConfiguration>(device: device, passes: passes)
+                renderer = Renderer<MetalViewConfiguration>(device: device, passes: passes, logger: logger)
                 try renderer?.configure(&configuration)
             } catch {
                 renderErrorHandler.send(error, logger: logger)
