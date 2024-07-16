@@ -41,6 +41,7 @@ public struct OffscreenRenderPassConfiguration: MetalConfigurationProtocol {
     public var depthStencilPixelFormat: MTLPixelFormat = .invalid // TODO: NOT USED
     public var depthStencilStorageMode: MTLStorageMode = .shared // TODO: NOT USED
     public var clearDepth: Double = 1.0
+    public var framebufferOnly: Bool = true
 
     public init() {
     }

@@ -166,7 +166,9 @@ struct TextureView: View {
                     LabeledContent("Pixel Format", value: "\(texture.pixelFormat)")
                     LabeledContent("Compression Type", value: "\(texture.compressionType)")
                     LabeledContent("Framebuffer Only?", value: texture.isFramebufferOnly, format: .bool)
+                    #if os(macOS) // TODO: Fix on iOS
                     LabeledContent("Is Sparse?", value: texture.isSparse ?? false, format: .bool)
+                    #endif
                     LabeledContent("Has Parent?", value: texture.parent != nil, format: .bool)
                     LabeledContent("Has Buffer?", value: texture.buffer != nil, format: .bool)
                     if let size {

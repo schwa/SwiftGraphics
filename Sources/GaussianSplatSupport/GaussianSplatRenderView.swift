@@ -18,10 +18,13 @@ public struct GaussianSplatRenderView: View {
     private let sortRate: Int
 
     @State
-    private var size: CGSize = .zero
+    private var colorTexture: MTLTexture? // TODO: RENAME
 
     @State
-    private var colorTexture: MTLTexture?
+    private var upscaledTexture: MTLTexture? // TODO: RENAME
+
+    @State
+    private var drawableSize: SIMD2<Float> = .zero
 
     public init(scene: SceneGraph, debugMode: Bool, sortRate: Int) {
         self.scene = scene
@@ -30,9 +33,10 @@ public struct GaussianSplatRenderView: View {
     }
 
     public var body: some View {
-        RenderView(passes: passes) { configuration in
+        RenderView(passes: pass.map({[$0]}) ?? []) { configuration in
             configuration.colorPixelFormat = .bgra8Unorm_srgb
             configuration.depthStencilPixelFormat = .invalid
+            configuration.framebufferOnly = false
             #if os(iOS)
             // TODO: FIXME
             print("### WARNING: isIdleTimerDisabled = true")
@@ -42,17 +46,26 @@ public struct GaussianSplatRenderView: View {
         }
         sizeWillChange: { device, configuration, size in
             do {
-                let colorTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: configuration.colorPixelFormat, width: Int(ceil(size.width / 2)), height: Int(ceil(size.height / 2)), mipmapped: false)
+                drawableSize = SIMD2<Float>(size)
+
+                let colorTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: configuration.colorPixelFormat, width: Int(ceil(size.width / 4)), height: Int(ceil(size.height / 4)), mipmapped: false)
                 colorTextureDescriptor.storageMode = .private
+                colorTextureDescriptor.usage = [.renderTarget, .shaderRead]
                 let colorTexture = try device.makeTexture(descriptor: colorTextureDescriptor).safelyUnwrap(BaseError.resourceCreationFailure)
                 colorTexture.label = "reduce-resolution-color"
                 self.colorTexture = colorTexture
+
+                let upscaledTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: configuration.colorPixelFormat, width: Int(ceil(size.width)), height: Int(ceil(size.height)), mipmapped: false)
+                upscaledTextureDescriptor.storageMode = .private
+                upscaledTextureDescriptor.usage = .renderTarget
+                let upscaledTexture = try device.makeTexture(descriptor: upscaledTextureDescriptor).safelyUnwrap(BaseError.resourceCreationFailure)
+                upscaledTexture.label = "reduce-resolution-upscaled"
+                self.upscaledTexture = upscaledTexture
             }
             catch {
                 fatalError("Failed to create texture.")
             }
         }
-        .onGeometryChange(for: CGSize.self, of: \.size) { size = $0 }
         //            .toolbar {
         //                // TODO: this should not be here.
         //                Button("Screenshot") {
@@ -61,8 +74,45 @@ public struct GaussianSplatRenderView: View {
         //            }
     }
 
-    var passes: [any PassProtocol] {
-        [GaussianSplatCompositePass(id: "GaussianSplatCompositePass", scene: scene, sortRate: sortRate)]
+    var pass: (GroupPass)? {
+        guard let colorTexture, let upscaledTexture else {
+            print("No texture(s)")
+            return nil
+        }
+        guard let splatsNode = scene.node(for: "splats"), let splats = splatsNode.content as? SplatCloud else {
+            print("No splats")
+            return nil
+        }
+        guard let cameraNode = scene.node(for: "camera") else {
+            print("No camera")
+            return nil
+        }
+
+        let offscreenRenderPassDescriptor = MTLRenderPassDescriptor()
+        offscreenRenderPassDescriptor.colorAttachments[0].clearColor = MTLClearColor(red: 0, green: 0, blue: 0, alpha: 1)
+        offscreenRenderPassDescriptor.colorAttachments[0].texture = colorTexture
+        offscreenRenderPassDescriptor.colorAttachments[0].loadAction = .clear
+        offscreenRenderPassDescriptor.colorAttachments[0].storeAction = .store
+
+        return GroupPass(id: "TODO-1") {
+            GroupPass(id: "GaussianSplatRenderGroup", renderPassDescriptor: offscreenRenderPassDescriptor) {
+                GaussianSplatPreCalcComputePass(
+                    splats: splats,
+                    modelMatrix: simd_float3x3(truncating: splatsNode.transform.matrix),
+                    cameraPosition: cameraNode.transform.translation
+                )
+                GaussianSplatBitonicSortComputePass(
+                    splats: splats,
+                    sortRate: sortRate
+                )
+                GaussianSplatRenderPass(
+                    scene: scene,
+                    debugMode: false
+                )
+            }
+            SpatialUpscalingPass(id: "TODO-2", source: colorTexture, destination: upscaledTexture, colorProcessingMode: .perceptual)
+            BlitTexturePass(id: "TODO-3", source: upscaledTexture, destination: nil)
+        }
     }
 
     func screenshot() {
@@ -101,7 +151,7 @@ public struct GaussianSplatRenderView: View {
             renderPassDescriptor.depthAttachment.storeAction = .store
             renderPassDescriptor.depthAttachment.clearDepth = 1
 
-            var passes = passes
+//            var passes: [any PassProtocol] = [pass]
 
             let upscaledPrivateTextureDescriptor = MTLTextureDescriptor()
             upscaledPrivateTextureDescriptor.pixelFormat = pixelFormat
@@ -110,23 +160,23 @@ public struct GaussianSplatRenderView: View {
             upscaledPrivateTextureDescriptor.storageMode = .private
             upscaledPrivateTextureDescriptor.usage = [.renderTarget, .shaderRead, .shaderWrite]
             let upscaledPrivateTexture = try device.makeTexture(descriptor: upscaledPrivateTextureDescriptor).safelyUnwrap(BaseError.resourceCreationFailure)
-            let spatialUpscalingPass = SpatialUpscalingPass(id: "SpatialUpscalingPass", inputTexture: targetTexture, outputTexture: upscaledPrivateTexture, colorProcessingMode: .perceptual)
+//            let spatialUpscalingPass = SpatialUpscalingPass(id: "SpatialUpscalingPass", inputTexture: targetTexture, outputTexture: upscaledPrivateTexture, colorProcessingMode: .perceptual)
+//
+//            let upscaledSharedTextureDescriptor = upscaledPrivateTextureDescriptor
+//            upscaledSharedTextureDescriptor.storageMode = .shared
+//            let upscaledSharedTexture = try device.makeTexture(descriptor: upscaledSharedTextureDescriptor).safelyUnwrap(BaseError.resourceCreationFailure)
+//
+//            let blitPass = BlitTexturePass(id: "BlitTexturePass", source: upscaledPrivateTexture, destination: upscaledSharedTexture)
 
-            let upscaledSharedTextureDescriptor = upscaledPrivateTextureDescriptor
-            upscaledSharedTextureDescriptor.storageMode = .shared
-            let upscaledSharedTexture = try device.makeTexture(descriptor: upscaledSharedTextureDescriptor).safelyUnwrap(BaseError.resourceCreationFailure)
+//            passes += [spatialUpscalingPass, blitPass]
 
-            let blitPass = BlitTexturePass(id: "BlitTexturePass", source: upscaledPrivateTexture, destination: upscaledSharedTexture)
-
-            passes += [spatialUpscalingPass, blitPass]
-
-            var offscreenRenderer = try OffscreenRenderer(device: device, size: SIMD2<Float>(Float(width), Float(height)), offscreenConfiguration: offscreenConfiguration, renderPassDescriptor: renderPassDescriptor, passes: passes)
-            try offscreenRenderer.configure()
-            try offscreenRenderer.render(capture: false)
-
-            try targetTexture.cgImage().write(to: URL(filePath: "/tmp/test.png"))
-            try upscaledSharedTexture.cgImage().write(to: URL(filePath: "/tmp/test-upscaled.png"))
-            URL(filePath: "/tmp/test.png").reveal()
+//            var offscreenRenderer = try OffscreenRenderer(device: device, size: SIMD2<Float>(Float(width), Float(height)), offscreenConfiguration: offscreenConfiguration, renderPassDescriptor: renderPassDescriptor, passes: passes)
+//            try offscreenRenderer.configure()
+//            try offscreenRenderer.render(capture: false)
+//
+//            try targetTexture.cgImage().write(to: URL(filePath: "/tmp/test.png"))
+//            try upscaledSharedTexture.cgImage().write(to: URL(filePath: "/tmp/test-upscaled.png"))
+//            URL(filePath: "/tmp/test.png").reveal()
         }
         catch {
             fatalError("\(error)")

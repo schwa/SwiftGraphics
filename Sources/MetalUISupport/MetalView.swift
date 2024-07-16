@@ -15,6 +15,7 @@ public struct MetalViewConfiguration: Sendable {
     public var clearDepth: Double
     public var preferredFramesPerSecond: Int
     public var enableSetNeedsDisplay: Bool
+    public var framebufferOnly: Bool
 }
 
 public struct MetalView: View {
@@ -148,7 +149,8 @@ extension MTKView {
                 depthStencilStorageMode: depthStencilStorageMode,
                 clearDepth: clearDepth,
                 preferredFramesPerSecond: preferredFramesPerSecond,
-                enableSetNeedsDisplay: enableSetNeedsDisplay
+                enableSetNeedsDisplay: enableSetNeedsDisplay,
+                framebufferOnly: framebufferOnly
             )
         }
         set {
@@ -172,6 +174,9 @@ extension MTKView {
             }
             if newValue.enableSetNeedsDisplay != enableSetNeedsDisplay {
                 enableSetNeedsDisplay = newValue.enableSetNeedsDisplay
+            }
+            if newValue.framebufferOnly != framebufferOnly {
+                framebufferOnly = newValue.framebufferOnly
             }
         }
     }
