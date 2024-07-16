@@ -96,7 +96,6 @@ public extension GroupPass {
     }
 }
 
-
 @MainActor
 @resultBuilder
 public enum RenderPassBuilder {
@@ -104,24 +103,23 @@ public enum RenderPassBuilder {
         components
     }
 
-
-//    public static func buildExpression<Content>(_ content: Content) -> Content where Content: ViewModifier {
-//        content
-//    }
-//
-//    public static func buildBlock() -> EmptyViewModifier {
-//        EmptyViewModifier()
-//    }
-//
-//    public static func buildBlock<Content>(_ content: Content) -> Content where Content: ViewModifier {
-//        content
-//    }
-//
-//    public static func buildEither<TrueContent, FalseContent>(first: TrueContent) -> ConditionalViewModifier<TrueContent, FalseContent> where TrueContent: ViewModifier, FalseContent: ViewModifier {
-//        .init(trueModifier: first)
-//    }
-//
-//    public static func buildEither<TrueContent, FalseContent>(second: FalseContent) -> ConditionalViewModifier<TrueContent, FalseContent> where TrueContent: ViewModifier, FalseContent: ViewModifier {
-//        .init(falseModifier: second)
-//    }
+    //    public static func buildExpression<Content>(_ content: Content) -> Content where Content: ViewModifier {
+    //        content
+    //    }
+    //
+    //    public static func buildBlock() -> EmptyViewModifier {
+    //        EmptyViewModifier()
+    //    }
+    //
+    //    public static func buildBlock<Content>(_ content: Content) -> Content where Content: ViewModifier {
+    //        content
+    //    }
+    //
+    //    public static func buildEither<TrueContent, FalseContent>(first: TrueContent) -> ConditionalViewModifier<TrueContent, FalseContent> where TrueContent: ViewModifier, FalseContent: ViewModifier {
+    //        .init(trueModifier: first)
+    //    }
+    //
+    //    public static func buildEither<TrueContent, FalseContent>(second: FalseContent) -> ConditionalViewModifier<TrueContent, FalseContent> where TrueContent: ViewModifier, FalseContent: ViewModifier {
+    //        .init(falseModifier: second)
+    //    }
 }

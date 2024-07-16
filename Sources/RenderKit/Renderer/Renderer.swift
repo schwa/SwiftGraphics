@@ -103,24 +103,24 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
         for pass in passes {
             switch pass {
             case let pass as any RenderPassProtocol:
-//                let isFirst = pass.id == renderPasses.first?.id
-//                let isLast = pass.id == renderPasses.last?.id
-//                if isFirst {
-//                    currentRenderPassDescriptor.colorAttachments[0].loadAction = .clear
-//                    currentRenderPassDescriptor.depthAttachment.loadAction = .clear
-//                }
-//                else {
-//                    currentRenderPassDescriptor.colorAttachments[0].loadAction = .load
-//                    currentRenderPassDescriptor.depthAttachment.loadAction = .load
-//                }
-//                if isLast {
-//                    currentRenderPassDescriptor.colorAttachments[0].storeAction = .store
-//                    currentRenderPassDescriptor.depthAttachment.storeAction = .dontCare
-//                }
-//                else {
-//                    currentRenderPassDescriptor.colorAttachments[0].storeAction = .store
-//                    currentRenderPassDescriptor.depthAttachment.storeAction = .store
-//                }
+                //                let isFirst = pass.id == renderPasses.first?.id
+                //                let isLast = pass.id == renderPasses.last?.id
+                //                if isFirst {
+                //                    currentRenderPassDescriptor.colorAttachments[0].loadAction = .clear
+                //                    currentRenderPassDescriptor.depthAttachment.loadAction = .clear
+                //                }
+                //                else {
+                //                    currentRenderPassDescriptor.colorAttachments[0].loadAction = .load
+                //                    currentRenderPassDescriptor.depthAttachment.loadAction = .load
+                //                }
+                //                if isLast {
+                //                    currentRenderPassDescriptor.colorAttachments[0].storeAction = .store
+                //                    currentRenderPassDescriptor.depthAttachment.storeAction = .dontCare
+                //                }
+                //                else {
+                //                    currentRenderPassDescriptor.colorAttachments[0].storeAction = .store
+                //                    currentRenderPassDescriptor.depthAttachment.storeAction = .store
+                //                }
                 guard let state = statesByPasses[pass.id] else {
                     fatalError("Could not get state for pass")
                 }
