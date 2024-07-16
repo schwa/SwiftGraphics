@@ -1,6 +1,8 @@
 import BaseSupport
 @preconcurrency import Metal
+#if canImport(MetalFX)
 @preconcurrency import MetalFX
+#endif
 
 public struct SpatialUpscalingPass: GeneralPassProtocol {
     public struct State: PassState {
@@ -8,9 +10,9 @@ public struct SpatialUpscalingPass: GeneralPassProtocol {
     }
 
     public var id: PassID
-    public var spatialScalerDescriptor: MTLFXSpatialScalerDescriptor
     public var source: Box<MTLTexture>?
     public var destination: Box<MTLTexture>?
+    public var spatialScalerDescriptor: MTLFXSpatialScalerDescriptor
     public var colorProcessingMode: MTLFXSpatialScalerColorProcessingMode
 
     public init(id: PassID, inputSize: MTLSize, inputPixelFormat: MTLPixelFormat, outputSize: MTLSize, outputPixelFormat: MTLPixelFormat, colorProcessingMode: MTLFXSpatialScalerColorProcessingMode) {

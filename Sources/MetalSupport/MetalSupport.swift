@@ -237,6 +237,7 @@ public extension MTLDevice {
             return try makeLibrary(URL: url)
         }
         else {
+            // TODO: Logger()
             Logger().warning("Failed to load debug metal library, falling back to bundle's default library.")
             return try makeDefaultLibrary(bundle: bundle)
         }

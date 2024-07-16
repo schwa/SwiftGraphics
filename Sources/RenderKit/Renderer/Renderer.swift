@@ -24,29 +24,36 @@ extension MetalViewConfiguration: MetalConfigurationProtocol {
 }
 
 struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalConfigurationProtocol {
-    private var device: MTLDevice
-    private var passes: PassCollection
-    private var statesByPasses: [PassID: any PassState] = [:]
-    private var configuration: MetalConfiguration?
-    private var drawableSize: SIMD2<Float> = .zero
-    private var logger: Logger? = Logger(subsystem: "com.swiftui.metal", category: "Renderer")
-
-    private var info: PassInfo?
-
     enum Phase: Equatable {
         case initialized
         case configured(sizeKnown: Bool)
         case rendering
     }
-    var phase: Phase
 
-    init(device: MTLDevice, passes: PassCollection) {
+    private var device: MTLDevice
+    private var passes: PassCollection
+    private var statesByPasses: [PassID: any PassState] = [:]
+    private var configuration: MetalConfiguration?
+    private var drawableSize: SIMD2<Float> = .zero
+    private var logger: Logger?
+    private var info: PassInfo?
+    private var phase: Phase {
+        didSet {
+            let oldValue = oldValue
+            let phase = phase
+            logger?.debug("Phase change \(oldValue) -> \(phase).")
+        }
+    }
+
+    init(device: MTLDevice, passes: PassCollection, logger: Logger? = nil) {
+        logger?.debug("Renderer.\(#function)")
         self.device = device
         self.passes = passes
         self.phase = .initialized
     }
 
     mutating func configure(_ configuration: inout MetalConfiguration) throws {
+        logger?.debug("Renderer.\(#function)")
         assert(phase == .initialized)
         self.phase = .configured(sizeKnown: false)
         configuration.colorPixelFormat = .bgra8Unorm_srgb
@@ -56,6 +63,7 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
     }
 
     mutating func sizeWillChange(_ size: SIMD2<Float>) throws {
+        logger?.debug("Renderer.\(#function): \(size)")
         assert(phase != .initialized)
         phase = .configured(sizeKnown: true)
         drawableSize = size
@@ -69,7 +77,10 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
     }
 
     mutating func render(commandBuffer: MTLCommandBuffer, currentRenderPassDescriptor: MTLRenderPassDescriptor, drawableSize: SIMD2<Float>) throws {
-        assert(phase == .configured(sizeKnown: true) || phase == .rendering)
+        guard phase == .configured(sizeKnown: true) || phase == .rendering else {
+            logger?.debug("Renderer not configured, skipping render.")
+            return
+        }
         if phase != .rendering {
             phase = .rendering
         }
@@ -241,6 +252,19 @@ extension CollectionDifference.Change {
             return element
         case .remove(_, let element, _):
             return element
+        }
+    }
+}
+
+extension Renderer.Phase: CustomStringConvertible {
+    public var description: String {
+        switch self {
+        case .initialized:
+            return "initialized"
+        case .configured(sizeKnown: let sizeKnown):
+            return "configured(sizeKnown: \(sizeKnown))"
+        case .rendering:
+            return "rendering"
         }
     }
 }

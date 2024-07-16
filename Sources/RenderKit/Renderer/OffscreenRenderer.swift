@@ -15,7 +15,7 @@ public struct OffscreenRenderer {
         self.size = size
         self.offscreenConfiguration = offscreenConfiguration
         self.renderPassDescriptor = renderPassDescriptor
-        self.renderer = .init(device: device, passes: .init(passes))
+        self.renderer = .init(device: device, passes: .init(passes), logger: nil)
     }
 
     public mutating func configure() throws {
