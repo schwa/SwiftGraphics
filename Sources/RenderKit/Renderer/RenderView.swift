@@ -83,3 +83,10 @@ public struct RenderView: View {
 //    }
 // }
 //
+
+extension RenderView {
+    public init(pass: (any PassProtocol)?, configure: @escaping Configure = { _ in }, sizeWillChange: @escaping SizeWillChange = { _, _, _ in }) {
+        self.init(passes: pass.map { [$0] } ?? [], configure: configure, sizeWillChange: sizeWillChange)
+    }
+
+}

@@ -54,7 +54,7 @@ public struct GaussianSplatView: View {
     private var more = false
 
     public var body: some View {
-        GaussianSplatRenderView(scene: scene, debugMode: debugMode, sortRate: sortRate)
+        GaussianSplatRenderView(scene: scene, debugMode: debugMode, sortRate: sortRate, metalFXRate: 1)
             .toolbar {
                 Button("More") {
                     more = true
@@ -68,7 +68,7 @@ public struct GaussianSplatView: View {
                 if let item = items.first {
                     item.loadItem(forTypeIdentifier: UTType.splat.identifier, options: nil) { data, _ in
                         guard let url = data as? URL else {
-                            print("No url")
+                            fatalError("No url")
                             return
                         }
                         Task {

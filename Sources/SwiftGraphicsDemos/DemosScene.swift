@@ -12,6 +12,10 @@ public struct DemosScene: Scene {
         Window("Demos", id: "demos") {
             DemosView()
         }
+        .commands {
+            SidebarCommands()
+            ToolbarCommands()
+        }
         #else
         WindowGroup("Demos", id: "demos") {
             DemosView()

@@ -26,10 +26,14 @@ public struct GaussianSplatMinimalView: View {
     private var cameraRotation = RollPitchYaw()
 
     @State
-    private var ballConstraint = BallConstraint()
+    private var ballConstraint = BallConstraint(radius: 0.4)
 
     @State
     private var isTargeted = false
+
+    @State
+    private var metalFXRate: Float = 1
+
 
     public init() {
         let device = MTLCreateSystemDefaultDevice()!
@@ -47,7 +51,7 @@ public struct GaussianSplatMinimalView: View {
     }
 
     public var body: some View {
-        GaussianSplatRenderView(scene: scene, debugMode: false, sortRate: 30)
+        GaussianSplatRenderView(scene: scene, debugMode: false, sortRate: 30, metalFXRate: metalFXRate)
             .onChange(of: cameraRotation, initial: true) {
                 ballConstraint.rollPitchYaw = cameraRotation
             }
@@ -62,7 +66,7 @@ public struct GaussianSplatMinimalView: View {
                 if let item = items.first {
                     item.loadItem(forTypeIdentifier: UTType.splat.identifier, options: nil) { data, _ in
                         guard let url = data as? URL else {
-                            print("No url")
+                            fatalError("No url")
                             return
                         }
                         Task {
@@ -77,5 +81,20 @@ public struct GaussianSplatMinimalView: View {
                 }
             }
             .border(isTargeted ? Color.accentColor : .clear, width: isTargeted ? 4 : 0)
+            .toolbar {
+                    Button("1") {
+                        metalFXRate = 1
+                    }
+                    Button("2") {
+                        metalFXRate = 2
+                    }
+                    Button("4") {
+                        metalFXRate = 4
+                    }
+                    Button("8") {
+                        metalFXRate = 8
+                    }
+
+            }
     }
 }

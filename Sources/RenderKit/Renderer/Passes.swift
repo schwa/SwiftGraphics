@@ -77,49 +77,58 @@ public struct GroupPass: GroupPassProtocol {
     internal var _children: PassCollection
     public var renderPassDescriptor: MTLRenderPassDescriptor?
 
-    public init(id: PassID, renderPassDescriptor: MTLRenderPassDescriptor? = nil, children: [any PassProtocol]) {
-        self.id = id
-        self.renderPassDescriptor = renderPassDescriptor
-        self._children = PassCollection(children)
-    }
+//    public init(id: PassID, renderPassDescriptor: MTLRenderPassDescriptor? = nil, children: [any PassProtocol]) {
+//        self.id = id
+//        self.renderPassDescriptor = renderPassDescriptor
+//        self._children = PassCollection(children)
+//    }
 
     public func children() throws -> [any PassProtocol] {
         _children.elements
     }
 }
 
+//public struct EmptyPass: GeneralPassProtocol {
+//    public struct State {
+//    }
+//
+//    public let id = PassID(rawValue: "\(UUID())")
+//}
+
 public extension GroupPass {
-    init(id: PassID, renderPassDescriptor: MTLRenderPassDescriptor? = nil, @RenderPassBuilder children: () -> [any PassProtocol]) {
+    init(id: PassID, renderPassDescriptor: MTLRenderPassDescriptor? = nil, @RenderPassBuilder content: () -> [any PassProtocol]) {
         self.id = id
         self.renderPassDescriptor = renderPassDescriptor
-        self._children = PassCollection(children())
+        self._children = PassCollection(content())
     }
 }
 
 @MainActor
 @resultBuilder
 public enum RenderPassBuilder {
-    public static func buildBlock(_ components: any PassProtocol...) -> [any PassProtocol] {
-        components
+
+    public static func buildBlock(_ passes: [any PassProtocol]...) -> [any PassProtocol] {
+        Array(passes.joined())
     }
 
-    //    public static func buildExpression<Content>(_ content: Content) -> Content where Content: ViewModifier {
-    //        content
-    //    }
-    //
-    //    public static func buildBlock() -> EmptyViewModifier {
-    //        EmptyViewModifier()
-    //    }
-    //
-    //    public static func buildBlock<Content>(_ content: Content) -> Content where Content: ViewModifier {
-    //        content
-    //    }
-    //
-    //    public static func buildEither<TrueContent, FalseContent>(first: TrueContent) -> ConditionalViewModifier<TrueContent, FalseContent> where TrueContent: ViewModifier, FalseContent: ViewModifier {
-    //        .init(trueModifier: first)
-    //    }
-    //
-    //    public static func buildEither<TrueContent, FalseContent>(second: FalseContent) -> ConditionalViewModifier<TrueContent, FalseContent> where TrueContent: ViewModifier, FalseContent: ViewModifier {
-    //        .init(falseModifier: second)
-    //    }
+    public static func buildExpression(_ pass: any PassProtocol) -> [any PassProtocol] {
+        [pass]
+    }
+
+    public static func buildExpression(_ passes: [any PassProtocol]) -> [any PassProtocol] {
+        passes
+    }
+
+
+    public static func buildOptional(_ passes: [any PassProtocol]?) -> [any PassProtocol] {
+        passes ?? []
+    }
+
+    public static func buildEither(first passes: [any PassProtocol]) -> [any PassProtocol] {
+        passes
+    }
+
+    public static func buildEither(second passes: [any PassProtocol]) -> [any PassProtocol] {
+        passes
+    }
 }

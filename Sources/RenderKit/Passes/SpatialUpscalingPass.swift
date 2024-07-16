@@ -15,6 +15,8 @@ public struct SpatialUpscalingPass: GeneralPassProtocol {
 
     public init(id: PassID, inputSize: MTLSize, inputPixelFormat: MTLPixelFormat, outputSize: MTLSize, outputPixelFormat: MTLPixelFormat, colorProcessingMode: MTLFXSpatialScalerColorProcessingMode) {
         self.id = id
+
+        // TODO: This really needs to go into setup or size will change. Or just base it on textures.
         spatialScalerDescriptor = MTLFXSpatialScalerDescriptor()
         spatialScalerDescriptor.inputWidth = inputSize.width
         spatialScalerDescriptor.inputHeight = inputSize.height
@@ -33,28 +35,29 @@ public struct SpatialUpscalingPass: GeneralPassProtocol {
 
     public func encode(commandBuffer: MTLCommandBuffer, info: PassInfo, state: State) throws {
         guard let source = source?() else {
-            fatalError()
+            fatalError("No source")
         }
         guard let destination = destination?() ?? info.currentRenderPassDescriptor?.colorAttachments[0].texture else {
             fatalError("No destination")
         }
         print(spatialScalerDescriptor.inputWidth, spatialScalerDescriptor.inputHeight)
         print(spatialScalerDescriptor.outputWidth, spatialScalerDescriptor.outputHeight)
+        print(info.currentRenderPassDescriptor?.colorAttachments[0].texture?.size)
+
         assert(source !== destination)
-        print(destination.storageMode.rawValue)
         state.spatialScaler.colorTexture = source
         state.spatialScaler.outputTexture = destination
         state.spatialScaler.encode(commandBuffer: commandBuffer)
     }
 }
 
-extension SpatialUpscalingPass {
-    public init(id: PassID, source: MTLTexture, outputSize: MTLSize, outputPixelFormat: MTLPixelFormat, colorProcessingMode: MTLFXSpatialScalerColorProcessingMode) {
+public extension SpatialUpscalingPass {
+    init(id: PassID, source: MTLTexture, outputSize: MTLSize, outputPixelFormat: MTLPixelFormat, colorProcessingMode: MTLFXSpatialScalerColorProcessingMode) {
         self.init(id: id, inputSize: source.size, inputPixelFormat: source.pixelFormat, outputSize: outputSize, outputPixelFormat: outputPixelFormat, colorProcessingMode: colorProcessingMode)
         self.source = .init(source)
     }
 
-    public init(id: PassID, source: MTLTexture, destination: MTLTexture, colorProcessingMode: MTLFXSpatialScalerColorProcessingMode) {
+    init(id: PassID, source: MTLTexture, destination: MTLTexture, colorProcessingMode: MTLFXSpatialScalerColorProcessingMode) {
         self.init(id: id, inputSize: source.size, inputPixelFormat: source.pixelFormat, outputSize: destination.size, outputPixelFormat: destination.pixelFormat, colorProcessingMode: colorProcessingMode)
         self.source = .init(source)
         self.destination = .init(destination)
