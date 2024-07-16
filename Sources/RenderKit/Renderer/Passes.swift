@@ -96,10 +96,10 @@ public struct GroupPass: GroupPassProtocol {
 // }
 
 public extension GroupPass {
-    init(id: PassID, renderPassDescriptor: MTLRenderPassDescriptor? = nil, @RenderPassBuilder content: () -> [any PassProtocol]) {
+    init(id: PassID, renderPassDescriptor: MTLRenderPassDescriptor? = nil, @RenderPassBuilder content: () throws -> [any PassProtocol]) rethrows {
         self.id = id
         self.renderPassDescriptor = renderPassDescriptor
-        self._children = PassCollection(content())
+        self._children = try PassCollection(content())
     }
 }
 

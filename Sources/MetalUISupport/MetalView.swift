@@ -1,10 +1,10 @@
 import BaseSupport
 import Everything
-import os
 import Metal
 import MetalKit
 import MetalSupport
 import Observation
+import os
 import SwiftUI
 
 #if !os(visionOS)
@@ -68,7 +68,7 @@ public struct MetalView: View {
                     model.view = view
                     return view
                 } update: { _ in
-//                    logger?.debug("ViewAdaptor.Update")
+                    //                    logger?.debug("ViewAdaptor.Update")
                 }
             }
         }
@@ -109,6 +109,10 @@ internal class MetalViewModel: NSObject, MTKViewDelegate {
         }
         do {
             var configuration = view.configuration
+            guard size
+                    != .zero else {
+                fatalError("Zero size metal view.")
+            }
             try drawableSizeWillChangeCallback(device, &configuration, size)
             view.configuration = configuration
             if view.enableSetNeedsDisplay {
@@ -123,7 +127,7 @@ internal class MetalViewModel: NSObject, MTKViewDelegate {
     }
 
     func draw(in view: MTKView) {
-        //logger?.debug("MetalViewModel.\(#function)")
+        // logger?.debug("MetalViewModel.\(#function)")
         guard let device = view.device, let currentDrawable = view.currentDrawable, let currentRenderPassDescriptor = view.currentRenderPassDescriptor, let drawCallback else {
             fatalError("No device, drawable, or draw in `\(#function)`.")
         }
@@ -145,7 +149,9 @@ internal class MetalViewModel: NSObject, MTKViewDelegate {
         do {
             var configuration = view.configuration
             try setupCallback(device, &configuration)
-            try drawableSizeWillChangeCallback?(device, &configuration, view.drawableSize)
+            if view.drawableSize != .zero {
+                try drawableSizeWillChangeCallback?(device, &configuration, view.drawableSize)
+            }
             view.configuration = configuration
         }
         catch {
