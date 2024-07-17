@@ -60,12 +60,6 @@ extension MyGradient {
     }
 }
 
-// func clamp<T: Comparable>(_ value: T, _ lower: T, _ upper: T) -> T {
-//    let max_ = max(value, lower)
-//    let min_ = min(max_, upper)
-//    return min_
-// }
-
 func inverseLerp(value: Float, startValue: Float, endValue: Float) -> Float {
     let result: Float
     //    if value <= startValue {

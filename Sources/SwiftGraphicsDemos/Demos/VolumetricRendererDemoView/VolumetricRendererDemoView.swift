@@ -1,4 +1,5 @@
 #if !os(visionOS)
+import BaseSupport
 import CoreGraphicsSupport
 import Metal
 import MetalKit
@@ -159,9 +160,9 @@ struct TransferFunctionSingleChannelEditor: View {
         DragGesture(coordinateSpace: coordinateSpace)
             .onChanged { value in
                 let count = values.count
-                let startColumn = clamp(Int((lastLocation ?? value.location).x * Double(count - 1) / size.width), in: 0 ... (count - 1))
-                let endColumn = clamp(Int(value.location.x * Double(values.count - 1) / size.width), in: 0 ... (values.count - 1))
-                let v = clamp(1 - Float(value.location.y / size.height), in: 0 ... 1)
+                let startColumn = clamp(Int((lastLocation ?? value.location).x * Double(count - 1) / size.width), to: 0 ... (count - 1))
+                let endColumn = clamp(Int(value.location.x * Double(values.count - 1) / size.width), to: 0 ... (values.count - 1))
+                let v = clamp(1 - Float(value.location.y / size.height), to: 0 ... 1)
                 for column in stride(from: startColumn, through: endColumn, by: endColumn >= startColumn ? 1 : -1) {
                     values[column] = v
                 }

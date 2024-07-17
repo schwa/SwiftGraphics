@@ -1,3 +1,4 @@
+import BaseSupport
 import CoreGraphicsSupport
 import SwiftUI
 import SwiftUISupport
@@ -148,7 +149,7 @@ public struct DefaultWheelStyle: WheelStyle {
                     let path = Path { path in
                         let center = CGPoint(x: frame.midX, y: frame.midX)
                         for x in stride(from: -frame.width, to: frame.width, by: tickSpacing) {
-                            let point = wrap(offset + CGPoint(x: x, y: 0) + center, within: frame)
+                            let point = wrap(offset + CGPoint(x: x, y: 0) + center, to: frame)
                             path.move(to: point + CGPoint(x: 0, y: -frame.width / 2))
                             path.addLine(to: point + CGPoint(x: 0, y: frame.width / 2))
                         }
