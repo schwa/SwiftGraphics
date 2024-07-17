@@ -30,7 +30,7 @@ public struct SceneGraphMapView: View {
     public var body: some View {
         ZStack {
             if drawableSize.x != 0 && drawableSize.y != 0 {
-                let helper = SceneGraphRenderHelper(scene: scene, drawableSize: drawableSize)
+                let helper = SceneGraphRenderHelper(scene: scene, renderTargetSize: drawableSize)
                 ForEach(Array(helper.elements()), id: \.node.id) { element in
                     let position = CGPoint(element.node.transform.translation.xz)
                     let view = view(for: element.node)
@@ -102,7 +102,7 @@ public struct SceneGraphMapView: View {
 
     @ViewBuilder
     func canvas() -> some View {
-        let helper = SceneGraphRenderHelper(scene: scene, drawableSize: drawableSize)
+        let helper = SceneGraphRenderHelper(scene: scene, renderTargetSize: drawableSize)
         Canvas(opaque: true) { context, size in
             context.concatenate(CGAffineTransform.translation(CGPoint(size.width / 2, size.height / 2)))
 

@@ -54,7 +54,7 @@ struct VolumetricRenderPass: RenderPassProtocol {
                 commandEncoder.setRenderPipelineState(state.renderPipelineState)
                 commandEncoder.setDepthStencilState(state.depthStencilState)
 
-                let helper = SceneGraphRenderHelper(scene: scene, drawableSize: info.drawableSize)
+                let helper = try SceneGraphRenderHelper(scene: scene, targetColorAttachment: renderPassDescriptor.colorAttachments[0])
                 for element in helper.elements() {
                     guard let volumeRepresentation = element.node.content as? VolumeRepresentation else {
                         continue

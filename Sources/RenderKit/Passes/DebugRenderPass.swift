@@ -47,7 +47,7 @@ public struct DebugRenderPass: RenderPassProtocol {
     public func render(commandBuffer: MTLCommandBuffer, renderPassDescriptor: MTLRenderPassDescriptor, info: PassInfo, state: State) throws {
         try commandBuffer.withRenderCommandEncoder(descriptor: renderPassDescriptor, label: "\(type(of: self))") { commandEncoder in
             try commandEncoder.withDebugGroup("Start encoding for \(type(of: self))") {
-                let elements = SceneGraphRenderHelper(scene: scene, drawableSize: info.drawableSize).elements()
+                let elements = try SceneGraphRenderHelper(scene: scene, targetColorAttachment: renderPassDescriptor.colorAttachments[0]).elements()
                 commandEncoder.setDepthStencilState(state.depthStencilState)
                 commandEncoder.setCullMode(cullMode)
                 commandEncoder.setFrontFacing(frontFacing)
