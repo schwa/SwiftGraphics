@@ -61,9 +61,7 @@ public struct GaussianSplatMinimalView: View {
                 scene.currentCameraNode?.transform = ballConstraint.transform
             }
             .ballRotation($cameraRotation, pitchLimit: .degrees(-.infinity) ... .degrees(.infinity))
-            .gesture(MagnifyGesture().onChanged { value in
-                ballConstraint.radius = Float(5 * value.magnification)
-            })
+            .zoomGesture(zoom: $ballConstraint.radius, scale: 5)
             .onDrop(of: [.splat], isTargeted: $isTargeted) { items in
                 if let item = items.first {
                     item.loadItem(forTypeIdentifier: UTType.splat.identifier, options: nil) { data, _ in
@@ -87,5 +85,52 @@ public struct GaussianSplatMinimalView: View {
                 Slider(value: $metalFXRate, in: 1...16, step: 0.25)
                     .frame(width: 120)
             }
+    }
+}
+
+struct ZoomGestureViewModifier: ViewModifier {
+
+    @Binding
+    var zoom: Float
+
+    var scale: Float
+
+    var range: ClosedRange<Float>
+
+    @State
+    var initialZoom: Float?
+
+    init(zoom: Binding<Float>, scale: Float, range: ClosedRange<Float>) {
+        self._zoom = zoom
+        self.scale = scale
+        self.range = range
+    }
+
+    func body(content: Content) -> some View {
+        content
+        .gesture(magnifyGesture)
+    }
+
+    func magnifyGesture() -> some Gesture {
+        MagnifyGesture()
+        .onChanged { value in
+            if initialZoom == nil {
+                initialZoom = zoom
+            }
+            guard let initialZoom else {
+                fatalError("Cannot zoom without an initial zoom value.")
+            }
+            zoom = initialZoom + scale * Float(value.magnification)
+        }
+        .onEnded { _ in
+            initialZoom = nil
+        }
+    }
+
+}
+
+extension View {
+    func zoomGesture(zoom: Binding<Float>, scale: Float = 1, range: ClosedRange<Float> = -.infinity ... .infinity) -> some View {
+        modifier(ZoomGestureViewModifier(zoom: zoom, scale: scale, range: range))
     }
 }
