@@ -62,7 +62,7 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
         self.configuration = configuration
     }
 
-    mutating func sizeWillChange(_ size: SIMD2<Float>) throws {
+    mutating func drawableSizeWillChange(_ size: SIMD2<Float>) throws {
         logger?.debug("Renderer.\(#function): \(size)")
         assert(phase != .initialized)
         phase = .configured(sizeKnown: true)
@@ -71,7 +71,7 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
             guard var state = statesByPasses[renderPass.id] else {
                 fatalError("Could not get state for render pass.")
             }
-            try renderPass.sizeWillChange(device: device, size: size, untypedState: &state)
+            try renderPass.drawableSizeWillChange(device: device, size: size, untypedState: &state)
             statesByPasses[renderPass.id] = state
         }
     }

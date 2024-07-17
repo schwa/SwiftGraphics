@@ -7,6 +7,7 @@ public func wrap(_ value: Double, to range: ClosedRange<Double>) -> Double {
     return (normalized.truncatingRemainder(dividingBy: size) + size).truncatingRemainder(dividingBy: size) + range.lowerBound
 }
 
+// TODO: move to CoreGraphicsSupport
 public func wrap(_ point: CGPoint, to rect: CGRect) -> CGPoint {
     CGPoint(
         x: wrap(point.x, to: rect.minX ... rect.maxX),
@@ -38,10 +39,6 @@ public func sign(_ v: Double) -> Double {
 
 // MARK: -
 
-//public func clamp<T>(_ value: T, lower: T, upper: T) -> T where T: Comparable {
-//    max(min(value, upper), lower)
-//}
-
 public func clamp<T>(_ value: T, to range: ClosedRange<T>) -> T where T: Comparable {
     min(max(value, range.lowerBound), range.upperBound)
 }
@@ -52,6 +49,7 @@ public extension FloatingPoint {
     }
 }
 
+// TODO: move to SIMDSupport
 public extension SIMD4 where Scalar == Float {
     func clamped(to range: ClosedRange<Scalar>) -> Self {
         [x.clamped(to: range), y.clamped(to: range), z.clamped(to: range), w.clamped(to: range)]

@@ -67,39 +67,43 @@ public struct UnlitShadingPass: RenderPassProtocol {
         return State(renderPipelineState: renderPipelineState, depthStencilState: depthStencilState, bindings: bindings)
     }
 
-    public func encode(commandEncoder: any MTLRenderCommandEncoder, info: PassInfo, state: State) throws {
-        let helper = SceneGraphRenderHelper(scene: scene, drawableSize: info.drawableSize)
-        let elements = helper.elements()
-        commandEncoder.setDepthStencilState(state.depthStencilState)
-        commandEncoder.setRenderPipelineState(state.renderPipelineState)
-        let bindings = state.bindings
-        for element in elements {
-            guard let geometry = element.node.geometry, let material = geometry.materials.compactMap({ $0 as? UnlitMaterialX }).first else {
-                continue
-            }
-            commandEncoder.withDebugGroup("Node: \(element.node.id)") {
-                commandEncoder.withDebugGroup("VertexShader") {
-                    let cameraUniforms = CameraUniforms(projectionMatrix: helper.projectionMatrix)
-                    commandEncoder.setVertexBytes(of: cameraUniforms, index: bindings.vertexCameraIndex)
-
-                    let modelTransforms = ModelTransforms(modelViewMatrix: element.modelViewMatrix, modelNormalMatrix: element.modelNormalMatrix)
-                    commandEncoder.setVertexBytes(of: modelTransforms, index: bindings.vertexModelsIndex)
-                }
-
-                commandEncoder.withDebugGroup("FragmentShader") {
-                    let vertexBuffer = geometry.mesh.vertexBuffers[0]
-                    commandEncoder.setVertexBuffer(vertexBuffer.buffer, offset: vertexBuffer.offset, index: bindings.vertexBufferIndex)
-                    if let texture = material.baseColorTexture {
-                        commandEncoder.setFragmentBytes(of: UnlitMaterial(color: material.baseColorFactor, textureIndex: 0), index: bindings.fragmentMaterialsIndex)
-                        commandEncoder.setFragmentTextures([texture], range: 0..<(bindings.fragmentTexturesIndex + 1))
+    public func render(commandBuffer: MTLCommandBuffer, renderPassDescriptor: MTLRenderPassDescriptor, info: PassInfo, state: State) throws {
+        try commandBuffer.withRenderCommandEncoder(descriptor: renderPassDescriptor, label: "\(type(of: self))") { commandEncoder in
+            try commandEncoder.withDebugGroup("Start encoding for \(type(of: self))") {
+                let helper = SceneGraphRenderHelper(scene: scene, drawableSize: info.drawableSize)
+                let elements = helper.elements()
+                commandEncoder.setDepthStencilState(state.depthStencilState)
+                commandEncoder.setRenderPipelineState(state.renderPipelineState)
+                let bindings = state.bindings
+                for element in elements {
+                    guard let geometry = element.node.geometry, let material = geometry.materials.compactMap({ $0 as? UnlitMaterialX }).first else {
+                        continue
                     }
-                    else {
-                        commandEncoder.setFragmentBytes(of: UnlitMaterial(color: material.baseColorFactor, textureIndex: -1), index: bindings.fragmentMaterialsIndex)
+                    commandEncoder.withDebugGroup("Node: \(element.node.id)") {
+                        commandEncoder.withDebugGroup("VertexShader") {
+                            let cameraUniforms = CameraUniforms(projectionMatrix: helper.projectionMatrix)
+                            commandEncoder.setVertexBytes(of: cameraUniforms, index: bindings.vertexCameraIndex)
+
+                            let modelTransforms = ModelTransforms(modelViewMatrix: element.modelViewMatrix, modelNormalMatrix: element.modelNormalMatrix)
+                            commandEncoder.setVertexBytes(of: modelTransforms, index: bindings.vertexModelsIndex)
+                        }
+
+                        commandEncoder.withDebugGroup("FragmentShader") {
+                            let vertexBuffer = geometry.mesh.vertexBuffers[0]
+                            commandEncoder.setVertexBuffer(vertexBuffer.buffer, offset: vertexBuffer.offset, index: bindings.vertexBufferIndex)
+                            if let texture = material.baseColorTexture {
+                                commandEncoder.setFragmentBytes(of: UnlitMaterial(color: material.baseColorFactor, textureIndex: 0), index: bindings.fragmentMaterialsIndex)
+                                commandEncoder.setFragmentTextures([texture], range: 0..<(bindings.fragmentTexturesIndex + 1))
+                            }
+                            else {
+                                commandEncoder.setFragmentBytes(of: UnlitMaterial(color: material.baseColorFactor, textureIndex: -1), index: bindings.fragmentMaterialsIndex)
+                            }
+                        }
+
+                        assert(geometry.mesh.vertexBuffers.count == 1)
+                        commandEncoder.draw(geometry.mesh)
                     }
                 }
-
-                assert(geometry.mesh.vertexBuffers.count == 1)
-                commandEncoder.draw(geometry.mesh)
             }
         }
     }

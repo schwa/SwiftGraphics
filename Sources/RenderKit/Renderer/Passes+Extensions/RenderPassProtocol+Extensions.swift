@@ -4,26 +4,18 @@ import Metal
 import MetalSupport
 
 public extension RenderPassProtocol {
-    func sizeWillChange(device: MTLDevice, size: SIMD2<Float>, state: inout State) throws {
-    }
-
-    func render(commandBuffer: MTLCommandBuffer, renderPassDescriptor: MTLRenderPassDescriptor, info: PassInfo, state: State) throws {
-        try commandBuffer.withRenderCommandEncoder(descriptor: renderPassDescriptor, label: "\(type(of: self))") { commandEncoder in
-            try commandEncoder.withDebugGroup("Start encoding for \(type(of: self))") {
-                try encode(commandEncoder: commandEncoder, info: info, state: state)
-            }
-        }
+    func drawableSizeWillChange(device: MTLDevice, size: SIMD2<Float>, state: inout State) throws {
     }
 }
 
 // MARK: -
 
 public extension RenderPassProtocol {
-    func sizeWillChange(device: MTLDevice, size: SIMD2<Float>, untypedState: inout any PassState) throws {
+    func drawableSizeWillChange(device: MTLDevice, size: SIMD2<Float>, untypedState: inout any PassState) throws {
         guard var state = untypedState as? State else {
             fatalError("Could not cast state to `State`, are two passes using same identifier?")
         }
-        try sizeWillChange(device: device, size: size, state: &state)
+        try drawableSizeWillChange(device: device, size: size, state: &state)
         untypedState = state
     }
 

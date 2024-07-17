@@ -1,7 +1,6 @@
 import BaseSupport
 import Foundation
 
-
 // MARK: Smoothstep (https://en.wikipedia.org/wiki/Smoothstep)
 
 public func smoothstep<T>(from edge0: T, to edge1: T, by x: T) -> T where T: FloatingPoint {

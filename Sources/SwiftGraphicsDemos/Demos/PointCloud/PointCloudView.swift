@@ -147,28 +147,32 @@ struct PointCloudRenderPass: RenderPassProtocol {
         return State(bindings: bindings, depthStencilState: depthStencilState, renderPipelineState: renderPipelineState)
     }
 
-    func encode(commandEncoder: any MTLRenderCommandEncoder, info: PassInfo, state: State) throws {
-        let helper = SceneGraphRenderHelper(scene: scene, drawableSize: info.drawableSize)
-        let elements = helper.elements()
+    func render(commandBuffer: MTLCommandBuffer, renderPassDescriptor: MTLRenderPassDescriptor, info: PassInfo, state: State) throws {
+        try commandBuffer.withRenderCommandEncoder(descriptor: renderPassDescriptor, label: "\(type(of: self))") { commandEncoder in
+            try commandEncoder.withDebugGroup("Start encoding for \(type(of: self))") {
+                let helper = SceneGraphRenderHelper(scene: scene, drawableSize: info.drawableSize)
+                let elements = helper.elements()
 
-        for element in elements {
-            guard let pointCloud = element.node.content as? PointCloud else {
-                continue
+                for element in elements {
+                    guard let pointCloud = element.node.content as? PointCloud else {
+                        continue
+                    }
+                    commandEncoder.setDepthStencilState(state.depthStencilState)
+                    commandEncoder.setRenderPipelineState(state.renderPipelineState)
+                    commandEncoder.withDebugGroup("VertexShader") {
+                        commandEncoder.setVertexBuffersFrom(mesh: pointCloud.pointMesh)
+                        var vertexUniforms = PointCloudVertexUniforms()
+                        vertexUniforms.modelViewProjectionMatrix = element.modelViewProjectionMatrix
+                        commandEncoder.setVertexBytes(of: vertexUniforms, index: state.bindings.vertexUniforms)
+                        commandEncoder.setVertexBuffer(pointCloud.points.content, offset: 0, index: state.bindings.vertexInstancePositions)
+                    }
+                    commandEncoder.withDebugGroup("FragmentShader") {
+                        let fragmentUniforms = PointCloudFragmentUniforms()
+                        commandEncoder.setFragmentBytes(of: fragmentUniforms, index: state.bindings.fragmentUniforms)
+                    }
+                    commandEncoder.draw(pointCloud.pointMesh, instanceCount: pointCloud.count)
+                }
             }
-            commandEncoder.setDepthStencilState(state.depthStencilState)
-            commandEncoder.setRenderPipelineState(state.renderPipelineState)
-            commandEncoder.withDebugGroup("VertexShader") {
-                commandEncoder.setVertexBuffersFrom(mesh: pointCloud.pointMesh)
-                var vertexUniforms = PointCloudVertexUniforms()
-                vertexUniforms.modelViewProjectionMatrix = element.modelViewProjectionMatrix
-                commandEncoder.setVertexBytes(of: vertexUniforms, index: state.bindings.vertexUniforms)
-                commandEncoder.setVertexBuffer(pointCloud.points.content, offset: 0, index: state.bindings.vertexInstancePositions)
-            }
-            commandEncoder.withDebugGroup("FragmentShader") {
-                let fragmentUniforms = PointCloudFragmentUniforms()
-                commandEncoder.setFragmentBytes(of: fragmentUniforms, index: state.bindings.fragmentUniforms)
-            }
-            commandEncoder.draw(pointCloud.pointMesh, instanceCount: pointCloud.count)
         }
     }
 }
