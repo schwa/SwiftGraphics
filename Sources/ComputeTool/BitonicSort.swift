@@ -14,17 +14,17 @@ public struct BitonicSortDemo {
     public func main() throws {
         let stopWatch = StopWatch()
 
-        logger?.debug("Creating random buffer", stopWatch)
+        logger?.debug("Creating random buffer \(stopWatch)")
         var entries: [UInt32] = (0 ..< 10_000).shuffled()
 
-        logger?("Copying buffer to GPU.", stopWatch)
+        logger?.debug("Copying buffer to GPU. \(stopWatch)")
         let device = MTLCreateSystemDefaultDevice()!
         let numEntries = entries.count
         let buffer: MTLBuffer = try entries.withUnsafeMutableBufferPointer { buffer in
             let buffer = UnsafeMutableRawBufferPointer(buffer)
             return try device.makeBufferEx(bytes: buffer.baseAddress!, length: buffer.count)
         }
-        logger?("Preparing compute.", stopWatch)
+        logger?.debug("Preparing compute. \(stopWatch)")
 
         let function = ShaderLibrary.bundle(.module).bitonicSort
         let numStages = Int(log2(nextPowerOfTwo(Double(numEntries))))
@@ -37,7 +37,7 @@ public struct BitonicSortDemo {
         ])
 
         let start = CFAbsoluteTimeGetCurrent()
-        logger?("Running \(numStages) compute stages", stopWatch)
+        logger?.debug("Running \(numStages) compute stages \(stopWatch)")
 
         var threadgroupsPerGrid = (entries.count + pass.maxTotalThreadsPerThreadgroup - 1) / pass.maxTotalThreadsPerThreadgroup
         threadgroupsPerGrid = (threadgroupsPerGrid + pass.threadExecutionWidth - 1) / pass.threadExecutionWidth * pass.threadExecutionWidth
@@ -54,7 +54,7 @@ public struct BitonicSortDemo {
                         pass.arguments.groupHeight = .int(groupHeight)
                         pass.arguments.stepIndex = .int(stepIndex)
 
-                        logger?("\(n), \(stageIndex)/\(numStages), \(stepIndex)/\(stageIndex + 1), \(groupWidth), \(groupHeight)")
+                        logger?.debug("\(n), \(stageIndex)/\(numStages), \(stepIndex)/\(stageIndex + 1), \(groupWidth), \(groupHeight)")
                         try dispatch(
                             pass: pass,
                             threadgroupsPerGrid: MTLSize(width: threadgroupsPerGrid),
@@ -67,17 +67,17 @@ public struct BitonicSortDemo {
         }
 
         let current = CFAbsoluteTimeGetCurrent()
-        logger?("GPU", current - start, 1 / (current - start))
+        logger?.debug("GPU \(current - start), \(1 / (current - start))")
 
-        logger?("Running on CPU for comparison", stopWatch)
+        logger?.debug("Running on CPU for comparison \(stopWatch)")
         let cpuTime = time {
             entries.sort()
         }
-        logger?("CPU", cpuTime)
+        logger?.debug("CPU \(cpuTime)")
 
-        logger?("Confirming output is sorted", stopWatch)
+        logger?.debug("Confirming output is sorted, \(stopWatch)")
         let sortedBuffer = UnsafeRawBufferPointer(start: buffer.contents(), count: buffer.length).bindMemory(to: UInt32.self)
-        logger?("SORTED: *********", sortedBuffer.isSorted, "***************")
-        logger?("Done", stopWatch)
+        logger?.debug("SORTED: ********* \(sortedBuffer.isSorted) ***************")
+        logger?.debug("Done, \(stopWatch)")
     }
 }
