@@ -1,4 +1,5 @@
 import CoreGraphicsSupport
+import Counters
 import Everything
 import Foundation
 import GaussianSplatSupport
@@ -120,6 +121,7 @@ struct ZoomGestureViewModifier: ViewModifier {
             guard let initialZoom else {
                 fatalError("Cannot zoom without an initial zoom value.")
             }
+            Counters.shared.increment(counter: "zoom")
             zoom = initialZoom + scale * Float(value.magnification)
         }
         .onEnded { _ in
