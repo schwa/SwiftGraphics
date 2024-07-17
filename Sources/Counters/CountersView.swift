@@ -20,7 +20,7 @@ public struct CountersView: View {
                 TableColumn("Count") { record in
                     if case let .count(count) = record.value {
                         Text("\(count, format: .number)")
-                        .monospacedDigit()
+                            .monospacedDigit()
                     }
                 }
                 .width(min: 50, ideal: 50)

@@ -52,9 +52,8 @@ public protocol ComputePassProtocol: ShaderPassProtocol {
 
 public protocol RenderPassProtocol: ShaderPassProtocol {
     func setup(device: MTLDevice, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State
-    func sizeWillChange(device: MTLDevice, size: SIMD2<Float>, state: inout State) throws
+    func drawableSizeWillChange(device: MTLDevice, size: SIMD2<Float>, state: inout State) throws
     func render(commandBuffer: MTLCommandBuffer, renderPassDescriptor: MTLRenderPassDescriptor, info: PassInfo, state: State) throws
-    func encode(commandEncoder: MTLRenderCommandEncoder, info: PassInfo, state: State) throws
 }
 
 // MARK: -

@@ -20,7 +20,7 @@ public struct OffscreenRenderer {
 
     public mutating func configure() throws {
         try renderer.configure(&offscreenConfiguration)
-        try renderer.sizeWillChange(size)
+        try renderer.drawableSizeWillChange(size)
     }
 
     public mutating func render(capture: Bool = false) throws {

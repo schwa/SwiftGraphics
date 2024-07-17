@@ -51,7 +51,7 @@ public struct RenderView: View {
             }
         } drawableSizeWillChange: { device, configuration, size in
             do {
-                try renderer?.sizeWillChange(SIMD2<Float>(size))
+                try renderer?.drawableSizeWillChange(SIMD2<Float>(size))
                 sizeWillChange(device, &configuration, size)
             } catch {
                 renderErrorHandler.send(error, logger: logger)

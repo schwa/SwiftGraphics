@@ -51,35 +51,39 @@ public struct DiffuseShadingRenderPass: RenderPassProtocol {
         return .init(renderPipelineState: renderPipelineState, depthStencilState: depthStencilState)
     }
 
-    public func encode(commandEncoder: any MTLRenderCommandEncoder, info: PassInfo, state: State) {
-        let elements = SceneGraphRenderHelper(scene: scene, drawableSize: info.drawableSize).elements()
+    public func render(commandBuffer: MTLCommandBuffer, renderPassDescriptor: MTLRenderPassDescriptor, info: PassInfo, state: State) throws {
+        try commandBuffer.withRenderCommandEncoder(descriptor: renderPassDescriptor, label: "\(type(of: self))") { commandEncoder in
+            try commandEncoder.withDebugGroup("Start encoding for \(type(of: self))") {
+                let elements = SceneGraphRenderHelper(scene: scene, drawableSize: info.drawableSize).elements()
 
-        commandEncoder.setDepthStencilState(state.depthStencilState)
-        let lightAmbientColor = lightAmbientColor.simd.xyz
-        let lightDiffuseColor = lightDiffuseColor.simd.xyz
+                commandEncoder.setDepthStencilState(state.depthStencilState)
+                let lightAmbientColor = lightAmbientColor.simd.xyz
+                let lightDiffuseColor = lightDiffuseColor.simd.xyz
 
-        for element in elements {
-            guard let geometry = element.node.geometry, let material = geometry.materials.compactMap({ $0 as? Material }).first else {
-                continue
-            }
-
-            commandEncoder.withDebugGroup("Node: \(element.node.id)") {
-                commandEncoder.setRenderPipelineState(state.renderPipelineState)
-                commandEncoder.withDebugGroup("FragmentShader") {
-                    let materialDiffuseColor = material.diffuseColor.simd.xyz
-                    let materialAmbientColor = material.ambientColor.simd.xyz
-                    let uniforms = DiffuseShadingFragmentShaderUniforms(materialDiffuseColor: materialDiffuseColor, materialAmbientColor: materialAmbientColor, lightAmbientColor: lightAmbientColor, lightDiffuseColor: lightDiffuseColor, lightPosition: lightPosition, lightPower: lightPower)
-                    commandEncoder.setFragmentBytes(of: uniforms, index: 0)
-                }
-                commandEncoder.withDebugGroup("Node: \(element.node.id)") {
-                    commandEncoder.withDebugGroup("VertexShader") {
-                        assert(geometry.mesh.vertexBuffers.count == 1)
-                        let vertexBuffer = geometry.mesh.vertexBuffers[0]
-                        commandEncoder.setVertexBuffer(vertexBuffer.buffer, offset: vertexBuffer.offset, index: 0)
-                        let uniforms = DiffuseShadingVertexShaderUniforms(modelViewMatrix: element.modelViewMatrix, modelViewProjectionMatrix: element.modelViewProjectionMatrix, modelNormalMatrix: element.modelNormalMatrix)
-                        commandEncoder.setVertexBytes(of: uniforms, index: 1)
+                for element in elements {
+                    guard let geometry = element.node.geometry, let material = geometry.materials.compactMap({ $0 as? Material }).first else {
+                        continue
                     }
-                    commandEncoder.draw(geometry.mesh)
+
+                    commandEncoder.withDebugGroup("Node: \(element.node.id)") {
+                        commandEncoder.setRenderPipelineState(state.renderPipelineState)
+                        commandEncoder.withDebugGroup("FragmentShader") {
+                            let materialDiffuseColor = material.diffuseColor.simd.xyz
+                            let materialAmbientColor = material.ambientColor.simd.xyz
+                            let uniforms = DiffuseShadingFragmentShaderUniforms(materialDiffuseColor: materialDiffuseColor, materialAmbientColor: materialAmbientColor, lightAmbientColor: lightAmbientColor, lightDiffuseColor: lightDiffuseColor, lightPosition: lightPosition, lightPower: lightPower)
+                            commandEncoder.setFragmentBytes(of: uniforms, index: 0)
+                        }
+                        commandEncoder.withDebugGroup("Node: \(element.node.id)") {
+                            commandEncoder.withDebugGroup("VertexShader") {
+                                assert(geometry.mesh.vertexBuffers.count == 1)
+                                let vertexBuffer = geometry.mesh.vertexBuffers[0]
+                                commandEncoder.setVertexBuffer(vertexBuffer.buffer, offset: vertexBuffer.offset, index: 0)
+                                let uniforms = DiffuseShadingVertexShaderUniforms(modelViewMatrix: element.modelViewMatrix, modelViewProjectionMatrix: element.modelViewProjectionMatrix, modelNormalMatrix: element.modelNormalMatrix)
+                                commandEncoder.setVertexBytes(of: uniforms, index: 1)
+                            }
+                            commandEncoder.draw(geometry.mesh)
+                        }
+                    }
                 }
             }
         }

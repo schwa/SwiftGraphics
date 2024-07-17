@@ -48,38 +48,42 @@ struct VolumetricRenderPass: RenderPassProtocol {
         return .init(renderPipelineState: renderPipelineState, depthStencilState: depthStencilState)
     }
 
-    func encode(commandEncoder: MTLRenderCommandEncoder, info: PassInfo, state: State) {
-        commandEncoder.setRenderPipelineState(state.renderPipelineState)
-        commandEncoder.setDepthStencilState(state.depthStencilState)
+    func render(commandBuffer: MTLCommandBuffer, renderPassDescriptor: MTLRenderPassDescriptor, info: PassInfo, state: State) throws {
+        try commandBuffer.withRenderCommandEncoder(descriptor: renderPassDescriptor, label: "\(type(of: self))") { commandEncoder in
+            try commandEncoder.withDebugGroup("Start encoding for \(type(of: self))") {
+                commandEncoder.setRenderPipelineState(state.renderPipelineState)
+                commandEncoder.setDepthStencilState(state.depthStencilState)
 
-        let helper = SceneGraphRenderHelper(scene: scene, drawableSize: info.drawableSize)
-        for element in helper.elements() {
-            guard let volumeRepresentation = element.node.content as? VolumeRepresentation else {
-                continue
+                let helper = SceneGraphRenderHelper(scene: scene, drawableSize: info.drawableSize)
+                for element in helper.elements() {
+                    guard let volumeRepresentation = element.node.content as? VolumeRepresentation else {
+                        continue
+                    }
+                    guard let cameraNode = scene.currentCameraNode else {
+                        fatalError("No camera")
+                    }
+                    // TODO: we need to remove this.
+                    let rollPitchYaw = cameraNode.transform.rotation.rollPitchYaw
+                    commandEncoder.setVertexBuffers(volumeRepresentation.mesh)
+                    // Vertex Buffer Index 1
+                    let cameraUniforms = CameraUniforms(projectionMatrix: helper.projectionMatrix)
+                    commandEncoder.setVertexBytes(of: cameraUniforms, index: 1)
+                    // Vertex Buffer Index 2
+                    let modelUniforms = VolumeTransforms(
+                        modelViewMatrix: element.modelViewMatrix,
+                        textureMatrix: simd_float4x4(translate: [0.5, 0.5, 0.5]) * rollPitchYaw.matrix4x4 * simd_float4x4(translate: [-0.5, -0.5, -0.5])
+                    )
+                    commandEncoder.setVertexBytes(of: modelUniforms, index: 2)
+                    // Vertex Buffer Index 3
+                    commandEncoder.setVertexBuffer(volumeRepresentation.instanceBuffer, offset: 0, index: 3)
+                    commandEncoder.setFragmentTexture(volumeRepresentation.texture, index: 0)
+                    commandEncoder.setFragmentTexture(volumeRepresentation.transferFunctionTexture, index: 1)
+                    // TODO: Hard coded
+                    let fragmentUniforms = VolumeFragmentUniforms(instanceCount: UInt16(volumeRepresentation.instanceCount), maxValue: 3_272, alpha: 10.0)
+                    commandEncoder.setFragmentBytes(of: fragmentUniforms, index: 0)
+                    commandEncoder.draw(volumeRepresentation.mesh, instanceCount: volumeRepresentation.instanceCount)
+                }
             }
-            guard let cameraNode = scene.currentCameraNode else {
-                fatalError("No camera")
-            }
-            // TODO: we need to remove this.
-            let rollPitchYaw = cameraNode.transform.rotation.rollPitchYaw
-            commandEncoder.setVertexBuffers(volumeRepresentation.mesh)
-            // Vertex Buffer Index 1
-            let cameraUniforms = CameraUniforms(projectionMatrix: helper.projectionMatrix)
-            commandEncoder.setVertexBytes(of: cameraUniforms, index: 1)
-            // Vertex Buffer Index 2
-            let modelUniforms = VolumeTransforms(
-                modelViewMatrix: element.modelViewMatrix,
-                textureMatrix: simd_float4x4(translate: [0.5, 0.5, 0.5]) * rollPitchYaw.matrix4x4 * simd_float4x4(translate: [-0.5, -0.5, -0.5])
-            )
-            commandEncoder.setVertexBytes(of: modelUniforms, index: 2)
-            // Vertex Buffer Index 3
-            commandEncoder.setVertexBuffer(volumeRepresentation.instanceBuffer, offset: 0, index: 3)
-            commandEncoder.setFragmentTexture(volumeRepresentation.texture, index: 0)
-            commandEncoder.setFragmentTexture(volumeRepresentation.transferFunctionTexture, index: 1)
-            // TODO: Hard coded
-            let fragmentUniforms = VolumeFragmentUniforms(instanceCount: UInt16(volumeRepresentation.instanceCount), maxValue: 3_272, alpha: 10.0)
-            commandEncoder.setFragmentBytes(of: fragmentUniforms, index: 0)
-            commandEncoder.draw(volumeRepresentation.mesh, instanceCount: volumeRepresentation.instanceCount)
         }
     }
 }

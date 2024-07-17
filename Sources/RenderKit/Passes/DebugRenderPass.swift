@@ -44,35 +44,37 @@ public struct DebugRenderPass: RenderPassProtocol {
         return State(depthStencilState: depthStencilState, renderPipelineState: renderPipelineState)
     }
 
-    public func encode(commandEncoder: MTLRenderCommandEncoder, info: PassInfo, state: State) throws {
-        let elements = SceneGraphRenderHelper(scene: scene, drawableSize: info.drawableSize).elements()
-
-        commandEncoder.setDepthStencilState(state.depthStencilState)
-        commandEncoder.setCullMode(cullMode)
-        commandEncoder.setFrontFacing(frontFacing)
-        commandEncoder.setTriangleFillMode(triangleFillMode)
-        commandEncoder.setRenderPipelineState(state.renderPipelineState)
-
-        for element in elements {
-            guard let mesh = element.node.geometry?.mesh else {
-                continue
-            }
-            try commandEncoder.withDebugGroup("Node: \(element.node.id)") {
-                commandEncoder.withDebugGroup("FragmentShader") {
-                    let fragmentUniforms = DebugFragmentShaderUniforms(windowSize: info.drawableSize)
-                    commandEncoder.setFragmentBytes(of: fragmentUniforms, index: 0)
-                }
-                try commandEncoder.withDebugGroup("Node: \(element.node.id)") {
-                    try commandEncoder.withDebugGroup("VertexShader") {
-                        var vertexUniforms = DebugVertexShaderUniforms()
-                        vertexUniforms.modelViewProjectionMatrix = element.modelViewProjectionMatrix
-                        vertexUniforms.positionOffset = positionOffset
-                        commandEncoder.setVertexBytes(of: vertexUniforms, index: 1)
-
-                        let vertexBuffer = try mesh.vertexBuffers.first.safelyUnwrap(BaseError.resourceCreationFailure)
-                        commandEncoder.setVertexBuffer(vertexBuffer.buffer, offset: vertexBuffer.offset, index: 0)
+    public func render(commandBuffer: MTLCommandBuffer, renderPassDescriptor: MTLRenderPassDescriptor, info: PassInfo, state: State) throws {
+        try commandBuffer.withRenderCommandEncoder(descriptor: renderPassDescriptor, label: "\(type(of: self))") { commandEncoder in
+            try commandEncoder.withDebugGroup("Start encoding for \(type(of: self))") {
+                let elements = SceneGraphRenderHelper(scene: scene, drawableSize: info.drawableSize).elements()
+                commandEncoder.setDepthStencilState(state.depthStencilState)
+                commandEncoder.setCullMode(cullMode)
+                commandEncoder.setFrontFacing(frontFacing)
+                commandEncoder.setTriangleFillMode(triangleFillMode)
+                commandEncoder.setRenderPipelineState(state.renderPipelineState)
+                for element in elements {
+                    guard let mesh = element.node.geometry?.mesh else {
+                        continue
                     }
-                    commandEncoder.draw(mesh)
+                    try commandEncoder.withDebugGroup("Node: \(element.node.id)") {
+                        commandEncoder.withDebugGroup("FragmentShader") {
+                            let fragmentUniforms = DebugFragmentShaderUniforms(windowSize: info.drawableSize)
+                            commandEncoder.setFragmentBytes(of: fragmentUniforms, index: 0)
+                        }
+                        try commandEncoder.withDebugGroup("Node: \(element.node.id)") {
+                            try commandEncoder.withDebugGroup("VertexShader") {
+                                var vertexUniforms = DebugVertexShaderUniforms()
+                                vertexUniforms.modelViewProjectionMatrix = element.modelViewProjectionMatrix
+                                vertexUniforms.positionOffset = positionOffset
+                                commandEncoder.setVertexBytes(of: vertexUniforms, index: 1)
+
+                                let vertexBuffer = try mesh.vertexBuffers.first.safelyUnwrap(BaseError.resourceCreationFailure)
+                                commandEncoder.setVertexBuffer(vertexBuffer.buffer, offset: vertexBuffer.offset, index: 0)
+                            }
+                            commandEncoder.draw(mesh)
+                        }
+                    }
                 }
             }
         }
