@@ -17,6 +17,7 @@ let package = Package(
         .library(name: "Compute", targets: ["Compute"]),
         .library(name: "CoreGraphicsSupport", targets: ["CoreGraphicsSupport"]),
         .library(name: "CoreGraphicsUnsafeConformances", targets: ["CoreGraphicsUnsafeConformances"]),
+        .library(name: "Counters", targets: ["Counters"]),
         .library(name: "Earcut", targets: ["Earcut"]),
         .library(name: "Fields3D", targets: ["Fields3D"]),
         .library(name: "GaussianSplatDemos", targets: ["GaussianSplatDemos"]),
@@ -406,7 +407,11 @@ let package = Package(
 
         .target(
             name: "GaussianSplatDemos",
-            dependencies: ["GaussianSplatSupport", "RenderKitUISupport"],
+            dependencies: [
+                "GaussianSplatSupport",
+                "RenderKitUISupport",
+                "Counters"
+            ],
             resources: [
                 .copy("Resources/lastchance.splat"),
                 .copy("Resources/train.splat"),
@@ -441,6 +446,13 @@ let package = Package(
         .target(
             name: "BaseSupport",
             dependencies: [
+                .product(name: "Everything", package: "Everything"),
+            ]
+        ),
+        .target(
+            name: "Counters",
+            dependencies: [
+                .product(name: "Algorithms", package: "swift-algorithms"),
                 .product(name: "Everything", package: "Everything"),
             ]
         ),
