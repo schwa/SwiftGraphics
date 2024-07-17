@@ -416,6 +416,7 @@ let package = Package(
                 .copy("Resources/lastchance.splat"),
                 .copy("Resources/train.splat"),
                 .copy("Resources/winter_fountain.splat"),
+                .copy("Resources/vision_dr.splat"),
             ]
         ),
         .target(

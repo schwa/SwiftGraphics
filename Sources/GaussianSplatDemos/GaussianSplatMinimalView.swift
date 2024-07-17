@@ -37,7 +37,7 @@ public struct GaussianSplatMinimalView: View {
 
     public init() {
         let device = MTLCreateSystemDefaultDevice()!
-        let url = Bundle.module.url(forResource: "winter_fountain", withExtension: "splat")!
+        let url = Bundle.module.url(forResource: "vision_dr", withExtension: "splat")!
         self.device = device
         let splats = try! SplatCloud(device: device, url: url)
         let root = Node(label: "root") {
