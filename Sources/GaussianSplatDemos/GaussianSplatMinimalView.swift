@@ -1,5 +1,5 @@
+import BaseSupport
 import CoreGraphicsSupport
-import Counters
 import Everything
 import Foundation
 import GaussianSplatSupport
@@ -37,7 +37,7 @@ public struct GaussianSplatMinimalView: View {
 
     public init() {
         let device = MTLCreateSystemDefaultDevice()!
-        let url = Bundle.module.url(forResource: "train", withExtension: "splat")!
+        let url = Bundle.module.url(forResource: "winter_fountain", withExtension: "splat")!
         self.device = device
         let splats = try! SplatCloud(device: device, url: url)
         let root = Node(label: "root") {
@@ -62,7 +62,7 @@ public struct GaussianSplatMinimalView: View {
                 scene.currentCameraNode?.transform = ballConstraint.transform
             }
             .ballRotation($cameraRotation, pitchLimit: .degrees(-.infinity) ... .degrees(.infinity))
-            .zoomGesture(zoom: $ballConstraint.radius, scale: 5)
+            .zoomGesture(zoom: $ballConstraint.radius, range: 0.5 ... 16)
             .onDrop(of: [.splat], isTargeted: $isTargeted) { items in
                 if let item = items.first {
                     item.loadItem(forTypeIdentifier: UTType.splat.identifier, options: nil) { data, _ in
@@ -90,20 +90,16 @@ public struct GaussianSplatMinimalView: View {
 }
 
 struct ZoomGestureViewModifier: ViewModifier {
-
     @Binding
     var zoom: Float
-
-    var scale: Float
 
     var range: ClosedRange<Float>
 
     @State
     var initialZoom: Float?
 
-    init(zoom: Binding<Float>, scale: Float, range: ClosedRange<Float>) {
+    init(zoom: Binding<Float>, range: ClosedRange<Float>) {
         self._zoom = zoom
-        self.scale = scale
         self.range = range
     }
 
@@ -114,6 +110,9 @@ struct ZoomGestureViewModifier: ViewModifier {
 
     func magnifyGesture() -> some Gesture {
         MagnifyGesture()
+        .onEnded { _ in
+            initialZoom = nil
+        }
         .onChanged { value in
             if initialZoom == nil {
                 initialZoom = zoom
@@ -121,18 +120,13 @@ struct ZoomGestureViewModifier: ViewModifier {
             guard let initialZoom else {
                 fatalError("Cannot zoom without an initial zoom value.")
             }
-            Counters.shared.increment(counter: "zoom")
-            zoom = initialZoom + scale * Float(value.magnification)
-        }
-        .onEnded { _ in
-            initialZoom = nil
+            zoom = clamp(initialZoom * Float(value.magnification), to: range)
         }
     }
-
 }
 
 extension View {
-    func zoomGesture(zoom: Binding<Float>, scale: Float = 1, range: ClosedRange<Float> = -.infinity ... .infinity) -> some View {
-        modifier(ZoomGestureViewModifier(zoom: zoom, scale: scale, range: range))
+    func zoomGesture(zoom: Binding<Float>, range: ClosedRange<Float> = -.infinity ... .infinity) -> some View {
+        modifier(ZoomGestureViewModifier(zoom: zoom, range: range))
     }
 }

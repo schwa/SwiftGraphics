@@ -23,43 +23,6 @@ extension View {
     }
 }
 
-func wrap(_ value: Double, within range: ClosedRange<Double>) -> Double {
-    let size = range.upperBound - range.lowerBound
-    let normalized = value - range.lowerBound
-    return (normalized.truncatingRemainder(dividingBy: size) + size).truncatingRemainder(dividingBy: size) + range.lowerBound
-}
-
-func wrap(_ point: CGPoint, within rect: CGRect) -> CGPoint {
-    CGPoint(
-        x: wrap(point.x, within: rect.minX ... rect.maxX),
-        y: wrap(point.y, within: rect.minY ... rect.maxY)
-    )
-}
-
-func sign(_ v: Double) -> Double {
-    if v < 0 {
-        return -1
-    }
-    else if v == 0 {
-        return 0
-    }
-    else {
-        return 1
-    }
-}
-
-public extension FloatingPoint {
-    func clamped(to range: ClosedRange<Self>) -> Self {
-        min(max(self, range.lowerBound), range.upperBound)
-    }
-
-    func wrapped(to range: ClosedRange<Self>) -> Self {
-        let rangeSize = range.upperBound - range.lowerBound
-        let wrappedValue = (self - range.lowerBound).truncatingRemainder(dividingBy: rangeSize)
-        return (wrappedValue < 0 ? wrappedValue + rangeSize : wrappedValue) + range.lowerBound
-    }
-}
-
 #if os(macOS)
 extension Image {
     @MainActor

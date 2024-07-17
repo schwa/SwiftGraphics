@@ -58,17 +58,6 @@ extension PackedHalf4 {
     }
 }
 
-extension FloatingPoint {
-    func clamped(to range: ClosedRange<Self>) -> Self {
-        clamp(self, in: range)
-    }
-}
-
-extension SIMD4 where Scalar == Float {
-    func clamped(to range: ClosedRange<Scalar>) -> Self {
-        [x.clamped(to: range), y.clamped(to: range), z.clamped(to: range), w.clamped(to: range)]
-    }
-}
 
 public extension Bundle {
     static let gaussianSplatShaders: Bundle = {

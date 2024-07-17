@@ -33,10 +33,10 @@ public struct BallRotationModifier: ViewModifier {
             .coordinateSpace(name: coordinateSpace)
             .gesture(dragGesture())
             .onChange(of: pitchLimit, initial: true) {
-                rollPitchYaw.pitch = clamp(rollPitchYaw.pitch, in: pitchLimit)
+                rollPitchYaw.pitch = clamp(rollPitchYaw.pitch, to: pitchLimit)
             }
             .onChange(of: yawLimit, initial: true) {
-                rollPitchYaw.yaw = clamp(rollPitchYaw.yaw, in: yawLimit)
+                rollPitchYaw.yaw = clamp(rollPitchYaw.yaw, to: yawLimit)
             }
     }
 
@@ -62,8 +62,8 @@ public struct BallRotationModifier: ViewModifier {
             unreachable()
         }
         var rollPitchYaw = initialGestureRollPitchYaw
-        rollPitchYaw.pitch = clamp(rollPitchYaw.pitch + .degrees(translation.dy * interactionScale.dy), in: pitchLimit)
-        rollPitchYaw.yaw = clamp(rollPitchYaw.yaw + .degrees(translation.dx * interactionScale.dx), in: yawLimit)
+        rollPitchYaw.pitch = clamp(rollPitchYaw.pitch + .degrees(translation.dy * interactionScale.dy), to: pitchLimit)
+        rollPitchYaw.yaw = clamp(rollPitchYaw.yaw + .degrees(translation.dx * interactionScale.dx), to: yawLimit)
         return rollPitchYaw
     }
 }
