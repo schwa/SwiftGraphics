@@ -78,45 +78,43 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
     }
 
     public func render(commandBuffer: MTLCommandBuffer, renderPassDescriptor: MTLRenderPassDescriptor, info: PassInfo, state: State) throws {
-        try commandBuffer.withRenderCommandEncoder(descriptor: renderPassDescriptor, label: "\(type(of: self))") { commandEncoder in
-            try commandEncoder.withDebugGroup("Start encoding for \(type(of: self))") {
-                if info.configuration.depthStencilPixelFormat != .invalid {
-                    commandEncoder.setDepthStencilState(state.depthStencilState)
+        try commandBuffer.withRenderCommandEncoder(descriptor: renderPassDescriptor, label: "\(type(of: self))", useDebugGroup: true) { commandEncoder in
+            if info.configuration.depthStencilPixelFormat != .invalid {
+                commandEncoder.setDepthStencilState(state.depthStencilState)
+            }
+            commandEncoder.setRenderPipelineState(state.renderPipelineState)
+            if debugMode {
+                commandEncoder.setTriangleFillMode(.lines)
+            }
+            let helper = try SceneGraphRenderHelper(scene: scene, targetColorAttachment: renderPassDescriptor.colorAttachments[0])
+            guard let cameraTransform = scene.currentCameraNode?.transform else {
+                fatalError("No camera")
+            }
+            for element in helper.elements() {
+                guard let splats = element.node.splats else {
+                    continue
                 }
-                commandEncoder.setRenderPipelineState(state.renderPipelineState)
-                if debugMode {
-                    commandEncoder.setTriangleFillMode(.lines)
-                }
-                let helper = SceneGraphRenderHelper(scene: scene, drawableSize: info.drawableSize)
-                guard let cameraTransform = scene.currentCameraNode?.transform else {
-                    fatalError("No camera")
-                }
-                for element in helper.elements() {
-                    guard let splats = element.node.splats else {
-                        continue
-                    }
-                    let uniforms = GaussianSplatUniforms(
-                        modelViewProjectionMatrix: helper.projectionMatrix * cameraTransform.matrix.inverse * element.modelMatrix,
-                        modelViewMatrix: helper.cameraMatrix.inverse * element.modelMatrix,
-                        projectionMatrix: helper.projectionMatrix,
-                        viewMatrix: helper.cameraMatrix.inverse,
-                        cameraPosition: helper.cameraMatrix.translation,
-                        drawableSize: info.drawableSize
-                    )
+                let uniforms = GaussianSplatUniforms(
+                    modelViewProjectionMatrix: helper.projectionMatrix * cameraTransform.matrix.inverse * element.modelMatrix,
+                    modelViewMatrix: helper.cameraMatrix.inverse * element.modelMatrix,
+                    projectionMatrix: helper.projectionMatrix,
+                    viewMatrix: helper.cameraMatrix.inverse,
+                    cameraPosition: helper.cameraMatrix.translation,
+                    drawableSize: try renderPassDescriptor.colorAttachments[0].size
+                )
 
-                    commandEncoder.withDebugGroup("VertexShader") {
-                        commandEncoder.setVertexBuffersFrom(mesh: state.quadMesh)
-                        commandEncoder.setVertexBytes(of: uniforms, index: state.bindings.vertexUniforms)
-                        commandEncoder.setVertexBuffer(splats.splats, index: state.bindings.vertexSplats)
-                        commandEncoder.setVertexBuffer(splats.indices, index: state.bindings.vertexSplatIndices)
-                    }
-                    commandEncoder.withDebugGroup("FragmentShader") {
-                        commandEncoder.setFragmentBytes(of: uniforms, index: state.bindings.fragmentUniforms)
-                        commandEncoder.setFragmentBuffer(splats.splats, index: state.bindings.fragmentSplats)
-                        commandEncoder.setFragmentBuffer(splats.indices, index: state.bindings.fragmentSplatIndices)
-                    }
-                    commandEncoder.draw(state.quadMesh, instanceCount: splats.splats.count)
+                commandEncoder.withDebugGroup("VertexShader") {
+                    commandEncoder.setVertexBuffersFrom(mesh: state.quadMesh)
+                    commandEncoder.setVertexBytes(of: uniforms, index: state.bindings.vertexUniforms)
+                    commandEncoder.setVertexBuffer(splats.splats, index: state.bindings.vertexSplats)
+                    commandEncoder.setVertexBuffer(splats.indices, index: state.bindings.vertexSplatIndices)
                 }
+                commandEncoder.withDebugGroup("FragmentShader") {
+                    commandEncoder.setFragmentBytes(of: uniforms, index: state.bindings.fragmentUniforms)
+                    commandEncoder.setFragmentBuffer(splats.splats, index: state.bindings.fragmentSplats)
+                    commandEncoder.setFragmentBuffer(splats.indices, index: state.bindings.fragmentSplatIndices)
+                }
+                commandEncoder.draw(state.quadMesh, instanceCount: splats.splats.count)
             }
         }
     }
@@ -125,5 +123,16 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
 extension Node {
     var splats: SplatCloud? {
         content as? SplatCloud
+    }
+}
+
+extension MTLRenderPassColorAttachmentDescriptor {
+    var size: SIMD2<Float> {
+        get throws {
+            guard let texture else {
+                throw BaseError.generic("Cannot get size for a color attachment with no texture.")
+            }
+            return SIMD2<Float>(Float(texture.width), Float(texture.height))
+        }
     }
 }

@@ -1,3 +1,5 @@
+import BaseSupport
+import Metal
 import simd
 
 // TODO: Rename.
@@ -21,19 +23,6 @@ public struct SceneGraphRenderHelper {
         self.cameraMatrix = cameraMatrix
         self.viewMatrix = viewMatrix ?? cameraMatrix.inverse
         self.projectionMatrix = projectionMatrix
-    }
-
-    public init(scene: SceneGraph, drawableSize: SIMD2<Float>) {
-        guard let currentCameraNode = scene.currentCameraNode else {
-            fatalError("No current camera node in scene")
-        }
-        assert(drawableSize.x > 0 && drawableSize.y > 0)
-        let cameraMatrix = currentCameraNode.transform.matrix
-        let viewMatrix = cameraMatrix.inverse
-        guard let projectionMatrix = currentCameraNode.camera?.projectionMatrix(for: drawableSize) else {
-            fatalError("No camera in scene")
-        }
-        self.init(scene: scene, cameraMatrix: cameraMatrix, viewMatrix: viewMatrix, projectionMatrix: projectionMatrix)
     }
 
     public func elements() -> any Sequence<Element> {
@@ -68,6 +57,31 @@ public struct SceneGraphRenderHelper {
         return AnySequence { iterator }
     }
 }
+
+public extension SceneGraphRenderHelper {
+    init(scene: SceneGraph, targetColorAttachment: MTLRenderPassColorAttachmentDescriptor) throws {
+        guard let texture = targetColorAttachment.texture else {
+            throw BaseError.generic("Oops")
+        }
+        let size = SIMD2<Float>(Float(texture.width), Float(texture.height))
+        self.init(scene: scene, renderTargetSize: size)
+    }
+
+    init(scene: SceneGraph, renderTargetSize: SIMD2<Float>) {
+        guard let currentCameraNode = scene.currentCameraNode else {
+            fatalError("No current camera node in scene")
+        }
+        assert(renderTargetSize.x > 0 && renderTargetSize.y > 0)
+        let cameraMatrix = currentCameraNode.transform.matrix
+        let viewMatrix = cameraMatrix.inverse
+        guard let projectionMatrix = currentCameraNode.camera?.projectionMatrix(for: renderTargetSize) else {
+            fatalError("No camera in scene")
+        }
+        self.init(scene: scene, cameraMatrix: cameraMatrix, viewMatrix: viewMatrix, projectionMatrix: projectionMatrix)
+    }
+}
+
+// MARK: -
 
 public struct TreeEventIterator<Node>: IteratorProtocol {
     private var stack: [(Node, Bool)]

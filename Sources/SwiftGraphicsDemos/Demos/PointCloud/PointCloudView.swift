@@ -150,7 +150,7 @@ struct PointCloudRenderPass: RenderPassProtocol {
     func render(commandBuffer: MTLCommandBuffer, renderPassDescriptor: MTLRenderPassDescriptor, info: PassInfo, state: State) throws {
         try commandBuffer.withRenderCommandEncoder(descriptor: renderPassDescriptor, label: "\(type(of: self))") { commandEncoder in
             try commandEncoder.withDebugGroup("Start encoding for \(type(of: self))") {
-                let helper = SceneGraphRenderHelper(scene: scene, drawableSize: info.drawableSize)
+                let helper = try SceneGraphRenderHelper(scene: scene, targetColorAttachment: renderPassDescriptor.colorAttachments[0])
                 let elements = helper.elements()
 
                 for element in elements {

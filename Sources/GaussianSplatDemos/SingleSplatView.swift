@@ -266,44 +266,42 @@ struct SingleGaussianSplatRenderPass: RenderPassProtocol {
     }
 
     func render(commandBuffer: MTLCommandBuffer, renderPassDescriptor: MTLRenderPassDescriptor, info: PassInfo, state: State) throws {
-        try commandBuffer.withRenderCommandEncoder(descriptor: renderPassDescriptor, label: "\(type(of: self))") { commandEncoder in
-            try commandEncoder.withDebugGroup("Start encoding for \(type(of: self))") {
-                commandEncoder.setDepthStencilState(state.depthStencilState)
-                commandEncoder.setRenderPipelineState(state.renderPipelineState)
+        try commandBuffer.withRenderCommandEncoder(descriptor: renderPassDescriptor, label: "\(type(of: self))", useDebugGroup: true) { commandEncoder in
+            commandEncoder.setDepthStencilState(state.depthStencilState)
+            commandEncoder.setRenderPipelineState(state.renderPipelineState)
 
-                if debugMode {
-                    commandEncoder.setTriangleFillMode(.lines)
-                }
-
-                let projectionMatrix = cameraProjection.projectionMatrix(for: info.drawableSize)
-                let viewMatrix = cameraTransform.matrix.inverse
-                let modelMatrix = modelTransform.matrix
-
-                let modelViewProjectionMatrix = projectionMatrix * viewMatrix * modelMatrix
-                let modelViewMatrix = viewMatrix * modelMatrix
-                let uniforms = GaussianSplatUniforms(
-                    modelViewProjectionMatrix: modelViewProjectionMatrix,
-                    modelViewMatrix: modelViewMatrix,
-                    projectionMatrix: projectionMatrix,
-                    viewMatrix: viewMatrix,
-                    cameraPosition: cameraTransform.matrix.translation,
-                    drawableSize: info.drawableSize
-                )
-                commandEncoder.withDebugGroup("VertexShader") {
-                    commandEncoder.setVertexBuffersFrom(mesh: state.quadMesh)
-                    commandEncoder.setVertexBytes(of: uniforms, index: state.bindings.vertexUniforms)
-                    commandEncoder.setVertexBuffer(splats.splats.base, offset: 0, index: state.bindings.vertexSplats)
-                    commandEncoder.setVertexBuffer(splats.indices.base, offset: 0, index: state.bindings.vertexSplatIndices)
-                }
-                commandEncoder.withDebugGroup("FragmentShader") {
-                    commandEncoder.setFragmentBytes(of: uniforms, index: state.bindings.fragmentUniforms)
-                    commandEncoder.setFragmentBuffer(splats.splats.base, offset: 0, index: state.bindings.fragmentSplats)
-                    commandEncoder.setFragmentBuffer(splats.indices.base, offset: 0, index: state.bindings.fragmentSplatIndices)
-                }
-                commandEncoder.draw(state.quadMesh, instanceCount: splats.splats.count)
-
-                //        commandEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4, instanceCount: splats.splats.count)
+            if debugMode {
+                commandEncoder.setTriangleFillMode(.lines)
             }
+
+            let projectionMatrix = cameraProjection.projectionMatrix(for: info.drawableSize)
+            let viewMatrix = cameraTransform.matrix.inverse
+            let modelMatrix = modelTransform.matrix
+
+            let modelViewProjectionMatrix = projectionMatrix * viewMatrix * modelMatrix
+            let modelViewMatrix = viewMatrix * modelMatrix
+            let uniforms = GaussianSplatUniforms(
+                modelViewProjectionMatrix: modelViewProjectionMatrix,
+                modelViewMatrix: modelViewMatrix,
+                projectionMatrix: projectionMatrix,
+                viewMatrix: viewMatrix,
+                cameraPosition: cameraTransform.matrix.translation,
+                drawableSize: info.drawableSize
+            )
+            commandEncoder.withDebugGroup("VertexShader") {
+                commandEncoder.setVertexBuffersFrom(mesh: state.quadMesh)
+                commandEncoder.setVertexBytes(of: uniforms, index: state.bindings.vertexUniforms)
+                commandEncoder.setVertexBuffer(splats.splats.base, offset: 0, index: state.bindings.vertexSplats)
+                commandEncoder.setVertexBuffer(splats.indices.base, offset: 0, index: state.bindings.vertexSplatIndices)
+            }
+            commandEncoder.withDebugGroup("FragmentShader") {
+                commandEncoder.setFragmentBytes(of: uniforms, index: state.bindings.fragmentUniforms)
+                commandEncoder.setFragmentBuffer(splats.splats.base, offset: 0, index: state.bindings.fragmentSplats)
+                commandEncoder.setFragmentBuffer(splats.indices.base, offset: 0, index: state.bindings.fragmentSplatIndices)
+            }
+            commandEncoder.draw(state.quadMesh, instanceCount: splats.splats.count)
+
+            //        commandEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4, instanceCount: splats.splats.count)
         }
     }
 }

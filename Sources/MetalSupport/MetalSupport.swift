@@ -90,7 +90,7 @@ public extension MTLBuffer {
 }
 
 public extension MTLCommandBuffer {
-    func withRenderCommandEncoder<R>(descriptor: MTLRenderPassDescriptor, label: String? = nil, block: (MTLRenderCommandEncoder) throws -> R) rethrows -> R {
+    func withRenderCommandEncoder<R>(descriptor: MTLRenderPassDescriptor, label: String? = nil, useDebugGroup: Bool = false, block: (MTLRenderCommandEncoder) throws -> R) rethrows -> R {
         guard let renderCommandEncoder = makeRenderCommandEncoder(descriptor: descriptor) else {
             fatalError("Failed to make render command encoder.")
         }
@@ -100,15 +100,21 @@ public extension MTLCommandBuffer {
         defer {
             renderCommandEncoder.endEncoding()
         }
-        return try block(renderCommandEncoder)
+        return try renderCommandEncoder.withDebugGroup("Encode \(label ?? "RenderCommandEncoder")", enabled: useDebugGroup) {
+            try block(renderCommandEncoder)
+        }
     }
 }
 
 public extension MTLCommandEncoder {
-    func withDebugGroup<R>(_ string: String, _ closure: () throws -> R) rethrows -> R {
-        pushDebugGroup(string)
+    func withDebugGroup<R>(_ string: String, enabled: Bool = true, _ closure: () throws -> R) rethrows -> R {
+        if enabled {
+            pushDebugGroup(string)
+        }
         defer {
-            popDebugGroup()
+            if enabled {
+                popDebugGroup()
+            }
         }
         return try closure()
     }
