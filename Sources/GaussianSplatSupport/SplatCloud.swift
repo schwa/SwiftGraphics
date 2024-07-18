@@ -9,7 +9,7 @@ public struct SplatCloud: Equatable, @unchecked Sendable {
     public typealias Splat = SplatC
     public var splats: TypedMTLBuffer<Splat>
     public var indices: TypedMTLBuffer<UInt32>
-    public var distances: TypedMTLBuffer<Float>
+    public var distances: TypedMTLBuffer<Float16>
     public var cameraPosition: SIMD3<Float>
     public var boundingBox: (SIMD3<Float>, SIMD3<Float>)
 
@@ -18,7 +18,7 @@ public struct SplatCloud: Equatable, @unchecked Sendable {
 
         let indices = (0 ..< splats.count).map { UInt32($0) }
         self.indices = try device.makeTypedBuffer(data: indices, options: .storageModeShared).labelled("Splats-Indices")
-        let distances = Array(repeating: Float.zero, count: splats.count)
+        let distances = Array(repeating: Float16.zero, count: splats.count)
         self.distances = try device.makeTypedBuffer(data: distances, options: .storageModeShared).labelled("Splats-Distances")
         self.cameraPosition = [.nan, .nan, .nan]
 

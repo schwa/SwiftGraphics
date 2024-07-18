@@ -25,7 +25,7 @@ namespace GaussianSplatShaders {
         constant simd_float3 &cameraPosition[[buffer(1)]],
         constant Splat *splats [[buffer(2)]],
         constant uint &splatCount [[buffer(3)]],
-        device float *splatDistances [[buffer(4)]]
+        device half *splatDistances [[buffer(4)]]
     ) {
         const uint index = thread_position_in_grid.x;
         if (index >= splatCount) {
@@ -42,7 +42,7 @@ namespace GaussianSplatShaders {
     void BitonicSortSplats(
         uint3 thread_position_in_grid [[thread_position_in_grid]],
         constant GaussianSplatSortUniforms &uniforms [[buffer(0)]],
-        constant float *splatDistances [[buffer(1)]],
+        constant half *splatDistances [[buffer(1)]],
         device uint *splatIndices [[buffer(2)]]
     ) {
         const auto index = thread_position_in_grid.x;
