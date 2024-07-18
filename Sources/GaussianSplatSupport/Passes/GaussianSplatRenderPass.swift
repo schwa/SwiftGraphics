@@ -21,19 +21,19 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
             var fragmentUniforms: Int
             var fragmentSplats: Int
             var fragmentSplatIndices: Int
-            var myCounters: Int
+            var vertexCounterBuffer: Int
         }
         var quadMesh: MTKMesh
         var bindings: Bindings
         var depthStencilState: MTLDepthStencilState
         var renderPipelineState: MTLRenderPipelineState
-        var myCounters: MTLBuffer
+        var vertexCounterBuffer: MTLBuffer
     }
 
     public var id: PassID = "GaussianSplatRenderPass"
     public var scene: SceneGraph
     public var debugMode: Bool
-    let useCounters = false
+    let useVertexCounting = false
 
     public init(scene: SceneGraph, debugMode: Bool) {
         self.scene = scene
@@ -44,7 +44,7 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
         let allocator = MTKMeshBufferAllocator(device: device)
         let quadMesh = try MTKMesh(mesh: MDLMesh(planeWithExtent: [2, 2, 0], segments: [1, 1], geometryType: .triangles, allocator: allocator), device: device)
 
-        let constantValues = MTLFunctionConstantValues(dictionary: [0: useCounters])
+        let constantValues = MTLFunctionConstantValues(dictionary: [0: useVertexCounting])
 
         let library = try device.makeDebugLibrary(bundle: .gaussianSplatShaders)
         let renderPipelineDescriptor = renderPipelineDescriptor()
@@ -74,16 +74,16 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
             fragmentUniforms: try reflection.binding(for: "uniforms", of: .fragment),
             fragmentSplats: try reflection.binding(for: "splats", of: .fragment),
             fragmentSplatIndices: try reflection.binding(for: "splatIndices", of: .fragment),
-            myCounters: useCounters ? try reflection.binding(for: "my_counters", of: .vertex) : 0
+            vertexCounterBuffer: useVertexCounting ? try reflection.binding(for: "my_counters", of: .vertex) : 0
         )
 
         let depthStencilDescriptor = MTLDepthStencilDescriptor(depthCompareFunction: .always, isDepthWriteEnabled: true)
         let depthStencilState = try device.makeDepthStencilState(descriptor: depthStencilDescriptor).safelyUnwrap(BaseError.resourceCreationFailure)
 
-        let myCounters = try device.makeBuffer(bytesOf: MyCounters(), options: .storageModeShared)
-        myCounters.label = "myCounters"
+        let vertexCounterBuffer = try device.makeBuffer(bytesOf: MyCounters(), options: .storageModeShared)
+        vertexCounterBuffer.label = "vertexCounterBuffer"
 
-        return State(quadMesh: quadMesh, bindings: bindings, depthStencilState: depthStencilState, renderPipelineState: renderPipelineState, myCounters: myCounters)
+        return State(quadMesh: quadMesh, bindings: bindings, depthStencilState: depthStencilState, renderPipelineState: renderPipelineState, vertexCounterBuffer: vertexCounterBuffer)
     }
 
     public func render(commandBuffer: MTLCommandBuffer, renderPassDescriptor: MTLRenderPassDescriptor, info: PassInfo, state: State) throws {
@@ -112,10 +112,10 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
                     drawableSize: try renderPassDescriptor.colorAttachments[0].size
                 )
 
-                if useCounters {
-                    let b = state.myCounters.contents().bindMemory(to: MyCounters.self, capacity: 1)
+                if useVertexCounting {
+                    let b = state.vertexCounterBuffer.contents().bindMemory(to: MyCounters.self, capacity: 1)
                     print(splats.splats.count, b[0].vertices_submitted / 3, b[0].vertices_culled / 3, (b[0].vertices_submitted - b[0].vertices_culled) / 3)
-                    state.myCounters.contents().storeBytes(of: MyCounters(), as: MyCounters.self)
+                    state.vertexCounterBuffer.contents().storeBytes(of: MyCounters(), as: MyCounters.self)
                 }
 
 
@@ -125,8 +125,8 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
                     commandEncoder.setVertexBytes(of: uniforms, index: state.bindings.vertexUniforms)
                     commandEncoder.setVertexBuffer(splats.splats, index: state.bindings.vertexSplats)
                     commandEncoder.setVertexBuffer(splats.indices, index: state.bindings.vertexSplatIndices)
-                    if useCounters {
-                        commandEncoder.setVertexBuffer(state.myCounters, offset: 0, index: state.bindings.myCounters)
+                    if useVertexCounting {
+                        commandEncoder.setVertexBuffer(state.vertexCounterBuffer, offset: 0, index: state.bindings.vertexCounterBuffer)
                     }
                 }
                 commandEncoder.withDebugGroup("FragmentShader") {
