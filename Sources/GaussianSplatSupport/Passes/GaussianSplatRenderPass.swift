@@ -33,6 +33,7 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
     public var id: PassID = "GaussianSplatRenderPass"
     public var scene: SceneGraph
     public var debugMode: Bool
+    let useCounters = true
 
     public init(scene: SceneGraph, debugMode: Bool) {
         self.scene = scene
@@ -43,12 +44,14 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
         let allocator = MTKMeshBufferAllocator(device: device)
         let quadMesh = try MTKMesh(mesh: MDLMesh(planeWithExtent: [2, 2, 0], segments: [1, 1], geometryType: .triangles, allocator: allocator), device: device)
 
+        let constantValues = MTLFunctionConstantValues(dictionary: [0: useCounters])
+
         let library = try device.makeDebugLibrary(bundle: .gaussianSplatShaders)
         let renderPipelineDescriptor = renderPipelineDescriptor()
         renderPipelineDescriptor.label = "\(type(of: self))"
         renderPipelineDescriptor.vertexDescriptor = MTLVertexDescriptor(oneTrueVertexDescriptor)
-        renderPipelineDescriptor.vertexFunction = library.makeFunction(name: "GaussianSplatShaders::VertexShader")
-        renderPipelineDescriptor.fragmentFunction = library.makeFunction(name: "GaussianSplatShaders::FragmentShader")
+        renderPipelineDescriptor.vertexFunction = try library.makeFunction(name: "GaussianSplatShaders::VertexShader", constantValues: constantValues)
+        renderPipelineDescriptor.fragmentFunction = try library.makeFunction(name: "GaussianSplatShaders::FragmentShader", constantValues: constantValues)
 
         renderPipelineDescriptor.colorAttachments[0].isBlendingEnabled = true
         renderPipelineDescriptor.colorAttachments[0].rgbBlendOperation = .add
@@ -71,7 +74,7 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
             fragmentUniforms: try reflection.binding(for: "uniforms", of: .fragment),
             fragmentSplats: try reflection.binding(for: "splats", of: .fragment),
             fragmentSplatIndices: try reflection.binding(for: "splatIndices", of: .fragment),
-            myCounters: try reflection.binding(for: "my_counters", of: .vertex)
+            myCounters: useCounters ? try reflection.binding(for: "my_counters", of: .vertex) : 0
         )
 
         let depthStencilDescriptor = MTLDepthStencilDescriptor(depthCompareFunction: .always, isDepthWriteEnabled: true)
@@ -80,12 +83,10 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
         let myCounters = try device.makeBuffer(bytesOf: MyCounters(), options: .storageModeShared)
         myCounters.label = "myCounters"
 
-
         return State(quadMesh: quadMesh, bindings: bindings, depthStencilState: depthStencilState, renderPipelineState: renderPipelineState, myCounters: myCounters)
     }
 
     public func render(commandBuffer: MTLCommandBuffer, renderPassDescriptor: MTLRenderPassDescriptor, info: PassInfo, state: State) throws {
-
         let b = state.myCounters.contents().bindMemory(to: MyCounters.self, capacity: 1)
 
         print(b[0])
@@ -122,8 +123,9 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
                     commandEncoder.setVertexBytes(of: uniforms, index: state.bindings.vertexUniforms)
                     commandEncoder.setVertexBuffer(splats.splats, index: state.bindings.vertexSplats)
                     commandEncoder.setVertexBuffer(splats.indices, index: state.bindings.vertexSplatIndices)
-                    commandEncoder.setVertexBuffer(state.myCounters, offset: 0, index: state.bindings.myCounters)
-
+                    if useCounters {
+                        commandEncoder.setVertexBuffer(state.myCounters, offset: 0, index: state.bindings.myCounters)
+                    }
                 }
                 commandEncoder.withDebugGroup("FragmentShader") {
                     commandEncoder.setFragmentBytes(of: uniforms, index: state.bindings.fragmentUniforms)

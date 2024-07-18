@@ -26,7 +26,7 @@ public extension MTLRenderPipelineReflection {
             fatalError("Unimplemented")
         }
         guard let binding = bindings.first(where: { $0.name == name }) else {
-            throw BaseError.missingValue
+            throw BaseError.generic("Could not bind '\(name)' to \(functionType) function.")
         }
         return binding.index
     }
