@@ -9,7 +9,7 @@
 #endif
 
 struct MyCounters {
-    ATOMIC_UINT vertices_rendered;
+    ATOMIC_UINT vertices_submitted;
     ATOMIC_UINT vertices_culled;
 };
 
@@ -58,6 +58,10 @@ namespace GaussianSplatShaders {
    ) {
         VertexOut out;
 
+        if (use_counters) {
+            atomic_fetch_add_explicit(&(my_counters->vertices_submitted), 1, memory_order_relaxed);
+        }
+
         const float2 vertexModelSpacePosition = in.position.xy;
         auto splat = splats[splatIndices[instance_id]];
         const float4 splatWorldSpacePosition = uniforms.modelViewMatrix * float4(float3(splat.position), 1);
@@ -77,9 +81,6 @@ namespace GaussianSplatShaders {
             return out;
         }
 
-        if (use_counters) {
-            atomic_fetch_add_explicit(&(my_counters->vertices_rendered), 1, memory_order_relaxed);
-        }
 
         // float3 calcCovariance2D(float3 viewPos, packed_half3 cov3Da, packed_half3 cov3Db, float4x4 viewMatrix, float4x4 projectionMatrix, float2 screenSize)
         const float3 cov2D = calcCovariance2D(splatWorldSpacePosition.xyz, splat.cov_a, splat.cov_b, uniforms.viewMatrix, uniforms.projectionMatrix, uniforms.drawableSize);

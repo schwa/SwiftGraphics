@@ -33,7 +33,7 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
     public var id: PassID = "GaussianSplatRenderPass"
     public var scene: SceneGraph
     public var debugMode: Bool
-    let useCounters = true
+    let useCounters = false
 
     public init(scene: SceneGraph, debugMode: Bool) {
         self.scene = scene
@@ -87,12 +87,6 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
     }
 
     public func render(commandBuffer: MTLCommandBuffer, renderPassDescriptor: MTLRenderPassDescriptor, info: PassInfo, state: State) throws {
-        let b = state.myCounters.contents().bindMemory(to: MyCounters.self, capacity: 1)
-
-        print(b[0])
-
-        state.myCounters.contents().storeBytes(of: MyCounters(), as: MyCounters.self)
-
         try commandBuffer.withRenderCommandEncoder(descriptor: renderPassDescriptor, label: "\(type(of: self))", useDebugGroup: true) { commandEncoder in
             if info.configuration.depthStencilPixelFormat != .invalid {
                 commandEncoder.setDepthStencilState(state.depthStencilState)
@@ -117,6 +111,14 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
                     cameraPosition: helper.cameraMatrix.translation,
                     drawableSize: try renderPassDescriptor.colorAttachments[0].size
                 )
+
+                if useCounters {
+                    let b = state.myCounters.contents().bindMemory(to: MyCounters.self, capacity: 1)
+                    print(splats.splats.count, b[0].vertices_submitted / 3, b[0].vertices_culled / 3, (b[0].vertices_submitted - b[0].vertices_culled) / 3)
+                    state.myCounters.contents().storeBytes(of: MyCounters(), as: MyCounters.self)
+                }
+
+
 
                 commandEncoder.withDebugGroup("VertexShader") {
                     commandEncoder.setVertexBuffersFrom(mesh: state.quadMesh)
