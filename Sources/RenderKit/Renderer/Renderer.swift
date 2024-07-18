@@ -32,10 +32,14 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
 
     private var device: MTLDevice
     private var passes: PassCollection
+    private var logger: Logger?
+
+    typealias Callbacks = RendererCallbacks
+    private var callbacks: Callbacks
+
     private var statesByPasses: [PassID: any PassState] = [:]
     private var configuration: MetalConfiguration?
     private var drawableSize: SIMD2<Float> = .zero
-    private var logger: Logger?
     private var info: PassInfo?
     private var phase: Phase {
         didSet {
@@ -45,11 +49,12 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
         }
     }
 
-    init(device: MTLDevice, passes: PassCollection, logger: Logger? = nil) {
+    init(device: MTLDevice, passes: PassCollection, logger: Logger? = nil, callbacks: Callbacks = .init()) {
         logger?.debug("Renderer.\(#function)")
         self.device = device
         self.passes = passes
         self.phase = .initialized
+        self.callbacks = callbacks
     }
 
     mutating func configure(_ configuration: inout MetalConfiguration) throws {
@@ -102,6 +107,11 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
         guard let info else {
             fatalError("Could not unwrap info.")
         }
+
+        if let preRender = callbacks.preRender {
+            preRender(commandBuffer)
+        }
+
         try _render(commandBuffer: commandBuffer, renderPassDescriptor: currentRenderPassDescriptor, passes: passes.elements, info: info)
     }
 
@@ -112,8 +122,13 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
         info.currentRenderPassDescriptor = renderPassDescriptor
 
         for pass in passes {
+            if let prePass = callbacks.prePass {
+                prePass(pass, commandBuffer, info)
+            }
+
             switch pass {
             case let pass as any RenderPassProtocol:
+                // TODO: FIXME. this is still not right.
                 //                let isFirst = pass.id == renderPasses.first?.id
                 //                let isLast = pass.id == renderPasses.last?.id
                 //                if isFirst {
@@ -152,14 +167,23 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
             default:
                 fatalError("Unknown pass type.")
             }
+
+            if let postPass = callbacks.postPass {
+                postPass(pass, commandBuffer, info)
+            }
         }
     }
 
     mutating func draw(commandQueue: MTLCommandQueue, currentRenderPassDescriptor: MTLRenderPassDescriptor, currentDrawable: MTLDrawable, drawableSize: SIMD2<Float>) throws {
-        let commandBuffer = try commandQueue.makeCommandBuffer().safelyUnwrap(BaseError.resourceCreationFailure)
-        try render(commandBuffer: commandBuffer, currentRenderPassDescriptor: currentRenderPassDescriptor, drawableSize: drawableSize)
-        commandBuffer.present(currentDrawable)
-        commandBuffer.commit()
+        try commandQueue.withCommandBuffer(drawable: currentDrawable) { commandBuffer in
+            if let scheduledHandler = callbacks.renderScheduled {
+                commandBuffer.addScheduledHandler(scheduledHandler)
+            }
+            if let completedHandler = callbacks.renderCompleted {
+                commandBuffer.addCompletedHandler(completedHandler)
+            }
+            try render(commandBuffer: commandBuffer, currentRenderPassDescriptor: currentRenderPassDescriptor, drawableSize: drawableSize)
+        }
     }
 
     func expand(passes: [any PassProtocol]) throws -> [any PassProtocol] {
@@ -266,5 +290,26 @@ extension Renderer.Phase: CustomStringConvertible {
         case .rendering:
             return "rendering"
         }
+    }
+}
+
+public struct RendererCallbacks: Sendable {
+    public var preRender: (@Sendable (MTLCommandBuffer) -> Void)?
+    public var renderScheduled: (@Sendable (MTLCommandBuffer) -> Void)?
+    public var renderCompleted: (@Sendable (MTLCommandBuffer) -> Void)?
+    public var prePass: (@Sendable (any PassProtocol, MTLCommandBuffer, PassInfo) -> Void)?
+    public var postPass: (@Sendable (any PassProtocol, MTLCommandBuffer, PassInfo) -> Void)?
+
+    public
+    init(
+        preRender: (@Sendable (MTLCommandBuffer) -> Void)? = nil,
+        renderScheduled: (@Sendable (MTLCommandBuffer) -> Void)? = nil,
+        renderCompleted: (@Sendable (MTLCommandBuffer) -> Void)? = nil,
+        prePass: (@Sendable (any PassProtocol, MTLCommandBuffer, PassInfo) -> Void)? = nil,
+        postPass: (@Sendable (any PassProtocol, MTLCommandBuffer, PassInfo) -> Void)? = nil
+    ) {
+        self.preRender = preRender
+        self.renderScheduled = renderScheduled
+        self.renderCompleted = renderCompleted
     }
 }

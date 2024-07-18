@@ -17,6 +17,7 @@ public struct GaussianSplatRenderView: View {
     private let debugMode: Bool
     private let sortRate: Int
     private let metalFXRate: Float
+    private let gpuCounters: GPUCounters?
 
     @Environment(\.metalDevice)
     var device
@@ -33,11 +34,12 @@ public struct GaussianSplatRenderView: View {
     @State
     private var drawableSize: SIMD2<Float> = .zero
 
-    public init(scene: SceneGraph, debugMode: Bool, sortRate: Int, metalFXRate: Float) {
+    public init(scene: SceneGraph, debugMode: Bool, sortRate: Int, metalFXRate: Float, gpuCounters: GPUCounters? = nil) {
         self.scene = scene
         self.debugMode = debugMode
         self.sortRate = sortRate
         self.metalFXRate = metalFXRate
+        self.gpuCounters = gpuCounters
     }
 
     public var body: some View {
@@ -136,6 +138,7 @@ public struct GaussianSplatRenderView: View {
         self.upscaledTexture = upscaledTexture
     }
 
+    // TODO: FIXME - move
     func screenshot() {
         //        do {
         //            let device = MTLCreateSystemDefaultDevice().forceUnwrap()

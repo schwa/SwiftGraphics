@@ -35,10 +35,12 @@ public struct GaussianSplatMinimalView: View {
     @State
     private var metalFXRate: Float = 1
 
+    @State
+    private var gpuCounters: GPUCounters
+
     public init() {
         let device = MTLCreateSystemDefaultDevice()!
         let url = Bundle.module.url(forResource: "vision_dr", withExtension: "splat")!
-        self.device = device
         let splats = try! SplatCloud(device: device, url: url)
         let root = Node(label: "root") {
             Node(label: "ball") {
@@ -47,11 +49,41 @@ public struct GaussianSplatMinimalView: View {
             }
             Node(label: "splats").content(splats)
         }
+
+        self.device = device
         self.scene = SceneGraph(root: root)
+        self.gpuCounters = try! GPUCounters(device: device)
+    }
+
+    var msFormatStyle: FloatingPointFormatStyle<Double> = .number.scale(1 / 1_000_000).precision(.fractionLength(0...2))
+
+    func performanceMeter() -> some View {
+        TimelineView(.periodic(from: .now, by: 1)) { _ in
+            HStack {
+                if let sample = gpuCounters.samples.last {
+                    let frameTime = sample.frameNanoseconds
+                    let fps = frameTime != 0 ? 1 / Double(frameTime / 1_000_000_000) : 0
+                    Text(sample.index, format: .number)
+                        .frame(width: 80)
+                    Text(fps, format: .number.precision(.fractionLength(0...2)))
+                        .frame(width: 80)
+                    Text(Double(sample.vertexNanoseconds ?? 0), format: msFormatStyle)
+                        .frame(width: 80)
+                    Text(Double(sample.fragmentNanoseconds ?? 0), format: msFormatStyle)
+                        .frame(width: 80)
+                }
+            }
+        }
+        .monospacedDigit()
+        .background(.white)
     }
 
     public var body: some View {
         GaussianSplatRenderView(scene: scene, debugMode: false, sortRate: 30, metalFXRate: metalFXRate)
+            .overlay(alignment: .top) {
+                performanceMeter()
+            }
+            .environment(\.gpuCounters, gpuCounters)
             #if os(iOS)
             .ignoresSafeArea()
             #endif
@@ -128,5 +160,17 @@ struct ZoomGestureViewModifier: ViewModifier {
 extension View {
     func zoomGesture(zoom: Binding<Float>, range: ClosedRange<Float> = -.infinity ... .infinity) -> some View {
         modifier(ZoomGestureViewModifier(zoom: zoom, range: range))
+    }
+}
+
+extension MTLCounterResultTimestamp {
+    var timestampNanoseconds: UInt64 {
+        var timebase = mach_timebase_info_data_t()
+        mach_timebase_info(&timebase)
+        return timestamp * UInt64(timebase.numer) / UInt64(timebase.denom)
+    }
+
+    var timestampMilliseconds: Double {
+        Double(timestampNanoseconds) / 1_000_000.0
     }
 }

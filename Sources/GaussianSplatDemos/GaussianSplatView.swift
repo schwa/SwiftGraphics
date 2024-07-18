@@ -34,6 +34,9 @@ public struct GaussianSplatView: View {
     @State
     private var ballConstraint = BallConstraint()
 
+    @State
+    private var counterSampleBuffer: MTLCounterSampleBuffer?
+
     public init() {
         let device = MTLCreateSystemDefaultDevice()!
         let url = Bundle.module.url(forResource: "train", withExtension: "splat")!

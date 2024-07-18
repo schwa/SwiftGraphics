@@ -32,6 +32,12 @@ public struct RenderView: View {
     @Environment(\.renderErrorHandler)
     var renderErrorHandler
 
+    @Environment(\.rendererCallbacks)
+    var rendererCallbacks
+
+    @Environment(\.gpuCounters)
+    var gpuCounters
+
     public init(passes: [any PassProtocol], configure: @escaping Configure = { _ in }, sizeWillChange: @escaping SizeWillChange = { _, _, _ in }) {
         self.configure = configure
         self.sizeWillChange = sizeWillChange
@@ -44,7 +50,22 @@ public struct RenderView: View {
             do {
                 configure(&configuration)
                 commandQueue = device.makeCommandQueue().forceUnwrap("Could not create command queue.")
-                renderer = Renderer<MetalViewConfiguration>(device: device, passes: passes, logger: logger)
+
+                var callbacks = rendererCallbacks ?? RendererCallbacks()
+                if let gpuCounters {
+                    // TODO: FIXME these over-write any callbacks passed in
+                    callbacks.renderCompleted = { _ in
+                        try! gpuCounters.gatherData()
+                    }
+                    callbacks.prePass = { _, _, passInfo in
+                        guard let renderPassDescriptor = passInfo.currentRenderPassDescriptor else {
+                            fatalError("Could not get current render pass descriptor.")
+                        }
+                        gpuCounters.updateBuffer(renderPassDescriptor: renderPassDescriptor)
+                    }
+                }
+
+                renderer = Renderer<MetalViewConfiguration>(device: device, passes: passes, logger: logger, callbacks: callbacks)
                 try renderer?.configure(&configuration)
             } catch {
                 renderErrorHandler.send(error, logger: logger)
@@ -84,8 +105,14 @@ public struct RenderView: View {
 // }
 //
 
-extension RenderView {
-    public init(pass: (any PassProtocol)?, configure: @escaping Configure = { _ in }, sizeWillChange: @escaping SizeWillChange = { _, _, _ in }) {
+public extension RenderView {
+    init(pass: (any PassProtocol)?, configure: @escaping Configure = { _ in }, sizeWillChange: @escaping SizeWillChange = { _, _, _ in }) {
         self.init(passes: pass.map { [$0] } ?? [], configure: configure, sizeWillChange: sizeWillChange)
     }
+}
+
+// TODO: Replace with RendererCallbacks \.callbacks
+public extension EnvironmentValues {
+    @Entry
+    var rendererCallbacks: RendererCallbacks?
 }
