@@ -33,11 +33,12 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
     public var id: PassID = "GaussianSplatRenderPass"
     public var scene: SceneGraph
     public var debugMode: Bool
-    let useVertexCounting = false
+    public var useVertexCounting = false
 
-    public init(scene: SceneGraph, debugMode: Bool) {
+    init(scene: SceneGraph, debugMode: Bool, useVertexCounting: Bool = false) {
         self.scene = scene
         self.debugMode = debugMode
+        self.useVertexCounting = useVertexCounting
     }
 
     public func setup(device: MTLDevice, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State {
@@ -117,8 +118,6 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
                     print(splats.splats.count, b[0].vertices_submitted / 3, b[0].vertices_culled / 3, (b[0].vertices_submitted - b[0].vertices_culled) / 3)
                     state.vertexCounterBuffer.contents().storeBytes(of: MyCounters(), as: MyCounters.self)
                 }
-
-
 
                 commandEncoder.withDebugGroup("VertexShader") {
                     commandEncoder.setVertexBuffersFrom(mesh: state.quadMesh)
