@@ -62,7 +62,7 @@ public struct GaussianSplatMinimalView: View {
                 scene.currentCameraNode?.transform = ballConstraint.transform
             }
             .ballRotation($cameraRotation, pitchLimit: .degrees(-.infinity) ... .degrees(.infinity))
-            .zoomGesture(zoom: $ballConstraint.radius, range: 0.5 ... 16)
+            .zoomGesture(zoom: $ballConstraint.radius)
             .onDrop(of: [.splat], isTargeted: $isTargeted) { items in
                 if let item = items.first {
                     item.loadItem(forTypeIdentifier: UTType.splat.identifier, options: nil) { data, _ in
