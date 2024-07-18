@@ -2,6 +2,17 @@
 
 #import "GaussianSplatSupport.h"
 
+#if __METAL_VERSION__
+#define ATOMIC_UINT atomic_uint
+#else
+#define ATOMIC_UINT unsigned int
+#endif
+
+struct MyCounters {
+    ATOMIC_UINT vertices_rendered;
+    ATOMIC_UINT vertices_culled;
+};
+
 #ifdef __METAL_VERSION__
 #import <metal_stdlib>
 
@@ -40,7 +51,8 @@ namespace GaussianSplatShaders {
         uint vertex_id[[vertex_id]],
         constant VertexUniforms &uniforms [[buffer(1)]],
         constant Splat *splats [[buffer(2)]],
-        constant uint *splatIndices [[buffer(3)]]
+        constant uint *splatIndices [[buffer(3)]],
+        device MyCounters* my_counters [[buffer(4)]]
    ) {
         VertexOut out;
 
@@ -49,15 +61,19 @@ namespace GaussianSplatShaders {
         const float4 splatWorldSpacePosition = uniforms.modelViewMatrix * float4(float3(splat.position), 1);
         const float4 splatClipSpacePosition = uniforms.projectionMatrix * splatWorldSpacePosition;
 
+
         const auto bounds = 1.2 * splatClipSpacePosition.w;
         if (splatClipSpacePosition.z < -splatClipSpacePosition.w
             || splatClipSpacePosition.x < -bounds
             || splatClipSpacePosition.x > bounds
             || splatClipSpacePosition.y < -bounds
             || splatClipSpacePosition.y > bounds) {
+            atomic_fetch_add_explicit(&(my_counters->vertices_culled), 1, memory_order_relaxed);
             out.position = float4(1, 1, 0, 1);
             return out;
         }
+
+        atomic_fetch_add_explicit(&(my_counters->vertices_rendered), 1, memory_order_relaxed);
 
         // float3 calcCovariance2D(float3 viewPos, packed_half3 cov3Da, packed_half3 cov3Db, float4x4 viewMatrix, float4x4 projectionMatrix, float2 screenSize)
         const float3 cov2D = calcCovariance2D(splatWorldSpacePosition.xyz, splat.cov_a, splat.cov_b, uniforms.viewMatrix, uniforms.projectionMatrix, uniforms.drawableSize);
