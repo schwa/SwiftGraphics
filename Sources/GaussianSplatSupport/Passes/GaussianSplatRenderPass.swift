@@ -21,11 +21,13 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
             var fragmentUniforms: Int
             var fragmentSplats: Int
             var fragmentSplatIndices: Int
+            var myCounters: Int
         }
         var quadMesh: MTKMesh
         var bindings: Bindings
         var depthStencilState: MTLDepthStencilState
         var renderPipelineState: MTLRenderPipelineState
+        var myCounters: MTLBuffer
     }
 
     public var id: PassID = "GaussianSplatRenderPass"
@@ -68,16 +70,28 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
             vertexSplatIndices: try reflection.binding(for: "splatIndices", of: .vertex),
             fragmentUniforms: try reflection.binding(for: "uniforms", of: .fragment),
             fragmentSplats: try reflection.binding(for: "splats", of: .fragment),
-            fragmentSplatIndices: try reflection.binding(for: "splatIndices", of: .fragment)
+            fragmentSplatIndices: try reflection.binding(for: "splatIndices", of: .fragment),
+            myCounters: try reflection.binding(for: "my_counters", of: .vertex)
         )
 
         let depthStencilDescriptor = MTLDepthStencilDescriptor(depthCompareFunction: .always, isDepthWriteEnabled: true)
         let depthStencilState = try device.makeDepthStencilState(descriptor: depthStencilDescriptor).safelyUnwrap(BaseError.resourceCreationFailure)
 
-        return State(quadMesh: quadMesh, bindings: bindings, depthStencilState: depthStencilState, renderPipelineState: renderPipelineState)
+        let myCounters = try device.makeBuffer(bytesOf: MyCounters(), options: .storageModeShared)
+        myCounters.label = "myCounters"
+
+
+        return State(quadMesh: quadMesh, bindings: bindings, depthStencilState: depthStencilState, renderPipelineState: renderPipelineState, myCounters: myCounters)
     }
 
     public func render(commandBuffer: MTLCommandBuffer, renderPassDescriptor: MTLRenderPassDescriptor, info: PassInfo, state: State) throws {
+
+        let b = state.myCounters.contents().bindMemory(to: MyCounters.self, capacity: 1)
+
+        print(b[0])
+
+        state.myCounters.contents().storeBytes(of: MyCounters(), as: MyCounters.self)
+
         try commandBuffer.withRenderCommandEncoder(descriptor: renderPassDescriptor, label: "\(type(of: self))", useDebugGroup: true) { commandEncoder in
             if info.configuration.depthStencilPixelFormat != .invalid {
                 commandEncoder.setDepthStencilState(state.depthStencilState)
@@ -108,6 +122,8 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
                     commandEncoder.setVertexBytes(of: uniforms, index: state.bindings.vertexUniforms)
                     commandEncoder.setVertexBuffer(splats.splats, index: state.bindings.vertexSplats)
                     commandEncoder.setVertexBuffer(splats.indices, index: state.bindings.vertexSplatIndices)
+                    commandEncoder.setVertexBuffer(state.myCounters, offset: 0, index: state.bindings.myCounters)
+
                 }
                 commandEncoder.withDebugGroup("FragmentShader") {
                     commandEncoder.setFragmentBytes(of: uniforms, index: state.bindings.fragmentUniforms)
