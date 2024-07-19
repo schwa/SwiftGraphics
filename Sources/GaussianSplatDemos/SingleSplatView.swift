@@ -184,7 +184,7 @@ public struct SingleSplatView: View {
     func makePasses() -> [any PassProtocol] {
         let splats = try! SplatCloud(device: device, splats: makeSplats().map(SplatC.init))
 
-        let preCalcComputePass = GaussianSplatPreCalcComputePass(
+        let preCalcComputePass = GaussianSplatDistanceComputePass(
             splats: splats,
             modelMatrix: simd_float3x3(truncating: .identity),
             cameraPosition: cameraTransform.translation
