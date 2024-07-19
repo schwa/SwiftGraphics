@@ -1,6 +1,7 @@
 import BaseSupport
 import CoreGraphicsSupport
 import Everything
+import Fields3D
 import Foundation
 import GaussianSplatSupport
 import MetalKit
@@ -55,31 +56,14 @@ public struct GaussianSplatMinimalView: View {
         self.gpuCounters = try! GPUCounters(device: device)
     }
 
-    var msFormatStyle: FloatingPointFormatStyle<Double> = .number.scale(1 / 1_000_000).precision(.fractionLength(0...2))
-
     func performanceMeter() -> some View {
-        TimelineView(.periodic(from: .now, by: 1)) { _ in
-            HStack {
-                if let sample = gpuCounters.samples.last {
-                    let frameTime = sample.frameNanoseconds
-                    let fps = frameTime != 0 ? 1 / Double(frameTime / 1_000_000_000) : 0
-                    Text(sample.index, format: .number)
-                        .frame(width: 80)
-                    Text(fps, format: .number.precision(.fractionLength(0...2)))
-                        .frame(width: 80)
-                    Text(Double(sample.vertexNanoseconds ?? 0), format: msFormatStyle)
-                        .frame(width: 80)
-                    Text(Double(sample.fragmentNanoseconds ?? 0), format: msFormatStyle)
-                        .frame(width: 80)
-                }
-            }
+        TimelineView(.periodic(from: .now, by: 0.25)) { _ in
+            PerformanceHUD(measurements: gpuCounters.measurements)
         }
-        .monospacedDigit()
-        .background(.white)
     }
 
     public var body: some View {
-        GaussianSplatRenderView(scene: scene, debugMode: false, sortRate: 30, metalFXRate: metalFXRate)
+        GaussianSplatRenderView(scene: scene, debugMode: false, sortRate: 0, metalFXRate: metalFXRate)
             .overlay(alignment: .top) {
                 performanceMeter()
             }

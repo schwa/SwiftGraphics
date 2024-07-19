@@ -42,6 +42,7 @@ public struct GaussianSplatBitonicSortComputePass: ComputePassProtocol {
         if sortRate > 1 && info.frame > 1 && !info.frame.isMultiple(of: sortRate) {
             return
         }
+        print("SORT")
 
         let computePipelineState = state.pipelineState
         let commandEncoder = commandBuffer.makeComputeCommandEncoder().forceUnwrap()

@@ -98,15 +98,17 @@ public struct GaussianSplatRenderView: View {
 
         return try GroupPass(id: "TODO-1") {
             GroupPass(id: "GaussianSplatRenderGroup", renderPassDescriptor: metalFXRate != 1 ? offscreenRenderPassDescriptor : nil) {
-                GaussianSplatPreCalcComputePass(
-                    splats: splats,
-                    modelMatrix: simd_float3x3(truncating: splatsNode.transform.matrix),
-                    cameraPosition: cameraNode.transform.translation
-                )
-                GaussianSplatBitonicSortComputePass(
-                    splats: splats,
-                    sortRate: sortRate
-                )
+                if sortRate > 0 {
+                    GaussianSplatPreCalcComputePass(
+                        splats: splats,
+                        modelMatrix: simd_float3x3(truncating: splatsNode.transform.matrix),
+                        cameraPosition: cameraNode.transform.translation
+                    )
+                    GaussianSplatBitonicSortComputePass(
+                        splats: splats,
+                        sortRate: sortRate
+                    )
+                }
                 GaussianSplatRenderPass(
                     scene: scene,
                     debugMode: false

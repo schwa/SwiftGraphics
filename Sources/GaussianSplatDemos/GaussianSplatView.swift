@@ -72,7 +72,6 @@ public struct GaussianSplatView: View {
                     item.loadItem(forTypeIdentifier: UTType.splat.identifier, options: nil) { data, _ in
                         guard let url = data as? URL else {
                             fatalError("No url")
-                            return
                         }
                         Task {
                             await MainActor.run {

@@ -1,3 +1,4 @@
+import Everything
 import Metal
 import Observation
 import SwiftUI
@@ -14,15 +15,52 @@ public class GPUCounters: @unchecked Sendable {
     @ObservationIgnored
     var maxSamples = 60
 
-    public struct Sample: Sendable {
-        public var index: UInt64
-        public var frameNanoseconds: UInt64
-        public var vertexNanoseconds: UInt64?
-        public var fragmentNanoseconds: UInt64?
+    @ObservationIgnored
+    var lastSampleTimestamp: UInt64?
+
+    public struct Measurement: Sendable {
+        public enum Kind: String, Hashable, Sendable {
+            case frame
+            case computeShader
+            case vertexShader
+            case fragmentShader
+        }
+
+        public struct Sample: Sendable {
+            public var timestamp: UInt64
+            public var value: UInt64
+
+            public init(timestamp: UInt64, value: UInt64) {
+                self.timestamp = timestamp
+                self.value = value
+            }
+        }
+
+        public var id: Kind
+        public var maxSamples: Int
+        public var samples: [Sample] = []
+        public var movingAverage = ExponentialMovingAverageIrregular()
+
+        public init(id: Kind, maxSamples: Int, samples: [Sample] = []) {
+            self.id = id
+            self.maxSamples = maxSamples
+            self.samples = samples
+            self.movingAverage = ExponentialMovingAverageIrregular()
+            for sample in samples {
+                self.movingAverage.update(time: Double(sample.timestamp), value: Double(sample.value))
+            }
+        }
+
+        mutating func addSample(timestamp: UInt64, value: UInt64) {
+            let sample = Sample(timestamp: timestamp, value: value)
+            samples.append(sample)
+            samples = Array(samples.suffix(maxSamples))
+            movingAverage.update(time: Double(timestamp), value: Double(value))
+        }
     }
 
     @ObservationIgnored
-    public private(set) var samples: [Sample] = []
+    public private(set) var measurements: [Measurement.Kind: Measurement] = [:]
 
     public init(device: MTLDevice) throws {
         //        print("atStageBoundary", device.supportsCounterSampling(.atStageBoundary))
@@ -59,19 +97,24 @@ public class GPUCounters: @unchecked Sendable {
     }
 
     public func gatherData() throws {
-        let now = getMachTimeInNanoseconds()
-        let lastSample = samples.last
-        var sample = Sample(index: (lastSample?.index ?? 0) + 1, frameNanoseconds: now - (lastSample?.frameNanoseconds ?? now))
+        let timestamp = getMachTimeInNanoseconds()
+        if let lastSampleTimestamp {
+            let frameTime = timestamp - lastSampleTimestamp
+            addMeasurement(id: .frame, timestamp: timestamp, value: frameTime)
+        }
         if let counterSampleBuffer {
             let data = try counterSampleBuffer.resolveCounterRange(0 ..< 4)
             data?.withUnsafeBytes { buffer in
                 let timestamps = buffer.bindMemory(to: MTLCounterResultTimestamp.self)
-                sample.vertexNanoseconds = timestamps[1].timestamp - timestamps[0].timestamp
-                sample.fragmentNanoseconds = timestamps[3].timestamp - timestamps[2].timestamp
+                addMeasurement(id: .vertexShader, timestamp: timestamp, value: timestamps[1].timestamp - timestamps[0].timestamp)
+                addMeasurement(id: .fragmentShader, timestamp: timestamp, value: timestamps[3].timestamp - timestamps[2].timestamp)
             }
         }
-        samples.append(sample)
-        samples = Array(samples.suffix(maxSamples))
+        lastSampleTimestamp = timestamp
+    }
+
+    func addMeasurement(id: Measurement.Kind, timestamp: UInt64, value: UInt64) {
+        measurements[id, default: .init(id: id, maxSamples: maxSamples)].addSample(timestamp: timestamp, value: value)
     }
 }
 

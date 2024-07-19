@@ -266,7 +266,7 @@ struct SingleGaussianSplatRenderPass: RenderPassProtocol {
     }
 
     func render(commandBuffer: MTLCommandBuffer, renderPassDescriptor: MTLRenderPassDescriptor, info: PassInfo, state: State) throws {
-        try commandBuffer.withRenderCommandEncoder(descriptor: renderPassDescriptor, label: "\(type(of: self))", useDebugGroup: true) { commandEncoder in
+        commandBuffer.withRenderCommandEncoder(descriptor: renderPassDescriptor, label: "\(type(of: self))", useDebugGroup: true) { commandEncoder in
             commandEncoder.setDepthStencilState(state.depthStencilState)
             commandEncoder.setRenderPipelineState(state.renderPipelineState)
 
