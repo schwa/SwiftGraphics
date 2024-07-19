@@ -286,7 +286,8 @@ struct SingleGaussianSplatRenderPass: RenderPassProtocol {
                 projectionMatrix: projectionMatrix,
                 viewMatrix: viewMatrix,
                 cameraPosition: cameraTransform.matrix.translation,
-                drawableSize: info.drawableSize
+                drawableSize: info.drawableSize,
+                discardRate: 0.0
             )
             commandEncoder.withDebugGroup("VertexShader") {
                 commandEncoder.setVertexBuffersFrom(mesh: state.quadMesh)

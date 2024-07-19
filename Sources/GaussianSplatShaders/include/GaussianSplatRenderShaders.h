@@ -109,6 +109,9 @@ namespace GaussianSplatShaders {
         }
         const auto falloff = exp(negativeDistanceSquared);
         const auto alpha = in.color.a * falloff;
+        if (alpha < uniforms.discardRate) {
+            discard_fragment();
+        }
         return float4(in.color.rgb * alpha, alpha);
     }
 }

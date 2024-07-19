@@ -39,6 +39,9 @@ public struct GaussianSplatMinimalView: View {
     @State
     private var gpuCounters: GPUCounters
 
+    @State
+    private var discardRate: Float = 0
+
     public init() {
         let device = MTLCreateSystemDefaultDevice()!
         let url = Bundle.module.url(forResource: "vision_dr", withExtension: "splat")!
@@ -63,7 +66,7 @@ public struct GaussianSplatMinimalView: View {
     }
 
     public var body: some View {
-        GaussianSplatRenderView(scene: scene, debugMode: false, sortRate: 0, metalFXRate: metalFXRate)
+        GaussianSplatRenderView(scene: scene, debugMode: false, sortRate: 1, metalFXRate: metalFXRate, discardRate: discardRate)
             .overlay(alignment: .top) {
                 performanceMeter()
             }
@@ -100,6 +103,10 @@ public struct GaussianSplatMinimalView: View {
             .toolbar {
                 TextField("MetalFX Rate", value: $metalFXRate, format: .number)
                 Slider(value: $metalFXRate, in: 1...16, step: 0.25)
+                    .frame(width: 120)
+
+                TextField("Discard Rate", value: $discardRate, format: .number)
+                Slider(value: $discardRate, in: 0 ... 0.5, step: 0.01)
                     .frame(width: 120)
             }
     }

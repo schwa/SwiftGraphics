@@ -57,7 +57,7 @@ public struct GaussianSplatView: View {
     private var more = false
 
     public var body: some View {
-        GaussianSplatRenderView(scene: scene, debugMode: debugMode, sortRate: sortRate, metalFXRate: 1)
+        GaussianSplatRenderView(scene: scene, debugMode: debugMode, sortRate: sortRate, metalFXRate: 1, discardRate: 0)
             .toolbar {
                 Button("More") {
                     more = true

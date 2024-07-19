@@ -34,11 +34,13 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
     public var scene: SceneGraph
     public var debugMode: Bool
     public var useVertexCounting = false
+    public var discardRate: Float = 0.05
 
-    init(scene: SceneGraph, debugMode: Bool, useVertexCounting: Bool = false) {
+    init(scene: SceneGraph, debugMode: Bool, useVertexCounting: Bool = false discardRate: Float) {
         self.scene = scene
         self.debugMode = debugMode
         self.useVertexCounting = useVertexCounting
+        self.discardRate = discardRate
     }
 
     public func setup(device: MTLDevice, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State {
@@ -110,7 +112,8 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
                     projectionMatrix: helper.projectionMatrix,
                     viewMatrix: helper.cameraMatrix.inverse,
                     cameraPosition: helper.cameraMatrix.translation,
-                    drawableSize: try renderPassDescriptor.colorAttachments[0].size
+                    drawableSize: try renderPassDescriptor.colorAttachments[0].size,
+                    discardRate: discardRate
                 )
 
                 if useVertexCounting {
