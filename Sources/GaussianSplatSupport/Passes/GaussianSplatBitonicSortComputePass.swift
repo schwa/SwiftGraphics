@@ -51,8 +51,6 @@ public struct GaussianSplatBitonicSortComputePass: ComputePassProtocol {
         let commandEncoder = commandBuffer.makeComputeCommandEncoder(descriptor: computePassDescriptor).forceUnwrap()
         commandEncoder.label = "GaussianSplatBitonicSortComputePass"
         commandEncoder.withDebugGroup("GaussianSplatBitonicSortComputePass") {
-
-
             commandEncoder.setComputePipelineState(computePipelineState)
 
             commandEncoder.setBuffer(splats.indices, index: state.bindingsSplatIndicesIndex)
