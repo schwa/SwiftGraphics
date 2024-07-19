@@ -7,6 +7,7 @@ struct GaussianSplatUniforms {
     simd_float4x4 viewMatrix;
     simd_float3 cameraPosition;
     simd_float2 drawableSize;
+    float discardRate;
 };
 
 #ifdef __METAL_VERSION__

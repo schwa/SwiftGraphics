@@ -18,6 +18,7 @@ public struct GaussianSplatRenderView: View {
     private let sortRate: Int
     private let metalFXRate: Float
     private let gpuCounters: GPUCounters?
+    private let discardRate: Float
 
     @Environment(\.metalDevice)
     var device
@@ -34,12 +35,15 @@ public struct GaussianSplatRenderView: View {
     @State
     private var drawableSize: SIMD2<Float> = .zero
 
+
+
     public init(scene: SceneGraph, debugMode: Bool, sortRate: Int, metalFXRate: Float, gpuCounters: GPUCounters? = nil) {
         self.scene = scene
         self.debugMode = debugMode
         self.sortRate = sortRate
         self.metalFXRate = metalFXRate
         self.gpuCounters = gpuCounters
+        self.discardRate = discardRate
     }
 
     public var body: some View {
@@ -111,7 +115,8 @@ public struct GaussianSplatRenderView: View {
                 }
                 GaussianSplatRenderPass(
                     scene: scene,
-                    debugMode: false
+                    debugMode: false,
+                    discardRate: discardRate
                 )
             }
             if metalFXRate != 1 {
