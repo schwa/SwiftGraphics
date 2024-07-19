@@ -19,6 +19,7 @@ struct SplatC {
 };
 #endif
 
+
 // MARK: -
 
 #ifdef __METAL_VERSION__
