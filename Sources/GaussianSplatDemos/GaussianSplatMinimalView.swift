@@ -42,6 +42,9 @@ public struct GaussianSplatMinimalView: View {
     @State
     private var discardRate: Float = 0
 
+    @State
+    private var sortRate: Int = 15
+
     public init() {
         let device = MTLCreateSystemDefaultDevice()!
         let url = Bundle.module.url(forResource: "vision_dr", withExtension: "splat")!
@@ -61,12 +64,12 @@ public struct GaussianSplatMinimalView: View {
 
     func performanceMeter() -> some View {
         TimelineView(.periodic(from: .now, by: 0.25)) { _ in
-            PerformanceHUD(measurements: gpuCounters.measurements)
+            PerformanceHUD(measurements: gpuCounters.current())
         }
     }
 
     public var body: some View {
-        GaussianSplatRenderView(scene: scene, debugMode: false, sortRate: 1, metalFXRate: metalFXRate, discardRate: discardRate)
+        GaussianSplatRenderView(scene: scene, debugMode: false, sortRate: sortRate, metalFXRate: metalFXRate, discardRate: discardRate)
             .overlay(alignment: .top) {
                 performanceMeter()
             }
@@ -101,13 +104,41 @@ public struct GaussianSplatMinimalView: View {
             }
             .border(isTargeted ? Color.accentColor : .clear, width: isTargeted ? 4 : 0)
             .toolbar {
-                TextField("MetalFX Rate", value: $metalFXRate, format: .number)
-                Slider(value: $metalFXRate, in: 1...16, step: 0.25)
-                    .frame(width: 120)
+                ValueView(value: false) { isPresented in
+                    Toggle(isOn: isPresented) { Text("Sort Rate") }
+                        .popover(isPresented: isPresented) {
+                            Form {
+                                TextField("Sort Rate", value: $sortRate, format: .number)
+                                Slider(value: $sortRate.toDouble, in: 0...30)
+                                    .frame(width: 120)
+                            }
+                            .padding()
+                        }
+                }
 
-                TextField("Discard Rate", value: $discardRate, format: .number)
-                Slider(value: $discardRate, in: 0 ... 0.5, step: 0.01)
-                    .frame(width: 120)
+                ValueView(value: false) { isPresented in
+                    Toggle(isOn: isPresented) { Text("MetalFX Factor") }
+                        .popover(isPresented: isPresented) {
+                            Form {
+                                TextField("MetalFX Factor", value: $metalFXRate, format: .number)
+                                Slider(value: $metalFXRate, in: 1...16)
+                                    .frame(width: 120)
+                            }
+                            .padding()
+                        }
+                }
+
+                ValueView(value: false) { isPresented in
+                    Toggle(isOn: isPresented) { Text("Discard Rate") }
+                        .popover(isPresented: isPresented) {
+                            Form {
+                                TextField("Discard Rate", value: $discardRate, format: .number)
+                                Slider(value: $discardRate, in: 0 ... 1)
+                                    .frame(width: 120)
+                            }
+                            .padding()
+                        }
+                }
             }
     }
 }

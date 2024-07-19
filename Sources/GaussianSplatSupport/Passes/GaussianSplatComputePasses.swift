@@ -42,12 +42,17 @@ public struct GaussianSplatBitonicSortComputePass: ComputePassProtocol {
         if sortRate > 1 && info.frame > 1 && !info.frame.isMultiple(of: sortRate) {
             return
         }
-        print("SORT")
+        //        logger?.debug("GPU Sort: \(info.frame) / \(sortRate)")
 
         let computePipelineState = state.pipelineState
-        let commandEncoder = commandBuffer.makeComputeCommandEncoder().forceUnwrap()
+
+        let computePassDescriptor = MTLComputePassDescriptor()
+        info.gpuCounters?.updateComputePassDescriptor(computePassDescriptor)
+        let commandEncoder = commandBuffer.makeComputeCommandEncoder(descriptor: computePassDescriptor).forceUnwrap()
         commandEncoder.label = "GaussianSplatBitonicSortComputePass"
         commandEncoder.withDebugGroup("GaussianSplatBitonicSortComputePass") {
+
+
             commandEncoder.setComputePipelineState(computePipelineState)
 
             commandEncoder.setBuffer(splats.indices, index: state.bindingsSplatIndicesIndex)

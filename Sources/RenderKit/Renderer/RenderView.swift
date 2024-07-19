@@ -50,22 +50,7 @@ public struct RenderView: View {
             do {
                 configure(&configuration)
                 commandQueue = device.makeCommandQueue().forceUnwrap("Could not create command queue.")
-
-                var callbacks = rendererCallbacks ?? RendererCallbacks()
-                if let gpuCounters {
-                    // TODO: FIXME these over-write any callbacks passed in
-                    callbacks.renderCompleted = { _ in
-                        try! gpuCounters.gatherData()
-                    }
-                    callbacks.prePass = { _, _, passInfo in
-                        guard let renderPassDescriptor = passInfo.currentRenderPassDescriptor else {
-                            fatalError("Could not get current render pass descriptor.")
-                        }
-                        gpuCounters.updateBuffer(renderPassDescriptor: renderPassDescriptor)
-                    }
-                }
-
-                renderer = Renderer<MetalViewConfiguration>(device: device, passes: passes, logger: logger, callbacks: callbacks)
+                renderer = Renderer<MetalViewConfiguration>(device: device, passes: passes, logger: logger, callbacks: rendererCallbacks ?? .init(), gpuCounters: gpuCounters)
                 try renderer?.configure(&configuration)
             } catch {
                 renderErrorHandler.send(error, logger: logger)

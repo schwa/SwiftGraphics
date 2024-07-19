@@ -5,8 +5,8 @@ import SwiftUI
 public struct PerformanceHUD: View {
     let measurements: [GPUCounters.Measurement.Kind: GPUCounters.Measurement]
 
-    public init(measurements: [GPUCounters.Measurement.Kind: GPUCounters.Measurement]) {
-        self.measurements = measurements
+    public init(measurements: [GPUCounters.Measurement]) {
+        self.measurements = .init(uniqueKeysWithValues: measurements.map { ($0.id, $0) })
     }
 
     var data: [(name: String, nanoseconds: Int64, color: Color)] {
@@ -22,16 +22,12 @@ public struct PerformanceHUD: View {
     public var body: some View {
         HStack {
             if let frameMeasurement = measurements[.frame] {
-
                 ZStack {
                     frameSectorChart()
                     MeasurementView(measurement: frameMeasurement)
                 }
                 .frame(width: 128, height: 128)
-
-
             }
-
             let kinds: [GPUCounters.Measurement.Kind] = [.computeShader, .vertexShader, .fragmentShader]
             ForEach(kinds, id: \.self) { kind in
                 if let measurement = measurements[kind] {
@@ -39,19 +35,6 @@ public struct PerformanceHUD: View {
                         .frame(width: 128, height: 128)
                 }
             }
-
-            //            if let computeNanoseconds {
-            //                NanosecondsView(nanoseconds: computeNanoseconds, subtitle: "Compute", color: .yellow)
-            //                .frame(width: 128, height: 128)
-            //            }
-            //            if let vertexNanoseconds {
-            //                NanosecondsView(nanoseconds: vertexNanoseconds, subtitle: "Vertex", color: .purple)
-            //                .frame(width: 128, height: 128)
-            //            }
-            //            if let fragmentNanoseconds {
-            //                NanosecondsView(nanoseconds: fragmentNanoseconds, subtitle: "Fragment", color: .cyan)
-            //                .frame(width: 128, height: 128)
-            //            }
         }
         .padding()
     }
@@ -59,9 +42,9 @@ public struct PerformanceHUD: View {
     @ViewBuilder
     func frameSectorChart() -> some View {
         if let frameMeasurement = measurements[.frame] {
+            // This is all so terrible, it's awesome.
             let valueKeyPath = \GPUCounters.Measurement.movingAverage.exponentialMovingAverage
             let subKinds: [GPUCounters.Measurement.Kind] = [.computeShader, .vertexShader, .fragmentShader]
-
             let totalValue = frameMeasurement[keyPath: valueKeyPath]
             let marks = subKinds.map { kind in
                 guard let measurement = measurements[kind] else {
@@ -70,12 +53,11 @@ public struct PerformanceHUD: View {
                 return (kind: kind, value: measurement[keyPath: valueKeyPath])
             }
             let subtotal = marks.map(\.value).reduce(0, +)
-
             let data: [(name: String, color: Color, value: Double)] =
-            marks.map { kind, value in
-                (kind.name, kind.color, value)
-            }
-            + [("Remaining", Color.white, totalValue - subtotal)]
+                marks.map { kind, value in
+                    (kind.name, kind.color, value)
+                }
+                + [("Remaining", Color.white, totalValue - subtotal)]
             Chart(data, id: \.name) { name, color, value in
                 SectorMark(
                     angle: .value(name, value),
@@ -89,6 +71,7 @@ public struct PerformanceHUD: View {
     }
 
     struct MeasurementView: View {
+        // TODO: Allow user to switch between modes.
         struct Mode: Identifiable {
             var id: String
             var text: (GPUCounters.Measurement) -> Text

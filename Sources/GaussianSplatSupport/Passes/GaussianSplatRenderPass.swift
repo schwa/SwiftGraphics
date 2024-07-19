@@ -36,7 +36,7 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
     public var useVertexCounting = false
     public var discardRate: Float = 0.05
 
-    init(scene: SceneGraph, debugMode: Bool, useVertexCounting: Bool = false discardRate: Float) {
+    init(scene: SceneGraph, debugMode: Bool, useVertexCounting: Bool = false, discardRate: Float) {
         self.scene = scene
         self.debugMode = debugMode
         self.useVertexCounting = useVertexCounting
