@@ -1,23 +1,12 @@
 import Everything
 import Metal
 import Observation
+import os
 import SwiftUI
 
 // TODO: FIXME - unchecked Sendable
 @Observable
 public class GPUCounters: @unchecked Sendable {
-    @ObservationIgnored
-    var device: MTLDevice
-
-    @ObservationIgnored
-    var counterSampleBuffer: MTLCounterSampleBuffer?
-
-    @ObservationIgnored
-    var maxSamples = 60
-
-    @ObservationIgnored
-    var lastSampleTimestamp: UInt64?
-
     public struct Measurement: Sendable {
         public enum Kind: String, Hashable, Sendable {
             case frame
@@ -60,7 +49,19 @@ public class GPUCounters: @unchecked Sendable {
     }
 
     @ObservationIgnored
-    public private(set) var measurements: [Measurement.Kind: Measurement] = [:]
+    var device: MTLDevice
+
+    @ObservationIgnored
+    var counterSampleBuffer: MTLCounterSampleBuffer?
+
+    @ObservationIgnored
+    var maxSamples = 60
+
+    @ObservationIgnored
+    var lastSampleTimestamp: UInt64?
+
+    @ObservationIgnored
+    private var measurements: OSAllocatedUnfairLock<[Measurement.Kind: Measurement]> = .init(initialState: [:])
 
     public init(device: MTLDevice) throws {
         //        print("atStageBoundary", device.supportsCounterSampling(.atStageBoundary))
@@ -78,7 +79,7 @@ public class GPUCounters: @unchecked Sendable {
                 fatalError("Could not find timestamp counter set")
             }
             let counterSampleBufferDescriptor = MTLCounterSampleBufferDescriptor()
-            counterSampleBufferDescriptor.sampleCount = 4
+            counterSampleBufferDescriptor.sampleCount = 6
             counterSampleBufferDescriptor.storageMode = .shared
             counterSampleBufferDescriptor.label = "My counter sample buffer"
             counterSampleBufferDescriptor.counterSet = counterSet
@@ -86,14 +87,24 @@ public class GPUCounters: @unchecked Sendable {
         }
     }
 
-    public func updateBuffer(renderPassDescriptor: MTLRenderPassDescriptor) {
-        if let counterSampleBuffer {
-            renderPassDescriptor.sampleBufferAttachments[0].startOfVertexSampleIndex = 0
-            renderPassDescriptor.sampleBufferAttachments[0].endOfVertexSampleIndex = 1
-            renderPassDescriptor.sampleBufferAttachments[0].startOfFragmentSampleIndex = 2
-            renderPassDescriptor.sampleBufferAttachments[0].endOfFragmentSampleIndex = 3
-            renderPassDescriptor.sampleBufferAttachments[0].sampleBuffer = counterSampleBuffer
+    public func updateRenderPassDescriptor(_ renderPassDescriptor: MTLRenderPassDescriptor) {
+        guard let counterSampleBuffer else {
+            return
         }
+        renderPassDescriptor.sampleBufferAttachments[0].startOfVertexSampleIndex = 0
+        renderPassDescriptor.sampleBufferAttachments[0].endOfVertexSampleIndex = 1
+        renderPassDescriptor.sampleBufferAttachments[0].startOfFragmentSampleIndex = 2
+        renderPassDescriptor.sampleBufferAttachments[0].endOfFragmentSampleIndex = 3
+        renderPassDescriptor.sampleBufferAttachments[0].sampleBuffer = counterSampleBuffer
+    }
+
+    public func updateComputePassDescriptor(_ passDescriptor: MTLComputePassDescriptor) {
+        guard let counterSampleBuffer else {
+            return
+        }
+        passDescriptor.sampleBufferAttachments[0].startOfEncoderSampleIndex = 4
+        passDescriptor.sampleBufferAttachments[0].endOfEncoderSampleIndex = 5
+        passDescriptor.sampleBufferAttachments[0].sampleBuffer = counterSampleBuffer
     }
 
     public func gatherData() throws {
@@ -103,18 +114,27 @@ public class GPUCounters: @unchecked Sendable {
             addMeasurement(id: .frame, timestamp: timestamp, value: frameTime)
         }
         if let counterSampleBuffer {
-            let data = try counterSampleBuffer.resolveCounterRange(0 ..< 4)
+            let data = try counterSampleBuffer.resolveCounterRange(0 ..< 6)
             data?.withUnsafeBytes { buffer in
                 let timestamps = buffer.bindMemory(to: MTLCounterResultTimestamp.self)
                 addMeasurement(id: .vertexShader, timestamp: timestamp, value: timestamps[1].timestamp - timestamps[0].timestamp)
                 addMeasurement(id: .fragmentShader, timestamp: timestamp, value: timestamps[3].timestamp - timestamps[2].timestamp)
+                addMeasurement(id: .computeShader, timestamp: timestamp, value: timestamps[5].timestamp - timestamps[4].timestamp)
             }
         }
         lastSampleTimestamp = timestamp
     }
 
     func addMeasurement(id: Measurement.Kind, timestamp: UInt64, value: UInt64) {
-        measurements[id, default: .init(id: id, maxSamples: maxSamples)].addSample(timestamp: timestamp, value: value)
+        measurements.withLock { measurements in
+            measurements[id, default: .init(id: id, maxSamples: maxSamples)].addSample(timestamp: timestamp, value: value)
+        }
+    }
+
+    public func current() -> [Measurement] {
+        measurements.withLock { measurements in
+            Array(measurements.values)
+        }
     }
 }
 

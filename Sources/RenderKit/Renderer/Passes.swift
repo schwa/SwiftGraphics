@@ -33,6 +33,7 @@ public struct PassInfo: Sendable {
     public var deltaTime: TimeInterval
     public var configuration: any MetalConfigurationProtocol
     public var currentRenderPassDescriptor: MTLRenderPassDescriptor?
+    public var gpuCounters: GPUCounters?
 }
 
 // MARK: -

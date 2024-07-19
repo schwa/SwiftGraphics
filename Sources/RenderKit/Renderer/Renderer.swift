@@ -36,6 +36,7 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
 
     typealias Callbacks = RendererCallbacks
     private var callbacks: Callbacks
+    private var gpuCounters: GPUCounters?
 
     private var statesByPasses: [PassID: any PassState] = [:]
     private var configuration: MetalConfiguration?
@@ -49,12 +50,13 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
         }
     }
 
-    init(device: MTLDevice, passes: PassCollection, logger: Logger? = nil, callbacks: Callbacks = .init()) {
+    init(device: MTLDevice, passes: PassCollection, logger: Logger? = nil, callbacks: Callbacks = .init(), gpuCounters: GPUCounters? = nil) {
         logger?.debug("Renderer.\(#function)")
         self.device = device
         self.passes = passes
         self.phase = .initialized
         self.callbacks = callbacks
+        self.gpuCounters = gpuCounters
     }
 
     mutating func configure(_ configuration: inout MetalConfiguration) throws {
@@ -82,6 +84,23 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
     }
 
     mutating func render(commandBuffer: MTLCommandBuffer, currentRenderPassDescriptor: MTLRenderPassDescriptor, drawableSize: SIMD2<Float>) throws {
+
+//        gpuCounters
+//
+//                if let gpuCounters {
+//                    // TODO: FIXME these over-write any callbacks passed in
+//                    callbacks.renderCompleted = { _ in
+//                        try! gpuCounters.gatherData()
+//                    }
+//                    callbacks.prePass = { _, _, passInfo in
+//                        guard let renderPassDescriptor = passInfo.currentRenderPassDescriptor else {
+//                            fatalError("Could not get current render pass descriptor.")
+//                        }
+//                        gpuCounters.updateRenderPassDescriptor(renderPassDescriptor)
+//                    }
+//                }
+
+
         guard phase == .configured(sizeKnown: true) || phase == .rendering else {
             logger?.debug("Renderer not configured, skipping render.")
             return
@@ -102,7 +121,7 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
             guard let configuration else {
                 fatalError("Could not unwrap configuration.")
             }
-            info = PassInfo(drawableSize: drawableSize, frame: 0, start: now, time: now, deltaTime: 0, configuration: configuration)
+            info = PassInfo(drawableSize: drawableSize, frame: 0, start: now, time: now, deltaTime: 0, configuration: configuration, gpuCounters: gpuCounters)
         }
         guard let info else {
             fatalError("Could not unwrap info.")
@@ -126,6 +145,7 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
                 prePass(pass, commandBuffer, info)
             }
 
+            gpuCounters?.updateRenderPassDescriptor(renderPassDescriptor)
             switch pass {
             case let pass as any RenderPassProtocol:
                 // TODO: FIXME. this is still not right.
@@ -179,9 +199,21 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
             if let scheduledHandler = callbacks.renderScheduled {
                 commandBuffer.addScheduledHandler(scheduledHandler)
             }
-            if let completedHandler = callbacks.renderCompleted {
-                commandBuffer.addCompletedHandler(completedHandler)
+
+            let completedHandler = callbacks.renderCompleted
+            let gpuCounters = gpuCounters
+            if completedHandler != nil || gpuCounters != nil {
+                commandBuffer.addCompletedHandler { commandBuffer in
+                    do {
+                        try gpuCounters?.gatherData()
+                    }
+                    catch {
+                        print("Failed to gather GPU counters: \(error.localizedDescription)")
+                    }
+                    completedHandler?(commandBuffer)
+                }
             }
+
             try render(commandBuffer: commandBuffer, currentRenderPassDescriptor: currentRenderPassDescriptor, drawableSize: drawableSize)
         }
     }
