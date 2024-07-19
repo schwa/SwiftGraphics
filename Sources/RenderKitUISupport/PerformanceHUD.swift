@@ -1,0 +1,166 @@
+import Charts
+import RenderKit
+import SwiftUI
+
+public struct PerformanceHUD: View {
+    let measurements: [GPUCounters.Measurement.Kind: GPUCounters.Measurement]
+
+    public init(measurements: [GPUCounters.Measurement.Kind: GPUCounters.Measurement]) {
+        self.measurements = measurements
+    }
+
+    var data: [(name: String, nanoseconds: Int64, color: Color)] {
+        let data: [(name: String, nanoseconds: Int64, color: Color)?] = [
+            //            computeNanoseconds.map { (name: "compute", nanoseconds: $0, color: Color.yellow) },
+            //            vertexNanoseconds.map { (name: "vertex", nanoseconds: $0, color: Color.purple) },
+            //            fragmentNanoseconds.map { (name: "fragment", nanoseconds: $0, color: Color.cyan) },
+            //            (name: "remaining", nanoseconds: remaining, color: Color.gray.opacity(0.33)),
+        ]
+        return data.compactMap { $0 }
+    }
+
+    public var body: some View {
+        HStack {
+            if let frameMeasurement = measurements[.frame] {
+
+                ZStack {
+                    frameSectorChart()
+                    MeasurementView(measurement: frameMeasurement)
+                }
+                .frame(width: 128, height: 128)
+
+
+            }
+
+            let kinds: [GPUCounters.Measurement.Kind] = [.computeShader, .vertexShader, .fragmentShader]
+            ForEach(kinds, id: \.self) { kind in
+                if let measurement = measurements[kind] {
+                    MeasurementView(measurement: measurement)
+                        .frame(width: 128, height: 128)
+                }
+            }
+
+            //            if let computeNanoseconds {
+            //                NanosecondsView(nanoseconds: computeNanoseconds, subtitle: "Compute", color: .yellow)
+            //                .frame(width: 128, height: 128)
+            //            }
+            //            if let vertexNanoseconds {
+            //                NanosecondsView(nanoseconds: vertexNanoseconds, subtitle: "Vertex", color: .purple)
+            //                .frame(width: 128, height: 128)
+            //            }
+            //            if let fragmentNanoseconds {
+            //                NanosecondsView(nanoseconds: fragmentNanoseconds, subtitle: "Fragment", color: .cyan)
+            //                .frame(width: 128, height: 128)
+            //            }
+        }
+        .padding()
+    }
+
+    @ViewBuilder
+    func frameSectorChart() -> some View {
+        if let frameMeasurement = measurements[.frame] {
+            let valueKeyPath = \GPUCounters.Measurement.movingAverage.exponentialMovingAverage
+            let subKinds: [GPUCounters.Measurement.Kind] = [.computeShader, .vertexShader, .fragmentShader]
+
+            let totalValue = frameMeasurement[keyPath: valueKeyPath]
+            let marks = subKinds.map { kind in
+                guard let measurement = measurements[kind] else {
+                    return (kind: kind, value: 0.0)
+                }
+                return (kind: kind, value: measurement[keyPath: valueKeyPath])
+            }
+            let subtotal = marks.map(\.value).reduce(0, +)
+
+            let data: [(name: String, color: Color, value: Double)] =
+            marks.map { kind, value in
+                (kind.name, kind.color, value)
+            }
+            + [("Remaining", Color.white, totalValue - subtotal)]
+            Chart(data, id: \.name) { name, color, value in
+                SectorMark(
+                    angle: .value(name, value),
+                    innerRadius: .ratio(0.9),
+                    angularInset: 1
+                )
+                .foregroundStyle(color)
+                .cornerRadius(4)
+            }
+        }
+    }
+
+    struct MeasurementView: View {
+        struct Mode: Identifiable {
+            var id: String
+            var text: (GPUCounters.Measurement) -> Text
+        }
+
+        var modes: [Mode] = [
+            .init(id: "Exp. MA") { Text($0.movingAverage.exponentialMovingAverage, format: Self.millisecondsStyle) },
+            .init(id: "Latest") { Text(Double($0.samples.last?.value ?? 0), format: Self.millisecondsStyle) },
+        ]
+        var measurement: GPUCounters.Measurement
+        static let millisecondsStyle = FloatingPointFormatStyle<Double>.number.scale(1 / 1_000_000).precision(.significantDigits(4))
+
+        @State
+        private var currentMode: Mode
+
+        init(modes: [Mode], currentMode: Mode, measurement: GPUCounters.Measurement) {
+            self.modes = modes
+            self.currentMode = currentMode
+            self.measurement = measurement
+        }
+
+        init(measurement: GPUCounters.Measurement) {
+            self.currentMode = modes[0]
+            self.measurement = measurement
+        }
+
+        var body: some View {
+            ZStack {
+                Circle().fill(measurement.id.color)
+                    .scaleEffect(0.85)
+                VStack {
+                    Text(measurement.id.name)
+                        .textCase(.uppercase)
+                        .opacity(0.666)
+                        .font(.system(size: 12))
+                    currentMode.text(measurement)
+                        .bold()
+                        .monospaced()
+                        .font(.system(size: 28))
+                    Text(currentMode.id)
+                        .opacity(0.666)
+                        .font(.system(size: 12))
+                }
+            }
+        }
+    }
+}
+
+extension GPUCounters.Measurement.Kind {
+    var name: String {
+        switch self {
+        case .frame:
+            return "Frame"
+        case .computeShader:
+            return "Compute"
+        case .vertexShader:
+            return "Vertex"
+        case .fragmentShader:
+            return "Fragment"
+        }
+    }
+
+    var color: Color {
+        switch self {
+        case .frame:
+            return .green
+        case .computeShader:
+            return .blue
+        case .vertexShader:
+            return .cyan
+        case .fragmentShader:
+            return .purple
+        }
+    }
+}
