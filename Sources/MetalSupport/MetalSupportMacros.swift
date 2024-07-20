@@ -1,7 +1,4 @@
-import Metal
-
 @attached(extension, conformances: MetalBindable)
-// @attached(member, names: named(bindingMappings))
 @attached(memberAttribute)
 public macro MetalBindings() = #externalMacro(module: "MetalSupportMacros", type: "MetalBindingsMacro")
 
