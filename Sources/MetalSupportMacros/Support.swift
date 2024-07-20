@@ -50,12 +50,6 @@ extension SyntaxProtocol {
     }
 }
 
-// extension SyntaxProtocol {
-//    func find() -> [Any] {
-//        []
-//    }
-// }
-
 extension Collection where Element: SyntaxProtocol {
     func compactMapAs<S>(_ syntaxType: S.Type) -> [S] where S: SyntaxProtocol {
         compactMap { $0.as(syntaxType) }
