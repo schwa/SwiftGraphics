@@ -5,6 +5,8 @@ import MetalSupport
 import RenderKit
 import simd
 
+// swiftlint:disable force_unwrapping
+
 public struct GaussianSplatRadixSortComputePass: ComputePassProtocol {
     public struct State: PassState {
         var histogramPipelineState: MTLComputePipelineState

@@ -5,14 +5,14 @@ included:
 excluded:
   - ".build"
   - "**/.build"
-cyclomatic_complexity:
-  warning: 20
-function_body_length:
-  warning: 300
-  error: 300
-file_length:
-  warning: 1000
-  error: 10000
+# cyclomatic_complexity:
+#   warning: 20
+# function_body_length:
+#   warning: 300
+#   error: 300
+# file_length:
+#   warning: 1000
+#   error: 10000
 only_rules:
 #  - accessibility_label_for_image # 13 violations
 #  - accessibility_trait_for_button # 6 violations
@@ -87,9 +87,9 @@ only_rules:
   - first_where
   - flatmap_over_map_reduce
   - for_where
-#  - force_cast # 1 violations
-#  - force_try # 37 violations
-#  - force_unwrapping # 177 violations
+  - force_cast # 1 violations
+  - force_try # 37 violations
+  - force_unwrapping # 177 violations
 #  - function_body_length # 14 violations
 #  - function_default_parameter_at_end # 52 violations
   - function_parameter_count
