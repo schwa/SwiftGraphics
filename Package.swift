@@ -1,6 +1,7 @@
 // swift-tools-version: 6.0
 
 import PackageDescription
+import CompilerPluginSupport
 
 let package = Package(
     name: "SwiftGraphics",
@@ -39,18 +40,22 @@ let package = Package(
         .library(name: "SIMDUnsafeConformances", targets: ["SIMDUnsafeConformances"]),
         .library(name: "SwiftGraphicsDemos", targets: ["SwiftGraphicsDemos"]),
         .library(name: "SwiftUISupport", targets: ["SwiftUISupport"]),
+        .library(name: "MetalSupportMacros", targets: ["MetalSupportMacros"]),
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-algorithms", from: "1.1.0"),
         .package(url: "https://github.com/apple/swift-argument-parser", from: "1.3.0"),
         .package(url: "https://github.com/apple/swift-async-algorithms", from: "0.1.0"),
         .package(url: "https://github.com/ksemianov/WrappingHStack", from: "0.2.0"),
-        .package(url: "https://github.com/schwa/ApproximateEquality", from: "0.2.1"),
+        .package(url: "https://github.com/schwa/ApproximateEquality", from: "0.4.0"),
         .package(url: "https://github.com/schwa/Everything", from: "1.1.0"),
         .package(url: "https://github.com/schwa/MetalCompilerPlugin", branch: "jwight/develop"),
         .package(url: "https://github.com/schwa/swiftfields", from: "0.0.1"),
         .package(url: "https://github.com/schwa/swiftformats", from: "0.3.5"),
         .package(url: "https://github.com/schwa/SwiftGLTF", branch: "main"),
+
+        // TODO: https://www.pointfree.co/blog/posts/116-being-a-good-citizen-in-the-land-of-swiftsyntax
+        .package(url: "https://github.com/apple/swift-syntax.git", from: "600.0.0-latest"),
     ],
     targets: [
         // MARK: Array2D
@@ -139,6 +144,7 @@ let package = Package(
             dependencies: [
                 "BaseSupport",
                 "SIMDSupport",
+                "MetalSupportMacros",
             ],
             swiftSettings: [
             ]
@@ -457,6 +463,21 @@ let package = Package(
                 .product(name: "Everything", package: "Everything"),
             ]
         ),
+        .macro(
+            name: "MetalSupportMacros",
+            dependencies: [
+                .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
+                .product(name: "SwiftCompilerPlugin", package: "swift-syntax")
+            ]
+        ),
+        .testTarget(
+            name: "MetalSupportMacrosTests",
+            dependencies: [
+                "MetalSupportMacros",
+                .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
+            ]
+        ),
+
     ],
     swiftLanguageVersions: [.v6]
 )
