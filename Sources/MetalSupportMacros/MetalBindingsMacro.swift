@@ -27,7 +27,10 @@ extension MetalBindingsMacro: ExtensionMacro {
             let patternBinding = $0.match(path: [
                 PatternBindingListSyntax.self,
                 PatternBindingSyntax.self,
-            ], viewMode: .sourceAccurate, as: PatternBindingSyntax.self).first!
+            ], viewMode: .sourceAccurate, as: PatternBindingSyntax.self).first
+            guard let patternBinding else {
+                fatalError("Expected a pattern binding")
+            }
             // Get the @ attributes of this property...
             let attributes = $0.attributes.compactMapAs(AttributeSyntax.self)
             // Skip any @MetalBindingIgnored we encounter...
@@ -35,7 +38,10 @@ extension MetalBindingsMacro: ExtensionMacro {
                 return nil
             }
             // Get the variable name...
-            let identifier = patternBinding.pattern.as(IdentifierPatternSyntax.self)!.identifier.trimmedDescription
+            let identifier = patternBinding.pattern.as(IdentifierPatternSyntax.self)?.identifier.trimmedDescription
+            guard let identifier else {
+                fatalError("Expected an identifier.")
+            }
             // If we have a @MetalBinding we can use it to optionally override name and type
             let binding = attributes.first { $0.attributeName.trimmedDescription == "MetalBinding" }
             guard let binding, let arguments = binding.arguments, case let .argumentList(arguments) = arguments else {
@@ -49,7 +55,8 @@ extension MetalBindingsMacro: ExtensionMacro {
         let mappings = bindings.map { name, identifier, type in
             "(\(name), \(type), \\.\(identifier))"
         }
-        return [try ExtensionDeclSyntax(
+        return [
+            try ExtensionDeclSyntax(
             """
             extension \(type): MetalBindable {
                 \(raw: isPublic ? "public " : "")let bindingMappings: [(String, MTLFunctionType?, WritableKeyPath<Self, Int>)] = [
@@ -57,7 +64,8 @@ extension MetalBindingsMacro: ExtensionMacro {
                 ]
             }
             """
-        )]
+            )
+        ]
     }
 }
 

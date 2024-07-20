@@ -27,10 +27,8 @@ extension SyntaxProtocol {
             return []
         }
         var result: [SyntaxProtocol] = []
-        for child in self.children(viewMode: viewMode) {
-            if matcher.match(child) {
-                result.append(child)
-            }
+        for child in self.children(viewMode: viewMode) where matcher.match(child) {
+            result.append(child)
         }
         if path.count == 1 {
             return result
