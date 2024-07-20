@@ -45,6 +45,7 @@ public struct GaussianSplatRenderView: View {
     }
 
     public var body: some View {
+        // swiftlint:disable:next force_try
         RenderView(pass: try! makePass()) { configuration in
             configuration.colorPixelFormat = .bgra8Unorm_srgb
             configuration.depthStencilPixelFormat = .invalid
