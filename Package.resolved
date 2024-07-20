@@ -1,13 +1,13 @@
 {
-  "originHash" : "63aac00eac056c5353994e3b4e8e926ed21ee15673f19adebda30039895af761",
+  "originHash" : "4034ed3a83254ee1a50664e454f3252caa797ef917908802f8e8cce32f360781",
   "pins" : [
     {
       "identity" : "approximateequality",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/schwa/ApproximateEquality",
       "state" : {
-        "revision" : "2940c86bcdd8559b2b72882a1f9c6e3e457c9735",
-        "version" : "0.3.0"
+        "revision" : "552f716baabbb06250f6b598a88dd0a401c72857",
+        "version" : "0.4.0"
       }
     },
     {
@@ -67,7 +67,7 @@
     {
       "identity" : "swift-numerics",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-numerics.git",
+      "location" : "https://github.com/apple/swift-numerics",
       "state" : {
         "revision" : "0a5bc04095a675662cf24757cc0640aa2204253b",
         "version" : "1.0.2"
@@ -78,8 +78,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-syntax.git",
       "state" : {
-        "revision" : "64889f0c732f210a935a0ad7cda38f77f876262d",
-        "version" : "509.1.1"
+        "revision" : "4c6cc0a3b9e8f14b3ae2307c5ccae4de6167ac2c",
+        "version" : "600.0.0-prerelease-2024-06-12"
       }
     },
     {
