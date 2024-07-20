@@ -470,6 +470,12 @@ let package = Package(
             ]
         ),
         .testTarget(
+            name: "MetalSupportTests",
+            dependencies: [
+                "MetalSupport",
+            ]
+        ),
+        .testTarget(
             name: "MetalSupportMacrosTests",
             dependencies: [
                 "MetalSupportMacros",
