@@ -31,23 +31,23 @@ extension MetalBindingsMacro: ExtensionMacro {
             // Get the @ attributes of this property...
             let attributes = $0.attributes.compactMapAs(AttributeSyntax.self)
             // Skip any @MetalBindingIgnored we encounter...
-            guard !attributes.contains(where: { $0.attributeName.trimmedDescription == "MetalBindingIgnored"} ) else {
+            guard !attributes.contains(where: { $0.attributeName.trimmedDescription == "MetalBindingIgnored" }) else {
                 return nil
             }
             // Get the variable name...
             let identifier = patternBinding.pattern.as(IdentifierPatternSyntax.self)!.identifier.trimmedDescription
             // If we have a @MetalBinding we can use it to optionally override name and type
-            let binding = attributes.first(where: { $0.attributeName.trimmedDescription == "MetalBinding" })
+            let binding = attributes.first { $0.attributeName.trimmedDescription == "MetalBinding" }
             guard let binding, let arguments = binding.arguments, case let .argumentList(arguments) = arguments else {
                 return ("\"\(identifier)\"", identifier, "nil")
             }
             // Get (optional) name parameter and (optional) function type parameter...
-            let name = arguments.first(where: { $0.label?.trimmedDescription == "name"})?.expression.trimmedDescription
-            let function = arguments.first(where: { $0.label?.trimmedDescription == "function"})?.expression.trimmedDescription
+            let name = arguments.first { $0.label?.trimmedDescription == "name" }?.expression.trimmedDescription
+            let function = arguments.first { $0.label?.trimmedDescription == "function" }?.expression.trimmedDescription
             return (name ?? "\"\(identifier)\"", identifier, function ?? "nil")
         }
         let mappings = bindings.map { name, identifier, type in
-            return "(\(name), \(type), \\.\(identifier))"
+            "(\(name), \(type), \\.\(identifier))"
         }
         return [try ExtensionDeclSyntax(
             """
