@@ -40,7 +40,6 @@ let package = Package(
         .library(name: "SIMDUnsafeConformances", targets: ["SIMDUnsafeConformances"]),
         .library(name: "SwiftGraphicsDemos", targets: ["SwiftGraphicsDemos"]),
         .library(name: "SwiftUISupport", targets: ["SwiftUISupport"]),
-        .library(name: "MetalSupportMacros", targets: ["MetalSupportMacros"]),
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-algorithms", from: "1.1.0"),
