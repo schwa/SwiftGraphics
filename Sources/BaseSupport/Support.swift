@@ -10,18 +10,6 @@ public extension NSCopying {
     }
 }
 
-public func unimplemented(_ message: @autoclosure () -> String = String(), file: StaticString = #file, line: UInt = #line) -> Never {
-    fatalError(message(), file: file, line: line)
-}
-
-public func temporarilyDisabled(_ message: @autoclosure () -> String = String(), file: StaticString = #file, line: UInt = #line) -> Never {
-    fatalError(message(), file: file, line: line)
-}
-
-public func unreachable(_ message: @autoclosure () -> String = String(), file: StaticString = #file, line: UInt = #line) -> Never {
-    fatalError(message(), file: file, line: line)
-}
-
 public func nextPowerOfTwo(_ value: Double) -> Double {
     let logValue = log2(Double(value))
     return pow(2.0, ceil(logValue))
@@ -88,4 +76,8 @@ public extension URL {
         NSWorkspace.shared.selectFile(path, inFileViewerRootedAtPath: "")
         #endif
     }
+}
+
+public func align(_ value: Int, alignment: Int) -> Int {
+    (value + alignment - 1) / alignment * alignment
 }

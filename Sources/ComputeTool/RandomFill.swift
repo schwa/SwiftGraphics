@@ -1,4 +1,5 @@
 import AppKit
+import BaseSupport
 import Compute
 import CoreGraphics
 import CoreGraphicsSupport
