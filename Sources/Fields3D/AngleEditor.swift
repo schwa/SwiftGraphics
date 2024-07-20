@@ -1,4 +1,3 @@
-import CoreGraphicsSupport
 import SwiftFormats
 import SwiftUI
 

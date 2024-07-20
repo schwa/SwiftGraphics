@@ -1,6 +1,5 @@
 import XCTest
 import MetalSupport
-import MetalUnsafeConformances
 
 final class VertexDescriptorTests: XCTestCase {
     func testVertexDescriptor() throws {

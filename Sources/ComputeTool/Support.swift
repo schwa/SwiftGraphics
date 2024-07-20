@@ -1,10 +1,8 @@
 import AppKit
-import Compute
 import CoreGraphics
 import CoreGraphicsSupport
 import Foundation
 import Metal
-import MetalSupport
 
 // swiftlint:disable force_unwrapping
 

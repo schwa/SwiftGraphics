@@ -1,4 +1,3 @@
-import MetalSupport
 import MetalUISupport
 import ModelIO
 import Observation

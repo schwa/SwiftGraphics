@@ -1,5 +1,4 @@
 import BaseSupport
-import CoreGraphicsSupport
 import simd
 import SIMDSupport
 

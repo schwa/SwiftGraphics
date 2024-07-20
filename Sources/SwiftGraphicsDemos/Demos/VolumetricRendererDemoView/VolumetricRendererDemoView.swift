@@ -9,8 +9,6 @@ import os
 import RenderKit
 import RenderKitShadersLegacy
 import RenderKitUISupport
-import Shapes2D
-import SIMDSupport
 import SwiftUI
 
 // https://www.youtube.com/watch?v=y4KdxaMC69w&t=1761s

@@ -1,7 +1,6 @@
 // https://en.wikibooks.org/wiki/Algorithm_Implementation/Geometry/Convex_hull/Monotone_chain
 
 import CoreGraphics
-import CoreGraphicsSupport
 
 // O(n log n)
 

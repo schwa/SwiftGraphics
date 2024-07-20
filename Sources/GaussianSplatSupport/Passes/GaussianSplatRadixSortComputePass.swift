@@ -1,4 +1,3 @@
-import BaseSupport
 import GaussianSplatShaders
 @preconcurrency import Metal
 import MetalSupport

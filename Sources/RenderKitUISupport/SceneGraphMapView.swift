@@ -2,7 +2,6 @@ import CoreGraphicsSupport
 import GaussianSplatSupport
 import Metal
 import MetalKit
-import MetalSupport
 import RenderKit
 import SIMDSupport
 import SwiftUI

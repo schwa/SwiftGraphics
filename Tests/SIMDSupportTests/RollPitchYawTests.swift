@@ -4,7 +4,6 @@ import simd
 import SwiftUI
 import Testing
 import ApproximateEquality
-import CoreGraphicsSupport
 
 // https://www.redcrab-software.com/en/Calculator/3x3/Matrix/Rotation-Matrix
 // https://www.wolframalpha.com/input?i=roll+pitch+yaw

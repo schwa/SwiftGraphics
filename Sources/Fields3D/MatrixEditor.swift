@@ -1,7 +1,5 @@
-import CoreGraphicsSupport
 import Foundation
 import simd
-import SIMDSupport
 import SwiftFormats
 import SwiftUI
 

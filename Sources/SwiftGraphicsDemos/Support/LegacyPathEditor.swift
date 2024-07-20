@@ -1,6 +1,5 @@
 import Algorithms
 import CoreGraphicsSupport
-import Shapes2D
 import SwiftUI
 import SwiftUISupport
 

@@ -1,7 +1,6 @@
 import CoreGraphicsSupport
 import CoreGraphicsUnsafeConformances
 import Everything
-import Shapes3D
 import simd
 import SwiftUI
 import WrappingHStack

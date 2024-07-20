@@ -1,4 +1,3 @@
-import CoreGraphicsSupport
 import Foundation
 import simd
 import SIMDSupport

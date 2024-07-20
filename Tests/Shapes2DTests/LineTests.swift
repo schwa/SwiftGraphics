@@ -1,4 +1,3 @@
-import CoreGraphicsSupport
 @testable import Shapes2D
 import SwiftUI
 import Testing

@@ -1,6 +1,5 @@
 import Foundation
 import os
-import SIMDSupport
 
 public struct SceneGraph: Equatable, Sendable {
     public var root: Node

@@ -1,5 +1,4 @@
 import CoreGraphics
-import CoreGraphicsSupport
 
 // O(n log n)
 public struct GrahamScan: ConvexHullProtocol {
