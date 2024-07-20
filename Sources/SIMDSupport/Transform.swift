@@ -169,3 +169,11 @@ public extension Transform {
         storage = .srt(SRT(scale: scale, rotation: rotation, translation: translation))
     }
 }
+
+public extension Transform {
+    func scaled(_ scale: SIMD3<Float>) -> Transform {
+        var copy = self
+        copy.scale *= scale
+        return copy
+    }
+}

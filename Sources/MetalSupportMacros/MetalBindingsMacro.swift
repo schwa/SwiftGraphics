@@ -57,7 +57,7 @@ extension MetalBindingsMacro: ExtensionMacro {
         }
         return [
             try ExtensionDeclSyntax(
-            """
+                """
             extension \(type): MetalBindable {
                 \(raw: isPublic ? "public " : "")nonisolated(unsafe) static let bindingMappings: [(String, MTLFunctionType?, WritableKeyPath<Self, Int>)] = [
                     \(raw: mappings.joined(separator: ",\n"))

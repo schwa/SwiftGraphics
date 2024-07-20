@@ -1,3 +1,4 @@
+import BaseSupport
 import Foundation
 
 // https://en.wikipedia.org/wiki/Tar_(computing)
@@ -110,10 +111,6 @@ extension TarArchive {
 }
 
 // MARK: -
-
-private func align(_ value: Int, alignment: Int) -> Int {
-    (value + alignment - 1) / alignment * alignment
-}
 
 private extension DataProtocol where Index == Int {
     func sub(offset: Int, count: Int) -> SubSequence {
