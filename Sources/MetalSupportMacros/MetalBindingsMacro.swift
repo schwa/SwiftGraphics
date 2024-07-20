@@ -59,34 +59,13 @@ extension MetalBindingsMacro: ExtensionMacro {
             try ExtensionDeclSyntax(
             """
             extension \(type): MetalBindable {
-                \(raw: isPublic ? "public " : "")let bindingMappings: [(String, MTLFunctionType?, WritableKeyPath<Self, Int>)] = [
+                \(raw: isPublic ? "public " : "")nonisolated(unsafe) static let bindingMappings: [(String, MTLFunctionType?, WritableKeyPath<Self, Int>)] = [
                     \(raw: mappings.joined(separator: ",\n"))
                 ]
             }
             """
             )
         ]
-    }
-}
-
-extension MetalBindingsMacro: MemberAttributeMacro {
-    public static func expansion(
-        of node: AttributeSyntax,
-        attachedTo declaration: some DeclGroupSyntax,
-        providingAttributesFor member: some DeclSyntaxProtocol,
-        in context: some MacroExpansionContext
-    ) throws -> [AttributeSyntax] {
-        guard let member = member.as(VariableDeclSyntax.self) else {
-            return []
-        }
-        // TODO: Get the actual label for the attribute.
-        let metalBindingIgnored = member.attributes.contains { element in
-            element.trimmedDescription == "@MetalBindingIgnored"
-        }
-        guard metalBindingIgnored == false else {
-            return []
-        }
-        return [AttributeSyntax(stringLiteral: "@MetalBinding()")]
     }
 }
 

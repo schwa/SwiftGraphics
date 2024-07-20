@@ -1,13 +1,13 @@
 {
-  "originHash" : "4f05c09ed1356ad7cf920a1ca3cdcf39defe194ec712ab26083d723b5daa5e9d",
+  "originHash" : "073e121cb86810517e7cf7201b537d5309f27f234163fe4fb31733b3a05ac68d",
   "pins" : [
     {
       "identity" : "approximateequality",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/schwa/ApproximateEquality",
       "state" : {
-        "revision" : "2940c86bcdd8559b2b72882a1f9c6e3e457c9735",
-        "version" : "0.3.0"
+        "revision" : "552f716baabbb06250f6b598a88dd0a401c72857",
+        "version" : "0.4.0"
       }
     },
     {
@@ -78,8 +78,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-syntax.git",
       "state" : {
-        "revision" : "64889f0c732f210a935a0ad7cda38f77f876262d",
-        "version" : "509.1.1"
+        "revision" : "4c6cc0a3b9e8f14b3ae2307c5ccae4de6167ac2c",
+        "version" : "600.0.0-prerelease-2024-06-12"
       }
     },
     {

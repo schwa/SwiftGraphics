@@ -1,7 +1,7 @@
 import Metal
 
 public protocol MetalBindable {
-    var bindingMappings: [(String, MTLFunctionType, WritableKeyPath<Self, Int>)] { get }
+    static var bindingMappings: [(String, MTLFunctionType?, WritableKeyPath<Self, Int>)] { get }
 }
 
 public extension MetalBindable {
@@ -9,7 +9,7 @@ public extension MetalBindable {
         guard let reflection else {
             fatalError()
         }
-        for (name, functionType, keyPath) in bindingMappings {
+        for (name, functionType, keyPath) in Self.bindingMappings {
             switch functionType {
             case .fragment:
                 let bindingIndex = try reflection.binding(for: name, of: .fragment)
