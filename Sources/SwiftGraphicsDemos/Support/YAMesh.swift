@@ -13,12 +13,12 @@ import ModelIO
 
 // MARK: -
 
-public struct BufferView: Labeled {
-    public var label: String?
-    public var buffer: MTLBuffer
-    public var offset: Int
+struct BufferView: Labeled {
+    var label: String?
+    var buffer: MTLBuffer
+    var offset: Int
 
-    public init(label: String? = nil, buffer: MTLBuffer, offset: Int) {
+    init(label: String? = nil, buffer: MTLBuffer, offset: Int) {
         self.label = label
         self.buffer = buffer
         self.offset = offset
@@ -26,7 +26,7 @@ public struct BufferView: Labeled {
 }
 
 extension BufferView: CustomStringConvertible {
-    public var description: String {
+    var description: String {
         "BufferView(label: \"\(label ?? "")\", buffer: \(buffer.gpuAddress, format: .hex), offset: \(offset))"
     }
 }
@@ -34,28 +34,28 @@ extension BufferView: CustomStringConvertible {
 // MARK: -
 
 // TODO: Deprecate?
-public struct YAMesh: Identifiable, Labeled {
-    public var id = TrivialID(for: Self.self)
-    public var label: String?
-    public var submeshes: [Submesh]
-    public var vertexDescriptor: VertexDescriptor
-    public var vertexBufferViews: [BufferView]
+struct YAMesh: Identifiable, Labeled {
+    var id = TrivialID(for: Self.self)
+    var label: String?
+    var submeshes: [Submesh]
+    var vertexDescriptor: VertexDescriptor
+    var vertexBufferViews: [BufferView]
 
-    public init(label: String? = nil, submeshes: [Submesh], vertexDescriptor: VertexDescriptor, vertexBufferViews: [BufferView]) {
+    init(label: String? = nil, submeshes: [Submesh], vertexDescriptor: VertexDescriptor, vertexBufferViews: [BufferView]) {
         self.label = label
         self.submeshes = submeshes
         self.vertexDescriptor = vertexDescriptor
         self.vertexBufferViews = vertexBufferViews
     }
 
-    public struct Submesh: Labeled {
-        public var label: String?
-        public var indexType: MTLIndexType
-        public var indexBufferView: BufferView
-        public var indexCount: Int
-        public var primitiveType: MTLPrimitiveType
+    struct Submesh: Labeled {
+        var label: String?
+        var indexType: MTLIndexType
+        var indexBufferView: BufferView
+        var indexCount: Int
+        var primitiveType: MTLPrimitiveType
 
-        public init(label: String? = nil, indexType: MTLIndexType, indexBufferView: BufferView, indexCount: Int, primitiveType: MTLPrimitiveType) {
+        init(label: String? = nil, indexType: MTLIndexType, indexBufferView: BufferView, indexCount: Int, primitiveType: MTLPrimitiveType) {
             self.label = label
             self.indexType = indexType
             self.indexBufferView = indexBufferView
@@ -67,7 +67,7 @@ public struct YAMesh: Identifiable, Labeled {
 
 // MARK: -
 
-public extension YAMesh {
+extension YAMesh {
     init(label: String? = nil, indexType: MTLIndexType, indexBufferView: BufferView, indexCount: Int, vertexDescriptor: VertexDescriptor, vertexBufferViews: [BufferView], primitiveType: MTLPrimitiveType) {
         let submesh = Submesh(indexType: indexType, indexBufferView: indexBufferView, indexCount: indexCount, primitiveType: primitiveType)
         self = .init(label: label, submeshes: [submesh], vertexDescriptor: vertexDescriptor, vertexBufferViews: vertexBufferViews)
@@ -79,7 +79,7 @@ public extension YAMesh {
     }
 }
 
-public extension YAMesh {
+extension YAMesh {
     // TODO: Maybe deprecate? @available(*, deprecated, message: "Deprecated")
     static func simpleMesh(label: String? = nil, indices: [UInt16], vertices: [SimpleVertex], primitiveType: MTLPrimitiveType = .triangle, device: MTLDevice) throws -> YAMesh {
         let indexBuffer = try device.makeBuffer(bytesOf: indices, options: .storageModeShared)
@@ -94,7 +94,7 @@ public extension YAMesh {
     }
 }
 
-public extension MTLRenderCommandEncoder {
+extension MTLRenderCommandEncoder {
     func setVertexBuffers(_ mesh: YAMesh) {
         for (layout, bufferView) in zip(mesh.vertexDescriptor.layouts, mesh.vertexBufferViews) {
             setVertexBuffer(bufferView.buffer, offset: bufferView.offset, index: layout.bufferIndex)
@@ -114,7 +114,7 @@ public extension MTLRenderCommandEncoder {
     }
 }
 
-public extension YAMesh {
+extension YAMesh {
     init(label: String? = nil, mdlMesh: MDLMesh, device: MTLDevice) throws {
         let mtkMesh = try MTKMesh(mesh: mdlMesh, device: device)
         let submeshes = mtkMesh.submeshes.map { mtkSubmesh in

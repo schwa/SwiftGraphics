@@ -3,6 +3,16 @@ import simd
 @testable import SIMDSupport
 import XCTest
 
+extension Transform.Storage {
+    var isMatrixForm: Bool {
+        if case .matrix = self { true } else { false }
+    }
+
+    var isSRTForm: Bool {
+        if case .srt = self { true } else { false }
+    }
+}
+
 class TransformTests: XCTestCase {
     func testTranslateShortcut() {
         let t1 = Transform(translation: [1, 2, 3])

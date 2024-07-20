@@ -1,3 +1,5 @@
+// periphery:ignore:all
+
 import Metal
 
 @attached(extension, conformances: MetalBindable, names: named(bindingMappings))

@@ -73,7 +73,7 @@ struct PathProgress: View {
     PathProgress()
 }
 
-public extension Path {
+extension Path {
     static func xyzzy(bounds: CGRect) -> Path {
         let distance = 2.0
         let symbols = LSystem.fractalBinaryTree.apply(iterations: 7)

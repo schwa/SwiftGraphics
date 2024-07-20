@@ -108,13 +108,13 @@ struct DragonCurve: View {
     }
 }
 
-public struct HilbertCurve: View {
+struct HilbertCurve: View {
     let symbols = LSystem.hilbertCurve.apply(iterations: 10)
 
-    public init() {
+    init() {
     }
 
-    public var body: some View {
+    var body: some View {
         ReplayableCanvas { context, size in
             let distance = 5.0
 

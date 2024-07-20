@@ -34,9 +34,6 @@ public struct MetalView: View {
     @State
     private var error: Error?
 
-    @State
-    private var view: MTKView?
-
     let setup: Self.Setup
     let drawableSizeWillChange: Self.DrawableSizeWillChange
     let draw: Self.Draw

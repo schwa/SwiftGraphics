@@ -217,12 +217,6 @@ extension FormattableMatrix where Scalar == Float {
 }
 
 extension UndoManager {
-    func registerUndo(handler: @escaping () -> Void) {
-        registerUndo(withTarget: self) { _ in
-            handler()
-        }
-    }
-
     func registerUndoValue<Value>(_ binding: Binding<Value>) {
         let copy = binding.wrappedValue
         registerUndo(withTarget: self) { _ in

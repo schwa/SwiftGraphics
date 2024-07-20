@@ -56,7 +56,7 @@ public extension PolygonalChain {
     }
 }
 
-extension Quad {
+public extension Quad {
     func flipped() -> Self {
         Quad(vertices: (
             vertices.0, vertices.2, vertices.1, vertices.3

@@ -277,7 +277,7 @@ public extension MTLDevice {
         return colorAttachmentTexture
     }
 
-    func makeDepthTexture(size: CGSize, depthStencilPixelFormat: MTLPixelFormat, memoryless: Bool) throws -> MTLTexture {
+    func makeDepthTexture(size: CGSize, depthStencilPixelFormat: MTLPixelFormat) throws -> MTLTexture {
         // ... and if we had a depth buffer - do the same... except depth buffers can be memoryless (yay) and we .dontCare about storing them later.
         let depthTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: depthStencilPixelFormat, width: Int(size.width), height: Int(size.height), mipmapped: false)
         depthTextureDescriptor.storageMode = .memoryless
@@ -335,7 +335,7 @@ public extension MTLFunctionConstantValues {
 
     func setConstantValue(_ value: Bool, index: Int) {
         withUnsafeBytes(of: value) { buffer in
-            setConstantValue(buffer.baseAddress!, type: .bool, index: 0)
+            setConstantValue(buffer.baseAddress!, type: .bool, index: index)
         }
     }
 }

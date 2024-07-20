@@ -8,7 +8,7 @@ import simd
 import SIMDSupport
 import SwiftUI
 
-public struct SceneGraphDemoView: View, DemoView {
+struct SceneGraphDemoView: View, DemoView {
     @State
     private var scene: SceneGraph
 
@@ -18,7 +18,7 @@ public struct SceneGraphDemoView: View, DemoView {
         self.scene = scene
     }
 
-    public var body: some View {
+    var body: some View {
         //        TimelineView(.animation) { timeline in
         SceneGraphView(scene: $scene, passes: [
             DiffuseShadingRenderPass(scene: scene),

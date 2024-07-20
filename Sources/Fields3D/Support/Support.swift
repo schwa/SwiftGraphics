@@ -54,25 +54,6 @@ extension ControlSize {
     }
 }
 
-struct RedlineModifier: ViewModifier {
-    @State
-    var size: CGSize = .zero
-
-    func body(content: Content) -> some View {
-        content
-            .geometrySize($size)
-            .overlay {
-                Text("\(size.height.formatted())").foregroundStyle(.red).font(.footnote).background(.thickMaterial)
-            }
-    }
-}
-
-extension View {
-    func redline() -> some View {
-        modifier(RedlineModifier())
-    }
-}
-
 public extension Path {
     static func curve(from: CGPoint, to: CGPoint, control1: CGPoint, control2: CGPoint) -> Path {
         Path { path in
@@ -193,14 +174,9 @@ public extension Path {
 }
 
 public struct PathMorpher {
-    var a: Path
-    var b: Path
-
     var points: [(CGPoint, CGPoint)]
 
     public init(a: Path, b: Path) {
-        self.a = a
-        self.b = b
         let count = 200
         points = (0 ..< count).map { n in
             let a = a.trimmedPath(from: 0, to: Double(n) / 200).currentPoint ?? a.firstPoint ?? .zero

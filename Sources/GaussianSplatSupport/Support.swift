@@ -6,6 +6,10 @@ import SIMDSupport
 
 // swiftlint:disable force_unwrapping
 
+// TODO: FIXME
+// typealias PackedHalf3 = simd_packed_float3
+// typealias PackedHalf4 = simd_packed_float4
+
 public struct PackedHalf3: Hashable {
     public var x: Float16
     public var y: Float16
@@ -19,15 +23,15 @@ public struct PackedHalf4: Hashable {
     public var w: Float16
 }
 
-func max(lhs: PackedFloat3, rhs: PackedFloat3) -> PackedFloat3 {
+public func max(lhs: PackedFloat3, rhs: PackedFloat3) -> PackedFloat3 {
     [max(lhs[0], rhs[0]), max(lhs[1], rhs[1]), max(lhs[2], rhs[2])]
 }
 
-func min(lhs: PackedFloat3, rhs: PackedFloat3) -> PackedFloat3 {
+public func min(lhs: PackedFloat3, rhs: PackedFloat3) -> PackedFloat3 {
     [min(lhs[0], rhs[0]), min(lhs[1], rhs[1]), min(lhs[2], rhs[2])]
 }
 
-extension Collection where Element == PackedFloat3 {
+public extension Collection where Element == PackedFloat3 {
     var bounds: (min: PackedFloat3, max: PackedFloat3) {
         (
             // swiftlint:disable:next reduce_into

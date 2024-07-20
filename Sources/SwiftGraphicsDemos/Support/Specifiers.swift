@@ -3,12 +3,12 @@ import MetalKit
 import ModelIO
 import os
 
-public enum BundleSpecifier: Sendable, Equatable, Hashable {
+enum BundleSpecifier: Sendable, Equatable, Hashable {
     case direct(Bundle)
     case fileURL(URL)
     case main
 
-    public func resolve() -> Bundle? {
+    func resolve() -> Bundle? {
         switch self {
         case .direct(let bundle):
             return bundle
@@ -23,7 +23,7 @@ public enum BundleSpecifier: Sendable, Equatable, Hashable {
 }
 
 extension BundleSpecifier: CustomDebugStringConvertible {
-    public var debugDescription: String {
+    var debugDescription: String {
         switch self {
         case .direct(let direct):
             ".direct(\(direct))"
@@ -37,18 +37,18 @@ extension BundleSpecifier: CustomDebugStringConvertible {
 
 // MARK: -
 
-public struct BundleResourceSpecifier: Sendable, Equatable, Hashable {
+struct BundleResourceSpecifier: Sendable, Equatable, Hashable {
     var bundle: BundleSpecifier
     var name: String
     var `extension`: String?
 
-    public init(bundle: BundleSpecifier, name: String, extension: String? = nil) {
+    init(bundle: BundleSpecifier, name: String, extension: String? = nil) {
         self.bundle = bundle
         self.name = name
         self.extension = `extension`
     }
 
-    public func resolve() throws -> URL? {
+    func resolve() throws -> URL? {
         guard let bundle = bundle.resolve() else {
             return nil
         }
@@ -58,7 +58,7 @@ public struct BundleResourceSpecifier: Sendable, Equatable, Hashable {
 
 // MARK: -
 
-public struct MeshSpecifier: Equatable {
+struct MeshSpecifier: Equatable {
     private enum Content: Equatable {
         case direct(MTKMesh)
         case fileURL(URL)
@@ -67,20 +67,20 @@ public struct MeshSpecifier: Equatable {
     }
     private var content: Content
 
-    public static func direct(_ mesh: MTKMesh) -> Self {
+    static func direct(_ mesh: MTKMesh) -> Self {
         .init(content: .direct(mesh))
     }
 
-    public static func fileURL(_ url: URL) -> Self {
+    static func fileURL(_ url: URL) -> Self {
         precondition(url.scheme == "file")
         return .init(content: .fileURL(url))
     }
 
-    public static func bundleResource(_ resource: BundleResourceSpecifier) -> Self {
+    static func bundleResource(_ resource: BundleResourceSpecifier) -> Self {
         .init(content: .bundleResource(resource))
     }
 
-    public func load(device: MTLDevice, vertexDescriptor: MDLVertexDescriptor) throws -> MTKMesh {
+    func load(device: MTLDevice, vertexDescriptor: MDLVertexDescriptor) throws -> MTKMesh {
         let mesh: MTKMesh
         switch content {
         case .direct(let direct):
@@ -113,7 +113,7 @@ public struct MeshSpecifier: Equatable {
 }
 
 extension MeshSpecifier: CustomDebugStringConvertible {
-    public var debugDescription: String {
+    var debugDescription: String {
         switch content {
         case .direct:
             "MeshSpecifier.direct(...)"
@@ -142,7 +142,7 @@ extension MeshSpecifier {
 
 // MARK: -
 
-public struct TextureSpecifier: Equatable, Sendable, Hashable {
+struct TextureSpecifier: Equatable, Sendable, Hashable {
     // TODO: We can make NewTextureSpecifier an enum now that we just have content
     private enum Content: Equatable, Sendable, Hashable {
         case direct(TextureBox)
@@ -152,25 +152,25 @@ public struct TextureSpecifier: Equatable, Sendable, Hashable {
     }
     private var content: Content
 
-    public static func direct(_ texture: MTLTexture) -> Self {
+    static func direct(_ texture: MTLTexture) -> Self {
         .init(content: .direct(.init(texture)))
     }
 
-    public static func fileURL(_ url: URL) -> Self {
+    static func fileURL(_ url: URL) -> Self {
         .init(content: .fileURL(url))
     }
 
-    public static func bundleResource(_ resource: BundleResourceSpecifier) -> Self {
+    static func bundleResource(_ resource: BundleResourceSpecifier) -> Self {
         .init(content: .bundleResource(resource))
     }
 
-    public static func color(_ color: CGColor) -> Self {
+    static func color(_ color: CGColor) -> Self {
         .init(content: .color(color))
     }
 
     // TODO: Make async
 
-    public func load(textureLoader: MTKTextureLoader, scaleFactor: CGFloat, options: [MTKTextureLoader.Option: Any]?) throws -> MTLTexture {
+    func load(textureLoader: MTKTextureLoader, scaleFactor: CGFloat, options: [MTKTextureLoader.Option: Any]?) throws -> MTLTexture {
         switch content {
         case .direct(let texture):
             return texture.texture
@@ -210,12 +210,12 @@ extension TextureSpecifier {
     }
 }
 
-public extension TextureSpecifier {
+extension TextureSpecifier {
     static let debugTexture = TextureSpecifier.bundleResource(.init(bundle: .main, name: "DebugTexture"))
 }
 
 extension TextureSpecifier: CustomDebugStringConvertible {
-    public var debugDescription: String {
+    var debugDescription: String {
         switch content {
         case .direct:
             ".direct(**texture**)"

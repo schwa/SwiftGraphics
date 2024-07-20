@@ -39,7 +39,6 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
 
     private var statesByPasses: [PassID: any PassState] = [:]
     private var configuration: MetalConfiguration?
-    private var drawableSize: SIMD2<Float> = .zero
     private var info: PassInfo?
     private var phase: Phase {
         didSet {
@@ -72,7 +71,6 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
         logger?.debug("Renderer.\(#function): \(size)")
         assert(phase != .initialized)
         phase = .configured(sizeKnown: true)
-        drawableSize = size
         for renderPass in passes.renderPasses {
             guard var state = statesByPasses[renderPass.id] else {
                 fatalError("Could not get state for render pass.")
@@ -292,10 +290,6 @@ struct PassCollection: Equatable {
     var renderPasses: [any RenderPassProtocol] {
         elements.compactMap { $0 as? any RenderPassProtocol }
     }
-
-    var computePasses: [any ComputePassProtocol] {
-        elements.compactMap { $0 as? any ComputePassProtocol }
-    }
 }
 
 extension CollectionDifference.Change {
@@ -340,5 +334,7 @@ public struct RendererCallbacks: Sendable {
         self.preRender = preRender
         self.renderScheduled = renderScheduled
         self.renderCompleted = renderCompleted
+        self.prePass = prePass
+        self.postPass = postPass
     }
 }
