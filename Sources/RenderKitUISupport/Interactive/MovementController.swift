@@ -166,7 +166,7 @@ class MovementController: @unchecked Sendable {
 
         relayTask = Task { [weak self] in
             let events = self?.displayLink!.events().flatMap { [weak self] _ in
-                return (self?.makeEvent() ?? []).async
+                (self?.makeEvent() ?? []).async
             }
             guard let events else {
                 return
