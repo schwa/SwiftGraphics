@@ -1,9 +1,10 @@
-// Sense a theme here?:
+// periphery:ignore:all
 // swiftlint:disable type_body_length
 // swiftlint:disable function_parameter_count
 // swiftlint:disable multiline_parameters
 // swiftlint:disable indentation_width
 // swiftlint:disable implicitly_unwrapped_optional
+// Sense a theme here?:
 
 import CoreGraphics
 import SwiftUI

@@ -1,6 +1,5 @@
 import Testing
-
-import SwiftGraphicsDemos
+@testable import SwiftGraphicsDemos
 
 @Test func testSimplePly() throws {
     let source = """

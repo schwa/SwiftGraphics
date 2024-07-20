@@ -49,9 +49,6 @@ public class GPUCounters: @unchecked Sendable {
     }
 
     @ObservationIgnored
-    var device: MTLDevice
-
-    @ObservationIgnored
     var counterSampleBuffer: MTLCounterSampleBuffer?
 
     @ObservationIgnored
@@ -73,7 +70,6 @@ public class GPUCounters: @unchecked Sendable {
         //        print(MTLCommonCounterSet.stageUtilization)
         //        print(MTLCommonCounterSet.statistic)
 
-        self.device = device
         if let counterSets = device.counterSets {
             guard let counterSet = counterSets.first(where: { $0.name == MTLCommonCounterSet.timestamp.rawValue }) else {
                 fatalError("Could not find timestamp counter set")

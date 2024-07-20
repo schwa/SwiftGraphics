@@ -1,4 +1,5 @@
-import BaseSupport
+// periphery:ignore:all
+
 import GameController
 import simd
 import SIMDSupport
@@ -41,7 +42,6 @@ struct FirstPersonInteractiveViewModifier <FirstPersonCamera: FirstPersonCameraP
                 #endif
                 movementConsumerTask = Task.detached { [movementController] in
                     for await event in movementController.events() {
-                        Counters.shared.increment(counter: "Consumption")
                         switch event.payload {
                         case .movement(let movement):
                             let target = await camera.target

@@ -148,16 +148,6 @@ extension Transform: CustomStringConvertible {
     }
 }
 
-extension Transform.Storage {
-    var isMatrixForm: Bool {
-        if case .matrix = self { true } else { false }
-    }
-
-    var isSRTForm: Bool {
-        if case .srt = self { true } else { false }
-    }
-}
-
 public extension Transform {
     init(scale: SIMD3<Float> = .unit, rotation: RollPitchYaw, translation: SIMD3<Float> = .zero) {
         storage = .srt(SRT(scale: scale, rotation: rotation, translation: translation))

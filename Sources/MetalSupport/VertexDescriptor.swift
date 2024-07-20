@@ -351,9 +351,3 @@ extension MTLVertexFormat {
         }
     }
 }
-
-extension VertexDescriptor {
-    var isPacked: Bool {
-        layouts.count == 1
-    }
-}

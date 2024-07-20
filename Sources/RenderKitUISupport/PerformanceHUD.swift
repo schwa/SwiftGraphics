@@ -9,16 +9,6 @@ public struct PerformanceHUD: View {
         self.measurements = .init(uniqueKeysWithValues: measurements.map { ($0.id, $0) })
     }
 
-    var data: [(name: String, nanoseconds: Int64, color: Color)] {
-        let data: [(name: String, nanoseconds: Int64, color: Color)?] = [
-            //            computeNanoseconds.map { (name: "compute", nanoseconds: $0, color: Color.yellow) },
-            //            vertexNanoseconds.map { (name: "vertex", nanoseconds: $0, color: Color.purple) },
-            //            fragmentNanoseconds.map { (name: "fragment", nanoseconds: $0, color: Color.cyan) },
-            //            (name: "remaining", nanoseconds: remaining, color: Color.gray.opacity(0.33)),
-        ]
-        return data.compactMap { $0 }
-    }
-
     public var body: some View {
         HStack {
             if let frameMeasurement = measurements[.frame] {
@@ -86,12 +76,6 @@ public struct PerformanceHUD: View {
 
         @State
         private var currentMode: Mode
-
-        init(modes: [Mode], currentMode: Mode, measurement: GPUCounters.Measurement) {
-            self.modes = modes
-            self.currentMode = currentMode
-            self.measurement = measurement
-        }
 
         init(measurement: GPUCounters.Measurement) {
             self.currentMode = modes[0]

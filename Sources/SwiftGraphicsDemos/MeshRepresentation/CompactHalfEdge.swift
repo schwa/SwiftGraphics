@@ -7,33 +7,33 @@ import Foundation
 // TODO: This file is a mess and doesn't match what a final API should look like
 // TODO: Goal is to unit test against data provided in paper and then improve API while keeping tests passing.
 
-public struct CompactHalfEdgeMesh {
-    public enum Mesh {
+struct CompactHalfEdgeMesh {
+    enum Mesh {
     }
 
-    public enum Face {
+    enum Face {
     }
 
-    public enum Edge {
+    enum Edge {
     }
 
-    public enum HalfEdge {
+    enum HalfEdge {
     }
 
-    public enum Vertex {
+    enum Vertex {
     }
 
-    public typealias FaceID = Tagged<Face, OneBasedIndex>
-    public typealias FaceEdgeID = Tagged<(Face, Edge), OneBasedIndex>
-    public typealias VertexID = Tagged<Vertex, OneBasedIndex>
-    public typealias HalfEdgeID = Tagged<HalfEdge, (FaceID, FaceEdgeID)>
+    typealias FaceID = Tagged<Face, OneBasedIndex>
+    typealias FaceEdgeID = Tagged<(Face, Edge), OneBasedIndex>
+    typealias VertexID = Tagged<Vertex, OneBasedIndex>
+    typealias HalfEdgeID = Tagged<HalfEdge, (FaceID, FaceEdgeID)>
 
-    public var EC: [(face: FaceID, vertices: [VertexID])] = [] // element connectivity
-    public var V2e: [HalfEdgeID] = []
-    public var E2e: [[HalfEdgeID]] = []
-    public var B2e: [HalfEdgeID] = []
+    var EC: [(face: FaceID, vertices: [VertexID])] = [] // element connectivity
+    var V2e: [HalfEdgeID] = []
+    var E2e: [[HalfEdgeID]] = []
+    var B2e: [HalfEdgeID] = []
 
-    public init(EC: [(FaceID, [VertexID])], V2e: [HalfEdgeID] = [], E2e: [[HalfEdgeID]] = [], B2e: [HalfEdgeID] = []) {
+    init(EC: [(FaceID, [VertexID])], V2e: [HalfEdgeID] = [], E2e: [[HalfEdgeID]] = [], B2e: [HalfEdgeID] = []) {
         self.EC = EC
         self.V2e = V2e
         self.E2e = E2e
@@ -41,7 +41,7 @@ public struct CompactHalfEdgeMesh {
     }
 }
 
-public extension CompactHalfEdgeMesh {
+extension CompactHalfEdgeMesh {
     // One-to-any downward incidence
 
     // ith edge (half-edge) of face f: return (f, i)
@@ -119,30 +119,30 @@ extension CompactHalfEdgeMesh {
     }
 }
 
-public struct OneBasedIndex: Hashable, Comparable, RawRepresentable {
-    public var rawValue: Int
+struct OneBasedIndex: Hashable, Comparable, RawRepresentable {
+    var rawValue: Int
 
-    public init(rawValue: Int) {
+    init(rawValue: Int) {
         self.rawValue = rawValue
     }
 
-    public var zeroBased: Int? {
+    var zeroBased: Int? {
         rawValue <= 0 ? nil : rawValue - 1
     }
 
-    public static func < (lhs: Self, rhs: Self) -> Bool {
+    static func < (lhs: Self, rhs: Self) -> Bool {
         lhs.rawValue < rhs.rawValue
     }
 }
 
 extension OneBasedIndex: ExpressibleByIntegerLiteral {
-    public init(integerLiteral value: Int) {
+    init(integerLiteral value: Int) {
         rawValue = value
     }
 }
 
 extension OneBasedIndex: CustomDebugStringConvertible {
-    public var debugDescription: String {
+    var debugDescription: String {
         "\(rawValue)"
     }
 }

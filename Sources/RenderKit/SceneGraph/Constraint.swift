@@ -1,4 +1,8 @@
+// periphery:ignore:all
+
 import SIMDSupport
+
+// TODO: Experimental. Remove?
 
 protocol Constraint {
 }

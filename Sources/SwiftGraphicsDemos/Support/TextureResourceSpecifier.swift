@@ -4,7 +4,7 @@ import SwiftUI
 
 // MARK: -
 
-public enum TextureResourceSpecifier: Sendable {
+enum TextureResourceSpecifier: Sendable {
     case file(URL)
     case bundledResource(Bundle, String)
     case cgImage(CGImage)
@@ -12,7 +12,7 @@ public enum TextureResourceSpecifier: Sendable {
 
     static let resourceScheme = "x-resource"
 
-    public enum Error: Swift.Error {
+    enum Error: Swift.Error {
         case invalidURL
         case missingBundle
         case invalidForm
@@ -20,7 +20,7 @@ public enum TextureResourceSpecifier: Sendable {
 }
 
 extension TextureResourceSpecifier: Equatable {
-    public static func == (lhs: TextureResourceSpecifier, rhs: TextureResourceSpecifier) -> Bool {
+    static func == (lhs: TextureResourceSpecifier, rhs: TextureResourceSpecifier) -> Bool {
         switch (lhs, rhs) {
         case (.file(let lhs), .file(let rhs)):
             return lhs == rhs
@@ -41,7 +41,7 @@ extension TextureResourceSpecifier: Equatable {
 }
 
 extension TextureResourceSpecifier: Hashable {
-    public func hash(into hasher: inout Hasher) {
+    func hash(into hasher: inout Hasher) {
         switch self {
         case .file(let url):
             url.hash(into: &hasher)
@@ -59,7 +59,7 @@ extension TextureResourceSpecifier: Hashable {
     }
 }
 
-public extension TextureResourceSpecifier {
+extension TextureResourceSpecifier {
     init(_ url: URL) throws {
         switch url.scheme {
         case "file":
@@ -113,14 +113,14 @@ public extension TextureResourceSpecifier {
     }
 }
 
-public extension TextureResourceSpecifier {
+extension TextureResourceSpecifier {
     init(_ urlString: String) throws {
         try self.init(URL(string: urlString)!)
     }
 }
 
 extension TextureResourceSpecifier: ExpressibleByStringLiteral {
-    public init(stringLiteral value: String) {
+    init(stringLiteral value: String) {
         do {
             try self.init(value)
         }
@@ -131,26 +131,26 @@ extension TextureResourceSpecifier: ExpressibleByStringLiteral {
 }
 
 extension TextureResourceSpecifier: Codable {
-    public init(from decoder: Decoder) throws {
+    init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
         let url = try container.decode(URL.self)
         try self.init(url)
     }
 
     // swiftlint:disable:next unavailable_function
-    public func encode(to encoder: Encoder) throws {
+    func encode(to encoder: Encoder) throws {
         fatalError("Unimplemented")
     }
 }
 
 // MARK: -
 
-public protocol InitWithTextureResourceSpecifier {
+protocol InitWithTextureResourceSpecifier {
     init(_ specifier: TextureResourceSpecifier) throws
 }
 
 extension Image: InitWithTextureResourceSpecifier {
-    public init(_ specifier: TextureResourceSpecifier) throws {
+    init(_ specifier: TextureResourceSpecifier) throws {
         switch specifier {
         case let .file(url):
             self = try Image(url: url)

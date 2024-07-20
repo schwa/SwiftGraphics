@@ -8,9 +8,6 @@ public struct RollPitchYawEditor: View {
     @Binding
     var rollPitchYaw: RollPitchYaw
 
-    @State
-    private var target: RollPitchYaw.Target = .object
-
     public init(_ rollPitchYaw: Binding<RollPitchYaw>) {
         self._rollPitchYaw = rollPitchYaw
     }

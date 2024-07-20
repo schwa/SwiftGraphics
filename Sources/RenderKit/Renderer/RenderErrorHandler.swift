@@ -31,12 +31,6 @@ extension EnvironmentValues {
     }
 }
 
-struct RenderErrorHandlerModifier: ViewModifier {
-    let value: RenderErrorHandler
-    func body(content: Content) -> some View {
-    }
-}
-
 public extension View {
     func renderErrorHandler(_ handler: @Sendable @escaping (Error) -> Void) -> some View {
         environment(\.renderErrorHandler, .init(handler: handler))

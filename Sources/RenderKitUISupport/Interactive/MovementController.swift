@@ -1,12 +1,12 @@
+// periphery:ignore:all
+// swiftlint:disable force_unwrapping
+
 import AsyncAlgorithms
-import BaseSupport
 import Foundation
 import GameController
 import Observation
 import os.log
 import SwiftUI
-
-// swiftlint:disable force_unwrapping
 
 // TODO: This needs to be massively cleaned-up and turned into an actor.
 // TODO: We need good support for pausing/resuming inputs
@@ -117,7 +117,6 @@ class MovementController: @unchecked Sendable {
                 //                strongSelf.mouseMovement += SIMD2(x, y)
                 //                Counters.shared.increment(counter: "Mouse (Delta)")
                 Task {
-                    Counters.shared.increment(counter: "Mouse Moved")
                     await self.channel.send(.rotation(x))
                 }
             }
@@ -167,14 +166,12 @@ class MovementController: @unchecked Sendable {
 
         relayTask = Task { [weak self] in
             let events = self?.displayLink!.events().flatMap { [weak self] _ in
-                Counters.shared.increment(counter: "DisplayLink")
                 return (self?.makeEvent() ?? []).async
             }
             guard let events else {
                 return
             }
             for await event in events {
-                Counters.shared.increment(counter: "Relay")
                 await self?.channel.send(event)
             }
         }
@@ -238,8 +235,6 @@ class MovementController: @unchecked Sendable {
                 movement != .zero ? Event.movement(movement) : nil,
                 rotation != .zero ? Event.rotation(rotation) : nil,
             ].compacted()
-
-            Counters.shared.increment(counter: "Poll: GC")
 
             allEvents += events
         }

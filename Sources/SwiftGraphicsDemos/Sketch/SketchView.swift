@@ -21,16 +21,13 @@ extension NamedCoordinateSpace {
     nonisolated(unsafe) static let canvas = NamedCoordinateSpace.named("CANVAS")
 }
 
-public struct SketchDemoView: View, DemoView {
-    public init() {
-    }
-
-    public var body: some View {
+struct SketchDemoView: View, DemoView {
+    var body: some View {
         SketchView()
     }
 }
 
-public struct SketchView: View {
+struct SketchView: View {
     @State
     private var model = SketchModel()
 
@@ -39,10 +36,10 @@ public struct SketchView: View {
 
     let function = ShaderLibrary.my_color_effect_2
 
-    public init() {
+    init() {
     }
 
-    public var body: some View {
+    var body: some View {
         VStack {
             ZStack {
                 Color.white

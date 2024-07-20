@@ -204,7 +204,6 @@ public struct SingleSplatView: View {
 struct SingleGaussianSplatRenderPass: RenderPassProtocol {
     struct State: PassState {
         struct Bindings {
-            var vertexBuffer0: Int
             var vertexUniforms: Int
             var vertexSplats: Int
             var vertexSplatIndices: Int
@@ -249,7 +248,6 @@ struct SingleGaussianSplatRenderPass: RenderPassProtocol {
         }
 
         let bindings = State.Bindings(
-            vertexBuffer0: try reflection.binding(for: "vertexBuffer.0", of: .vertex),
             vertexUniforms: try reflection.binding(for: "uniforms", of: .vertex),
             vertexSplats: try reflection.binding(for: "splats", of: .vertex),
             vertexSplatIndices: try reflection.binding(for: "splatIndices", of: .vertex),

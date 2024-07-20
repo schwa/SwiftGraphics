@@ -15,12 +15,6 @@ public extension simd_quatf {
     }
 }
 
-extension simd_quatf {
-    var innerDescription: String {
-        "\(real.formatted()), [\(imag.x.formatted()), \(imag.y.formatted()), \(imag.z.formatted())]"
-    }
-}
-
 // MARK: -
 
 public extension simd_quatd {

@@ -5,11 +5,11 @@ import Foundation
 // https://docs.gl/sl4/step
 // https://www.youtube.com/watch?v=YJB1QnEmlTs
 
-public func step<V: BinaryFloatingPoint>(_ x: V, _ a: V) -> V {
+func step<V: BinaryFloatingPoint>(_ x: V, _ a: V) -> V {
     x < a ? 0.0 : 1.0
 }
 
-public func clamp<V: BinaryFloatingPoint>(_ x: V, _ a: V, _ b: V) -> V {
+func clamp<V: BinaryFloatingPoint>(_ x: V, _ a: V, _ b: V) -> V {
     if x < a {
         return a
     }
@@ -19,11 +19,11 @@ public func clamp<V: BinaryFloatingPoint>(_ x: V, _ a: V, _ b: V) -> V {
     return x
 }
 
-public func saturate<V: BinaryFloatingPoint>(_ x: V) -> V {
+func saturate<V: BinaryFloatingPoint>(_ x: V) -> V {
     clamp(x, 0.0, 1.0)
 }
 
-public func smoothstep<V: BinaryFloatingPoint>(_ a: V, _ b: V, _ x: V) -> V {
+func smoothstep<V: BinaryFloatingPoint>(_ a: V, _ b: V, _ x: V) -> V {
     let y = saturate((x - a) / (b - a))
     return y * y * (3.0 - 2.0 * y)
 }

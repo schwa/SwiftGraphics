@@ -181,15 +181,3 @@ extension View {
         modifier(ZoomGestureViewModifier(zoom: zoom, range: range))
     }
 }
-
-extension MTLCounterResultTimestamp {
-    var timestampNanoseconds: UInt64 {
-        var timebase = mach_timebase_info_data_t()
-        mach_timebase_info(&timebase)
-        return timestamp * UInt64(timebase.numer) / UInt64(timebase.denom)
-    }
-
-    var timestampMilliseconds: Double {
-        Double(timestampNanoseconds) / 1_000_000.0
-    }
-}

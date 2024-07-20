@@ -19,18 +19,18 @@ extension HalfEdgeMesh.Face where Position == SIMD3<Float> {
 
 // MARK: -
 
-public protocol HalfEdgeMeshConverterProtocol: ConverterProtocol {
+protocol HalfEdgeMeshConverterProtocol: ConverterProtocol {
 }
 
-public protocol HalfEdgeMeshConvertable {
+protocol HalfEdgeMeshConvertable {
     associatedtype HalfEdgeMeshConverter: HalfEdgeMeshConverterProtocol where HalfEdgeMeshConverter.Input == Self, HalfEdgeMeshConverter.Output == HalfEdgeMesh<SIMD3<Float>>
 
     func toHalfEdgeMesh() throws -> HalfEdgeMesh<SIMD3<Float>>
 }
 
 extension Box3D: HalfEdgeMeshConvertable {
-    public struct HalfEdgeMeshConverter: HalfEdgeMeshConverterProtocol {
-        public func convert(_ box: Box3D) throws -> HalfEdgeMesh<SIMD3<Float>> {
+    struct HalfEdgeMeshConverter: HalfEdgeMeshConverterProtocol {
+        func convert(_ box: Box3D) throws -> HalfEdgeMesh<SIMD3<Float>> {
             HalfEdgeMesh<SIMD3<Float>>(polygons: [
                 // Bottom face (viewed from above, must be clockwise because normally viewed from below)
                 .init(vertices: [box.minXMinYMinZ, box.maxXMinYMinZ, box.maxXMaxYMinZ, box.minXMaxYMinZ]),
@@ -48,7 +48,7 @@ extension Box3D: HalfEdgeMeshConvertable {
         }
     }
 
-    public func toHalfEdgeMesh() throws -> HalfEdgeMesh<SIMD3<Float>> {
+    func toHalfEdgeMesh() throws -> HalfEdgeMesh<SIMD3<Float>> {
         try HalfEdgeMeshConverter().convert(self)
     }
 }

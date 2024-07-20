@@ -69,15 +69,15 @@ extension UnsafeMemoryEquatable {
     }
 }
 
-public func max(lhs: SIMD3<Float>, rhs: SIMD3<Float>) -> SIMD3<Float> {
+func max(lhs: SIMD3<Float>, rhs: SIMD3<Float>) -> SIMD3<Float> {
     [max(lhs[0], rhs[0]), max(lhs[1], rhs[1]), max(lhs[2], rhs[2])]
 }
 
-public func min(lhs: SIMD3<Float>, rhs: SIMD3<Float>) -> SIMD3<Float> {
+func min(lhs: SIMD3<Float>, rhs: SIMD3<Float>) -> SIMD3<Float> {
     [min(lhs[0], rhs[0]), min(lhs[1], rhs[1]), min(lhs[2], rhs[2])]
 }
 
-public extension MTLComputeCommandEncoder {
+extension MTLComputeCommandEncoder {
     func setBytes(_ bytes: UnsafeRawBufferPointer, index: Int) {
         setBytes(bytes.baseAddress!, length: bytes.count, index: index)
     }
@@ -96,13 +96,13 @@ public extension MTLComputeCommandEncoder {
 }
 
 // TODO: Deprecate - there's already an Axis3D
-public enum Axis3 {
+enum Axis3 {
     case x
     case y
     case z
 }
 
-public extension Axis3 {
+extension Axis3 {
     var positiveVector: SIMD3<Float> {
         switch self {
         case .x:
@@ -115,7 +115,7 @@ public extension Axis3 {
     }
 }
 
-public extension SIMD3<Float> {
+extension SIMD3<Float> {
     func angle(along axis: Axis3) -> Angle {
         // Project the vector onto the plane perpendicular to the axis
         let projectedVector: SIMD3<Float>
@@ -694,7 +694,7 @@ extension Array {
     }
 }
 
-public extension Projection3DHelper {
+extension Projection3DHelper {
     init(size: CGSize, cameraProjection: Projection, cameraTransform: Transform) {
         var helper = Projection3DHelper(size: size)
         helper.viewTransform = cameraTransform.matrix.inverse
@@ -704,7 +704,7 @@ public extension Projection3DHelper {
     }
 }
 
-public extension RollPitchYaw {
+extension RollPitchYaw {
     mutating func setAxis(_ vector: SIMD3<Float>) {
         switch vector {
         case [-1, 0, 0]:
@@ -813,7 +813,7 @@ extension Path {
     }
 }
 
-public extension MDLMeshConvertable {
+extension MDLMeshConvertable {
     func toYAMesh(allocator: MDLMeshBufferAllocator?, device: MTLDevice) throws -> YAMesh {
         let mdlMesh = try toMDLMesh(allocator: allocator)
         return try YAMesh(label: "\(type(of: self))", mdlMesh: mdlMesh, device: device)

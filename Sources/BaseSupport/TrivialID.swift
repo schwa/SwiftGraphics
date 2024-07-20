@@ -20,14 +20,6 @@ public struct TrivialID: Sendable, Hashable {
         }
     }
 
-    static func scope(for name: String) -> Scope {
-        Self.staticState.withLock { staticState in
-            let scope = staticState.scopesByName[name, default: .init(name: name)]
-            staticState.scopesByName[name] = scope
-            return scope
-        }
-    }
-
     public private(set) var scope: Scope
     public private(set) var serial: Int
 

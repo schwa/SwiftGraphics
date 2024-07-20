@@ -9,7 +9,7 @@ import SIMDSupport
 import SwiftGLTF
 import SwiftUI
 
-public struct SimplePBRSceneGraphDemoView: View, DemoView {
+struct SimplePBRSceneGraphDemoView: View, DemoView {
     let device: MTLDevice
 
     @State
@@ -25,7 +25,7 @@ public struct SimplePBRSceneGraphDemoView: View, DemoView {
         self.scene = scene
     }
 
-    public var body: some View {
+    var body: some View {
         RenderView(passes: [
             DiffuseShadingRenderPass(scene: scene),
             UnlitShadingPass(scene: scene),
@@ -160,8 +160,8 @@ extension SimplePBRMaterial: @retroactive MaterialProtocol, @retroactive @unchec
 
 // <ARL:
 
-public struct SimplePBRShadingPass: RenderPassProtocol {
-    public struct State: PassState {
+struct SimplePBRShadingPass: RenderPassProtocol {
+    struct State: PassState {
         var renderPipelineState: MTLRenderPipelineState
         var depthStencilState: MTLDepthStencilState
 
@@ -175,14 +175,14 @@ public struct SimplePBRShadingPass: RenderPassProtocol {
         var bindings: Bindings
     }
 
-    public var id: PassID = "SimplePBRShadingPass"
-    public var scene: SceneGraph
+    var id: PassID = "SimplePBRShadingPass"
+    var scene: SceneGraph
 
-    public init(scene: SceneGraph) {
+    init(scene: SceneGraph) {
         self.scene = scene
     }
 
-    public func setup(device: MTLDevice, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State {
+    func setup(device: MTLDevice, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State {
         let library = try device.makeDebugLibrary(bundle: .renderKitShaders)
         let renderPipelineDescriptor = renderPipelineDescriptor()
         renderPipelineDescriptor.vertexFunction = library.makeFunction(name: "SimplePBRShader::VertexShader")!
@@ -208,7 +208,7 @@ public struct SimplePBRShadingPass: RenderPassProtocol {
         return State(renderPipelineState: renderPipelineState, depthStencilState: depthStencilState, bindings: bindings)
     }
 
-    public func render(commandBuffer: MTLCommandBuffer, renderPassDescriptor: MTLRenderPassDescriptor, info: PassInfo, state: State) throws {
+    func render(commandBuffer: MTLCommandBuffer, renderPassDescriptor: MTLRenderPassDescriptor, info: PassInfo, state: State) throws {
         try commandBuffer.withRenderCommandEncoder(descriptor: renderPassDescriptor, label: "\(type(of: self))") { commandEncoder in
             try commandEncoder.withDebugGroup("Start encoding for \(type(of: self))") {
                 let helper = try SceneGraphRenderHelper(scene: scene, targetColorAttachment: renderPassDescriptor.colorAttachments[0])

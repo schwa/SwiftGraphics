@@ -14,8 +14,8 @@ import simd
 // TODO: Makt it so position is generic.
 // https://cs184.eecs.berkeley.edu/sp20/lecture/8-22/meshes-and-geometry-processing
 
-public struct HalfEdgeMesh <Position: Hashable> {
-    public class Vertex: Identifiable {
+struct HalfEdgeMesh <Position: Hashable> {
+    class Vertex: Identifiable {
         var position: Position
         weak var halfEdge: HalfEdge?
 
@@ -24,14 +24,14 @@ public struct HalfEdgeMesh <Position: Hashable> {
         }
     }
 
-    public class Face: Identifiable {
+    class Face: Identifiable {
         weak var halfEdge: HalfEdge? //
 
         init() {
         }
     }
 
-    public class HalfEdge: Identifiable {
+    class HalfEdge: Identifiable {
         var vertex: Vertex
         var next: HalfEdge?
         var twin: HalfEdge?

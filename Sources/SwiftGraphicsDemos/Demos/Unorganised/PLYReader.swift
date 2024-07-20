@@ -4,17 +4,17 @@ import Foundation
 
 public struct Ply {
     public struct Header {
-        public enum Format: String {
+        enum Format: String {
             case ascii
             case binaryLittleEndian = "binary_little_endian"
         }
-        public struct Element: Equatable {
-            public enum Specification: Equatable {
-                public struct Property: Equatable {
+        struct Element: Equatable {
+            enum Specification: Equatable {
+                struct Property: Equatable {
                     var name: String
                     var valueType: ScalarType
                 }
-                public struct List: Equatable {
+                struct List: Equatable {
                     var name: String
                     var countType: ScalarType
                     var valueType: ScalarType
@@ -23,27 +23,27 @@ public struct Ply {
                 case list(List)
             }
 
-            public var name: String
-            public var count: Int
-            public var specification: Specification
+            var name: String
+            var count: Int
+            var specification: Specification
         }
 
-        public var format: Format
-        public var version: String
-        public var elements: [Element]
+        var format: Format
+        var version: String
+        var elements: [Element]
     }
 
-    public struct Element {
-        public enum Record {
+    struct Element {
+        enum Record {
             case compound([ScalarValue]) // Values may be different
             case collection([ScalarValue]) // All values are same
         }
 
-        public var definition: Header.Element
-        public var records: [Record]
+        var definition: Header.Element
+        var records: [Record]
     }
 
-    public enum ScalarType: String {
+    enum ScalarType: String {
         case char
         case uchar
         case short
@@ -54,7 +54,7 @@ public struct Ply {
         case double
     }
 
-    public enum ScalarValue {
+    enum ScalarValue {
         case char(Int8)
         case uchar(UInt8)
         case short(Int16)
@@ -65,13 +65,13 @@ public struct Ply {
         case double(Double)
     }
 
-    public var header: Header
+    var header: Header
 
-    public var elementData: Data
+    var elementData: Data
 
-    public var processedElements: [Element]?
+    var processedElements: [Element]?
 
-    public var elements: [Element] {
+    var elements: [Element] {
         mutating get throws {
             if let processedElements {
                 return processedElements
@@ -111,7 +111,7 @@ public struct Ply {
     }
 }
 
-public extension Ply {
+extension Ply {
     init(string: String, processElements: Bool = false) throws {
         guard let data = string.data(using: .utf8) else {
             throw BaseError.generic("Could not encode string.")
@@ -173,13 +173,13 @@ extension Ply.ScalarType {
 // MARK:
 
 // extension Ply.Header.Element: CustomDebugStringConvertible {
-//    public var debugDescription: String {
+//    var debugDescription: String {
 //        "Element(name: \(name), properties: \(properties))"
 //    }
 // }
 
 // extension Ply.Header.Element.Property: CustomDebugStringConvertible {
-//    public var debugDescription: String {
+//    var debugDescription: String {
 //        switch self {
 //        case .list(name: let name, countType: let countType, valueType: let valueType):
 //            return "Property(name: \(name), countType: \(countType) valueType: \(valueType))"
@@ -190,13 +190,13 @@ extension Ply.ScalarType {
 // }
 
 extension Ply.Element: CustomDebugStringConvertible {
-    public var debugDescription: String {
+    var debugDescription: String {
         "Element(name: \(definition.name), records: [\(records.map { "[\($0)]" }.joined(separator: ", "))])"
     }
 }
 
 extension Ply.Element.Record: CustomDebugStringConvertible {
-    public var debugDescription: String {
+    var debugDescription: String {
         switch self {
         case .collection(let values):
             values.map(\.debugDescription).joined(separator: ", ")
@@ -207,7 +207,7 @@ extension Ply.Element.Record: CustomDebugStringConvertible {
 }
 
 extension Ply.ScalarValue: CustomDebugStringConvertible {
-    public var debugDescription: String {
+    var debugDescription: String {
         switch self {
         case .char(let value):
             String(value)
@@ -276,7 +276,7 @@ extension Ply.ScalarValue {
     }
 }
 
-public extension Ply.ScalarValue {
+extension Ply.ScalarValue {
     var int: Int? {
         switch self {
         case .char(let value):
@@ -306,7 +306,7 @@ public extension Ply.ScalarValue {
     }
 }
 
-public extension Ply.Header.Element.Specification {
+extension Ply.Header.Element.Specification {
     var properties: [Ply.Header.Element.Specification.Property]? {
         guard case let .compound(array) = self else {
             return nil
@@ -339,7 +339,7 @@ public extension Ply.Header {
     }
 }
 
-public extension Ply.Element.Record {
+extension Ply.Element.Record {
     var values: [Ply.ScalarValue] {
         switch self {
         case .collection(let values):

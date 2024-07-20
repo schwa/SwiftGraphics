@@ -22,3 +22,8 @@ benchmark:
 
 # plot-benchmark:
 #     swift package benchmark --target Shapes2DBenchmarkTarget run --filter InternalUTCClock-now --metric wallClock --format histogramPercentiles
+
+periphery-scan:
+    clear
+    swift package clean
+    periphery scan

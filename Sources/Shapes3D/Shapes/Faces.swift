@@ -5,8 +5,6 @@ import ModelIO
 import simd
 
 public protocol Face {
-    associatedtype Vertex: VertexLike
-
     mutating func flip()
 }
 

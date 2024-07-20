@@ -39,10 +39,6 @@ extension SyntaxProtocol {
         }
     }
 
-    func match(path: [SyntaxProtocol.Type], viewMode: SyntaxTreeViewMode) -> [SyntaxProtocol] {
-        match(path: path.map { .type($0) }, viewMode: viewMode)
-    }
-
     func match<S>(path: [SyntaxProtocol.Type], viewMode: SyntaxTreeViewMode, `as` syntaxType: S.Type) -> [S] where S: SyntaxProtocol {
         match(path: path.map { .type($0) }, viewMode: viewMode).compactMap { $0.as(syntaxType) }
     }

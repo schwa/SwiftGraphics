@@ -2,8 +2,6 @@ import Observation
 import SwiftUI
 
 public struct CountersView: View {
-    let startDate = Date.now
-
     @State
     private var records: [Counters.Record] = []
 

@@ -10,7 +10,7 @@ import SwiftUI
 import AppKit
 #endif
 
-public extension MTKMesh {
+extension MTKMesh {
     /// Total length of all buffers in MTKMesh
     var totalLength: Int {
         let vertexBuffersLength = vertexBuffers.map(\.length).reduce(0, +)
@@ -19,7 +19,7 @@ public extension MTKMesh {
     }
 }
 
-public extension SIMD3<Float> {
+extension SIMD3<Float> {
     func distance(to rhs: SIMD3<Float>) -> Float {
         (self - rhs).length
     }
@@ -31,7 +31,7 @@ public extension SIMD3<Float> {
 
 // MARK: -
 
-public func hslToRgb(_ h: Float, _ s: Float, _ l: Float) -> (Float, Float, Float) {
+func hslToRgb(_ h: Float, _ s: Float, _ l: Float) -> (Float, Float, Float) {
     if s == 0 {
         return (1, 1, 1)
     } else {
@@ -44,7 +44,7 @@ public func hslToRgb(_ h: Float, _ s: Float, _ l: Float) -> (Float, Float, Float
     }
 }
 
-public func hueToRgb(_ p: Float, _ q: Float, _ t: Float) -> Float {
+func hueToRgb(_ p: Float, _ q: Float, _ t: Float) -> Float {
     var t = t
     if t < 0 { t += 1 }
     if t > 1 { t -= 1 }
@@ -60,13 +60,13 @@ public func hueToRgb(_ p: Float, _ q: Float, _ t: Float) -> Float {
     return p
 }
 
-public struct SpatialTapGestureModifier: ViewModifier {
+struct SpatialTapGestureModifier: ViewModifier {
     let callback: (CGPoint) -> Void
 
     @State
     var start: CGPoint?
 
-    public func body(content: Content) -> some View {
+    func body(content: Content) -> some View {
         content.gesture(DragGesture(minimumDistance: 0).onChanged { value in
             if start == nil {
                 start = value.location
@@ -78,13 +78,13 @@ public struct SpatialTapGestureModifier: ViewModifier {
     }
 }
 
-public extension View {
+extension View {
     func onSpatialTapGesture(_ callback: @escaping (CGPoint) -> Void) -> some View {
         modifier(SpatialTapGestureModifier(callback: callback))
     }
 }
 
-public extension Image {
+extension Image {
     init(url: URL) throws {
         if try url.checkResourceIsReachable() == false {
             throw BaseError.generic("Resource does not exist at: \(url)")
@@ -114,7 +114,7 @@ extension MemoryLayout {
     }
 }
 
-public extension MTKTextureLoader {
+extension MTKTextureLoader {
     func newTexture(for color: CGColor, options: [MTKTextureLoader.Option: Any]? = nil) throws -> MTLTexture {
         let image = try color.makeImage()
         let texture = try newTexture(cgImage: image, options: options)

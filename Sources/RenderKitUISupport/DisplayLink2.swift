@@ -1,3 +1,5 @@
+// periphery:ignore:all
+
 #if os(macOS)
 import AppKit
 import QuartzCore
@@ -35,15 +37,6 @@ class DisplayLink2 {
     private let mode: RunLoop.Mode
     private let helper: Helper
     private let displayLink: CADisplayLink
-
-    var isPaused: Bool {
-        get {
-            displayLink.isPaused
-        }
-        set {
-            displayLink.isPaused = newValue
-        }
-    }
 
     private init(runloop: RunLoop = .current, mode: RunLoop.Mode = .default, displayLinkFactory: (Helper) -> CADisplayLink) {
         self.runloop = runloop
