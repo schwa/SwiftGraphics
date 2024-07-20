@@ -18,8 +18,8 @@ public actor Counters {
 
         enum Value {
             case count(Int)
-//            case int(Int)
-//            case double(Double)
+            //            case int(Int)
+            //            case double(Double)
         }
     }
 
