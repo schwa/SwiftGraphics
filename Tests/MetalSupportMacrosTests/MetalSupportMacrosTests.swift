@@ -41,7 +41,7 @@ final class MetalBindingsMacrosTests: XCTestCase {
             }
 
             extension Bindings: MetalBindable {
-                let bindingMappings: [(String, MTLFunctionType?, WritableKeyPath<Self, Int>)] = [
+                nonisolated(unsafe) static let bindingMappings: [(String, MTLFunctionType?, WritableKeyPath<Self, Int>)] = [
                     ("color", nil, \.color),
                     ("exampleFragmentBinding", .fragment, \.exampleFragmentBinding),
                     ("newName", nil, \.oldName)
