@@ -10,7 +10,6 @@ import MetalPerformanceShaders
 import ModelIO
 import os
 import simd
-import SIMDSupport
 
 // swiftlint:disable force_unwrapping
 

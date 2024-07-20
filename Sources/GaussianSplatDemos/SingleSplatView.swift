@@ -8,7 +8,6 @@ import GaussianSplatSupport
 import MetalSupport
 import Observation
 import RenderKit
-import Shapes3D
 import simd
 import SIMDSupport
 import SwiftFields

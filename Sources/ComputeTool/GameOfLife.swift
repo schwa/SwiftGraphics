@@ -4,7 +4,6 @@ import Compute
 import Everything
 import Foundation
 import Metal
-import MetalSupport
 
 // swiftlint:disable force_unwrapping
 

@@ -1,5 +1,4 @@
 import BaseSupport
-import CoreGraphicsSupport
 @preconcurrency import Metal
 import MetalKit
 import MetalSupport

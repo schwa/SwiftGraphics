@@ -1,7 +1,5 @@
-import BaseSupport
 import Foundation
 import Metal
-import MetalSupport
 
 public extension RenderPassProtocol {
     func drawableSizeWillChange(device: MTLDevice, size: SIMD2<Float>, state: inout State) throws {

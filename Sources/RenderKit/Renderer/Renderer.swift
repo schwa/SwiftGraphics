@@ -8,7 +8,6 @@ import ModelIO
 import os.log
 import RenderKitShadersLegacy
 import simd
-import SIMDSupport
 import SwiftUI
 
 public protocol MetalConfigurationProtocol: Sendable {

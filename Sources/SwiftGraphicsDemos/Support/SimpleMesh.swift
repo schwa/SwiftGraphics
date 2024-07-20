@@ -5,7 +5,6 @@ import ModelIO
 import os
 import RenderKitShadersLegacy
 import Shapes2D
-import SIMDSupport
 import SwiftUI
 
 protocol MTLBufferProviding {

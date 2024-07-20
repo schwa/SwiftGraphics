@@ -1,7 +1,6 @@
 import MetalKit
 import MetalSupport
 import ModelIO
-import SIMDSupport
 import SwiftUI
 
 public struct Sphere3D {

@@ -1,4 +1,3 @@
-import CoreGraphicsSupport
 import Projection
 import simd
 import SIMDSupport

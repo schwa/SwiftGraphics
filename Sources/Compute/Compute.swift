@@ -1,6 +1,5 @@
 import BaseSupport
 import Metal
-import MetalSupport
 
 // swiftlint:disable force_unwrapping
 

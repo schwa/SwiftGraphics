@@ -1,7 +1,6 @@
 import MetalSupport
 import RenderKitShadersLegacy
 import Shapes3D
-import SIMDSupport
 import SwiftUI
 
 extension PolygonConvertable {

@@ -2,12 +2,10 @@ import Everything
 @preconcurrency import Metal
 import MetalKit
 import MetalSupport
-import MetalUISupport
 import ModelIO
 import os
 import RenderKit
 import RenderKitShadersLegacy
-import Shapes2D
 import SIMDSupport
 import SwiftUI
 

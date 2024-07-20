@@ -1,7 +1,6 @@
 import MetalKit
 import MetalSupport
 import ModelIO
-import SIMDSupport
 import SwiftUI
 
 // TODO: This file needs a big makeover. See also MeshConvertable.

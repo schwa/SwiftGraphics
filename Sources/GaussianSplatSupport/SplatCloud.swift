@@ -1,4 +1,3 @@
-import CoreGraphicsSupport
 import Metal
 import MetalSupport
 import simd

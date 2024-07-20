@@ -8,7 +8,6 @@ import RenderKit
 import RenderKitShaders
 import RenderKitUISupport
 import Shapes3D
-import SIMDSupport
 import SwiftUI
 
 struct PointCloudView: View, DemoView {

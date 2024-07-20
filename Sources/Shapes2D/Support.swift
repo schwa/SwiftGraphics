@@ -1,6 +1,5 @@
 import ApproximateEquality
 import CoreGraphics
-import CoreGraphicsSupport
 import Foundation
 
 extension ComparisonResult {

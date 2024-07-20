@@ -1,4 +1,3 @@
-import BaseSupport
 import CoreGraphics
 import CoreGraphicsSupport
 import CoreGraphicsUnsafeConformances

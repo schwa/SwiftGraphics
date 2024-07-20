@@ -1,4 +1,3 @@
-import CoreGraphicsSupport
 import Fields3D
 import SwiftUI
 

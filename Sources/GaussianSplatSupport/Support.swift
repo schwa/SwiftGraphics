@@ -1,8 +1,6 @@
 import BaseSupport
-import CoreGraphicsSupport
 import Foundation
 import Metal
-import MetalSupport
 import simd
 import SIMDSupport
 
