@@ -18,8 +18,6 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
             var vertexSplats: Int
             var vertexSplatIndices: Int
             var fragmentUniforms: Int
-            var fragmentSplats: Int
-            var fragmentSplatIndices: Int
             var vertexCounterBuffer: Int
         }
         var quadMesh: MTKMesh
@@ -74,8 +72,6 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
             vertexSplats: try reflection.binding(for: "splats", of: .vertex),
             vertexSplatIndices: try reflection.binding(for: "splatIndices", of: .vertex),
             fragmentUniforms: try reflection.binding(for: "uniforms", of: .fragment),
-            fragmentSplats: try reflection.binding(for: "splats", of: .fragment),
-            fragmentSplatIndices: try reflection.binding(for: "splatIndices", of: .fragment),
             vertexCounterBuffer: useVertexCounting ? try reflection.binding(for: "my_counters", of: .vertex) : 0
         )
 
@@ -132,8 +128,6 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
                 }
                 commandEncoder.withDebugGroup("FragmentShader") {
                     commandEncoder.setFragmentBytes(of: uniforms, index: state.bindings.fragmentUniforms)
-                    commandEncoder.setFragmentBuffer(splats.splats, index: state.bindings.fragmentSplats)
-                    commandEncoder.setFragmentBuffer(splats.indices, index: state.bindings.fragmentSplatIndices)
                 }
                 commandEncoder.draw(state.quadMesh, instanceCount: splats.splats.count)
             }

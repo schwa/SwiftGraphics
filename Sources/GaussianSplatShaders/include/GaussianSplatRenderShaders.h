@@ -98,9 +98,7 @@ namespace GaussianSplatShaders {
     [[fragment]]
     float4 FragmentShader(
         FragmentIn in [[stage_in]],
-        constant FragmentUniforms &uniforms [[buffer(0)]],
-        constant Splat *splats [[buffer(1)]],
-        constant uint *splatIndices [[buffer(3)]]
+        constant FragmentUniforms &uniforms [[buffer(0)]]
     ) {
         const auto relativePosition = in.relativePosition;
         const auto negativeDistanceSquared = -dot(relativePosition, relativePosition);
