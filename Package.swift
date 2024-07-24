@@ -178,6 +178,7 @@ let package = Package(
                 "GenericGeometryBase",
                 "Shapes2D",
             ],
+            exclude: ["README.md"],
             swiftSettings: [
             ]
         ),
@@ -275,7 +276,8 @@ let package = Package(
                 "MetalSupport",
                 "Shapes2D",
                 "SIMDSupport",
-            ]
+            ],
+            exclude: ["Shapes/README.md"]
         ),
 
         .target(
@@ -335,6 +337,7 @@ let package = Package(
             name: "ComputeTool",
             dependencies: [
                 "Compute",
+                "MetalSupport",
                 "MetalUnsafeConformances",
             ],
             resources: [
@@ -375,6 +378,12 @@ let package = Package(
                 "RenderKitUISupport",
                 "SwiftUISupport",
             ],
+            exclude: [
+                "Support/SignedDistanceFields.metal",
+                "Demos/VolumetricRendererDemoView/README.md",
+                "Support/ShaderToy/ShaderToy.metal",
+                "Support/my_color_effect.metal",
+            ],
             resources: [
                 .process("Resources/Assets.xcassets"),
                 .copy("Resources/Output"),
@@ -402,6 +411,7 @@ let package = Package(
                 "SwiftGraphicsDemos",
             ],
             resources: [
+                .process("Media.xcassets"),
                 .copy("CubeBinary.ply"),
                 .copy("test-splat.3-points-from-train.ply"),
             ],
@@ -466,7 +476,8 @@ let package = Package(
             dependencies: [
                 .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
                 .product(name: "SwiftCompilerPlugin", package: "swift-syntax")
-            ]
+            ],
+            exclude: ["README.md"]
         ),
         .testTarget(
             name: "MetalSupportTests",

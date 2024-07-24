@@ -73,7 +73,6 @@ extension CGImage {
     static func makeTestImage(definition: BitmapDefinition) throws -> CGImage {
         let context = try CGContext.bitmapContext(definition: definition)
         let rect = CGRect(width: CGFloat(definition.width), height: CGFloat(definition.height))
-        let size2 = rect.size / 2
         func segment(color: CGColor, start: CGPoint, end: CGPoint) {
             context.saveGState()
             var locations: [CGFloat] = [0.333, 1]
@@ -90,7 +89,6 @@ extension CGImage {
         guard let image = context.makeImage() else {
             throw BaseError.generic("Failed to create image")
         }
-        let nsImage = NSImage(cgImage: image)
         return image
     }
 }
