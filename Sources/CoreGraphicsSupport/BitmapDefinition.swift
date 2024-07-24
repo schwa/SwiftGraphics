@@ -6,10 +6,11 @@ public struct BitmapDefinition: Sendable {
     public var bytesPerRow: Int
     public var pixelFormat: PixelFormat
 
-    public init(width: Int, height: Int, bytesPerRow: Int? = 0, pixelFormat: PixelFormat) {
+    public init(width: Int, height: Int, bytesPerRow: Int? = nil, pixelFormat: PixelFormat) {
+        assert(width != 0 && height != 0, "BitmapDefinition must have non-zero width and height.")
         self.width = width
         self.height = height
-        self.bytesPerRow = bytesPerRow ?? width * pixelFormat.bytesPerComponent
+        self.bytesPerRow = bytesPerRow ?? width * pixelFormat.bytesPerComponent * pixelFormat.numberOfComponents
         self.pixelFormat = pixelFormat
     }
 }
@@ -20,7 +21,7 @@ public extension BitmapDefinition {
     }
 }
 
-public struct PixelFormat: Sendable {
+public struct PixelFormat: Sendable, Equatable {
     public var bitsPerComponent: Int
     public var numberOfComponents: Int
     public var alphaInfo: CGImageAlphaInfo
@@ -50,8 +51,36 @@ public extension PixelFormat {
     }
 }
 
+/*
+ |     16  bits per pixel,    |     5  bits per component
+ kCGImageAlphaNoneSkipFirst |
+ |     32  bits per pixel,    |     8  bits per component
+ kCGImageAlphaNoneSkipFirst |
+ |     32  bits per pixel,    |     8  bits per component
+ kCGImageAlphaNoneSkipLast |
+ |     32  bits per pixel,    |     8  bits per component
+ kCGImageAlphaPremultipliedFirst |
+ |     32  bits per pixel,    |     8  bits per component
+ kCGImageAlphaPremultipliedLast |
+ |     32  bits per pixel,    |     10 bits per component
+ kCGImageAlphaNone|kCGImagePixelFormatRGBCIF10|kCGImageByteOrder16Little |
+ |     64  bits per pixel,    |     16 bits per component
+ kCGImageAlphaPremultipliedLast |
+ |     64  bits per pixel,    |     16 bits per component
+ kCGImageAlphaNoneSkipLast |
+ |     64  bits per pixel,    |     16 bits per component
+ kCGImageAlphaPremultipliedLast|kCGBitmapFloatComponents|kCGImageByteOrder16Little |
+ |     64  bits per pixel,    |     16 bits per component
+ kCGImageAlphaNoneSkipLast|kCGBitmapFloatComponents|kCGImageByteOrder16Little |
+ |     128 bits per pixel,    |     32 bits per component
+ kCGImageAlphaPremultipliedLast|kCGBitmapFloatComponents |
+ |     128 bits per pixel,    |     32 bits per component
+ kCGImageAlphaNoneSkipLast|kCGBitmapFloatComponents |
+ */
+
 public extension PixelFormat {
-    static let rgba8 = PixelFormat(bitsPerComponent: 8, numberOfComponents: 4, alphaInfo: .premultipliedLast, byteOrder: .order32Little, formatInfo: .packed, useFloatComponents: false, colorSpace: CGColorSpaceCreateDeviceRGB())
+    static let rgba8 = PixelFormat(bitsPerComponent: 8, numberOfComponents: 4, alphaInfo: .premultipliedLast, byteOrder: .orderDefault, formatInfo: .packed, useFloatComponents: false, colorSpace: CGColorSpaceCreateDeviceRGB())
+    static let rgba8srgb = PixelFormat(bitsPerComponent: 8, numberOfComponents: 4, alphaInfo: .premultipliedLast, byteOrder: .orderDefault, formatInfo: .packed, useFloatComponents: false, colorSpace: CGColorSpace(name: CGColorSpace.sRGB)!)
 }
 
 public extension PixelFormat {

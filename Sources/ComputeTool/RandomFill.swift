@@ -16,10 +16,11 @@ struct RandomFill {
     let device = MTLCreateSystemDefaultDevice()!
 
     func main() throws {
-        let testImage = CGImage.makeTestImage(width: 512, height: 512)!
+        let testImage = try CGImage.makeTestImage(width: 512, height: 512)
         let testTexture = try device.newTexture(with: testImage)
         let outImage = try testTexture.cgImage()
-        try outImage.write(to: URL(filePath: "/tmp/out.png"))
+        try outImage.write(to: URL(filePath: "/tmp/test-image.png"))
+        URL(filePath: "/tmp/test-image.png").reveal()
 
         try testPixelFormats()
 
@@ -52,7 +53,7 @@ struct RandomFill {
 
         let data = UnsafeMutableRawBufferPointer(start: buffer.contents(), count: buffer.length)
 
-        let context = CGContext.bitmapContext(data: data, definition: .init(width: texture.width, height: height, pixelFormat: PixelFormat(bitsPerComponent: texture.pixelFormat.bits!, numberOfComponents: 1, alphaInfo: .none, byteOrder: .orderDefault, colorSpace: colorSpace)))!
+        let context = try CGContext.bitmapContext(data: data, definition: .init(width: texture.width, height: height, pixelFormat: PixelFormat(bitsPerComponent: texture.pixelFormat.bits!, numberOfComponents: 1, alphaInfo: .none, byteOrder: .orderDefault, colorSpace: colorSpace)))
 
         let image = context.makeImage()!
 
@@ -60,6 +61,7 @@ struct RandomFill {
         let destination = try ImageDestination(url: url)
         destination.addImage(image)
         try destination.finalize()
+        url.reveal()
     }
 }
 
@@ -82,6 +84,6 @@ func testPixelFormats() throws {
         let texture = buffer.makeTexture(descriptor: textureDescriptor, offset: 0, bytesPerRow: bytesPerRow)!
 
         let data = UnsafeMutableRawBufferPointer(start: buffer.contents(), count: buffer.length)
-        _ = CGContext.bitmapContext(data: data, definition: .init(width: texture.width, height: texture.height, bytesPerRow: bytesPerRow, pixelFormat: pixelFormat2))!
+        _ = try CGContext.bitmapContext(data: data, definition: .init(width: texture.width, height: texture.height, bytesPerRow: bytesPerRow, pixelFormat: pixelFormat2))
     }
 }

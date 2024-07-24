@@ -1,4 +1,5 @@
 import AppKit
+import BaseSupport
 import CoreGraphics
 import CoreGraphicsSupport
 import Foundation
@@ -29,15 +30,6 @@ func time(_ block: () -> Void) -> CFAbsoluteTime {
     block()
     let end = CFAbsoluteTimeGetCurrent()
     return end - start
-}
-
-public func nextPowerOfTwo(_ value: Double) -> Double {
-    let logValue = log2(Double(value))
-    return pow(2.0, ceil(logValue))
-}
-
-public func nextPowerOfTwo(_ value: Int) -> Int {
-    Int(nextPowerOfTwo(Double(value)))
 }
 
 extension Collection where Element: Comparable {
@@ -74,25 +66,31 @@ extension MTLTexture {
 }
 
 extension CGImage {
-    static func makeTestImage(width: Int, height: Int) -> CGImage? {
-        guard let context = CGContext.bitmapContext(definition: .init(width: width, height: height, pixelFormat: .rgba8)) else {
-            return nil
-        }
-        let rect = CGRect(width: CGFloat(width), height: CGFloat(height))
+    static func makeTestImage(width: Int, height: Int) throws -> CGImage {
+        try makeTestImage(definition: .init(width: width, height: height, pixelFormat: .rgba8))
+    }
+
+    static func makeTestImage(definition: BitmapDefinition) throws -> CGImage {
+        let context = try CGContext.bitmapContext(definition: definition)
+        let rect = CGRect(width: CGFloat(definition.width), height: CGFloat(definition.height))
         let size2 = rect.size / 2
-        context.setFillColor(CGColor(red: 1, green: 0, blue: 0, alpha: 1))
-        context.fill([CGRect(origin: rect.minXMinY, size: size2)])
-        context.setFillColor(CGColor(red: 0, green: 1, blue: 0, alpha: 1))
-        context.fill([CGRect(origin: rect.midXMinY, size: size2)])
-        context.setFillColor(CGColor(red: 0, green: 0, blue: 1, alpha: 1))
-        context.fill([CGRect(origin: rect.minXMidY, size: size2)])
-
-        var locations: [CGFloat] = [0, 1]
-        let colors = [CGColor(red: 1, green: 1, blue: 1, alpha: 0), CGColor(red: 1, green: 1, blue: 1, alpha: 1)]
-        let gradient = CGGradient(colorsSpace: context.colorSpace!, colors: colors as CFArray, locations: &locations)!
-
-        context.clip(to: [CGRect(origin: rect.midXMidY, size: size2)])
-        context.drawLinearGradient(gradient, start: rect.midXMidY, end: rect.maxXMaxY, options: [.drawsBeforeStartLocation, .drawsAfterEndLocation])
-        return context.makeImage()
+        func segment(color: CGColor, start: CGPoint, end: CGPoint) {
+            context.saveGState()
+            var locations: [CGFloat] = [0.333, 1]
+            let colors = [color.withAlphaComponent(0), color]
+            let gradient = CGGradient(colorsSpace: context.colorSpace!, colors: colors as CFArray, locations: &locations)!
+            context.clip(to: [CGRect(points: (start, end))])
+            context.drawLinearGradient(gradient, start: start, end: end, options: [.drawsBeforeStartLocation, .drawsAfterEndLocation])
+            context.restoreGState()
+        }
+        segment(color: CGColor(red: 1, green: 0, blue: 0, alpha: 1), start: rect.minXMaxY, end: rect.midXMidY)
+        segment(color: CGColor(red: 0, green: 1, blue: 0, alpha: 1), start: rect.maxXMaxY, end: rect.midXMidY)
+        segment(color: CGColor(red: 0, green: 0, blue: 1, alpha: 1), start: rect.minXMinY, end: rect.midXMidY)
+        segment(color: CGColor(red: 0, green: 0, blue: 0, alpha: 1), start: rect.maxXMinY, end: rect.midXMidY)
+        guard let image = context.makeImage() else {
+            throw BaseError.generic("Failed to create image")
+        }
+        let nsImage = NSImage(cgImage: image)
+        return image
     }
 }

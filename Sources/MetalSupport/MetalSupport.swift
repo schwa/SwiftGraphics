@@ -11,8 +11,6 @@ import ModelIO
 import os
 import simd
 
-// swiftlint:disable force_unwrapping
-
 // TODO: This file is a mess.
 // TODO: Take note of the deprecations here.
 
@@ -219,23 +217,10 @@ public extension MTLDevice {
         return families.contains { supportsFamily($0) }
     }
 
-    func newTexture(with image: CGImage) throws -> MTLTexture {
-        // TODO: Throw.
-        guard let bitmapDefinition = BitmapDefinition(from: image) else {
-            fatalError("Failed to create bitmap definition")
-        }
-        guard let context = CGContext.bitmapContext(with: image), let data = context.data else {
-            fatalError("Failed to create bitmap context")
-        }
-        guard let pixelFormat = MTLPixelFormat(from: bitmapDefinition.pixelFormat) else {
-            fatalError("Failed to create pixel format")
-        }
-        let textureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: pixelFormat, width: image.width, height: image.height, mipmapped: true)
-        guard let texture = makeTexture(descriptor: textureDescriptor) else {
-            fatalError("Failed to create texture")
-        }
-        texture.replace(region: MTLRegion(origin: .zero, size: MTLSize(image.width, image.height, 1)), mipmapLevel: 0, slice: 0, withBytes: data, bytesPerRow: bitmapDefinition.bytesPerRow, bytesPerImage: bitmapDefinition.bytesPerRow * image.height)
-        return texture
+    func newTexture(with image: CGImage, options: [MTKTextureLoader.Option: Any]? = nil) throws -> MTLTexture {
+        // Through much annoying debugging I discovered MTKTextureLoader doesn't like CGImages with .orderDefault byte order.
+        assert(image.byteOrderInfo != .orderDefault)
+        return try MTKTextureLoader(device: self).newTexture(cgImage: image, options: options)
     }
 
     func makeDebugLibrary(bundle: Bundle) throws -> MTLLibrary {
@@ -433,11 +418,11 @@ public extension MTLTexture {
         }
     }
 
-    func convert(destinationColorSpace: CGColorSpace, sourceAlpha: MPSAlphaType, destinationAlpha: MPSAlphaType) throws -> MTLTexture {
+    func convert(pixelFormat: MTLPixelFormat, destinationColorSpace: CGColorSpace, sourceAlpha: MPSAlphaType, destinationAlpha: MPSAlphaType) throws -> MTLTexture {
         guard let sourceColorSpace = pixelFormat.colorSpace else {
             throw BaseError.illegalValue
         }
-        let destinationTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba32Float, width: width, height: height, mipmapped: false)
+        let destinationTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: pixelFormat, width: width, height: height, mipmapped: false)
         destinationTextureDescriptor.usage = [.shaderRead, .shaderWrite]
         guard let destinationTexture = device.makeTexture(descriptor: destinationTextureDescriptor) else {
             fatalError("Failed to create destination texture")
@@ -454,13 +439,13 @@ public extension MTLTexture {
 
     func cgImage(colorSpace: CGColorSpace? = nil) throws -> CGImage {
         if let pixelFormat = PixelFormat(pixelFormat) {
-            guard let context = CGContext.bitmapContext(definition: .init(width: width, height: height, pixelFormat: pixelFormat)) else {
-                throw BaseError.resourceCreationFailure
-            }
+            let bitmapDefinition = BitmapDefinition(width: width, height: height, pixelFormat: pixelFormat)
+            let context = try CGContext.bitmapContext(definition: bitmapDefinition)
+            assert(context.bytesPerRow == bitmapDefinition.bytesPerRow)
             guard let pixelBytes = context.data else {
                 throw BaseError.resourceCreationFailure
             }
-            getBytes(pixelBytes, bytesPerRow: context.bytesPerRow, from: MTLRegion(origin: .zero, size: MTLSize(width, height, 1)), mipmapLevel: 0)
+            getBytes(pixelBytes, bytesPerRow: bitmapDefinition.bytesPerRow, from: MTLRegion(origin: .zero, size: MTLSize(width, height, 1)), mipmapLevel: 0)
             guard let image = context.makeImage() else {
                 throw BaseError.resourceCreationFailure
             }
@@ -472,7 +457,7 @@ public extension MTLTexture {
                 fatalError("No colorspace for \(pixelFormat)")
             }
             guard let dstColorSpace = colorSpace else {
-                fatalError("No colorspace")
+                fatalError("No colorspace provided.")
             }
             let destinationTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba32Float, width: width, height: height, mipmapped: false)
             destinationTextureDescriptor.usage = [.shaderRead, .shaderWrite]
