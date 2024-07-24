@@ -15,13 +15,13 @@ func countingSort<T>(values: [T], valueSpace: Int, key: (T) -> Int) -> [T] where
     }
     // Prefix Sum
     for i in counts.indices.dropFirst() {
-        counts[i] = counts[i] + counts[i - 1]
+        counts[i] += counts[i - 1]
     }
     // Shuffle
     var result = Array(repeating: T.zero, count: values.count)
     for i in values.indices.reversed() {
         let value = key(values[i])
-        counts[value] = counts[value] - 1
+        counts[value] -= 1
         result[counts[value]] = values[i]
     }
     return result

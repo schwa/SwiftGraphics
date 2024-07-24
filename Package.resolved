@@ -1,5 +1,5 @@
 {
-  "originHash" : "4034ed3a83254ee1a50664e454f3252caa797ef917908802f8e8cce32f360781",
+  "originHash" : "325204de0924a7a2f6b2b98690f23aedc0ed6019ce8f45321479228f53a9d23e",
   "pins" : [
     {
       "identity" : "approximateequality",
@@ -24,8 +24,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/schwa/MetalCompilerPlugin",
       "state" : {
-        "branch" : "jwight/develop",
-        "revision" : "4442e685b055d7aa781d673846c7c8afcfde9c83"
+        "branch" : "jwight/logging",
+        "revision" : "c17611738a7cfdc49cc28e2c8df96a0c702948a1"
       }
     },
     {
@@ -67,7 +67,7 @@
     {
       "identity" : "swift-numerics",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-numerics",
+      "location" : "https://github.com/apple/swift-numerics.git",
       "state" : {
         "revision" : "0a5bc04095a675662cf24757cc0640aa2204253b",
         "version" : "1.0.2"
