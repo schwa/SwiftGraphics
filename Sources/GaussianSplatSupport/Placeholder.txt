@@ -1,7 +1,0 @@
-
-//
-//  Untitled.swift
-//
-//
-//  Created by Jonathan Wight on 7/2/24.
-//
