@@ -1,6 +1,5 @@
+import BaseSupport
 import CoreGraphics
-
-// swiftlint:disable force_unwrapping
 
 public extension CGBitmapInfo {
     init(alphaInfo: CGImageAlphaInfo, byteOrderInfo: CGImageByteOrderInfo, formatInfo: CGImagePixelFormatInfo = .packed, useFloatComponents: Bool = false) {
@@ -8,27 +7,42 @@ public extension CGBitmapInfo {
     }
 
     var alphaInfo: CGImageAlphaInfo {
-        CGImageAlphaInfo(rawValue: rawValue & CGBitmapInfo.alphaInfoMask.rawValue)!
+        CGImageAlphaInfo(rawValue: rawValue & CGBitmapInfo.alphaInfoMask.rawValue).forceUnwrap("Could not extract alpha info.")
     }
 
     var byteOrderInfo: CGImageByteOrderInfo {
-        CGImageByteOrderInfo(rawValue: rawValue & CGBitmapInfo.byteOrderMask.rawValue)!
+        CGImageByteOrderInfo(rawValue: rawValue & CGBitmapInfo.byteOrderMask.rawValue).forceUnwrap("Could not extract byte order info.")
     }
 
     var formatInfo: CGImagePixelFormatInfo {
-        CGImagePixelFormatInfo(rawValue: rawValue & CGImagePixelFormatInfo.mask.rawValue)!
+        CGImagePixelFormatInfo(rawValue: rawValue & CGImagePixelFormatInfo.mask.rawValue).forceUnwrap("Could not extract format info.")
     }
 
     var useFloatComponents: Bool {
-        CGImageAlphaInfo(rawValue: rawValue & CGBitmapInfo.floatInfoMask.rawValue)!.rawValue != 0
+        CGImageAlphaInfo(rawValue: rawValue & CGBitmapInfo.floatInfoMask.rawValue).forceUnwrap("Could not extract use float components info.").rawValue != 0
     }
 }
 
 public extension CGContext {
-    static func bitmapContext(data: UnsafeMutableRawBufferPointer? = nil, definition: BitmapDefinition) -> CGContext? {
-        assert(data == nil || data!.count == definition.height * definition.bytesPerRow, "\(data!.count) == \(definition.height * definition.bytesPerRow)")
+    static func bitmapContext(data: UnsafeMutableRawBufferPointer? = nil, definition: BitmapDefinition) throws -> CGContext {
         // swiftlint:disable:next line_length
-        return CGContext(data: data?.baseAddress, width: definition.width, height: definition.height, bitsPerComponent: definition.pixelFormat.bitsPerComponent, bytesPerRow: definition.bytesPerRow, space: definition.pixelFormat.colorSpace!, bitmapInfo: definition.pixelFormat.bitmapInfo.rawValue)
+
+        var definition = definition
+        if definition.pixelFormat.byteOrder == .orderDefault {
+            // TODO: Other endianness?
+            definition.pixelFormat.byteOrder = .order32Big
+        }
+
+        assert(data == nil || data?.count == definition.height * definition.bytesPerRow, "\(String(describing: data?.count)) == \(definition.height * definition.bytesPerRow)")
+
+        guard let colorSpace = definition.pixelFormat.colorSpace else {
+            throw BaseError.generic("No colorspace.")
+        }
+
+        guard let context = CGContext(data: data?.baseAddress, width: definition.width, height: definition.height, bitsPerComponent: definition.pixelFormat.bitsPerComponent, bytesPerRow: definition.bytesPerRow, space: colorSpace, bitmapInfo: definition.pixelFormat.bitmapInfo.rawValue) else {
+            throw BaseError.generic("Could not create bitmap context")
+        }
+        return context
     }
 
     class func bitmapContext(bounds: CGRect, color: CGColor? = nil) -> CGContext {
@@ -49,13 +63,11 @@ public extension CGContext {
 }
 
 public extension CGContext {
-    static func bitmapContext(with image: CGImage) -> CGContext? {
+    static func bitmapContext(with image: CGImage) throws -> CGContext {
         guard let bitmapDefinition = BitmapDefinition(from: image) else {
-            return nil
+            throw BaseError.generic("Could not create bitmap definition from image")
         }
-        guard let context = CGContext.bitmapContext(definition: bitmapDefinition) else {
-            return nil
-        }
+        let context = try CGContext.bitmapContext(definition: bitmapDefinition)
         context.draw(image, in: CGRect(origin: .zero, size: image.size))
         return context
     }

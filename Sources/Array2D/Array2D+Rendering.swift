@@ -7,11 +7,9 @@ import GenericGeometryBase
 // swiftlint:disable force_unwrapping
 
 private extension Array2D {
-    mutating func draw(image: CGImage, definition: BitmapDefinition) {
-        flatStorage.withUnsafeMutableBytes { buffer in
-            guard let context = CGContext.bitmapContext(data: buffer, definition: definition) else {
-                fatalError("Could not create bitmap context")
-            }
+    mutating func draw(image: CGImage, definition: BitmapDefinition) throws {
+        try flatStorage.withUnsafeMutableBytes { buffer in
+            let context = try CGContext.bitmapContext(data: buffer, definition: definition)
             context.draw(image, in: CGRect(width: CGFloat(image.width), height: CGFloat(image.height)))
         }
     }
@@ -24,20 +22,20 @@ public extension Array2D where Element == Float {
         PixelFormat(bitsPerComponent: MemoryLayout<Element>.stride * 8, numberOfComponents: 1, alphaInfo: .none, byteOrder: .order32Little, useFloatComponents: true, colorSpace: CGColorSpace(name: CGColorSpace.linearGray)!)
     }
 
-    init(cgImage: CGImage) {
+    init(cgImage: CGImage) throws {
         self = Array2D(repeating: Float.zero, size: [cgImage.width, cgImage.height])
         let definition = BitmapDefinition(width: cgImage.width, height: cgImage.height, pixelFormat: pixelFormat)
-        draw(image: cgImage, definition: definition)
+        try draw(image: cgImage, definition: definition)
     }
 
     var cgImage: CGImage {
-        flatStorage.withUnsafeBytes { bytes in
-            let bytes = UnsafeMutableRawBufferPointer(mutating: bytes)
-            let definition = BitmapDefinition(width: size.width, height: size.height, pixelFormat: pixelFormat)
-            guard let bitmapContext = CGContext.bitmapContext(data: bytes, definition: definition) else {
-                fatalError("Could not create bitmap context")
+        get throws {
+            try flatStorage.withUnsafeBytes { bytes in
+                let bytes = UnsafeMutableRawBufferPointer(mutating: bytes)
+                let definition = BitmapDefinition(width: size.width, height: size.height, pixelFormat: pixelFormat)
+                let bitmapContext = try CGContext.bitmapContext(data: bytes, definition: definition)
+                return bitmapContext.makeImage()!
             }
-            return bitmapContext.makeImage()!
         }
     }
 }
@@ -66,11 +64,9 @@ public extension Array2D where Element: BinaryInteger {
 }
 
 public extension Array2D {
-    func toCGImage(_ block: (Element) -> CGColor) -> CGImage {
+    func toCGImage(_ block: (Element) -> CGColor) throws -> CGImage {
         let definition = BitmapDefinition(width: size.width, height: size.height, pixelFormat: .rgba8)
-        guard let bitmapContext = CGContext.bitmapContext(data: nil, definition: definition) else {
-            fatalError("Could not create bitmap context")
-        }
+        let bitmapContext = try CGContext.bitmapContext(data: nil, definition: definition)
         render(in: bitmapContext, cellSize: [1, 1]) {
             block($0)
         }

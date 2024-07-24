@@ -473,6 +473,8 @@ let package = Package(
             name: "MetalSupportTests",
             dependencies: [
                 "MetalSupport",
+                "MetalUnsafeConformances",
+                "BaseSupport",
             ]
         ),
         .testTarget(
