@@ -81,3 +81,18 @@ public extension URL {
 public func align(_ value: Int, alignment: Int) -> Int {
     (value + alignment - 1) / alignment * alignment
 }
+
+public func getMachTimeInNanoseconds() -> UInt64 {
+    var timebase = mach_timebase_info_data_t()
+    mach_timebase_info(&timebase)
+    let currentTime = mach_absolute_time()
+    return currentTime * UInt64(timebase.numer) / UInt64(timebase.denom)
+}
+
+public func timeit<R>(_ block: () throws -> R) rethrows -> R {
+    let start = getMachTimeInNanoseconds()
+    let result = try block()
+    let end = getMachTimeInNanoseconds()
+    print(Double(end - start) / 1_000_000_000)
+    return result
+}

@@ -155,7 +155,9 @@ public extension PixelFormat {
     // TODO: Test endianness. // TODO: This is clearly very broken and desparately needs offscreen rendering unit tests.
     // swiftlint:disable:next cyclomatic_complexity
     init?(_ pixelFormat: MTLPixelFormat) {
-        let colorSpace = pixelFormat.colorSpace!
+        guard let colorSpace = pixelFormat.colorSpace else {
+            return nil
+        }
         switch pixelFormat {
         case .rgba8Unorm:
             self = .init(bitsPerComponent: 8, numberOfComponents: 4, alphaInfo: .premultipliedLast, byteOrder: .order32Big, colorSpace: colorSpace)

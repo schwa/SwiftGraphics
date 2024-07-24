@@ -48,7 +48,7 @@ let package = Package(
         .package(url: "https://github.com/ksemianov/WrappingHStack", from: "0.2.0"),
         .package(url: "https://github.com/schwa/ApproximateEquality", from: "0.4.0"),
         .package(url: "https://github.com/schwa/Everything", from: "1.1.0"),
-        .package(url: "https://github.com/schwa/MetalCompilerPlugin", branch: "jwight/develop"),
+        .package(url: "https://github.com/schwa/MetalCompilerPlugin", branch: "jwight/logging"),
         .package(url: "https://github.com/schwa/swiftfields", from: "0.0.1"),
         .package(url: "https://github.com/schwa/swiftformats", from: "0.3.5"),
         .package(url: "https://github.com/schwa/SwiftGLTF", branch: "main"),
@@ -64,6 +64,7 @@ let package = Package(
             dependencies: [
                 .product(name: "Algorithms", package: "swift-algorithms"),
                 "CoreGraphicsSupport",
+                "CoreGraphicsUnsafeConformances",
                 "GenericGeometryBase",
             ],
             swiftSettings: [
@@ -269,6 +270,7 @@ let package = Package(
             name: "Shapes3D",
             dependencies: [
                 .product(name: "Algorithms", package: "swift-algorithms"),
+                "CoreGraphicsUnsafeConformances",
                 "CoreGraphicsSupport",
                 "MetalSupport",
                 "Shapes2D",
@@ -341,9 +343,10 @@ let package = Package(
                 "MetalUnsafeConformances",
             ],
             resources: [
-                .process("BitonicSort.metal"),
-                .process("GameOfLife.metal"),
-                .process("RandomFill.metal"),
+                .process("Bundle.txt")
+            ],
+            plugins: [
+                .plugin(name: "MetalCompilerPlugin", package: "MetalCompilerPlugin")
             ]
         ),
 
@@ -415,7 +418,8 @@ let package = Package(
             dependencies: [
                 "GaussianSplatSupport",
                 "RenderKitUISupport",
-                "Counters"
+                "Counters",
+                "Fields3D"
             ],
             resources: [
                 .copy("Resources/lastchance.splat"),
@@ -482,6 +486,17 @@ let package = Package(
             dependencies: [
                 "MetalSupportMacros",
                 .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
+            ]
+        ),
+        .testTarget(
+            name: "GaussianSplatTests",
+            dependencies: [
+                "GaussianSplatDemos",
+                "GaussianSplatShaders",
+                "GaussianSplatSupport",
+            ],
+            resources: [
+                .copy("Resources/lastchance.splat"),
             ]
         ),
 
