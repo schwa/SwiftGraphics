@@ -2,6 +2,7 @@ import AppKit
 import BaseSupport
 import CoreGraphics
 import CoreGraphicsSupport
+import CryptoKit
 import Foundation
 import Metal
 
@@ -90,5 +91,79 @@ extension CGImage {
             throw BaseError.generic("Failed to create image")
         }
         return image
+    }
+}
+
+extension Collection where Element == UInt16 {
+    func histogram() -> [Int] {
+        reduce(into: Array(repeating: 0, count: 65536)) { result, value in
+            result[Int(value)] += 1
+        }
+    }
+}
+
+extension Collection where Element: Hashable {
+    func histogram() -> [Element: Int] {
+        var counts: [Element: Int] = [:]
+
+        for element in self {
+            counts[element, default: 0] += 1
+        }
+
+        return counts
+    }
+}
+extension MTLDevice {
+    func makeDefaultLogState() throws -> MTLLogState {
+        let logStateDescriptor = MTLLogStateDescriptor()
+        logStateDescriptor.level = .debug
+        logStateDescriptor.bufferSize = 128 * 1024 * 1024
+
+        let logState = try makeLogState(descriptor: logStateDescriptor)
+        logState.addLogHandler { _, _, _, message in
+            print(message)
+        }
+        return logState
+    }
+}
+
+extension Array where Element: BinaryInteger {
+    func prefixSumInclusive() -> [Element] {
+        var copy = self
+        for index in copy.indices.dropFirst() {
+            copy[index] += copy[index - 1]
+        }
+        return copy
+    }
+
+    func prefixSumExclusive() -> [Element] {
+        var histogram = self
+        var sum = Element.zero
+        for i in histogram.indices {
+            let t = histogram[i]
+            histogram[i] = sum
+            sum += t
+        }
+        return histogram
+    }
+}
+
+extension Array {
+    func sha256() -> String {
+        withUnsafeBytes { buffer in
+            let digest = SHA256.hash(data: buffer)
+            return digest.map { String(format: "%02hhx", $0) }.joined()
+        }
+    }
+}
+
+extension MTLBuffer {
+    func `as`<T>(_ type: T.Type) -> [T] {
+        Array(contentsBuffer(of: T.self))
+    }
+
+    func clear() {
+        let length = length
+        memset(contents(), 0, length)
     }
 }

@@ -18,22 +18,32 @@ public struct Compute {
         guard let commandQueue = device.makeCommandQueue(descriptor: commandQueueDescriptor) else {
             throw ComputeError.resourceCreationFailure
         }
+        commandQueue.label = "Compute-MTLCommandQueue"
         self.commandQueue = commandQueue
     }
 
-    public func task<R>(_ block: (Task) throws -> R) throws -> R {
+    public func task<R>(label: String? = nil, _ block: (Task) throws -> R) throws -> R {
         let commandBufferDescriptor = MTLCommandBufferDescriptor()
         commandBufferDescriptor.logState = logState
 
         guard let commandBuffer = commandQueue.makeCommandBuffer(descriptor: commandBufferDescriptor) else {
             throw ComputeError.resourceCreationFailure
         }
+        commandBuffer.label = "\(label ?? "Unlabelled")-MTLCommandBuffer"
         defer {
             commandBuffer.commit()
             commandBuffer.waitUntilCompleted()
         }
-        let task = Task(commandBuffer: commandBuffer)
+        let task = Task(label: label, commandBuffer: commandBuffer)
         return try block(task)
+    }
+
+    public func dispatch<R>(label: String? = nil, _ block: (Dispatcher) throws -> R) throws -> R {
+        try task(label: label) { task in
+            try task { dispatch in
+                try block(dispatch)
+            }
+        }
     }
 
     public func makePass(function: ShaderFunction, constants: [String: Argument] = [:], arguments: [String: Argument] = [:]) throws -> Pass {
@@ -44,13 +54,14 @@ public struct Compute {
 // MARK: -
 
 public extension Compute {
+    // TODO: Rename.
     struct Pass {
         public let function: ShaderFunction
         internal let bindings: [String: Int]
         public var arguments: Arguments
         public let computePipelineState: MTLComputePipelineState
 
-        init(device: MTLDevice, function: ShaderFunction, constants: [String: Argument] = [:], arguments: [String: Argument] = [:]) throws {
+        internal init(device: MTLDevice, function: ShaderFunction, constants: [String: Argument] = [:], arguments: [String: Argument] = [:]) throws {
             self.function = function
 
             let constantValues = MTLFunctionConstantValues()
@@ -61,7 +72,9 @@ public extension Compute {
             let library = try function.library.makelibrary(device: device)
 
             let function = try library.makeFunction(name: function.name, constantValues: constantValues)
+            function.label = "\(function.name)-MTLFunction"
             let computePipelineDescriptor = MTLComputePipelineDescriptor()
+            computePipelineDescriptor.label = "\(function.name)-MTLComputePipelineState"
             //            computePipelineDescriptor.threadGroupSizeIsMultipleOfThreadExecutionWidth = false
             computePipelineDescriptor.computeFunction = function
             let (computePipelineState, reflection) = try device.makeComputePipelineState(descriptor: computePipelineDescriptor, options: [.bindingInfo])
@@ -93,7 +106,7 @@ public extension Compute {
 
     @dynamicMemberLookup
     struct Arguments {
-        var arguments: [String: Argument]
+        internal var arguments: [String: Argument]
 
         public subscript(dynamicMember name: String) -> Argument? {
             get {
@@ -109,8 +122,8 @@ public extension Compute {
     struct Argument {
         // var bindingType: MTLBindingType
 
-        var encode: (MTLComputeCommandEncoder, Int) -> Void
-        var constantValue: (MTLFunctionConstantValues, String) -> Void
+        internal var encode: (MTLComputeCommandEncoder, Int) -> Void
+        internal var constantValue: (MTLFunctionConstantValues, String) -> Void
 
         public static func int(_ value: some BinaryInteger) -> Self {
             Self { encoder, index in
@@ -159,14 +172,19 @@ public extension Compute {
     }
 
     struct Task {
+        let label: String?
         let commandBuffer: MTLCommandBuffer
 
-        public func callAsFunction<R>(_ block: (Dispatcher) throws -> R) rethrows -> R {
+        public func callAsFunction<R>(_ block: (Dispatcher) throws -> R) throws -> R {
             try run(block)
         }
 
-        public func run<R>(_ block: (Dispatcher) throws -> R) rethrows -> R {
-            let commandEncoder = commandBuffer.makeComputeCommandEncoder()!
+        public func run<R>(_ block: (Dispatcher) throws -> R) throws -> R {
+            guard let commandEncoder = commandBuffer.makeComputeCommandEncoder() else {
+                throw ComputeError.resourceCreationFailure
+            }
+            commandEncoder.label = "\(label ?? "Unlabelled")-MTLComputeCommandEncoder"
+
             defer {
                 commandEncoder.endEncoding()
             }

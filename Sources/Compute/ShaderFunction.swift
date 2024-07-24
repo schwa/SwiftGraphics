@@ -8,10 +8,14 @@ public struct ShaderLibrary: Sendable {
         Self { device in
             if let name {
                 let url = bundle.url(forResource: name, withExtension: "metallib")!
-                return try device.makeLibrary(URL: url)
+                let library = try device.makeLibrary(URL: url)
+                library.label = "\(name).MTLLibrary"
+                return library
             }
             else {
-                return try device.makeDefaultLibrary(bundle: bundle)
+                let library = try device.makeDefaultLibrary(bundle: bundle)
+                library.label = "Default.MTLLibrary"
+                return library
             }
         }
     }
@@ -25,6 +29,10 @@ public struct ShaderLibrary: Sendable {
     }
 
     var make: @Sendable (MTLDevice) throws -> MTLLibrary
+
+    public func function(name: String) -> ShaderFunction {
+        ShaderFunction(library: self, name: name)
+    }
 
     public subscript(dynamicMember name: String) -> ShaderFunction {
         ShaderFunction(library: self, name: name)
