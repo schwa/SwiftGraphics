@@ -3,38 +3,38 @@ import Metal
 import MetalSupport
 
 let source = #"""
-#include <metal_stdlib>
+    #include <metal_stdlib>
 
-using namespace metal;
+    using namespace metal;
 
-kernel void parallel_reduction_sum(
+    kernel void parallel_reduction_sum(
     const device float* input [[buffer(0)]],
     device float* output [[buffer(1)]],
     uint thread_position_in_grid [[thread_position_in_grid]],
     uint simdgroup_index_in_threadgroup [[simdgroup_index_in_threadgroup]],
     uint threads_per_simdgroup [[threads_per_simdgroup]]
-)
-{
+    )
+    {
     // load value
     float value = input[thread_position_in_grid];
     // Perform parallel reduction within SIMD group
     for (uint offset = threads_per_simdgroup / 2; offset > 0; offset >>= 1) {
-        value += simd_shuffle_down(value, offset);
+    value += simd_shuffle_down(value, offset);
     }
     // Only the first thread in each SIMD group writes the result
     if (simd_is_first()) {
-        output[simdgroup_index_in_threadgroup] = value;
+    output[simdgroup_index_in_threadgroup] = value;
     }
-}
+    }
 """#
 
 struct Reduce {
     let device = MTLCreateSystemDefaultDevice()!
 
-    func main() throws  {
+    func main() throws {
         // Create N values and sum them up in the CPU...
         var count = 5000
-        let values = (0..<count).map({ Float($0 + 1) })
+        let values = (0..<count).map { Float($0 + 1) }
         print("Expected result:", values.reduce(0, +))
         // Create input and output metal buffers to work in... fill the input buffer with our sample data
         var input = try device.makeBuffer(bytesOf: values, options: [])

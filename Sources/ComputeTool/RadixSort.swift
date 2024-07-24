@@ -35,7 +35,6 @@ extension Collection where Element == UInt8 {
     }
 }
 
-
 func radixSort(values: [Int]) -> [Int] {
     var values = values
     for n in 0..<4 {
@@ -44,8 +43,8 @@ func radixSort(values: [Int]) -> [Int] {
     return values
 }
 
-//@main
-//struct Test {
+// @main
+// struct Test {
 //    static func main() {
 ////        let values = [0, 3, 2, 2, 3, 2, 0, 3, 2, 1]
 ////        print(countingSort(values: values, valueSpace: 4, key: { $0 }))
@@ -53,8 +52,7 @@ func radixSort(values: [Int]) -> [Int] {
 //        let result = radixSort(values: values)
 //        assert(values.sorted() == result)
 //    }
-//}
-
+// }
 
 struct RadixSort {
     let device = MTLCreateSystemDefaultDevice()!
@@ -65,15 +63,15 @@ struct RadixSort {
         logStateDescriptor.bufferSize = 128 * 1024 * 1024
 
         let logState = try device.makeLogState(descriptor: logStateDescriptor)
-        logState.addLogHandler { subsystem, category, logLevel, message in
+        logState.addLogHandler { _, _, _, message in
             print(message)
         }
         return logState
     }
 
-    func main() throws  {
+    func main() throws {
         let values = (0..<5_000_000).map { _ in UInt32.random(in: 0...255) }
-        let cpuCounts = timeit({ values.map({ UInt8($0) }).histogram() })
+        let cpuCounts = timeit { values.map { UInt8($0) }.histogram() }
 
         let compute = try Compute(device: device, logState: try makeLogState())
         let library = ShaderLibrary.bundle(.module, name: "debug")

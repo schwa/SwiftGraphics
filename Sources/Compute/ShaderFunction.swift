@@ -5,8 +5,8 @@ public struct ShaderLibrary: Sendable {
     public static let `default` = Self.bundle(.main)
 
     public static func bundle(_ bundle: Bundle, name: String? = nil) -> Self {
-        Self.init { device in
-            if let name = name {
+        Self { device in
+            if let name {
                 let url = bundle.url(forResource: name, withExtension: "metallib")!
                 return try device.makeLibrary(URL: url)
             }
@@ -17,7 +17,7 @@ public struct ShaderLibrary: Sendable {
     }
 
     public static func source(_ source: String) -> Self {
-        Self.init { device in
+        Self { device in
             let options = MTLCompileOptions()
             options.enableLogging = true
             return try device.makeLibrary(source: source, options: options)
@@ -25,7 +25,6 @@ public struct ShaderLibrary: Sendable {
     }
 
     var make: @Sendable (MTLDevice) throws -> MTLLibrary
-
 
     public subscript(dynamicMember name: String) -> ShaderFunction {
         ShaderFunction(library: self, name: name)
@@ -35,7 +34,6 @@ public struct ShaderLibrary: Sendable {
         try make(device)
     }
 }
-
 
 // MARK: -
 
