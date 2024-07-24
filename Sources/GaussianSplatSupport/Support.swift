@@ -61,12 +61,29 @@ extension PackedHalf4 {
 }
 
 public extension Bundle {
-    static let gaussianSplatShaders: Bundle = {
-        if let shadersBundleURL = Bundle.main.url(forResource: "SwiftGraphics_GaussianSplatShaders", withExtension: "bundle"), let bundle = Bundle(url: shadersBundleURL) {
-            return bundle
+
+    // GaussianSplatTests.xctest/Contents/Resources/SwiftGraphics_GaussianSplatSupport.bundle
+
+    func peerBundle(named name: String, withExtension extension: String? = nil) -> Bundle? {
+        let parentDirectory = bundleURL.deletingLastPathComponent()
+        if let `extension` {
+            return Bundle(url: parentDirectory.appendingPathComponent(name + "." + `extension`))
         }
-        // Fail.
-        fatalError("Could not find shaders bundle")
+        else {
+            return Bundle(url: parentDirectory.appendingPathComponent(name))
+        }
+    }
+
+    static let gaussianSplatShaders: Bundle = {
+        Bundle.module.peerBundle(named: "SwiftGraphics_GaussianSplatShaders", withExtension: "bundle").forceUnwrap("Could not find bundle.")
+
+
+//        print(Bundle.module)
+//        if let shadersBundleURL = Bundle.main.url(forResource: "SwiftGraphics_GaussianSplatShaders", withExtension: "bundle"), let bundle = Bundle(url: shadersBundleURL) {
+//            return bundle
+//        }
+//        // Fail.
+//        fatalError("Could not find shaders bundle")
     }()
 }
 

@@ -1,28 +1,32 @@
 import BaseSupport
 import Metal
+import MetalSupport
 
 // swiftlint:disable force_unwrapping
 
 public struct Compute {
     public let device: MTLDevice
+    let logState: MTLLogState?
     let commandQueue: MTLCommandQueue
 
-    public init(device: MTLDevice) throws {
+    public init(device: MTLDevice, logState: MTLLogState? = nil) throws {
         self.device = device
-        guard let commandQueue = device.makeCommandQueue() else {
+        self.logState = logState
+        let commandQueueDescriptor = MTLCommandQueueDescriptor()
+        commandQueueDescriptor.logState = logState
+        guard let commandQueue = device.makeCommandQueue(descriptor: commandQueueDescriptor) else {
             throw BaseError.resourceCreationFailure
         }
         self.commandQueue = commandQueue
     }
 
     public func task<R>(_ block: (Task) throws -> R) rethrows -> R {
-        let commandBuffer = commandQueue.makeCommandBuffer()!
-        defer {
-            commandBuffer.commit()
-            commandBuffer.waitUntilCompleted()
+        let commandBufferDescriptor = MTLCommandBufferDescriptor()
+        commandBufferDescriptor.logState = logState
+        return try commandQueue.withCommandBuffer(descriptor: commandBufferDescriptor, waitAfterCommit: true) { commandBuffer in
+            let task = Task(commandBuffer: commandBuffer)
+            return try block(task)
         }
-        let task = Task(commandBuffer: commandBuffer)
-        return try block(task)
     }
 
     public func makePass(function: ShaderFunction, constants: [String: Argument] = [:], arguments: [String: Argument] = [:]) throws -> Pass {
@@ -47,11 +51,11 @@ public extension Compute {
                 constant.constantValue(constantValues, name)
             }
 
-            let library = try device.makeLibrary(function.library)
+            let library = try function.library.makelibrary(device: device)
 
             let function = try library.makeFunction(name: function.name, constantValues: constantValues)
             let computePipelineDescriptor = MTLComputePipelineDescriptor()
-            computePipelineDescriptor.threadGroupSizeIsMultipleOfThreadExecutionWidth = false
+//            computePipelineDescriptor.threadGroupSizeIsMultipleOfThreadExecutionWidth = false
             computePipelineDescriptor.computeFunction = function
             let (computePipelineState, reflection) = try device.makeComputePipelineState(descriptor: computePipelineDescriptor, options: [.bindingInfo])
             bindings = Dictionary(uniqueKeysWithValues: reflection!.bindings.map { binding in
@@ -70,9 +74,9 @@ public extension Compute {
             computePipelineState.threadExecutionWidth
         }
 
-        func bind(_ commandEncoder: MTLComputeCommandEncoder) {
+        func bind(_ commandEncoder: MTLComputeCommandEncoder) throws {
             for (name, value) in arguments.arguments {
-                let index = bindings[name]!
+                let index = try bindings[name].safelyUnwrap(BaseError.generic("Could not get binding for \(name)"))
                 value.encode(commandEncoder, index)
             }
         }
@@ -88,6 +92,7 @@ public extension Compute {
             }
             set {
                 arguments[name] = newValue
+                // TODO: it would be nice to assign name as a label to buffers/textures that have no name.
             }
         }
     }
@@ -165,13 +170,15 @@ public extension Compute {
         let commandEncoder: MTLComputeCommandEncoder
 
         public func callAsFunction(pass: Pass, threadgroupsPerGrid: MTLSize, threadsPerThreadgroup: MTLSize) throws {
-            try dispatch(pass: pass, threadgroupsPerGrid: threadgroupsPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
+            commandEncoder.setComputePipelineState(pass.computePipelineState)
+            try pass.bind(commandEncoder)
+            commandEncoder.dispatchThreadgroups(threadgroupsPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
         }
 
-        public func dispatch(pass: Pass, threadgroupsPerGrid: MTLSize, threadsPerThreadgroup: MTLSize) throws {
+        public func callAsFunction(pass: Pass, threads: MTLSize, threadsPerThreadgroup: MTLSize) throws {
             commandEncoder.setComputePipelineState(pass.computePipelineState)
-            pass.bind(commandEncoder)
-            commandEncoder.dispatchThreadgroups(threadgroupsPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
+            try pass.bind(commandEncoder)
+            commandEncoder.dispatchThreads(threads, threadsPerThreadgroup: threadsPerThreadgroup)
         }
     }
 }

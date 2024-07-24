@@ -134,12 +134,6 @@ public class GPUCounters: @unchecked Sendable {
     }
 }
 
-private func getMachTimeInNanoseconds() -> UInt64 {
-    var timebase = mach_timebase_info_data_t()
-    mach_timebase_info(&timebase)
-    let currentTime = mach_absolute_time()
-    return currentTime * UInt64(timebase.numer) / UInt64(timebase.denom)
-}
 
 // Move to RenderKitUI
 public extension EnvironmentValues {

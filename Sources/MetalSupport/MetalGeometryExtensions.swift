@@ -28,6 +28,10 @@ public extension MTLSize {
     init(width: Int) {
         self = MTLSize(width: width, height: 1, depth: 1)
     }
+
+    init(width: Int, height: Int) {
+        self = MTLSize(width: width, height: height, depth: 1)
+    }
 }
 
 public extension SIMD4<Double> {
