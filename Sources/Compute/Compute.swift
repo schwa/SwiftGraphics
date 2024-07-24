@@ -83,7 +83,7 @@ public extension Compute {
 
         func bind(_ commandEncoder: MTLComputeCommandEncoder) throws {
             for (name, value) in arguments.arguments {
-                guard let index = try bindings[name] else {
+                guard let index = bindings[name] else {
                     throw ComputeError.missingBinding(name)
                 }
                 value.encode(commandEncoder, index)

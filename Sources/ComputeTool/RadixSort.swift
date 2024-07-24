@@ -87,7 +87,6 @@ struct RadixSort {
             try compute.task { task in
                 try task { dispatch in
                     let maxTotalThreadsPerThreadgroup = histogram.computePipelineState.maxTotalThreadsPerThreadgroup
-                    let threadExecutionWidth = histogram.computePipelineState.threadExecutionWidth
                     print(maxTotalThreadsPerThreadgroup)
                     try dispatch(pass: histogram, threads: MTLSize(width: 256, height: values.count), threadsPerThreadgroup: MTLSize(width: maxTotalThreadsPerThreadgroup, height: 1))
                 }
