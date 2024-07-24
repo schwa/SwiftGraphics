@@ -232,7 +232,7 @@ let package = Package(
                 "BaseSupport",
             ],
             resources: [
-                .process("Placeholder.txt"),
+                .process("Bundle.txt"),
             ],
             swiftSettings: [
             ]
@@ -447,7 +447,7 @@ let package = Package(
                 "Shapes3D",
             ],
             resources: [
-                .copy("Placeholder.txt")
+                .copy("Bundle.txt")
             ]
         ),
         .target(
