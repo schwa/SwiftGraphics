@@ -89,10 +89,16 @@ public func getMachTimeInNanoseconds() -> UInt64 {
     return currentTime * UInt64(timebase.numer) / UInt64(timebase.denom)
 }
 
-public func timeit<R>(_ block: () throws -> R) rethrows -> R {
+@discardableResult
+public func timeit<R>(_ label: String? = nil, _ block: () throws -> R) rethrows -> R {
     let start = getMachTimeInNanoseconds()
     let result = try block()
     let end = getMachTimeInNanoseconds()
-    print(Double(end - start) / 1_000_000_000)
+    let delta = TimeInterval(end - start) / 1_000_000_000
+
+    let measurement = Measurement(value: delta, unit: UnitDuration.seconds)
+    let measurementMS = measurement.converted(to: .milliseconds)
+
+    print("\(label ?? "<unamed>"): \(measurementMS.formatted())")
     return result
 }
