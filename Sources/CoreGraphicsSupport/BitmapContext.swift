@@ -45,12 +45,12 @@ public extension CGContext {
         return context
     }
 
-    class func bitmapContext(bounds: CGRect, color: CGColor? = nil) -> CGContext {
+    class func bitmapContext(bounds: CGRect, color: CGColor? = nil) throws -> CGContext {
         let colorspace = CGColorSpaceCreateDeviceRGB()
         let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue)
         let width = Int(ceil(bounds.size.width))
         let height = Int(ceil(bounds.size.height))
-        let context = CGContext(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: width * 4, space: colorspace, bitmapInfo: bitmapInfo.rawValue)!
+        let context = CGContext(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: width * 4, space: colorspace, bitmapInfo: bitmapInfo.rawValue).forceUnwrap("Failed to creat CGContext")
         context.translateBy(x: -bounds.origin.x, y: -bounds.origin.y)
 
         if let color {

@@ -188,7 +188,8 @@ public extension MTLDevice {
 
     func makeBuffer(data: Data, options: MTLResourceOptions) throws -> MTLBuffer {
         try data.withUnsafeBytes { buffer in
-            guard let buffer = makeBuffer(bytes: buffer.baseAddress!, length: buffer.count, options: options) else {
+            let baseAddress = buffer.baseAddress.forceUnwrap("No baseAddress.")
+            guard let buffer = makeBuffer(bytes: baseAddress, length: buffer.count, options: options) else {
                 throw BaseError.resourceCreationFailure
             }
             return buffer
@@ -197,7 +198,8 @@ public extension MTLDevice {
 
     func makeBuffer(bytesOf content: some Any, options: MTLResourceOptions) throws -> MTLBuffer {
         try withUnsafeBytes(of: content) { buffer in
-            guard let buffer = makeBuffer(bytes: buffer.baseAddress!, length: buffer.count, options: options) else {
+            let baseAddress = buffer.baseAddress.forceUnwrap("No baseAddress.")
+            guard let buffer = makeBuffer(bytes: baseAddress, length: buffer.count, options: options) else {
                 throw BaseError.resourceCreationFailure
             }
             return buffer
@@ -206,7 +208,8 @@ public extension MTLDevice {
 
     func makeBuffer(bytesOf content: [some Any], options: MTLResourceOptions) throws -> MTLBuffer {
         try content.withUnsafeBytes { buffer in
-            guard let buffer = makeBuffer(bytes: buffer.baseAddress!, length: buffer.count, options: options) else {
+            let baseAddress = buffer.baseAddress.forceUnwrap("No baseAddress.")
+            guard let buffer = makeBuffer(bytes: baseAddress, length: buffer.count, options: options) else {
                 throw BaseError.resourceCreationFailure
             }
             return buffer
@@ -235,9 +238,9 @@ public extension MTLDevice {
         }
     }
 
-    func newBufferFor2DTexture(pixelFormat: MTLPixelFormat, size: MTLSize) -> MTLBuffer {
+    func newBufferFor2DTexture(pixelFormat: MTLPixelFormat, size: MTLSize) throws -> MTLBuffer {
         assert(size.depth == 1)
-        let bytesPerPixel = pixelFormat.bits! / 8
+        let bytesPerPixel = pixelFormat.bits.forceUnwrap("Could not gets.") / 8
         let alignment = minimumLinearTextureAlignment(for: pixelFormat)
         let bytesPerRow = align(Int(size.width) * bytesPerPixel, alignment: alignment)
         guard let buffer = makeBuffer(length: bytesPerRow * Int(size.height), options: .storageModeShared) else {
@@ -248,17 +251,17 @@ public extension MTLDevice {
 
     func makeColorTexture(size: CGSize, pixelFormat: MTLPixelFormat) throws -> MTLTexture {
         // Create a shared memory MTLBuffer for the color attachment texture. This allows us to access the pixels efficiently from CPU later on (which is likely the whole point of an offscreen renderer).
-        let colorAttachmentTextureBuffer = newBufferFor2DTexture(pixelFormat: pixelFormat, size: MTLSize(width: Int(size.width), height: Int(size.height), depth: 1))
+        let colorAttachmentTextureBuffer = try newBufferFor2DTexture(pixelFormat: pixelFormat, size: MTLSize(width: Int(size.width), height: Int(size.height), depth: 1))
 
         // Now create a texture descriptor and texture from the buffer
         let colorAttachmentTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: pixelFormat, width: Int(size.width), height: Int(size.height), mipmapped: false)
         colorAttachmentTextureDescriptor.storageMode = .shared
         colorAttachmentTextureDescriptor.usage = [.renderTarget]
 
-        let bytesPerPixel = pixelFormat.bits! / 8
+        let bytesPerPixel = pixelFormat.bits.forceUnwrap("Could not gets.") / 8
         let alignment = minimumLinearTextureAlignment(for: pixelFormat)
         let bytesPerRow = align(Int(size.width) * bytesPerPixel, alignment: alignment)
-        let colorAttachmentTexture = colorAttachmentTextureBuffer.makeTexture(descriptor: colorAttachmentTextureDescriptor, offset: 0, bytesPerRow: bytesPerRow)!
+        let colorAttachmentTexture = try colorAttachmentTextureBuffer.makeTexture(descriptor: colorAttachmentTextureDescriptor, offset: 0, bytesPerRow: bytesPerRow).safelyUnwrap(BaseError.resourceCreationFailure)
         colorAttachmentTexture.label = "Color Texture"
         return colorAttachmentTexture
     }
@@ -268,7 +271,7 @@ public extension MTLDevice {
         let depthTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: depthStencilPixelFormat, width: Int(size.width), height: Int(size.height), mipmapped: false)
         depthTextureDescriptor.storageMode = .memoryless
         depthTextureDescriptor.usage = .renderTarget
-        let depthStencilTexture = makeTexture(descriptor: depthTextureDescriptor)!
+        let depthStencilTexture = try makeTexture(descriptor: depthTextureDescriptor).safelyUnwrap(BaseError.resourceCreationFailure)
         depthStencilTexture.label = "Depth Texture"
         return depthStencilTexture
     }
@@ -314,14 +317,16 @@ public extension MTLFunctionConstantValues {
 
         for (index, value) in dictionary {
             withUnsafeBytes(of: value) { buffer in
-                setConstantValue(buffer.baseAddress!, type: .bool, index: index)
+                let baseAddress = buffer.baseAddress.forceUnwrap("Could not get base Address")
+                setConstantValue(baseAddress, type: .bool, index: index)
             }
         }
     }
 
     func setConstantValue(_ value: Bool, index: Int) {
         withUnsafeBytes(of: value) { buffer in
-            setConstantValue(buffer.baseAddress!, type: .bool, index: index)
+            let baseAddress = buffer.baseAddress.forceUnwrap("Could not get base Address")
+            setConstantValue(baseAddress, type: .bool, index: index)
         }
     }
 }
@@ -415,7 +420,8 @@ public extension MTLTexture {
         let buffer = Array(repeatElement(color, count: width * height * depth))
         assert(MemoryLayout<SIMD4<UInt8>>.stride == pixelFormat.size)
         buffer.withUnsafeBytes { pointer in
-            replace(region: region, mipmapLevel: 0, withBytes: pointer.baseAddress!, bytesPerRow: width * MemoryLayout<SIMD4<UInt8>>.stride)
+            let baseAddress = pointer.baseAddress.forceUnwrap("Could not get base address of buffer")
+            replace(region: region, mipmapLevel: 0, withBytes: baseAddress, bytesPerRow: width * MemoryLayout<SIMD4<UInt8>>.stride)
         }
     }
 
@@ -430,8 +436,8 @@ public extension MTLTexture {
         }
         let conversionInfo = CGColorConversionInfo(src: sourceColorSpace, dst: destinationColorSpace)
         let conversion = MPSImageConversion(device: device, srcAlpha: sourceAlpha, destAlpha: destinationAlpha, backgroundColor: nil, conversionInfo: conversionInfo)
-        let commandQueue = device.makeCommandQueue()!
-        let commandBuffer = commandQueue.makeCommandBuffer()!
+        let commandQueue = device.makeCommandQueue().forceUnwrap("Could not create command queue")
+        let commandBuffer = commandQueue.makeCommandBuffer().forceUnwrap("Could not create command buffer")
         conversion.encode(commandBuffer: commandBuffer, sourceTexture: self, destinationTexture: destinationTexture)
         commandBuffer.commit()
         commandBuffer.waitUntilCompleted()
@@ -468,8 +474,8 @@ public extension MTLTexture {
             let conversionInfo = CGColorConversionInfo(src: srcColorSpace, dst: dstColorSpace)
             // TODO: we're just assuming premultiplied here.
             let conversion = MPSImageConversion(device: device, srcAlpha: .premultiplied, destAlpha: .premultiplied, backgroundColor: nil, conversionInfo: conversionInfo)
-            let commandQueue = device.makeCommandQueue()!
-            let commandBuffer = commandQueue.makeCommandBuffer()!
+            let commandQueue = device.makeCommandQueue().forceUnwrap("Failed to create command queue")
+            let commandBuffer = commandQueue.makeCommandBuffer().forceUnwrap("Failed to create command buffer")
             conversion.encode(commandBuffer: commandBuffer, sourceTexture: self, destinationTexture: destinationTexture)
             commandBuffer.commit()
             commandBuffer.waitUntilCompleted()
@@ -483,8 +489,8 @@ public extension MTLTexture {
         guard let histogram = device.makeBuffer(length: size) else {
             fatalError("Failed to create histogram buffer")
         }
-        let commandQueue = device.makeCommandQueue()!
-        let commandBuffer = commandQueue.makeCommandBuffer()!
+        let commandQueue = device.makeCommandQueue().forceUnwrap("Failed to create command queue")
+        let commandBuffer = commandQueue.makeCommandBuffer().forceUnwrap("Failed to create command buffer")
         filter.encode(to: commandBuffer, sourceTexture: self, histogram: histogram, histogramOffset: 0)
         commandBuffer.commit()
         commandBuffer.waitUntilCompleted()
