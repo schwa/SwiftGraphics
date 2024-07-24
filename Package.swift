@@ -334,7 +334,7 @@ let package = Package(
             name: "Compute"
         ),
         .executableTarget(
-            name: "ComputeTool",
+            name: "ComputeDemos",
             dependencies: [
                 "Compute",
                 "MetalSupport",
