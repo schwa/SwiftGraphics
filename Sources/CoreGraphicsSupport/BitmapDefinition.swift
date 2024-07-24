@@ -78,10 +78,12 @@ public extension PixelFormat {
  kCGImageAlphaNoneSkipLast|kCGBitmapFloatComponents |
  */
 
+// swiftlint:disable force_unwrapping
 public extension PixelFormat {
     static let rgba8 = PixelFormat(bitsPerComponent: 8, numberOfComponents: 4, alphaInfo: .premultipliedLast, byteOrder: .orderDefault, formatInfo: .packed, useFloatComponents: false, colorSpace: CGColorSpaceCreateDeviceRGB())
     static let rgba8srgb = PixelFormat(bitsPerComponent: 8, numberOfComponents: 4, alphaInfo: .premultipliedLast, byteOrder: .orderDefault, formatInfo: .packed, useFloatComponents: false, colorSpace: CGColorSpace(name: CGColorSpace.sRGB)!)
 }
+// swiftlint:enable force_unwrapping
 
 public extension PixelFormat {
     var bitsPerPixel: Int {
