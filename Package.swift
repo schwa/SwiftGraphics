@@ -329,12 +329,7 @@ let package = Package(
         // MARK: Compute
 
         .target(
-            name: "Compute",
-            dependencies: [
-                "MetalSupport",
-                "MetalUISupport",
-                "CoreGraphicsSupport",
-            ]
+            name: "Compute"
         ),
         .executableTarget(
             name: "ComputeTool",

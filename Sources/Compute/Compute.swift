@@ -1,8 +1,11 @@
-import BaseSupport
+//import BaseSupport
 import Metal
-import MetalSupport
+//import MetalSupport
 
-// swiftlint:disable force_unwrapping
+public enum ComputeError: Error {
+    case resourceCreationFailure
+    case missingBinding(String)
+}
 
 public struct Compute {
     public let device: MTLDevice
@@ -15,18 +18,24 @@ public struct Compute {
         let commandQueueDescriptor = MTLCommandQueueDescriptor()
         commandQueueDescriptor.logState = logState
         guard let commandQueue = device.makeCommandQueue(descriptor: commandQueueDescriptor) else {
-            throw BaseError.resourceCreationFailure
+            throw ComputeError.resourceCreationFailure
         }
         self.commandQueue = commandQueue
     }
 
-    public func task<R>(_ block: (Task) throws -> R) rethrows -> R {
+    public func task<R>(_ block: (Task) throws -> R) throws -> R {
         let commandBufferDescriptor = MTLCommandBufferDescriptor()
         commandBufferDescriptor.logState = logState
-        return try commandQueue.withCommandBuffer(descriptor: commandBufferDescriptor, waitAfterCommit: true) { commandBuffer in
-            let task = Task(commandBuffer: commandBuffer)
-            return try block(task)
+
+        guard let commandBuffer = commandQueue.makeCommandBuffer(descriptor: commandBufferDescriptor) else {
+            throw ComputeError.resourceCreationFailure
         }
+        defer {
+            commandBuffer.commit()
+            commandBuffer.waitUntilCompleted()
+        }
+        let task = Task(commandBuffer: commandBuffer)
+        return try block(task)
     }
 
     public func makePass(function: ShaderFunction, constants: [String: Argument] = [:], arguments: [String: Argument] = [:]) throws -> Pass {
@@ -76,7 +85,9 @@ public extension Compute {
 
         func bind(_ commandEncoder: MTLComputeCommandEncoder) throws {
             for (name, value) in arguments.arguments {
-                let index = try bindings[name].safelyUnwrap(BaseError.generic("Could not get binding for \(name)"))
+                guard let index = try bindings[name] else {
+                    throw ComputeError.missingBinding(name)
+                }
                 value.encode(commandEncoder, index)
             }
         }

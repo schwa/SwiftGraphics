@@ -46,7 +46,7 @@ extension Node {
 }
 
 public extension SplatCloud {
-    convenience init(device: MTLDevice, url: URL, bitsPerPositionScalar: Int? = nil) throws {
+    init(device: MTLDevice, url: URL, bitsPerPositionScalar: Int? = nil) throws {
         let data = try Data(contentsOf: url)
         let splats: TypedMTLBuffer<SplatC>
         if url.pathExtension == "splatc" {
