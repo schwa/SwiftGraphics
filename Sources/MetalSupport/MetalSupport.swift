@@ -117,7 +117,6 @@ public extension MTLCommandEncoder {
 }
 
 public extension MTLCommandQueue {
-
     func withCommandBuffer<R>(descriptor: MTLCommandBufferDescriptor? = nil, waitAfterCommit wait: Bool, block: (MTLCommandBuffer) throws -> R) rethrows -> R {
         let descriptor = descriptor ?? .init()
         guard let commandBuffer = makeCommandBuffer(descriptor: descriptor) else {

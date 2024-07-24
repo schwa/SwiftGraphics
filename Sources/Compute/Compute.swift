@@ -1,6 +1,4 @@
-//import BaseSupport
 import Metal
-//import MetalSupport
 
 public enum ComputeError: Error {
     case resourceCreationFailure
@@ -64,7 +62,7 @@ public extension Compute {
 
             let function = try library.makeFunction(name: function.name, constantValues: constantValues)
             let computePipelineDescriptor = MTLComputePipelineDescriptor()
-//            computePipelineDescriptor.threadGroupSizeIsMultipleOfThreadExecutionWidth = false
+            //            computePipelineDescriptor.threadGroupSizeIsMultipleOfThreadExecutionWidth = false
             computePipelineDescriptor.computeFunction = function
             let (computePipelineState, reflection) = try device.makeComputePipelineState(descriptor: computePipelineDescriptor, options: [.bindingInfo])
             bindings = Dictionary(uniqueKeysWithValues: reflection!.bindings.map { binding in

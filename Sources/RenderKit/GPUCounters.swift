@@ -135,7 +135,6 @@ public class GPUCounters: @unchecked Sendable {
     }
 }
 
-
 // Move to RenderKitUI
 public extension EnvironmentValues {
     @Entry
