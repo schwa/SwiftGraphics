@@ -1,5 +1,4 @@
 #import "GaussianSplatBitonicSortComputeShader.h"
-#import "GaussianSplatRadixSortComputeShader.h"
 #import "GaussianSplatDistanceComputeShader.h"
 #import "GaussianSplatRenderShaders.h"
 #import "GaussianSplatPointRenderShaders.h"
