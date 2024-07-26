@@ -138,7 +138,6 @@ extension TextureResourceSpecifier: Codable {
         try self.init(url)
     }
 
-    // swiftlint:disable:next unavailable_function
     func encode(to encoder: Encoder) throws {
         unimplemented()
     }

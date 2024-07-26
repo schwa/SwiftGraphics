@@ -1,8 +1,6 @@
 import Foundation
 import SwiftUI
 
-// swiftlint:disable force_unwrapping
-
 public struct MeasurementField <Label, UnitType>: View where Label: View, UnitType: Dimension {
     @Binding
     private var measurement: Measurement<UnitType>

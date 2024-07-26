@@ -100,7 +100,6 @@ public extension Array2D {
 }
 
 public extension Array2D {
-    // swiftlint:disable:next unavailable_function
     init(_ slice: RectSlice) {
         // TODO: There has to be a better way
 
