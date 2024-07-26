@@ -16,8 +16,14 @@ public extension CGSize {
     }
 
     var scalars: [CGFloat] {
-        // TODO: Provide a setter
-        [width, height]
+        get {
+            [width, height]
+        }
+        set {
+            assert(newValue.count == 2)
+            (self.width, self.height) = (newValue[0], newValue[1])
+        }
+
     }
 }
 
@@ -37,8 +43,12 @@ public extension CGSize {
     }
 
     var tuple: (CGFloat, CGFloat) {
-        (width, height)
-        // TODO: Provide a setter
+        get {
+            (width, height)
+        }
+        set {
+            (self.width, self.height) = newValue
+        }
     }
 }
 
@@ -121,16 +131,12 @@ public extension CGSize {
     // TODO: It doesn't really make any sense to have other RNG methods on CGSize?
 }
 
-// TODO: Validate need for below.
-
 // TODO: Move elsewhere? Rename AreaOrientation?
 public enum Orientation {
     case square
     case landscape
     case portrait
 }
-
-// TODO: Stop being CG based
 
 public extension CGSize {
     var aspectRatio: CGFloat {

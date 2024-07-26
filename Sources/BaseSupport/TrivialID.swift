@@ -1,7 +1,7 @@
 import Foundation
 import os
 
-// TODO: Make generic (will have to move staticState out of struct)
+// NOTE: Make generic (will have to move staticState out of struct)
 public struct TrivialID: Sendable, Hashable {
     struct StaticState {
         var scopesByName: [String: Scope] = [:]

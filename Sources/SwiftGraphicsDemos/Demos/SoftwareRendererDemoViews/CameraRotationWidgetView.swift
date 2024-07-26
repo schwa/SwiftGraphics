@@ -81,3 +81,16 @@ struct CameraWidgetButtonStyle: ButtonStyle {
             }
     }
 }
+
+extension Axis3D {
+    var color: Color {
+        switch self {
+        case .x:
+            .red
+        case .y:
+            .green
+        case .z:
+            .blue
+        }
+    }
+}

@@ -20,8 +20,7 @@ public protocol PassProtocol: Equatable, Sendable {
     var id: PassID { get }
 }
 
-// TODO: Make sendable.
-// TODO: Allow for empty state - make Never or () conform to PassState???
+// IDEA: Allow for empty state - make Never or () conform to PassState???
 public protocol PassState: Sendable {
 }
 

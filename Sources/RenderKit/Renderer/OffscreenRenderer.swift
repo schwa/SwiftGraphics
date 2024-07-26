@@ -38,19 +38,11 @@ public struct OffscreenRenderer {
 public struct OffscreenRenderPassConfiguration: MetalConfigurationProtocol {
     public var colorPixelFormat: MTLPixelFormat = .bgra8Unorm
     public var clearColor: MTLClearColor = .init(red: 0, green: 0, blue: 0, alpha: 1.0)
-    public var depthStencilPixelFormat: MTLPixelFormat = .invalid // TODO: NOT USED
-    public var depthStencilStorageMode: MTLStorageMode = .shared // TODO: NOT USED
+    public var depthStencilPixelFormat: MTLPixelFormat = .invalid
+    public var depthStencilStorageMode: MTLStorageMode = .shared
     public var clearDepth: Double = 1.0
     public var framebufferOnly: Bool = true
 
     public init() {
     }
-
-    //    public var currentRenderPassDescriptor: MTLRenderPassDescriptor?
-    ////    public var targetTexture: MTLTexture? // TODO: Rename - this is too vague
-    //
-    //    public mutating func update() throws {
-    //        currentRenderPassDescriptor = nil
-    //        targetTexture = nil
-    //    }
 }

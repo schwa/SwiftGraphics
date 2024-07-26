@@ -120,8 +120,8 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
                 commandEncoder.withDebugGroup("VertexShader") {
                     commandEncoder.setVertexBuffersFrom(mesh: state.quadMesh)
                     commandEncoder.setVertexBytes(of: uniforms, index: state.bindings.vertexUniforms)
-                    commandEncoder.setVertexBuffer(splats.splats, index: state.bindings.vertexSplats)
-                    commandEncoder.setVertexBuffer(splats.indices, index: state.bindings.vertexSplatIndices)
+                    commandEncoder.setVertexBuffer(splats.splats, offset: 0, index: state.bindings.vertexSplats)
+                    commandEncoder.setVertexBuffer(splats.indices, offset: 0, index: state.bindings.vertexSplatIndices)
                     if useVertexCounting {
                         commandEncoder.setVertexBuffer(state.vertexCounterBuffer, offset: 0, index: state.bindings.vertexCounterBuffer)
                     }

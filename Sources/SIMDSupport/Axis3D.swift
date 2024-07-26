@@ -16,16 +16,4 @@ public enum Axis3D: CaseIterable {
             [0, 0, 1]
         }
     }
-
-    // TODO: MOVE
-    public var color: Color {
-        switch self {
-        case .x:
-            .red
-        case .y:
-            .green
-        case .z:
-            .blue
-        }
-    }
 }

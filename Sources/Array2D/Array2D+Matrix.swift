@@ -21,16 +21,6 @@ public extension Array2D where Element == Float {
 }
 
 public extension Array2D {
-    init(_ v: simd_float4x4) where Element == Float {
-        // TODO: this is _row major_
-        self = Array2D(size: [4, 4]) { point in
-            v[point.x][point.y]
-        }
-    }
-}
-
-// TODO: Move
-public extension Array2D {
     init(columns: [[Element]]) {
         self = Array2D(flatStorage: Array(columns.joined()), size: [columns.count, columns.first?.count ?? 0]).transposed()
     }

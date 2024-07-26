@@ -1,7 +1,6 @@
 import ModelIO
 
 // TODO: FIXME
-// TODO: Move
 nonisolated(unsafe) public let oneTrueVertexDescriptor: MDLVertexDescriptor = {
     let vertexDescriptor = MDLVertexDescriptor()
     vertexDescriptor.addOrReplaceAttribute(.init(name: MDLVertexAttributePosition, format: .float3, offset: 0, bufferIndex: 0))

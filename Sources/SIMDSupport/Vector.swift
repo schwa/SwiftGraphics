@@ -130,12 +130,6 @@ public extension SIMD3 where Scalar == Float {
     func cross(_ other: Self) -> Self {
         simd_cross(self, other)
     }
-
-    // TODO: Rename
-    func norm() -> Scalar {
-        simd_norm_inf(self)
-        // return simd_norm_one(self)
-    }
 }
 
 public extension SIMD2 where Scalar: FloatingPoint {

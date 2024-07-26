@@ -82,7 +82,7 @@ public struct RenderView: View {
     }
 }
 
-// TODO: Idea for later. Might make it easier to dynamically create render pass collections? (when fully fleshed out with conditional support etc).
+// IDEA: Might make it easier to dynamically create render pass collections? (when fully fleshed out with conditional support etc).
 // @resultBuilder public struct RenderPassBuilder {
 //    public static func buildBlock(_ components: any RenderPassProtocol...) -> RenderPassCollection {
 //        components

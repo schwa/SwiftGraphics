@@ -101,11 +101,7 @@ public extension Array2D {
 
 public extension Array2D {
     init(_ slice: RectSlice) {
-        // TODO: There has to be a better way
-
-        unimplemented()
-
-        // self = Array2D(flatStorage: slice.map { slice.array[$0] }, size: slice.rect.size)
+         self = Array2D(flatStorage: slice.map { slice.array[$0] }, size: slice.rect.size)
     }
 }
 

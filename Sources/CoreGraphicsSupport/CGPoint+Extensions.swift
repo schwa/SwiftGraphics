@@ -18,8 +18,14 @@ public extension CGPoint {
     }
 
     var scalars: [CGFloat] {
-        // TODO: Provide a setter
-        [x, y]
+        get {
+            [x, y]
+        }
+        set {
+            assert(newValue.count == 2)
+            self.x = newValue[0]
+            self.y = newValue[1]
+        }
     }
 }
 
@@ -56,8 +62,12 @@ public extension CGPoint {
     }
 
     var tuple: (CGFloat, CGFloat) {
-        (x, y)
-        // TODO: Provide a setter
+        get {
+            (x, y)
+        }
+        set {
+            (self.x, self.y) = newValue
+        }
     }
 }
 
@@ -201,13 +211,11 @@ public extension CGPoint {
 
     // Returns the angle between this vector and another vector 'vec'.
     // The result sign indicates the rotation direction from this vector to 'vec': positive for counter-clockwise, negative for clockwise.
-    // TODO: Unit test
+    // TODO: UNITTEST ME
     func angle(to other: Self) -> Angle { // [-M_PI, M_PI)
         .radians(atan2(crossProduct(self, other), dotProduct(self, other)))
     }
 }
-
-// TODO: Misc 2
 
 /// The dot product of two vectors is the sum of the products of the corresponding components of the two vectors.
 public func dotProduct(_ lhs: CGPoint, _ rhs: CGPoint) -> CGFloat {
@@ -218,8 +226,6 @@ public func dotProduct(_ lhs: CGPoint, _ rhs: CGPoint) -> CGFloat {
 public func crossProduct(_ lhs: CGPoint, _ rhs: CGPoint) -> CGFloat {
     lhs.x * rhs.y - lhs.y * rhs.x
 }
-
-// TODO: Deprecation zone
 
 public extension CGPoint {
     func flipVertically(within rect: CGRect) -> CGPoint {
