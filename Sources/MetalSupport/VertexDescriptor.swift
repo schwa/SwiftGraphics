@@ -32,7 +32,7 @@ public struct VertexDescriptor: Hashable, Sendable {
             case position
             case normal
             case textureCoordinate
-            // TODO: Add in more semantics. (From ModelIO semantics and GLTF etc)
+            // IDEA: Add in more semantics. (From ModelIO semantics and GLTF etc)
         }
 
         public var label: String?

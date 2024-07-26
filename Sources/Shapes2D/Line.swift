@@ -69,6 +69,8 @@ public extension Line {
     var slope: Double {
         (-c / b) / (c / a)
     }
+
+    // IDEA: provide angle?
 }
 
 // MARK: -
@@ -91,7 +93,6 @@ public extension Line {
 }
 
 public extension Line {
-    // TODO: Unconfirmed/untested
     // [+X, 0] == 0°, clockwise
     init(point: CGPoint, angle: Angle) {
         if angle.degrees == 90 || angle.degrees == 270 {

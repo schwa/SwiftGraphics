@@ -8,7 +8,7 @@ import UIKit
 #endif
 import SwiftUI
 
-// TODO: Use UIUpdateLink
+// IDEA: Use UIUpdateLink on iOS
 
 @available(macOS 14, iOS 15, tvOS 16, *)
 class DisplayLink2 {

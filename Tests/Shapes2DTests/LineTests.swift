@@ -56,3 +56,11 @@ import CoreGraphicsUnsafeConformances
         }
     }
 }
+
+@Test func tetAngles() async throws {
+    #expect(Line(point: .zero, angle: .degrees(0)).isHorizontal)
+    #expect(Line(point: .zero, angle: .degrees(90)).isVertical)
+    // TODO: Finish.
+//    #expect(Line(point: .zero, angle: .degrees(45)).slope == 1)
+//    #expect(Line(point: .zero, angle: .degrees(180)).isHorizontal)
+}
