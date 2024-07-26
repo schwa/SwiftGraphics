@@ -1,4 +1,5 @@
 public enum BaseError: Error {
+    // TODO: Have a good going over here and clean up duplicate/vague types.
     case generic(String)
     case resourceCreationFailure
     case illegalValue

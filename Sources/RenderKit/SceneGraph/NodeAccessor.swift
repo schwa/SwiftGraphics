@@ -12,41 +12,6 @@ public struct NodeAccessor: Hashable {
     var path: IndexPath
 }
 
-public extension Binding where Value == SceneGraph {
-    func binding(for label: String) -> Binding<Node?> {
-        guard let indexPath = wrappedValue.firstIndexPath(label: label) else {
-            fatalError("No node with label \(label) found in scene graph.")
-        }
-        return Binding<Node?> {
-            wrappedValue[accessor: NodeAccessor(path: indexPath)]
-        }
-        set: {
-            wrappedValue[accessor: NodeAccessor(path: indexPath)] = $0
-        }
-    }
-
-    func binding(for indexPath: IndexPath) -> Binding<Node?> {
-        Binding<Node?> {
-            wrappedValue[accessor: NodeAccessor(path: indexPath)]
-        }
-        set: {
-            wrappedValue[accessor: NodeAccessor(path: indexPath)] = $0
-        }
-    }
-
-    func binding(for indexPath: IndexPath) -> Binding<Node> {
-        Binding<Node> {
-            guard let node = wrappedValue[accessor: NodeAccessor(path: indexPath)] else {
-                fatalError("No node at indexPath \(indexPath)")
-            }
-            return node
-        }
-        set: {
-            wrappedValue[accessor: NodeAccessor(path: indexPath)] = $0
-        }
-    }
-}
-
 // TODO: Cleanup.
 public extension SceneGraph {
     // @available(*, deprecated, message: "Deprecated")
@@ -146,33 +111,88 @@ public extension SceneGraph {
     }
 }
 
-public extension SceneGraph {
-    var currentCameraNode: Node? {
+public extension Node {
+    // TODO: Deprecate and use Accessors.
+    subscript(indexPath indexPath: IndexPath) -> Node {
         get {
-            guard let currentCameraPath else {
-                return nil
+            guard let index = indexPath.first else {
+                return self
             }
-            return root[indexPath: currentCameraPath]
-        }
-        set {
-            if let newValue {
-                guard let currentCameraPath else {
-                    fatalError("Trying to set current camera node, but no path for existing camera")
-                }
-                root[indexPath: currentCameraPath] = newValue
+            let child = children[index]
+            let indexPath = indexPath.dropFirst()
+            if indexPath.isEmpty {
+                return child
             }
             else {
-                currentCameraPath = nil
+                return child[indexPath: indexPath]
+            }
+        }
+        set {
+            guard let index = indexPath.first else {
+                self = newValue
+                return
+            }
+            let indexPath = indexPath.dropFirst()
+            if indexPath.isEmpty {
+                children[index] = newValue
+            }
+            else {
+                children[index][indexPath: indexPath] = newValue
             }
         }
     }
+}
 
-    var currentCamera: Camera? {
-        get {
-            currentCameraNode?.camera
+public extension Node {
+    func allNodes() -> any Sequence<Node> {
+        AnySequence {
+            TreeIterator(mode: .depthFirst, root: self, children: \.children)
         }
-        set {
-            currentCameraNode?.camera = newValue
+    }
+    func allIndexedNodes() -> any Sequence<(node: Node, path: IndexPath)> {
+        AnySequence {
+            TreeIterator(mode: .depthFirst, root: (node: self, path: IndexPath())) { node, path in
+                node.children.enumerated().map { index, node in
+                    (node: node, path: path + [index])
+                }
+            }
+        }
+    }
+}
+
+// MARK: -
+
+public extension Binding where Value == SceneGraph {
+    func binding(for label: String) -> Binding<Node?> {
+        guard let indexPath = wrappedValue.firstIndexPath(label: label) else {
+            fatalError("No node with label \(label) found in scene graph.")
+        }
+        return Binding<Node?> {
+            wrappedValue[accessor: NodeAccessor(path: indexPath)]
+        }
+        set: {
+            wrappedValue[accessor: NodeAccessor(path: indexPath)] = $0
+        }
+    }
+
+    func binding(for indexPath: IndexPath) -> Binding<Node?> {
+        Binding<Node?> {
+            wrappedValue[accessor: NodeAccessor(path: indexPath)]
+        }
+        set: {
+            wrappedValue[accessor: NodeAccessor(path: indexPath)] = $0
+        }
+    }
+
+    func binding(for indexPath: IndexPath) -> Binding<Node> {
+        Binding<Node> {
+            guard let node = wrappedValue[accessor: NodeAccessor(path: indexPath)] else {
+                fatalError("No node at indexPath \(indexPath)")
+            }
+            return node
+        }
+        set: {
+            wrappedValue[accessor: NodeAccessor(path: indexPath)] = $0
         }
     }
 }
