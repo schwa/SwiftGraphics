@@ -3,7 +3,7 @@ import Foundation
 import os
 import SIMDSupport
 
-public struct Node: Identifiable, Sendable, Equatable {
+public struct Node: Identifiable, Sendable {
     public typealias Content = any Sendable
 
     public var id: TrivialID {
@@ -69,7 +69,9 @@ public struct Node: Identifiable, Sendable, Equatable {
             changeCount += 1
         }
     }
+}
 
+extension Node: Equatable {
     // TODO: This is not true equality. Maybe put into a "PartialEquality" (gross: overloads with Rust term?) protocol? "GenerationEquality"
     public static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.id == rhs.id && lhs.generationID == rhs.generationID

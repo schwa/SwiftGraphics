@@ -46,8 +46,10 @@ public extension Quadrant {
     }
 
     static func from(point: CGPoint, rect: CGRect) -> Quadrant? {
-        // TODO: can be outside
-        Quadrant.from(point: point - rect.mid)
+        if !rect.contains(point) {
+            return nil
+        }
+        return Quadrant.from(point: point - rect.mid)
     }
 }
 

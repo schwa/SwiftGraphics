@@ -2,7 +2,7 @@ import CoreGraphics
 
 // swiftlint:disable force_unwrapping
 
-// TODO: - this is a "CGPoint" quadtree - see http://www.codeproject.com/Articles/30535/A-Simple-QuadTree-Implementation-in-C for a discussion of point vs "region' quad tree
+// This is a "CGPoint" quadtree - see http://www.codeproject.com/Articles/30535/A-Simple-QuadTree-Implementation-in-C for a discussion of point vs "region' quad tree
 
 struct QuadTreeConfig {
     let minimumNodeSize: CGSize

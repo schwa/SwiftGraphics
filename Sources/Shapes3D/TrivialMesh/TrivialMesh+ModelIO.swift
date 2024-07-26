@@ -12,10 +12,14 @@ public extension TrivialMesh where Vertex == SIMD3<Float> {
             throw BaseError.missingValue
         }
         let positions = try mesh.positions
-        // TODO: confirm that these are triangles.
-        // TODO: confirm that index is uint32
         guard let submesh = mesh.submeshes?[0] as? MDLSubmesh else {
             throw BaseError.missingValue
+        }
+        guard submesh.geometryType == .triangles else {
+            throw BaseError.invalidParameter
+        }
+        guard submesh.indexType == .uint32 else {
+            throw BaseError.invalidParameter
         }
         let indexBuffer = submesh.indexBuffer
         let indexBytes = UnsafeRawBufferPointer(start: indexBuffer.map().bytes, count: indexBuffer.length)
@@ -40,10 +44,14 @@ public extension TrivialMesh where Vertex == SimpleVertex {
         let vertices = zip(positions, normals).map {
             SimpleVertex(packedPosition: $0.0, packedNormal: $0.1)
         }
-
-        // TODO: confirm that these are triangles & confirm that index is uint32
         guard let submesh = mesh.submeshes?[0] as? MDLSubmesh else {
             throw BaseError.missingValue
+        }
+        guard submesh.geometryType == .triangles else {
+            throw BaseError.invalidParameter
+        }
+        guard submesh.indexType == .uint32 else {
+            throw BaseError.invalidParameter
         }
         let indexBuffer = submesh.indexBuffer
         let indexBytes = UnsafeRawBufferPointer(start: indexBuffer.map().bytes, count: indexBuffer.length)

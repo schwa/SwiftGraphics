@@ -4,55 +4,6 @@ import simd
 import SIMDSupport
 
 public extension Node {
-    // TODO: Deprecate and use Accessors.
-    subscript(indexPath indexPath: IndexPath) -> Node {
-        get {
-            guard let index = indexPath.first else {
-                return self
-            }
-            let child = children[index]
-            let indexPath = indexPath.dropFirst()
-            if indexPath.isEmpty {
-                return child
-            }
-            else {
-                return child[indexPath: indexPath]
-            }
-        }
-        set {
-            guard let index = indexPath.first else {
-                self = newValue
-                return
-            }
-            let indexPath = indexPath.dropFirst()
-            if indexPath.isEmpty {
-                children[index] = newValue
-            }
-            else {
-                children[index][indexPath: indexPath] = newValue
-            }
-        }
-    }
-}
-
-public extension Node {
-    func allNodes() -> any Sequence<Node> {
-        AnySequence {
-            TreeIterator(mode: .depthFirst, root: self, children: \.children)
-        }
-    }
-    func allIndexedNodes() -> any Sequence<(node: Node, path: IndexPath)> {
-        AnySequence {
-            TreeIterator(mode: .depthFirst, root: (node: self, path: IndexPath())) { node, path in
-                node.children.enumerated().map { index, node in
-                    (node: node, path: path + [index])
-                }
-            }
-        }
-    }
-}
-
-public extension Node {
     func dump() -> String {
         var s = ""
         for (node, path) in allIndexedNodes() {
