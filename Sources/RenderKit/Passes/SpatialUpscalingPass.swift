@@ -1,3 +1,4 @@
+#if canImport(metalFX)
 import BaseSupport
 @preconcurrency import MetalFX
 
@@ -34,3 +35,4 @@ public struct SpatialUpscalingPass: GeneralPassProtocol {
         spatialScaler().encode(commandBuffer: commandBuffer)
     }
 }
+#endif
