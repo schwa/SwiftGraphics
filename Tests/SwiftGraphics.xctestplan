@@ -15,18 +15,21 @@
         "value" : "1"
       }
     ],
-    "targetForVariableExpansion" : {
-      "containerPath" : "container:",
-      "identifier" : "ComputeTool",
-      "name" : "ComputeTool"
-    }
+    "testExecutionOrdering" : "random"
   },
   "testTargets" : [
     {
       "target" : {
         "containerPath" : "container:",
-        "identifier" : "EarcutTests",
-        "name" : "EarcutTests"
+        "identifier" : "GaussianSplatTests",
+        "name" : "GaussianSplatTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "MetalSupportTests",
+        "name" : "MetalSupportTests"
       }
     },
     {
@@ -39,15 +42,15 @@
     {
       "target" : {
         "containerPath" : "container:",
-        "identifier" : "RenderKitTests",
-        "name" : "RenderKitTests"
+        "identifier" : "SIMDSupportTests",
+        "name" : "SIMDSupportTests"
       }
     },
     {
       "target" : {
         "containerPath" : "container:",
-        "identifier" : "SIMDSupportTests",
-        "name" : "SIMDSupportTests"
+        "identifier" : "RenderKitTests",
+        "name" : "RenderKitTests"
       }
     },
     {
@@ -60,15 +63,22 @@
     {
       "target" : {
         "containerPath" : "container:",
-        "identifier" : "SwiftGraphicsDemosTests",
-        "name" : "SwiftGraphicsDemosTests"
+        "identifier" : "CoreGraphicsSupportTests",
+        "name" : "CoreGraphicsSupportTests"
       }
     },
     {
       "target" : {
         "containerPath" : "container:",
-        "identifier" : "MetalSupportTests",
-        "name" : "MetalSupportTests"
+        "identifier" : "EarcutTests",
+        "name" : "EarcutTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "SwiftGraphicsDemosTests",
+        "name" : "SwiftGraphicsDemosTests"
       }
     }
   ],

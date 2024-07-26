@@ -13,6 +13,6 @@ import Testing
 func testPackedFloatSizes() {
     #expect(MemoryLayout<SIMD3<Float>>.size == 16)
     #expect(MemoryLayout<SIMD3<Float>>.stride == 16)
-    #expect(MemoryLayout<PackedFloat3>.size == 16)
-    #expect(MemoryLayout<PackedFloat3>.stride == 16)
+    #expect(MemoryLayout<PackedFloat3>.size == 12)
+    #expect(MemoryLayout<PackedFloat3>.stride == 12)
 }

@@ -41,7 +41,6 @@ public extension Triangle {
     }
 }
 
-// TODO: This is a hack
 func isFuzzyEqual(_ lhs: CGFloat, _ rhs: CGFloat) -> Bool {
     lhs.isApproximatelyEqual(to: rhs, absoluteTolerance: 0.0001)
 }
@@ -55,7 +54,6 @@ public extension Triangle {
         )
     }
 
-    // TODO:
     var angles: (Angle, Angle, Angle) {
         let a1 = Angle(vertex: vertices.0, p1: vertices.1, p2: vertices.2)
         let a2 = Angle(vertex: vertices.1, p1: vertices.2, p2: vertices.0)
@@ -156,7 +154,6 @@ public extension Triangle {
 
 //// Cartesian coordinates
 public extension Triangle {
-    // TODO:
     // converts trilinear coordinates to Cartesian coordinates relative
     // to the incenter; thus, the incenter has coordinates (0.0, 0.0)
     func toLocalCartesian(alpha: Double, beta: Double, gamma: Double) -> CGPoint {

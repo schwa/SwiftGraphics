@@ -29,7 +29,6 @@ public extension CGContext {
 
         var definition = definition
         if definition.pixelFormat.byteOrder == .orderDefault {
-            // TODO: Other endianness?
             definition.pixelFormat.byteOrder = .order32Big
         }
 
