@@ -94,6 +94,7 @@ public extension PackedHalf4 {
     }
 }
 
+// IDEA: Bring back simd_packed_half4
 public struct PackedHalf4: Hashable, Sendable {
     public var x: Float16
     public var y: Float16
