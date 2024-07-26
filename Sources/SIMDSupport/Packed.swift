@@ -88,7 +88,6 @@ public struct PackedHalf3: Hashable, Sendable {
     }
 }
 
-
 public extension PackedHalf4 {
     init(_ other: SIMD4<Float>) {
         self = PackedHalf4(x: Float16(other.x), y: Float16(other.y), z: Float16(other.z), w: Float16(other.w))

@@ -598,7 +598,7 @@ struct CodableAppStorage<Value: Codable>: DynamicProperty {
                 UserDefaults.standard.setValue(string, forKey: key)
             }
             catch {
-            fatalError(error)
+                fatalError(error)
             }
         }
     }

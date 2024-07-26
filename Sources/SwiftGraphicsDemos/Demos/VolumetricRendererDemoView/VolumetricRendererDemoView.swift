@@ -107,7 +107,6 @@ struct VolumetricRendererDemoView: DemoView {
             catch {
                 fatalError(error)
             }
-
         }
     }
 }

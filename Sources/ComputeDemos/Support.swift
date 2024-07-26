@@ -1,4 +1,6 @@
+#if os(macOS)
 import AppKit
+#endif
 import BaseSupport
 import CoreGraphics
 import CoreGraphicsSupport
@@ -7,8 +9,6 @@ import Foundation
 import Metal
 
 // swiftlint:disable force_unwrapping
-
-// TODO: MOVE
 
 class StopWatch: CustomStringConvertible {
     var last: CFAbsoluteTime?
