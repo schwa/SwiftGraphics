@@ -34,7 +34,7 @@ only_rules:
   - colon
   - comma
   - comma_inheritance
-  - comment_spacing # 9 violations (fixable)
+  - comment_spacing
   - compiler_protocol_init
   - computed_accessors_order
   - conditional_returns_on_newline
@@ -77,7 +77,7 @@ only_rules:
 #  - explicit_type_interface # 2168 violations
   - extension_access_modifier
   - fallthrough
-#  - fatal_error_message # 86 violations
+  - fatal_error_message
   - file_header
 #  - file_length # 6 violations
 #  - file_name # 97 violations
@@ -199,19 +199,19 @@ only_rules:
 #  - single_test_class # 7 violations
 #  - sorted_enum_cases # 48 violations
   - sorted_first_last
-  - sorted_imports # 5 violations (fixable)
+  - sorted_imports
 #  - statement_position # 157 violations (fixable)
   - static_operator
   - static_over_final_class
   - strict_fileprivate
   - strong_iboutlet
-#  - superfluous_disable_command # 4 violations
+  - superfluous_disable_command
 #  - superfluous_else # 45 violations (fixable)
   - switch_case_alignment
 #  - switch_case_on_newline # 146 violations
   - syntactic_sugar
   - test_case_accessibility # 3 violations (fixable)
-#  - todo # 234 violations
+# - todo
   - toggle_bool
   - trailing_closure # 3 violations (fixable)
 #  - trailing_comma # 122 violations (fixable)
@@ -242,10 +242,10 @@ only_rules:
   - valid_ibinspectable
   - vertical_parameter_alignment
   - vertical_parameter_alignment_on_call
-  - vertical_whitespace # 3 violations (fixable)
+  - vertical_whitespace
 #  - vertical_whitespace_between_cases # 627 violations (fixable)
-  - vertical_whitespace_closing_braces # 3 violations (fixable)
-  - vertical_whitespace_opening_braces # 1 violations (fixable)
+  - vertical_whitespace_closing_braces
+  - vertical_whitespace_opening_braces
   - void_function_in_ternary
   - void_return
   - weak_delegate

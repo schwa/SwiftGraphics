@@ -78,27 +78,22 @@ struct ReplayableGraphicsContext: GraphicsContextProtocol2 {
         unimplemented()
     }
 
-    // swiftlint:disable:next unavailable_function
     mutating func clip(to path: Path, style: FillStyle, options: GraphicsContext.ClipOptions) {
         unimplemented()
     }
 
-    // swiftlint:disable:next unavailable_function
     mutating func clipToLayer(opacity: Double, options: GraphicsContext.ClipOptions, content: (inout GraphicsContext) throws -> Void) rethrows {
         unimplemented()
     }
 
-    // swiftlint:disable:next unavailable_function
     mutating func addFilter(_ filter: GraphicsContext.Filter, options: GraphicsContext.FilterOptions) {
         unimplemented()
     }
 
-    // swiftlint:disable:next unavailable_function
     func resolve(_ shading: GraphicsContext.Shading) -> GraphicsContext.Shading {
         unimplemented()
     }
 
-    // swiftlint:disable:next unavailable_function
     func drawLayer(content: (inout GraphicsContext) throws -> Void) rethrows {
         unimplemented()
     }

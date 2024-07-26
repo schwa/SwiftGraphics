@@ -89,7 +89,6 @@ struct QuartzContext: GraphicsContextProtocol {
         cgContext.clip()
     }
 
-    // swiftlint:disable:next unavailable_function
     mutating func clipToLayer(opacity: Double, options: ClipOptions, content: (inout Self) throws -> Void) rethrows {
         unimplemented() // TODO: Unimplemented
     }

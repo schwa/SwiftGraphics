@@ -197,7 +197,6 @@ class CSGNode<Vertex> where Vertex: VertexLike {
     }
 
     // Recursively remove all polygons in `polygons` that are inside this BSP tree.
-    // swiftlint:disable:next unavailable_function
     func clip(polygons: [Polygon]) -> [Polygon] {
         // TODO: FIXME
         unimplemented()

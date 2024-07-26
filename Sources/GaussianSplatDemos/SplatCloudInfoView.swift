@@ -31,9 +31,7 @@ public struct SplatCloudInfoView: View {
 
                 //                TaskView(id: splats, "Bounding box") {
                 //                    let positions = splats.map { SIMD3<Float>($0.position) }
-                //                    // swiftlint:disable:next reduce_into
                 //                    let minimums = positions.reduce([.greatestFiniteMagnitude, .greatestFiniteMagnitude, .greatestFiniteMagnitude], min)
-                //                    // swiftlint:disable:next reduce_into
                 //                    let maximums = positions.reduce([-.greatestFiniteMagnitude, -.greatestFiniteMagnitude, -.greatestFiniteMagnitude], max)
                 //                    let size = maximums - minimums
                 //                    return "\(minimums, format: .vector) ... \(maximums, format: .vector), size: (\(size, format: .vector))"

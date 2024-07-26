@@ -113,7 +113,6 @@ extension Accessor2D: MutableCollection {
 // MARK: BidirectionalCollection
 
 extension Accessor2D: BidirectionalCollection {
-    // swiftlint:disable:next unavailable_function
     public func index(before i: Index) -> Index {
         unimplemented()
     }

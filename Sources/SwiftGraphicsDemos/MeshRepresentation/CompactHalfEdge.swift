@@ -113,7 +113,6 @@ extension CompactHalfEdgeMesh {
 }
 
 extension CompactHalfEdgeMesh {
-    // swiftlint:disable:next unavailable_function
     init(connectivity: [(FaceID, [VertexID])]) {
         unimplemented()
     }
