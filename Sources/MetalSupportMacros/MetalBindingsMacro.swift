@@ -13,7 +13,7 @@ extension MetalBindingsMacro: ExtensionMacro {
         conformingTo protocols: [TypeSyntax],
         in context: some MacroExpansionContext
     ) throws -> [ExtensionDeclSyntax] {
-        // TODO: this is a bit rude.
+        // This is not a great way to detect if a declaration is public. Be nice to create a helper function that does it properly.
         let isPublic = declaration.modifiers.map(\.trimmedDescription).contains("public")
         // Get all variables within this declaration...
         let bindings: [(name: String, keyPath: String, type: String)] = declaration.match(path: [

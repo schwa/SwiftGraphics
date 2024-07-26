@@ -31,7 +31,6 @@ public extension Arc {
         let limit = Double.pi * 2 / Double(maximumArcs)
 
         if abs(beta - alpha) > (limit + .ulpOfOne) {
-            // TODO: This can cause infinite recursion!
             return arcToBezierCurves(center: center, radius: radius, alpha: alpha, beta: alpha + limit, maximumArcs: maximumArcs)
                 + arcToBezierCurves(center: center, radius: radius, alpha: alpha + limit, beta: beta, maximumArcs: maximumArcs)
         }

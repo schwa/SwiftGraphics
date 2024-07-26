@@ -769,7 +769,6 @@ public class EllipticalArc {
                     let etaA = etaB
                     etaB += dEta
                     found = (estimateError(degree, etaA, etaB) <= threshold)
-                    // TODO: condition could be wrong here
                     if !found {
                         break
                     }

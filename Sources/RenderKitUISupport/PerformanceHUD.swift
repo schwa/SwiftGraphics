@@ -61,7 +61,7 @@ public struct PerformanceHUD: View {
     }
 
     struct MeasurementView: View {
-        // TODO: Allow user to switch between modes.
+        // IDEA: Allow user to switch between modes.
         struct Mode: Identifiable {
             var id: String
             var text: (GPUCounters.Measurement) -> Text
