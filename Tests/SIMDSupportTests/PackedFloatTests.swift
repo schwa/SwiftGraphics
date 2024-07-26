@@ -1,10 +1,3 @@
-//
-//  PackedFloatTests.swift
-//  SwiftGraphics
-//
-//  Created by Jonathan Wight on 7/26/24.
-//
-
 import SIMDSupport
 import simd
 import Testing

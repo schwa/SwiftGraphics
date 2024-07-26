@@ -28,8 +28,6 @@ struct HalfEdge2DDemoView: View, DemoView {
         let faceColors = Dictionary(uniqueKeysWithValues: mesh.faces.map { ($0.id, Color(white: 0.8)) })
         self.mesh = mesh
         self.faceColors = faceColors
-
-        self.mesh.dump()
     }
 
     var body: some View {

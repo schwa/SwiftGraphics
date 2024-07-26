@@ -1,10 +1,3 @@
-//
-//  BouncingBallsSimulation.swift
-//  Random
-//
-//  Created by Jonathan Wight on 6/9/24.
-//
-
 import Foundation
 
 struct Ball {
