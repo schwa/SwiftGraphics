@@ -1,6 +1,5 @@
 import CoreGraphics
 
-// TODO: Should be clockwise or anticlockwise
 public enum Turn: Int {
     case left = 1
     case none = 0

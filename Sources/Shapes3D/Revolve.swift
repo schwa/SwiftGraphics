@@ -5,8 +5,6 @@ import simd
 import SIMDSupport
 import SwiftUI
 
-// TODO: Experimental
-
 public func revolve(polygonalChain: PolygonalChain3D, axis: Line3D, range: ClosedRange<Angle>) -> TrivialMesh<SIMD3<Float>> {
     let quads = polygonalChain.segments.map {
         revolve(lineSegment: $0, axis: axis, range: range)

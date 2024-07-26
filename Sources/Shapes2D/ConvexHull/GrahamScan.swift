@@ -18,7 +18,7 @@ public struct GrahamScan: ConvexHullProtocol {
         for index in 2 ..< points.count {
             var t: Turn = .left
             repeat {
-                let p_index = hull[hull.count - 2] // TODO: There seems to be a crasher here!!!
+                let p_index = hull[hull.count - 2]
                 let p = points[p_index]
                 let q_index = hull[hull.count - 1]
                 let q = points[q_index]

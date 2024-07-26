@@ -41,8 +41,7 @@ public extension TrivialMesh where Vertex == SimpleVertex {
             SimpleVertex(packedPosition: $0.0, packedNormal: $0.1)
         }
 
-        // TODO: confirm that these are triangles.
-        // TODO: confirm that index is uint32
+        // TODO: confirm that these are triangles & confirm that index is uint32
         guard let submesh = mesh.submeshes?[0] as? MDLSubmesh else {
             throw BaseError.missingValue
         }
@@ -115,7 +114,6 @@ extension DataProtocol {
 
 public extension MDLMesh {
     // TODO: MDLMesh was not created using a MTKMeshBufferAllocator}
-    // TODO: FIX bangs
     convenience init(trivialMesh mesh: TrivialMesh<SimpleVertex>, allocator: MDLMeshBufferAllocator? = nil) throws {
         let allocator = allocator ?? MDLMeshBufferDataAllocator()
         let vertexBuffer = try mesh.vertices.withUnsafeBytes { buffer in

@@ -61,7 +61,7 @@ public protocol RenderPassProtocol: ShaderPassProtocol {
 public protocol GeneralPassProtocol: PassProtocol {
     associatedtype State: PassState
     func setup(device: MTLDevice) throws -> State
-    func encode(commandBuffer: MTLCommandBuffer, info: PassInfo, state: State) throws // TODO: Rename
+    func encode(commandBuffer: MTLCommandBuffer, info: PassInfo, state: State) throws
 }
 
 // MARK: -

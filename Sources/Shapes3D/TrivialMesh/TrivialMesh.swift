@@ -2,7 +2,8 @@ import Algorithms
 import MetalSupport
 import simd
 
-// TODO: Rename to "SimpleMesh"
+// IDEA: Rename?
+
 public struct TrivialMesh<Vertex> where Vertex: Equatable {
     public var label: String?
     public var indices: [Int]
