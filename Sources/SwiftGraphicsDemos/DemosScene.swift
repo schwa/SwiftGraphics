@@ -60,6 +60,8 @@ struct DemosView: View {
     var body: some View {
         NavigationSplitView {
             List(selection: $currentDemo) {
+                row(for: CountersDemoView.self)
+                row(for: InlineNotificationsDemoView.self)
                 group(named: "Gaussian Splat") {
                     row(for: GaussianSplatMinimalView.self)
                     row(for: GaussianSplatView.self)
@@ -108,6 +110,7 @@ struct DemosView: View {
                     AnyView(currentDemo.type.init())// .id(currentDemo)
                 }
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
             .logger(Logger())
             .inlineNotificationOverlay()
         }

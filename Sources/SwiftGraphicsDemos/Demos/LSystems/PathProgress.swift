@@ -1,10 +1,3 @@
-//
-//  Untitled.swift
-//
-//
-//  Created by Jonathan Wight on 6/27/24.
-//
-
 import CoreGraphicsSupport
 import SwiftUI
 
