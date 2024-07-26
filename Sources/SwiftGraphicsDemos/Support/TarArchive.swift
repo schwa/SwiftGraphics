@@ -3,10 +3,6 @@ import Foundation
 
 // https://en.wikipedia.org/wiki/Tar_(computing)
 struct TarArchive: Sendable {
-    enum Error: Swift.Error {
-        case generic(String)
-    }
-
     struct Header<Buffer>: Sendable where Buffer: DataProtocol & Sendable, Buffer.Index == Int {
         var buffer: Buffer
     }
@@ -16,13 +12,13 @@ struct TarArchive: Sendable {
     init(url: URL) throws {
         let data = try Data(contentsOf: url, options: .mappedIfSafe)
         guard data.count >= 2_048 else {
-            throw Error.generic("Tar archives need to be at least 2048 bytes.")
+            throw BaseError.extended(BaseError.parsingFailure, "Tar archives need to be at least 2048 bytes.")
         }
         var remainingRange = data.startIndex ..< data.endIndex
         var records: [String: Header<Data>] = [:]
         while remainingRange.count > 1_024 {
             if remainingRange.count < 512 {
-                throw Error.generic("Not enough data remaining to read a header record.")
+                throw BaseError.extended(BaseError.parsingFailure, "Not enough data remaining to read a header record.")
             }
             var header = Header(buffer: data[remainingRange])
             let length = try header.totalLength
@@ -57,10 +53,10 @@ extension TarArchive.Header {
         get throws {
             let bytes = buffer.sub(offset: 124, count: 12)
             guard let string = String(bytes: bytes, encoding: .nonLossyASCII)?.trimmingCharacters(in: .whitespacesAndNewlines) else {
-                throw TarArchive.Error.generic("Failed to read file size.")
+                throw BaseError.extended(BaseError.parsingFailure, "Failed to read file size.")
             }
             guard let result = Int(string, radix: 8) else {
-                throw TarArchive.Error.generic("Failed to read file size.")
+                throw BaseError.extended(BaseError.parsingFailure, "Failed to read file size.")
             }
             return result
         }
@@ -82,7 +78,7 @@ extension TarArchive.Header {
         get throws {
             let bytes = buffer.sub(offset: 156, count: 1)
             guard let string = String(bytes: bytes, encoding: .nonLossyASCII), let fileType = FileType(rawValue: string) else {
-                throw TarArchive.Error.generic("Failed to read file type.")
+                throw BaseError.extended(BaseError.parsingFailure, "Failed to read file type.")
             }
             return fileType
         }
@@ -104,7 +100,7 @@ extension TarArchive.Header {
 extension TarArchive {
     init(named name: String, in bundle: Bundle = .main) throws {
         guard let url = bundle.url(forResource: name, withExtension: "tar") else {
-            throw Error.generic("Could not construct url for \(name) in \(bundle).")
+            throw BaseError.extended(BaseError.parsingFailure, "Could not construct url for \(name) in \(bundle).")
         }
         self = try TarArchive(url: url)
     }

@@ -36,11 +36,11 @@ public extension CGContext {
         assert(data == nil || data?.count == definition.height * definition.bytesPerRow, "\(String(describing: data?.count)) == \(definition.height * definition.bytesPerRow)")
 
         guard let colorSpace = definition.pixelFormat.colorSpace else {
-            throw BaseError.generic("No colorspace.")
+            throw BaseError.invalidParameter
         }
 
         guard let context = CGContext(data: data?.baseAddress, width: definition.width, height: definition.height, bitsPerComponent: definition.pixelFormat.bitsPerComponent, bytesPerRow: definition.bytesPerRow, space: colorSpace, bitmapInfo: definition.pixelFormat.bitmapInfo.rawValue) else {
-            throw BaseError.generic("Could not create bitmap context")
+            throw BaseError.resourceCreationFailure
         }
         return context
     }
@@ -65,7 +65,7 @@ public extension CGContext {
 public extension CGContext {
     static func bitmapContext(with image: CGImage) throws -> CGContext {
         guard let bitmapDefinition = BitmapDefinition(from: image) else {
-            throw BaseError.generic("Could not create bitmap definition from image")
+            throw BaseError.resourceCreationFailure
         }
         let context = try CGContext.bitmapContext(definition: bitmapDefinition)
         context.draw(image, in: CGRect(origin: .zero, size: image.size))

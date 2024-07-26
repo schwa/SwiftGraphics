@@ -507,7 +507,7 @@ struct MarkingsView: View {
                             context.stroke(path, with: .color(Color.black), lineWidth: 1 / 4)
                         }
                     default:
-                        fatalError("Unimplemented")
+                        unimplemented()
                     }
                 }
             }
@@ -833,7 +833,7 @@ extension Path3D {
                 case .closeSubpath:
                     path.closePath()
                 default:
-                    fatalError("Unimplemented")
+                    unimplemented()
                 }
             }
         }

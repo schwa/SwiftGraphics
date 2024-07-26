@@ -145,7 +145,7 @@ extension MTLRenderPassColorAttachmentDescriptor {
     var size: SIMD2<Float> {
         get throws {
             guard let texture else {
-                throw BaseError.generic("Cannot get size for a color attachment with no texture.")
+                throw BaseError.invalidParameter
             }
             return SIMD2<Float>(Float(texture.width), Float(texture.height))
         }

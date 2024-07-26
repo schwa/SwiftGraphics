@@ -87,16 +87,16 @@ extension View {
 extension Image {
     init(url: URL) throws {
         if try url.checkResourceIsReachable() == false {
-            throw BaseError.generic("Resource does not exist at: \(url)")
+            throw BaseError.inputOutputFailure
         }
         #if os(macOS)
         guard let nsImage = NSImage(contentsOf: url) else {
-            throw BaseError.generic("Cannot load resource at \(url), maybe sandbox issues.")
+            throw BaseError.inputOutputFailure
         }
         self = Image(nsImage: nsImage)
         #elseif os(iOS)
         guard let uiImage = UIImage(contentsOfFile: url.path) else {
-            throw BaseError.generic("Cannot load resource at \(url), maybe sandbox issues.")
+            throw BaseError.inputOutputFailure
         }
         self = Image(uiImage: uiImage)
         #endif

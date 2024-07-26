@@ -1,3 +1,4 @@
+import BaseSupport
 import CoreGraphics
 import CoreGraphicsSupport
 
@@ -37,8 +38,7 @@ public extension Circle {
         let c = points.2 - points.0
         let d = 2 * (b.x * c.y - b.y * c.x)
         guard d != 0 else {
-            // throw Error.generic("Points are colinear")
-            fatalError("Unimplemented")
+            throw BaseError.invalidParameter
         }
         let bms = b.lengthSquared
         let cms = c.lengthSquared

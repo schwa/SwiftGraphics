@@ -18,7 +18,7 @@ extension SwiftGLTF.Accessor {
         case (.FLOAT, .VEC4):
             .float4
         default:
-            fatalError("Unimplemented") // MORE TO DO
+            unimplemented() // MORE TO DO
         }
     }
 

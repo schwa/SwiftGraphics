@@ -23,10 +23,10 @@ public extension MTLRenderPipelineReflection {
         case .mesh:
             bindings = meshBindings
         default:
-            fatalError("Unimplemented")
+            unimplemented()
         }
         guard let binding = bindings.first(where: { $0.name == name }) else {
-            throw BaseError.generic("Could not bind '\(name)' to \(functionType) function.")
+            throw BaseError.invalidParameter
         }
         return binding.index
     }

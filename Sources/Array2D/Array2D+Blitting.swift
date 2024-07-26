@@ -1,3 +1,4 @@
+import BaseSupport
 import CoreGraphics
 import CoreGraphicsSupport
 import Foundation
@@ -103,7 +104,7 @@ public extension Array2D {
     init(_ slice: RectSlice) {
         // TODO: There has to be a better way
 
-        fatalError("Unimplemented")
+        unimplemented()
 
         // self = Array2D(flatStorage: slice.map { slice.array[$0] }, size: slice.rect.size)
     }

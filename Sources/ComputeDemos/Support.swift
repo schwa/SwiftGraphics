@@ -88,7 +88,7 @@ extension CGImage {
         segment(color: CGColor(red: 0, green: 0, blue: 1, alpha: 1), start: rect.minXMinY, end: rect.midXMidY)
         segment(color: CGColor(red: 0, green: 0, blue: 0, alpha: 1), start: rect.maxXMinY, end: rect.midXMidY)
         guard let image = context.makeImage() else {
-            throw BaseError.generic("Failed to create image")
+            throw BaseError.resourceCreationFailure
         }
         return image
     }

@@ -1,3 +1,4 @@
+import BaseSupport
 import Foundation
 @preconcurrency import Metal
 import SwiftUI
@@ -139,7 +140,7 @@ extension TextureResourceSpecifier: Codable {
 
     // swiftlint:disable:next unavailable_function
     func encode(to encoder: Encoder) throws {
-        fatalError("Unimplemented")
+        unimplemented()
     }
 }
 
