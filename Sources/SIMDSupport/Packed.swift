@@ -94,7 +94,19 @@ public extension PackedHalf4 {
     }
 }
 
-public typealias PackedHalf4 = simd_packed_half4
+public struct PackedHalf4: Hashable, Sendable {
+    public var x: Float16
+    public var y: Float16
+    public var z: Float16
+    public var w: Float16
+
+    public init(x: Float16, y: Float16, z: Float16, w: Float16) {
+        self.x = x
+        self.y = y
+        self.z = z
+        self.w = w
+    }
+}
 
 public extension SIMD3 where Scalar == Float {
     init(_ other: PackedHalf3) {
