@@ -513,6 +513,13 @@ let package = Package(
             ]
         ),
 
+        .testTarget(
+            name: "GenericGeometryBaseTests",
+            dependencies: [
+                "GenericGeometryBase",
+            ]
+        ),
+
     ],
     swiftLanguageVersions: [.v6]
 )

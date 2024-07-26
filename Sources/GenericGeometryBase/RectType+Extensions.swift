@@ -185,7 +185,6 @@ public extension RectType where Scalar == Point.Scalar, Scalar == Size.Scalar {
         Point(x: maxX, y: maxY)
     }
 
-    // TODO: This doens't work for int rects???
     init(minX: Scalar, minY: Scalar, maxX: Scalar, maxY: Scalar) {
         self.init(origin: Point(x: minX, y: minY), size: Size(width: maxX - minX, height: maxY - minY))
     }
