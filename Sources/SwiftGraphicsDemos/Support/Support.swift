@@ -1,3 +1,4 @@
+import BaseSupport
 import CoreGraphics
 import CoreGraphicsSupport
 import CoreGraphicsUnsafeConformances
@@ -507,7 +508,7 @@ struct MarkingsView: View {
                             context.stroke(path, with: .color(Color.black), lineWidth: 1 / 4)
                         }
                     default:
-                        unimplemented()
+                        BaseSupport.unimplemented()
                     }
                 }
             }
@@ -597,7 +598,7 @@ struct CodableAppStorage<Value: Codable>: DynamicProperty {
                 UserDefaults.standard.setValue(string, forKey: key)
             }
             catch {
-                fatalError()
+            fatalError(error)
             }
         }
     }
@@ -615,7 +616,7 @@ struct CodableAppStorage<Value: Codable>: DynamicProperty {
             }
         }
         catch {
-            fatalError()
+            fatalError(error)
         }
     }
 }
@@ -634,7 +635,7 @@ extension CodableAppStorage where Value: ExpressibleByNilLiteral {
             }
         }
         catch {
-            fatalError()
+            fatalError(error)
         }
     }
 }
@@ -833,7 +834,7 @@ extension Path3D {
                 case .closeSubpath:
                     path.closePath()
                 default:
-                    unimplemented()
+                    BaseSupport.unimplemented()
                 }
             }
         }
@@ -847,7 +848,7 @@ extension UTType {
 extension Bundle {
     func url(forResource resource: String?, withExtension extension: String?) throws -> URL {
         guard let url = url(forResource: resource, withExtension: `extension`) else {
-            fatalError()
+            throw BaseError.resourceCreationFailure
         }
         return url
     }

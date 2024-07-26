@@ -1,3 +1,4 @@
+import BaseSupport
 import Foundation
 import GaussianSplatSupport
 import Metal
@@ -67,7 +68,7 @@ public extension SplatCloud {
             splats = try device.makeTypedBuffer(data: splatArray, options: .storageModeShared).labelled("Splats")
         }
         else {
-            fatalError()
+            throw BaseError.illegalValue
         }
         try self.init(device: device, splats: splats)
     }

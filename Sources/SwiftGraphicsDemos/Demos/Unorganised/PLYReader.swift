@@ -107,7 +107,7 @@ public struct Ply {
     func fetch(element: Header.Element, record: Int) -> Data.SubSequence {
         // header.elements.firstIndex(of: element)
 
-        fatalError()
+        BaseSupport.unimplemented()
     }
 }
 
@@ -519,42 +519,42 @@ extension CollectionScanner where Element == UInt8 {
             switch type {
             case .char:
                 guard let value = scan(type: Int8.self) else {
-                    fatalError()
+                    throw BaseError.parsingFailure
                 }
                 return .char(value)
             case .uchar:
                 guard let value = scan(type: UInt8.self) else {
-                    fatalError()
+                    throw BaseError.parsingFailure
                 }
                 return .uchar(value)
             case .short:
                 guard let value = scan(type: Int16.self) else {
-                    fatalError()
+                    throw BaseError.parsingFailure
                 }
                 return .short(value)
             case .ushort:
                 guard let value = scan(type: UInt16.self) else {
-                    fatalError()
+                    throw BaseError.parsingFailure
                 }
                 return .ushort(value)
             case .int:
                 guard let value = scan(type: Int32.self) else {
-                    fatalError()
+                    throw BaseError.parsingFailure
                 }
                 return .int(value)
             case .uint:
                 guard let value = scan(type: UInt32.self) else {
-                    fatalError()
+                    throw BaseError.parsingFailure
                 }
                 return .uint(value)
             case .float:
                 guard let value = scan(type: Float.self) else {
-                    fatalError()
+                    throw BaseError.parsingFailure
                 }
                 return .float(value)
             case .double:
                 guard let value = scan(type: Double.self) else {
-                    fatalError()
+                    throw BaseError.parsingFailure
                 }
                 return .double(value)
             }

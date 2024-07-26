@@ -42,10 +42,10 @@ struct SimplePBRSceneGraphDemoView: View, DemoView {
             let path = scene.root.allIndexedNodes().first { $0.0.label == "model-1" }!.1
             let material = Binding<SimplePBRMaterial> {
                 guard let geometry = scene.root[indexPath: path].geometry else {
-                    fatalError()
+                    fatalError("Failed to get geometry.")
                 }
                 guard let material = geometry.materials[0] as? SimplePBRMaterial else {
-                    fatalError()
+                    fatalError("Failed to get material.")
                 }
                 return material
             }

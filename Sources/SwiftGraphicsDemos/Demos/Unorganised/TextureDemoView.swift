@@ -1,3 +1,4 @@
+import BaseSupport
 import CoreGraphicsSupport
 import MetalKit
 import MetalSupport
@@ -101,7 +102,7 @@ struct TextureView: View {
             renderPipelineDescriptor.vertexDescriptor = MTLVertexDescriptor(descriptor)
             let (renderPipelineState, reflection) = try device.makeRenderPipelineState(descriptor: renderPipelineDescriptor, options: [.bindingInfo])
             guard let reflection else {
-                fatalError()
+                throw BaseError.resourceCreationFailure
             }
 
             var bindings = Bindings()

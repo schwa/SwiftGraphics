@@ -1,3 +1,4 @@
+import BaseSupport
 import simd
 @testable import SIMDSupport
 import XCTest
@@ -17,7 +18,7 @@ final class CompendiumTests: XCTestCase {
         case ("1a", "2b", "3b"): print("Post-multiplication, Column-Major, Right-handed") // ***
         case ("1b", "2b", "3b"): print("Post-multiplication, Row-Major, Left-handed")
         default:
-            fatalError()
+            unreachable()
         }
     }
 

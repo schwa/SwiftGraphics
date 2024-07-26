@@ -1,3 +1,4 @@
+import BaseSupport
 import Metal
 
 public protocol MetalBindable {
@@ -7,7 +8,7 @@ public protocol MetalBindable {
 public extension MetalBindable {
     mutating func updateBindings(with reflection: MTLRenderPipelineReflection?) throws {
         guard let reflection else {
-            fatalError()
+            throw BaseError.resourceCreationFailure
         }
         for (name, functionType, keyPath) in Self.bindingMappings {
             switch functionType {
@@ -18,7 +19,7 @@ public extension MetalBindable {
                 let bindingIndex = try reflection.binding(for: name, of: .vertex)
                 self[keyPath: keyPath] = bindingIndex
             default:
-                fatalError()
+                throw BaseError.invalidParameter
             }
         }
     }

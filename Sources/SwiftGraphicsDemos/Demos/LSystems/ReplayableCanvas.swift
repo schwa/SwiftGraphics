@@ -1,3 +1,4 @@
+import BaseSupport
 import Observation
 import SwiftUI
 
@@ -73,31 +74,33 @@ struct ReplayableGraphicsContext: GraphicsContextProtocol2 {
     var environment: EnvironmentValues { .init() }
     var transform: CGAffineTransform = .identity
 
-    var clipBoundingRect: CGRect { fatalError() }
+    var clipBoundingRect: CGRect {
+        unimplemented()
+    }
 
     // swiftlint:disable:next unavailable_function
     mutating func clip(to path: Path, style: FillStyle, options: GraphicsContext.ClipOptions) {
-        fatalError()
+        unimplemented()
     }
 
     // swiftlint:disable:next unavailable_function
     mutating func clipToLayer(opacity: Double, options: GraphicsContext.ClipOptions, content: (inout GraphicsContext) throws -> Void) rethrows {
-        fatalError()
+        unimplemented()
     }
 
     // swiftlint:disable:next unavailable_function
     mutating func addFilter(_ filter: GraphicsContext.Filter, options: GraphicsContext.FilterOptions) {
-        fatalError()
+        unimplemented()
     }
 
     // swiftlint:disable:next unavailable_function
     func resolve(_ shading: GraphicsContext.Shading) -> GraphicsContext.Shading {
-        fatalError()
+        unimplemented()
     }
 
     // swiftlint:disable:next unavailable_function
     func drawLayer(content: (inout GraphicsContext) throws -> Void) rethrows {
-        fatalError()
+        unimplemented()
     }
 
     func fill(_ path: Path, with shading: GraphicsContext.Shading, style: FillStyle) {
