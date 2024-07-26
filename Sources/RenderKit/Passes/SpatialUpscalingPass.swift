@@ -1,4 +1,4 @@
-#if canImport(metalFX)
+#if !targetEnvironment(simulator)
 import BaseSupport
 @preconcurrency import MetalFX
 

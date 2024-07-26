@@ -28,6 +28,9 @@ extension LineSegment: Codable {
 extension LineSegment: Equatable {
 }
 
+extension LineSegment: Sendable {
+}
+
 // MARK: -
 
 public extension LineSegment {

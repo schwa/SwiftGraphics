@@ -580,7 +580,7 @@ extension Color: Codable {
 }
 
 @propertyWrapper
-struct CodableAppStorage<Value: Codable>: DynamicProperty {
+struct CodableAppStorage<Value>: DynamicProperty, Sendable where Value: Codable & Sendable {
     var key: String
 
     @State
@@ -619,6 +619,16 @@ struct CodableAppStorage<Value: Codable>: DynamicProperty {
             fatalError(error)
         }
     }
+
+    var projectedValue: Binding<Value> {
+        Binding<Value> {
+            wrappedValue
+        }
+        set: { newValue in
+            wrappedValue = newValue
+        }
+    }
+
 }
 
 extension CodableAppStorage where Value: ExpressibleByNilLiteral {
