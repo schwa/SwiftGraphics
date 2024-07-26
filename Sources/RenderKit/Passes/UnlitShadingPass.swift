@@ -3,7 +3,6 @@ import BaseSupport
 import MetalSupport
 import RenderKitShadersLegacy
 
-// TODO: Rename
 public struct UnlitMaterialX: MaterialProtocol {
     public var baseColorFactor: SIMD4<Float>
     public var baseColorTexture: MTLTexture?

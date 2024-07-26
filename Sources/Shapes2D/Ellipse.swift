@@ -77,19 +77,6 @@ public extension Ellipse {
         let origin = CGPoint(x: center.x - size.width * 0.5, y: center.y - size.height * 0.5)
         return CGRect(origin: origin, size: size)
     }
-
-    // TODO: FIXME
-    //    var boundingBox: CGRect {
-    //        let bezierCurves = toBezierCurves()
-    //        let rects = [
-    //            bezierCurves.0.boundingBox,
-    //            bezierCurves.1.boundingBox,
-    //            bezierCurves.2.boundingBox,
-    //            bezierCurves.3.boundingBox
-    //            ]
-    //
-    //        return CGRect.unionOfRects(rects)
-    //    }
 }
 
 public extension Ellipse {

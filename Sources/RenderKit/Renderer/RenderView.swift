@@ -96,7 +96,6 @@ public extension RenderView {
     }
 }
 
-// TODO: Replace with RendererCallbacks \.callbacks
 public extension EnvironmentValues {
     @Entry
     var rendererCallbacks: RendererCallbacks?

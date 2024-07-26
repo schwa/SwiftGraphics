@@ -9,7 +9,6 @@ struct QuadTreeConfig {
     let maximumObjectsPerNode: Int
 }
 
-// TODO: Make value type
 public class QuadTree<T> {
     public var frame: CGRect { rootNode!.frame }
     public var rootNode: QuadTreeNode<T>?
@@ -42,7 +41,6 @@ public class QuadTreeNode<T> {
     public let frame: CGRect
     let config: QuadTreeConfig
 
-    // TODO: this needs to be an enum
     public var subnodes: [QuadTreeNode] = []
     public lazy var items: [Item] = []
 

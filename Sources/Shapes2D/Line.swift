@@ -90,13 +90,6 @@ public extension Line {
     }
 }
 
-// TODO:
-// public extension Line {
-//    init(point: CGPoint, slope: Double) {
-//        fatalError()
-//    }
-// }
-
 public extension Line {
     // TODO: Unconfirmed/untested
     // [+X, 0] == 0°, clockwise
@@ -168,16 +161,6 @@ public extension Line {
         }
     }
 }
-
-// TODO:
-// public extension Line {
-//    func rotate(angle: Angle) -> Line {
-//        fatalError()
-//    }
-//
-//    func reflect(point: CGPoint) -> CGPoint {
-//    }
-// }
 
 // MARK: -
 
