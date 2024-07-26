@@ -1,5 +1,5 @@
 index_exclude:
-- Sources/ComputeTool/**
+- Sources/ComputeDemos/**
 - Sources/GaussianSplatDemos/**
 - Sources/GaussianSplatSupport/**
 - Sources/SwiftGraphicsDemos/**

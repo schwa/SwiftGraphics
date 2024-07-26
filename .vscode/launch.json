@@ -119,6 +119,30 @@
             "name": "Release SwiftGraphicsDemosCLI",
             "program": "${workspaceFolder:SwiftGraphics}/.build/release/SwiftGraphicsDemosCLI",
             "preLaunchTask": "swift: Build Release SwiftGraphicsDemosCLI"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "sourceLanguages": [
+                "swift"
+            ],
+            "args": [],
+            "cwd": "${workspaceFolder:SwiftGraphics}",
+            "name": "Debug ComputeDemos",
+            "program": "${workspaceFolder:SwiftGraphics}/.build/debug/ComputeDemos",
+            "preLaunchTask": "swift: Build Debug ComputeDemos"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "sourceLanguages": [
+                "swift"
+            ],
+            "args": [],
+            "cwd": "${workspaceFolder:SwiftGraphics}",
+            "name": "Release ComputeDemos",
+            "program": "${workspaceFolder:SwiftGraphics}/.build/release/ComputeDemos",
+            "preLaunchTask": "swift: Build Release ComputeDemos"
         }
     ]
 }
