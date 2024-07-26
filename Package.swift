@@ -506,6 +506,13 @@ let package = Package(
             ]
         ),
 
+        .testTarget(
+            name: "CoreGraphicsSupportTests",
+            dependencies: [
+                "CoreGraphicsSupport",
+            ]
+        ),
+
     ],
     swiftLanguageVersions: [.v6]
 )
