@@ -5,21 +5,18 @@ import SwiftUI
 
 public struct DecodingError: Error {}
 
-// TODO: Move
 public extension SIMD3 where Scalar == Float {
     func dot(_ other: Self) -> Float {
         simd_dot(self, other)
     }
 }
 
-// TODO: Move
 public extension SIMD2<Float> {
     init(length: Float, angle: Angle) {
         self = .init(x: cos(Float(angle.radians)) * length, y: sin(Float(angle.radians)) * length)
     }
 }
 
-// TODO: Move
 public extension SIMD3 where Scalar: BinaryFloatingPoint {
     init(xy: SIMD2<Scalar>) {
         self = SIMD3(xy[0], xy[1], 0)
@@ -46,5 +43,11 @@ public extension RollPitchYaw {
         roll.isApproximatelyEqual(to: other.roll, absoluteTolerance: absoluteTolerance)
             && pitch.isApproximatelyEqual(to: other.pitch, absoluteTolerance: absoluteTolerance)
             && yaw.isApproximatelyEqual(to: other.yaw, absoluteTolerance: absoluteTolerance)
+    }
+}
+
+public extension SIMD4 where Scalar == Float {
+    func clamped(to range: ClosedRange<Scalar>) -> Self {
+        [x.clamped(to: range), y.clamped(to: range), z.clamped(to: range), w.clamped(to: range)]
     }
 }

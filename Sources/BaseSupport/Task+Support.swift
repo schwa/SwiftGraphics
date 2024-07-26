@@ -6,7 +6,6 @@ public extension Task where Failure == Error {
         Task(priority: priority) {
             let delay = UInt64(delayInterval * 1_000_000_000)
             try await Task<Never, Never>.sleep(nanoseconds: delay)
-            // TODO: Check cancellation
             return try await operation()
         }
     }
@@ -21,7 +20,6 @@ public extension Task where Failure == Error {
                     continuation.resume()
                 }
             }
-            // TODO: Check cancellation
             return try await operation()
         }
     }

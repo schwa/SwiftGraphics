@@ -55,8 +55,6 @@ extension CGPoint: CompositeLerpable {
 extension CGSize: CompositeLerpable {
     public typealias Factor = CGFloat
 
-    // TODO: Move
-
     public static let unit = CGSize(width: 1, height: 1)
 }
 

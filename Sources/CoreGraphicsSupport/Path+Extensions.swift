@@ -220,7 +220,6 @@ public extension Path {
 }
 
 public extension Path {
-    // TODO: Replace with function that we can control how we handle curves...
     var polygonalChains: [[CGPoint]] {
         var polygons: [[CGPoint]] = []
         var current: [CGPoint] = []

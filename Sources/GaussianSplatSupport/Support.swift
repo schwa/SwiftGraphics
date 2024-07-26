@@ -6,10 +6,6 @@ import SIMDSupport
 
 // swiftlint:disable force_unwrapping
 
-// TODO: FIXME
-// typealias PackedHalf3 = simd_packed_float3
-// typealias PackedHalf4 = simd_packed_float4
-
 public func max(lhs: PackedFloat3, rhs: PackedFloat3) -> PackedFloat3 {
     [max(lhs[0], rhs[0]), max(lhs[1], rhs[1]), max(lhs[2], rhs[2])]
 }
@@ -83,7 +79,6 @@ public extension MTLDevice {
     }
 }
 
-// TODO: Unchecked sendable.
 public struct TypedMTLBuffer<T>: Equatable {
     // TODO: Make private.
     public var base: MTLBuffer
@@ -122,9 +117,9 @@ public extension TypedMTLBuffer {
 
 extension MTLRenderCommandEncoder {
     // TODO: Offset
-    func setVertexBuffer <T>(_ buffer: TypedMTLBuffer<T>, index: Int) {
+    func setVertexBuffer <T>(_ buffer: TypedMTLBuffer<T>, offset: Int, index: Int) {
         buffer.withMTLBuffer {
-            setVertexBuffer($0, offset: 0, index: index)
+            setVertexBuffer($0, offset: offset * MemoryLayout<T>.stride, index: index)
         }
     }
 

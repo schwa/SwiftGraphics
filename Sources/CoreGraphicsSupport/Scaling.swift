@@ -1,7 +1,5 @@
 import CoreGraphics
 
-// TODO: Move to Everythung - make generic?
-
 // MARK: Scaling and alignment.
 
 public enum Scaling {

@@ -24,3 +24,10 @@ public extension CGColor {
         }
     }
 }
+
+public func wrap(_ point: CGPoint, to rect: CGRect) -> CGPoint {
+    CGPoint(
+        x: wrap(point.x, to: rect.minX ... rect.maxX),
+        y: wrap(point.y, to: rect.minY ... rect.maxY)
+    )
+}

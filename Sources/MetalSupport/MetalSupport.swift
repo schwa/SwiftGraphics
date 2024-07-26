@@ -11,9 +11,6 @@ import ModelIO
 import os
 import simd
 
-// TODO: This file is a mess.
-// TODO: Take note of the deprecations here.
-
 public extension MTKMesh {
     func labelBuffers(_ label: String) {
         for (index, buffer) in vertexBuffers.enumerated() {
