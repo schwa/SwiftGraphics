@@ -29,6 +29,7 @@ let source = #"""
 """#
 
 struct Reduce {
+    // swiftlint:disable:next force_unwrapping
     let device = MTLCreateSystemDefaultDevice()!
 
     func main() throws {

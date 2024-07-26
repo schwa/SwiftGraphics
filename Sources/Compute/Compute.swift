@@ -78,7 +78,10 @@ public extension Compute {
             //            computePipelineDescriptor.threadGroupSizeIsMultipleOfThreadExecutionWidth = false
             computePipelineDescriptor.computeFunction = function
             let (computePipelineState, reflection) = try device.makeComputePipelineState(descriptor: computePipelineDescriptor, options: [.bindingInfo])
-            bindings = Dictionary(uniqueKeysWithValues: reflection!.bindings.map { binding in
+            guard let reflection else {
+                throw ComputeError.resourceCreationFailure
+            }
+            bindings = Dictionary(uniqueKeysWithValues: reflection.bindings.map { binding in
                 (binding.name, binding.index)
             })
 
@@ -128,13 +131,19 @@ public extension Compute {
         public static func int(_ value: some BinaryInteger) -> Self {
             Self { encoder, index in
                 withUnsafeBytes(of: value) { buffer in
-                    encoder.setBytes(buffer.baseAddress!, length: buffer.count, index: index)
+                    guard let baseAddress = buffer.baseAddress else {
+                        fatalError("Could not get baseAddress.")
+                    }
+                    encoder.setBytes(baseAddress, length: buffer.count, index: index)
                 }
             }
             constantValue: { constants, name in
                 withUnsafeBytes(of: value) { buffer in
+                    guard let baseAddress = buffer.baseAddress else {
+                        fatalError("Could not get baseAddress.")
+                    }
                     // TODO: may not be .int if T isn't Int32
-                    constants.setConstantValue(buffer.baseAddress!, type: .int, withName: name)
+                    constants.setConstantValue(baseAddress, type: .int, withName: name)
                 }
             }
         }
@@ -142,12 +151,18 @@ public extension Compute {
         public static func bool(_ value: Bool) -> Self {
             Self { encoder, index in
                 withUnsafeBytes(of: value) { buffer in
-                    encoder.setBytes(buffer.baseAddress!, length: buffer.count, index: index)
+                    guard let baseAddress = buffer.baseAddress else {
+                        fatalError("Could not get baseAddress.")
+                    }
+                    encoder.setBytes(baseAddress, length: buffer.count, index: index)
                 }
             }
             constantValue: { constants, name in
                 withUnsafeBytes(of: value) { buffer in
-                    constants.setConstantValue(buffer.baseAddress!, type: .bool, withName: name)
+                    guard let baseAddress = buffer.baseAddress else {
+                        fatalError("Could not get baseAddress.")
+                    }
+                    constants.setConstantValue(baseAddress, type: .bool, withName: name)
                 }
             }
         }

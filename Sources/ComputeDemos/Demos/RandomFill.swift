@@ -1,3 +1,4 @@
+#if os(macOS)
 import AppKit
 import BaseSupport
 import Compute
@@ -87,3 +88,4 @@ func testPixelFormats() throws {
         _ = try CGContext.bitmapContext(data: data, definition: .init(width: texture.width, height: texture.height, bytesPerRow: bytesPerRow, pixelFormat: pixelFormat2))
     }
 }
+#endif

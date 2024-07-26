@@ -10,7 +10,6 @@ import SIMDSupport
 // typealias PackedHalf3 = simd_packed_float3
 // typealias PackedHalf4 = simd_packed_float4
 
-
 public func max(lhs: PackedFloat3, rhs: PackedFloat3) -> PackedFloat3 {
     [max(lhs[0], rhs[0]), max(lhs[1], rhs[1]), max(lhs[2], rhs[2])]
 }

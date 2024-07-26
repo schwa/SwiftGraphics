@@ -7,7 +7,9 @@ public struct ShaderLibrary: Sendable {
     public static func bundle(_ bundle: Bundle, name: String? = nil) -> Self {
         Self { device in
             if let name {
-                let url = bundle.url(forResource: name, withExtension: "metallib")!
+                guard let url = bundle.url(forResource: name, withExtension: "metallib") else {
+                    fatalError("Could not load metallib.")
+                }
                 let library = try device.makeLibrary(URL: url)
                 library.label = "\(name).MTLLibrary"
                 return library
@@ -69,7 +71,10 @@ public struct ShaderConstant {
         self.dataType = dataType
         accessor = { (callback: (UnsafeRawPointer) -> Void) in
             value.withUnsafeBytes { pointer in
-                callback(pointer.baseAddress!)
+                guard let baseAddress = pointer.baseAddress else {
+                    fatalError("Could not get baseAddress.")
+                }
+                callback(baseAddress)
             }
         }
     }
@@ -78,7 +83,10 @@ public struct ShaderConstant {
         self.dataType = dataType
         accessor = { (callback: (UnsafeRawPointer) -> Void) in
             withUnsafeBytes(of: value) { pointer in
-                callback(pointer.baseAddress!)
+                guard let baseAddress = pointer.baseAddress else {
+                    fatalError("Could not get baseAddress.")
+                }
+                callback(baseAddress)
             }
         }
     }
