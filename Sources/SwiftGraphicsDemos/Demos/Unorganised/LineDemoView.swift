@@ -4,7 +4,7 @@ import SwiftFormats
 import SwiftUI
 
 struct LineDemoView: View, DemoView {
-    struct Element: Identifiable, Codable {
+    struct Element: Identifiable, Codable, Sendable {
         var id: String = UUID().uuidString
         var lineSegment: LineSegment
         var color: Color

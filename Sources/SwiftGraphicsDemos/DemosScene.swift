@@ -1,3 +1,4 @@
+import BaseSupport
 import Everything
 import GaussianSplatDemos
 import os
@@ -53,6 +54,7 @@ struct Demo: Hashable {
 
 struct DemosView: View {
     @State
+//    @CodableAppStorage("CurrentDemo")
     private var currentDemo: Demo?
 
     var body: some View {

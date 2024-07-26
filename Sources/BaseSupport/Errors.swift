@@ -14,6 +14,7 @@ public enum BaseError: Error {
     case encodingFailure
     case missingResource
     case extended(Error, String)
+    case decodingFailure
 }
 
 public func fatalError(_ error: Error) -> Never {
