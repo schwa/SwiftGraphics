@@ -159,10 +159,6 @@ public struct IntRectSequence: Sequence {
 }
 
 public extension IntRect {
-    init(minX: Int, minY: Int, maxX: Int, maxY: Int) {
-        self.init(origin: .init(x: minX, y: minY), size: .init(width: maxX - minX + 1, height: maxY - minY + 1))
-    }
-
     var scalars: [Int] {
         [origin.x, origin.y, size.width, size.height]
     }
