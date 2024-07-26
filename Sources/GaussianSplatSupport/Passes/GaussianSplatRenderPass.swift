@@ -49,7 +49,7 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
         let library = try device.makeDebugLibrary(bundle: .gaussianSplatShaders)
         let renderPipelineDescriptor = renderPipelineDescriptor()
         renderPipelineDescriptor.label = "\(type(of: self))"
-        renderPipelineDescriptor.vertexDescriptor = MTLVertexDescriptor(oneTrueVertexDescriptor)
+        renderPipelineDescriptor.vertexDescriptor = MTLVertexDescriptor(MDLVertexDescriptor.simpleVertexDescriptor)
         renderPipelineDescriptor.vertexFunction = try library.makeFunction(name: "GaussianSplatShaders::VertexShader", constantValues: constantValues)
         renderPipelineDescriptor.fragmentFunction = try library.makeFunction(name: "GaussianSplatShaders::FragmentShader", constantValues: constantValues)
 

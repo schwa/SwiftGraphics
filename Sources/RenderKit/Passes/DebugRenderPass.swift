@@ -2,6 +2,7 @@ import BaseSupport
 @preconcurrency import Metal
 import MetalKit
 import MetalSupport
+import ModelIO
 import Observation
 import RenderKitShadersLegacy
 import simd
@@ -16,7 +17,7 @@ public struct DebugRenderPass: RenderPassProtocol {
     public var clipspaceOffset: SIMD3<Float> = .zero
     public var scene: SceneGraph
 
-    let vertexDescriptor = MTLVertexDescriptor(oneTrueVertexDescriptor)
+    let vertexDescriptor = MTLVertexDescriptor(MDLVertexDescriptor.simpleVertexDescriptor)
 
     public struct State: PassState {
         var depthStencilState: MTLDepthStencilState

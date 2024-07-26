@@ -18,7 +18,7 @@ public struct DiffuseMaterial: MaterialProtocol {
 public struct DiffuseShadingRenderPass: RenderPassProtocol {
     public var id: PassID = "SceneGraph3RenderPass"
     public var scene: SceneGraph
-    let vertexDescriptor = MTLVertexDescriptor(oneTrueVertexDescriptor)
+    let vertexDescriptor = MTLVertexDescriptor(MDLVertexDescriptor.simpleVertexDescriptor)
     let lightAmbientColor = CGColor(gray: 1.0, alpha: 1.0)
     let lightDiffuseColor = CGColor(gray: 1.0, alpha: 1.0)
     let lightPosition: SIMD3<Float> = [0, 10, 0]
