@@ -6,6 +6,21 @@ public protocol MetalBindable {
 }
 
 public extension MetalBindable {
+    mutating func updateBindings(with reflection: MTLComputePipelineReflection?) throws {
+        guard let reflection else {
+            fatalError()
+        }
+        for (name, functionType, keyPath) in Self.bindingMappings {
+            switch functionType {
+            case .kernel, nil:
+                let bindingIndex = try reflection.binding(for: name)
+                self[keyPath: keyPath] = bindingIndex
+            default:
+                fatalError()
+            }
+        }
+    }
+
     mutating func updateBindings(with reflection: MTLRenderPipelineReflection?) throws {
         guard let reflection else {
             throw BaseError.resourceCreationFailure
