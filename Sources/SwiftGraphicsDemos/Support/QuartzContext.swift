@@ -1,3 +1,4 @@
+import BaseSupport
 import SwiftUI
 
 // TODO: This @preconcurrency is weird.
@@ -90,7 +91,7 @@ struct QuartzContext: GraphicsContextProtocol {
 
     // swiftlint:disable:next unavailable_function
     mutating func clipToLayer(opacity: Double, options: ClipOptions, content: (inout Self) throws -> Void) rethrows {
-        fatalError("Unimplemented") // TODO: Unimplemented
+        unimplemented() // TODO: Unimplemented
     }
 
     func drawLayer(content: (inout Self) throws -> Void) rethrows {

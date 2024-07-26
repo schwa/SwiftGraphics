@@ -1,3 +1,4 @@
+import BaseSupport
 import Foundation
 import GenericGeometryBase
 
@@ -117,7 +118,7 @@ extension Array2D: MutableCollection {
 extension Array2D: BidirectionalCollection {
     // swiftlint:disable:next unavailable_function
     public func index(before i: Index) -> Index {
-        fatalError("Unimplemented")
+        unimplemented()
     }
 }
 

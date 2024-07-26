@@ -1,4 +1,5 @@
 import Accelerate
+import BaseSupport
 import CoreGraphics
 
 #if os(macOS)
@@ -13,7 +14,7 @@ public extension NSImage {
 
     var cgImage: CGImage {
         guard let cgImage = cgImage(forProposedRect: nil, context: nil, hints: nil) else {
-            fatalError("Unimplemented")
+            unimplemented()
         }
         return cgImage
     }

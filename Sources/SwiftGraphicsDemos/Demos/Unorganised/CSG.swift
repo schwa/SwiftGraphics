@@ -200,7 +200,7 @@ class CSGNode<Vertex> where Vertex: VertexLike {
     // swiftlint:disable:next unavailable_function
     func clip(polygons: [Polygon]) -> [Polygon] {
         // TODO: FIXME
-        fatalError("Unimplemented")
+        unimplemented()
         //        guard let plane else {
         //            return []
         //        }
@@ -309,7 +309,7 @@ extension Polygon3D where Vertex == SimpleVertex {
         case .back:
             back.append(self)
         case .spanning:
-            fatalError("Unimplemented")
+            unimplemented()
         // TODO: FIXME
 
         //            var f: [Vertex] = []

@@ -679,7 +679,7 @@ extension MTLStepFunction: @retroactive CustomStringConvertible {
         case .perInstance:
             "perInstance"
         default:
-            fatalError("unimplemented")
+            unimplemented()
         }
     }
 }

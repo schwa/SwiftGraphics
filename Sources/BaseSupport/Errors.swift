@@ -7,6 +7,11 @@ public enum BaseError: Error {
     case unknown
     case missingValue
     case typeMismatch
+    case inputOutputFailure
+    case invalidParameter
+    case parsingFailure
+    case encodingFailure
+    case extended(Error, String)
 }
 
 public func fatalError(_ error: Error) -> Never {

@@ -58,7 +58,7 @@ extension MDLMesh {
     var positions: [PackedFloat3] {
         get throws {
             guard let attribute = vertexDescriptor.attributes.compactMap({ $0 as? MDLVertexAttribute }).first(where: { $0.name == MDLVertexAttributePosition }) else {
-                throw BaseError.generic("MDLMesh does not specify positions attribute.")
+                throw BaseError.invalidParameter
             }
             guard attribute.format == .float3 else {
                 throw BaseError.typeMismatch
@@ -84,7 +84,7 @@ extension MDLMesh {
     var normals: [PackedFloat3] {
         get throws {
             guard let attribute = vertexDescriptor.attributes.compactMap({ $0 as? MDLVertexAttribute }).first(where: { $0.name == MDLVertexAttributeNormal }) else {
-                throw BaseError.generic("MDLMesh does not specify normals attribute.")
+                throw BaseError.invalidParameter
             }
             guard attribute.format == .float3 else {
                 throw BaseError.typeMismatch

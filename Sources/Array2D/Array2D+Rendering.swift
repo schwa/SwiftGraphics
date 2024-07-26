@@ -1,4 +1,5 @@
 import Algorithms
+import BaseSupport
 import CoreGraphics
 import CoreGraphicsSupport
 import CoreGraphicsUnsafeConformances
@@ -83,7 +84,7 @@ public extension Array2D where Element == SIMD4<UInt8> {
         let colorspace = CGColorSpaceCreateDeviceRGB()
         let bitmapInfo = CGBitmapInfo(alphaInfo: .premultipliedLast, byteOrderInfo: CGImageByteOrderInfo.order32Big, useFloatComponents: false)
         guard let context = CGContext(data: nil, width: size.width, height: size.height, bitsPerComponent: 8, bytesPerRow: MemoryLayout<Element>.size * size.width, space: colorspace, bitmapInfo: bitmapInfo.rawValue) else {
-            fatalError("Unimplemented")
+            unimplemented()
         }
         context.setAllowsAntialiasing(false)
         context.draw(cgImage, in: CGRect(width: CGFloat(size.width), height: CGFloat(size.height)))
@@ -102,10 +103,10 @@ public extension Array2D where Element == SIMD4<UInt8> {
         return flatStorage.withUnsafeBytes { bytes in
             let bytes = UnsafeMutableRawPointer(mutating: bytes.baseAddress)
             guard let context = CGContext(data: bytes, width: size.width, height: size.height, bitsPerComponent: 8, bytesPerRow: MemoryLayout<Element>.size * size.width, space: colorspace, bitmapInfo: bitmapInfo.rawValue) else {
-                fatalError("Unimplemented")
+                unimplemented()
             }
             guard let image = context.makeImage() else {
-                fatalError("Unimplemented")
+                unimplemented()
             }
             return image
         }

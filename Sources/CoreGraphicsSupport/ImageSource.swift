@@ -73,7 +73,7 @@ import AppKit
 public extension CGImage {
     static func image(contentsOf url: URL) throws -> CGImage {
         guard let nsImage = NSImage(contentsOf: url) else {
-            throw BaseError.generic("URL not found: \(url)")
+            throw BaseError.inputOutputFailure
         }
         return nsImage.cgImage
     }
@@ -86,7 +86,7 @@ public extension CGImage {
     @available(*, unavailable)
     static func image(contentsOf url: URL) throws -> CGImage {
         // TODO:
-        fatalError("Unimplemented")
+        unimplemented()
     }
 }
 #endif // os(macOS)
