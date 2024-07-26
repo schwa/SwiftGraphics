@@ -60,44 +60,47 @@ struct DemosView: View {
     var body: some View {
         NavigationSplitView {
             List(selection: $currentDemo) {
-                row(for: GaussianSplatMinimalView.self)
-                row(for: GaussianSplatView.self)
-                row(for: SplatCloudInfoView.self)
-                row(for: SingleSplatView.self)
-                row(for: SimplePBRSceneGraphDemoView.self)
-                row(for: TriangleReflectionView.self)
-                row(for: QuasiRandomTriangleView.self)
-                row(for: PointCloudView.self)
-                row(for: PointCloudSoftwareRenderView.self)
-                group(named: "Current") {
-                    row(for: HalfEdge3DDemoView.self)
-                    row(for: HalfEdge2DDemoView.self)
+                group(named: "Gaussian Splat") {
+                    row(for: GaussianSplatMinimalView.self)
+                    row(for: GaussianSplatView.self)
+                    row(for: SplatCloudInfoView.self)
+                    row(for: SingleSplatView.self)
                 }
                 group(named: "RenderKit") {
+                    // TODO: All failing right now
+                    row(for: PointCloudView.self)
                     row(for: SceneGraphDemoView.self)
+                    row(for: SimplePBRSceneGraphDemoView.self)
                     row(for: VolumetricRendererDemoView.self)
                 }
                 group(named: "Software Renderers") {
                     row(for: SoftwareRendererBoxesDemoView.self)
                     row(for: SoftwareRendererMeshDemoView.self)
+                    row(for: PointCloudSoftwareRenderView.self)
                 }
-                group(named: "Unorganized") {
-                    row(for: TextureDemoView.self)
-                    row(for: ShaderTestDemoView.self)
-                    row(for: Particles2DemoView.self)
+                group(named: "Unorganized", disclosed: false) {
                     row(for: AngleDemoView.self)
                     row(for: BeziersDemoView.self)
-                    row(for: CSGDemoView.self)
                     row(for: CustomStrokeEditorDemoView.self)
+                    row(for: FieldsTestBedView.self)
+                    row(for: HalfEdge2DDemoView.self)
+                    row(for: HalfEdge3DDemoView.self)
                     row(for: HobbyCurveDemoView.self)
-                    row(for: LineDemoView.self)
                     row(for: PixelFormatsDemoView.self)
+                    row(for: Particles2DemoView.self)
+                    row(for: QuasiRandomTriangleView.self)
+                    row(for: ShaderTestDemoView.self)
                     row(for: ShapesDemoView.self)
                     row(for: SimulationDemoView.self)
                     row(for: SketchDemoView.self)
                     row(for: SplineDemoView.self)
+                    row(for: TriangleReflectionView.self)
                 }
-                row(for: FieldsTestBedView.self)
+                group(named: "Failing", disclosed: false) {
+                    row(for: CSGDemoView.self)  // TODO: Broken
+                    row(for: LineDemoView.self) // TODO: Broken
+                    row(for: TextureDemoView.self) // TODO: Broken
+                }
             }
         } detail: {
             ZStack {
@@ -121,9 +124,9 @@ struct DemosView: View {
     }
 
     @ViewBuilder
-    func group<Content>(named name: String, @ViewBuilder content: () -> Content) -> some View where Content: View {
+    func group<Content>(named name: String, disclosed: Bool = true, @ViewBuilder content: () -> Content) -> some View where Content: View {
         let content = content()
-        ValueView(value: true) { isExpanded in
+        ValueView(value: disclosed) { isExpanded in
             DisclosureGroup(isExpanded: isExpanded) {
                 content
             } label: {
