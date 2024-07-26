@@ -190,8 +190,6 @@ public extension SceneGraph {
     }
 }
 
-
-
 // MARK: -
 
 public extension Binding where Value == SceneGraph {

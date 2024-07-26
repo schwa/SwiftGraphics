@@ -9,7 +9,7 @@ public struct DemosScene: Scene {
     }
 
     public var body: some Scene {
-#if os(macOS)
+        #if os(macOS)
         Window("Demos", id: "demos") {
             DemosView()
         }
@@ -17,11 +17,11 @@ public struct DemosScene: Scene {
             SidebarCommands()
             ToolbarCommands()
         }
-#else
+        #else
         WindowGroup("Demos", id: "demos") {
             DemosView()
         }
-#endif
+        #endif
     }
 }
 
@@ -100,7 +100,7 @@ struct DemosView: View {
         } detail: {
             ZStack {
                 if let currentDemo {
-                    AnyView(currentDemo.type.init())//.id(currentDemo)
+                    AnyView(currentDemo.type.init())// .id(currentDemo)
                 }
             }
             .logger(Logger())
