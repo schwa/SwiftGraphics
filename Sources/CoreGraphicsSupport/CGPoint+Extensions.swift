@@ -211,7 +211,7 @@ public extension CGPoint {
 
     // Returns the angle between this vector and another vector 'vec'.
     // The result sign indicates the rotation direction from this vector to 'vec': positive for counter-clockwise, negative for clockwise.
-    // TODO: UNITTEST ME
+    // TODO: UNIT TEST ME
     func angle(to other: Self) -> Angle { // [-M_PI, M_PI)
         .radians(atan2(crossProduct(self, other), dotProduct(self, other)))
     }

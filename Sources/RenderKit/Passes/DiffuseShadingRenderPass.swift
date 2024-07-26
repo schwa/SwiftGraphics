@@ -4,19 +4,18 @@ import MetalSupport
 import RenderKitShadersLegacy
 import SwiftUI
 
-public struct DiffuseShadingRenderPass: RenderPassProtocol {
-    // TODO: Move out
-    public struct Material: MaterialProtocol {
-        // TODO: Repalce with SIMD4
-        var diffuseColor: CGColor
-        var ambientColor: CGColor
+public struct DiffuseMaterial: MaterialProtocol {
+    // IDEA: Replace with SIMD4
+    var diffuseColor: CGColor
+    var ambientColor: CGColor
 
-        public init(diffuseColor: CGColor = .init(gray: 0, alpha: 1), ambientColor: CGColor = .init(gray: 0, alpha: 1)) {
-            self.diffuseColor = diffuseColor
-            self.ambientColor = ambientColor
-        }
+    public init(diffuseColor: CGColor = .init(gray: 0, alpha: 1), ambientColor: CGColor = .init(gray: 0, alpha: 1)) {
+        self.diffuseColor = diffuseColor
+        self.ambientColor = ambientColor
     }
+}
 
+public struct DiffuseShadingRenderPass: RenderPassProtocol {
     public var id: PassID = "SceneGraph3RenderPass"
     public var scene: SceneGraph
     let vertexDescriptor = MTLVertexDescriptor(oneTrueVertexDescriptor)
@@ -61,7 +60,7 @@ public struct DiffuseShadingRenderPass: RenderPassProtocol {
                 let lightDiffuseColor = lightDiffuseColor.simd.xyz
 
                 for element in elements {
-                    guard let geometry = element.node.geometry, let material = geometry.materials.compactMap({ $0 as? Material }).first else {
+                    guard let geometry = element.node.geometry, let material = geometry.materials.compactMap({ $0 as? DiffuseMaterial }).first else {
                         continue
                     }
 

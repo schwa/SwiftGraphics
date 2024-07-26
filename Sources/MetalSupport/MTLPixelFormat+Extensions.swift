@@ -4,7 +4,7 @@ import CoreGraphicsSupport
 import Metal
 
 public extension MTLPixelFormat {
-    // TODO: CGColorSpaceCreateLinearized?
+    // IDEA: Use CGColorSpaceCreateLinearized?
     var colorSpace: CGColorSpace? {
         let deviceRGB = CGColorSpaceCreateDeviceRGB()
         let sRGB = CGColorSpace(name: CGColorSpace.sRGB)
@@ -151,8 +151,6 @@ public extension MTLPixelFormat {
 }
 
 public extension PixelFormat {
-    // TODO: Test endianness. // TODO: This is clearly very broken and desparately needs offscreen rendering unit tests.
-    // swiftlint:disable:next cyclomatic_complexity
     init?(_ pixelFormat: MTLPixelFormat) {
         guard let colorSpace = pixelFormat.colorSpace else {
             return nil

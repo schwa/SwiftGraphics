@@ -23,7 +23,6 @@ public extension CGSize {
             assert(newValue.count == 2)
             (self.width, self.height) = (newValue[0], newValue[1])
         }
-
     }
 }
 
@@ -127,12 +126,9 @@ public extension CGSize {
         var rng = SystemRandomNumberGenerator()
         return random(width: width, height: height, using: &rng)
     }
-
-    // TODO: It doesn't really make any sense to have other RNG methods on CGSize?
 }
 
-// TODO: Move elsewhere? Rename AreaOrientation?
-public enum Orientation {
+public enum AreaOrientation {
     case square
     case landscape
     case portrait
@@ -143,7 +139,7 @@ public extension CGSize {
         width / height
     }
 
-    var orientation: Orientation {
+    var orientation: AreaOrientation {
         if abs(width) > abs(height) {
             .landscape
         }

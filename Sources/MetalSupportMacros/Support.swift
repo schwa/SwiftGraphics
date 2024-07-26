@@ -22,7 +22,7 @@ extension Match {
 
 extension SyntaxProtocol {
     func match(path: [Match], viewMode: SyntaxTreeViewMode) -> [SyntaxProtocol] {
-        // TODO: Match self.
+        // IDEA: Match self.
         guard let matcher = path.first else {
             return []
         }

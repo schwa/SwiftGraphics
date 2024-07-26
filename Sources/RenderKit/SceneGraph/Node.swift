@@ -38,14 +38,15 @@ public struct Node: Identifiable, Sendable, Equatable {
 
     public var content: (Content)? {
         didSet {
-            generation += 1
+            changeCount += 1
         }
     }
 
-    public var generation: Int = 0 // TODO: Rename to changeCount
+    public var changeCount: Int = 0
 
+    // IDEA: Rename
     public var generationID: AnyHashable {
-        Pair(id, generation)
+        Pair(id, changeCount)
     }
 
     public init(label: String = "", transform: Transform = .identity, content: (Content)? = nil, children: [Self] = []) {
@@ -59,13 +60,13 @@ public struct Node: Identifiable, Sendable, Equatable {
 
     public mutating func updateGeneration<T>(new: T, old: T) where T: Equatable {
         if new != old {
-            generation += 1
+            changeCount += 1
         }
     }
 
     public mutating func updateGeneration<T>(new: T?, old: T?) where T: Equatable {
         if new != old {
-            generation += 1
+            changeCount += 1
         }
     }
 

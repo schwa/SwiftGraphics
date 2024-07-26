@@ -1,7 +1,6 @@
 import BaseSupport
 import GenericGeometryBase
 
-// TODO: Reduce Storage requirements.
 public struct Accessor2D<Storage> where Storage: RandomAccessCollection & MutableCollection, Storage.Index == Int {
     public private(set) var size: IntSize
 

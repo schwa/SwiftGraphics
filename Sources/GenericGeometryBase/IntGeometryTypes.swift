@@ -158,13 +158,11 @@ public struct IntRectSequence: Sequence {
     }
 }
 
-// TODO: Move
 public extension IntRect {
     init(minX: Int, minY: Int, maxX: Int, maxY: Int) {
         self.init(origin: .init(x: minX, y: minY), size: .init(width: maxX - minX + 1, height: maxY - minY + 1))
     }
 
-    // TODO: Move (maybe put in Rect)
     var scalars: [Int] {
         [origin.x, origin.y, size.width, size.height]
     }

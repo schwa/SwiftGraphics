@@ -117,7 +117,7 @@ public extension Compute {
             }
             set {
                 arguments[name] = newValue
-                // TODO: it would be nice to assign name as a label to buffers/textures that have no name.
+                // IDEA: it would be nice to assign name as a label to buffers/textures that have no name.
             }
         }
     }
@@ -138,11 +138,11 @@ public extension Compute {
                 }
             }
             constantValue: { constants, name in
+                assert(MemoryLayout.size(ofValue: value) == MemoryLayout<Int32>.size)
                 withUnsafeBytes(of: value) { buffer in
                     guard let baseAddress = buffer.baseAddress else {
                         fatalError("Could not get baseAddress.")
                     }
-                    // TODO: may not be .int if T isn't Int32
                     constants.setConstantValue(baseAddress, type: .int, withName: name)
                 }
             }

@@ -81,21 +81,6 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
     }
 
     mutating func render(commandBuffer: MTLCommandBuffer, currentRenderPassDescriptor: MTLRenderPassDescriptor, drawableSize: SIMD2<Float>) throws {
-        //        gpuCounters
-        //
-        //                if let gpuCounters {
-        //                    // TODO: FIXME these over-write any callbacks passed in
-        //                    callbacks.renderCompleted = { _ in
-        //                        try! gpuCounters.gatherData()
-        //                    }
-        //                    callbacks.prePass = { _, _, passInfo in
-        //                        guard let renderPassDescriptor = passInfo.currentRenderPassDescriptor else {
-        //                            fatalError("Could not get current render pass descriptor.")
-        //                        }
-        //                        gpuCounters.updateRenderPassDescriptor(renderPassDescriptor)
-        //                    }
-        //                }
-
         guard phase == .configured(sizeKnown: true) || phase == .rendering else {
             logger?.debug("Renderer not configured, skipping render.")
             return
@@ -143,7 +128,7 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
             gpuCounters?.updateRenderPassDescriptor(renderPassDescriptor)
             switch pass {
             case let pass as any RenderPassProtocol:
-                // TODO: FIXME. this is still not right.
+                // TODO: IMPORTANT. this is still not right.
                 //                let isFirst = pass.id == renderPasses.first?.id
                 //                let isLast = pass.id == renderPasses.last?.id
                 //                if isFirst {

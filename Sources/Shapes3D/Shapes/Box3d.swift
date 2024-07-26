@@ -96,7 +96,7 @@ extension Box3D: MDLMeshConvertable {
         }
 
         public func convert(_ box: Box3D) throws -> MDLMesh {
-            // TODO: FIXME - box isn't centered at correct lcoation
+            // TODO: box isn't centered at correct lcoation
             let mesh = MDLMesh(boxWithExtent: [box.max.x - box.min.x, box.max.y - box.min.y, box.max.z - box.min.z], segments: SIMD3(segments.map(UInt32.init)), inwardNormals: inwardNormals, geometryType: geometryType, allocator: allocator)
             if flippedTextureCoordinates {
                 mesh.flipTextureCoordinates(inAttributeNamed: "textureCoordinate")

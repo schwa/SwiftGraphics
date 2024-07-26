@@ -152,7 +152,7 @@ class CSGNode<Vertex> where Vertex: VertexLike {
     // nodes there. Each set of polygons is partitioned using the first polygon
     // (no heuristic is used to pick a good split).
     func insert(polygons: [Polygon]) {
-        temporarilyDisabled() // TODO: FIXME
+        temporarilyDisabled() // TODO:
         //        if polygons.isEmpty {
         //            return
         //        }
@@ -188,7 +188,7 @@ class CSGNode<Vertex> where Vertex: VertexLike {
 
     // Convert solid space to empty space and empty space to solid space.
     func invert() {
-        temporarilyDisabled() // TODO: FIXME
+        temporarilyDisabled() // TODO:
         //        polygons = polygons.map { $0.flipped() }
         //        plane!.flip()
         //        front?.invert()
@@ -198,7 +198,7 @@ class CSGNode<Vertex> where Vertex: VertexLike {
 
     // Recursively remove all polygons in `polygons` that are inside this BSP tree.
     func clip(polygons: [Polygon]) -> [Polygon] {
-        // TODO: FIXME
+        // TODO:
         unimplemented()
         //        guard let plane else {
         //            return []
@@ -309,7 +309,7 @@ extension Polygon3D where Vertex == SimpleVertex {
             back.append(self)
         case .spanning:
             unimplemented()
-        // TODO: FIXME
+        // TODO:
 
         //            var f: [Vertex] = []
         //            var b: [Vertex] = []
@@ -323,7 +323,7 @@ extension Polygon3D where Vertex == SimpleVertex {
         //                    b.append(vi)
         //                }
         //                temporarilyDisabled()
-        //                // TODO: FIXME
+        //                // TODO:
         // //                if ti | tj == .spanning {
         // //                    let t = (splitter.w - splitter.normal.dot(vi.position)) / splitter.normal.dot(vj.position - vi.position)
         // //                    let v = vi.interpolate(vj, t)
