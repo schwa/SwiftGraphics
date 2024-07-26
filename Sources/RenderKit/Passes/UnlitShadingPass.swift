@@ -54,7 +54,7 @@ public struct UnlitShadingPass: RenderPassProtocol {
 
         let (renderPipelineState, reflection) = try device.makeRenderPipelineState(descriptor: renderPipelineDescriptor, options: [.bindingInfo])
         guard let reflection else {
-            fatalError("No reflection for render pipeline.")
+            throw BaseError.resourceCreationFailure
         }
         let bindings = State.Bindings(
             vertexBufferIndex: try reflection.binding(for: "vertexBuffer.0", of: .vertex),

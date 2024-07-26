@@ -1,3 +1,4 @@
+import BaseSupport
 import MetalUISupport
 import ModelIO
 import Observation
@@ -64,7 +65,7 @@ public struct RenderView: View {
         } draw: { _, _, size, currentDrawable, currentRenderPassDescriptor in
             do {
                 guard let commandQueue else {
-                    fatalError("No command queue")
+                    throw BaseError.missingValue
                 }
                 try renderer?.draw(commandQueue: commandQueue, currentRenderPassDescriptor: currentRenderPassDescriptor, currentDrawable: currentDrawable, drawableSize: SIMD2<Float>(size))
             } catch {

@@ -28,7 +28,7 @@ public struct GaussianSplatBitonicSortComputePass: ComputePassProtocol {
         let function = library.makeFunction(name: "GaussianSplatShaders::BitonicSortSplats").forceUnwrap("No function found")
         let (pipelineState, reflection) = try device.makeComputePipelineState(function: function, options: .bindingInfo)
         guard let reflection else {
-            fatalError("Failed to create pipeline state.")
+            throw BaseError.resourceCreationFailure
         }
         return State(
             pipelineState: pipelineState,

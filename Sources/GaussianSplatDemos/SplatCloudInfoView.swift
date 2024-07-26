@@ -1,3 +1,4 @@
+import BaseSupport
 import Charts
 import GaussianSplatSupport
 import simd
@@ -88,7 +89,7 @@ public struct SplatCloudInfoView: View {
                         splats = try load(url: url)
                     }
                     catch {
-                        fatalError("\(error)")
+                        fatalError(error)
                     }
                 }
             }

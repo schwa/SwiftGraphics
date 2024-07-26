@@ -86,9 +86,9 @@ public extension MTLBuffer {
 }
 
 public extension MTLCommandBuffer {
-    func withRenderCommandEncoder<R>(descriptor: MTLRenderPassDescriptor, label: String? = nil, useDebugGroup: Bool = false, block: (MTLRenderCommandEncoder) throws -> R) rethrows -> R {
+    func withRenderCommandEncoder<R>(descriptor: MTLRenderPassDescriptor, label: String? = nil, useDebugGroup: Bool = false, block: (MTLRenderCommandEncoder) throws -> R) throws -> R {
         guard let renderCommandEncoder = makeRenderCommandEncoder(descriptor: descriptor) else {
-            fatalError("Failed to make render command encoder.")
+            throw BaseError.resourceCreationFailure
         }
         if let label {
             renderCommandEncoder.label = label
@@ -117,10 +117,10 @@ public extension MTLCommandEncoder {
 }
 
 public extension MTLCommandQueue {
-    func withCommandBuffer<R>(descriptor: MTLCommandBufferDescriptor? = nil, waitAfterCommit wait: Bool, block: (MTLCommandBuffer) throws -> R) rethrows -> R {
+    func withCommandBuffer<R>(descriptor: MTLCommandBufferDescriptor? = nil, waitAfterCommit wait: Bool, block: (MTLCommandBuffer) throws -> R) throws -> R {
         let descriptor = descriptor ?? .init()
         guard let commandBuffer = makeCommandBuffer(descriptor: descriptor) else {
-            fatalError("Failed to make command buffer.")
+            throw BaseError.resourceCreationFailure
         }
         defer {
             commandBuffer.commit()
@@ -131,9 +131,9 @@ public extension MTLCommandQueue {
         return try block(commandBuffer)
     }
 
-    func withCommandBuffer<R>(drawable: (any MTLDrawable)? = nil, block: (MTLCommandBuffer) throws -> R) rethrows -> R {
+    func withCommandBuffer<R>(drawable: (any MTLDrawable)? = nil, block: (MTLCommandBuffer) throws -> R) throws -> R {
         guard let commandBuffer = makeCommandBuffer() else {
-            fatalError("Failed to make command buffer.")
+            throw BaseError.resourceCreationFailure
         }
         defer {
             if let drawable {
@@ -244,7 +244,7 @@ public extension MTLDevice {
         let alignment = minimumLinearTextureAlignment(for: pixelFormat)
         let bytesPerRow = align(Int(size.width) * bytesPerPixel, alignment: alignment)
         guard let buffer = makeBuffer(length: bytesPerRow * Int(size.height), options: .storageModeShared) else {
-            fatalError("Could not create buffer.")
+            throw BaseError.resourceCreationFailure
         }
         return buffer
     }
@@ -432,7 +432,7 @@ public extension MTLTexture {
         let destinationTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: pixelFormat, width: width, height: height, mipmapped: false)
         destinationTextureDescriptor.usage = [.shaderRead, .shaderWrite]
         guard let destinationTexture = device.makeTexture(descriptor: destinationTextureDescriptor) else {
-            fatalError("Failed to create destination texture")
+            throw BaseError.resourceCreationFailure
         }
         let conversionInfo = CGColorConversionInfo(src: sourceColorSpace, dst: destinationColorSpace)
         let conversion = MPSImageConversion(device: device, srcAlpha: sourceAlpha, destAlpha: destinationAlpha, backgroundColor: nil, conversionInfo: conversionInfo)
@@ -461,15 +461,15 @@ public extension MTLTexture {
         //            // https://developer.apple.com/documentation/metal/mtltexture/1515598-newtextureviewwithpixelformat
         else {
             guard let srcColorSpace = pixelFormat.colorSpace else {
-                fatalError("No colorspace for \(pixelFormat)")
+                throw BaseError.invalidParameter
             }
             guard let dstColorSpace = colorSpace else {
-                fatalError("No colorspace provided.")
+                throw BaseError.invalidParameter
             }
             let destinationTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba32Float, width: width, height: height, mipmapped: false)
             destinationTextureDescriptor.usage = [.shaderRead, .shaderWrite]
             guard let destinationTexture = device.makeTexture(descriptor: destinationTextureDescriptor) else {
-                fatalError("Failed to create destination texture")
+                throw BaseError.resourceCreationFailure
             }
             let conversionInfo = CGColorConversionInfo(src: srcColorSpace, dst: dstColorSpace)
             // TODO: we're just assuming premultiplied here.
@@ -487,7 +487,7 @@ public extension MTLTexture {
         let filter = MPSImageHistogram(device: device)
         let size = filter.histogramSize(forSourceFormat: pixelFormat)
         guard let histogram = device.makeBuffer(length: size) else {
-            fatalError("Failed to create histogram buffer")
+            fatalError(BaseError.resourceCreationFailure)
         }
         let commandQueue = device.makeCommandQueue().forceUnwrap("Failed to create command queue")
         let commandBuffer = commandQueue.makeCommandBuffer().forceUnwrap("Failed to create command buffer")

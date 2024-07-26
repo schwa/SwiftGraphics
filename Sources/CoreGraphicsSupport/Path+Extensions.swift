@@ -1,3 +1,4 @@
+import BaseSupport
 import SwiftUI
 
 // Treating SwiftUI.Path as part of CoreGraphics
@@ -236,9 +237,9 @@ public extension Path {
                 current.append(point)
                 lastPoint = point
             case .quadCurve:
-                fatalError("Not implemented")
+                unimplemented()
             case .curve:
-                fatalError("Not implemented")
+                unimplemented()
             case .closeSubpath:
                 if let first = current.first {
                     current.append(first)
@@ -330,7 +331,7 @@ public extension Path {
                                 case .bottomRight:
                                     return .line(to: rect.maxXMaxY)
                                 default:
-                                    fatalError("Invalid corner.")
+                                    unreachable()
                                 }
                             }
                             else {

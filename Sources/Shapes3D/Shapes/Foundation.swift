@@ -1,3 +1,4 @@
+import BaseSupport
 import simd
 
 public struct Line3D {
@@ -119,7 +120,7 @@ public extension PolygonalChain3D {
     }
 
     var isSelfIntersecting: Bool {
-        fatalError("Not implemented")
+        unimplemented()
     }
 }
 

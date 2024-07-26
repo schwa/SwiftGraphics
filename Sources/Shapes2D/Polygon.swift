@@ -1,3 +1,4 @@
+import BaseSupport
 import CoreGraphics
 
 public struct Polygon {
@@ -13,7 +14,7 @@ public struct Polygon {
     }
 
     public var complexity: Complexity {
-        fatalError("Not implemented")
+        unimplemented()
     }
 
     public func isConvex() -> Bool {
