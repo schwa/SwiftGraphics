@@ -1,3 +1,4 @@
+import BaseSupport
 import GaussianSplatShaders
 @preconcurrency import Metal
 import MetalSupport
@@ -30,7 +31,7 @@ public struct GaussianSplatDistanceComputePass: ComputePassProtocol {
         let function = library.makeFunction(name: "GaussianSplatShaders::DistancePreCalc").forceUnwrap("No function found (found: \(library.functionNames))")
         let (pipelineState, reflection) = try device.makeComputePipelineState(function: function, options: .bindingInfo)
         guard let reflection else {
-            fatalError("Failed to create pipeline state")
+            throw BaseError.resourceCreationFailure
         }
         return State(
             pipelineState: pipelineState,

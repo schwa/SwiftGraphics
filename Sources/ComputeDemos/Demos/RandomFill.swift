@@ -28,7 +28,7 @@ struct RandomFill {
         textureDescriptor.usage = [.shaderWrite]
         textureDescriptor.resourceOptions = .storageModeShared
         guard let bytesPerRow = textureDescriptor.bytesPerRow else {
-            fatalError("Failed to create texture descriptor")
+            throw BaseError.resourceCreationFailure
         }
         let bufferSize = bytesPerRow * height
         let buffer = try device.makeBufferEx(length: bufferSize, options: [.storageModeShared])

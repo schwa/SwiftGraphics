@@ -1,3 +1,4 @@
+import BaseSupport
 import CoreGraphicsSupport
 import GaussianSplatSupport
 import Metal
@@ -93,8 +94,13 @@ public struct SceneGraphMapView: View {
 
     func dragGesture(for node: Node) -> some Gesture {
         DragGesture(coordinateSpace: coordinateSpace).onChanged { value in
-            scene.modify(node: node) { node in
-                node?.transform.translation.xz = SIMD2<Float>(value.location / scale)
+            do {
+                try scene.modify(node: node) { node in
+                    node?.transform.translation.xz = SIMD2<Float>(value.location / scale)
+                }
+            }
+            catch {
+                fatalError(error)
             }
         }
     }

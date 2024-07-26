@@ -11,6 +11,7 @@ public enum BaseError: Error {
     case invalidParameter
     case parsingFailure
     case encodingFailure
+    case missingResource
     case extended(Error, String)
 }
 

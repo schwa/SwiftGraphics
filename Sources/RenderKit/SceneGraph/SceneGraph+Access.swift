@@ -1,3 +1,4 @@
+import BaseSupport
 import Foundation
 import SwiftUI
 
@@ -104,9 +105,9 @@ public extension SceneGraph {
     }
 
     // @available(*, deprecated, message: "Deprecated")
-    mutating func modify <R>(label: String, _ block: (inout Node?) throws -> R) rethrows -> R {
+    mutating func modify <R>(label: String, _ block: (inout Node?) throws -> R) throws -> R {
         guard let accessor = accessor(for: label) else {
-            fatalError("No node with label: \(label)")
+            throw BaseError.missingValue
         }
         var node = self[accessor: accessor]
         let result = try block(&node)
@@ -115,9 +116,9 @@ public extension SceneGraph {
     }
 
     // @available(*, deprecated, message: "Deprecated")
-    mutating func modify <R>(id: Node.ID, _ block: (inout Node?) throws -> R) rethrows -> R {
+    mutating func modify <R>(id: Node.ID, _ block: (inout Node?) throws -> R) throws -> R {
         guard let accessor = accessor(for: id) else {
-            fatalError("No node with id: \(id)")
+            throw BaseError.missingValue
         }
         var node = self[accessor: accessor]
         let result = try block(&node)
@@ -126,9 +127,9 @@ public extension SceneGraph {
     }
 
     // @available(*, deprecated, message: "Deprecated")
-    mutating func modify <R>(node: Node, _ block: (inout Node?) throws -> R) rethrows -> R {
+    mutating func modify <R>(node: Node, _ block: (inout Node?) throws -> R) throws -> R {
         guard let accessor = accessor(for: node.id) else {
-            fatalError("No node with id: \(node.id)")
+            throw BaseError.missingValue
         }
         var node = self[accessor: accessor]
         let result = try block(&node)

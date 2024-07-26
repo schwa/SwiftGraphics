@@ -89,7 +89,7 @@ extension YAMesh {
         let indexType: MTLIndexType = accessor.indexType
         let indexCount = accessor.count
         guard let primitiveType = MTLPrimitiveType(primitive.mode) else {
-            fatalError("Unknown primitive type")
+            throw BaseError.missingValue
         }
         self = YAMesh(label: container.url.lastPathComponent, indexType: indexType, indexBufferView: indexBufferView, indexCount: indexCount, vertexDescriptor: descriptor, vertexBufferViews: bufferViews, primitiveType: primitiveType)
     }

@@ -119,9 +119,9 @@ struct TextureView: View {
             guard let renderState else {
                 fatalError("Draw called before command queue set up. This should be impossible.")
             }
-            renderState.commandQueue.withCommandBuffer(drawable: currentDrawable) { commandBuffer in
+            try renderState.commandQueue.withCommandBuffer(drawable: currentDrawable) { commandBuffer in
                 commandBuffer.label = "RendererView-CommandBuffer"
-                commandBuffer.withRenderCommandEncoder(descriptor: renderPassDescriptor) { renderCommandEncoder in
+                try commandBuffer.withRenderCommandEncoder(descriptor: renderPassDescriptor) { renderCommandEncoder in
                     renderCommandEncoder.setRenderPipelineState(renderState.renderPipelineState)
                     renderCommandEncoder.setVertexBuffers(renderState.mesh)
                     let displayScale: Float = 2

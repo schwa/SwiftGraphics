@@ -21,7 +21,7 @@ public func XCTAssertNotEqual<T>(_ expression1: @escaping @autoclosure () throws
         }
     }
     catch {
-        XCTAssert(false, "Oops")
+        XCTAssert(false, "\(error)")
     }
 }
 

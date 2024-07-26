@@ -1,3 +1,4 @@
+import BaseSupport
 import Metal
 
 public enum ComputeError: Error {
@@ -157,7 +158,7 @@ public extension Compute {
                 encoder.setBuffer(buffer, offset: offset, index: index)
             }
             constantValue: { _, _ in
-                fatalError("TODO: buffer")
+                unimplemented()
             }
         }
 
@@ -166,7 +167,7 @@ public extension Compute {
                 encoder.setTexture(texture, index: index)
             }
             constantValue: { _, _ in
-                fatalError("TODO: texture")
+                unimplemented()
             }
         }
     }

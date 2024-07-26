@@ -1,3 +1,4 @@
+import BaseSupport
 import CoreGraphicsUnsafeConformances
 import Foundation
 import simd
@@ -48,6 +49,6 @@ public extension Line3D {
 
     @available(*, unavailable)
     func intersects(plane: Plane3D) -> SIMD3<Float> {
-        fatalError("Not implemented")
+        unimplemented()
     }
 }

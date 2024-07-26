@@ -1,3 +1,4 @@
+import BaseSupport
 import CoreGraphics
 import CoreGraphicsSupport
 import Metal
@@ -135,7 +136,7 @@ public extension MTLPixelFormat {
 
     init?(from pixelFormat: PixelFormat) {
         guard let colorSpaceName = pixelFormat.colorSpace?.name as? String else {
-            fatalError("Unable to determine color space name for pixel format \(pixelFormat)")
+            fatalError(BaseError.invalidParameter)
         }
         let bitmapInfo = CGBitmapInfo(rawValue: pixelFormat.bitmapInfo.rawValue & CGBitmapInfo.byteOrderMask.rawValue)
         switch (pixelFormat.numberOfComponents, pixelFormat.bitsPerComponent, pixelFormat.useFloatComponents, bitmapInfo, pixelFormat.alphaInfo, colorSpaceName) {
@@ -150,8 +151,6 @@ public extension MTLPixelFormat {
 }
 
 public extension PixelFormat {
-    // TODO: FIXME FIXME FIXME FIXME FIXME FIXME FIXME
-
     // TODO: Test endianness. // TODO: This is clearly very broken and desparately needs offscreen rendering unit tests.
     // swiftlint:disable:next cyclomatic_complexity
     init?(_ pixelFormat: MTLPixelFormat) {

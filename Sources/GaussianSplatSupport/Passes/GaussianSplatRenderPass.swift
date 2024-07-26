@@ -63,7 +63,7 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
 
         let (renderPipelineState, reflection) = try device.makeRenderPipelineState(descriptor: renderPipelineDescriptor, options: [.bindingInfo])
         guard let reflection else {
-            fatalError("Failed to create render pipeline state")
+            throw BaseError.resourceCreationFailure
         }
 
         let bindings = State.Bindings(
@@ -95,7 +95,7 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
             }
             let helper = try SceneGraphRenderHelper(scene: scene, targetColorAttachment: renderPassDescriptor.colorAttachments[0])
             guard let cameraTransform = scene.currentCameraNode?.transform else {
-                fatalError("No camera")
+                throw BaseError.missingValue
             }
             for element in helper.elements() {
                 guard let splats = element.node.splats else {

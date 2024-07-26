@@ -1,3 +1,4 @@
+import BaseSupport
 import CoreGraphics
 
 public struct BitmapDefinition: Sendable {
@@ -103,7 +104,7 @@ public extension PixelFormat {
             // Only for RGB 32 bits per pixel,
             32
         default:
-            fatalError("Unknown case")
+            unreachable()
         }
     }
 

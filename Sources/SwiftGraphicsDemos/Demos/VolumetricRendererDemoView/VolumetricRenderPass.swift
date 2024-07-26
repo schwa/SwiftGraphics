@@ -1,3 +1,4 @@
+import BaseSupport
 import Everything
 @preconcurrency import Metal
 import MetalKit
@@ -58,7 +59,7 @@ struct VolumetricRenderPass: RenderPassProtocol {
                         continue
                     }
                     guard let cameraNode = scene.currentCameraNode else {
-                        fatalError("No camera")
+                        throw BaseError.missingValue
                     }
                     // TODO: we need to remove this.
                     let rollPitchYaw = cameraNode.transform.rotation.rollPitchYaw

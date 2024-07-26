@@ -573,7 +573,7 @@ extension Color: Codable {
     public func encode(to encoder: any Encoder) throws {
         var container = encoder.singleValueContainer()
         guard let components = resolve(in: .init()).cgColor.converted(to: CGColorSpace(name: CGColorSpace.sRGB)!, intent: .defaultIntent, options: nil)?.components else {
-            fatalError("Could not resolve color")
+            throw BaseError.parsingFailure
         }
         try container.encode(components)
     }

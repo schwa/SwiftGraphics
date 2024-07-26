@@ -1,3 +1,4 @@
+import BaseSupport
 import Foundation
 import ImageIO
 import UniformTypeIdentifiers
@@ -15,7 +16,7 @@ public struct ImageDestination {
         let type = try type ?? Self.type(for: url)
 
         guard let destination = CGImageDestinationCreateWithURL(url as CFURL, type.identifier as CFString, count, nil) else {
-            fatalError("CGImageDestinationCreateWithURL() failed.")
+            throw BaseError.resourceCreationFailure
         }
         self.destination = destination
     }
@@ -34,7 +35,7 @@ public struct ImageDestination {
 
     public static var typeIdentifiers: Set<UTType> {
         guard let typeIdentifiers = CGImageDestinationCopyTypeIdentifiers() as? [String] else {
-            fatalError("CGImageDestinationCopyTypeIdentifiers() failed.")
+            fatalError(BaseError.resourceCreationFailure)
         }
         return Set(typeIdentifiers.compactMap { UTType($0) })
     }

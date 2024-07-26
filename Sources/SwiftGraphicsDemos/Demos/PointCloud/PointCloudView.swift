@@ -64,8 +64,13 @@ struct PointCloudView: View, DemoView {
             }
         }
         .onChange(of: pointCloud, initial: true) {
-            scene.modify(label: "point-cloud") { node in
-                node!.content = pointCloud
+            do {
+                try scene.modify(label: "point-cloud") { node in
+                    node!.content = pointCloud
+                }
+            }
+            catch {
+                fatalError(error)
             }
         }
         .overlay(alignment: .bottom) {

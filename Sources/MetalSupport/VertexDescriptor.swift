@@ -1,3 +1,4 @@
+import BaseSupport
 import Metal
 import MetalKit
 import ModelIO
@@ -230,16 +231,16 @@ public extension VertexDescriptor {
         // From "Metal feature set tables"
         let maxBufferArgumentEntriesCount = 31
         let maxVertexAttributesCount = 31
-        let layouts: [Layout] = (0 ..< maxBufferArgumentEntriesCount).compactMap { bufferIndex in
+        let layouts: [Layout] = try (0 ..< maxBufferArgumentEntriesCount).compactMap { bufferIndex in
             guard let mdlLayout = mdlDescriptor.layouts[bufferIndex] as? MDLVertexBufferLayout else {
-                fatalError("No buffer at index.")
+                throw BaseError.invalidParameter
             }
             guard mdlLayout.stride != 0 else {
                 return nil
             }
-            let attributes: [Attribute] = (0 ..< maxVertexAttributesCount).compactMap { attributeIndex in
+            let attributes: [Attribute] = try (0 ..< maxVertexAttributesCount).compactMap { attributeIndex in
                 guard let mdlAttribute = mdlDescriptor.attributes[attributeIndex] as? MDLVertexAttribute else {
-                    fatalError("No attribute at index")
+                    throw BaseError.invalidParameter
                 }
                 guard mdlAttribute.bufferIndex == bufferIndex, mdlAttribute.format != .invalid else {
                     return nil

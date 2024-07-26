@@ -32,7 +32,7 @@ struct PixelFormatsDemoView: View, DemoView {
                 self.texture = texture
             }
             for pixelFormat in MTLPixelFormat.allCases {
-                guard let converted = texture.converted(to: pixelFormat) else {
+                guard let converted = try! texture.converted(to: pixelFormat) else {
                     continue
                 }
                 convertedTextures[pixelFormat] = converted
@@ -42,7 +42,7 @@ struct PixelFormatsDemoView: View, DemoView {
 }
 
 extension MTLTexture {
-    func converted(to pixelFormat: MTLPixelFormat) -> MTLTexture? {
+    func converted(to pixelFormat: MTLPixelFormat) throws -> MTLTexture? {
         guard pixelFormat != self.pixelFormat else {
             print("Skipping. Destination pixel format same as source pixel format (\(pixelFormat))")
             return nil
@@ -83,7 +83,7 @@ extension MTLTexture {
         guard let destinationTexture = device.makeTexture(descriptor: destinationTextureDescriptor) else {
             return nil
         }
-        commandQueue.withCommandBuffer(waitAfterCommit: true) { commandBuffer in
+        try commandQueue.withCommandBuffer(waitAfterCommit: true) { commandBuffer in
             let blitEncoder = commandBuffer.makeBlitCommandEncoder()!
             blitEncoder.copy(from: self, to: destinationTexture)
             blitEncoder.endEncoding()

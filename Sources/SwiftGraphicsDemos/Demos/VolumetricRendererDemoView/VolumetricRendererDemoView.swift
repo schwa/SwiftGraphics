@@ -97,11 +97,17 @@ struct VolumetricRendererDemoView: DemoView {
 
             let region = MTLRegion(origin: [0, 0, 0], size: [256, 1, 1]) // TODO: Hardcoded
             let bytesPerRow = 256 * MemoryLayout<SIMD4<UInt8>>.stride
-            scene.modify(label: "volume") { node in
-                let volumeRepresentation = node!.content as! VolumeRepresentation
-                volumeRepresentation.transferFunctionTexture.replace(region: region, mipmapLevel: 0, slice: 0, withBytes: buffer.baseAddress!, bytesPerRow: bytesPerRow, bytesPerImage: 0)
-                node!.content = volumeRepresentation
+            do {
+                try scene.modify(label: "volume") { node in
+                    let volumeRepresentation = node!.content as! VolumeRepresentation
+                    volumeRepresentation.transferFunctionTexture.replace(region: region, mipmapLevel: 0, slice: 0, withBytes: buffer.baseAddress!, bytesPerRow: bytesPerRow, bytesPerImage: 0)
+                    node!.content = volumeRepresentation
+                }
             }
+            catch {
+                fatalError(error)
+            }
+
         }
     }
 }
