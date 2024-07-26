@@ -10,18 +10,6 @@ import SIMDSupport
 // typealias PackedHalf3 = simd_packed_float3
 // typealias PackedHalf4 = simd_packed_float4
 
-public struct PackedHalf3: Hashable {
-    public var x: Float16
-    public var y: Float16
-    public var z: Float16
-}
-
-public struct PackedHalf4: Hashable {
-    public var x: Float16
-    public var y: Float16
-    public var z: Float16
-    public var w: Float16
-}
 
 public func max(lhs: PackedFloat3, rhs: PackedFloat3) -> PackedFloat3 {
     [max(lhs[0], rhs[0]), max(lhs[1], rhs[1]), max(lhs[2], rhs[2])]
@@ -39,24 +27,6 @@ public extension Collection where Element == PackedFloat3 {
             // swiftlint:disable:next reduce_into
             reduce([-Float.greatestFiniteMagnitude, -Float.greatestFiniteMagnitude, -Float.greatestFiniteMagnitude], GaussianSplatSupport.max)
         )
-    }
-}
-
-public extension SIMD3 where Scalar == Float {
-    init(_ other: PackedHalf3) {
-        self = SIMD3(Scalar(other.x), Scalar(other.y), Scalar(other.z))
-    }
-}
-
-extension PackedHalf3 {
-    init(_ other: SIMD3<Float>) {
-        self = PackedHalf3(x: Float16(other.x), y: Float16(other.y), z: Float16(other.z))
-    }
-}
-
-extension PackedHalf4 {
-    init(_ other: SIMD4<Float>) {
-        self = PackedHalf4(x: Float16(other.x), y: Float16(other.y), z: Float16(other.z), w: Float16(other.w))
     }
 }
 
