@@ -49,11 +49,6 @@ public struct GaussianSplatRenderView: View {
             configuration.colorPixelFormat = .bgra8Unorm_srgb
             configuration.depthStencilPixelFormat = .invalid
             configuration.framebufferOnly = false
-            #if os(iOS)
-            // TODO: FIXME
-            print("### WARNING: isIdleTimerDisabled = true")
-            UIApplication.shared.isIdleTimerDisabled = true
-            #endif
         }
         sizeWillChange: { device, configuration, size in
             do {

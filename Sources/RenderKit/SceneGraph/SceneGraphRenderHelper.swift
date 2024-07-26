@@ -6,7 +6,7 @@ import simd
 public struct SceneGraphRenderHelper {
     public struct Element {
         public var node: Node
-        // TODO: Some of these should be calculated on the fly.
+        // IDEA: Some of these should be calculated on the fly.
         public var modelMatrix: simd_float4x4
         public var modelViewMatrix: simd_float4x4
         public var modelViewProjectionMatrix: simd_float4x4

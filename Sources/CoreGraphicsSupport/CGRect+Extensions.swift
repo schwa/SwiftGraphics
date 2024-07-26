@@ -115,7 +115,7 @@ public extension CGRect {
     }
 }
 
-// TODO: Validate all of these.
+// TODO: UNIT TEST ME
 public extension CGRect {
     init(_ origin: CGPoint) {
         self = CGRect(origin: origin, size: .zero)

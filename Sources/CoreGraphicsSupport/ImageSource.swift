@@ -58,16 +58,6 @@ public struct ImageSource {
     }
 }
 
-public extension ImageSource {
-    init(named name: String, bundle: Bundle = Bundle.main) throws {
-        // TODO: Provide more types? Use UTI
-        guard let url = bundle.url(forResource: name, withExtension: "png") else {
-            throw BaseError.missingResource
-        }
-        self = try ImageSource(url: url)
-    }
-}
-
 #if os(macOS)
 import AppKit
 
@@ -77,16 +67,6 @@ public extension CGImage {
             throw BaseError.inputOutputFailure
         }
         return nsImage.cgImage
-    }
-}
-
-#elseif os(iOS) || os(tvOS)
-import UIKit
-
-public extension CGImage {
-    @available(*, unavailable)
-    static func image(contentsOf url: URL) throws -> CGImage {
-        unimplemented()
     }
 }
 #endif // os(macOS)

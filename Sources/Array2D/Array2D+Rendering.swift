@@ -116,8 +116,7 @@ public extension Array2D where Element == SIMD4<UInt8> {
 // MARK: CGContext
 
 public extension Array2D {
-    // TODO: Replace with methods on CGContext
-
+    // IDEA: Replace with methods on CGContext?
     func render(in context: CGContext, cellSize: CGSize, dirtyRect: CGRect = .infinite, colorMapper: (Element) -> CGColor) {
         var lastColor: CGColor?
         for (index, value) in indexed() {
@@ -135,27 +134,8 @@ public extension Array2D {
     }
 }
 
-// public extension Array2D where Element: ColorConvertible {
-//    // TODO: Replace with methods on CGContext
-//    func render(in context: CGContext, cellSize: CGSize, dirtyRect: CGRect = .infinite) {
-//        var lastColor: CGColor!
-//        for (index, value) in indexed() {
-//            let cellOrigin = CGPoint(x: CGFloat(index.x) * cellSize.width, y: CGFloat(index.y) * cellSize.height)
-//            let cellRect = CGRect(origin: cellOrigin, size: cellSize)
-//            if cellRect.intersects(dirtyRect) {
-//                let color = value.color
-//                if color !== lastColor {
-//                    context.setFillColor(color)
-//                    lastColor = color
-//                }
-//                context.fill(cellRect)
-//            }
-//        }
-//    }
-// }
-
 public extension Array2D {
-    // TODO: Replace with methods on CGContext
+    // IDEA: Replace with methods on CGContext?
     func render(in context: CGContext, cellSize: CGSize, callback: (Element) -> CGColor) {
         for (index, value) in indexed() {
             let cellOrigin = CGPoint(x: CGFloat(index.x) * cellSize.width, y: CGFloat(index.y) * cellSize.height)

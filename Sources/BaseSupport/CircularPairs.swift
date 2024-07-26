@@ -1,4 +1,4 @@
-// TODO: Can this be replaced/arugmented by something in SwiftAlgorithms?
+// IDEA: Can this be replaced/arugmented by something in SwiftAlgorithms?
 
 public extension Sequence {
     func circularPairs() -> CircularPairsSequence<Self> {

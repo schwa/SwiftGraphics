@@ -9,7 +9,6 @@ public extension Path {
         addLines(lines)
     }
 
-    // TODO: line segment
     init(lineSegments: [(CGPoint, CGPoint)]) {
         self.init()
         for lineSegment in lineSegments {
@@ -30,8 +29,7 @@ public extension Path {
         }
     }
 
-    // TODO: Rename strokedLineSegment
-    init(lineSegment: (CGPoint, CGPoint), width: Double, lineCap: CGLineCap = .butt) {
+    init(strokedLineSegment lineSegment: (CGPoint, CGPoint), width: Double, lineCap: CGLineCap = .butt) {
         let path = Path { path in
             path.move(to: lineSegment.0)
             path.addLine(to: lineSegment.1)
@@ -68,7 +66,6 @@ public extension Path {
         addLine(to: to)
     }
 
-    // TODO: Make into Path.sCurve()
     mutating func addSCurve(from start: CGPoint, to end: CGPoint) {
         let mid = (end + start) * 0.5
 

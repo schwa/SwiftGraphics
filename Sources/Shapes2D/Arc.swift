@@ -15,8 +15,6 @@ public struct Arc {
     }
 }
 
-// TODO: all geometry should be equatable/fuzzy equatable
-
 extension Arc: Equatable {
     public static func == (lhs: Arc, rhs: Arc) -> Bool {
         lhs.center == rhs.center
@@ -26,29 +24,11 @@ extension Arc: Equatable {
     }
 }
 
-// extension Arc: FuzzyEquatable {
-//    public static func ==% (lhs: Arc, rhs: Arc) -> Bool {
-//        lhs.center ==% rhs.center
-//            && lhs.radius ==% rhs.radius
-//            && lhs.theta ==% rhs.theta
-//            && lhs.phi ==% rhs.phi
-//    }
-// }
-
 public extension Arc {
     static func arcToBezierCurves(center: CGPoint, radius: Double, alpha: Double, beta: Double, maximumArcs: Int = 4) -> [CubicBezierCurve] {
         assert(maximumArcs >= 3)
 
         let limit = Double.pi * 2 / Double(maximumArcs)
-
-        // If[Abs[\[Beta] - \[Alpha]] > limit,
-        //  		Return[{
-        //    			BezierArcConstruction[{xc, yc},
-        //     r, {\[Alpha], \[Alpha] + limit}],
-        //    			BezierArcConstruction[{xc, yc},
-        //     r, {\[Alpha] + limit, \[Beta]}]
-        //    		}]
-        //  	];
 
         if abs(beta - alpha) > (limit + .ulpOfOne) {
             // TODO: This can cause infinite recursion!

@@ -5,9 +5,9 @@ import Observation
 import os
 import SwiftUI
 
-// TODO: FIXME - unchecked Sendable
+// WISH: Currently unchecked sendable. Should strive to make pure Sendable?
 @Observable
-public class GPUCounters: @unchecked Sendable {
+public final class GPUCounters: @unchecked Sendable {
     public struct Measurement: Sendable {
         public enum Kind: String, Hashable, Sendable {
             case frame
@@ -50,13 +50,13 @@ public class GPUCounters: @unchecked Sendable {
     }
 
     @ObservationIgnored
-    var counterSampleBuffer: MTLCounterSampleBuffer?
+    private var counterSampleBuffer: MTLCounterSampleBuffer?
 
     @ObservationIgnored
-    var maxSamples = 60
+    private var maxSamples = 60
 
     @ObservationIgnored
-    var lastSampleTimestamp: UInt64?
+    private var lastSampleTimestamp: UInt64?
 
     @ObservationIgnored
     private var measurements: OSAllocatedUnfairLock<[Measurement.Kind: Measurement]> = .init(initialState: [:])

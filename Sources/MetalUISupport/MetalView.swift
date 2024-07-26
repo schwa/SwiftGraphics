@@ -9,7 +9,7 @@ import SwiftUI
 
 #if !os(visionOS)
 public struct MetalViewConfiguration: Sendable {
-    // TODO: Fully expand this.
+    // IDEA: Fully expand this as needed.
     public var colorPixelFormat: MTLPixelFormat
     public var clearColor: MTLClearColor
     public var depthStencilPixelFormat: MTLPixelFormat

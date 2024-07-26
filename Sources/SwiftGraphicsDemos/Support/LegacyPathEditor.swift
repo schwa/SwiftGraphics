@@ -23,7 +23,7 @@ struct LegacyPathEditor: View {
             ForEach(Array(elements), id: \.offset) { offset, points in
                 let path = Path.line(from: points.0, to: points.1)
                 path.stroke()
-                    .contentShape(Path(lineSegment: points, width: 20, lineCap: .round), eoFill: false)
+                    .contentShape(Path(strokedLineSegment: points, width: 20, lineCap: .round), eoFill: false)
                     .gesture(SpatialTapGesture(coordinateSpace: coordinateSpace).onEnded { value in
                         self.points.insert(value.location, at: offset + 1)
                     })

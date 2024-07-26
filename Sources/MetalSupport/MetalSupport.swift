@@ -412,7 +412,6 @@ public extension MTLTexture {
     }
 
     func clear(color: SIMD4<UInt8> = [0, 0, 0, 0]) {
-        // TODO: This is crazy expensive. :-)
         assert(depth == 1)
         let buffer = Array(repeatElement(color, count: width * height * depth))
         assert(MemoryLayout<SIMD4<UInt8>>.stride == pixelFormat.size)

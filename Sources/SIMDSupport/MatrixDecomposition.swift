@@ -83,7 +83,7 @@ public extension simd_float4x4 {
         return rotation
     }
 
-    // TODO: FIXME - bad values can cause infinite loops
+    // TODO: bad values can cause infinite loops
 
     //    Printing description of self:
     //    ▿ simd_float4x4([[0.8139089, 0.019463059, -0.58066654, 0.0], [0.0, 0.99943876, 0.033499666, 0.0], [0.58099264, -0.027265675, 0.81345206, 0.0], [2.9049633, -0.13632837, 4.0672603, 1.0]])
