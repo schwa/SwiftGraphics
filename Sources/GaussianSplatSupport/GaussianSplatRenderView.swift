@@ -1,6 +1,8 @@
 import BaseSupport
 import Metal
+#if canImport(MetalFX)
 import MetalFX
+#endif
 import MetalKit
 import MetalSupport
 import RenderKit
@@ -112,10 +114,12 @@ public struct GaussianSplatRenderView: View {
                     discardRate: discardRate
                 )
             }
+            #if canImport(MetalFX)
             if metalFXRate != 1 {
                 try SpatialUpscalingPass(id: "TODO-2", device: device, source: colorTexture, destination: upscaledTexture, colorProcessingMode: .perceptual)
                 BlitTexturePass(id: "TODO-3", source: upscaledTexture, destination: nil)
             }
+            #endif
         }
     }
 
