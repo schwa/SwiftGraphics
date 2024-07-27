@@ -54,7 +54,7 @@ struct Demo: Hashable {
 
 struct DemosView: View {
     @State
-//    @CodableAppStorage("CurrentDemo")
+    //    @CodableAppStorage("CurrentDemo")
     private var currentDemo: Demo?
 
     var body: some View {
