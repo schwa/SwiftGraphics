@@ -35,8 +35,8 @@ struct SceneGraphInspector: View {
 
     @ViewBuilder
     var sceneDetail: some View {
-        if let selection, let indexPath = scene.firstIndexPath(id: selection) {
-            let node: Binding<Node> = $scene.binding(for: indexPath)
+        if let selection, let accessor = scene.firstAccessor(id: selection) {
+            let node: Binding<Node> = $scene.binding(for: accessor)
             //                let node = scene.root[indexPath: indexPath]
             List {
                 Form {

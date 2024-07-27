@@ -168,6 +168,23 @@ public extension SceneGraph {
 }
 
 public extension SceneGraph {
+    func firstAccessor(id: Node.ID) -> NodeAccessor? {
+        root.firstAccessor(id: id)
+    }
+    func firstAccessor(label: String) -> NodeAccessor? {
+        root.firstAccessor(label: label)
+    }
+
+    func firstNode(id: Node.ID) -> Node? {
+        root.firstNode(id: id)
+    }
+
+    func firstNode(label: String) -> Node? {
+        root.firstNode(label: label)
+    }
+}
+
+public extension SceneGraph {
     @available(*, deprecated, message: "Deprecated")
     func firstIndexPath(matching predicate: (Node, IndexPath) -> Bool) -> IndexPath? {
         root.allIndexedNodes().first { node, indexPath in
@@ -265,6 +282,32 @@ public extension Binding where Value == SceneGraph {
             wrappedValue[accessor: NodeAccessor(indexPath)] = $0
         }
     }
+
+    func binding(for accessor: NodeAccessor) -> Binding<Node?> {
+        Binding<Node?> {
+            wrappedValue[accessor: accessor]
+        }
+        set: {
+            wrappedValue[accessor: accessor] = $0
+        }
+    }
+
+    func binding(for accessor: NodeAccessor) -> Binding<Node> {
+        Binding<Node> {
+            guard let node = wrappedValue[accessor: accessor] else {
+                fatalError("No node at accessor: \(accessor).")
+            }
+            return node
+        }
+        set: {
+            wrappedValue[accessor: accessor] = $0
+        }
+    }
+}
+
+
+@available(*, deprecated, message: "Deprecated")
+public extension Binding where Value == SceneGraph {
 
     func binding(for indexPath: IndexPath) -> Binding<Node?> {
         Binding<Node?> {

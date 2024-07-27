@@ -83,10 +83,10 @@ public struct GaussianSplatRenderView: View {
             logger?.warning("No texture(s)")
             return nil
         }
-        guard let splatsNode = scene.node(for: "splats"), let splats = splatsNode.content as? SplatCloud else {
+        guard let splatsNode = scene.firstNode(label: "splats"), let splats = splatsNode.content as? SplatCloud else {
             return nil
         }
-        guard let cameraNode = scene.node(for: "camera") else {
+        guard let cameraNode = scene.firstNode(label: "camera") else {
             return nil
         }
 
