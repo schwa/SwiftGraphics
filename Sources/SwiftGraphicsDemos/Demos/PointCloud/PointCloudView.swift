@@ -5,6 +5,7 @@ import MetalKit
 import MetalSupport
 import Projection
 import RenderKit
+import RenderKitSceneGraph
 import RenderKitShaders
 import RenderKitUISupport
 import Shapes3D

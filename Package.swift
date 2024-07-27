@@ -30,6 +30,7 @@ let package = Package(
         .library(name: "Projection", targets: ["Projection"]),
         .library(name: "Raster", targets: ["Raster"]),
         .library(name: "RenderKit", targets: ["RenderKit"]),
+        .library(name: "RenderKitSceneGraph", targets: ["RenderKitSceneGraph"]),
         .library(name: "RenderKitShaders", targets: ["RenderKitShaders"]),
         .library(name: "RenderKitShadersLegacy", targets: ["RenderKitShadersLegacy"]),
         .library(name: "RenderKitUISupport", targets: ["RenderKitUISupport"]),
@@ -230,6 +231,7 @@ let package = Package(
                 "MetalUISupport",
                 .product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
                 "BaseSupport",
+                "RenderKitSceneGraph"
             ],
             resources: [
                 .process("Bundle.txt"),
@@ -377,6 +379,7 @@ let package = Package(
                 "GaussianSplatDemos",
                 "RenderKitUISupport",
                 "SwiftUISupport",
+                "RenderKitSceneGraph"
             ],
             exclude: [
                 "Support/SignedDistanceFields.metal",
@@ -424,7 +427,8 @@ let package = Package(
                 "GaussianSplatSupport",
                 "RenderKitUISupport",
                 "Counters",
-                "Fields3D"
+                "Fields3D",
+                "RenderKitSceneGraph"
             ],
             resources: [
                 .copy("Resources/lastchance.splat"),
@@ -445,6 +449,7 @@ let package = Package(
                 "GaussianSplatShaders",
                 "RenderKit",
                 "Shapes3D",
+                "RenderKitSceneGraph"
             ],
             resources: [
                 .copy("Bundle.txt")
@@ -519,6 +524,23 @@ let package = Package(
                 "GenericGeometryBase",
             ]
         ),
+
+        .target(
+            name: "RenderKitSceneGraph",
+            dependencies: [
+                "BaseSupport",
+            ],
+            swiftSettings: [
+            ]
+        ),
+
+        .testTarget(
+            name: "RenderKitSceneGraphTests",
+            dependencies: [
+                "RenderKitSceneGraph",
+            ]
+        ),
+
 
     ],
     swiftLanguageVersions: [.v6]

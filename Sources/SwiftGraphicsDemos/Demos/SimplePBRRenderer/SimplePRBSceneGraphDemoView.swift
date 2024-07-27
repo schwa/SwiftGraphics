@@ -3,6 +3,7 @@ import BaseSupport
 import MetalKit
 import MetalSupport
 import RenderKit
+import RenderKitSceneGraph
 import RenderKitShaders
 import Shapes3D
 import SIMDSupport

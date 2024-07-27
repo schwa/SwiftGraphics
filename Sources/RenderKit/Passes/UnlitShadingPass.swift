@@ -2,6 +2,7 @@ import BaseSupport
 @preconcurrency import Metal
 import MetalSupport
 import ModelIO
+import RenderKitSceneGraph
 import RenderKitShadersLegacy
 
 public struct UnlitMaterialX: MaterialProtocol {

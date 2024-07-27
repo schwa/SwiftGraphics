@@ -6,6 +6,7 @@ import MetalFX
 import MetalKit
 import MetalSupport
 import RenderKit
+import RenderKitSceneGraph
 import simd
 import SIMDSupport
 import SwiftUI
