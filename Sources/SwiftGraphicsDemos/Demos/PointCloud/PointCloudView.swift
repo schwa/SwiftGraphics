@@ -75,7 +75,7 @@ struct PointCloudView: View, DemoView {
             }
         }
         .overlay(alignment: .bottom) {
-            if let node = scene.node(for: "point-cloud"), let pointCloud = node.content as? PointCloud {
+            if let node = scene.firstNode(label: "point-cloud"), let pointCloud = node.content as? PointCloud {
                 Text("\(pointCloud.count)")
                     .foregroundStyle(.white)
                     .padding()
