@@ -8,11 +8,17 @@ import SwiftUI
 // We also need ways to query the graph = queries should (generally?) return accessors
 // Query by content type woudl be nice
 
+// An opaque wrapper around IndexPath.
+// TODO: Make Node.Accessor
 public struct NodeAccessor: Hashable, Sendable {
     var path: IndexPath
 
     init(_ path: IndexPath) {
         self.path = path
+    }
+
+    init() {
+        self.path = .init()
     }
 }
 
@@ -83,6 +89,8 @@ public extension Node {
             TreeIterator(mode: .depthFirst, root: self, children: \.children)
         }
     }
+
+    @available(*, deprecated, message: "Deprecated")
     func allIndexedNodes() -> any Sequence<(node: Node, path: IndexPath)> {
         AnySequence {
             TreeIterator(mode: .depthFirst, root: (node: self, path: IndexPath())) { node, path in
@@ -92,9 +100,72 @@ public extension Node {
             }
         }
     }
+
+    func allNodes() -> any Sequence<(node: Node, accessor: NodeAccessor)> {
+        AnySequence {
+            TreeIterator(mode: .depthFirst, root: (node: self, accessor: NodeAccessor())) { node, accessor in
+                node.children.enumerated().map { index, node in
+                    (node: node, accessor: .init(accessor.path + [index]))
+                }
+            }
+        }
+    }
+}
+
+public extension Node {
+    func firstAccessor(matching predicate: (Node, NodeAccessor) -> Bool) -> NodeAccessor? {
+        allNodes().first { node, accessor in
+            predicate(node, accessor)
+        }?.accessor
+    }
+    func firstNode(matching predicate: (Node, NodeAccessor) -> Bool) -> Node? {
+        allNodes().first { node, accessor in
+            predicate(node, accessor)
+        }?.node
+    }
+}
+
+public extension Node {
+    func firstAccessor(id: Node.ID) -> NodeAccessor? {
+        firstAccessor {
+            node, _ in node.id == id
+        }
+    }
+    func firstAccessor(label: String) -> NodeAccessor? {
+        firstAccessor { node, _ in
+            node.label == label
+        }
+    }
+
+    func firstNode(id: Node.ID) -> Node? {
+        firstNode {
+            node, _ in node.id == id
+        }
+    }
+
+    func firstNode(label: String) -> Node? {
+        firstNode {
+            node, _ in node.label == label
+        }
+    }
 }
 
 // MARK: -
+
+public extension SceneGraph {
+    subscript(accessor accessor: NodeAccessor) -> Node? {
+        get {
+            root[accessor: accessor]
+        }
+        set {
+            guard let newValue else {
+                // IDEA: There's no reason we can't delete the node here.
+                fatalError("Cannot set node to nil")
+            }
+            root[accessor: accessor] = newValue
+        }
+    }
+}
 
 public extension SceneGraph {
     @available(*, deprecated, message: "Deprecated")
@@ -138,19 +209,9 @@ public extension SceneGraph {
         }
         return .init(path)
     }
+}
 
-    subscript(accessor accessor: NodeAccessor) -> Node? {
-        get {
-            root[accessor: accessor]
-        }
-        set {
-            guard let newValue else {
-                // IDEA: There's no reason we can't delete the node here.
-                fatalError("Cannot set node to nil")
-            }
-            root[accessor: accessor] = newValue
-        }
-    }
+extension SceneGraph {
 
     mutating func modify <R>(accessor: NodeAccessor, _ block: (inout Node?) throws -> R) rethrows -> R {
         var node = self[accessor: accessor]
