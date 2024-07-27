@@ -5,6 +5,7 @@ import GaussianSplatShaders
 import MetalSupport
 import Observation
 import RenderKit
+import RenderKitSceneGraph
 import simd
 import SIMDSupport
 import SwiftUI

@@ -3,6 +3,7 @@ import Foundation
 import GaussianSplatSupport
 import Metal
 import RenderKit
+import RenderKitSceneGraph
 import UniformTypeIdentifiers
 
 // swiftlint:disable force_unwrapping

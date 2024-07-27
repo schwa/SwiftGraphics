@@ -1,6 +1,7 @@
 import BaseSupport
 @preconcurrency import MetalKit
 import MetalSupport
+import RenderKitSceneGraph
 import RenderKitShadersLegacy
 import SwiftUI
 

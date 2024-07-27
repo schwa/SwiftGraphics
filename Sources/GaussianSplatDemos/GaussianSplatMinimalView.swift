@@ -5,6 +5,7 @@ import GaussianSplatSupport
 import MetalKit
 import Observation
 import RenderKit
+import RenderKitSceneGraph
 import RenderKitUISupport
 import simd
 import SIMDSupport

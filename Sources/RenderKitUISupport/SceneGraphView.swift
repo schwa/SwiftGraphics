@@ -2,6 +2,7 @@ import Fields3D
 import Metal
 import MetalKit
 import RenderKit
+import RenderKitSceneGraph
 import simd
 import SIMDSupport
 import SwiftUI

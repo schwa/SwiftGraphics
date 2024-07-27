@@ -7,6 +7,7 @@ import MetalSupport
 import ModelIO
 import os
 import RenderKit
+import RenderKitSceneGraph
 import RenderKitShadersLegacy
 import RenderKitUISupport
 import SwiftUI

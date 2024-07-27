@@ -2,6 +2,7 @@ import Metal
 import MetalKit
 import MetalSupport
 import RenderKit
+import RenderKitSceneGraph
 import RenderKitUISupport
 import Shapes3D
 import simd
