@@ -40,9 +40,9 @@ struct SimplePBRSceneGraphDemoView: View, DemoView {
         }
         .ballRotation($cameraRotation)
         .inspector(isPresented: .constant(true)) {
-            let path = scene.root.allIndexedNodes().first { $0.0.label == "model-1" }!.1
+            let path = scene.firstAccessor(label: "model-1")!
             let material = Binding<SimplePBRMaterial> {
-                guard let geometry = scene.root[indexPath: path].geometry else {
+                guard let geometry = scene.root[accessor: path].geometry else {
                     fatalError("Failed to get geometry.")
                 }
                 guard let material = geometry.materials[0] as? SimplePBRMaterial else {
@@ -51,7 +51,7 @@ struct SimplePBRSceneGraphDemoView: View, DemoView {
                 return material
             }
             set: {
-                scene.root[indexPath: path].geometry?.materials[0] = $0
+                scene.root[accessor: path].geometry?.materials[0] = $0
             }
             SimplePBRMaterialEditor(material: material)
         }

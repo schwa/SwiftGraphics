@@ -17,11 +17,4 @@ public struct SceneGraph: Equatable, Sendable {
         self.root = Node()
         self.currentCameraAccessor = nil
     }
-
-    @available(*, deprecated, message: "Deprecated")
-    public func pathTo(node needle: Node) -> IndexPath? {
-        root.allIndexedNodes().first { node, _ in
-            needle == node
-        }?.1
-    }
 }

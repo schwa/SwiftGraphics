@@ -92,7 +92,7 @@ struct VolumetricRendererDemoView: DemoView {
         .map { SIMD4<UInt8>($0) }
 
         values.withUnsafeBytes { buffer in
-            guard scene.node(for: "volume") != nil else {
+            guard scene.firstNode(label: "volume") != nil else {
                 return
             }
 
