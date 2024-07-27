@@ -86,8 +86,8 @@ public extension Node {
 
 public extension Node {
     func firstAccessor(id: Node.ID) -> NodeAccessor? {
-        firstAccessor {
-            node, _ in node.id == id
+        firstAccessor { node, _ in
+            node.id == id
         }
     }
     func firstAccessor(label: String) -> NodeAccessor? {
@@ -97,14 +97,14 @@ public extension Node {
     }
 
     func firstNode(id: Node.ID) -> Node? {
-        firstNode {
-            node, _ in node.id == id
+        firstNode { node, _ in
+            node.id == id
         }
     }
 
     func firstNode(label: String) -> Node? {
-        firstNode {
-            node, _ in node.label == label
+        firstNode { node, _ in
+            node.label == label
         }
     }
 }
