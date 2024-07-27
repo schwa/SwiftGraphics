@@ -60,8 +60,6 @@ struct DemosView: View {
     var body: some View {
         NavigationSplitView {
             List(selection: $currentDemo) {
-                row(for: CountersDemoView.self)
-                row(for: InlineNotificationsDemoView.self)
                 group(named: "Gaussian Splat") {
                     row(for: GaussianSplatMinimalView.self)
                     row(for: GaussianSplatView.self)
@@ -80,18 +78,25 @@ struct DemosView: View {
                     row(for: SoftwareRendererMeshDemoView.self)
                     row(for: PointCloudSoftwareRenderView.self)
                 }
+                group(named: "SwiftUI Shaders", disclosed: true) {
+                    row(for: SwiftUIShaderDemoView.self)
+                    row(for: SignedDistanceFieldsDemoView.self)
+                }
+                group(named: "UI", disclosed: false) {
+                    row(for: CountersDemoView.self)
+                    row(for: FieldsTestBedView.self)
+                    row(for: InlineNotificationsDemoView.self)
+                }
                 group(named: "Unorganized", disclosed: false) {
                     row(for: AngleDemoView.self)
                     row(for: BeziersDemoView.self)
                     row(for: CustomStrokeEditorDemoView.self)
-                    row(for: FieldsTestBedView.self)
                     row(for: HalfEdge2DDemoView.self)
                     row(for: HalfEdge3DDemoView.self)
                     row(for: HobbyCurveDemoView.self)
                     row(for: PixelFormatsDemoView.self)
                     row(for: Particles2DemoView.self)
                     row(for: QuasiRandomTriangleView.self)
-                    row(for: ShaderTestDemoView.self)
                     row(for: ShapesDemoView.self)
                     row(for: SimulationDemoView.self)
                     row(for: SketchDemoView.self)
