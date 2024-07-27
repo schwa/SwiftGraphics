@@ -628,7 +628,6 @@ struct CodableAppStorage<Value>: DynamicProperty, Sendable where Value: Codable 
             wrappedValue = newValue
         }
     }
-
 }
 
 extension CodableAppStorage where Value: ExpressibleByNilLiteral {

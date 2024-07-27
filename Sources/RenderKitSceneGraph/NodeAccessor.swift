@@ -144,7 +144,6 @@ public extension SceneGraph {
 }
 
 public extension SceneGraph {
-
     mutating func modify <R>(accessor: NodeAccessor, _ block: (inout Node?) throws -> R) rethrows -> R {
         var node = self[accessor: accessor]
         let result = try block(&node)

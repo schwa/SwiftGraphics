@@ -1,7 +1,6 @@
 import SwiftUI
 
 struct SwiftUIShaderDemoView: DemoView {
-
     @State
     var offset: CGPoint = [20, 20]
 
