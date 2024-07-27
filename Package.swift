@@ -382,10 +382,7 @@ let package = Package(
                 "RenderKitSceneGraph"
             ],
             exclude: [
-                "Support/SignedDistanceFields.metal",
                 "Demos/VolumetricRendererDemoView/README.md",
-                "Support/ShaderToy/ShaderToy.metal",
-                "Support/my_color_effect.metal",
             ],
             resources: [
                 .process("Resources/Assets.xcassets"),
@@ -529,6 +526,7 @@ let package = Package(
             name: "RenderKitSceneGraph",
             dependencies: [
                 "BaseSupport",
+                "SIMDSupport",
             ],
             swiftSettings: [
             ]
