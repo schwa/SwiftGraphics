@@ -1,20 +1,20 @@
 public extension SceneGraph {
     var currentCameraNode: Node? {
         get {
-            guard let currentCameraPath else {
+            guard let currentCameraAccessor else {
                 return nil
             }
-            return root[indexPath: currentCameraPath]
+            return root[accessor: currentCameraAccessor]
         }
         set {
             if let newValue {
-                guard let currentCameraPath else {
-                    fatalError("Trying to set current camera node, but no path for existing camera")
+                guard let currentCameraAccessor else {
+                    fatalError("Trying to set current camera node, but no accessor for existing camera.")
                 }
-                root[indexPath: currentCameraPath] = newValue
+                root[accessor: currentCameraAccessor] = newValue
             }
             else {
-                currentCameraPath = nil
+                currentCameraAccessor = nil
             }
         }
     }
