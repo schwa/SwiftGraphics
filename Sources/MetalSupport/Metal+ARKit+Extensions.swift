@@ -1,3 +1,5 @@
+// periphery:ignore:all
+
 #if os(iOS) && !targetEnvironment(simulator)
 import ARKit
 import BaseSupport

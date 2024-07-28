@@ -23,7 +23,7 @@ public enum LineSegmentIntersection {
     case endIntersect(CGPoint)
 }
 
-extension LineSegment {
+public extension LineSegment {
     typealias Intersection = Line.Intersection
 
     static func intersection(_ lhs: LineSegment, _ rhs: LineSegment) -> Intersection {

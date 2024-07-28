@@ -1,3 +1,5 @@
+// periphery:ignore:all
+
 @preconcurrency import Metal
 
 public struct PassID: Hashable, Sendable {

@@ -1,4 +1,3 @@
-import BaseSupport
 import Foundation
 import simd
 import SIMDSupport

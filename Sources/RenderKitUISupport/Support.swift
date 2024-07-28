@@ -1,4 +1,3 @@
-import RenderKit
 import RenderKitSceneGraph
 
 public extension SceneGraph {
