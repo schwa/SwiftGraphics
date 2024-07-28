@@ -5,7 +5,7 @@ import SIMDSupport
 public extension Node {
     func dump() -> String {
         var s = ""
-        for (node, accessor) in allNodes() {
+        for (node, accessor) in allAccessors() {
             let indent = String(repeating: "  ", count: accessor.path.count)
             print("\(indent)Node(id: \"\(node.id)\", transform: \(node.transform), accessor: #\(accessor))", to: &s)
             if let content = node.content {
