@@ -168,6 +168,22 @@ public extension SceneGraph {
 }
 
 public extension SceneGraph {
+    /// Returns a sequence of all nodes in the tree.
+    ///
+    /// - Returns: A sequence containing all nodes in the tree.
+    func allNodes() -> any Sequence<Node> {
+        root.allNodes()
+    }
+
+    /// Returns a sequence of all nodes in the tree along with their accessors.
+    ///
+    /// - Returns: A sequence of tuples containing nodes and their corresponding accessors.
+    func allAccessors() -> any Sequence<(node: Node, accessor: Node.Accessor)> {
+        root.allAccessors()
+    }
+}
+
+public extension SceneGraph {
     /// Finds the first accessor for a node with the given ID in the scene graph.
     ///
     /// - Parameter id: The ID of the node to find.
