@@ -2,14 +2,13 @@ import BaseSupport
 import Foundation
 import SwiftUI
 
-// TODO: This file needs a massive rewrite.
-// Eveyrthing should be in terms of NodeAccessors not IndexPaths.
-// We need convenience to access nodes by label, by id and by accessor
-// We also need ways to query the graph = queries should (generally?) return accessors
-// Query by content type woudl be nice
+// IDEA: Query by content type woudl be nice
 
 // An opaque wrapper around IndexPath.
-// TODO: Make Node.Accessor
+public extension Node {
+    typealias Accessor = NodeAccessor
+}
+
 public struct NodeAccessor: Hashable, Sendable {
     var path: IndexPath
 
@@ -23,7 +22,7 @@ public struct NodeAccessor: Hashable, Sendable {
 }
 
 public extension Node {
-    subscript(accessor accessor: NodeAccessor) -> Node {
+    subscript(accessor accessor: Accessor) -> Node {
         get {
             guard let index = accessor.path.first else {
                 return self
@@ -60,9 +59,9 @@ public extension Node {
         }
     }
 
-    func allNodes() -> any Sequence<(node: Node, accessor: NodeAccessor)> {
+    func allNodes() -> any Sequence<(node: Node, accessor: Accessor)> {
         AnySequence {
-            TreeIterator(mode: .depthFirst, root: (node: self, accessor: NodeAccessor())) { node, accessor in
+            TreeIterator(mode: .depthFirst, root: (node: self, accessor: .init())) { node, accessor in
                 node.children.enumerated().map { index, node in
                     (node: node, accessor: .init(accessor.path + [index]))
                 }
@@ -72,12 +71,12 @@ public extension Node {
 }
 
 public extension Node {
-    func firstAccessor(matching predicate: (Node, NodeAccessor) -> Bool) -> NodeAccessor? {
+    func firstAccessor(matching predicate: (Node, Accessor) -> Bool) -> Accessor? {
         allNodes().first { node, accessor in
             predicate(node, accessor)
         }?.accessor
     }
-    func firstNode(matching predicate: (Node, NodeAccessor) -> Bool) -> Node? {
+    func firstNode(matching predicate: (Node, Accessor) -> Bool) -> Node? {
         allNodes().first { node, accessor in
             predicate(node, accessor)
         }?.node
@@ -85,12 +84,12 @@ public extension Node {
 }
 
 public extension Node {
-    func firstAccessor(id: Node.ID) -> NodeAccessor? {
+    func firstAccessor(id: Node.ID) -> Accessor? {
         firstAccessor { node, _ in
             node.id == id
         }
     }
-    func firstAccessor(label: String) -> NodeAccessor? {
+    func firstAccessor(label: String) -> Accessor? {
         firstAccessor { node, _ in
             node.label == label
         }
@@ -112,7 +111,7 @@ public extension Node {
 // MARK: -
 
 public extension SceneGraph {
-    subscript(accessor accessor: NodeAccessor) -> Node? {
+    subscript(accessor accessor: Node.Accessor) -> Node? {
         get {
             root[accessor: accessor]
         }
@@ -127,10 +126,10 @@ public extension SceneGraph {
 }
 
 public extension SceneGraph {
-    func firstAccessor(id: Node.ID) -> NodeAccessor? {
+    func firstAccessor(id: Node.ID) -> Node.Accessor? {
         root.firstAccessor(id: id)
     }
-    func firstAccessor(label: String) -> NodeAccessor? {
+    func firstAccessor(label: String) -> Node.Accessor? {
         root.firstAccessor(label: label)
     }
 
@@ -144,7 +143,7 @@ public extension SceneGraph {
 }
 
 public extension SceneGraph {
-    mutating func modify <R>(accessor: NodeAccessor, _ block: (inout Node?) throws -> R) rethrows -> R {
+    mutating func modify <R>(accessor: Node.Accessor, _ block: (inout Node?) throws -> R) rethrows -> R {
         var node = self[accessor: accessor]
         let result = try block(&node)
         self[accessor: accessor] = node
@@ -197,7 +196,7 @@ public extension Binding where Value == SceneGraph {
         }
     }
 
-    func binding(for accessor: NodeAccessor) -> Binding<Node?> {
+    func binding(for accessor: Node.Accessor) -> Binding<Node?> {
         Binding<Node?> {
             wrappedValue[accessor: accessor]
         }
@@ -206,7 +205,7 @@ public extension Binding where Value == SceneGraph {
         }
     }
 
-    func binding(for accessor: NodeAccessor) -> Binding<Node> {
+    func binding(for accessor: Node.Accessor) -> Binding<Node> {
         Binding<Node> {
             guard let node = wrappedValue[accessor: accessor] else {
                 fatalError("No node at accessor: \(accessor).")
