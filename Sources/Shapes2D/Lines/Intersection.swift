@@ -1,4 +1,5 @@
 import CoreGraphics
+import CoreGraphicsSupport
 
 extension LineSegment {
     typealias Intersection = Line.Intersection

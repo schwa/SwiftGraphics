@@ -5,8 +5,6 @@ import CoreGraphicsSupport
 import Foundation
 import SwiftUI
 
-// swiftlint:disable force_unwrapping
-
 // https://www.desmos.com/calculator/gtdbajcu41
 // https://www.wolframalpha.com/input?i=line
 // https://byjus.com/maths/general-equation-of-a-line/
@@ -66,7 +64,10 @@ public extension Line {
     }
 
     var slope: Double {
-        (-c / b) / (c / a)
+
+        -(a / b)
+
+
     }
 
     // IDEA: provide angle?
