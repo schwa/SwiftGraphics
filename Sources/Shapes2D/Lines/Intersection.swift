@@ -1,52 +1,6 @@
-import Algorithms
-import ApproximateEquality
 import CoreGraphics
-import CoreGraphicsSupport
-import Foundation
-import SwiftUI
 
-public struct LineSegment {
-    public var start: CGPoint
-    public var end: CGPoint
-
-    public init(_ start: CGPoint, _ end: CGPoint) {
-        self.start = start
-        self.end = end
-    }
-}
-
-extension LineSegment: ApproximateEquality {
-    public func isApproximatelyEqual(to other: Self, absoluteTolerance: Double.Magnitude) -> Bool {
-        start.isApproximatelyEqual(to: other.start, absoluteTolerance: CGPoint.Magnitude(absoluteTolerance))
-            && end.isApproximatelyEqual(to: other.end, absoluteTolerance: CGPoint.Magnitude(absoluteTolerance))
-    }
-}
-
-extension LineSegment: Codable {
-}
-
-extension LineSegment: Equatable {
-}
-
-extension LineSegment: Sendable {
-}
-
-// MARK: -
-
-public extension LineSegment {
-    init(_ x0: Double, _ y0: Double, _ x1: Double, _ y1: Double) {
-        start = CGPoint(x0, y0)
-        end = CGPoint(x1, y1)
-    }
-
-    var reversed: LineSegment {
-        LineSegment(end, start)
-    }
-
-    var line: Line {
-        Line(points: (start, end))
-    }
-
+extension LineSegment {
     typealias Intersection = Line.Intersection
 
     static func intersection(_ lhs: LineSegment, _ rhs: LineSegment) -> Intersection {
@@ -54,25 +8,48 @@ public extension LineSegment {
         let rhs = rhs.line
         return Line.intersection(lhs, rhs)
     }
-
-    var length: Double {
-        (end - start).length
-    }
 }
 
-public extension LineSegment {
-    func map(_ t: (CGPoint) throws -> CGPoint) rethrows -> LineSegment {
-        try LineSegment(t(start), t(end))
+public extension Line {
+    enum Intersection: Equatable {
+        case none
+        case point(CGPoint)
+        case everywhere
     }
 
-    func parallel(offset: Double) -> LineSegment {
-        let angle = Angle(from: start, to: end) - .degrees(90)
-        let offset = CGPoint(distance: offset, angle: angle)
-        return map { $0 + offset }
+    static func intersection(_ lhs: Self, _ rhs: Self) -> Intersection {
+        // TODO: we can clean this up tremendously (write unit tests first!), get rid of forced unwraps.
+        if lhs == rhs {
+            return .everywhere
+        }
+
+        func verticalIntersection(line: Self, x: Double) -> CGPoint {
+            let y = line.y(forX: x)!
+            return CGPoint(x: x, y: y)
+        }
+
+        switch (lhs.isVertical, rhs.isVertical) {
+        case (true, true):
+            // Two vertical lines.
+            return lhs.xIntercept == rhs.xIntercept ? .everywhere : .none
+        case (false, true):
+            let point = verticalIntersection(line: lhs, x: rhs.xIntercept!.x)
+            return .point(point)
+        case (true, false):
+            let point = verticalIntersection(line: rhs, x: lhs.xIntercept!.x)
+            return .point(point)
+        case (false, false):
+            let lhs = lhs.slopeInterceptForm!
+            let rhs = rhs.slopeInterceptForm!
+            if lhs.m == rhs.m {
+                return .none
+            }
+            let x = (rhs.b - lhs.b) / (lhs.m - rhs.m)
+            let y = lhs.m * x + lhs.b
+            return .point(CGPoint(x, y))
+        }
     }
 }
-
-// MARK: -
 
 public enum LineSegmentIntersection {
     case intersect(CGPoint)

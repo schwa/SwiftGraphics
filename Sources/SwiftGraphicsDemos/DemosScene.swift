@@ -60,6 +60,7 @@ struct DemosView: View {
     var body: some View {
         NavigationSplitView {
             List(selection: $currentDemo) {
+                row(for: LineDemoView.self)
                 group(named: "Gaussian Splat") {
                     row(for: GaussianSplatMinimalView.self)
                     row(for: GaussianSplatView.self)
