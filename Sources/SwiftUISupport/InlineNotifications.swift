@@ -101,7 +101,9 @@ public struct InlineNotification: Identifiable, Sendable, Equatable {
 
 extension InlineNotification {
     struct Payload: Hashable {
+        // periphery:ignore
         var title: String
+        // periphery:ignore
         var message: String?
     }
 

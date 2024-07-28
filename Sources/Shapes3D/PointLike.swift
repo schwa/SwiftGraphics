@@ -1,7 +1,6 @@
 // periphery:ignore:all
 
 import CoreGraphics
-// periphery:ignore
 import CoreGraphicsSupport
 import simd
 
