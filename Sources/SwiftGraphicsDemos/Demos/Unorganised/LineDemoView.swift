@@ -25,100 +25,82 @@ struct LineDemoView: View, DemoView {
     @State
     private var showIntersections = true
 
+    @State
+    private var size: CGSize = .zero
+
     var body: some View {
         ZStack {
-            GeometryReader { proxy in
-                let size = proxy.size
-                let transform: CGAffineTransform = .translation(x: 2, y: 2) * .scale(x: 100, y: 100) * .scale(x: 1, y: -1) * .translation(x: 0, y: size.height)
-                AxisView(transform: transform)
-                    .onTapGesture {
-                        selectedElement = nil
-                    }
-                ForEach(elements) { element in
-                    let lineSegment = element.lineSegment
-                    let line = Line(points: (lineSegment.start, lineSegment.end))
-                    // TODO: stop hardcoding bounds
-                    if let clippedLine = line.lineSegment(bounds: CGRect(x: -20, y: -20, width: 40, height: 40)) {
-                        Path.line(from: clippedLine.start, to: clippedLine.end).applying(transform).stroke(lineWidth: 5).foregroundColor(element.color.opacity(0.25))
-                            .onTapGesture {
-                                selectedElement = element.id
-                            }
-                    }
-
-                    if selectedElement == element.id {
-                        Path.line(from: lineSegment.start, to: lineSegment.end).applying(transform)
-                            .stroke(lineWidth: 9)
-                            .foregroundColor(.accentColor)
-                        Path.line(from: lineSegment.start, to: lineSegment.end).applying(transform)
-                            .stroke(lineWidth: 6)
-                            .foregroundColor(.white)
-                    }
-
-                    Path.line(from: lineSegment.start, to: lineSegment.end).applying(transform)
-                        .stroke(lineWidth: 5)
-                        .foregroundColor(element.color)
+            let transform: CGAffineTransform = .translation(x: 2, y: 2) * .scale(x: 100, y: 100) * .scale(x: 1, y: -1) * .translation(x: 0, y: size.height)
+            AxisView(transform: transform)
+                .onTapGesture {
+                    selectedElement = nil
+                }
+            ForEach(elements) { element in
+                let lineSegment = element.lineSegment
+                let line = Line(points: (lineSegment.start, lineSegment.end))
+                // TODO: stop hardcoding bounds
+                if let clippedLine = line.lineSegment(bounds: CGRect(x: -20, y: -20, width: 40, height: 40)) {
+                    Path.line(from: clippedLine.start, to: clippedLine.end).applying(transform).stroke(lineWidth: 5).foregroundColor(element.color.opacity(0.25))
                         .onTapGesture {
                             selectedElement = element.id
                         }
                 }
-                ForEach(elements) { element in
-                    let start = Binding {
-                        element.lineSegment.start
-                    } set: { newValue in
-                        elements[elements.firstIndex(identifiedBy: element.id)!].lineSegment.start = newValue.map { floor($0 / 0.25) * 0.25 }
-                    }
-                    let end = Binding {
-                        element.lineSegment.end
-                    } set: { newValue in
-                        elements[elements.firstIndex(identifiedBy: element.id)!].lineSegment.end = newValue.map { floor($0 / 0.25) * 0.25 }
-                    }
-                    Handle(start.transformed(transform))
-                        .simultaneousGesture(TapGesture().onEnded { selectedElement = element.id })
-                    Handle(end.transformed(transform))
-                        .simultaneousGesture(TapGesture().onEnded { selectedElement = element.id })
+                if selectedElement == element.id {
+                    Path.line(from: lineSegment.start, to: lineSegment.end).applying(transform)
+                        .stroke(lineWidth: 9)
+                        .foregroundColor(.accentColor)
+                    Path.line(from: lineSegment.start, to: lineSegment.end).applying(transform)
+                        .stroke(lineWidth: 6)
+                        .foregroundColor(.white)
                 }
-                Canvas { context, _ in
-                    for (index, lhs) in elements.enumerated() {
-                        let lhsLine = Line(points: (lhs.lineSegment.start, lhs.lineSegment.end))
-
-                        if showIntercepts {
-                            if let xIntercept = lhsLine.xIntercept {
-                                context.fill(Path.circle(center: xIntercept, radius: 0.06), with: .color(.white), transform: transform)
-                                context.fill(Path.circle(center: xIntercept, radius: 0.05), with: .color(.red), transform: transform)
-                            }
-                            if let yIntercept = lhsLine.yIntercept {
-                                context.fill(Path.circle(center: yIntercept, radius: 0.06), with: .color(.white), transform: transform)
-                                context.fill(Path.circle(center: yIntercept, radius: 0.05), with: .color(.green), transform: transform)
-                            }
-                        }
-
-                        if showIntersections {
-                            for rhs in elements.dropFirst(index + 1) {
-                                let rhsLine = Line(points: (rhs.lineSegment.start, rhs.lineSegment.end))
-                                if case .point(let point) = Line.intersection(lhsLine, rhsLine) {
-                                    context.fill(Path.circle(center: point, radius: 0.06), with: .color(.white), transform: transform)
-                                    context.fill(Path.circle(center: point, radius: 0.05), with: .color(.blue), transform: transform)
-                                }
-                            }
-                        }
+                Path.line(from: lineSegment.start, to: lineSegment.end).applying(transform)
+                    .stroke(lineWidth: 5)
+                    .foregroundColor(element.color)
+                    .onTapGesture {
+                        selectedElement = element.id
                     }
-                }
-                .allowsHitTesting(false)
             }
-            .inspector(isPresented: .constant(true)) {
-                if let selectedElement, let element = elements.first(identifiedBy: selectedElement) {
-                    let binding = Binding {
-                        element
-                    } set: { newValue in
-                        elements[elements.firstIndex(identifiedBy: element.id)!] = newValue
+            ForEach(elements) { element in
+                let start = Binding {
+                    element.lineSegment.start
+                } set: { newValue in
+                    elements[elements.firstIndex(identifiedBy: element.id)!].lineSegment.start = newValue.map { floor($0 / 0.25) * 0.25 }
+                }
+                let end = Binding {
+                    element.lineSegment.end
+                } set: { newValue in
+                    elements[elements.firstIndex(identifiedBy: element.id)!].lineSegment.end = newValue.map { floor($0 / 0.25) * 0.25 }
+                }
+                Handle(start.transformed(transform))
+                    .simultaneousGesture(TapGesture().onEnded { selectedElement = element.id })
+                Handle(end.transformed(transform))
+                    .simultaneousGesture(TapGesture().onEnded { selectedElement = element.id })
+            }
+            Canvas { context, _ in
+                for (index, lhs) in elements.enumerated() {
+                    let lhsLine = Line(points: (lhs.lineSegment.start, lhs.lineSegment.end))
+                    if showIntercepts {
+                        if let xIntercept = lhsLine.xIntercept {
+                            context.fill(Path.circle(center: xIntercept, radius: 0.06), with: .color(.white), transform: transform)
+                            context.fill(Path.circle(center: xIntercept, radius: 0.05), with: .color(.red), transform: transform)
+                        }
+                        if let yIntercept = lhsLine.yIntercept {
+                            context.fill(Path.circle(center: yIntercept, radius: 0.06), with: .color(.white), transform: transform)
+                            context.fill(Path.circle(center: yIntercept, radius: 0.05), with: .color(.green), transform: transform)
+                        }
                     }
-                    Form {
-                        LabeledContent("ID", value: element.id)
-                        ColorPicker("Color", selection: binding.color)
-                        LineSegmentInfoView(lineSegment: binding.lineSegment)
+                    if showIntersections {
+                        for rhs in elements.dropFirst(index + 1) {
+                            let rhsLine = Line(points: (rhs.lineSegment.start, rhs.lineSegment.end))
+                            if case .point(let point) = Line.intersection(lhsLine, rhsLine) {
+                                context.fill(Path.circle(center: point, radius: 0.06), with: .color(.white), transform: transform)
+                                context.fill(Path.circle(center: point, radius: 0.05), with: .color(.blue), transform: transform)
+                            }
+                        }
                     }
                 }
             }
+            .allowsHitTesting(false)
         }
         .toolbar {
             Toggle("Show Intercepts", isOn: $showIntercepts)
@@ -134,6 +116,24 @@ struct LineDemoView: View, DemoView {
             }
             .disabled(selectedElement == nil)
         }
+        .inspector {
+            if let selectedElement, let element = elements.first(identifiedBy: selectedElement) {
+                let binding = Binding {
+                    element
+                } set: { newValue in
+                    elements[elements.firstIndex(identifiedBy: element.id)!] = newValue
+                }
+                Form {
+                    LabeledContent("ID", value: element.id)
+                    ColorPicker("Color", selection: binding.color)
+                    LineSegmentInfoView(lineSegment: binding.lineSegment)
+                }
+            }
+            else {
+                ContentUnavailableView("No selection")
+            }
+        }
+        .onGeometryChange(for: CGSize.self, of: \.size) { size = $0 }
     }
 }
 
@@ -216,5 +216,11 @@ struct LineSegmentInfoView: View {
                 Text("VERTICAL")
             }
         }
+    }
+}
+
+extension ContentUnavailableView where Label == Text, Description == EmptyView, Actions == EmptyView {
+    init(_ title: String) {
+        self = .init { Text(title) }
     }
 }

@@ -52,11 +52,11 @@ public extension Line {
     }
 }
 
-func slopeInterceptFormToStandardForm(m: Double, b: Double) -> (a: Double, b: Double, c: Double) {
+internal func slopeInterceptFormToStandardForm(m: Double, b: Double) -> (a: Double, b: Double, c: Double) {
     (a: -m, b: 1, c: b)
 }
 
-func standardFormSlopeInterceptFormTo(a: Double, b: Double, c: Double) -> (m: Double, b: Double)? {
+internal func standardFormSlopeInterceptFormTo(a: Double, b: Double, c: Double) -> (m: Double, b: Double)? {
     guard b != 0 else {
         return nil
     }
