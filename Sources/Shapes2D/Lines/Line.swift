@@ -64,13 +64,12 @@ public extension Line {
     }
 
     var slope: Double {
-
-        -(a / b)
-
-
+        -a / b
     }
 
-    // IDEA: provide angle?
+    var angle: Angle {
+        .radians(atan(slope))
+    }
 }
 
 // MARK: -
@@ -87,7 +86,7 @@ public extension Line {
         else {
             let m = (y2 - y1) / (x2 - x1)
             let b = y1 - m * x1
-            self = .init(slopeInterceptFormToStandardForm(m: m, b: b))
+            self = .slopeIntercept(m: m, b: b)
         }
     }
 }
@@ -101,7 +100,7 @@ public extension Line {
         else {
             let m = tan(angle.radians)
             let b = -m * point.x + point.y
-            self = .init(slopeInterceptFormToStandardForm(m: m, b: b))
+            self = .slopeIntercept(m: m, b: b)
         }
     }
 }
@@ -117,23 +116,5 @@ public extension Line {
             result.c = 1.0 / b * result.c
         }
         return result
-    }
-}
-
-// MARK: -
-
-public extension Line {
-    func distance(to point: CGPoint) -> Double {
-        if isVertical {
-            return abs(point.x - xIntercept!.x)
-        }
-        else {
-            let (m, b) = slopeInterceptForm!.tuple
-            return abs(m * point.x - point.y + b) / sqrt(m * m + 1)
-        }
-    }
-
-    func contains(_ point: CGPoint, tolerance: Double = 0.0) -> Bool {
-        abs(distance(to: point)) <= tolerance
     }
 }

@@ -1,62 +1,7 @@
 import CoreGraphics
 import CoreGraphicsSupport
 
-extension LineSegment {
-    typealias Intersection = Line.Intersection
-
-    static func intersection(_ lhs: LineSegment, _ rhs: LineSegment) -> Intersection {
-        let lhs = lhs.line
-        let rhs = rhs.line
-        return Line.intersection(lhs, rhs)
-    }
-}
-
-public extension Line {
-    enum Intersection: Equatable {
-        case none
-        case point(CGPoint)
-        case everywhere
-    }
-
-    static func intersection(_ lhs: Self, _ rhs: Self) -> Intersection {
-        // TODO: we can clean this up tremendously (write unit tests first!), get rid of forced unwraps.
-        if lhs == rhs {
-            return .everywhere
-        }
-
-        func verticalIntersection(line: Self, x: Double) -> CGPoint {
-            let y = line.y(forX: x)!
-            return CGPoint(x: x, y: y)
-        }
-
-        switch (lhs.isVertical, rhs.isVertical) {
-        case (true, true):
-            // Two vertical lines.
-            return lhs.xIntercept == rhs.xIntercept ? .everywhere : .none
-        case (false, true):
-            let point = verticalIntersection(line: lhs, x: rhs.xIntercept!.x)
-            return .point(point)
-        case (true, false):
-            let point = verticalIntersection(line: rhs, x: lhs.xIntercept!.x)
-            return .point(point)
-        case (false, false):
-            let lhs = lhs.slopeInterceptForm!
-            let rhs = rhs.slopeInterceptForm!
-            if lhs.m == rhs.m {
-                return .none
-            }
-            let x = (rhs.b - lhs.b) / (lhs.m - rhs.m)
-            let y = lhs.m * x + lhs.b
-            return .point(CGPoint(x, y))
-        }
-    }
-}
-
-public enum LineSegmentIntersection {
-    case intersect(CGPoint)
-    case overlap(LineSegment)
-    case endIntersect(CGPoint)
-}
+// TODO: Too many intersection types in here. Cleanup.
 
 public extension LineSegment {
     func contains(_ point: CGPoint, tolerance: Double = 0.0) -> Bool {
@@ -72,7 +17,30 @@ public extension LineSegment {
     }
 }
 
-public extension LineSegment {
+public enum LineSegmentIntersection {
+    case intersect(CGPoint)
+    case overlap(LineSegment)
+    case endIntersect(CGPoint)
+}
+
+extension LineSegment {
+    typealias Intersection = Line.Intersection
+
+    static func intersection(_ lhs: LineSegment, _ rhs: LineSegment) -> Intersection {
+        let result = Line.intersection(lhs.line, rhs.line)
+        if case .point(let point) = result {
+            if lhs.contains(point) && rhs.contains(point) {
+                return result
+            }
+            else {
+                return .none
+            }
+        }
+        else {
+            return result
+        }
+    }
+
     func intersection(_ other: LineSegment) -> CGPoint? {
         guard let intersection: LineSegmentIntersection = advancedIntersection(other) else {
             return nil
@@ -87,7 +55,9 @@ public extension LineSegment {
             return nil
         }
     }
+}
 
+public extension LineSegment {
     // Adapted from: http://geomalgorithms.com/a05-_intersect-1.html
     func advancedIntersection(_ other: LineSegment) -> LineSegmentIntersection? {
         let smallNumber = CGPoint.Factor(0.00000001)
@@ -203,5 +173,64 @@ public extension LineSegment {
         }
 
         return .intersect(S1.start + sI * u)
+    }
+}
+
+// MARK: -
+
+public extension Line {
+    func distance(to point: CGPoint) -> Double {
+        if isVertical {
+            return abs(point.x - xIntercept!.x)
+        }
+        else {
+            let (m, b) = slopeInterceptForm!.tuple
+            return abs(m * point.x - point.y + b) / sqrt(m * m + 1)
+        }
+    }
+
+    func contains(_ point: CGPoint, tolerance: Double = 0.0) -> Bool {
+        abs(distance(to: point)) <= tolerance
+    }
+}
+
+public extension Line {
+    enum Intersection: Equatable {
+        case none
+        case point(CGPoint)
+        case everywhere
+    }
+
+    static func intersection(_ lhs: Self, _ rhs: Self) -> Intersection {
+        // TODO: we can clean this up tremendously (write unit tests first!), get rid of forced unwraps.
+        if lhs == rhs {
+            return .everywhere
+        }
+
+        func verticalIntersection(line: Self, x: Double) -> CGPoint {
+            let y = line.y(forX: x)!
+            return CGPoint(x: x, y: y)
+        }
+
+        switch (lhs.isVertical, rhs.isVertical) {
+        case (true, true):
+            // Two vertical lines.
+            return lhs.xIntercept == rhs.xIntercept ? .everywhere : .none
+        case (false, true):
+            let point = verticalIntersection(line: lhs, x: rhs.xIntercept!.x)
+            return .point(point)
+        case (true, false):
+            let point = verticalIntersection(line: rhs, x: lhs.xIntercept!.x)
+            return .point(point)
+        case (false, false):
+            let lhs = lhs.slopeInterceptForm!
+            let rhs = rhs.slopeInterceptForm!
+            if lhs.m == rhs.m {
+                return .none
+            }
+            let x = (rhs.b - lhs.b) / (lhs.m - rhs.m)
+            let y = lhs.m * x + lhs.b
+            return .point(CGPoint(x, y))
+        }
     }
 }
