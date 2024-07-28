@@ -4,7 +4,7 @@ import os
 public struct SceneGraph: Equatable, Sendable {
     public var root: Node
 
-    public var currentCameraAccessor: NodeAccessor?
+    public var currentCameraAccessor: Node.Accessor?
 
     public init(root: Node) {
         self.root = root
