@@ -26,6 +26,9 @@ struct LineDemoView: View, DemoView {
     private var showIntersections = true
 
     @State
+    private var showParallels = true
+
+    @State
     private var size: CGSize = .zero
 
     var body: some View {
@@ -77,14 +80,21 @@ struct LineDemoView: View, DemoView {
                     .simultaneousGesture(TapGesture().onEnded { selectedElement = element.id })
             }
             Canvas { context, _ in
-                for (index, lhs) in elements.enumerated() {
-                    let lhsLine = Line(points: (lhs.lineSegment.start, lhs.lineSegment.end))
+                for (index, element) in elements.enumerated() {
+                    let lineSegment = element.lineSegment
+                    let line = Line(points: (lineSegment.start, lineSegment.end))
+                    if showParallels {
+                        let p1 = lineSegment.parallel(offset: -0.5)
+                        context.stroke(Path(p1), with: .color(element.color.opacity(0.5)), transform: transform)
+                        let p2 = lineSegment.parallel(offset: 0.5)
+                        context.stroke(Path(p2), with: .color(element.color.opacity(0.5)), transform: transform)
+                    }
                     if showIntercepts {
-                        if let xIntercept = lhsLine.xIntercept {
+                        if let xIntercept = line.xIntercept {
                             context.fill(Path.circle(center: xIntercept, radius: 0.06), with: .color(.white), transform: transform)
                             context.fill(Path.circle(center: xIntercept, radius: 0.05), with: .color(.red), transform: transform)
                         }
-                        if let yIntercept = lhsLine.yIntercept {
+                        if let yIntercept = line.yIntercept {
                             context.fill(Path.circle(center: yIntercept, radius: 0.06), with: .color(.white), transform: transform)
                             context.fill(Path.circle(center: yIntercept, radius: 0.05), with: .color(.green), transform: transform)
                         }
@@ -92,7 +102,7 @@ struct LineDemoView: View, DemoView {
                     if showIntersections {
                         for rhs in elements.dropFirst(index + 1) {
                             let rhsLine = Line(points: (rhs.lineSegment.start, rhs.lineSegment.end))
-                            if case .point(let point) = Line.intersection(lhsLine, rhsLine) {
+                            if case .point(let point) = Line.intersection(line, rhsLine) {
                                 context.fill(Path.circle(center: point, radius: 0.06), with: .color(.white), transform: transform)
                                 context.fill(Path.circle(center: point, radius: 0.05), with: .color(.blue), transform: transform)
                             }
@@ -103,6 +113,7 @@ struct LineDemoView: View, DemoView {
             .allowsHitTesting(false)
         }
         .toolbar {
+            Toggle("Show Parallels", isOn: $showParallels)
             Toggle("Show Intercepts", isOn: $showIntercepts)
             Toggle("Show Intersecitons", isOn: $showIntersections)
             Button("Add line") {

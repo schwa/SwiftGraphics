@@ -1,7 +1,7 @@
 import CoreGraphics
 import Foundation
 
-// swiftlint:disable:force_unwrapping
+// swiftlint:disable force_unwrapping
 
 internal extension Line {
     func compare(point: CGPoint) -> ComparisonResult {
@@ -84,7 +84,7 @@ public extension Line {
 // 14  1110    > > > ≤    1
 // 15  1111    > > > >    0
 
-extension LineSegment {
+public extension LineSegment {
     var line: Line {
         Line(points: (start, end))
     }
