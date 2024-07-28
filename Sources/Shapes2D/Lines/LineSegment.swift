@@ -43,7 +43,6 @@ public extension LineSegment {
         LineSegment(end, start)
     }
 
-
     var length: Double {
         (end - start).length
     }
