@@ -34,7 +34,6 @@ public extension SlopeInterceptForm {
 // MARK: Conversion between SlopeIntercept and Standard Form
 
 public extension Line {
-
     static func slopeIntercept(m: Double, b: Double) -> Line {
         .init(a: -m, b: 1, c: b)
     }
