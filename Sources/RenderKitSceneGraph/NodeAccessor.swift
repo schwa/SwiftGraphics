@@ -71,7 +71,7 @@ public extension Node {
     /// Returns a sequence of all nodes in the tree along with their accessors.
     ///
     /// - Returns: A sequence of tuples containing nodes and their corresponding accessors.
-    func allNodes() -> any Sequence<(node: Node, accessor: Accessor)> {
+    func allAccessors() -> any Sequence<(node: Node, accessor: Accessor)> {
         AnySequence {
             TreeIterator(mode: .depthFirst, root: (node: self, accessor: .init())) { node, accessor in
                 node.children.enumerated().map { index, node in
@@ -88,7 +88,7 @@ public extension Node {
     /// - Parameter predicate: A closure that takes a Node and an Accessor and returns a Bool.
     /// - Returns: The first Accessor that satisfies the predicate, or nil if none is found.
     func firstAccessor(matching predicate: (Node, Accessor) -> Bool) -> Accessor? {
-        allNodes().first { node, accessor in
+        allAccessors().first { node, accessor in
             predicate(node, accessor)
         }?.accessor
     }
@@ -98,7 +98,7 @@ public extension Node {
     /// - Parameter predicate: A closure that takes a Node and an Accessor and returns a Bool.
     /// - Returns: The first Node that satisfies the predicate, or nil if none is found.
     func firstNode(matching predicate: (Node, Accessor) -> Bool) -> Node? {
-        allNodes().first { node, accessor in
+        allAccessors().first { node, accessor in
             predicate(node, accessor)
         }?.node
     }
@@ -227,10 +227,7 @@ public extension SceneGraph {
         guard let accessor = firstAccessor(label: label) else {
             throw BaseError.missingValue
         }
-        var node = self[accessor: accessor]
-        let result = try block(&node)
-        self[accessor: accessor] = node
-        return result
+        return try modify(accessor: accessor, block)
     }
 
     /// Modifies a node in the scene graph with the given ID using the provided modification closure.
@@ -244,10 +241,7 @@ public extension SceneGraph {
         guard let accessor = firstAccessor(id: id) else {
             throw BaseError.missingValue
         }
-        var node = self[accessor: accessor]
-        let result = try block(&node)
-        self[accessor: accessor] = node
-        return result
+        return try modify(accessor: accessor, block)
     }
 
     /// Modifies a specific node in the scene graph using the provided modification closure.
@@ -258,13 +252,7 @@ public extension SceneGraph {
     /// - Returns: The value returned by the modification closure.
     /// - Throws: BaseError.missingValue if the node is not found, or rethrows any error thrown by the modification closure.
     mutating func modify<R>(node: Node, _ block: (inout Node?) throws -> R) throws -> R {
-        guard let accessor = firstAccessor(id: node.id) else {
-            throw BaseError.missingValue
-        }
-        var node = self[accessor: accessor]
-        let result = try block(&node)
-        self[accessor: accessor] = node
-        return result
+        try modify(id: node.id, block)
     }
 }
 
