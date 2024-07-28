@@ -1,3 +1,4 @@
+import ApproximateEquality
 import Testing
 import CoreGraphics
 @testable import Shapes2D
@@ -36,7 +37,7 @@ func testXForY() throws {
     let line = Line(a: 2, b: -1, c: 4)
     let x = line.x(forY: 3)
     #expect(x != nil)
-    #expect(isApproximatelyEqual(x!, 3.5))
+    #expect(x!.isApproximatelyEqual(to: 3.5))
 }
 
 @Test
@@ -44,7 +45,7 @@ func testYForX() throws {
     let line = Line(a: 2, b: -1, c: 4)
     let y = line.y(forX: 5)
     #expect(y != nil)
-    #expect(isApproximatelyEqual(y!, 6))
+    #expect(y!.isApproximatelyEqual(to: 6))
 }
 
 @Test
@@ -53,25 +54,25 @@ func testIntercepts() throws {
 
     let xIntercept = line.xIntercept
     #expect(xIntercept != nil)
-    #expect(isApproximatelyEqual(xIntercept!.x, 2))
-    #expect(isApproximatelyEqual(xIntercept!.y, 0))
+    #expect(xIntercept!.x.isApproximatelyEqual(to: 2))
+    #expect(xIntercept!.y.isApproximatelyEqual(to: 0))
 
     let yIntercept = line.yIntercept
     #expect(yIntercept != nil)
-    #expect(isApproximatelyEqual(yIntercept!.x, 0))
-    #expect(isApproximatelyEqual(yIntercept!.y, -4))
+    #expect(yIntercept!.x.isApproximatelyEqual(to: 0))
+    #expect(yIntercept!.y.isApproximatelyEqual(to: -4))
 }
 
 @Test
 func testSlope() throws {
     let line = Line(a: 2, b: -1, c: 4)
-    #expect(isApproximatelyEqual(line.slope, 2))
+    #expect(line.slope.isApproximatelyEqual(to: 2))
 }
 
 @Test
 func testInitWithPoints() throws {
     let line = Line(points: (CGPoint(x: 0, y: 0), CGPoint(x: 3, y: 4)))
-    #expect(isApproximatelyEqual(line.slope, 4.0/3.0))
+    #expect(line.slope.isApproximatelyEqual(to: 4.0/3.0))
     #expect(line.contains(CGPoint(x: 0, y: 0)))
     #expect(line.contains(CGPoint(x: 3, y: 4)))
 }
@@ -79,7 +80,7 @@ func testInitWithPoints() throws {
 @Test
 func testInitWithPointAndAngle() throws {
     let line = Line(point: CGPoint(x: 1, y: 1), angle: Angle(degrees: 45))
-    #expect(isApproximatelyEqual(line.slope, 1))
+    #expect(line.slope.isApproximatelyEqual(to: 1))
     #expect(line.contains(CGPoint(x: 1, y: 1)))
 }
 
@@ -108,4 +109,53 @@ func testContainsPoint() throws {
     let pointOff = CGPoint(x: 2, y: 1)
     #expect(line.contains(pointOn))
     #expect(!line.contains(pointOff, tolerance: 1e-6))
+}
+
+@Test
+func testLineAngleHorizontal() throws {
+    let line = Line(a: 0, b: 1, c: 0)
+    #expect(line.angle.degrees.isApproximatelyEqual(to: 0, absoluteTolerance: 1e-6))
+}
+
+@Test
+func testLineAngleVertical() throws {
+    let line = Line(a: 1, b: 0, c: 0)
+    #expect(line.angle.degrees.isApproximatelyEqual(to: -90, absoluteTolerance: 1e-6))
+}
+
+@Test
+func testLineAngle45Degrees() throws {
+    let line = Line(a: 1, b: -1, c: 0)
+    #expect(line.angle.degrees.isApproximatelyEqual(to: 45, absoluteTolerance: 1e-6))
+}
+
+@Test
+func testLineAngleNegative45Degrees() throws {
+    let line = Line(a: 1, b: 1, c: 0)
+    #expect(line.angle.degrees.isApproximatelyEqual(to: -45, absoluteTolerance: 1e-6))
+}
+
+@Test
+func testLineAngle30Degrees() throws {
+    let line = Line(a: sqrt(3), b: -1, c: 0)
+    #expect(line.angle.degrees.isApproximatelyEqual(to: 60, absoluteTolerance: 1e-6))
+}
+
+@Test
+func testLineAngle60Degrees() throws {
+    let line = Line(a: 1, b: -sqrt(3), c: 0)
+    #expect(line.angle.degrees.isApproximatelyEqual(to: 30, absoluteTolerance: 1e-6))
+}
+
+@Test
+func testLineAngleWithTranslation() throws {
+    let line = Line(a: 1, b: -1, c: 5) // y = x + 5
+    #expect(line.angle.degrees.isApproximatelyEqual(to: 45, absoluteTolerance: 1e-6))
+}
+
+@Test
+func testLineAngleConsistencyWithSlope() throws {
+    let line = Line(a: 2, b: -3, c: 1)
+    let angleFromSlope = Angle(radians: atan(line.slope))
+    #expect(line.angle.radians.isApproximatelyEqual(to: angleFromSlope.radians, absoluteTolerance: 1e-6))
 }

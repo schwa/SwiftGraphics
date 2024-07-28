@@ -536,6 +536,7 @@ let package = Package(
             name: "RenderKitSceneGraphTests",
             dependencies: [
                 "RenderKitSceneGraph",
+                "ApproximateEquality"
             ]
         ),
 
