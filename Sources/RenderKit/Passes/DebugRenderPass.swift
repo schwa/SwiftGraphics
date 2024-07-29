@@ -9,7 +9,7 @@ import RenderKitShadersLegacy
 import simd
 
 public struct DebugRenderPass: RenderPassProtocol {
-    public var id: PassID = "DebugRenderPass2"
+    public var id: PassID
 
     public var positionOffset: SIMD3<Float> = [0, 0, -0.001]
     public var cullMode: MTLCullMode = .back
@@ -25,7 +25,8 @@ public struct DebugRenderPass: RenderPassProtocol {
         var renderPipelineState: MTLRenderPipelineState
     }
 
-    public init(scene: SceneGraph) {
+    public init(id: PassID, scene: SceneGraph) {
+        self.id = id
         self.scene = scene
     }
 

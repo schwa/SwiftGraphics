@@ -128,25 +128,7 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
             gpuCounters?.updateRenderPassDescriptor(renderPassDescriptor)
             switch pass {
             case let pass as any RenderPassProtocol:
-                // TODO: IMPORTANT. this is still not right.
-                //                let isFirst = pass.id == renderPasses.first?.id
-                //                let isLast = pass.id == renderPasses.last?.id
-                //                if isFirst {
-                //                    currentRenderPassDescriptor.colorAttachments[0].loadAction = .clear
-                //                    currentRenderPassDescriptor.depthAttachment.loadAction = .clear
-                //                }
-                //                else {
-                //                    currentRenderPassDescriptor.colorAttachments[0].loadAction = .load
-                //                    currentRenderPassDescriptor.depthAttachment.loadAction = .load
-                //                }
-                //                if isLast {
-                //                    currentRenderPassDescriptor.colorAttachments[0].storeAction = .store
-                //                    currentRenderPassDescriptor.depthAttachment.storeAction = .dontCare
-                //                }
-                //                else {
-                //                    currentRenderPassDescriptor.colorAttachments[0].storeAction = .store
-                //                    currentRenderPassDescriptor.depthAttachment.storeAction = .store
-                //                }
+                // It is important that render passes have their render pass descriptor's load/store actions set correctly. You can use prePass to set that up.
                 guard let state = statesByPasses[pass.id] else {
                     throw BaseError.missingValue
                 }

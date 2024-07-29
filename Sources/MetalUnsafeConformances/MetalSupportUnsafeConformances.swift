@@ -689,3 +689,39 @@ extension MTLOrigin: @retroactive ExpressibleByArrayLiteral {
         self = .init(x: elements[0], y: elements[1], z: elements[2])
     }
 }
+
+extension MTLLoadAction: @retroactive CustomStringConvertible {
+    public var description: String {
+        switch self {
+        case .dontCare:
+            "dontCare"
+        case .load:
+            "load"
+        case .clear:
+            "clear"
+        @unknown default:
+            unimplemented()
+        }
+    }
+}
+
+extension MTLStoreAction: @retroactive CustomStringConvertible {
+    public var description: String {
+        switch self {
+        case .dontCare:
+            "dontCare"
+        case .store:
+            "store"
+        case .multisampleResolve:
+            "multisampleResolve"
+        case .storeAndMultisampleResolve:
+            "storeAndMultisampleResolve"
+        case .unknown:
+            "unknown"
+        case .customSampleDepthStore:
+            "customSampleDepthStore"
+        @unknown default:
+            unimplemented()
+        }
+    }
+}
