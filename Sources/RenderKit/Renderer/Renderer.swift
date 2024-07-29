@@ -62,7 +62,7 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
         assert(phase == .initialized)
         self.phase = .configured(sizeKnown: false)
         configuration.colorPixelFormat = .bgra8Unorm_srgb
-        // configuration.depthStencilPixelFormat = .depth32Float
+        configuration.depthStencilPixelFormat = .depth32Float
         try setupPasses(passes: passes.elements, configuration: &configuration)
         self.configuration = configuration
     }
