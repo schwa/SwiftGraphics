@@ -1,3 +1,4 @@
+import BaseSupport
 import Metal
 
 public extension MTLOrigin {
@@ -37,5 +38,29 @@ public extension MTLSize {
 public extension SIMD4<Double> {
     init(_ clearColor: MTLClearColor) {
         self = [clearColor.red, clearColor.green, clearColor.blue, clearColor.alpha]
+    }
+}
+
+public extension MTLIndexType {
+    var indexSize: Int {
+        switch self {
+        case .uint16:
+            MemoryLayout<UInt16>.size
+        case .uint32:
+            MemoryLayout<UInt32>.size
+        default:
+            fatalError(BaseError.illegalValue)
+        }
+    }
+}
+
+public extension MTLPrimitiveType {
+    var vertexCount: Int? {
+        switch self {
+        case .triangle:
+            3
+        default:
+            fatalError(BaseError.illegalValue)
+        }
     }
 }
