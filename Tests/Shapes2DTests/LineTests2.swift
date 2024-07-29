@@ -36,7 +36,7 @@ func testXForY() throws {
     let line = Line(a: 2, b: -1, c: 4)
     let x = line.x(forY: 3)
     #expect(x != nil)
-    #expect(x!.isApproximatelyEqual(to: 3.5))
+    #expect(x!.isApproximatelyEqual(to: 3.5, absoluteTolerance: 0.001))
 }
 
 @Test
@@ -44,7 +44,7 @@ func testYForX() throws {
     let line = Line(a: 2, b: -1, c: 4)
     let y = line.y(forX: 5)
     #expect(y != nil)
-    #expect(y!.isApproximatelyEqual(to: 6))
+    #expect(y!.isApproximatelyEqual(to: 6, absoluteTolerance: 0.001))
 }
 
 @Test
@@ -53,25 +53,25 @@ func testIntercepts() throws {
 
     let xIntercept = line.xIntercept
     #expect(xIntercept != nil)
-    #expect(xIntercept!.x.isApproximatelyEqual(to: 2))
-    #expect(xIntercept!.y.isApproximatelyEqual(to: 0))
+    #expect(xIntercept!.x.isApproximatelyEqual(to: 2, absoluteTolerance: 0.001))
+    #expect(xIntercept!.y.isApproximatelyEqual(to: 0, absoluteTolerance: 0.001))
 
     let yIntercept = line.yIntercept
     #expect(yIntercept != nil)
-    #expect(yIntercept!.x.isApproximatelyEqual(to: 0))
-    #expect(yIntercept!.y.isApproximatelyEqual(to: -4))
+    #expect(yIntercept!.x.isApproximatelyEqual(to: 0, absoluteTolerance: 0.001))
+    #expect(yIntercept!.y.isApproximatelyEqual(to: -4, absoluteTolerance: 0.001))
 }
 
 @Test
 func testSlope() throws {
     let line = Line(a: 2, b: -1, c: 4)
-    #expect(line.slope.isApproximatelyEqual(to: 2))
+    #expect(line.slope.isApproximatelyEqual(to: 2, absoluteTolerance: 0.001))
 }
 
 @Test
 func testInitWithPoints() throws {
     let line = Line(points: (CGPoint(x: 0, y: 0), CGPoint(x: 3, y: 4)))
-    #expect(line.slope.isApproximatelyEqual(to: 4.0/3.0))
+    #expect(line.slope.isApproximatelyEqual(to: 4.0/3.0, absoluteTolerance: 0.001))
     #expect(line.contains(CGPoint(x: 0, y: 0)))
     #expect(line.contains(CGPoint(x: 3, y: 4)))
 }
@@ -79,7 +79,7 @@ func testInitWithPoints() throws {
 @Test
 func testInitWithPointAndAngle() throws {
     let line = Line(point: CGPoint(x: 1, y: 1), angle: Angle(degrees: 45))
-    #expect(line.slope.isApproximatelyEqual(to: 1))
+    #expect(line.slope.isApproximatelyEqual(to: 1, absoluteTolerance: 0.001))
     #expect(line.contains(CGPoint(x: 1, y: 1)))
 }
 

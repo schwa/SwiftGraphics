@@ -30,7 +30,7 @@ func testLineSegmentLength() throws {
     let end = CGPoint(x: 3, y: 4)
     let segment = LineSegment(start, end)
 
-    #expect(segment.length.isApproximatelyEqual(to: 5.0))
+    #expect(segment.length.isApproximatelyEqual(to: 5.0, absoluteTolerance: 0.001))
 }
 
 @Test
@@ -53,7 +53,7 @@ func testLineSegmentParallel() throws {
     let parallel = segment.parallel(offset: offset)
 
     // Check that the parallel segment has the same length
-    #expect(segment.length.isApproximatelyEqual(to: parallel.length))
+    #expect(segment.length.isApproximatelyEqual(to: parallel.length, absoluteTolerance: 0.001))
 
     // Check that the parallel segment is offset by the correct distance
     let midpoint = CGPoint(x: (start.x + end.x) / 2, y: (start.y + end.y) / 2)
@@ -62,13 +62,13 @@ func testLineSegmentParallel() throws {
 
     let offsetDistance = sqrt(pow(midpoint.x - parallelMidpoint.x, 2) +
                               pow(midpoint.y - parallelMidpoint.y, 2))
-    #expect(offsetDistance.isApproximatelyEqual(to: abs(offset)))
+    #expect(offsetDistance.isApproximatelyEqual(to: abs(offset), absoluteTolerance: 0.001))
 
     // Check that the parallel segment is indeed parallel (same angle)
     let originalAngle = atan2(end.y - start.y, end.x - start.x)
     let parallelAngle = atan2(parallel.end.y - parallel.start.y,
                               parallel.end.x - parallel.start.x)
-    #expect(originalAngle.isApproximatelyEqual(to: parallelAngle))
+    #expect(originalAngle.isApproximatelyEqual(to: parallelAngle, absoluteTolerance: 0.001))
 }
 
 @Test

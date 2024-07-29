@@ -5,19 +5,6 @@ import simd
 // https://math.stackexchange.com/questions/237369/given-this-transformation-matrix-how-do-i-decompose-it-into-translation-rotati
 // https://github.com/g-truc/glm/blob/b3f87720261d623986f164b2a7f6a0a938430271/glm/gtx/matrix_decompose.inl
 
-public func isApproximatelyEqual(_ lhs: SIMD3<Float>, _ rhs: SIMD3<Float>, epsilon: Float) -> Bool {
-    let difference = abs(lhs - rhs)
-    return (0 ..< 3).allSatisfy { difference[$0] < epsilon }
-}
-
-public func isApproximatelyEqual(_ lhs: simd_float3x3, _ rhs: simd_float3x3, epsilon: Float) -> Bool {
-    zip(lhs.scalars, rhs.scalars).allSatisfy { abs($0 - $1) < epsilon }
-}
-
-public func isApproximatelyEqual(_ lhs: simd_float4x4, _ rhs: simd_float4x4, epsilon: Float) -> Bool {
-    zip(lhs.scalars, rhs.scalars).allSatisfy { abs($0 - $1) < epsilon }
-}
-
 public extension simd_float4x4 {
     var translation: SIMD3<Float> {
         columns.3.xyz
@@ -44,10 +31,10 @@ public extension simd_float4x4 {
         let invTop3x3Matrix = top3x3Matrix.inverse
         let inv3x3Translation = -(invTop3x3Matrix * translation)
         // Make sure we adhere to the conditions of a 4x4 invertible affine transform matrix
-        if !SIMDSupport.isApproximatelyEqual(inv4x4Top3x3, invTop3x3Matrix, epsilon: 1e-06) {
+        if !inv4x4Top3x3.isApproximatelyEqual(to: invTop3x3Matrix, absoluteTolerance: 1e-06) {
             return false
         }
-        if !SIMDSupport.isApproximatelyEqual(inv4x4Translation, inv3x3Translation, epsilon: 1e-06) {
+        if !inv4x4Translation.isApproximatelyEqual(to: inv3x3Translation, absoluteTolerance: 1e-06) {
             return false
         }
         return true
