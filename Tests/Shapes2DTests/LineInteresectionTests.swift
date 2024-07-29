@@ -1,8 +1,6 @@
-import ApproximateEquality
 import Testing
 import CoreGraphics
 @testable import Shapes2D
-import ApproximateEquality
 
 @Test
 func testLineSegmentIntersectionNone() throws {

@@ -1,5 +1,4 @@
 import Algorithms
-import ApproximateEquality
 import CoreGraphics
 import CoreGraphicsSupport
 import Foundation

@@ -1,5 +1,5 @@
 import Algorithms
-import ApproximateEquality
+import BaseSupport
 import CoreGraphics
 import CoreGraphicsSupport
 import Foundation
@@ -15,7 +15,7 @@ public struct LineSegment {
     }
 }
 
-extension LineSegment: ApproximateEquality {
+extension LineSegment {
     public func isApproximatelyEqual(to other: Self, absoluteTolerance: Double.Magnitude) -> Bool {
         start.isApproximatelyEqual(to: other.start, absoluteTolerance: CGPoint.Magnitude(absoluteTolerance))
             && end.isApproximatelyEqual(to: other.end, absoluteTolerance: CGPoint.Magnitude(absoluteTolerance))

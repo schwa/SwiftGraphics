@@ -3,7 +3,6 @@ import simd
 @testable import SIMDSupport
 import SwiftUI
 import Testing
-import ApproximateEquality
 
 // https://www.redcrab-software.com/en/Calculator/3x3/Matrix/Rotation-Matrix
 // https://www.wolframalpha.com/input?i=roll+pitch+yaw

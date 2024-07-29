@@ -1,4 +1,3 @@
-import ApproximateEquality
 import Foundation
 import Testing
 import CoreGraphics
