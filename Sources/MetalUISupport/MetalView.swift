@@ -106,8 +106,7 @@ internal class MetalViewModel: NSObject, MTKViewDelegate {
         }
         do {
             var configuration = view.configuration
-            guard size
-                    != .zero else {
+            guard size != .zero else {
                 fatalError("Zero size metal view.")
             }
             try drawableSizeWillChangeCallback(device, &configuration, size)
