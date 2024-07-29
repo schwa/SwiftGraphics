@@ -1,4 +1,3 @@
-import ApproximateEquality
 import CoreGraphics
 import CoreGraphicsSupport
 import SwiftUI

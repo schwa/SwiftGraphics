@@ -1,4 +1,3 @@
-import ApproximateEquality
 import simd
 
 // https://callumhay.blogspot.com/2010/10/decomposing-affine-transforms.html

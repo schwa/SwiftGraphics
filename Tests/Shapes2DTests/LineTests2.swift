@@ -1,4 +1,3 @@
-import ApproximateEquality
 import Testing
 import CoreGraphics
 @testable import Shapes2D

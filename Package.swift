@@ -47,7 +47,6 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-argument-parser", from: "1.3.0"),
         .package(url: "https://github.com/apple/swift-async-algorithms", from: "0.1.0"),
         .package(url: "https://github.com/ksemianov/WrappingHStack", from: "0.2.0"),
-        .package(url: "https://github.com/schwa/ApproximateEquality", from: "0.4.0"),
         .package(url: "https://github.com/schwa/Everything", from: "1.1.0"),
         .package(url: "https://github.com/schwa/MetalCompilerPlugin", branch: "jwight/logging"),
         .package(url: "https://github.com/schwa/swiftfields", from: "0.0.1"),
@@ -77,7 +76,6 @@ let package = Package(
         .target(
             name: "CoreGraphicsSupport",
             dependencies: [
-                "ApproximateEquality",
                 "BaseSupport",
             ],
             swiftSettings: [
@@ -131,7 +129,7 @@ let package = Package(
         .target(
             name: "GenericGeometryBase",
             dependencies: [
-                "ApproximateEquality",
+                "BaseSupport",
                 "CoreGraphicsSupport",
             ],
             swiftSettings: [
@@ -254,7 +252,7 @@ let package = Package(
             name: "Shapes2D",
             dependencies: [
                 .product(name: "Algorithms", package: "swift-algorithms"),
-                .product(name: "ApproximateEquality", package: "ApproximateEquality"),
+                "BaseSupport",
                 "CoreGraphicsSupport",
                 "GenericGeometryBase",
                 "SIMDSupport",
@@ -301,8 +299,8 @@ let package = Package(
         .target(
             name: "SIMDSupport",
             dependencies: [
+                "BaseSupport",
                 "CoreGraphicsSupport",
-                .product(name: "ApproximateEquality", package: "ApproximateEquality"),
             ],
             swiftSettings: [
             ]
@@ -535,8 +533,8 @@ let package = Package(
         .testTarget(
             name: "RenderKitSceneGraphTests",
             dependencies: [
+                "BaseSupport",
                 "RenderKitSceneGraph",
-                "ApproximateEquality"
             ]
         ),
 
