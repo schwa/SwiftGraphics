@@ -28,9 +28,9 @@ struct SimplePBRSceneGraphDemoView: View, DemoView {
 
     var body: some View {
         RenderView(passes: [
-            DiffuseShadingRenderPass(scene: scene),
-            UnlitShadingPass(scene: scene),
-            SimplePBRShadingPass(scene: scene),
+            DiffuseShadingRenderPass(id: "diffuse", scene: scene),
+            UnlitShadingPass(id: "unlit", scene: scene),
+            SimplePBRShadingPass(id: "pbr", scene: scene),
             //            DebugRenderPass(scene: scene),
         ])
         .showFrameEditor()
@@ -176,10 +176,11 @@ struct SimplePBRShadingPass: RenderPassProtocol {
         var bindings: Bindings
     }
 
-    var id: PassID = "SimplePBRShadingPass"
+    var id: PassID
     var scene: SceneGraph
 
-    init(scene: SceneGraph) {
+    init(id: PassID, scene: SceneGraph) {
+        self.id = id
         self.scene = scene
     }
 

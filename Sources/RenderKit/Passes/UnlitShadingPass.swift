@@ -35,10 +35,11 @@ public struct UnlitShadingPass: RenderPassProtocol {
         var bindings: Bindings
     }
 
-    public var id: PassID = "UnlitShadingPass"
+    public var id: PassID
     public var scene: SceneGraph
 
-    public init(scene: SceneGraph) {
+    public init(id: PassID, scene: SceneGraph) {
+        self.id = id
         self.scene = scene
     }
 

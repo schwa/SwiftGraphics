@@ -100,3 +100,14 @@ public extension EnvironmentValues {
     @Entry
     var rendererCallbacks: RendererCallbacks?
 }
+
+public extension View {
+    func rendererCallbacks(_ callbacks: RendererCallbacks) -> some View {
+        self.environment(\.rendererCallbacks, callbacks)
+    }
+
+    // Break out pre-render for convenience.
+    func rendererCallbacks(prePass: @escaping @Sendable (any PassProtocol, MTLCommandBuffer, PassInfo) -> Void) -> some View {
+        self.environment(\.rendererCallbacks, .init(prePass: prePass))
+    }
+}

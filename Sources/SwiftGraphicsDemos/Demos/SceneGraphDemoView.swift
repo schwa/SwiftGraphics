@@ -20,24 +20,32 @@ struct SceneGraphDemoView: View, DemoView {
     }
 
     var body: some View {
-        //        TimelineView(.animation) { timeline in
-        SceneGraphView(scene: $scene, passes: [
-            DiffuseShadingRenderPass(scene: scene),
-            UnlitShadingPass(scene: scene),
-            DebugRenderPass(scene: scene),
+        RenderView(passes: [
+            DiffuseShadingRenderPass(id: "diffuse", scene: scene),
+            UnlitShadingPass(id: "unlit", scene: scene),
+            DebugRenderPass(id: "debug", scene: scene),
         ])
-        //            .onChange(of: timeline.date) {
-        //                scene.modify(label: "model-1") { node in
-        //                    node?.transform.rotation.rollPitchYaw.roll = .degrees((timeline.date.timeIntervalSince1970 * 30).wrapped(to: 0...360))
-        //                }
-        //                scene.modify(label: "model-2") { node in
-        //                    node?.transform.rotation.rollPitchYaw.pitch = .degrees((timeline.date.timeIntervalSince1970 * 30).wrapped(to: 0...360))
-        //                }
-        //                scene.modify(label: "model-3") { node in
-        //                    node?.transform.rotation.rollPitchYaw.yaw = .degrees((timeline.date.timeIntervalSince1970 * 30).wrapped(to: 0...360))
-        //                }
-        //            }
-        //        }
+        .rendererCallbacks { pass, _, passInfo in
+            switch pass.id {
+            case "diffuse":
+                passInfo.currentRenderPassDescriptor!.colorAttachments[0].loadAction = .clear
+                passInfo.currentRenderPassDescriptor!.depthAttachment.loadAction = .clear
+                passInfo.currentRenderPassDescriptor!.colorAttachments[0].storeAction = .store
+                passInfo.currentRenderPassDescriptor!.depthAttachment.storeAction = .store
+            case "unlit":
+                passInfo.currentRenderPassDescriptor!.colorAttachments[0].loadAction = .load
+                passInfo.currentRenderPassDescriptor!.depthAttachment.loadAction = .load
+                passInfo.currentRenderPassDescriptor!.colorAttachments[0].storeAction = .store
+                passInfo.currentRenderPassDescriptor!.depthAttachment.storeAction = .store
+            case "debug":
+                passInfo.currentRenderPassDescriptor!.colorAttachments[0].loadAction = .load
+                passInfo.currentRenderPassDescriptor!.depthAttachment.loadAction = .load
+                passInfo.currentRenderPassDescriptor!.colorAttachments[0].storeAction = .store
+                passInfo.currentRenderPassDescriptor!.depthAttachment.storeAction = .dontCare
+            default:
+                break
+            }
+        }
     }
 }
 

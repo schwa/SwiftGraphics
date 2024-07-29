@@ -17,7 +17,7 @@ public struct DiffuseMaterial: MaterialProtocol {
 }
 
 public struct DiffuseShadingRenderPass: RenderPassProtocol {
-    public var id: PassID = "SceneGraph3RenderPass"
+    public var id: PassID
     public var scene: SceneGraph
     let vertexDescriptor = MTLVertexDescriptor(MDLVertexDescriptor.simpleVertexDescriptor)
     let lightAmbientColor = CGColor(gray: 1.0, alpha: 1.0)
@@ -30,7 +30,8 @@ public struct DiffuseShadingRenderPass: RenderPassProtocol {
         var depthStencilState: MTLDepthStencilState
     }
 
-    public init(scene: SceneGraph) {
+    public init(id: PassID, scene: SceneGraph) {
+        self.id = id
         self.scene = scene
     }
 
