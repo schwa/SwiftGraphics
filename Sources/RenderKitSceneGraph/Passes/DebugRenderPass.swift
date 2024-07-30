@@ -4,7 +4,7 @@ import MetalKit
 import MetalSupport
 import ModelIO
 import Observation
-import RenderKitSceneGraph
+import RenderKit
 import RenderKitShadersLegacy
 import simd
 

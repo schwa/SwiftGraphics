@@ -223,13 +223,11 @@ let package = Package(
         .target(
             name: "RenderKit",
             dependencies: [
-                "RenderKitShadersLegacy",
                 "SIMDSupport",
                 "MetalSupport",
                 "MetalUISupport",
                 .product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
                 "BaseSupport",
-                "RenderKitSceneGraph"
             ],
             resources: [
                 .process("Bundle.txt"),
@@ -524,6 +522,7 @@ let package = Package(
             name: "RenderKitSceneGraph",
             dependencies: [
                 "BaseSupport",
+                "RenderKitShadersLegacy",
                 "SIMDSupport",
             ],
             swiftSettings: [
