@@ -2,7 +2,6 @@ import Combine
 import MetalKit
 import ModelIO
 import os.log
-import RenderKitShadersLegacy
 import simd
 import SwiftUI
 

@@ -6,7 +6,6 @@ import MetalSupport
 import MetalUISupport
 import ModelIO
 import os.log
-import RenderKitShadersLegacy
 import simd
 import SwiftUI
 

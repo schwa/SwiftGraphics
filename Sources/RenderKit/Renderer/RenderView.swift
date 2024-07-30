@@ -3,7 +3,6 @@ import MetalUISupport
 import ModelIO
 import Observation
 import os.log
-import RenderKitShadersLegacy
 import simd
 import SIMDSupport
 import SwiftUI
