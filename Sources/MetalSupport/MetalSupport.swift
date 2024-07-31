@@ -52,6 +52,126 @@ public extension MTLAttributeDescriptor {
     }
 }
 
+public extension MTLBuffer {
+    func data() -> Data {
+        Data(bytes: contents(), count: length)
+    }
+
+    /// Update a MTLBuffer's contents using an inout type block
+    func with<T, R>(type: T.Type, _ block: (inout T) -> R) -> R {
+        let value = contents().bindMemory(to: T.self, capacity: 1)
+        return block(&value.pointee)
+    }
+
+    func withEx<T, R>(type: T.Type, count: Int, _ block: (UnsafeMutableBufferPointer<T>) -> R) -> R {
+        let pointer = contents().bindMemory(to: T.self, capacity: count)
+        let buffer = UnsafeMutableBufferPointer(start: pointer, count: count)
+        return block(buffer)
+    }
+
+    func contentsBuffer() -> UnsafeMutableRawBufferPointer {
+        UnsafeMutableRawBufferPointer(start: contents(), count: length)
+    }
+
+    func contentsBuffer<T>(of type: T.Type) -> UnsafeMutableBufferPointer<T> {
+        contentsBuffer().bindMemory(to: type)
+    }
+    func labelled(_ label: String) -> MTLBuffer {
+        self.label = label
+        return self
+    }
+}
+
+public extension MTLCommandBuffer {
+    func withRenderCommandEncoder<R>(descriptor: MTLRenderPassDescriptor, label: String? = nil, useDebugGroup: Bool = false, block: (MTLRenderCommandEncoder) throws -> R) throws -> R {
+        guard let renderCommandEncoder = makeRenderCommandEncoder(descriptor: descriptor) else {
+            throw BaseError.resourceCreationFailure
+        }
+        if let label {
+            renderCommandEncoder.label = label
+        }
+        defer {
+            renderCommandEncoder.endEncoding()
+        }
+        return try renderCommandEncoder.withDebugGroup("Encode \(label ?? "RenderCommandEncoder")", enabled: useDebugGroup) {
+            try block(renderCommandEncoder)
+        }
+    }
+
+    func withComputeCommandEncoder<R>(label: String? = nil, useDebugGroup: Bool = false, block: (MTLComputeCommandEncoder) throws -> R) rethrows -> R {
+        guard let commandEncoder = makeComputeCommandEncoder() else {
+            fatalError("Failed to make command encoder.")
+        }
+        if let label {
+            commandEncoder.label = label
+        }
+        defer {
+            commandEncoder.endEncoding()
+        }
+        return try commandEncoder.withDebugGroup("Encode \(label ?? "ComputeCommandEncoder")", enabled: useDebugGroup) {
+            try block(commandEncoder)
+        }
+    }
+
+    func withComputeCommandEncoder<R>(descriptor: MTLComputePassDescriptor, label: String? = nil, useDebugGroup: Bool = false, block: (MTLComputeCommandEncoder) throws -> R) rethrows -> R {
+        guard let commandEncoder = makeComputeCommandEncoder(descriptor: descriptor) else {
+            fatalError("Failed to make command encoder.")
+        }
+        if let label {
+            commandEncoder.label = label
+        }
+        defer {
+            commandEncoder.endEncoding()
+        }
+        return try commandEncoder.withDebugGroup("Encode \(label ?? "ComputeCommandEncoder")", enabled: useDebugGroup) {
+            try block(commandEncoder)
+        }
+    }
+}
+
+public extension MTLCommandEncoder {
+    func withDebugGroup<R>(_ string: String, enabled: Bool = true, _ closure: () throws -> R) rethrows -> R {
+        if enabled {
+            pushDebugGroup(string)
+        }
+        defer {
+            if enabled {
+                popDebugGroup()
+            }
+        }
+        return try closure()
+    }
+}
+
+public extension MTLCommandQueue {
+    func withCommandBuffer<R>(descriptor: MTLCommandBufferDescriptor? = nil, waitAfterCommit wait: Bool, block: (MTLCommandBuffer) throws -> R) throws -> R {
+        let descriptor = descriptor ?? .init()
+        guard let commandBuffer = makeCommandBuffer(descriptor: descriptor) else {
+            throw BaseError.resourceCreationFailure
+        }
+        defer {
+            commandBuffer.commit()
+            if wait {
+                commandBuffer.waitUntilCompleted()
+            }
+        }
+        return try block(commandBuffer)
+    }
+
+    func withCommandBuffer<R>(drawable: (any MTLDrawable)? = nil, block: (MTLCommandBuffer) throws -> R) throws -> R {
+        guard let commandBuffer = makeCommandBuffer() else {
+            throw BaseError.resourceCreationFailure
+        }
+        defer {
+            if let drawable {
+                commandBuffer.present(drawable)
+            }
+            commandBuffer.commit()
+        }
+        return try block(commandBuffer)
+    }
+}
+
 public extension MTLDepthStencilDescriptor {
     convenience init(depthCompareFunction: MTLCompareFunction, isDepthWriteEnabled: Bool) {
         self.init()
