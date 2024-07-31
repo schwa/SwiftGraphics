@@ -48,6 +48,36 @@ public extension MTLCommandBuffer {
             try block(renderCommandEncoder)
         }
     }
+
+    func withComputeCommandEncoder<R>(label: String? = nil, useDebugGroup: Bool = false, block: (MTLComputeCommandEncoder) throws -> R) rethrows -> R {
+        guard let commandEncoder = makeComputeCommandEncoder() else {
+            fatalError("Failed to make command encoder.")
+        }
+        if let label {
+            commandEncoder.label = label
+        }
+        defer {
+            commandEncoder.endEncoding()
+        }
+        return try commandEncoder.withDebugGroup("Encode \(label ?? "ComputeCommandEncoder")", enabled: useDebugGroup) {
+            try block(commandEncoder)
+        }
+    }
+
+    func withComputeCommandEncoder<R>(descriptor: MTLComputePassDescriptor, label: String? = nil, useDebugGroup: Bool = false, block: (MTLComputeCommandEncoder) throws -> R) rethrows -> R {
+        guard let commandEncoder = makeComputeCommandEncoder(descriptor: descriptor) else {
+            fatalError("Failed to make command encoder.")
+        }
+        if let label {
+            commandEncoder.label = label
+        }
+        defer {
+            commandEncoder.endEncoding()
+        }
+        return try commandEncoder.withDebugGroup("Encode \(label ?? "ComputeCommandEncoder")", enabled: useDebugGroup) {
+            try block(commandEncoder)
+        }
+    }
 }
 
 // MARK: -
