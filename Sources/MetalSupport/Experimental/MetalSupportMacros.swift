@@ -3,7 +3,7 @@
 import Metal
 
 @attached(extension, conformances: MetalBindable, names: named(bindingMappings))
-public macro MetalBindings() = #externalMacro(module: "MetalSupportMacros", type: "MetalBindingsMacro")
+public macro MetalBindings(function: MTLFunctionType? = nil) = #externalMacro(module: "MetalSupportMacros", type: "MetalBindingsMacro")
 
 @attached(peer)
 public macro MetalBinding(name: String? = nil, function: MTLFunctionType? = nil) = #externalMacro(module: "MetalSupportMacros", type: "MetalBindingMacro")

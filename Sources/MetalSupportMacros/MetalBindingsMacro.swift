@@ -13,6 +13,10 @@ extension MetalBindingsMacro: ExtensionMacro {
         conformingTo protocols: [TypeSyntax],
         in context: some MacroExpansionContext
     ) throws -> [ExtensionDeclSyntax] {
+        var defaultFunction: String? = nil
+        if let arguments = node.arguments, case let .argumentList(arguments) = arguments {
+            defaultFunction = arguments.first { $0.label?.trimmedDescription == "function" }?.expression.trimmedDescription
+        }
         // This is not a great way to detect if a declaration is public. Be nice to create a helper function that does it properly.
         let isPublic = declaration.modifiers.map(\.trimmedDescription).contains("public")
         // Get all variables within this declaration...
@@ -45,12 +49,12 @@ extension MetalBindingsMacro: ExtensionMacro {
             // If we have a @MetalBinding we can use it to optionally override name and type
             let binding = attributes.first { $0.attributeName.trimmedDescription == "MetalBinding" }
             guard let binding, let arguments = binding.arguments, case let .argumentList(arguments) = arguments else {
-                return ("\"\(identifier)\"", identifier, "nil")
+                return ("\"\(identifier)\"", identifier, defaultFunction ?? "nil")
             }
             // Get (optional) name parameter and (optional) function type parameter...
             let name = arguments.first { $0.label?.trimmedDescription == "name" }?.expression.trimmedDescription
             let function = arguments.first { $0.label?.trimmedDescription == "function" }?.expression.trimmedDescription
-            return (name ?? "\"\(identifier)\"", identifier, function ?? "nil")
+            return (name ?? "\"\(identifier)\"", identifier, function ?? defaultFunction ?? "nil")
         }
         let mappings = bindings.map { name, identifier, type in
             "(\(name), \(type), \\.\(identifier))"

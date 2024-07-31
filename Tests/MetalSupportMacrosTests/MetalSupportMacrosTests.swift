@@ -15,8 +15,8 @@ let testMacros: [String: Macro.Type] = [
 #endif
 
 final class MetalBindingsMacrosTests: XCTestCase {
-    func testMacro() throws {
-        #if canImport(MetalSupportMacros)
+    func testMacro1() throws {
+#if canImport(MetalSupportMacros)
         assertMacroExpansion(#"""
             @MetalBindings
             struct Bindings {
@@ -32,7 +32,7 @@ final class MetalBindingsMacrosTests: XCTestCase {
                 var oldName: Int
             }
             """#,
-            expandedSource: #"""
+                             expandedSource: #"""
             struct Bindings {
                 var color: Int
                 var name: String
@@ -48,10 +48,36 @@ final class MetalBindingsMacrosTests: XCTestCase {
                 ]
             }
             """#,
-            macros: testMacros
+                             macros: testMacros
         )
 #else
         throw XCTSkip("macros are only supported when running tests for the host platform")
 #endif
     }
-}
+
+
+    func testDefaultFunction() throws {
+        #if canImport(MetalSupportMacros)
+        assertMacroExpansion(#"""
+            @MetalBindings(function: .vertex)
+            struct Bindings {
+                var color: Int
+            }
+            """#,
+            expandedSource: #"""
+            struct Bindings {
+                var color: Int
+            }
+
+            extension Bindings: MetalBindable {
+                nonisolated(unsafe) static let bindingMappings: [(String, MTLFunctionType?, WritableKeyPath<Self, Int>)] = [
+                    ("color", .vertex, \.color)
+                ]
+            }
+            """#,
+            macros: testMacros
+        )
+#else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+#endif
+    }}
