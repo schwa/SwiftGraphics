@@ -8,11 +8,16 @@ import simd
 public struct GaussianSplatDistanceComputePass: ComputePassProtocol {
     public struct State: PassState {
         var pipelineState: MTLComputePipelineState
-        var bindingsModelMatrixIndex: Int
-        var bindingsCameraPositionIndex: Int
-        var bindingsSplatsIndex: Int
-        var bindingsSplatCountIndex: Int
-        var bindingsSplatDistancesIndex: Int
+        var bindings: Bindings
+    }
+
+    @MetalBindings
+    struct Bindings {
+        var modelMatrix: Int
+        var cameraPosition: Int
+        var splats: Int
+        var splatCount: Int
+        var splatDistances: Int
     }
 
     public var id = PassID("GaussianSplatPreCalcComputePass")
@@ -30,16 +35,11 @@ public struct GaussianSplatDistanceComputePass: ComputePassProtocol {
         let library = try device.makeDebugLibrary(bundle: .gaussianSplatShaders)
         let function = library.makeFunction(name: "GaussianSplatShaders::DistancePreCalc").forceUnwrap("No function found (found: \(library.functionNames))")
         let (pipelineState, reflection) = try device.makeComputePipelineState(function: function, options: .bindingInfo)
-        guard let reflection else {
-            throw BaseError.resourceCreationFailure
-        }
+        var bindings = Bindings(modelMatrix: 0, cameraPosition: 0, splats: 0, splatCount: 0, splatDistances: 0)
+        try bindings.updateBindings(with: reflection)
         return State(
             pipelineState: pipelineState,
-            bindingsModelMatrixIndex: try reflection.binding(for: "modelMatrix"),
-            bindingsCameraPositionIndex: try reflection.binding(for: "cameraPosition"),
-            bindingsSplatsIndex: try reflection.binding(for: "splats"),
-            bindingsSplatCountIndex: try reflection.binding(for: "splatCount"),
-            bindingsSplatDistancesIndex: try reflection.binding(for: "splatDistances")
+            bindings: bindings
         )
     }
 
@@ -49,11 +49,11 @@ public struct GaussianSplatDistanceComputePass: ComputePassProtocol {
         commandEncoder.label = "GaussianSplatPreCalcComputePass"
         commandEncoder.withDebugGroup("GaussianSplatPreCalcComputePass") {
             commandEncoder.setComputePipelineState(computePipelineState)
-            commandEncoder.setBytes(of: modelMatrix, index: state.bindingsModelMatrixIndex)
-            commandEncoder.setBytes(of: cameraPosition, index: state.bindingsCameraPositionIndex)
-            commandEncoder.setBuffer(splats.splats, index: state.bindingsSplatsIndex)
-            commandEncoder.setBytes(of: UInt32(splats.splats.count), index: state.bindingsSplatCountIndex)
-            commandEncoder.setBuffer(splats.distances, index: state.bindingsSplatDistancesIndex)
+            commandEncoder.setBytes(of: modelMatrix, index: state.bindings.modelMatrix)
+            commandEncoder.setBytes(of: cameraPosition, index: state.bindings.cameraPosition)
+            commandEncoder.setBuffer(splats.splats, index: state.bindings.splats)
+            commandEncoder.setBytes(of: UInt32(splats.splats.count), index: state.bindings.splatCount)
+            commandEncoder.setBuffer(splats.distances, index: state.bindings.splatDistances)
             let threadsPerThreadgroup = MTLSize(width: computePipelineState.maxTotalThreadsPerThreadgroup, height: 1, depth: 1)
             let numThreadgroups = (splats.splats.count + threadsPerThreadgroup.width - 1) / threadsPerThreadgroup.width
             let threadgroupsPerGrid = MTLSize(width: numThreadgroups, height: 1, depth: 1)

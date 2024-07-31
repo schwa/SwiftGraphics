@@ -8,10 +8,14 @@ import simd
 public struct GaussianSplatBitonicSortComputePass: ComputePassProtocol {
     public struct State: PassState {
         var pipelineState: MTLComputePipelineState
-        var bindingsUniformsIndex: Int
-        var bindingsSplatDistancesIndex: Int
-        var bindingsSplatIndicesIndex: Int
-        var frameCount: Int = 0
+        var bindings: Bindings
+    }
+
+    @MetalBindings
+    struct Bindings {
+        var uniforms: Int
+        var splatDistances: Int
+        var splatIndices: Int
     }
 
     public var id = PassID("GaussianSplatBitonicSortComputePass")
@@ -27,14 +31,13 @@ public struct GaussianSplatBitonicSortComputePass: ComputePassProtocol {
         let library = try device.makeDebugLibrary(bundle: .gaussianSplatShaders)
         let function = library.makeFunction(name: "GaussianSplatShaders::BitonicSortSplats").forceUnwrap("No function found")
         let (pipelineState, reflection) = try device.makeComputePipelineState(function: function, options: .bindingInfo)
-        guard let reflection else {
-            throw BaseError.resourceCreationFailure
-        }
+
+        var bindings = Bindings(uniforms: 0, splatDistances: 0, splatIndices: 0)
+        try bindings.updateBindings(with: reflection)
+
         return State(
             pipelineState: pipelineState,
-            bindingsUniformsIndex: try reflection.binding(for: "uniforms"),
-            bindingsSplatDistancesIndex: try reflection.binding(for: "splatDistances"),
-            bindingsSplatIndicesIndex: try reflection.binding(for: "splatIndices")
+            bindings: bindings
         )
     }
 
@@ -53,8 +56,8 @@ public struct GaussianSplatBitonicSortComputePass: ComputePassProtocol {
         commandEncoder.withDebugGroup("GaussianSplatBitonicSortComputePass") {
             commandEncoder.setComputePipelineState(computePipelineState)
 
-            commandEncoder.setBuffer(splats.indices, index: state.bindingsSplatIndicesIndex)
-            commandEncoder.setBuffer(splats.distances, index: state.bindingsSplatDistancesIndex)
+            commandEncoder.setBuffer(splats.indices, index: state.bindings.splatIndices)
+            commandEncoder.setBuffer(splats.distances, index: state.bindings.splatDistances)
             let splatCount = splats.splats.count
             let numStages = Int(log2(nextPowerOfTwo(Double(splatCount))))
             var threadgroupsPerGrid = (splatCount + computePipelineState.maxTotalThreadsPerThreadgroup - 1) / computePipelineState.maxTotalThreadsPerThreadgroup
@@ -67,7 +70,7 @@ public struct GaussianSplatBitonicSortComputePass: ComputePassProtocol {
 
                         // TODO: Changing all the uniforms per call() is a bit over the top but hey.
                         let uniforms = GaussianSplatSortUniforms(splatCount: UInt32(splatCount), groupWidth: UInt32(groupWidth), groupHeight: UInt32(groupHeight), stepIndex: UInt32(stepIndex))
-                        commandEncoder.setBytes(of: uniforms, index: state.bindingsUniformsIndex)
+                        commandEncoder.setBytes(of: uniforms, index: state.bindings.uniforms)
                         commandEncoder.dispatchThreadgroups(MTLSize(width: threadgroupsPerGrid), threadsPerThreadgroup: MTLSize(width: computePipelineState.maxTotalThreadsPerThreadgroup))
                     }
                 }
