@@ -522,6 +522,8 @@ let package = Package(
             name: "RenderKitSceneGraph",
             dependencies: [
                 "BaseSupport",
+                "MetalSupport",
+                "RenderKit",
                 "RenderKitShadersLegacy",
                 "SIMDSupport",
             ],
