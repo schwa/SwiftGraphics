@@ -238,9 +238,9 @@ let package = Package(
         .target(
             name: "RenderKitUISupport",
             dependencies: [
-                "RenderKit",
+                "RenderKitSceneGraph",
+                "GaussianSplatSupport", // TODO: Get rid of dependency
                 "SwiftUISupport",
-                "GaussianSplatSupport",
             ]
         ),
 

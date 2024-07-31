@@ -1,6 +1,6 @@
 import BaseSupport
 import CoreGraphicsSupport
-import GaussianSplatSupport
+import GaussianSplatSupport // TODO: Get rid of dependency
 import Metal
 import MetalKit
 import RenderKitSceneGraph
@@ -60,6 +60,7 @@ public struct SceneGraphMapView: View {
                 }
                 .zIndex(1)
                 .gesture(cameraDragGesture())
+            // TODO: We get rid of this by some kind "bounds" property for content
         case let splats as SplatCloud:
             Image(systemName: "questionmark.circle.fill").foregroundStyle(.black, Color(red: 1, green: 0, blue: 1))
                 .frame(width: 32, height: 32)
