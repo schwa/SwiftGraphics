@@ -12,14 +12,14 @@ func test1() throws {
 
     // Make sure our loaded splat cloud is at least initialized correct.
     let splatCloud = try SplatCloud(device: device, url: url)
-    let blank = splatCloud.indexedDistances.toArray()
+    let blank = splatCloud.indexedDistances[0].toArray()
     #expect(blank.allSatisfy { $0.distance == 0 })
     #expect(blank.enumerated().allSatisfy { UInt32($0) == $1.index })
 
     // Get distances for all splats on the GPU and make sure we have distance info for every splat.
     let distancePass = GaussianSplatDistanceComputePass(splats: splatCloud, modelMatrix: .identity, cameraPosition: .zero, sortRate: 0)
     try distancePass.computeOnce(device: device)
-    let unsorted = splatCloud.indexedDistances.toArray()
+    let unsorted = splatCloud.indexedDistances[0].toArray()
     #expect(unsorted.contains(where: { $0.distance != 0 }))
     #expect(unsorted.allSatisfy { $0.distance != 0 })
     #expect(unsorted.enumerated().allSatisfy { UInt32($0) == $1.index })
@@ -27,7 +27,7 @@ func test1() throws {
     // Do a GPU based sort
     let sortPass = GaussianSplatBitonicSortComputePass(splats: splatCloud, sortRate: 0)
     try sortPass.computeOnce(device: device)
-    let sorted = splatCloud.indexedDistances.toArray()
+    let sorted = splatCloud.indexedDistances[0].toArray()
 
     // Because GPU sort is stable indices may be in different order for same distances. Only compare distance.
     let cpuSorted = Array(unsorted.sorted(by: \.distance).reversed())
@@ -41,7 +41,7 @@ func test1() throws {
     // Do a second GPU based sort
     let sortPassAgain = GaussianSplatBitonicSortComputePass(splats: splatCloud, sortRate: 0)
     try sortPassAgain.computeOnce(device: device)
-    let sortedAgain = splatCloud.indexedDistances.toArray()
+    let sortedAgain = splatCloud.indexedDistances[0].toArray()
     #expect(sorted == sortedAgain)
 }
 
