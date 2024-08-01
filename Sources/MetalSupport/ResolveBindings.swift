@@ -4,6 +4,8 @@ import Metal
 public extension MTLComputePipelineReflection {
     func binding(for name: String) throws -> Int {
         guard let binding = bindings.first(where: { $0.name == name }) else {
+            let bindings = bindings.map(\.name)
+            logger?.debug("Failed to find binding for \(name). Valid binding names are: \(bindings.joined(separator: ", "))")
             throw BaseError.missingValue
         }
         return binding.index
