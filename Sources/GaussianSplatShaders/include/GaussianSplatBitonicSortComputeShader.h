@@ -22,8 +22,7 @@ namespace GaussianSplatShaders {
     void BitonicSortSplats(
         uint3 thread_position_in_grid [[thread_position_in_grid]],
         constant GaussianSplatSortUniforms &uniforms [[buffer(0)]],
-        constant half *splatDistances [[buffer(1)]],
-        device uint *splatIndices [[buffer(2)]]
+        device IndexedDistance *indexedDistances [[buffer(1)]]
     ) {
         const auto index = thread_position_in_grid.x;
         const auto hIndex = index & (uniforms.groupWidth - 1);
@@ -35,15 +34,15 @@ namespace GaussianSplatShaders {
             return;
         }
 
-        const auto valueLeft = splatIndices[indexLeft];
-        const auto valueRight = splatIndices[indexRight];
-        auto distanceLeft = splatDistances[valueLeft];
-        auto distanceRight = splatDistances[valueRight];
+        const auto valueLeft = indexedDistances[indexLeft];
+        const auto valueRight = indexedDistances[indexRight];
+        auto distanceLeft = valueLeft.distance;
+        auto distanceRight = valueRight.distance;
         // Swap entries if value is descending
         if (distanceLeft < distanceRight) {
             // TODO: Does metal have a swap function?
-            splatIndices[indexLeft] = valueRight;
-            splatIndices[indexRight] = valueLeft;
+            indexedDistances[indexLeft] = valueRight;
+            indexedDistances[indexRight] = valueLeft;
         }
     }
 }

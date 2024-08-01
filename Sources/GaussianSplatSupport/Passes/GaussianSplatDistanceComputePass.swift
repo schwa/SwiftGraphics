@@ -13,11 +13,11 @@ public struct GaussianSplatDistanceComputePass: ComputePassProtocol {
 
     @MetalBindings
     struct Bindings {
-        var modelMatrix: Int
-        var cameraPosition: Int
-        var splats: Int
-        var splatCount: Int
-        var splatDistances: Int
+        var modelMatrix: Int = -1
+        var cameraPosition: Int = -1
+        var splats: Int = -1
+        var splatCount: Int = -1
+        var indexedDistances: Int = -1
     }
 
     public var id = PassID("GaussianSplatPreCalcComputePass")
@@ -35,7 +35,7 @@ public struct GaussianSplatDistanceComputePass: ComputePassProtocol {
         let library = try device.makeDebugLibrary(bundle: .gaussianSplatShaders)
         let function = library.makeFunction(name: "GaussianSplatShaders::DistancePreCalc").forceUnwrap("No function found (found: \(library.functionNames))")
         let (pipelineState, reflection) = try device.makeComputePipelineState(function: function, options: .bindingInfo)
-        var bindings = Bindings(modelMatrix: 0, cameraPosition: 0, splats: 0, splatCount: 0, splatDistances: 0)
+        var bindings = Bindings()
         try bindings.updateBindings(with: reflection)
         return State(
             pipelineState: pipelineState,
@@ -53,7 +53,7 @@ public struct GaussianSplatDistanceComputePass: ComputePassProtocol {
             commandEncoder.setBytes(of: cameraPosition, index: state.bindings.cameraPosition)
             commandEncoder.setBuffer(splats.splats, index: state.bindings.splats)
             commandEncoder.setBytes(of: UInt32(splats.splats.count), index: state.bindings.splatCount)
-            commandEncoder.setBuffer(splats.distances, index: state.bindings.splatDistances)
+            commandEncoder.setBuffer(splats.indexedDistances, index: state.bindings.indexedDistances)
             let threadsPerThreadgroup = MTLSize(width: computePipelineState.maxTotalThreadsPerThreadgroup, height: 1, depth: 1)
             let numThreadgroups = (splats.splats.count + threadsPerThreadgroup.width - 1) / threadsPerThreadgroup.width
             let threadgroupsPerGrid = MTLSize(width: numThreadgroups, height: 1, depth: 1)

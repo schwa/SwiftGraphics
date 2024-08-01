@@ -13,9 +13,8 @@ public struct GaussianSplatBitonicSortComputePass: ComputePassProtocol {
 
     @MetalBindings
     struct Bindings {
-        var uniforms: Int
-        var splatDistances: Int
-        var splatIndices: Int
+        var uniforms: Int = -1
+        var indexedDistances: Int = -1
     }
 
     public var id = PassID("GaussianSplatBitonicSortComputePass")
@@ -32,7 +31,7 @@ public struct GaussianSplatBitonicSortComputePass: ComputePassProtocol {
         let function = library.makeFunction(name: "GaussianSplatShaders::BitonicSortSplats").forceUnwrap("No function found")
         let (pipelineState, reflection) = try device.makeComputePipelineState(function: function, options: .bindingInfo)
 
-        var bindings = Bindings(uniforms: 0, splatDistances: 0, splatIndices: 0)
+        var bindings = Bindings()
         try bindings.updateBindings(with: reflection)
 
         return State(
@@ -56,8 +55,7 @@ public struct GaussianSplatBitonicSortComputePass: ComputePassProtocol {
         commandEncoder.withDebugGroup("GaussianSplatBitonicSortComputePass") {
             commandEncoder.setComputePipelineState(computePipelineState)
 
-            commandEncoder.setBuffer(splats.indices, index: state.bindings.splatIndices)
-            commandEncoder.setBuffer(splats.distances, index: state.bindings.splatDistances)
+            commandEncoder.setBuffer(splats.indexedDistances, index: state.bindings.indexedDistances)
             let splatCount = splats.splats.count
             let numStages = Int(log2(nextPowerOfTwo(Double(splatCount))))
             var threadgroupsPerGrid = (splatCount + computePipelineState.maxTotalThreadsPerThreadgroup - 1) / computePipelineState.maxTotalThreadsPerThreadgroup

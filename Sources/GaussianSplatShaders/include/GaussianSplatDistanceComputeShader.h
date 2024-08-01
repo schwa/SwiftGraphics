@@ -18,7 +18,7 @@ namespace GaussianSplatShaders {
         constant simd_float3 &cameraPosition[[buffer(1)]],
         constant Splat *splats [[buffer(2)]],
         constant uint &splatCount [[buffer(3)]],
-        device half *splatDistances [[buffer(4)]]
+        device IndexedDistance *indexedDistances [[buffer(4)]]
     ) {
         const uint index = thread_position_in_grid.x;
         if (index >= splatCount) {
@@ -26,7 +26,8 @@ namespace GaussianSplatShaders {
         }
         const auto position = modelMatrix * float3(splats[index].position);
         const auto distance = distance_squared(position, cameraPosition);
-        splatDistances[index] = distance;
+        indexedDistances[index].index = index;
+        indexedDistances[index].distance = distance;
     }
 }
 #endif // __METAL_VERSION__

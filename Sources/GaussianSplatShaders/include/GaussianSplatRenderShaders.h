@@ -53,7 +53,7 @@ namespace GaussianSplatShaders {
         uint vertex_id[[vertex_id]],
         constant VertexUniforms &uniforms [[buffer(1)]],
         constant Splat *splats [[buffer(2)]],
-        constant uint *splatIndices [[buffer(3)]],
+        constant IndexedDistance *indexedDistances [[buffer(3)]],
         device MyCounters* my_counters [[buffer(4), function_constant(use_counters)]]
    ) {
         VertexOut out;
@@ -63,10 +63,10 @@ namespace GaussianSplatShaders {
         }
 
         const float2 vertexModelSpacePosition = in.position.xy;
-        auto splat = splats[splatIndices[instance_id]];
+        auto indexedDistance = indexedDistances[instance_id];
+        auto splat = splats[indexedDistance.index];
         const float4 splatWorldSpacePosition = uniforms.modelViewMatrix * float4(float3(splat.position), 1);
         const float4 splatClipSpacePosition = uniforms.projectionMatrix * splatWorldSpacePosition;
-
 
         const auto bounds = 1.2 * splatClipSpacePosition.w;
         if (splatClipSpacePosition.z < -splatClipSpacePosition.w
