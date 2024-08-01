@@ -58,7 +58,7 @@ public struct GaussianSplatDistanceComputePass: ComputePassProtocol {
             commandEncoder.setBytes(of: cameraPosition, index: state.bindings.cameraPosition)
             commandEncoder.setBuffer(splats.splats, index: state.bindings.splats)
             commandEncoder.setBytes(of: UInt32(splats.splats.count), index: state.bindings.splatCount)
-            commandEncoder.setBuffer(splats.indexedDistances, index: state.bindings.indexedDistances)
+            commandEncoder.setBuffer(splats.indexedDistances[0], index: state.bindings.indexedDistances)
             let threadsPerThreadgroup = MTLSize(width: computePipelineState.maxTotalThreadsPerThreadgroup, height: 1, depth: 1)
             let numThreadgroups = (splats.splats.count + threadsPerThreadgroup.width - 1) / threadsPerThreadgroup.width
             let threadgroupsPerGrid = MTLSize(width: numThreadgroups, height: 1, depth: 1)

@@ -139,3 +139,40 @@ extension MTLComputeCommandEncoder {
         }
     }
 }
+
+public struct TupleBuffered<Element> {
+    var elements: [Element]
+
+    public init(elements: [Element]) {
+        self.elements = elements
+    }
+
+    public mutating func rotate() {
+        let first = elements.removeFirst()
+        elements.append(first)
+    }
+
+    public subscript(_ index: Int) -> Element {
+        get {
+            elements[index]
+        }
+        set {
+            elements[index] = newValue
+        }
+    }
+}
+
+extension TupleBuffered: ExpressibleByArrayLiteral {
+    public init(arrayLiteral elements: Element...) {
+        self.elements = elements
+    }
+}
+
+extension TupleBuffered: Sendable where Element: Sendable {
+}
+
+extension TupleBuffered: Equatable where Element: Equatable {
+}
+
+extension TupleBuffered: Hashable where Element: Hashable {
+}
