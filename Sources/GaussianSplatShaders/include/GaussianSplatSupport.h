@@ -1,5 +1,10 @@
 #import <simd/simd.h>
 
+struct IndexedDistance {
+    unsigned int index;
+    float distance;
+};
+
 struct GaussianSplatUniforms {
     simd_float4x4 modelViewProjectionMatrix;
     simd_float4x4 modelViewMatrix;

@@ -23,10 +23,10 @@ namespace GaussianSplatShaders {
         uint vertex_id[[vertex_id]],
         constant VertexUniforms &uniforms [[buffer(1)]],
         constant Splat *splats [[buffer(2)]],
-        constant uint *splatIndices [[buffer(3)]]
-   ) {
+        constant IndexedDistance *indexedDistances [[buffer(3)]]
+    ) {
         VertexOut out;
-        auto splat = splats[splatIndices[instance_id]];
+        auto splat = splats[indexedDistances[instance_id].index];
         out.position = uniforms.modelViewProjectionMatrix * float4(float3(splat.position) + in.position, 1.0),
         out.color = float4(splat.color);
         return out;

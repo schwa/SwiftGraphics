@@ -24,14 +24,14 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
 
     @MetalBindings(function: .vertex)
     struct VertexBindings {
-        var uniforms: Int
-        var splats: Int
-        var splatIndices: Int
+        var uniforms: Int = -1
+        var splats: Int = -1
+        var indexedDistances: Int = -1
     }
 
     @MetalBindings(function: .fragment)
     struct FragmentBindings {
-        var uniforms: Int
+        var uniforms: Int = -1
     }
 
 
@@ -74,9 +74,9 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
             throw BaseError.resourceCreationFailure
         }
 
-        var vertexBindings = VertexBindings(uniforms: 0, splats: 0, splatIndices: 0)
+        var vertexBindings = VertexBindings()
         try vertexBindings.updateBindings(with: reflection)
-        var fragmentBindings = FragmentBindings(uniforms: 0)
+        var fragmentBindings = FragmentBindings()
         try fragmentBindings.updateBindings(with: reflection)
 
         let depthStencilDescriptor = MTLDepthStencilDescriptor(depthCompareFunction: .always, isDepthWriteEnabled: true)
@@ -125,7 +125,7 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
                     commandEncoder.setVertexBuffersFrom(mesh: state.quadMesh)
                     commandEncoder.setVertexBytes(of: uniforms, index: state.vertexBindings.uniforms)
                     commandEncoder.setVertexBuffer(splats.splats, offset: 0, index: state.vertexBindings.splats)
-                    commandEncoder.setVertexBuffer(splats.indices, offset: 0, index: state.vertexBindings.splatIndices)
+                    commandEncoder.setVertexBuffer(splats.indexedDistances, offset: 0, index: state.vertexBindings.indexedDistances)
 // TODO: FIXME
                     //                    if useVertexCounting {
 //                        commandEncoder.setVertexBuffer(state.vertexCounterBuffer, offset: 0, index: state.bindings.vertexCounterBuffer)

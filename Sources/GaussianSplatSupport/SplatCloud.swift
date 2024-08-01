@@ -2,23 +2,22 @@ import Metal
 import MetalSupport
 import simd
 import SIMDSupport
+import GaussianSplatShaders
 
 // TODO: @unchecked Sendable
 public struct SplatCloud: Equatable, @unchecked Sendable {
     public typealias Splat = SplatC
     public var splats: TypedMTLBuffer<Splat>
-    public var indices: TypedMTLBuffer<UInt32>
-    public var distances: TypedMTLBuffer<Float16>
+    public var indexedDistances: TypedMTLBuffer<IndexedDistance>
     public var cameraPosition: SIMD3<Float>
     public var boundingBox: (SIMD3<Float>, SIMD3<Float>)
 
     public init(device: MTLDevice, splats: TypedMTLBuffer<Splat>) throws {
         self.splats = splats
 
-        let indices = (0 ..< splats.count).map { UInt32($0) }
-        self.indices = try device.makeTypedBuffer(data: indices, options: .storageModeShared).labelled("Splats-Indices")
-        let distances = Array(repeating: Float16.zero, count: splats.count)
-        self.distances = try device.makeTypedBuffer(data: distances, options: .storageModeShared).labelled("Splats-Distances")
+        let indexedDistances = (0 ..< splats.count).map { IndexedDistance(index: UInt32($0), distance: 0.0) }
+
+        self.indexedDistances = try device.makeTypedBuffer(data: indexedDistances, options: .storageModeShared).labelled("Splats-IndexDistances")
         self.cameraPosition = [.nan, .nan, .nan]
 
         self.boundingBox = splats.withUnsafeBuffer { buffer in
@@ -39,8 +38,7 @@ public struct SplatCloud: Equatable, @unchecked Sendable {
 
     public static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.splats == rhs.splats
-            && lhs.indices == rhs.indices
-            && lhs.distances == rhs.distances
+            && lhs.indexedDistances == rhs.indexedDistances
             && lhs.cameraPosition == rhs.cameraPosition
     }
 }
