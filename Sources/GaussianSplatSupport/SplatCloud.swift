@@ -8,7 +8,7 @@ import GaussianSplatShaders
 public struct SplatCloud: Equatable, @unchecked Sendable {
     public typealias Splat = SplatC
     public var splats: TypedMTLBuffer<Splat>
-    public var indexedDistances: TypedMTLBuffer<IndexedDistance>
+    public var indexedDistances: TupleBuffered<TypedMTLBuffer<IndexedDistance>>
     public var cameraPosition: SIMD3<Float>
     public var boundingBox: (SIMD3<Float>, SIMD3<Float>)
 
@@ -17,7 +17,10 @@ public struct SplatCloud: Equatable, @unchecked Sendable {
 
         let indexedDistances = (0 ..< splats.count).map { IndexedDistance(index: UInt32($0), distance: 0.0) }
 
-        self.indexedDistances = try device.makeTypedBuffer(data: indexedDistances, options: .storageModeShared).labelled("Splats-IndexDistances")
+        self.indexedDistances = [
+            try device.makeTypedBuffer(data: indexedDistances, options: .storageModeShared).labelled("Splats-IndexDistances-1"),
+            try device.makeTypedBuffer(data: indexedDistances, options: .storageModeShared).labelled("Splats-IndexDistances-2"),
+        ]
         self.cameraPosition = [.nan, .nan, .nan]
 
         self.boundingBox = splats.withUnsafeBuffer { buffer in
