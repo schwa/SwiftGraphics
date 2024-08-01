@@ -100,7 +100,8 @@ public struct GaussianSplatRenderView: View {
                     GaussianSplatDistanceComputePass(
                         splats: splats,
                         modelMatrix: simd_float3x3(truncating: splatsNode.transform.matrix),
-                        cameraPosition: cameraNode.transform.translation
+                        cameraPosition: cameraNode.transform.translation,
+                        sortRate: sortRate
                     )
                     GaussianSplatBitonicSortComputePass(
                         splats: splats,
