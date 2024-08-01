@@ -37,6 +37,12 @@ func test1() throws {
     let expectedIndicesByDistance = Dictionary(uniqueKeysWithValues: unsorted.map({ ($0.index, $0.distance) }))
     let indicesByDistance = Dictionary(uniqueKeysWithValues: sorted.map({ ($0.index, $0.distance) }))
     #expect(indicesByDistance == expectedIndicesByDistance)
+
+    // Do a second GPU based sort
+    let sortPassAgain = GaussianSplatBitonicSortComputePass(splats: splatCloud, sortRate: 0)
+    try sortPassAgain.computeOnce(device: device)
+    let sortedAgain = splatCloud.indexedDistances.toArray()
+    #expect(sorted == sortedAgain)
 }
 
 extension TypedMTLBuffer {
