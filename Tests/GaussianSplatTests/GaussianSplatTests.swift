@@ -17,7 +17,7 @@ func test1() throws {
     #expect(blank.enumerated().allSatisfy { UInt32($0) == $1.index })
 
     // Get distances for all splats on the GPU and make sure we have distance info for every splat.
-    let distancePass = GaussianSplatDistanceComputePass(splats: splatCloud, modelMatrix: .identity, cameraPosition: .zero)
+    let distancePass = GaussianSplatDistanceComputePass(splats: splatCloud, modelMatrix: .identity, cameraPosition: .zero, sortRate: 0)
     try distancePass.computeOnce(device: device)
     let unsorted = splatCloud.indexedDistances.toArray()
     #expect(unsorted.contains(where: { $0.distance != 0 }))
