@@ -78,9 +78,7 @@ public struct GaussianSplatRenderView: View {
     }
 
     func makePass() throws -> GroupPass? {
-        logger?.debug("\(type(of: self)).\(#function)")
         guard let colorTexture, let upscaledTexture else {
-            logger?.warning("No texture(s)")
             return nil
         }
         guard let splatsNode = scene.firstNode(label: "splats"), let splats = splatsNode.content as? SplatCloud else {
