@@ -34,7 +34,6 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
         var uniforms: Int = -1
     }
 
-
     public var id: PassID = "GaussianSplatRenderPass"
     public var scene: SceneGraph
     public var debugMode: Bool
@@ -126,10 +125,10 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
                     commandEncoder.setVertexBytes(of: uniforms, index: state.vertexBindings.uniforms)
                     commandEncoder.setVertexBuffer(splats.splats, offset: 0, index: state.vertexBindings.splats)
                     commandEncoder.setVertexBuffer(splats.indexedDistances[0], offset: 0, index: state.vertexBindings.indexedDistances)
-// TODO: FIXME
+                    // TODO: FIXME
                     //                    if useVertexCounting {
-//                        commandEncoder.setVertexBuffer(state.vertexCounterBuffer, offset: 0, index: state.bindings.vertexCounterBuffer)
-//                    }
+                    //                        commandEncoder.setVertexBuffer(state.vertexCounterBuffer, offset: 0, index: state.bindings.vertexCounterBuffer)
+                    //                    }
                 }
                 commandEncoder.withDebugGroup("FragmentShader") {
                     commandEncoder.setFragmentBytes(of: uniforms, index: state.fragmentBindings.uniforms)
