@@ -13,7 +13,7 @@ extension MetalBindingsMacro: ExtensionMacro {
         conformingTo protocols: [TypeSyntax],
         in context: some MacroExpansionContext
     ) throws -> [ExtensionDeclSyntax] {
-        var defaultFunction: String? = nil
+        var defaultFunction: String?
         if let arguments = node.arguments, case let .argumentList(arguments) = arguments {
             defaultFunction = arguments.first { $0.label?.trimmedDescription == "function" }?.expression.trimmedDescription
         }

@@ -25,7 +25,7 @@ struct GraphPaperView: View {
     }
 
     var body: some View {
-        GeometryReader { geometry in
+        GeometryReader { _ in
             Canvas { context, size in
                 context.transform = transform
 

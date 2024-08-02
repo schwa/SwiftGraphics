@@ -7,7 +7,7 @@ public extension CGPoint {
 
     func isApproximatelyEqual(to rhs: Self, absoluteTolerance: Magnitude) -> Bool {
         x.isApproximatelyEqual(to: rhs.x, absoluteTolerance: absoluteTolerance)
-        && y.isApproximatelyEqual(to: rhs.y, absoluteTolerance: absoluteTolerance)
+            && y.isApproximatelyEqual(to: rhs.y, absoluteTolerance: absoluteTolerance)
     }
 }
 
