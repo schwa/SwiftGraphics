@@ -1,8 +1,8 @@
+import GaussianSplatShaders
 import Metal
 import MetalSupport
 import simd
 import SIMDSupport
-import GaussianSplatShaders
 
 // TODO: @unchecked Sendable
 public struct SplatCloud: Equatable, @unchecked Sendable {
@@ -23,7 +23,7 @@ public struct SplatCloud: Equatable, @unchecked Sendable {
         ]
         self.cameraPosition = [.nan, .nan, .nan]
 
-        self.boundingBox = splats.withUnsafeBuffer { buffer in
+        self.boundingBox = splats.withUnsafeBufferPointer { buffer in
             let positions = buffer.map { SIMD3<Float>($0.position) }
             // swiftlint:disable:next reduce_into
             let minimums = positions.reduce([.greatestFiniteMagnitude, .greatestFiniteMagnitude, .greatestFiniteMagnitude], min)

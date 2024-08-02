@@ -77,5 +77,4 @@ public extension MTLTexture {
             return try destinationTexture.cgImage()
         }
     }
-
 }
