@@ -55,7 +55,7 @@ public struct GaussianSplatBitonicSortComputePass: ComputePassProtocol {
         commandEncoder.withDebugGroup("GaussianSplatBitonicSortComputePass") {
             commandEncoder.setComputePipelineState(computePipelineState)
 
-            commandEncoder.setBuffer(splats.indexedDistances[0], index: state.bindings.indexedDistances)
+            commandEncoder.setBuffer(splats.indexedDistances[0], offset: 0, index: state.bindings.indexedDistances)
             let splatCount = splats.splats.count
             let numStages = Int(log2(nextPowerOfTwo(Double(splatCount))))
             var threadgroupsPerGrid = (splatCount + computePipelineState.maxTotalThreadsPerThreadgroup - 1) / computePipelineState.maxTotalThreadsPerThreadgroup

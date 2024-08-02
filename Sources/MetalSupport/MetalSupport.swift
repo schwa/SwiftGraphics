@@ -52,8 +52,6 @@ public extension MTLAttributeDescriptor {
     }
 }
 
-
-
 public extension MTLDepthStencilDescriptor {
     convenience init(depthCompareFunction: MTLCompareFunction, isDepthWriteEnabled: Bool) {
         self.init()
