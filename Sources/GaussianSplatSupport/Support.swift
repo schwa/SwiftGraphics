@@ -1,6 +1,6 @@
 import BaseSupport
 import Foundation
-import Metal
+@preconcurrency import Metal
 import simd
 import SIMDSupport
 
@@ -79,7 +79,7 @@ public extension MTLDevice {
     }
 }
 
-public struct TypedMTLBuffer<T>: Equatable {
+public struct TypedMTLBuffer<T>: Equatable, Sendable {
     // TODO: Make private.
     public var base: MTLBuffer
 
@@ -102,10 +102,17 @@ public struct TypedMTLBuffer<T>: Equatable {
 }
 
 public extension TypedMTLBuffer {
-    func withUnsafeBuffer<R>(_ block: (UnsafeBufferPointer<T>) throws -> R) rethrows -> R {
+    func withUnsafeBufferPointer<R>(_ block: (UnsafeBufferPointer<T>) throws -> R) rethrows -> R {
         let contents = base.contents()
         let pointer = contents.bindMemory(to: T.self, capacity: count)
         let buffer = UnsafeBufferPointer(start: pointer, count: count)
+        return try block(buffer)
+    }
+
+    func withUnsafeMutableBufferPointer<R>(_ block: (UnsafeMutableBufferPointer<T>) throws -> R) rethrows -> R {
+        let contents = base.contents()
+        let pointer = contents.bindMemory(to: T.self, capacity: count)
+        let buffer = UnsafeMutableBufferPointer(start: pointer, count: count)
         return try block(buffer)
     }
 
