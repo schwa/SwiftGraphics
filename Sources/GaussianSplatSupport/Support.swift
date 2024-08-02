@@ -56,10 +56,13 @@ extension simd_quatf {
     }
 }
 
+@dynamicMemberLookup
 public struct TupleBuffered<Element> {
+    var keys: [String: Int]
     var elements: [Element]
 
-    public init(elements: [Element]) {
+    public init(keys: [String], elements: [Element]) {
+        self.keys = Dictionary(uniqueKeysWithValues: zip(keys, keys.indices))
         self.elements = elements
     }
 
@@ -68,19 +71,19 @@ public struct TupleBuffered<Element> {
         elements.append(first)
     }
 
-    public subscript(_ index: Int) -> Element {
+    public subscript(dynamicMember key: String) -> Element {
         get {
-            elements[index]
+            guard let index = keys[key] else {
+                fatalError("No index for key \(key)")
+            }
+            return elements[index]
         }
         set {
+            guard let index = keys[key] else {
+                fatalError("No index for key \(key)")
+            }
             elements[index] = newValue
         }
-    }
-}
-
-extension TupleBuffered: ExpressibleByArrayLiteral {
-    public init(arrayLiteral elements: Element...) {
-        self.elements = elements
     }
 }
 
