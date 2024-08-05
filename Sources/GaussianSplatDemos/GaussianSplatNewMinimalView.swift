@@ -65,7 +65,6 @@ public struct GaussianSplatNewMinimalView: View {
             }
     }
 
-
     @State
     private var cameraConeConstraint = CameraConeConstraint(cameraCone: .init(apex: [0, 0, 0], axis: [0, 1, 0], apexToTopBase: 0, topBaseRadius: 2, bottomBaseRadius: 2, height: 2))
 }
