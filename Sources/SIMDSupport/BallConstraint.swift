@@ -7,6 +7,7 @@ public struct BallConstraint: Equatable {
     public var rollPitchYaw: RollPitchYaw
 
     public var transform: Transform {
+        // TODO: Is order correct (probably not)
         Transform((rollPitchYaw.matrix4x4 * simd_float4x4(translate: [0, 0, radius])))
     }
 
