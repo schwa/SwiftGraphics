@@ -62,7 +62,6 @@ struct DemosView: View {
             List(selection: $currentDemo) {
                 row(for: LineDemoView.self)
                 group(named: "Gaussian Splat") {
-                    row(for: GaussianSplatMinimalView.self)
                     row(for: GaussianSplatView.self)
                     row(for: SplatCloudInfoView.self)
                 }
