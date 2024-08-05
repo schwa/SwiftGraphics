@@ -64,7 +64,6 @@ struct SceneGraphDemoView: View, DemoView {
             .background(Color.white)
             .padding()
         }
-
     }
 }
 
