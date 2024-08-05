@@ -2,6 +2,7 @@ import Projection
 import simd
 import SIMDSupport
 import SwiftUI
+import RenderKitSceneGraph
 
 struct CameraConeDemoView: DemoView {
     @State
@@ -152,42 +153,7 @@ extension Path3D {
     }
 }
 
-private struct CameraCone {
-    var apex: SIMD3<Float>
-    var axis: SIMD3<Float>
-    var apexToTopBase: Float
-    var topBaseRadius: Float
-    var bottomBaseRadius: Float
-    var height: Float
-}
-
-fileprivate extension CameraCone {
-    func position(h: Float, angle: Angle) -> SIMD3<Float> {
-        // Ensure h is between 0 and 1
-        let clampedH = max(0, min(1, h))
-
-        // Calculate the radius at height h
-        let radius = topBaseRadius + (bottomBaseRadius - topBaseRadius) * clampedH
-
-        // Calculate the center point at height h
-        let center = apex + axis * (apexToTopBase + height * clampedH)
-
-        // Calculate the point on the circle at the given angle
-        let angleInRadians = Float(angle.radians)
-        let x = radius * cos(angleInRadians)
-        let z = radius * sin(angleInRadians)
-
-        // Create a coordinate system where Y is along the axis
-        let up = axis
-        let right = SIMD3<Float>(up.z, up.x, up.y) // Arbitrary perpendicular vector
-        let forward = simd_cross(up, right)
-
-        // Transform the point to the cone's coordinate system
-        return center + right * x + forward * z
-    }
-}
-
-fileprivate extension GraphicsContext3D {
+extension GraphicsContext3D {
     func draw(cone: CameraCone) {
         var path = Path3D()
 
