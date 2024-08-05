@@ -2,17 +2,20 @@ import simd
 import SwiftUI
 
 public struct CameraConeConstraint: Equatable {
-    public var cameraCone: CameraCone = .init(apex: [0, 0, 0], axis: [1, 0, 0], apexToTopBase: 0, topBaseRadius: 2, bottomBaseRadius: 2, height: 2)
-    public var lookAt: SIMD3<Float> = .zero
+    public var cameraCone: CameraCone
+    public var lookAt: SIMD3<Float>
     public var position: SIMD3<Float> {
         cameraCone.position(h: Float(height), angle: angle)
     }
 
-    public var angle: Angle = .zero
-    public var height: Double = 0.5
+    public var angle: Angle
+    public var height: Double
 
-    public init() {
-        // TODO
+    public init(cameraCone: CameraCone, lookAt: SIMD3<Float> = .zero, angle: Angle = .zero, height: Double = .zero) {
+        self.cameraCone = cameraCone
+        self.lookAt = lookAt
+        self.angle = angle
+        self.height = height
     }
 }
 

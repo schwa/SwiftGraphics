@@ -13,6 +13,9 @@ struct SceneGraphDemoView: View, DemoView {
     @State
     private var scene: SceneGraph
 
+    @State
+    private var cameraConeConstraint = CameraConeConstraint(cameraCone: .init(apex: [0, 0, 0], axis: [0, 1, 0], apexToTopBase: 0, topBaseRadius: 2, bottomBaseRadius: 2, height: 2))
+
     init() {
         let device = MTLCreateSystemDefaultDevice()!
         let scene = try! SceneGraph.demo(device: device)
@@ -46,6 +49,22 @@ struct SceneGraphDemoView: View, DemoView {
                 break
             }
         }
+        .draggableParameter($cameraConeConstraint.height, axis: .vertical, range: 0...1, scale: 0.01, behavior: .clamping)
+        .draggableParameter($cameraConeConstraint.angle.degrees, axis: .horizontal, range: 0...360, scale: 0.1, behavior: .wrapping)
+        .onChange(of: cameraConeConstraint.position, initial: true) {
+            let cameraPosition = cameraConeConstraint.position
+            scene.currentCameraNode!.transform.matrix = look(at: cameraConeConstraint.lookAt, from: cameraPosition, up: [0, 1, 0])
+        }
+        .overlay(alignment: .bottom) {
+            VStack {
+                Text("\(cameraConeConstraint.height)")
+                Text("\(cameraConeConstraint.angle)")
+            }
+            .padding()
+            .background(Color.white)
+            .padding()
+        }
+
     }
 }
 
