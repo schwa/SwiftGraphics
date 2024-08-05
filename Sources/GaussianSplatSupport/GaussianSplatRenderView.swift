@@ -10,6 +10,7 @@ import RenderKitSceneGraph
 import simd
 import SIMDSupport
 import SwiftUI
+import SwiftUISupport
 #if os(iOS)
 import UIKit
 #endif

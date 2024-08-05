@@ -158,6 +158,9 @@ public extension Transform {
     init(scale: SIMD3<Float> = .unit, rotation: simd_float4x4, translation: SIMD3<Float> = .zero) {
         storage = .srt(SRT(scale: scale, rotation: rotation, translation: translation))
     }
+    init(scale: SIMD3<Float> = .unit, roll: Angle, pitch: Angle, yaw: Angle, translation: SIMD3<Float> = .zero) {
+        storage = .srt(SRT(scale: scale, rotation: .rollPitchYaw(.init(roll: roll, pitch: pitch, yaw: yaw)), translation: translation))
+    }
 }
 
 public extension Transform {

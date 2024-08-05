@@ -1,6 +1,7 @@
 import Foundation
 import simd
 import SIMDSupport
+import SwiftUI
 
 public extension Node {
     func dump() -> String {
@@ -32,6 +33,9 @@ public extension Node {
     }
     func transform(rotation: Rotation) -> Node {
         transform(Transform(rotation: rotation))
+    }
+    func transform(roll: Angle, pitch: Angle, yaw: Angle) -> Node {
+        transform(Transform(roll: roll, pitch: pitch, yaw: yaw))
     }
     func transform(translation: SIMD3<Float>) -> Node {
         transform(.translation(translation))

@@ -16,8 +16,21 @@ public struct GraphicsContext3D {
 
     public func stroke(path: Path3D, with shading: GraphicsContext.Shading, style: StrokeStyle) {
         let viewProjectionTransform = projection.projectionTransform * projection.viewTransform
-        let path = Path { path2D in
-            for element in path.elements {
+        let path = path.project(projection, viewProjectionTransform: viewProjectionTransform)
+        graphicsContext2D.stroke(path, with: shading, style: style)
+    }
+
+    public func fill(path: Path3D, with shading: GraphicsContext.Shading) {
+        let viewProjectionTransform = projection.projectionTransform * projection.viewTransform
+        let path = path.project(projection, viewProjectionTransform: viewProjectionTransform)
+        graphicsContext2D.fill(path, with: shading)
+    }
+}
+
+extension Path3D {
+    func project(_ projection: Projection3DHelper, viewProjectionTransform: simd_float4x4) -> Path {
+        Path { path2D in
+            for element in elements {
                 switch element {
                 case .move(let point):
                     let transform = projection.clipTransform * viewProjectionTransform
@@ -34,6 +47,5 @@ public struct GraphicsContext3D {
                 }
             }
         }
-        graphicsContext2D.stroke(path, with: shading, style: style)
     }
 }

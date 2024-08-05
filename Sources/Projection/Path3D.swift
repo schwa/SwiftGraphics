@@ -31,6 +31,12 @@ public struct Path3D {
     }
 }
 
+public extension Path3D {
+    mutating func addPath(_ path: Path3D) {
+        elements.append(contentsOf: path.elements)
+    }
+}
+
 extension Path3D: CustomStringConvertible {
     public var description: String {
         "Path3D(elements: \(elements.map(\.description).joined(separator: ", "))"

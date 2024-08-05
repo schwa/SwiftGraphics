@@ -60,9 +60,10 @@ struct DemosView: View {
     var body: some View {
         NavigationSplitView {
             List(selection: $currentDemo) {
-                row(for: LineDemoView.self)
+                row(for: CameraConeDemoView.self)
                 group(named: "Gaussian Splat") {
                     row(for: GaussianSplatView.self)
+                    row(for: GaussianSplatNewMinimalView.self)
                     row(for: SplatCloudInfoView.self)
                 }
                 group(named: "RenderKit") {
@@ -101,6 +102,7 @@ struct DemosView: View {
                     row(for: SketchDemoView.self)
                     row(for: SplineDemoView.self)
                     row(for: TriangleReflectionView.self)
+                    row(for: LineDemoView.self)
                 }
                 group(named: "Failing", disclosed: false) {
                     row(for: CSGDemoView.self)  // TODO: Broken
