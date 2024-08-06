@@ -3,6 +3,8 @@ import CoreGraphicsSupport
 
 // TODO: Too many intersection types in here. Cleanup.
 
+// swiftlint:disable force_unwrapping
+
 public extension LineSegment {
     func contains(_ point: CGPoint, tolerance: Double = 0.0) -> Bool {
         if point.x < min(start.x, end.x) - tolerance || point.x > max(start.x, end.x) + tolerance {

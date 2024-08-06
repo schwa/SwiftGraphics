@@ -14,7 +14,6 @@ struct SceneGraphDemoView: View, DemoView {
     @State
     private var scene: SceneGraph
 
-
     init() {
         let device = MTLCreateSystemDefaultDevice()!
         let scene = try! SceneGraph.demo(device: device)

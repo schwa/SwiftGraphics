@@ -32,7 +32,7 @@ public extension SceneGraph {
 public extension SceneGraph {
     var unsafeCurrentCameraNode: Node {
         get {
-            currentCameraNode!
+            currentCameraNode.forceUnwrap("No current camera node")
         }
         set {
             currentCameraNode = newValue

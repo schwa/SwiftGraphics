@@ -18,9 +18,6 @@ struct XYZRotationTests {
         (RollPitchYaw(x: .degrees(10), y: .degrees(20), z: .degrees(30)), simd_float3x3([0.8137976, 0.54383814, -0.20487414], [-0.46984628, 0.8231729, 0.31879574], [0.3420201, -0.16317587, 0.92541647])),
     ])
     func testBasic(rotation: RollPitchYaw, matrix: simd_float3x3) {
-        let result = rotation.matrix3x3
-        #expect(result.isApproximatelyEqual(to: matrix, absoluteTolerance: tolerance))
-
         let result2 = rotation.toMatrix3x3(order: .zyx)
         #expect(result2.isApproximatelyEqual(to: matrix, absoluteTolerance: tolerance))
     }
@@ -91,9 +88,7 @@ struct XYZRotationTests {
             #expect(result.isApproximatelyEqual(to: expected, absoluteTolerance: tolerance), "Failed for order: \(order)")
         }
     }
-}
 
-struct TestMatrixRotation {
     @Test(arguments: [
         (Angle(degrees: 0), SIMD3<Float>(1, 0, 0)),
         (Angle(degrees: 0), SIMD3<Float>(0, 1, 0)),

@@ -71,7 +71,7 @@ struct VolumetricRenderPass: RenderPassProtocol {
                     // Vertex Buffer Index 2
                     let modelUniforms = VolumeTransforms(
                         modelViewMatrix: element.modelViewMatrix,
-                        textureMatrix: simd_float4x4(translate: [0.5, 0.5, 0.5]) * rollPitchYaw.matrix4x4 * simd_float4x4(translate: [-0.5, -0.5, -0.5])
+                        textureMatrix: simd_float4x4(translate: [0.5, 0.5, 0.5]) * rollPitchYaw.toMatrix4x4(order: .rollPitchYaw) * simd_float4x4(translate: [-0.5, -0.5, -0.5])
                     )
                     commandEncoder.setVertexBytes(of: modelUniforms, index: 2)
                     // Vertex Buffer Index 3
