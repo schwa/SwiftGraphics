@@ -107,7 +107,7 @@ public struct SceneGraphMapView: View {
     }
 }
 
-extension Node: FirstPersonCameraProtocol {
+extension Node {
     var target: SIMD3<Float> {
         get {
             // transform.translation.xz

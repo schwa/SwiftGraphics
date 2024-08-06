@@ -60,6 +60,23 @@ public extension XYZRotation {
     }
 }
 
+//    // Helper function to create a rotation matrix from RollPitchYaw
+//    func createRotationMatrix(from orientation: RollPitchYaw) -> simd_float4x4 {
+//        let cx = cos(Float(orientation.pitch.radians))
+//        let sx = sin(Float(orientation.pitch.radians))
+//        let cy = cos(Float(orientation.yaw.radians))
+//        let sy = sin(Float(orientation.yaw.radians))
+//        let cz = cos(Float(orientation.roll.radians))
+//        let sz = sin(Float(orientation.roll.radians))
+//
+//        return simd_float4x4(
+//            SIMD4<Float>(cy * cz, cx * sz + sx * sy * cz, sx * sz - cx * sy * cz, 0),
+//            SIMD4<Float>(-cy * sz, cx * cz - sx * sy * sz, sx * cz + cx * sy * sz, 0),
+//            SIMD4<Float>(sy, -sx * cy, cx * cy, 0),
+//            SIMD4<Float>(0, 0, 0, 1)
+//        )
+//    }
+
 public extension XYZRotation {
     init(target: Target = .object, matrix: simd_float3x3) {
         // https://web.archive.org/web/20220428033032/
