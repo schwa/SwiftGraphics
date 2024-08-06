@@ -27,7 +27,7 @@ public struct FirstPerson3DGameControllerViewModifier: ViewModifier {
                         let deltaTime = now.timeIntervalSince(lastUpdate)
                         fpvController.update(deltaTime: deltaTime)
                     }
-                    lastUpdate = lastUpdate
+                    lastUpdate = now
                 }
                 .onChange(of: fpvController.transform) {
                     transform.matrix = fpvController.transform
