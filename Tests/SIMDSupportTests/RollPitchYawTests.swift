@@ -58,3 +58,111 @@ internal extension float4x4 {
         ))
     }
 }
+
+struct XYZRotationTests {
+    let tolerance: Float = 1e-6
+
+    @Test
+    func identityRotation() {
+        let rotation = XYZRotation(x: Angle(radians: 0), y: Angle(radians: 0), z: Angle(radians: 0))
+        let identity = simd_float3x3(1)
+
+        for order in XYZRotation.Order.allCases {
+            let result = rotation.toMatrix3x3(order: order)
+            #expect(result.isApproximatelyEqual(to: identity, absoluteTolerance: tolerance))
+        }
+    }
+
+    @Test
+    func xRotation() {
+        let angle = Angle(degrees: 45) // 45 degrees
+        let rotation = XYZRotation(x: angle, y: Angle(radians: 0), z: Angle(radians: 0))
+        let expected = simd_float3x3(
+            simd_float3(1, 0, 0),
+            simd_float3(0, Float(cos(angle.radians)), Float(sin(angle.radians))),
+            simd_float3(0, Float(-sin(angle.radians)), Float(cos(angle.radians)))
+        )
+
+        for order in XYZRotation.Order.allCases {
+            let result = rotation.toMatrix3x3(order: order)
+            #expect(result.isApproximatelyEqual(to: expected, absoluteTolerance: tolerance))
+        }
+    }
+
+    @Test
+    func yRotation() {
+        let angle = Angle(degrees: 60) // 60 degrees
+        let rotation = XYZRotation(x: Angle(radians: 0), y: angle, z: Angle(radians: 0))
+        let expected = simd_float3x3(
+            simd_float3(Float(cos(angle.radians)), 0, Float(-sin(angle.radians))),
+            simd_float3(0, 1, 0),
+            simd_float3(Float(sin(angle.radians)), 0, Float(cos(angle.radians)))
+        )
+
+        for order in XYZRotation.Order.allCases {
+            let result = rotation.toMatrix3x3(order: order)
+            #expect(result.isApproximatelyEqual(to: expected, absoluteTolerance: tolerance))
+        }
+    }
+
+    @Test
+    func zRotation() {
+        let angle = Angle(degrees: 30) // 30 degrees
+        let rotation = XYZRotation(x: Angle(radians: 0), y: Angle(radians: 0), z: angle)
+        let expected = simd_float3x3(
+            simd_float3(Float(cos(angle.radians)), Float(sin(angle.radians)), 0),
+            simd_float3(Float(-sin(angle.radians)), Float(cos(angle.radians)), 0),
+            simd_float3(0, 0, 1)
+        )
+
+        for order in XYZRotation.Order.allCases {
+            let result = rotation.toMatrix3x3(order: order)
+            #expect(result.isApproximatelyEqual(to: expected, absoluteTolerance: tolerance))
+        }
+    }
+
+    @Test
+    func compositeRotation() {
+        let rotation = XYZRotation(x: Angle(degrees: 45), y: Angle(degrees: 60), z: Angle(degrees: 30))
+
+        // Test each order
+        let ordersAndExpected: [(XYZRotation.Order, simd_float3x3)] = [
+            (.xyz, simd_float3x3(simd_float3(0.433012702, 0.62499994, -0.65000004),
+                                 simd_float3(-0.2165063, 0.86602545, 0.4504857),
+                                 simd_float3(0.8749998, -0.21650632, 0.43301263))),
+            (.xzy, simd_float3x3(simd_float3(0.433012702, 0.5, -0.7499999),
+                                 simd_float3(-0.43301263, 0.86602545, 0.25000006),
+                                 simd_float3(0.7905693, -0.0, 0.61237246))),
+            (.yxz, simd_float3x3(simd_float3(0.433012702, 0.7905693, -0.43301263),
+                                 simd_float3(-0.2165063, 0.61237246, 0.7905693),
+                                 simd_float3(0.8749998, -0.0, 0.4330127))),
+            (.yzx, simd_float3x3(simd_float3(0.433012702, 0.35355335, -0.8291796),
+                                 simd_float3(-0.612372, 0.86602545, 0.0),
+                                 simd_float3(0.6614378, 0.35355335, 0.55901706))),
+            (.zxy, simd_float3x3(simd_float3(0.433012702, 0.5, -0.7499999),
+                                 simd_float3(-0.7905693, 0.61237246, -0.0),
+                                 simd_float3(0.43301263, 0.61237246, 0.6614378))),
+            (.zyx, simd_float3x3(simd_float3(0.433012702, 0.7499999, -0.5),
+                                 simd_float3(-0.7905693, 0.4330127, 0.43301263),
+                                 simd_float3(0.43301263, 0.5, 0.7499999)))
+        ]
+
+        for (order, expected) in ordersAndExpected {
+            let result = rotation.toMatrix3x3(order: order)
+            #expect(result.isApproximatelyEqual(to: expected, absoluteTolerance: tolerance), "Failed for order: \(order)")
+        }
+    }
+}
+
+extension simd_float3x3 {
+    func isApproximatelyEqual(to other: simd_float3x3, absoluteTolerance tolerance: Float) -> Bool {
+        for i in 0..<3 {
+            for j in 0..<3 {
+                if abs(self[i][j] - other[i][j]) > tolerance {
+                    return false
+                }
+            }
+        }
+        return true
+    }
+}
