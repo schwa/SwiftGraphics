@@ -1,3 +1,4 @@
+import Constraints3D
 import Metal
 import MetalKit
 import MetalSupport
@@ -13,8 +14,6 @@ struct SceneGraphDemoView: View, DemoView {
     @State
     private var scene: SceneGraph
 
-    @State
-    private var cameraConeConstraint = CameraConeConstraint(cameraCone: .init(apex: [0, 0, 0], axis: [0, 1, 0], apexToTopBase: 0, topBaseRadius: 2, bottomBaseRadius: 2, height: 2))
 
     init() {
         let device = MTLCreateSystemDefaultDevice()!
@@ -49,21 +48,19 @@ struct SceneGraphDemoView: View, DemoView {
                 break
             }
         }
-        .modifier(FirstPerson3DGameControllerViewModifier(transform: $scene.unsafeCurrentCameraNode.transform))
-        //        .draggableParameter($cameraConeConstraint.height, axis: .vertical, range: 0...1, scale: 0.01, behavior: .clamping)
-        //        .draggableParameter($cameraConeConstraint.angle.degrees, axis: .horizontal, range: 0...360, scale: 0.1, behavior: .wrapping)
-        .onChange(of: cameraConeConstraint.position, initial: true) {
-            let cameraPosition = cameraConeConstraint.position
-            scene.currentCameraNode!.transform.matrix = look(at: cameraConeConstraint.lookAt, from: cameraPosition, up: [0, 1, 0])
+        .modifier(enabled: false, FirstPerson3DGameControllerViewModifier(transform: $scene.unsafeCurrentCameraNode.transform))
+        .modifier(enabled: true, CameraConeController(cameraCone: .init(apex: [0, 0, 0], axis: [0, 1, 0], apexToTopBase: 0, topBaseRadius: 2, bottomBaseRadius: 2, height: 2), transform: $scene.unsafeCurrentCameraNode.transform))
+    }
+}
+
+extension View {
+    @ViewBuilder
+    nonisolated public func modifier<T>(enabled: Bool, _ modifier: T) -> some View where T: ViewModifier {
+        if enabled {
+            self.modifier(modifier)
         }
-        .overlay(alignment: .bottom) {
-            VStack {
-                Text("\(cameraConeConstraint.height)")
-                Text("\(cameraConeConstraint.angle)")
-            }
-            .padding()
-            .background(Color.white)
-            .padding()
+        else {
+            self
         }
     }
 }

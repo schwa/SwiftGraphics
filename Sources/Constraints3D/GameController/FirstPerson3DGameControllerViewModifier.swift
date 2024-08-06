@@ -3,7 +3,7 @@ import simd
 import SIMDSupport
 import SwiftUI
 
-struct FirstPerson3DGameControllerViewModifier: ViewModifier {
+public struct FirstPerson3DGameControllerViewModifier: ViewModifier {
     @Binding
     var transform: Transform
 
@@ -13,12 +13,12 @@ struct FirstPerson3DGameControllerViewModifier: ViewModifier {
     @State
     var lastUpdate: Date?
 
-    init(transform: Binding<Transform>, controller: GCController? = nil) {
+    public init(transform: Binding<Transform>, controller: GCController? = nil) {
         self._transform = transform
         self.fpvController = FirstPerson3D(controller: controller, transform: transform.wrappedValue.matrix)
     }
 
-    func body(content: Content) -> some View {
+    public func body(content: Content) -> some View {
         TimelineView(.animation) { timeline in
             content
                 .onChange(of: timeline.date) {

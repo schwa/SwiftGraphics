@@ -41,6 +41,7 @@ let package = Package(
         .library(name: "SIMDUnsafeConformances", targets: ["SIMDUnsafeConformances"]),
         .library(name: "SwiftGraphicsDemos", targets: ["SwiftGraphicsDemos"]),
         .library(name: "SwiftUISupport", targets: ["SwiftUISupport"]),
+        .library(name: "Constraints3D", targets: ["Constraints3D"]),
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-algorithms", from: "1.1.0"),
@@ -352,6 +353,7 @@ let package = Package(
             name: "SwiftGraphicsDemos",
             dependencies: [
                 "Array2D",
+                "Constraints3D",
                 "CoreGraphicsSupport",
                 "CoreGraphicsUnsafeConformances",
                 "GenericGeometryBase",
@@ -417,6 +419,7 @@ let package = Package(
         .target(
             name: "GaussianSplatDemos",
             dependencies: [
+                "Constraints3D",
                 "GaussianSplatSupport",
                 "RenderKitUISupport",
                 "Counters",
@@ -536,6 +539,14 @@ let package = Package(
             dependencies: [
                 "BaseSupport",
                 "RenderKitSceneGraph",
+            ]
+        ),
+
+        .target(
+            name: "Constraints3D",
+            dependencies: [
+                "BaseSupport",
+                "SIMDSupport",
             ]
         ),
 
