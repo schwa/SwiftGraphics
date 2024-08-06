@@ -21,7 +21,7 @@ public extension Rotation {
         case .quaternion(let quaternion):
             return simd_float4x4(quaternion)
         case .rollPitchYaw(let rollPitchYaw):
-            return .init(rollPitchYaw.matrix3x3)
+            return rollPitchYaw.toMatrix4x4(order: .rollPitchYaw)
         }
     }
 }
@@ -57,7 +57,7 @@ public extension Rotation {
             case .quaternion(let quaternion):
                 return quaternion
             case .rollPitchYaw(let rollPitchYaw):
-                return rollPitchYaw.quaternion
+                return rollPitchYaw.toQuaternion(order: .rollPitchYaw)
             }
         }
         set {
@@ -69,7 +69,7 @@ public extension Rotation {
         get {
             switch storage {
             case .quaternion(let quaternion):
-                return RollPitchYaw(target: .object, quaternion: quaternion)
+                return RollPitchYaw(target: .object, quaternion: quaternion, order: .rollPitchYaw)
             case .rollPitchYaw(let rollPitchYaw):
                 return rollPitchYaw
             }

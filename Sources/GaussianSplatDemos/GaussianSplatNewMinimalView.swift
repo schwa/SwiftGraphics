@@ -43,29 +43,11 @@ public struct GaussianSplatNewMinimalView: View {
             #if os(iOS)
             .ignoresSafeArea()
             #endif
-            .draggableParameter($cameraConeConstraint.height, axis: .vertical, range: 0...1, scale: 0.01, behavior: .clamping)
-            .draggableParameter($cameraConeConstraint.angle.degrees, axis: .horizontal, range: 0...360, scale: 0.1, behavior: .wrapping)
-            .onChange(of: cameraConeConstraint.position, initial: true) {
-                let cameraPosition = cameraConeConstraint.position
-                scene.currentCameraNode!.transform.matrix = look(at: cameraConeConstraint.lookAt, from: cameraPosition, up: [0, 1, 0])
-            }
-            .overlay(alignment: .bottom) {
-                VStack {
-                    Text("\(cameraConeConstraint.height)")
-                    Text("\(cameraConeConstraint.angle)")
-                    Slider(value: $pitch.degrees, in: 0...360).frame(width: 120)
-                }
-                .padding()
-                .background(Color.white)
-                .padding()
-            }
+            .modifier(FirstPerson3DGameControllerViewModifier(transform: $scene.unsafeCurrentCameraNode.transform))
             .onChange(of: pitch) {
                 try! scene.modify(label: "splats") { node in
                     node?.transform.rotation = .rollPitchYaw(.init(pitch: pitch))
                 }
             }
     }
-
-    @State
-    private var cameraConeConstraint = CameraConeConstraint(cameraCone: .init(apex: [0, 0, 0], axis: [0, 1, 0], apexToTopBase: 0, topBaseRadius: 2, bottomBaseRadius: 2, height: 2))
 }

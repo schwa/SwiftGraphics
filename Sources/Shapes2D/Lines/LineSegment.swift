@@ -15,8 +15,8 @@ public struct LineSegment {
     }
 }
 
-extension LineSegment {
-    public func isApproximatelyEqual(to other: Self, absoluteTolerance: Double.Magnitude) -> Bool {
+public extension LineSegment {
+    func isApproximatelyEqual(to other: Self, absoluteTolerance: Double.Magnitude) -> Bool {
         start.isApproximatelyEqual(to: other.start, absoluteTolerance: CGPoint.Magnitude(absoluteTolerance))
             && end.isApproximatelyEqual(to: other.end, absoluteTolerance: CGPoint.Magnitude(absoluteTolerance))
     }

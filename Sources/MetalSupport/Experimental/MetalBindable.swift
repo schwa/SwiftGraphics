@@ -16,7 +16,7 @@ public extension MetalBindable {
                 let bindingIndex = try reflection.binding(for: name)
                 self[keyPath: keyPath] = bindingIndex
             default:
-                fatalError()
+                fatalError("Unsupported function type.")
             }
         }
     }

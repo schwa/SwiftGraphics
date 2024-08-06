@@ -23,7 +23,7 @@ public struct FirstPerson3DGameControllerViewModifier: ViewModifier {
             content
                 .onChange(of: timeline.date) {
                     let now = timeline.date
-                    if let lastUpdate = lastUpdate {
+                    if let lastUpdate {
                         let deltaTime = now.timeIntervalSince(lastUpdate)
                         fpvController.update(deltaTime: deltaTime)
                     }
@@ -124,7 +124,7 @@ struct FirstPerson3D {
         orientation.pitch = Angle(radians: max(min(orientation.pitch.radians, .pi / 2), -.pi / 2))
 
         // Create rotation matrix
-        let rotationMatrix = orientation.matrix4x4
+        let rotationMatrix = orientation.toMatrix4x4(order: .zyx)
 
         // Combine the new rotation with the existing translation
         transform.columns.0 = rotationMatrix.columns.0

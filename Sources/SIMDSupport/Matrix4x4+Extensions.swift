@@ -39,12 +39,6 @@ public extension simd_float4x4 {
     }
 }
 
-//public extension simd_float4x4 {
-//    init(rotationAngle angle: Angle, axis: SIMD3<Float>) {
-//        self.init(simd_float3x3(rotationAngle: angle, axis: axis))
-//    }
-//}
-
 public extension simd_float4x4 {
     @inlinable init(_ m: simd_float3x3) {
         self = simd_float4x4(columns: (

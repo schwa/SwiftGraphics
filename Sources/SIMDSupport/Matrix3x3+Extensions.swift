@@ -34,7 +34,6 @@ public extension simd_float3x3 {
     }
 }
 
-
 public extension simd_float3x3 {
     @inlinable init(_ m: simd_float4x4) {
         self = simd_float3x3(columns: (

@@ -64,13 +64,16 @@ public extension XYZRotation {
 }
 
 public extension XYZRotation {
-    enum Order: CaseIterable {
+    enum Order: CaseIterable, Sendable {
         case xyz
         case xzy
         case yxz
         case yzx
         case zxy
         case zyx
+
+        // zyx order ensures correct matrix multiplication for roll (x), pitch (y), yaw (z)
+        public static let rollPitchYaw = Self.zyx
     }
 
     func toMatrix3x3(order: Order) -> simd_float3x3 {
@@ -92,11 +95,20 @@ public extension XYZRotation {
             return x * y * z
         }
     }
+
+    func toMatrix4x4(order: Order) -> simd_float4x4 {
+        .init(toMatrix3x3(order: order))
+    }
+
+    func toQuaternion(order: Order) -> simd_quatf {
+        simd_quatf(toMatrix4x4(order: order))
+    }
 }
 
-
 public extension XYZRotation {
-    init(target: Target = .object, matrix: simd_float3x3) {
+    // THis only works for zyx order right now
+    init(target: Target = .object, matrix: simd_float3x3, order: Order) {
+        assert(order == .zyx)
         // https://web.archive.org/web/20220428033032/
         // http://planning.cs.uiuc.edu/node103.html
         let x = -atan2(matrix[2][1], matrix[2][2])
@@ -110,28 +122,6 @@ public extension XYZRotation {
         }
     }
 
-    var matrix3x3: simd_float3x3 {
-        return toMatrix3x3(order: .zyx)
-    }
-
-    @available(*, deprecated, message: "Deprecated")
-    var worldMatrix3x3: simd_float3x3 {
-        let x = simd_float3x3(rotationAngle: -x, axis: [-1, 0, 0])
-        let y = simd_float3x3(rotationAngle: -y, axis: [0, -1, 0])
-        let z = simd_float3x3(rotationAngle: -z, axis: [0, 0, -1])
-        return x * y * z
-    }
-}
-
-public extension XYZRotation {
-    var matrix4x4: simd_float4x4 {
-        .init(matrix3x3)
-    }
-
-    @available(*, deprecated, message: "Deprecated")
-    var worldMatrix4x4: simd_float4x4 {
-        .init(worldMatrix3x3)
-    }
 }
 
 public extension XYZRotation {
@@ -143,19 +133,10 @@ public extension XYZRotation {
 }
 
 public extension XYZRotation {
-    init(target: Target = .object, quaternion: simd_quatf) {
+    init(target: Target = .object, quaternion: simd_quatf, order: Order) {
         let matrix4x4 = simd_float4x4(quaternion)
         let matrix3x3 = simd_float3x3(matrix4x4)
-        self.init(target: target, matrix: matrix3x3)
-    }
-
-    var quaternion: simd_quatf {
-        simd_quatf(matrix4x4)
-    }
-
-    @available(*, deprecated, message: "Deprecated")
-    var worldQuaternion: simd_quatf {
-        simd_quatf(worldMatrix4x4)
+        self.init(target: target, matrix: matrix3x3, order: order)
     }
 }
 

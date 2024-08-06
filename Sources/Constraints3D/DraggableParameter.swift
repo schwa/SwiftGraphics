@@ -55,7 +55,8 @@ public struct DraggableParamaterViewModifier: ViewModifier {
                     input = value.translation.height
                 }
 
-                var newValue = initialValue! + input * scale
+
+                var newValue = initialValue.unsafelyUnwrapped + input * scale
                 guard let range else {
                     fatalError("TODO")
                 }
