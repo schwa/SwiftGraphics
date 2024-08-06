@@ -1,6 +1,6 @@
 import BaseSupport
 import Foundation
-@preconcurrency import Metal
+import Metal
 import simd
 import SIMDSupport
 

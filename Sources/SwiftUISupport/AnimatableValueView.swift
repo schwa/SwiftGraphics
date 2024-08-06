@@ -1,6 +1,6 @@
 import SwiftUI
 
-public struct AnimatableValueView <Value, Content>: View, @preconcurrency Animatable where Content: View, Value: VectorArithmetic & Sendable {
+public struct AnimatableValueView <Value, Content>: View, Animatable where Content: View, Value: VectorArithmetic & Sendable {
     public var animatableData: Value
 
     var content: (Value) -> Content
