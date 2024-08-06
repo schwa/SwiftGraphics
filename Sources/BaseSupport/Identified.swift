@@ -33,6 +33,9 @@ extension Identified: Encodable where ID: Encodable, Content: Encodable {
 extension Identified: Decodable where ID: Decodable, Content: Decodable {
 }
 
+extension Identified: Sendable where ID: Sendable, Content: Sendable {
+}
+
 public extension Array {
     func identifiedByIndex() -> [Identified<Int, Element>] {
         enumerated().map {

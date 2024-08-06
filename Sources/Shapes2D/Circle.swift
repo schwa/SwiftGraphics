@@ -15,6 +15,12 @@ public struct Circle {
 extension Circle: Codable {
 }
 
+extension Circle: Equatable {
+}
+
+extension Circle: Sendable {
+}
+
 // MARK: -
 
 public extension Circle {
