@@ -107,15 +107,15 @@ struct GameControllerInspector: View {
                 LabeledContent("Battery State", value: "\(battery.batteryState)")
             }
             LabeledContent("physicalInputProfile", value: "\(controller.physicalInputProfile)")
-            LabeledContent("microGamepad", value: "\(controller.microGamepad)")
-            LabeledContent("extendedGamepad", value: "\(controller.extendedGamepad)")
-            LabeledContent("motion", value: "\(controller.motion)")
-            LabeledContent("light", value: "\(controller.light)")
+            LabeledContent("microGamepad", value: "\(String(describing: controller.microGamepad))")
+            LabeledContent("extendedGamepad", value: "\(String(describing: controller.extendedGamepad))")
+            LabeledContent("motion", value: "\(String(describing: controller.motion))")
+            LabeledContent("light", value: "\(String(describing: controller.light))")
             if let light = controller.light {
                 let color = Color(red: Double(light.color.red), green: Double(light.color.green), blue: Double(light.color.blue))
                 ColorPicker("?", selection: .constant(color))
             }
-            LabeledContent("haptics", value: "\(controller.haptics)")
+            LabeledContent("haptics", value: "\(String(describing: controller.haptics))")
             let profile = controller.physicalInputProfile
             LabeledContent("lastEventTimestamp", value: "\(profile.lastEventTimestamp)")
             LabeledContent("hasRemappedElements", value: "\(profile.hasRemappedElements)")
@@ -256,12 +256,12 @@ class GameControllerViewModel {
                     }
                 }
                 group.addTask { [weak self] in
-                    for await notification in notificationCenter.notifications(named: .GCControllerDidBecomeCurrent) {
+                    for await _ in notificationCenter.notifications(named: .GCControllerDidBecomeCurrent) {
                         await self?.update()
                     }
                 }
                 group.addTask { [weak self] in
-                    for await notification in notificationCenter.notifications(named: .GCControllerDidStopBeingCurrent) {
+                    for await _ in notificationCenter.notifications(named: .GCControllerDidStopBeingCurrent) {
                         await self?.update()
                     }
                 }
