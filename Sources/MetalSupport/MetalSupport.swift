@@ -82,7 +82,8 @@ public extension MTLDevice {
         return families.contains { supportsFamily($0) }
     }
 
-    @available(*, deprecated, message: "Deprecated")
+    // TODO: Deprecate?
+    //@available(*, deprecated, message: "Deprecated")
     func makeDebugLibrary(bundle: Bundle) throws -> MTLLibrary {
         if let url = bundle.url(forResource: "debug", withExtension: "metallib") {
             return try makeLibrary(URL: url)
