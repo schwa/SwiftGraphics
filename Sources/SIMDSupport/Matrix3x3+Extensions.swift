@@ -12,7 +12,17 @@ public extension simd_float3x3 {
     }
 
     @inlinable init(rotationAngle angle: Angle, axis: SIMD3<Float>) {
-        self.init(simd_float4x4(simd_quaternion(Float(angle.radians), axis)))
+        let radians = Float(angle.radians)
+        let c = cos(radians)
+        let s = sin(radians)
+        let axis = normalize(axis)
+        let temp = (1 - c) * axis
+
+        self.init(columns: (
+            [c + temp.x * axis.x, temp.x * axis.y + s * axis.z, temp.x * axis.z - s * axis.y],
+            [temp.y * axis.x - s * axis.z, c + temp.y * axis.y, temp.y * axis.z + s * axis.x],
+            [temp.z * axis.x + s * axis.y, temp.z * axis.y - s * axis.x, c + temp.z * axis.z]
+        ))
     }
 
     @inlinable static func scaled(_ s: SIMD3<Float>) -> simd_float3x3 {
@@ -23,6 +33,7 @@ public extension simd_float3x3 {
         simd_float3x3(simd_quaternion(Float(angle.radians), axis))
     }
 }
+
 
 public extension simd_float3x3 {
     @inlinable init(_ m: simd_float4x4) {

@@ -3,6 +3,9 @@ import SwiftUI
 
 public typealias RollPitchYaw = XYZRotation
 
+// https://www.redcrab-software.com/en/Calculator/3x3/Matrix/Rotation-Matrix
+// https://www.wolframalpha.com/input?i=roll+pitch+yaw
+
 public struct XYZRotation: Sendable, Equatable {
     public enum Target: Sendable {
         case object
@@ -60,24 +63,6 @@ public extension XYZRotation {
     }
 }
 
-//    // Helper function to create a rotation matrix from RollPitchYaw
-//    func createRotationMatrix(from orientation: RollPitchYaw) -> simd_float4x4 {
-//        let cx = cos(Float(orientation.pitch.radians))
-//        let sx = sin(Float(orientation.pitch.radians))
-//        let cy = cos(Float(orientation.yaw.radians))
-//        let sy = sin(Float(orientation.yaw.radians))
-//        let cz = cos(Float(orientation.roll.radians))
-//        let sz = sin(Float(orientation.roll.radians))
-//
-//        return simd_float4x4(
-//            SIMD4<Float>(cy * cz, cx * sz + sx * sy * cz, sx * sz - cx * sy * cz, 0),
-//            SIMD4<Float>(-cy * sz, cx * cz - sx * sy * sz, sx * cz + cx * sy * sz, 0),
-//            SIMD4<Float>(sy, -sx * cy, cx * cy, 0),
-//            SIMD4<Float>(0, 0, 0, 1)
-//        )
-//    }
-
-
 public extension XYZRotation {
     enum Order: CaseIterable {
         case xyz
@@ -89,50 +74,22 @@ public extension XYZRotation {
     }
 
     func toMatrix3x3(order: Order) -> simd_float3x3 {
-        let cx = Float(cos(x.angle))
-        let sx = Float(sin(x.angle))
-        let cy = Float(cos(y.angle))
-        let sy = Float(sin(y.angle))
-        let cz = Float(cos(z.angle))
-        let sz = Float(sin(z.angle))
-
+        let x = simd_float3x3(rotationAngle: x, axis: [1, 0, 0])
+        let y = simd_float3x3(rotationAngle: y, axis: [0, 1, 0])
+        let z = simd_float3x3(rotationAngle: z, axis: [0, 0, 1])
         switch order {
         case .xyz:
-            return simd_float3x3(
-                simd_float3(cy * cz, cy * sz, -sy),
-                simd_float3(sx * sy * cz - cx * sz, sx * sy * sz + cx * cz, sx * cy),
-                simd_float3(cx * sy * cz + sx * sz, cx * sy * sz - sx * cz, cx * cy)
-            )
+            return z * y * x
         case .xzy:
-            return simd_float3x3(
-                simd_float3(cy * cz, sz, -sy * cz),
-                simd_float3(-cy * sz * cx + sy * sx, cx * cz, sy * sz * cx + cy * sx),
-                simd_float3(cy * sz * sx + sy * cx, -sx * cz, -sy * sz * sx + cy * cx)
-            )
+            return y * z * x
         case .yxz:
-            return simd_float3x3(
-                simd_float3(cy * cz + sy * sx * sz, cy * sz - sy * sx * cz, -sy * cx),
-                simd_float3(cx * sz, cx * cz, sx),
-                simd_float3(sy * cz - cy * sx * sz, sy * sz + cy * sx * cz, cy * cx)
-            )
+            return z * x * y
         case .yzx:
-            return simd_float3x3(
-                simd_float3(cy * cz, sx * sy - cx * cy * sz, cx * sy + sx * cy * sz),
-                simd_float3(sz, cx * cz, -sx * cz),
-                simd_float3(-sy * cz, sx * cy + cx * sy * sz, cx * cy - sx * sy * sz)
-            )
+            return x * z * y
         case .zxy:
-            return simd_float3x3(
-                simd_float3(cy * cz, sz, -sy * cz),
-                simd_float3(-cx * cy * sz + sx * sy, cx * cz, cx * sy * sz + sx * cy),
-                simd_float3(sx * cy * sz + cx * sy, -sx * cz, -sx * sy * sz + cx * cy)
-            )
+            return y * x * z
         case .zyx:
-            return simd_float3x3(
-                simd_float3(cy * cz, cx * sz + sx * sy * cz, sx * sz - cx * sy * cz),
-                simd_float3(-cy * sz, cx * cz - sx * sy * sz, sx * cz + cx * sy * sz),
-                simd_float3(sy, -sx * cy, cx * cy)
-            )
+            return x * y * z
         }
     }
 }
@@ -160,6 +117,7 @@ public extension XYZRotation {
         return x * y * z
     }
 
+    @available(*, deprecated, message: "Deprecated")
     var worldMatrix3x3: simd_float3x3 {
         let x = simd_float3x3(rotationAngle: -x, axis: [-1, 0, 0])
         let y = simd_float3x3(rotationAngle: -y, axis: [0, -1, 0])
@@ -172,6 +130,8 @@ public extension XYZRotation {
     var matrix4x4: simd_float4x4 {
         .init(matrix3x3)
     }
+
+    @available(*, deprecated, message: "Deprecated")
     var worldMatrix4x4: simd_float4x4 {
         .init(worldMatrix3x3)
     }
@@ -196,6 +156,7 @@ public extension XYZRotation {
         simd_quatf(matrix4x4)
     }
 
+    @available(*, deprecated, message: "Deprecated")
     var worldQuaternion: simd_quatf {
         simd_quatf(worldMatrix4x4)
     }
