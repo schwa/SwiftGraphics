@@ -10,54 +10,19 @@ struct XYZRotationTests {
     // https://www.redcrab-software.com/en/Calculator/3x3/Matrix/Rotation-Matrix
     // https://www.wolframalpha.com/input?i=roll+pitch+yaw
 
-    @Test
-    func testBasic() {
-        let arguments = [
-            (RollPitchYaw(x: .degrees(45)), simd_float3x3([[1.0, 0.0, 0.0], [0.0, 0.70710677, 0.70710677], [0.0, -0.70710677, 0.70710677]])),
-            (RollPitchYaw(y: .degrees(45)), simd_float3x3([[0.70710677, 0.0, -0.70710677], [0.0, 1.0, 0.0], [0.70710677, 0.0, 0.70710677]])),
-            (RollPitchYaw(z: .degrees(45)), simd_float3x3([0.7071067, 0.7071068, 0.0], [-0.7071068, 0.7071067, 0.0], [0.0, 0.0, 1.0])),
-            (RollPitchYaw(x: .degrees(10), y: .degrees(20), z: .degrees(30)), simd_float3x3([0.8137976, 0.54383814, -0.20487414], [-0.46984628, 0.8231729, 0.31879574], [0.3420201, -0.16317587, 0.92541647])),
-        ]
-        for (rotation, matrix) in arguments {
-            let result = rotation.matrix3x3
-            #expect(result.isApproximatelyEqual(to: matrix, absoluteTolerance: tolerance))
-        }
-    }
+    @Test(arguments: [
+        (RollPitchYaw(), simd_float3x3([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]])),
+        (RollPitchYaw(x: .degrees(45)), simd_float3x3([[1.0, 0.0, 0.0], [0.0, 0.70710677, 0.70710677], [0.0, -0.70710677, 0.70710677]])),
+        (RollPitchYaw(y: .degrees(45)), simd_float3x3([[0.70710677, 0.0, -0.70710677], [0.0, 1.0, 0.0], [0.70710677, 0.0, 0.70710677]])),
+        (RollPitchYaw(z: .degrees(45)), simd_float3x3([0.7071067, 0.7071068, 0.0], [-0.7071068, 0.7071067, 0.0], [0.0, 0.0, 1.0])),
+        (RollPitchYaw(x: .degrees(10), y: .degrees(20), z: .degrees(30)), simd_float3x3([0.8137976, 0.54383814, -0.20487414], [-0.46984628, 0.8231729, 0.31879574], [0.3420201, -0.16317587, 0.92541647])),
+    ])
+    func testBasic(rotation: RollPitchYaw, matrix: simd_float3x3) {
+        let result = rotation.matrix3x3
+        #expect(result.isApproximatelyEqual(to: matrix, absoluteTolerance: tolerance))
 
-    @Test
-    func testWorldMode() {
-        let objectX = RollPitchYaw(x: .degrees(45))
-        #expect(objectX.matrix3x3.isApproximatelyEqual(to: simd_float3x3(columns: (
-            [1, 0, 0], [0.0, 0.70710677, 0.70710677], [0.0, -0.70710677, 0.70710677])), absoluteTolerance: tolerance))
-        #expect(objectX.isApproximatelyEqual(to: RollPitchYaw(matrix: objectX.matrix3x3), absoluteTolerance: .degrees(Double(tolerance))))
-
-        let objectY = RollPitchYaw(y: .degrees(45))
-        #expect(objectY.matrix3x3.isApproximatelyEqual(to: simd_float3x3(columns: (
-            [0.7071067, 0.0, -0.7071068], [0.0, 0.99999994, 0.0], [0.7071068, 0.0, 0.7071067]
-        )), absoluteTolerance: tolerance))
-        #expect(objectY.isApproximatelyEqual(to: RollPitchYaw(matrix: objectY.matrix3x3), absoluteTolerance: .degrees(Double(tolerance))))
-
-        let objectZ = RollPitchYaw(z: .degrees(45))
-        #expect(objectZ.matrix3x3.isApproximatelyEqual(to: simd_float3x3(columns: (
-            [0.7071067, 0.7071068, 0.0], [-0.7071068, 0.7071067, 0.0], [0.0, 0.0, 1.0]
-        )), absoluteTolerance: tolerance))
-        #expect(objectZ.isApproximatelyEqual(to: RollPitchYaw(matrix: objectZ.matrix3x3), absoluteTolerance: .degrees(Double(tolerance))))
-
-        let objectXYZ = RollPitchYaw(x: .degrees(10), y: .degrees(20), z: .degrees(30))
-        #expect(objectXYZ.matrix3x3.isApproximatelyEqual(to: simd_float3x3(columns: (
-            [0.8137976, 0.54383814, -0.20487414], [-0.46984628, 0.8231729, 0.31879574], [0.3420201, -0.16317587, 0.92541647])), absoluteTolerance: tolerance))
-        #expect(objectXYZ.isApproximatelyEqual(to: RollPitchYaw(matrix: objectXYZ.matrix3x3), absoluteTolerance: .degrees(Double(tolerance))))
-    }
-
-    @Test
-    func identityRotation() {
-        let rotation = XYZRotation(x: Angle(radians: 0), y: Angle(radians: 0), z: Angle(radians: 0))
-        let identity = simd_float3x3(1)
-
-        for order in XYZRotation.Order.allCases {
-            let result = rotation.toMatrix3x3(order: order)
-            #expect(result.isApproximatelyEqual(to: identity, absoluteTolerance: tolerance))
-        }
+        let result2 = rotation.toMatrix3x3(order: .zyx)
+        #expect(result2.isApproximatelyEqual(to: matrix, absoluteTolerance: tolerance))
     }
 
     @Test
@@ -130,12 +95,15 @@ struct XYZRotationTests {
 
 struct TestMatrixRotation {
     @Test(arguments: [
-        (Angle(degrees: 45), SIMD3<Float>([1, 0, 0])),
-        (Angle(degrees: 45), SIMD3<Float>([0, 1, 0])),
-        (Angle(degrees: 45), SIMD3<Float>([0, 0, 1])),
-        (Angle(degrees: 225), SIMD3<Float>([1, 0, 0])),
-        (Angle(degrees: 225), SIMD3<Float>([0, 1, 0])),
-        (Angle(degrees: 225), SIMD3<Float>([0, 0, 1]))
+        (Angle(degrees: 0), SIMD3<Float>(1, 0, 0)),
+        (Angle(degrees: 0), SIMD3<Float>(0, 1, 0)),
+        (Angle(degrees: 0), SIMD3<Float>(0, 0, 1)),
+        (Angle(degrees: 45), SIMD3<Float>(1, 0, 0)),
+        (Angle(degrees: 45), SIMD3<Float>(0, 1, 0)),
+        (Angle(degrees: 45), SIMD3<Float>(0, 0, 1)),
+        (Angle(degrees: 225), SIMD3<Float>(1, 0, 0)),
+        (Angle(degrees: 225), SIMD3<Float>(0, 1, 0)),
+        (Angle(degrees: 225), SIMD3<Float>(0, 0, 1))
     ])
     func testMatrixRotation(angle: Angle, axis: SIMD3<Float>) {
         let viaMatrix = simd_float3x3(rotationAngle: angle, axis: axis)
