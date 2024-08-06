@@ -1,5 +1,6 @@
 import BaseSupport
-@preconcurrency import MetalKit
+@preconcurrency import Metal
+import MetalKit
 import MetalSupport
 import RenderKit
 import RenderKitShadersLegacy
