@@ -14,7 +14,7 @@ extension Binding where Value: FormattableMatrix {
     }
 }
 
-public struct MatrixEditor <Matrix>: View where Matrix: FormattableMatrix & MatrixOperations, Matrix.Scalar == Float {
+public struct MatrixEditor <Matrix>: View where Matrix: FormattableMatrix & MatrixOperations & Sendable, Matrix.Scalar == Float {
     @Binding
     var matrix: Matrix
 
@@ -217,7 +217,7 @@ extension FormattableMatrix where Scalar == Float {
 }
 
 extension UndoManager {
-    func registerUndoValue<Value>(_ binding: Binding<Value>) {
+    func registerUndoValue<Value>(_ binding: Binding<Value>) where Value: Sendable {
         let copy = binding.wrappedValue
         registerUndo(withTarget: self) { _ in
             binding.wrappedValue = copy

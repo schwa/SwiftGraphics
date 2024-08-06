@@ -3,7 +3,7 @@ import Foundation
 import Shapes2D
 import SwiftUI
 
-enum MyShape: Codable {
+enum MyShape: Codable, Sendable {
     case line(LineSegment)
     case circle(Shapes2D.Circle)
 }
