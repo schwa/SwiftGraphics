@@ -49,8 +49,9 @@ struct SceneGraphDemoView: View, DemoView {
                 break
             }
         }
-        .draggableParameter($cameraConeConstraint.height, axis: .vertical, range: 0...1, scale: 0.01, behavior: .clamping)
-        .draggableParameter($cameraConeConstraint.angle.degrees, axis: .horizontal, range: 0...360, scale: 0.1, behavior: .wrapping)
+        .modifier(FirstPerson3DGameControllerViewModifier(transform: $scene.unsafeCurrentCameraNode.transform))
+        //        .draggableParameter($cameraConeConstraint.height, axis: .vertical, range: 0...1, scale: 0.01, behavior: .clamping)
+        //        .draggableParameter($cameraConeConstraint.angle.degrees, axis: .horizontal, range: 0...360, scale: 0.1, behavior: .wrapping)
         .onChange(of: cameraConeConstraint.position, initial: true) {
             let cameraPosition = cameraConeConstraint.position
             scene.currentCameraNode!.transform.matrix = look(at: cameraConeConstraint.lookAt, from: cameraPosition, up: [0, 1, 0])

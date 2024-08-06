@@ -1,5 +1,5 @@
 import BaseSupport
-import Charts
+// import Charts
 import GaussianSplatSupport
 import simd
 import SwiftFormats
@@ -63,19 +63,20 @@ public struct SplatCloudInfoView: View {
                 //                TaskView(id: splats, "# unique y") { Set(splats.map(\.position.y)).count }
                 //                TaskView(id: splats, "# unique z") { Set(splats.map(\.position.z)).count }
 
-                TaskView(id: splats) {
-                    channelInfo(splats: splats)
-                }
-                content: { channelInfo in
-                    ForEach(channelInfo, id: \.name) { data in
-                        Chart {
-                            LinePlot(data.frequency, x: .value(data.name, \.0), y: .value("Frequency", \.1))
-                                .foregroundStyle(data.color)
-                        }
-                        .chartXScale(domain: 0 ... 255)
-                        .frame(maxHeight: 50)
-                    }
-                }
+                // TODO: FIXME Breaks on macOS 15 beta.
+                //                TaskView(id: splats) {
+                //                    channelInfo(splats: splats)
+                //                }
+                //                content: { channelInfo in
+                //                    ForEach(channelInfo, id: \.name) { data in
+                //                        Chart {
+                //                            LinePlot(data.frequency, x: .value(data.name, \.0), y: .value("Frequency", \.1))
+                //                                .foregroundStyle(data.color)
+                //                        }
+                //                        .chartXScale(domain: 0 ... 255)
+                //                        .frame(maxHeight: 50)
+                //                    }
+                //                }
             }
             .onAppear {
                 let url = Bundle.module.url(forResource: "train", withExtension: "splat")!

@@ -28,3 +28,14 @@ public extension SceneGraph {
         }
     }
 }
+
+public extension SceneGraph {
+    var unsafeCurrentCameraNode: Node {
+        get {
+            currentCameraNode!
+        }
+        set {
+            currentCameraNode = newValue
+        }
+    }
+}
