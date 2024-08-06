@@ -111,10 +111,7 @@ public extension XYZRotation {
     }
 
     var matrix3x3: simd_float3x3 {
-        let x = simd_float3x3(rotationAngle: x, axis: [1, 0, 0])
-        let y = simd_float3x3(rotationAngle: y, axis: [0, 1, 0])
-        let z = simd_float3x3(rotationAngle: z, axis: [0, 0, 1])
-        return x * y * z
+        return toMatrix3x3(order: .zyx)
     }
 
     @available(*, deprecated, message: "Deprecated")
