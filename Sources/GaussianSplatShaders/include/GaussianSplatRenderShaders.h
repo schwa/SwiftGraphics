@@ -36,7 +36,6 @@ namespace GaussianSplatShaders {
         float4 fragColor [[color(0)]];
     };
 
-    typedef SplatC Splat;
     typedef GaussianSplatUniforms VertexUniforms;
     typedef GaussianSplatUniforms FragmentUniforms;
     typedef VertexOut FragmentIn;
@@ -52,7 +51,7 @@ namespace GaussianSplatShaders {
         uint instance_id[[instance_id]],
         uint vertex_id[[vertex_id]],
         constant VertexUniforms &uniforms [[buffer(1)]],
-        constant Splat *splats [[buffer(2)]],
+        constant SplatC *splats [[buffer(2)]],
         constant IndexedDistance *indexedDistances [[buffer(3)]],
         device MyCounters* my_counters [[buffer(4), function_constant(use_counters)]]
    ) {

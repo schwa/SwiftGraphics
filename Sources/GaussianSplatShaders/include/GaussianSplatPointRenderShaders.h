@@ -22,7 +22,7 @@ namespace GaussianSplatShaders {
         uint instance_id[[instance_id]],
         uint vertex_id[[vertex_id]],
         constant VertexUniforms &uniforms [[buffer(1)]],
-        constant Splat *splats [[buffer(2)]],
+        constant SplatC *splats [[buffer(2)]],
         constant IndexedDistance *indexedDistances [[buffer(3)]]
     ) {
         VertexOut out;
