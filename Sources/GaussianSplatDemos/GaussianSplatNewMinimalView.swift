@@ -57,6 +57,5 @@ public struct GaussianSplatNewMinimalView: View {
                 .background(Color.white)
                 .padding()
             }
-
     }
 }
