@@ -49,5 +49,14 @@ public struct GaussianSplatNewMinimalView: View {
                     node?.transform.rotation = .rollPitchYaw(.init(pitch: pitch))
                 }
             }
+            .overlay(alignment: .bottom) {
+                VStack {
+                    Slider(value: $pitch.degrees, in: 0...360).frame(width: 120)
+                }
+                .padding()
+                .background(Color.white)
+                .padding()
+            }
+
     }
 }

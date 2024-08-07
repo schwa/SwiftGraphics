@@ -5,6 +5,7 @@ public typealias RollPitchYaw = XYZRotation
 
 // https://www.redcrab-software.com/en/Calculator/3x3/Matrix/Rotation-Matrix
 // https://www.wolframalpha.com/input?i=roll+pitch+yaw
+// https://www.wikidoc.org/index.php/Tait-Bryan_rotations
 
 public struct XYZRotation: Sendable, Equatable {
     public enum Target: Sendable {
@@ -139,23 +140,23 @@ public extension XYZRotation {
     }
 }
 
-extension RollPitchYaw: CustomStringConvertible {
+extension XYZRotation: CustomStringConvertible {
     public var description: String {
-        RollPitchYawFormatStyle().format(self)
+        XYZRotationFormatStyle().format(self)
     }
 }
 
-public struct RollPitchYawFormatStyle: FormatStyle {
+public struct XYZRotationFormatStyle: FormatStyle {
     public typealias FormatInput = XYZRotation
     public typealias FormatOutput = String
 
-    public func format(_ value: RollPitchYaw) -> String {
+    public func format(_ value: XYZRotation) -> String {
         "roll: \(value.roll.degrees.formatted())°, pitch: \(value.pitch.degrees.formatted())°, yaw: \(value.yaw.degrees.formatted())°"
     }
 }
 
-public extension FormatStyle where Self == RollPitchYawFormatStyle {
-    static var rollPitchYaw: Self {
+public extension FormatStyle where Self == XYZRotationFormatStyle {
+    static var XYZRotation: Self {
         Self()
     }
 }

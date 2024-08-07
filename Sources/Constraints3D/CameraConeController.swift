@@ -24,6 +24,8 @@ public struct CameraConeController: ViewModifier {
     }
 }
 
+// MARK: -
+
 public struct CameraConeConstraint: Equatable {
     public var cameraCone: CameraCone
     public var lookAt: SIMD3<Float>
@@ -41,6 +43,8 @@ public struct CameraConeConstraint: Equatable {
         self.height = height
     }
 }
+
+// MARK: -
 
 public struct CameraCone: Equatable {
     public var apex: SIMD3<Float>

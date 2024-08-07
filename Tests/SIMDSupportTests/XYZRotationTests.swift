@@ -11,13 +11,13 @@ struct XYZRotationTests {
     // https://www.wolframalpha.com/input?i=roll+pitch+yaw
 
     @Test(arguments: [
-        (RollPitchYaw(), simd_float3x3([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]])),
-        (RollPitchYaw(x: .degrees(45)), simd_float3x3([[1.0, 0.0, 0.0], [0.0, 0.70710677, 0.70710677], [0.0, -0.70710677, 0.70710677]])),
-        (RollPitchYaw(y: .degrees(45)), simd_float3x3([[0.70710677, 0.0, -0.70710677], [0.0, 1.0, 0.0], [0.70710677, 0.0, 0.70710677]])),
-        (RollPitchYaw(z: .degrees(45)), simd_float3x3([0.7071067, 0.7071068, 0.0], [-0.7071068, 0.7071067, 0.0], [0.0, 0.0, 1.0])),
-        (RollPitchYaw(x: .degrees(10), y: .degrees(20), z: .degrees(30)), simd_float3x3([0.8137976, 0.54383814, -0.20487414], [-0.46984628, 0.8231729, 0.31879574], [0.3420201, -0.16317587, 0.92541647])),
+        (XYZRotation(), simd_float3x3([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]])),
+        (XYZRotation(x: .degrees(45)), simd_float3x3([[1.0, 0.0, 0.0], [0.0, 0.70710677, 0.70710677], [0.0, -0.70710677, 0.70710677]])),
+        (XYZRotation(y: .degrees(45)), simd_float3x3([[0.70710677, 0.0, -0.70710677], [0.0, 1.0, 0.0], [0.70710677, 0.0, 0.70710677]])),
+        (XYZRotation(z: .degrees(45)), simd_float3x3([0.7071067, 0.7071068, 0.0], [-0.7071068, 0.7071067, 0.0], [0.0, 0.0, 1.0])),
+        (XYZRotation(x: .degrees(10), y: .degrees(20), z: .degrees(30)), simd_float3x3([0.8137976, 0.54383814, -0.20487414], [-0.46984628, 0.8231729, 0.31879574], [0.3420201, -0.16317587, 0.92541647])),
     ])
-    func testBasic(rotation: RollPitchYaw, matrix: simd_float3x3) {
+    func testBasic(rotation: XYZRotation, matrix: simd_float3x3) {
         let result2 = rotation.toMatrix3x3(order: .zyx)
         #expect(result2.isApproximatelyEqual(to: matrix, absoluteTolerance: tolerance))
     }
