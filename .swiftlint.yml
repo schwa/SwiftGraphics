@@ -68,7 +68,7 @@ only_rules:
   - empty_string
   - empty_xctest_method
   - enum_case_associated_values_count
-  - expiring_todo
+#  - expiring_todo
 #  - explicit_acl # 1581 violations
 #  - explicit_enum_raw_value # 17 violations
   - explicit_init
@@ -211,7 +211,7 @@ only_rules:
 #  - switch_case_on_newline # 146 violations
   - syntactic_sugar
   - test_case_accessibility # 3 violations (fixable)
-  - todo
+  #- todo
   - toggle_bool
   - trailing_closure # 3 violations (fixable)
 #  - trailing_comma # 122 violations (fixable)
