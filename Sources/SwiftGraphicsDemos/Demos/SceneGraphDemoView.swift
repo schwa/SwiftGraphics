@@ -52,9 +52,9 @@ struct SceneGraphDemoView: View, DemoView {
     }
 }
 
-extension View {
+public extension View {
     @ViewBuilder
-    nonisolated public func modifier<T>(enabled: Bool, _ modifier: T) -> some View where T: ViewModifier {
+    nonisolated func modifier<T>(enabled: Bool, _ modifier: T) -> some View where T: ViewModifier {
         if enabled {
             self.modifier(modifier)
         }

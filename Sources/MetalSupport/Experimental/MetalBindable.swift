@@ -8,7 +8,7 @@ public protocol MetalBindable {
 public extension MetalBindable {
     mutating func updateBindings(with reflection: MTLComputePipelineReflection?) throws {
         guard let reflection else {
-            fatalError()
+            fatalError("No reflection available.")
         }
         for (name, functionType, keyPath) in Self.bindingMappings {
             switch functionType {

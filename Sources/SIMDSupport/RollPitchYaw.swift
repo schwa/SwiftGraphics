@@ -121,7 +121,6 @@ public extension XYZRotation {
             self.init(x: .radians(Double(-x)), y: .radians(Double(-y)), z: .radians(Double(-z)))
         }
     }
-
 }
 
 public extension XYZRotation {

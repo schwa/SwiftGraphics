@@ -59,10 +59,8 @@ struct GraphPaperView: View {
         }
 
         // Draw major grid lines
-        for position in stride(from: -length, through: length, by: majorGridSpacing) {
-            if abs(position) > 0.001 * majorGridSpacing { // Skip the axis
-                drawLine(context: context, position: position, length: length, isXAxis: isXAxis, isMajor: true)
-            }
+        for position in stride(from: -length, through: length, by: majorGridSpacing) where abs(position) > 0.001 * majorGridSpacing {
+            drawLine(context: context, position: position, length: length, isXAxis: isXAxis, isMajor: true)
         }
     }
 
