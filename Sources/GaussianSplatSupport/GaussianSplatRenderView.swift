@@ -38,7 +38,7 @@ public struct GaussianSplatRenderView: View {
     @State
     private var drawableSize: SIMD2<Float> = .zero
 
-    public init(scene: SceneGraph, debugMode: Bool, sortRate: Int, metalFXRate: Float, gpuCounters: GPUCounters? = nil, discardRate: Float = 0) {
+    public init(scene: SceneGraph, debugMode: Bool = false, sortRate: Int = 0, metalFXRate: Float = 1, gpuCounters: GPUCounters? = nil, discardRate: Float = 0) {
         self.scene = scene
         self.debugMode = debugMode
         self.sortRate = sortRate
