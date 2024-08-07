@@ -1,9 +1,10 @@
 import BaseSupport
 @preconcurrency import GameController
+import os
 import SwiftUI
 
 struct GameControllerInspector: View {
-    @Bindable
+    @State
     var viewModel = GameControllerViewModel()
 
     var body: some View {
@@ -171,6 +172,7 @@ class GameControllerViewModel {
     var currentMouse: GCMouse?
     var coalescedKeyboard: GCKeyboard?
     var currentController: GCController?
+    var logger: Logger? = Logger()
 
     var monitorTask: Task<(), Never>?
 
@@ -200,8 +202,11 @@ class GameControllerViewModel {
     }
 
     func addDevice(_ device: GCDevice) {
-        devices.append(device)
         update()
+        guard !devices.contains(where: { $0 === device }) else {
+            return
+        }
+        devices.append(device)
     }
 
     func removeDevice(_ device: GCDevice) {
@@ -210,6 +215,7 @@ class GameControllerViewModel {
     }
 
     func startMonitoring() {
+        let logger = logger
         monitorTask = Task { [weak self] in
             await withDiscardingTaskGroup { [weak self] group in
                 let notificationCenter = NotificationCenter.default
@@ -217,6 +223,7 @@ class GameControllerViewModel {
                     for await notification in notificationCenter.notifications(named: .GCControllerDidConnect) {
                         if let device = notification.object as? GCController {
                             await self?.addDevice(device)
+                            logger?.info("Controller connected: \(device)")
                         }
                     }
                 }
@@ -224,6 +231,7 @@ class GameControllerViewModel {
                     for await notification in notificationCenter.notifications(named: .GCControllerDidDisconnect) {
                         if let device = notification.object as? GCController {
                             await self?.removeDevice(device)
+                            logger?.info("Controller disconnected: \(device)")
                         }
                     }
                 }
@@ -231,6 +239,7 @@ class GameControllerViewModel {
                     for await notification in notificationCenter.notifications(named: .GCKeyboardDidConnect) {
                         if let device = notification.object as? GCKeyboard {
                             await self?.addDevice(device)
+                            logger?.info("Keyboard connected: \(device)")
                         }
                     }
                 }
@@ -238,6 +247,7 @@ class GameControllerViewModel {
                     for await notification in notificationCenter.notifications(named: .GCKeyboardDidDisconnect) {
                         if let device = notification.object as? GCKeyboard {
                             await self?.removeDevice(device)
+                            logger?.info("Keyboard disconnected: \(device)")
                         }
                     }
                 }
@@ -245,6 +255,7 @@ class GameControllerViewModel {
                     for await notification in notificationCenter.notifications(named: .GCMouseDidConnect) {
                         if let device = notification.object as? GCMouse {
                             await self?.addDevice(device)
+                            logger?.info("Mouse connected: \(device)")
                         }
                     }
                 }
@@ -252,6 +263,7 @@ class GameControllerViewModel {
                     for await notification in notificationCenter.notifications(named: .GCMouseDidDisconnect) {
                         if let device = notification.object as? GCMouse {
                             await self?.removeDevice(device)
+                            logger?.info("Mouse disconnected: \(device)")
                         }
                     }
                 }
