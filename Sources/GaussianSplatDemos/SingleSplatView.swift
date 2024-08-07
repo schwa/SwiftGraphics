@@ -1,3 +1,4 @@
+import Constraints3D
 import BaseSupport
 import Everything
 import Fields3D
@@ -32,9 +33,6 @@ public struct SingleSplatView: View {
     private var device: MTLDevice
 
     @State
-    private var debugMode: Bool = false
-
-    @State
     private var splat: SplatD
 
     @State
@@ -44,32 +42,26 @@ public struct SingleSplatView: View {
         let device = MTLCreateSystemDefaultDevice()!
         assert(MemoryLayout<SplatC>.size == 26)
         let splat = SplatD(position: [0, 0, 0], scale: [1, 0.5, 0.25], color: [1, 0, 1, 1], rotation: .init(angle: .zero, axis: [0, 0, 0]))
-
         self.device = device
         self.splat = splat
-
         let root = Node(label: "root") {
             Node(label: "camera", content: Camera())
-            // Node(label: "splats", content: splats)
+            Node(label: "splats")
         }
         self.scene = SceneGraph(root: root)
     }
 
     public var body: some View {
         GaussianSplatRenderView(scene: scene)
-            .ballRotation($ballConstraint.rollPitchYaw, updatesPitch: true, updatesYaw: true)
-            .onChange(of: ballConstraint.transform, initial: true) {
-                cameraTransform = ballConstraint.transform
+        .modifier(CameraConeController(cameraCone: .init(apex: [0, 0, 0], axis: [0, 1, 0], apexToTopBase: 0, topBaseRadius: 2, bottomBaseRadius: 2, height: 2), transform: $scene.unsafeCurrentCameraNode.transform))
+        .onChange(of: splat, initial: true) {
+            try! scene.modify(label: "splats") { node in
+                let splats = [splat].map(SplatC.init)
+                node!.content = try SplatCloud(device: device, splats: splats)
             }
-            .inspector(isPresented: .constant(true)) {
-                makeInspector()
-            }
-    }
-
-    @ViewBuilder
-    func makeToolbar() -> some View {
-        Toggle(isOn: $debugMode) {
-            Text("Debug")
+        }
+        .inspector(isPresented: .constant(true)) {
+            makeInspector()
         }
     }
 
@@ -79,7 +71,7 @@ public struct SingleSplatView: View {
             ValueView(value: false) { isPresented in
                 ValueView(value: Optional<Data>.none) { data in
                     Button("Save Splat") {
-                        let splats = makeSplats().map(SplatB.init)
+                        let splats = [splat].map(SplatB.init)
                         splats.withUnsafeBytes { buffer in
                             data.wrappedValue = Data(buffer)
                         }
@@ -175,15 +167,5 @@ public struct SingleSplatView: View {
             }
         }
         return randomSplats
-    }
-
-    func makeSplats() -> [SplatD] {
-        //        + randomSplats
-        //            .init(position: .init([-2, 0.01, 0.01]), scale: .init([0.5, 0.5, 0.5]), color: [1, 0, 1, 1], rotation: .identity),
-        //            .init(position: .init([2, 0.01, 0.01]), scale: .init([0.5, 0.5, 0.5]), color: [1, 1, 0, 1], rotation: .identity),
-        //            .init(position: .init([-3.01, 0.01, 0.01]), scale: .init([0.5, 0.5, 0.5]), color: [0, 1, 1, 1], rotation: .rollPitchYaw(.init(yaw: .degrees(90)))),
-        [
-            splat,
-        ]
     }
 }

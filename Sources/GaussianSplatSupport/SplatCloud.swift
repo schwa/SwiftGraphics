@@ -17,7 +17,7 @@ public struct SplatCloud: Equatable, @unchecked Sendable {
 
         let indexedDistances = (0 ..< splats.count).map { IndexedDistance(index: UInt32($0), distance: 0.0) }
 
-        self.indexedDistances = try device.makeTypedBuffer(data: indexedDistances, options: .storageModeShared).labelled("Splats-IndexDistances-1")
+        self.indexedDistances = try device.makeTypedBuffer(data: indexedDistances, options: .storageModeShared).labelled("Splats-IndexDistances-1") //
         self.cameraPosition = [.nan, .nan, .nan]
 
         self.boundingBox = splats.withUnsafeBufferPointer { buffer in
@@ -30,16 +30,20 @@ public struct SplatCloud: Equatable, @unchecked Sendable {
         }
     }
 
-    public init(device: MTLDevice, splats: [Splat]) throws {
-        let mtlBuffer = try device.makeBuffer(bytesOf: splats, options: .storageModeShared)
-        let typedMTLBuffer = TypedMTLBuffer<Splat>(mtlBuffer: mtlBuffer)
-        try self.init(device: device, splats: typedMTLBuffer)
-    }
-
     public static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.splats == rhs.splats
             && lhs.indexedDistances == rhs.indexedDistances
             && lhs.cameraPosition == rhs.cameraPosition
+    }
+}
+
+public extension SplatCloud {
+    public init(device: MTLDevice, splats: [Splat]) throws {
+        assert(!splats.isEmpty)
+        let mtlBuffer = try device.makeBuffer(bytesOf: splats, options: .storageModeShared)
+        mtlBuffer.label = "Splats-1"
+        let typedMTLBuffer = TypedMTLBuffer<Splat>(mtlBuffer: mtlBuffer)
+        try self.init(device: device, splats: typedMTLBuffer)
     }
 }
 
@@ -56,6 +60,7 @@ public struct SplatB: Equatable, Sendable {
     public var rotation: SIMD4<UInt8>
 }
 
+// Metal Debugger: half3 position, half4 color, half3 cov_a, half3 cov_b
 public struct SplatC: Equatable {
     public var position: PackedHalf3
     public var color: PackedHalf4
