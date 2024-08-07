@@ -179,11 +179,6 @@ struct SimplePBRShadingPass: RenderPassProtocol {
     var id: PassID
     var scene: SceneGraph
 
-    init(id: PassID, scene: SceneGraph) {
-        self.id = id
-        self.scene = scene
-    }
-
     func setup(device: MTLDevice, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State {
         let library = try device.makeDebugLibrary(bundle: .renderKitShaders)
         let renderPipelineDescriptor = renderPipelineDescriptor()
