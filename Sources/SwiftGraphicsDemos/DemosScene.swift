@@ -66,6 +66,7 @@ struct DemosView: View {
                     row(for: GaussianSplatView.self)
                     row(for: GaussianSplatNewMinimalView.self)
                     row(for: SplatCloudInfoView.self)
+                    row(for: SingleSplatView.self)
                 }
                 group(named: "RenderKit") {
                     // TODO: All failing right now
