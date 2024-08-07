@@ -38,7 +38,7 @@ public struct SplatCloud: Equatable, @unchecked Sendable {
 }
 
 public extension SplatCloud {
-    public init(device: MTLDevice, splats: [Splat]) throws {
+    init(device: MTLDevice, splats: [Splat]) throws {
         assert(!splats.isEmpty)
         let mtlBuffer = try device.makeBuffer(bytesOf: splats, options: .storageModeShared)
         mtlBuffer.label = "Splats-1"

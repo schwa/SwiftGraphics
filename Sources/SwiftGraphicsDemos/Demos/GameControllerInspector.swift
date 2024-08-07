@@ -5,7 +5,7 @@ import SwiftUI
 
 struct GameControllerInspector: View {
     @State
-    var viewModel = GameControllerViewModel()
+    private var viewModel = GameControllerViewModel()
 
     var body: some View {
         NavigationStack {
