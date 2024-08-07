@@ -40,6 +40,9 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
     public var useVertexCounting = false
     public var discardRate: Float = 0.05
 
+    let vertexShaderName = "GaussianSplatShaders::VertexShader"
+    let fragmentShaderName = "GaussianSplatShaders::FragmentShader"
+
     init(scene: SceneGraph, debugMode: Bool, useVertexCounting: Bool = false, discardRate: Float) {
         self.scene = scene
         self.debugMode = debugMode
@@ -57,8 +60,8 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
         let renderPipelineDescriptor = renderPipelineDescriptor()
         renderPipelineDescriptor.label = "\(type(of: self))"
         renderPipelineDescriptor.vertexDescriptor = MTLVertexDescriptor(MDLVertexDescriptor.simpleVertexDescriptor)
-        renderPipelineDescriptor.vertexFunction = try library.makeFunction(name: "GaussianSplatShaders::VertexShader", constantValues: constantValues)
-        renderPipelineDescriptor.fragmentFunction = try library.makeFunction(name: "GaussianSplatShaders::FragmentShader", constantValues: constantValues)
+        renderPipelineDescriptor.vertexFunction = try library.makeFunction(name: vertexShaderName, constantValues: constantValues)
+        renderPipelineDescriptor.fragmentFunction = try library.makeFunction(name: fragmentShaderName, constantValues: constantValues)
 
         renderPipelineDescriptor.colorAttachments[0].isBlendingEnabled = true
         renderPipelineDescriptor.colorAttachments[0].rgbBlendOperation = .add
