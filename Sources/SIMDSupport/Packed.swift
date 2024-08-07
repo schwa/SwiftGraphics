@@ -76,6 +76,17 @@ public extension SIMD3 where Scalar == Float {
 
 // MARK: -
 
+public struct PackedHalf2: Hashable, Sendable {
+    public var x: Float16
+    public var y: Float16
+
+    public init(x: Float16, y: Float16) {
+        self.x = x
+        self.y = y
+    }
+}
+
+
 public struct PackedHalf3: Hashable, Sendable {
     public var x: Float16
     public var y: Float16
