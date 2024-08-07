@@ -8,3 +8,6 @@ extension GaussianSplatView: DemoView {
 
 extension GaussianSplatNewMinimalView: DemoView {
 }
+
+extension SingleSplatView: DemoView {
+}
