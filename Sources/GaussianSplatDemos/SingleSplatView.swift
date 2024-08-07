@@ -16,6 +16,8 @@ import SwiftFields
 import SwiftUI
 import UniformTypeIdentifiers
 
+
+
 public struct SingleSplatView: View {
     @State
     private var cameraTransform: Transform = .translation([0, 0, 5])
@@ -40,7 +42,6 @@ public struct SingleSplatView: View {
 
     public init() {
         let device = MTLCreateSystemDefaultDevice()!
-        assert(MemoryLayout<SplatC>.size == 26)
         let splat = SplatD(position: [0, 0, 0], scale: [1, 0.5, 0.25], color: [1, 0, 1, 1], rotation: .init(angle: .zero, axis: [0, 0, 0]))
         self.device = device
         self.splat = splat
@@ -167,5 +168,46 @@ public struct SingleSplatView: View {
             }
         }
         return randomSplats
+    }
+}
+
+struct SplatD: Equatable {
+    var position: PackedFloat3
+    var scale: PackedFloat3
+    var color: SIMD4<Float>
+    var rotation: Rotation
+
+    init(position: PackedFloat3, scale: PackedFloat3, color: SIMD4<Float>, rotation: Rotation) {
+        self.position = position
+        self.scale = scale
+        self.color = color
+        self.rotation = rotation
+    }
+}
+
+extension SplatB {
+    init(_ other: SplatD) {
+        let color = SIMD4<UInt8>(other.color * 255)
+        let rotation_vector = other.rotation.quaternion.vectorRealFirst
+        let rotation = ((rotation_vector / rotation_vector.length) * 128 + 128).clamped(to: 0...255)
+        self = SplatB(position: other.position, scale: other.scale, color: color, rotation: SIMD4<UInt8>(rotation))
+    }
+}
+
+extension SplatC {
+    init(_ other: SplatD) {
+        let transform = simd_float3x3(other.rotation.quaternion) * simd_float3x3(diagonal: SIMD3<Float>(other.scale))
+        let cov3D = transform * transform.transpose
+        let cov_a = PackedHalf3(x: Float16(cov3D[0, 0]), y: Float16(cov3D[0, 1]), z: Float16(cov3D[0, 2]))
+        let cov_b = PackedHalf3(x: Float16(cov3D[1, 1]), y: Float16(cov3D[1, 2]), z: Float16(cov3D[2, 2]))
+
+        self = SplatC(position: PackedHalf3(SIMD3<Float>(other.position)), color: PackedHalf4(other.color), cov_a: cov_a, cov_b: cov_b)
+    }
+
+}
+
+extension simd_quatf {
+    var vectorRealFirst: simd_float4 {
+        [vector.w, vector.x, vector.y, vector.z]
     }
 }

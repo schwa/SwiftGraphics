@@ -50,12 +50,6 @@ public extension Bundle {
     }()
 }
 
-extension simd_quatf {
-    var vectorRealFirst: simd_float4 {
-        [vector.w, vector.x, vector.y, vector.z]
-    }
-}
-
 @dynamicMemberLookup
 public struct TupleBuffered<Element> {
     var keys: [String: Int]
