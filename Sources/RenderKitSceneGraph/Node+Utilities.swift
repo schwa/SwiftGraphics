@@ -8,9 +8,9 @@ public extension Node {
         var s = ""
         for (node, accessor) in allAccessors() {
             let indent = String(repeating: "  ", count: accessor.path.count)
-            print("\(indent)Node(id: \"\(node.id)\", transform: \(node.transform), accessor: #\(accessor))", to: &s)
+            s += "\(indent)Node(id: \"\(node.id)\", transform: \(node.transform), accessor: #\(accessor))\n"
             if let content = node.content {
-                print("\(indent)  content: \(content))", to: &s)
+                s += "\(indent)  content: \(content))\n"
             }
         }
         return s

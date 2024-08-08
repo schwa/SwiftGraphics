@@ -40,13 +40,6 @@ public extension Bundle {
 
     static let gaussianSplatShaders: Bundle = {
         Bundle.module.peerBundle(named: "SwiftGraphics_GaussianSplatShaders", withExtension: "bundle").forceUnwrap("Could not find bundle.")
-
-        //        print(Bundle.module)
-        //        if let shadersBundleURL = Bundle.main.url(forResource: "SwiftGraphics_GaussianSplatShaders", withExtension: "bundle"), let bundle = Bundle(url: shadersBundleURL) {
-        //            return bundle
-        //        }
-        //        // Fail.
-        //        fatalError("Could not find shaders bundle")
     }()
 }
 

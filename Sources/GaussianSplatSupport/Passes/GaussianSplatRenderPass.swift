@@ -86,7 +86,6 @@ public struct GaussianSplatRenderPass <Splat>: RenderPassProtocol where Splat: S
             if info.configuration.depthStencilPixelFormat != .invalid {
                 commandEncoder.setDepthStencilState(state.depthStencilState)
             }
-            print(info.configuration.depthStencilPixelFormat)
             commandEncoder.setRenderPipelineState(state.renderPipelineState)
             if debugMode {
                 commandEncoder.setTriangleFillMode(.lines)
