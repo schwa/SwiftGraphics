@@ -1,7 +1,6 @@
 import BaseSupport
 import Constraints3D
 import CoreGraphicsSupport
-import GaussianSplatSupport // TODO: Get rid of dependency
 import Metal
 import MetalKit
 import RenderKitSceneGraph
@@ -57,25 +56,6 @@ public struct SceneGraphMapView: View {
                     }
                 }
                 .zIndex(1)
-        // TODO: We get rid of this by some kind "bounds" property for content
-        case let splats as SplatCloud:
-            Image(systemName: "questionmark.circle.fill").foregroundStyle(.black, Color(red: 1, green: 0, blue: 1))
-                .frame(width: 32, height: 32)
-                .background {
-                    let p0 = CGPoint(splats.boundingBox.0.xz) * scale
-                    let p1 = CGPoint(splats.boundingBox.1.xz) * scale
-                    let bounds = CGRect(
-                        origin: p0,
-                        size: CGSize(p1 - p0)
-                    )
-                    Path { path in
-                        path.addPath(Path(bounds))
-                        path.addLines([CGPoint(x: bounds.minX, y: bounds.minY), CGPoint(x: bounds.maxX, y: bounds.maxY)])
-                        path.addLines([CGPoint(x: bounds.minX, y: bounds.maxY), CGPoint(x: bounds.maxX, y: bounds.minY)])
-                    }.stroke(Color.red)
-                    .offset(x: 16, y: 16)
-                }
-                .gesture(dragGesture(for: node))
         case nil:
             EmptyView()
         default:

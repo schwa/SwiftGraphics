@@ -44,7 +44,7 @@ public struct GaussianSplatView: View {
     public init() {
         let device = MTLCreateSystemDefaultDevice()!
         let url = Bundle.module.url(forResource: "vision_dr", withExtension: "splat")!
-        let splats = try! SplatCloud(device: device, url: url)
+        let splats = try! SplatCloud<SplatC>(device: device, url: url)
         let root = Node(label: "root") {
             Node(label: "ball") {
                 Node(label: "camera", content: Camera())
@@ -64,7 +64,7 @@ public struct GaussianSplatView: View {
     }
 
     public var body: some View {
-        GaussianSplatRenderView(scene: scene, debugMode: false, sortRate: sortRate, metalFXRate: metalFXRate, discardRate: discardRate)
+        GaussianSplatRenderView<SplatC>(scene: scene, debugMode: false, sortRate: sortRate, metalFXRate: metalFXRate, discardRate: discardRate)
             .overlay(alignment: .top) {
                 performanceMeter()
             }
@@ -81,7 +81,7 @@ public struct GaussianSplatView: View {
                         }
                         Task {
                             await MainActor.run {
-                                scene.splatsNode.content = try! SplatCloud(device: device, url: url)
+                                scene.splatsNode.content = try! SplatCloud<SplatC>(device: device, url: url)
                             }
                         }
                     }

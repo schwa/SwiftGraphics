@@ -29,7 +29,7 @@ public struct GaussianSplatNewMinimalView: View {
     public init() {
         let device = MTLCreateSystemDefaultDevice()!
         let url = Bundle.module.url(forResource: "vision_dr", withExtension: "splat")!
-        let splats = try! SplatCloud(device: device, url: url)
+        let splats = try! SplatCloud<SplatC>(device: device, url: url)
         self.device = device
         let root = Node(label: "root") {
             Node(label: "camera", content: Camera())
@@ -39,7 +39,7 @@ public struct GaussianSplatNewMinimalView: View {
     }
 
     public var body: some View {
-        GaussianSplatRenderView(scene: scene, debugMode: false, sortRate: 15, metalFXRate: 1)
+        GaussianSplatRenderView<SplatC>(scene: scene, debugMode: false, sortRate: 15, metalFXRate: 1)
             #if os(iOS)
             .ignoresSafeArea()
             #endif

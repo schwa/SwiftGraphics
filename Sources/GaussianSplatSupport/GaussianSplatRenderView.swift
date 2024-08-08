@@ -15,7 +15,7 @@ import SwiftUISupport
 import UIKit
 #endif
 
-public struct GaussianSplatRenderView: View {
+public struct GaussianSplatRenderView <Splat>: View where Splat: SplatProtocol {
     private let scene: SceneGraph
     private let debugMode: Bool
     private let sortRate: Int
@@ -82,7 +82,7 @@ public struct GaussianSplatRenderView: View {
         guard let colorTexture, let upscaledTexture else {
             return nil
         }
-        guard let splatsNode = scene.firstNode(label: "splats"), let splats = splatsNode.content as? SplatCloud else {
+        guard let splatsNode = scene.firstNode(label: "splats"), let splats = splatsNode.content as? SplatCloud<Splat> else {
             return nil
         }
         guard let cameraNode = scene.firstNode(label: "camera") else {
@@ -109,7 +109,7 @@ public struct GaussianSplatRenderView: View {
                         sortRate: sortRate
                     )
                 }
-                GaussianSplatRenderPass(
+                GaussianSplatRenderPass<Splat>(
                     scene: scene,
                     debugMode: false,
                     discardRate: discardRate

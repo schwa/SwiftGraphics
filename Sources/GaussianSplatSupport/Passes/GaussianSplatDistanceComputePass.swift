@@ -5,28 +5,22 @@ import MetalSupport
 import RenderKit
 import simd
 
-public struct GaussianSplatDistanceComputePass: ComputePassProtocol {
+public struct GaussianSplatDistanceComputePass<Splat>: ComputePassProtocol where Splat: SplatProtocol {
+    typealias Bindings = GaussianSplatDistanceComputePassBindings
+
     public struct State: PassState {
         var pipelineState: MTLComputePipelineState
         var bindings: Bindings
     }
 
-    @MetalBindings
-    struct Bindings {
-        var modelMatrix: Int = -1
-        var cameraPosition: Int = -1
-        var splats: Int = -1
-        var splatCount: Int = -1
-        var indexedDistances: Int = -1
-    }
 
     public var id = PassID("GaussianSplatPreCalcComputePass")
-    var splats: SplatCloud
+    var splats: SplatCloud<Splat>
     var modelMatrix: simd_float3x3
     var cameraPosition: SIMD3<Float>
     var sortRate: Int
 
-    public init(splats: SplatCloud, modelMatrix: simd_float3x3, cameraPosition: SIMD3<Float>, sortRate: Int) {
+    public init(splats: SplatCloud<Splat>, modelMatrix: simd_float3x3, cameraPosition: SIMD3<Float>, sortRate: Int) {
         self.splats = splats
         self.modelMatrix = modelMatrix
         self.cameraPosition = cameraPosition
@@ -68,3 +62,12 @@ public struct GaussianSplatDistanceComputePass: ComputePassProtocol {
         commandEncoder.endEncoding()
     }
 }
+
+    @MetalBindings
+    struct GaussianSplatDistanceComputePassBindings {
+        var modelMatrix: Int = -1
+        var cameraPosition: Int = -1
+        var splats: Int = -1
+        var splatCount: Int = -1
+        var indexedDistances: Int = -1
+    }
