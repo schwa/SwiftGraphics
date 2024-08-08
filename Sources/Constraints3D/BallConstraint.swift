@@ -1,4 +1,5 @@
 import simd
+import SIMDSupport
 import SwiftUI
 
 public struct BallConstraint: Equatable {

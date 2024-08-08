@@ -1,3 +1,4 @@
+import Constraints3D
 import CoreGraphicsSupport
 import Fields3D
 import Projection
@@ -62,9 +63,6 @@ struct SoftwareRendererBoxesDemoView: View, DemoView {
                 }
                 Section("Camera") {
                     ProjectionEditor($cameraProjection)
-                }
-                Section("Ball Constraint") {
-                    BallConstraintEditor(ballConstraint: $ballConstraint)
                 }
             }
         }

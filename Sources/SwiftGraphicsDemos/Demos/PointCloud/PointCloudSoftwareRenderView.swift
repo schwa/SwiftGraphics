@@ -1,3 +1,4 @@
+import Constraints3D
 import CoreGraphicsSupport
 import Fields3D
 import Projection
@@ -62,11 +63,6 @@ struct PointCloudSoftwareRenderView: View, DemoView {
                 Section("Camera Projection") {
                     ProjectionEditor($cameraProjection)
                 }
-
-                Section("Ball Constraint") {
-                    BallConstraintEditor(ballConstraint: $ballConstraint)
-                }
-
                 Section("Camera Transform") {
                     TransformEditor($cameraTransform)
                 }

@@ -1,3 +1,4 @@
+import Constraints3D
 import CoreGraphicsSupport
 import Everything
 import Fields3D
@@ -161,9 +162,6 @@ struct SoftwareRendererMeshDemoView: View, DemoView {
                 }
                 Section("Camera") {
                     ProjectionEditor($cameraProjection)
-                }
-                Section("Ball Constraint") {
-                    BallConstraintEditor(ballConstraint: $ballConstraint)
                 }
             }
         }

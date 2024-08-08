@@ -1,3 +1,4 @@
+import Constraints3D
 import Fields3D
 import Metal
 import MetalKit
@@ -122,13 +123,6 @@ public struct SceneGraphViewModifier: ViewModifier {
             .inspector(isPresented: $isInspectorPresented) {
                 TabView {
                     Form {
-                        Section("Ball Constaint") {
-                            BallConstraintEditor(ballConstraint: $ballConstraint)
-                                .controlSize(.small)
-                            Button("Reset") {
-                                ballConstraint.rollPitchYaw = .zero
-                            }
-                        }
                         Section("Camera") {
                             MatrixEditor($scene.currentCameraNode.unsafeBinding().transform.matrix)
                         }
