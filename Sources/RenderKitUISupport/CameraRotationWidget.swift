@@ -38,19 +38,20 @@ public struct CameraRotationWidget: View {
                 .zIndex(-.greatestFiniteMagnitude)
 
                 ForEach(axesInfo(), id: \.0) { info in
-                    Button("-\(info.label)") {
+                    let z = Double(projectionHelper.worldSpaceToClipSpace(info.vector * length).normalized.z)
+                    Button(info.label) {
                         rotation.rollPitchYaw.setAxis(info.vector)
                     }
                     .buttonStyle(CameraWidgetButtonStyle())
                     .backgroundStyle(info.color)
                     .offset(projectionHelper.worldSpaceToScreenSpace(info.vector * length))
-                    .zIndex(Double(projectionHelper.worldSpaceToClipSpace(info.vector * length).z))
+                    .zIndex(z)
                     .keyboardShortcut(info.keyboardShortcut)
+                    .opacity(z < -0.015 ? 0.5 : 1)
                 }
             }
             .onChange(of: rotation, initial: true) {
                 cameraTransform.rotation = rotation
-                print(cameraTransform)
             }
             .onChange(of: cameraTransform, initial: true) {
                 rotation = cameraTransform.rotation
@@ -58,6 +59,7 @@ public struct CameraRotationWidget: View {
             .modifier(NewBallControllerViewModifier(constraint: .init(radius: 0), transform: $cameraTransform))
             .background(isHovering ? .white.opacity(0.5) : .clear)
             .onHover { isHovering = $0 }
+            .cornerRadius(8)
         }
     }
 
@@ -115,6 +117,15 @@ extension RollPitchYaw {
             self = .init(roll: .degrees(0), pitch: .degrees(0), yaw: .degrees(0))
         default:
             break
+        }
+    }
+}
+
+extension View {
+    func log(_ value: some Equatable, initial: Bool = false, string: @escaping @autoclosure () -> String) -> some View {
+        onChange(of: value, initial: initial) {
+            //Logger().log("\(value)")
+            print(string())
         }
     }
 }
