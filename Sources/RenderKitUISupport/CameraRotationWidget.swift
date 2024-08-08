@@ -4,31 +4,29 @@ import simd
 import SIMDSupport
 import SwiftUI
 
-public struct CameraRotationWidgetView: View {
+public struct CameraRotationWidget: View {
     @Binding
-    var ballConstraint: BallConstraint
+    var rotation: Rotation
 
     @State
-    private var cameraTransform: Transform = .translation([0, 0, -5])
-
-    @State
-    private var cameraProjection: Projection = .orthographic(.init(left: -1, right: 1, bottom: -1, top: 1, near: -1, far: 1))
+    private var cameraTransform: Transform = .identity
 
     @State
     private var isHovering = false
 
     var length: Float = 0.75
 
-    public init(ballConstraint: Binding<BallConstraint>) {
-        self._ballConstraint = ballConstraint
+    public init(rotation: Binding<Rotation>) {
+        self._rotation = rotation
     }
 
     public var body: some View {
         GeometryReader { proxy in
-            let projection = Projection3DHelper(size: proxy.size, cameraProjection: cameraProjection, cameraTransform: cameraTransform)
+            let cameraProjection = Projection.orthographic(.init(left: -1, right: 1, bottom: -1, top: 1, near: -1, far: 1))
+            let projectionHelper = Projection3DHelper(size: proxy.size, cameraProjection: cameraProjection, cameraTransform: cameraTransform)
             ZStack {
                 Canvas { context, _ in
-                    context.draw3DLayer(projection: projection) { _, context3D in
+                    context.draw3DLayer(projection: projectionHelper) { _, context3D in
                         for axis in Axis3D.allCases {
                             context3D.stroke(path: Path3D { path in
                                 path.move(to: axis.vector * -length)
@@ -41,19 +39,23 @@ public struct CameraRotationWidgetView: View {
 
                 ForEach(axesInfo(), id: \.0) { info in
                     Button("-\(info.label)") {
-                        ballConstraint.rollPitchYaw.setAxis(info.vector)
+                        rotation.rollPitchYaw.setAxis(info.vector)
                     }
                     .buttonStyle(CameraWidgetButtonStyle())
                     .backgroundStyle(info.color)
-                    .offset(projection.worldSpaceToScreenSpace(info.vector * length))
-                    .zIndex(Double(projection.worldSpaceToClipSpace(info.vector * length).z))
+                    .offset(projectionHelper.worldSpaceToScreenSpace(info.vector * length))
+                    .zIndex(Double(projectionHelper.worldSpaceToClipSpace(info.vector * length).z))
                     .keyboardShortcut(info.keyboardShortcut)
                 }
             }
-            .onChange(of: ballConstraint, initial: true) {
-                cameraTransform = ballConstraint.transform
+            .onChange(of: rotation, initial: true) {
+                cameraTransform.rotation = rotation
+                print(cameraTransform)
             }
-            .ballRotation($ballConstraint.rollPitchYaw)
+            .onChange(of: cameraTransform, initial: true) {
+                rotation = cameraTransform.rotation
+            }
+            .modifier(NewBallControllerViewModifier(constraint: .init(radius: 0), transform: $cameraTransform))
             .background(isHovering ? .white.opacity(0.5) : .clear)
             .onHover { isHovering = $0 }
         }
