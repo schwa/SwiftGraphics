@@ -15,12 +15,12 @@ public struct CameraConeController: ViewModifier {
 
     public func body(content: Content) -> some View {
         content
-        .draggableParameter($cameraConeConstraint.height, axis: .vertical, range: 0...1, scale: 0.01, behavior: .clamping)
-        .draggableParameter($cameraConeConstraint.angle.degrees, axis: .horizontal, range: 0...360, scale: 0.1, behavior: .wrapping)
-        .onChange(of: cameraConeConstraint.position, initial: true) {
-            let cameraPosition = cameraConeConstraint.position
-            transform.matrix = look(at: cameraConeConstraint.lookAt, from: cameraPosition, up: [0, 1, 0])
-        }
+            .draggableParameter($cameraConeConstraint.height, axis: .vertical, range: 0...1, scale: 0.01, behavior: .clamping)
+            .draggableParameter($cameraConeConstraint.angle.degrees, axis: .horizontal, range: 0...360, scale: 0.1, behavior: .wrapping)
+            .onChange(of: cameraConeConstraint.position, initial: true) {
+                let cameraPosition = cameraConeConstraint.position
+                transform.matrix = look(at: cameraConeConstraint.lookAt, from: cameraPosition, up: [0, 1, 0])
+            }
     }
 }
 

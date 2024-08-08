@@ -19,11 +19,11 @@ public struct NewBallControllerViewModifier: ViewModifier {
 
     public func body(content: Content) -> some View {
         content
-        .draggableParameter($constraint.pitch.degrees, axis: .vertical, range: pitchRange.degrees, scale: 0.1, behavior: .clamping)
-        .draggableParameter($constraint.yaw.degrees, axis: .horizontal, range: yawRange.degrees, scale: 0.1, behavior: .wrapping)
-        .onChange(of: constraint.transform, initial: true) {
-            transform = constraint.transform
-        }
+            .draggableParameter($constraint.pitch.degrees, axis: .vertical, range: pitchRange.degrees, scale: 0.1, behavior: .clamping)
+            .draggableParameter($constraint.yaw.degrees, axis: .horizontal, range: yawRange.degrees, scale: 0.1, behavior: .wrapping)
+            .onChange(of: constraint.transform, initial: true) {
+                transform = constraint.transform
+            }
     }
 }
 
@@ -38,7 +38,7 @@ extension ClosedRange where Bound == Angle {
 public struct NewBallConstraint: Equatable {
     public var transform: Transform {
         Transform((RollPitchYaw(pitch: pitch, yaw: yaw).toMatrix4x4(order: .rollPitchYaw) * simd_float4x4(translate: [0, 0, radius])))
-   }
+    }
 
     public var target: SIMD3<Float>
     public var radius: Float

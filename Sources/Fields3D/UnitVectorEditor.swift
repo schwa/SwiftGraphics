@@ -25,14 +25,14 @@ public struct UnitVectorEditor: View {
         .coordinateSpace(NamedCoordinateSpace.named("FOO"))
         .overlay {
             Circle()
-            .fill(Color.accentColor)
-            .frame(width: 8)
-            .padding()
-            .contentShape(Circle())
-            .position(triangle.toCartesian((Double(vector.x), Double(vector.y), Double(vector.z))))
-            .gesture(drag(triangle: triangle))
+                .fill(Color.accentColor)
+                .frame(width: 8)
+                .padding()
+                .contentShape(Circle())
+                .position(triangle.toCartesian((Double(vector.x), Double(vector.y), Double(vector.z))))
+                .gesture(drag(triangle: triangle))
         }
-        .onGeometryChange(for: CGSize.self, of: \.size, action: { size = $0 })
+        .onGeometryChange(for: CGSize.self, of: \.size) { size = $0 }
         .aspectRatio(sqrt(3 / 2), contentMode: .fit)
         .onSpatialTapGesture { value in
             let location = triangle.clamp(value.location)
@@ -55,7 +55,7 @@ public struct UnitVectorEditor: View {
 
     VStack {
         UnitVectorEditor(vector: $vector)
-        .frame(width: 60)
+            .frame(width: 60)
         Text("Vector: (\(vector.x), \(vector.y), \(vector.z))")
     }
 }

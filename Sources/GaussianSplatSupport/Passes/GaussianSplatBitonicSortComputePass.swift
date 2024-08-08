@@ -74,8 +74,8 @@ public struct GaussianSplatBitonicSortComputePass <Splat>: ComputePassProtocol w
     }
 }
 
-    @MetalBindings
-    struct GaussianSplatBitonicSortComputePassBindings {
-        var uniforms: Int = -1
-        var indexedDistances: Int = -1
-    }
+@MetalBindings
+struct GaussianSplatBitonicSortComputePassBindings {
+    var uniforms: Int = -1
+    var indexedDistances: Int = -1
+}
