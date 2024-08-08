@@ -50,6 +50,11 @@ struct SceneGraphDemoView: View, DemoView {
         .modifier(enabled: false, FirstPerson3DGameControllerViewModifier(transform: $scene.unsafeCurrentCameraNode.transform))
         .modifier(enabled: false, CameraConeController(cameraCone: .init(apex: [0, 0, 0], axis: [0, 1, 0], apexToTopBase: 0, topBaseRadius: 2, bottomBaseRadius: 2, height: 2), transform: $scene.unsafeCurrentCameraNode.transform))
         .modifier(enabled: true, NewBallControllerViewModifier(constraint: .init(radius: 5), transform: $scene.unsafeCurrentCameraNode.transform))
+        .overlay(alignment: .topTrailing) {
+            CameraRotationWidget(rotation: $scene.unsafeCurrentCameraNode.transform.rotation)
+                .frame(width: 100, height: 100)
+                .padding()
+        }
     }
 }
 
