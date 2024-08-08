@@ -35,11 +35,7 @@ struct SimplePBRSceneGraphDemoView: View, DemoView {
             //            DebugRenderPass(scene: scene),
         ])
         .showFrameEditor()
-        .onChange(of: cameraRotation, initial: true) {
-            let b = BallConstraint(radius: 5, rollPitchYaw: cameraRotation)
-            scene.currentCameraNode?.transform = b.transform
-        }
-        .ballRotation($cameraRotation)
+        .modifier(NewBallControllerViewModifier(constraint: .init(radius: 5), transform: $scene.unsafeCurrentCameraNode.transform))
         .inspector(isPresented: .constant(true)) {
             let path = scene.firstAccessor(label: "model-1")!
             let material = Binding<SimplePBRMaterial> {

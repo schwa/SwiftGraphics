@@ -76,7 +76,6 @@ struct VolumetricRendererDemoView: DemoView {
                 .padding()
                 .controlSize(.small)
             }
-            .modifier(SceneGraphViewModifier(scene: $scene))
     }
 
     func updateTransferFunctionTexture(_ scene: inout SceneGraph) {

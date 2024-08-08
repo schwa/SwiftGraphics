@@ -19,9 +19,6 @@ struct HalfEdge3DDemoView: View, DemoView {
     private var cameraProjection: Projection = .perspective(.init())
 
     @State
-    private var ballConstraint = BallConstraint()
-
-    @State
     private var rasterizerOptions = Rasterizer.Options.default
 
     @State
@@ -77,19 +74,8 @@ struct HalfEdge3DDemoView: View, DemoView {
                     }
                 }
             }
-            .ballRotation($ballConstraint.rollPitchYaw)
-            .onChange(of: ballConstraint) {
-                cameraTransform = ballConstraint.transform
-            }
         }
-        .onChange(of: ballConstraint.transform, initial: true) {
-            cameraTransform = ballConstraint.transform
-        }
-        .overlay(alignment: .topTrailing) {
-            CameraRotationWidgetView(ballConstraint: $ballConstraint)
-                .frame(width: 120, height: 120)
-        }
-        .ballRotation($ballConstraint.rollPitchYaw)
+        .modifier(NewBallControllerViewModifier(constraint: .init(radius: 5), transform: $cameraTransform))
         .inspector {
             TabView {
                 HalfEdgeMeshInspectorView(mesh: $mesh, selection: $selection, faceColors: $faceColors)

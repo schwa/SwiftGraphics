@@ -24,9 +24,6 @@ public struct SingleSplatView: View {
     private var cameraProjection: Projection = .perspective(.init())
 
     @State
-    private var ballConstraint = BallConstraint(radius: 5)
-
-    @State
     private var modelTransform: Transform = .init(scale: [1, 1, 1])
 
     @State

@@ -14,9 +14,6 @@ struct CameraConeDemoView: DemoView {
     private var cameraProjection: Projection = .perspective(.init())
 
     @State
-    private var ballConstraint = BallConstraint()
-
-    @State
     private var angle: Angle = .zero
 
     @State
@@ -40,14 +37,7 @@ struct CameraConeDemoView: DemoView {
                 context2D.stroke(Path(lineSegments: [(p0, p1)]), with: .color(.purple), lineWidth: 2)
             }
         }
-        .overlay(alignment: .topTrailing) {
-            CameraRotationWidgetView(ballConstraint: $ballConstraint)
-                .frame(width: 120, height: 120)
-        }
-        .onChange(of: ballConstraint.transform, initial: true) {
-            cameraTransform = ballConstraint.transform
-        }
-        .ballRotation($ballConstraint.rollPitchYaw, pitchLimit: .unlimited, yawLimit: .unlimited)
+        .modifier(NewBallControllerViewModifier(constraint: .init(radius: 5), transform: $cameraTransform))
         .inspector {
             Form {
                 Section("Ccamera") {
