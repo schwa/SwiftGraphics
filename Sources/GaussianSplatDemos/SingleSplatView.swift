@@ -171,13 +171,6 @@ struct SplatD: Equatable {
     var scale: PackedFloat3
     var color: SIMD4<Float>
     var rotation: Rotation
-
-    init(position: PackedFloat3, scale: PackedFloat3, color: SIMD4<Float>, rotation: Rotation) {
-        self.position = position
-        self.scale = scale
-        self.color = color
-        self.rotation = rotation
-    }
 }
 
 extension SplatB {
