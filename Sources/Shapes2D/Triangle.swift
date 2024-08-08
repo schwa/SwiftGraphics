@@ -151,32 +151,6 @@ public extension Triangle {
     }
 }
 
-//// Cartesian coordinates
-public extension Triangle {
-    // converts trilinear coordinates to Cartesian coordinates relative
-    // to the incenter; thus, the incenter has coordinates (0.0, 0.0)
-    func toLocalCartesian(alpha: Double, beta: Double, gamma: Double) -> CGPoint {
-        let area = area
-        let (a, b, c) = lengths
-
-        let r = 2 * area / (a + b + c)
-        let k = 2 * area / (a * alpha + b * beta + c * gamma)
-        let C = angles.2.radians
-
-        let x = (k * beta - r + (k * alpha - r) * cos(C)) / sin(C)
-        let y = k * alpha - r
-
-        return CGPoint(x: x, y: y)
-    }
-
-    // TODO: This seems broken! --- validate that this is still needed..
-    func toCartesian(alpha: Double, beta: Double, gamma: Double) -> CGPoint {
-        let a = toLocalCartesian(alpha: alpha, beta: beta, gamma: gamma)
-        let delta = toLocalCartesian(alpha: 0, beta: 0, gamma: 1)
-        return vertices.0 + a - delta
-    }
-}
-
 // MARK: Utilities
 
 func equalities<T>(_ e: (T, T, T), test: (T, T) -> Bool) -> Int {
@@ -191,4 +165,111 @@ func equalities<T>(_ e: (T, T, T), test: (T, T) -> Bool) -> Int {
         c += 1
     }
     return min(c, 3)
+}
+
+public extension Triangle {
+    // Convert Cartesian coordinates to trilinear coordinates
+    func toTrilinear(_ point: CGPoint) -> (Double, Double, Double) {
+        let (a, b, c) = sideDistances()
+        let (area1, area2, area3) = subtrianglesAreas(point)
+        let totalArea = area
+
+        return (
+            Double(area1) * 2 / (a * Double(totalArea)),
+            Double(area2) * 2 / (b * Double(totalArea)),
+            Double(area3) * 2 / (c * Double(totalArea))
+        )
+    }
+
+    // Convert trilinear coordinates to Cartesian coordinates
+    func toCartesian(_ trilinear: (Double, Double, Double)) -> CGPoint {
+        let (x1, y1) = (vertices.0.x, vertices.0.y)
+        let (x2, y2) = (vertices.1.x, vertices.1.y)
+        let (x3, y3) = (vertices.2.x, vertices.2.y)
+        let (a, b, c) = trilinear
+
+        let denominator = a + b + c
+        let x = CGFloat((a * x1 + b * x2 + c * x3) / denominator)
+        let y = CGFloat((a * y1 + b * y2 + c * y3) / denominator)
+
+        return CGPoint(x: x, y: y)
+    }
+
+    // Clamp a point to the closest point within the triangle
+    func clamp(_ point: CGPoint) -> CGPoint {
+        // Check if the point is inside the triangle
+        if isPointInside(point) {
+            return point
+        }
+
+        // Find the closest point on each edge
+        let closestOnEdge1 = closestPointOnLineSegment(point, lineStart: vertices.0, lineEnd: vertices.1)
+        let closestOnEdge2 = closestPointOnLineSegment(point, lineStart: vertices.1, lineEnd: vertices.2)
+        let closestOnEdge3 = closestPointOnLineSegment(point, lineStart: vertices.2, lineEnd: vertices.0)
+
+        // Find the closest among these three points
+        let distances = [
+            point.distance(to: closestOnEdge1),
+            point.distance(to: closestOnEdge2),
+            point.distance(to: closestOnEdge3)
+        ]
+
+        let minDistance = distances.min()!
+        if minDistance == distances[0] {
+            return closestOnEdge1
+        } else if minDistance == distances[1] {
+            return closestOnEdge2
+        } else {
+            return closestOnEdge3
+        }
+    }
+
+    // Helper function to check if a point is inside the triangle
+    func isPointInside(_ point: CGPoint) -> Bool {
+        let (area1, area2, area3) = subtrianglesAreas(point)
+        let totalArea = area
+
+        // The point is inside if the sum of subtriangle areas equals the total area
+        // We use a small epsilon for floating-point comparison
+        let epsilon: CGFloat = 1e-6
+        return abs(area1 + area2 + area3 - totalArea) < epsilon
+    }
+
+    // Helper function to find the closest point on a line segment
+    func closestPointOnLineSegment(_ point: CGPoint, lineStart: CGPoint, lineEnd: CGPoint) -> CGPoint {
+        let lineVector = CGPoint(x: lineEnd.x - lineStart.x, y: lineEnd.y - lineStart.y)
+        let pointVector = CGPoint(x: point.x - lineStart.x, y: point.y - lineStart.y)
+
+        let lineLengthSquared = lineVector.x * lineVector.x + lineVector.y * lineVector.y
+        let t = max(0, min(1, (pointVector.x * lineVector.x + pointVector.y * lineVector.y) / lineLengthSquared))
+
+        return CGPoint(
+            x: lineStart.x + t * lineVector.x,
+            y: lineStart.y + t * lineVector.y
+        )
+    }
+
+    // Helper function to calculate side lengths
+    private func sideDistances() -> (Double, Double, Double) {
+        let a = vertices.1.distance(to: vertices.2)
+        let b = vertices.2.distance(to: vertices.0)
+        let c = vertices.0.distance(to: vertices.1)
+        return (a, b, c)
+    }
+
+    // Helper function to calculate areas of subtriangles
+    private func subtrianglesAreas(_ point: CGPoint) -> (CGFloat, CGFloat, CGFloat) {
+        let area1 = Triangle(point, vertices.1, vertices.2).area
+        let area2 = Triangle(vertices.0, point, vertices.2).area
+        let area3 = Triangle(vertices.0, vertices.1, point).area
+        return (area1, area2, area3)
+    }
+
+//    // Helper function to calculate the area of the triangle
+//    func area() -> CGFloat {
+//        let (x1, y1) = (vertices.0.x, vertices.0.y)
+//        let (x2, y2) = (vertices.1.x, vertices.1.y)
+//        let (x3, y3) = (vertices.2.x, vertices.2.y)
+//        return abs((x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2)) / 2)
+//    }
 }

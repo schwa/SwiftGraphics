@@ -117,6 +117,8 @@ let package = Package(
             name: "Fields3D",
             dependencies: [
                 "CoreGraphicsSupport",
+                "CoreGraphicsUnsafeConformances",
+                "Shapes2D",
                 "SIMDSupport",
                 "SwiftUISupport",
                 .product(name: "SwiftFormats", package: "SwiftFormats"),
