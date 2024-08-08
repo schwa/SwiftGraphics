@@ -1,4 +1,5 @@
 import BaseSupport
+import Constraints3D
 @preconcurrency import Metal
 import MetalKit
 import MetalSupport

@@ -1,4 +1,5 @@
 import BaseSupport
+import Constraints3D
 import Everything
 import Foundation
 import GaussianSplatSupport

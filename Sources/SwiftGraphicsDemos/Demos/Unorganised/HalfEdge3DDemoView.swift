@@ -1,3 +1,4 @@
+import Constraints3D
 import CoreGraphicsSupport
 import Fields3D
 import Projection
@@ -103,9 +104,6 @@ struct HalfEdge3DDemoView: View, DemoView {
                     }
                     Section("Camera") {
                         ProjectionEditor($cameraProjection)
-                    }
-                    Section("Ball Constraint") {
-                        BallConstraintEditor(ballConstraint: $ballConstraint)
                     }
                 }
                 .tabItem { Text("Stuff") }

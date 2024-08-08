@@ -1,4 +1,5 @@
 import BaseSupport
+import Constraints3D
 import CoreGraphicsSupport
 import GaussianSplatSupport // TODO: Get rid of dependency
 import Metal
