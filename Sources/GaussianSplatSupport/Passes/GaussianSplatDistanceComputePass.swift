@@ -13,7 +13,6 @@ public struct GaussianSplatDistanceComputePass<Splat>: ComputePassProtocol where
         var bindings: Bindings
     }
 
-
     public var id = PassID("GaussianSplatPreCalcComputePass")
     var splats: SplatCloud<Splat>
     var modelMatrix: simd_float3x3

@@ -26,6 +26,9 @@ public struct GaussianSplatNewMinimalView: View {
     @State
     private var pitch = Angle.zero
 
+    @State
+    private var cameraCone: CameraCone = .init(apex: [0, 0, 0], axis: [1, 0, 0], apexToTopBase: 0, topBaseRadius: 2, bottomBaseRadius: 2, height: 2)
+
     public init() {
         let device = MTLCreateSystemDefaultDevice()!
         let url = Bundle.module.url(forResource: "vision_dr", withExtension: "splat")!
@@ -39,11 +42,11 @@ public struct GaussianSplatNewMinimalView: View {
     }
 
     public var body: some View {
-        GaussianSplatRenderView<SplatC>(scene: scene, debugMode: false, sortRate: 15, metalFXRate: 1)
+        GaussianSplatRenderView<SplatC>(scene: scene, debugMode: false, sortRate: 15, metalFXRate: 2)
             #if os(iOS)
             .ignoresSafeArea()
             #endif
-            .modifier(FirstPerson3DGameControllerViewModifier(transform: $scene.unsafeCurrentCameraNode.transform))
+            .modifier(CameraConeController(cameraCone: cameraCone, transform: $scene.unsafeCurrentCameraNode.transform))
             .onChange(of: pitch) {
                 try! scene.modify(label: "splats") { node in
                     node?.transform.rotation = .rollPitchYaw(.init(pitch: pitch))
@@ -56,6 +59,18 @@ public struct GaussianSplatNewMinimalView: View {
                 .padding()
                 .background(Color.white)
                 .padding()
+            }
+            .inspector(isPresented: .constant(true)) {
+                Form {
+                    Section("Cone") {
+                        TextField("Apex", value: $cameraCone.apex, format: .vector)
+                        TextField("Axis", value: $cameraCone.axis, format: .vector)
+                        TextField("H1", value: $cameraCone.apexToTopBase, format: .number)
+                        TextField("H2", value: $cameraCone.height, format: .number)
+                        TextField("R1", value: $cameraCone.topBaseRadius, format: .number)
+                        TextField("R2", value: $cameraCone.bottomBaseRadius, format: .number)
+                    }
+                }
             }
     }
 }
