@@ -704,37 +704,6 @@ extension Array {
     }
 }
 
-extension Projection3DHelper {
-    init(size: CGSize, cameraProjection: Projection, cameraTransform: Transform) {
-        var helper = Projection3DHelper(size: size)
-        helper.viewTransform = cameraTransform.matrix.inverse
-        helper.projectionTransform = cameraProjection.projectionMatrix(for: SIMD2<Float>(size))
-        helper.clipTransform = simd_float4x4(scale: [Float(size.width) / 2, Float(size.height) / 2, 1])
-        self = helper
-    }
-}
-
-extension RollPitchYaw {
-    mutating func setAxis(_ vector: SIMD3<Float>) {
-        switch vector {
-        case [-1, 0, 0]:
-            self = .init(roll: .degrees(0), pitch: .degrees(0), yaw: .degrees(90))
-        case [1, 0, 0]:
-            self = .init(roll: .degrees(0), pitch: .degrees(0), yaw: .degrees(270))
-        case [0, -1, 0]:
-            self = .init(roll: .degrees(0), pitch: .degrees(90), yaw: .degrees(0))
-        case [0, 1, 0]:
-            self = .init(roll: .degrees(0), pitch: .degrees(270), yaw: .degrees(0))
-        case [0, 0, -1]:
-            self = .init(roll: .degrees(0), pitch: .degrees(180), yaw: .degrees(0))
-        case [0, 0, 1]:
-            self = .init(roll: .degrees(0), pitch: .degrees(0), yaw: .degrees(0))
-        default:
-            break
-        }
-    }
-}
-
 extension View {
     func onSpatialTap(count: Int = 1, coordinateSpace: some CoordinateSpaceProtocol = .local, handler: @escaping (CGPoint) -> Void) -> some View {
         gesture(SpatialTapGesture(count: count, coordinateSpace: coordinateSpace).onEnded { value in

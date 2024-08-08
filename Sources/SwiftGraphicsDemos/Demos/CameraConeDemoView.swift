@@ -1,6 +1,7 @@
 import Constraints3D
 import Projection
 import RenderKitSceneGraph
+import RenderKitUISupport
 import simd
 import SIMDSupport
 import SwiftUI

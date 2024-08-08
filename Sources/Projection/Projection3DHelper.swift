@@ -37,6 +37,16 @@ public struct Projection3DHelper: Sendable {
     }
 }
 
+public extension Projection3DHelper {
+    init(size: CGSize, cameraProjection: Projection, cameraTransform: Transform) {
+        var helper = Projection3DHelper(size: size)
+        helper.viewTransform = cameraTransform.matrix.inverse
+        helper.projectionTransform = cameraProjection.projectionMatrix(for: SIMD2<Float>(size))
+        helper.clipTransform = simd_float4x4(scale: [Float(size.width) / 2, Float(size.height) / 2, 1])
+        self = helper
+    }
+}
+
 // MARK: -
 
 public extension GraphicsContext {
