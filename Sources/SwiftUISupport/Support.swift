@@ -88,3 +88,28 @@ public extension View {
         gesture(SpatialTapGesture(count: count, coordinateSpace: coordinateSpace).onEnded(ended))
     }
 }
+
+// NOTE: This _could_ be considered a performance issue. IIRC common wisdom has recommended NOT doing this.
+public extension View {
+    @ViewBuilder
+    nonisolated func modifier<T>(enabled: Bool, _ modifier: T) -> some View where T: ViewModifier {
+        if enabled {
+            self.modifier(modifier)
+        }
+        else {
+            self
+        }
+    }
+}
+
+public extension View {
+    @ViewBuilder
+    func modifier(@ViewModifierBuilder _ modifier: () -> (some ViewModifier)?) -> some View {
+        if let modifier = modifier() {
+            self.modifier(modifier)
+        }
+        else {
+            self
+        }
+    }
+}

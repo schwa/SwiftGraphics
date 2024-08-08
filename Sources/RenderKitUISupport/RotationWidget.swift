@@ -4,7 +4,7 @@ import simd
 import SIMDSupport
 import SwiftUI
 
-public struct CameraRotationWidget: View {
+public struct RotationWidget: View {
     @Binding
     var rotation: Rotation
 

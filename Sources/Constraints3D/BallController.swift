@@ -3,8 +3,13 @@ import SIMDSupport
 import SwiftUI
 
 public struct NewBallControllerViewModifier: ViewModifier {
-    @State
     private var constraint: NewBallConstraint
+
+    @State
+    private var pitch: Angle = .zero
+
+    @State
+    private var yaw: Angle = .zero
 
     @Binding
     var transform: Transform
@@ -15,40 +20,34 @@ public struct NewBallControllerViewModifier: ViewModifier {
     public init(constraint: NewBallConstraint, transform: Binding<Transform>) {
         self.constraint = constraint
         self._transform = transform
+        // TODO: compute pitch yaw from transform
     }
 
     public func body(content: Content) -> some View {
         content
-            .draggableParameter($constraint.pitch.degrees, axis: .vertical, range: pitchRange.degrees, scale: 0.1, behavior: .clamping)
-            .draggableParameter($constraint.yaw.degrees, axis: .horizontal, range: yawRange.degrees, scale: 0.1, behavior: .wrapping)
-            .onChange(of: constraint.transform, initial: true) {
-                transform = constraint.transform
+            .draggableParameter($pitch.degrees, axis: .vertical, range: pitchRange.degrees, scale: 0.1, behavior: .clamping)
+            .draggableParameter($yaw.degrees, axis: .horizontal, range: yawRange.degrees, scale: 0.1, behavior: .wrapping)
+            .onChange(of: [pitch, yaw], initial: true) {
+                transform = constraint.transform(for: RollPitchYaw(pitch: pitch, yaw: yaw))
             }
-    }
-}
-
-extension ClosedRange where Bound == Angle {
-    var degrees: ClosedRange<Double> {
-        lowerBound.degrees ... upperBound.degrees
+            .onChange(of: constraint, initial: true) {
+                transform = constraint.transform(for: RollPitchYaw(pitch: pitch, yaw: yaw))
+            }
     }
 }
 
 // MARK: -
 
 public struct NewBallConstraint: Equatable {
-    public var transform: Transform {
-        Transform((RollPitchYaw(pitch: pitch, yaw: yaw).toMatrix4x4(order: .rollPitchYaw) * simd_float4x4(translate: [0, 0, radius])))
-    }
-
     public var target: SIMD3<Float>
     public var radius: Float
-    public var pitch: Angle
-    public var yaw: Angle
 
-    public init(target: SIMD3<Float> = .zero, pitch: Angle = .zero, yaw: Angle = .zero, radius: Float) {
+    public init(target: SIMD3<Float> = .zero, radius: Float) {
         self.target = target
         self.radius = radius
-        self.pitch = pitch
-        self.yaw = yaw
+    }
+
+    func transform(for rotation: RollPitchYaw) -> Transform {
+        Transform((rotation.toMatrix4x4(order: .rollPitchYaw) * simd_float4x4(translate: [0, 0, radius])))
     }
 }
