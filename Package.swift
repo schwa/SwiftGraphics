@@ -15,7 +15,6 @@ let package = Package(
     products: [
         .library(name: "Array2D", targets: ["Array2D"]),
         .library(name: "BaseSupport", targets: ["BaseSupport"]),
-        .library(name: "Compute", targets: ["Compute"]),
         .library(name: "CoreGraphicsSupport", targets: ["CoreGraphicsSupport"]),
         .library(name: "CoreGraphicsUnsafeConformances", targets: ["CoreGraphicsUnsafeConformances"]),
         .library(name: "Counters", targets: ["Counters"]),
@@ -328,26 +327,6 @@ let package = Package(
             ]
         ),
 
-        // MARK: Compute
-
-        .target(
-            name: "Compute"
-        ),
-        .executableTarget(
-            name: "ComputeDemos",
-            dependencies: [
-                "Compute",
-                "MetalSupport",
-                "MetalUnsafeConformances",
-            ],
-            resources: [
-                .process("Bundle.txt")
-            ],
-            plugins: [
-                .plugin(name: "MetalCompilerPlugin", package: "MetalCompilerPlugin")
-            ]
-        ),
-
         // MARK: SwiftGraphicsDemos
 
         .target(
@@ -371,7 +350,6 @@ let package = Package(
                 "SIMDUnsafeConformances",
                 "SwiftGLTF",
                 "WrappingHStack",
-                "Compute",
                 "MetalUnsafeConformances",
                 "Fields3D",
                 .product(name: "SwiftFields", package: "swiftfields"),
