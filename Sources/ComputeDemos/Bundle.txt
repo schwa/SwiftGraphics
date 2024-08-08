@@ -1,1 +1,0 @@
-This file kept left here to act as a resource for SPM so we get a `Bundle.module`.
