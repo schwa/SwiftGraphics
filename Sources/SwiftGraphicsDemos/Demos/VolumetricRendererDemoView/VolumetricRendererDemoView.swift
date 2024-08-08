@@ -1,5 +1,6 @@
 #if !os(visionOS)
 import BaseSupport
+import Constraints3D
 import CoreGraphicsSupport
 import Metal
 import MetalKit
@@ -60,6 +61,7 @@ struct VolumetricRendererDemoView: DemoView {
             .onChange(of: alphaTransferFunction) {
                 updateTransferFunctionTexture(&scene)
             }
+            .modifier(NewBallControllerViewModifier(constraint: .init(radius: 2), transform: $scene.unsafeCurrentCameraNode.transform))
             .overlay(alignment: .bottom) {
                 VStack {
                     TransferFunctionSingleChannelEditor(width: 1_024, values: $redTransferFunction, color: .red)

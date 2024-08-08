@@ -1,4 +1,5 @@
 import BaseSupport
+import Constraints3D
 import GaussianSplatSupport
 @preconcurrency import Metal
 import MetalKit
@@ -64,6 +65,7 @@ struct PointCloudView: View, DemoView {
                 }
             }
         }
+        .modifier(NewBallControllerViewModifier(constraint: .init(radius: 5), transform: $scene.unsafeCurrentCameraNode.transform))
         .onChange(of: pointCloud, initial: true) {
             do {
                 try scene.modify(label: "point-cloud") { node in

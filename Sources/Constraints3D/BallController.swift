@@ -1,10 +1,4 @@
-//
-//  BallController.swift
-//  SwiftGraphics
-//
-//  Created by Jonathan Wight on 8/7/24.
-//
-
+import simd
 import SIMDSupport
 import SwiftUI
 
@@ -33,7 +27,8 @@ public struct NewBallControllerViewModifier: ViewModifier {
 
 public struct NewBallConstraint: Equatable {
     public var transform: Transform {
-        Transform(roll: .zero, pitch: pitch, yaw: yaw, translation: [0, 0, radius])
+
+        Transform((RollPitchYaw(pitch: pitch, yaw: yaw).toMatrix4x4(order: .rollPitchYaw) * simd_float4x4(translate: [0, 0, radius])))
    }
 
     public var target: SIMD3<Float>
