@@ -16,6 +16,15 @@ struct GaussianSplatUniforms {
 };
 
 #ifdef __METAL_VERSION__
+// Antimatter style
+struct SplatB {
+    packed_float3 position; //  0 ..< 12
+    packed_float3 scale;    // 12 ..< 24
+    uchar4 color;           // 24 ..< 28
+    uchar4 rotation;        // 28 ..< 32
+};
+
+// Sean style
 struct SplatC {
     packed_half3 position;
     packed_half4 color;
