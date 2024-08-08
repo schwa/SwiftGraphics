@@ -13,7 +13,6 @@ struct SwiftUIShaderDemoView: DemoView {
                 .gesture {
                     DragGesture().onChanged { value in
                         offset = CGPoint(value.translation)
-                        print(offset)
                     }
                 }
             Circle().fill(Color.white).frame(width: 20, height: 20)
