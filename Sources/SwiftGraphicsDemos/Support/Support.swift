@@ -677,12 +677,6 @@ extension View {
     }
 }
 
-extension View {
-    func onSpatialTapGesture(count: Int = 1, coordinateSpace: CoordinateSpace = .local, _ ended: @escaping (SpatialTapGesture.Value) -> Void) -> some View {
-        gesture(SpatialTapGesture(count: count, coordinateSpace: coordinateSpace).onEnded(ended))
-    }
-}
-
 extension Array {
     subscript(relative index: Int) -> Element {
         get {

@@ -82,3 +82,9 @@ public struct EmptyViewModifier: ViewModifier {
         content
     }
 }
+
+public extension View {
+    func onSpatialTapGesture(count: Int = 1, coordinateSpace: CoordinateSpace = .local, _ ended: @escaping (SpatialTapGesture.Value) -> Void) -> some View {
+        gesture(SpatialTapGesture(count: count, coordinateSpace: coordinateSpace).onEnded(ended))
+    }
+}

@@ -5,6 +5,7 @@ import RenderKitUISupport
 import simd
 import SIMDSupport
 import SwiftUI
+import Fields3D
 
 struct CameraConeDemoView: DemoView {
     @State
@@ -40,7 +41,7 @@ struct CameraConeDemoView: DemoView {
         .modifier(NewBallControllerViewModifier(constraint: .init(radius: 5), transform: $cameraTransform))
         .inspector {
             Form {
-                Section("Ccamera") {
+                Section("Camera") {
                     LabeledContent("Angle") {
                         VStack {
                             Slider(value: $angle.degrees, in: 0...360)
@@ -57,6 +58,10 @@ struct CameraConeDemoView: DemoView {
                     }
                 }
                 Section("Cone") {
+                    LabeledContent("Y") {
+                        UnitVectorEditor(vector: $cone.axis)
+                    }
+
                     LabeledContent("Y") {
                         VStack {
                             Slider(value: $cone.apex.y, in: -10...10)
