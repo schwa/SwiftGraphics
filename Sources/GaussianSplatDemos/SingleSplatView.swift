@@ -16,8 +16,6 @@ import SwiftFields
 import SwiftUI
 import UniformTypeIdentifiers
 
-
-
 public struct SingleSplatView: View {
     @State
     private var cameraTransform: Transform = .translation([0, 0, 5])
@@ -203,7 +201,6 @@ extension SplatC {
 
         self = SplatC(position: PackedHalf3(SIMD3<Float>(other.position)), color: PackedHalf4(other.color), cov_a: cov_a, cov_b: cov_b)
     }
-
 }
 
 extension simd_quatf {

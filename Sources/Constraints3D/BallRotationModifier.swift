@@ -4,6 +4,7 @@ import simd
 import SIMDSupport
 import SwiftUI
 
+@available(*, deprecated, message: "Deprecated")
 public struct BallRotationModifier: ViewModifier {
     @Binding
     var rollPitchYaw: RollPitchYaw

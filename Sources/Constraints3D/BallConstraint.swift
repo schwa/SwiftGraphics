@@ -2,6 +2,7 @@ import simd
 import SIMDSupport
 import SwiftUI
 
+@available(*, deprecated, message: "Deprecated")
 public struct BallConstraint: Equatable {
     public var radius: Float
     public var lookAt: SIMD3<Float>
