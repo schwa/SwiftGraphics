@@ -12,7 +12,6 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 public struct GaussianSplatRenderPass <Splat>: RenderPassProtocol where Splat: SplatProtocol {
-
     typealias VertexBindings = GaussianSplatRenderPassVertexBindings
     typealias FragmentBindings = GaussianSplatRenderPassFragmentBindings
 
@@ -25,7 +24,6 @@ public struct GaussianSplatRenderPass <Splat>: RenderPassProtocol where Splat: S
         var renderPipelineState: MTLRenderPipelineState
         var vertexCounterBuffer: MTLBuffer
     }
-
 
     public var id: PassID = "GaussianSplatRenderPass"
     public var scene: SceneGraph

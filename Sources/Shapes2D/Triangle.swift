@@ -265,11 +265,11 @@ public extension Triangle {
         return (area1, area2, area3)
     }
 
-//    // Helper function to calculate the area of the triangle
-//    func area() -> CGFloat {
-//        let (x1, y1) = (vertices.0.x, vertices.0.y)
-//        let (x2, y2) = (vertices.1.x, vertices.1.y)
-//        let (x3, y3) = (vertices.2.x, vertices.2.y)
-//        return abs((x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2)) / 2)
-//    }
+    //    // Helper function to calculate the area of the triangle
+    //    func area() -> CGFloat {
+    //        let (x1, y1) = (vertices.0.x, vertices.0.y)
+    //        let (x2, y2) = (vertices.1.x, vertices.1.y)
+    //        let (x3, y3) = (vertices.2.x, vertices.2.y)
+    //        return abs((x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2)) / 2)
+    //    }
 }

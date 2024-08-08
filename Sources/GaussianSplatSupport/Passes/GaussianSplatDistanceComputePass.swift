@@ -62,11 +62,11 @@ public struct GaussianSplatDistanceComputePass<Splat>: ComputePassProtocol where
     }
 }
 
-    @MetalBindings
-    struct GaussianSplatDistanceComputePassBindings {
-        var modelMatrix: Int = -1
-        var cameraPosition: Int = -1
-        var splats: Int = -1
-        var splatCount: Int = -1
-        var indexedDistances: Int = -1
-    }
+@MetalBindings
+struct GaussianSplatDistanceComputePassBindings {
+    var modelMatrix: Int = -1
+    var cameraPosition: Int = -1
+    var splats: Int = -1
+    var splatCount: Int = -1
+    var indexedDistances: Int = -1
+}
