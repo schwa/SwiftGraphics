@@ -41,13 +41,7 @@ extension SceneGraph {
     }
 }
 
-extension Node {
-    var splats: SplatCloud? {
-        content as? SplatCloud
-    }
-}
-
-public extension SplatCloud {
+public extension SplatCloud where Splat == SplatC {
     init(device: MTLDevice, url: URL, bitsPerPositionScalar: Int? = nil) throws {
         let data = try Data(contentsOf: url)
         let splats: TypedMTLBuffer<SplatC>

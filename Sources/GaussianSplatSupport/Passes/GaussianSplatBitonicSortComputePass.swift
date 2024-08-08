@@ -5,23 +5,19 @@ import MetalSupport
 import RenderKit
 import simd
 
-public struct GaussianSplatBitonicSortComputePass: ComputePassProtocol {
+public struct GaussianSplatBitonicSortComputePass <Splat>: ComputePassProtocol where Splat: SplatProtocol {
     public struct State: PassState {
         var pipelineState: MTLComputePipelineState
         var bindings: Bindings
     }
 
-    @MetalBindings
-    struct Bindings {
-        var uniforms: Int = -1
-        var indexedDistances: Int = -1
-    }
+    typealias Bindings = GaussianSplatBitonicSortComputePassBindings
 
     public var id = PassID("GaussianSplatBitonicSortComputePass")
-    var splats: SplatCloud
+    var splats: SplatCloud<Splat>
     var sortRate: Int
 
-    public init(splats: SplatCloud, sortRate: Int) {
+    public init(splats: SplatCloud<Splat>, sortRate: Int) {
         self.splats = splats
         self.sortRate = sortRate
     }
@@ -77,3 +73,9 @@ public struct GaussianSplatBitonicSortComputePass: ComputePassProtocol {
         commandEncoder.endEncoding()
     }
 }
+
+    @MetalBindings
+    struct GaussianSplatBitonicSortComputePassBindings {
+        var uniforms: Int = -1
+        var indexedDistances: Int = -1
+    }

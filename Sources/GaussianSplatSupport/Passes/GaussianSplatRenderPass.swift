@@ -11,7 +11,11 @@ import SIMDSupport
 import SwiftUI
 import UniformTypeIdentifiers
 
-public struct GaussianSplatRenderPass: RenderPassProtocol {
+public struct GaussianSplatRenderPass <Splat>: RenderPassProtocol where Splat: SplatProtocol {
+
+    typealias VertexBindings = GaussianSplatRenderPassVertexBindings
+    typealias FragmentBindings = GaussianSplatRenderPassFragmentBindings
+
     public struct State: PassState {
         var quadMesh: MTKMesh
         var vertexBindings: VertexBindings
@@ -22,17 +26,6 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
         var vertexCounterBuffer: MTLBuffer
     }
 
-    @MetalBindings(function: .vertex)
-    struct VertexBindings {
-        var uniforms: Int = -1
-        var splats: Int = -1
-        var indexedDistances: Int = -1
-    }
-
-    @MetalBindings(function: .fragment)
-    struct FragmentBindings {
-        var uniforms: Int = -1
-    }
 
     public var id: PassID = "GaussianSplatRenderPass"
     public var scene: SceneGraph
@@ -104,7 +97,7 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
                 throw BaseError.missingValue
             }
             for element in helper.elements() {
-                guard let splats = element.node.splats else {
+                guard let splats = element.node.splats(Splat.self) else {
                     continue
                 }
                 let uniforms = GaussianSplatUniforms(
@@ -143,8 +136,8 @@ public struct GaussianSplatRenderPass: RenderPassProtocol {
 }
 
 extension Node {
-    var splats: SplatCloud? {
-        content as? SplatCloud
+    func splats <Splat>(_ type: Splat.Type) -> SplatCloud<Splat>? where Splat: SplatProtocol {
+        content as? SplatCloud<Splat>
     }
 }
 
@@ -157,4 +150,16 @@ extension MTLRenderPassColorAttachmentDescriptor {
             return SIMD2<Float>(Float(texture.width), Float(texture.height))
         }
     }
+}
+
+@MetalBindings(function: .vertex)
+struct GaussianSplatRenderPassVertexBindings {
+    var uniforms: Int = -1
+    var splats: Int = -1
+    var indexedDistances: Int = -1
+}
+
+@MetalBindings(function: .fragment)
+struct GaussianSplatRenderPassFragmentBindings {
+    var uniforms: Int = -1
 }

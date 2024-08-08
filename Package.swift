@@ -240,7 +240,6 @@ let package = Package(
             name: "RenderKitUISupport",
             dependencies: [
                 "RenderKitSceneGraph",
-                "GaussianSplatSupport", // TODO: Get rid of dependency
                 "SwiftUISupport",
             ]
         ),

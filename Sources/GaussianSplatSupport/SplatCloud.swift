@@ -8,10 +8,8 @@ public protocol SplatProtocol: Equatable, Sendable {
     var floatPosition: SIMD3<Float> { get }
 }
 
-public typealias SplatCloud = SplatCloud_<SplatC>
-
 // TODO: @unchecked Sendable
-public struct SplatCloud_ <Splat>: Equatable, @unchecked Sendable where Splat: SplatProtocol {
+public struct SplatCloud <Splat>: Equatable, @unchecked Sendable where Splat: SplatProtocol {
     public var splats: TypedMTLBuffer<Splat>
     public var indexedDistances: TypedMTLBuffer<IndexedDistance>
     public var cameraPosition: SIMD3<Float>
@@ -42,7 +40,7 @@ public struct SplatCloud_ <Splat>: Equatable, @unchecked Sendable where Splat: S
     }
 }
 
-public extension SplatCloud_ {
+public extension SplatCloud {
     init(device: MTLDevice, splats: [Splat]) throws {
         assert(!splats.isEmpty)
         let mtlBuffer = try device.makeBuffer(bytesOf: splats, options: .storageModeShared)
@@ -52,7 +50,7 @@ public extension SplatCloud_ {
     }
 }
 
-public extension SplatCloud_ {
+public extension SplatCloud {
     func center() -> SIMD3<Float> {
         (boundingBox.0 + boundingBox.1) / 2
     }
