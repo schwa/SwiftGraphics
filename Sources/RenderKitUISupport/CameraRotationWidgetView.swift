@@ -3,7 +3,7 @@ import simd
 import SIMDSupport
 import SwiftUI
 
-struct CameraRotationWidgetView: View {
+public struct CameraRotationWidgetView: View {
     @Binding
     var ballConstraint: BallConstraint
 
@@ -18,11 +18,11 @@ struct CameraRotationWidgetView: View {
 
     var length: Float = 0.75
 
-    init(ballConstraint: Binding<BallConstraint>) {
+    public init(ballConstraint: Binding<BallConstraint>) {
         self._ballConstraint = ballConstraint
     }
 
-    var body: some View {
+    public var body: some View {
         GeometryReader { proxy in
             let projection = Projection3DHelper(size: proxy.size, cameraProjection: cameraProjection, cameraTransform: cameraTransform)
             ZStack {
@@ -82,7 +82,7 @@ struct CameraWidgetButtonStyle: ButtonStyle {
     }
 }
 
-extension Axis3D {
+public extension Axis3D {
     var color: Color {
         switch self {
         case .x:
@@ -91,6 +91,27 @@ extension Axis3D {
             .green
         case .z:
             .blue
+        }
+    }
+}
+
+extension RollPitchYaw {
+    mutating func setAxis(_ vector: SIMD3<Float>) {
+        switch vector {
+        case [-1, 0, 0]:
+            self = .init(roll: .degrees(0), pitch: .degrees(0), yaw: .degrees(90))
+        case [1, 0, 0]:
+            self = .init(roll: .degrees(0), pitch: .degrees(0), yaw: .degrees(270))
+        case [0, -1, 0]:
+            self = .init(roll: .degrees(0), pitch: .degrees(90), yaw: .degrees(0))
+        case [0, 1, 0]:
+            self = .init(roll: .degrees(0), pitch: .degrees(270), yaw: .degrees(0))
+        case [0, 0, -1]:
+            self = .init(roll: .degrees(0), pitch: .degrees(180), yaw: .degrees(0))
+        case [0, 0, 1]:
+            self = .init(roll: .degrees(0), pitch: .degrees(0), yaw: .degrees(0))
+        default:
+            break
         }
     }
 }
