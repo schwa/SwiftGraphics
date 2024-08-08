@@ -64,18 +64,18 @@ public struct VertexDescriptor: Hashable, Sendable {
 extension VertexDescriptor: CustomStringConvertible {
     public var description: String {
         var s = ""
-        print("VertexDescriptor \(String(describing: label))", to: &s)
+        s += "VertexDescriptor \(String(describing: label))\n"
         for (index, layout) in layouts.enumerated() {
-            print("\tLayout \(index) \(String(describing: layout.label))", to: &s)
-            print("\t\tstepFunction: \(layout.stepFunction)", to: &s)
-            print("\t\tstride: \(layout.stride)", to: &s)
-            print("\t\tstepRate: \(layout.stepRate)", to: &s)
-            print("\t\tbufferIndex: \(layout.bufferIndex)", to: &s)
+            s += "\tLayout \(index) \(String(describing: layout.label))\n"
+            s += "\t\tstepFunction: \(layout.stepFunction)\n"
+            s += "\t\tstride: \(layout.stride)\n"
+            s += "\t\tstepRate: \(layout.stepRate)\n"
+            s += "\t\tbufferIndex: \(layout.bufferIndex)\n"
             for (index, attribute) in layout.attributes.enumerated() {
-                print("\t\tattribute \(index) \(String(describing: attribute.label))", to: &s)
-                print("\t\t\tsemantic: \(String(describing: attribute.semantic))", to: &s)
-                print("\t\t\toffset: \(attribute.offset)", to: &s)
-                print("\t\t\tformat: \(attribute.format)", to: &s)
+                s += "\t\tattribute \(index) \(String(describing: attribute.label))\n"
+                s += "\t\t\tsemantic: \(String(describing: attribute.semantic))\n"
+                s += "\t\t\toffset: \(attribute.offset)\n"
+                s += "\t\t\tformat: \(attribute.format)\n"
             }
         }
         return s

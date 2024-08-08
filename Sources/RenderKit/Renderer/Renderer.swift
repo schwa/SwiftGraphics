@@ -165,12 +165,12 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
             let completedHandler = callbacks.renderCompleted
             let gpuCounters = gpuCounters
             if completedHandler != nil || gpuCounters != nil {
-                commandBuffer.addCompletedHandler { commandBuffer in
+                commandBuffer.addCompletedHandler { [logger] commandBuffer in
                     do {
                         try gpuCounters?.gatherData()
                     }
                     catch {
-                        print("Failed to gather GPU counters: \(error.localizedDescription)")
+                        logger?.error("Failed to gather GPU counters: \(error.localizedDescription)")
                     }
                     completedHandler?(commandBuffer)
                 }

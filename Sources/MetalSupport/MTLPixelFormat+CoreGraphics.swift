@@ -94,8 +94,6 @@ public extension MTLPixelFormat {
         case (3, 8, false, .byteOrder32Little, .premultipliedLast, "kCGColorSpaceDeviceRGB"):
             self = .bgra8Unorm
         default:
-
-            //            print(pixelFormat.numberOfComponents, pixelFormat.bitsPerComponent, pixelFormat.useFloatComponents, bitmapInfo, pixelFormat.alphaInfo, colorSpaceName)
             return nil
         }
     }

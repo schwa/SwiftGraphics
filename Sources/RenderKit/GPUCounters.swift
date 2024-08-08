@@ -62,15 +62,6 @@ public final class GPUCounters: @unchecked Sendable {
     private var measurements: OSAllocatedUnfairLock<[Measurement.Kind: Measurement]> = .init(initialState: [:])
 
     public init(device: MTLDevice) throws {
-        //        print("atStageBoundary", device.supportsCounterSampling(.atStageBoundary))
-        //        print("atDrawBoundary", device.supportsCounterSampling(.atDrawBoundary))
-        //        print("atDispatchBoundary", device.supportsCounterSampling(.atDispatchBoundary))
-        //        print("atTileDispatchBoundary", device.supportsCounterSampling(.atTileDispatchBoundary))
-        //        print("atBlitBoundary", device.supportsCounterSampling(.atBlitBoundary))
-        //        print(MTLCommonCounterSet.timestamp)
-        //        print(MTLCommonCounterSet.stageUtilization)
-        //        print(MTLCommonCounterSet.statistic)
-
         if let counterSets = device.counterSets {
             guard let counterSet = counterSets.first(where: { $0.name == MTLCommonCounterSet.timestamp.rawValue }) else {
                 fatalError("Could not find timestamp counter set")
