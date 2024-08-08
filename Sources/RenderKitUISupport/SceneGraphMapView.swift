@@ -8,12 +8,10 @@ import RenderKitSceneGraph
 import SIMDSupport
 import SwiftUI
 
+@available(*, deprecated, message: "Deprecated")
 public struct SceneGraphMapView: View {
     @Binding
     var scene: SceneGraph
-
-    @Binding
-    var ballConstraint: BallConstraint
 
     private var scale: Double
 
@@ -21,9 +19,8 @@ public struct SceneGraphMapView: View {
 
     let coordinateSpace = NamedCoordinateSpace.named("MapCoordinateSpace")
 
-    public init(scene: Binding<SceneGraph>, ballConstraint: Binding<BallConstraint>, scale: CGFloat, drawableSize: SIMD2<Float>) {
+    public init(scene: Binding<SceneGraph>, scale: CGFloat, drawableSize: SIMD2<Float>) {
         self._scene = scene
-        self._ballConstraint = ballConstraint
         self.scale = scale
         self.drawableSize = drawableSize
     }
@@ -60,7 +57,6 @@ public struct SceneGraphMapView: View {
                     }
                 }
                 .zIndex(1)
-                .gesture(cameraDragGesture())
         // TODO: We get rid of this by some kind "bounds" property for content
         case let splats as SplatCloud:
             Image(systemName: "questionmark.circle.fill").foregroundStyle(.black, Color(red: 1, green: 0, blue: 1))
@@ -85,12 +81,6 @@ public struct SceneGraphMapView: View {
         default:
             Image(systemName: "questionmark.circle.fill").foregroundStyle(.black, Color(red: 1, green: 0, blue: 1))
                 .gesture(dragGesture(for: node))
-        }
-    }
-
-    func cameraDragGesture() -> some Gesture {
-        DragGesture(coordinateSpace: coordinateSpace).onChanged { value in
-            ballConstraint.radius = Float(max(0, value.location.distance(to: CGPoint(ballConstraint.lookAt.xz) * scale) / scale))
         }
     }
 

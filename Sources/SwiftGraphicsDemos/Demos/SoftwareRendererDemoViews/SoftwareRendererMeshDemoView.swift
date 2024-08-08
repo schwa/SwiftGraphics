@@ -49,9 +49,6 @@ struct SoftwareRendererMeshDemoView: View, DemoView {
     private var cameraProjection: Projection = .perspective(.init())
 
     @State
-    private var ballConstraint = BallConstraint()
-
-    @State
     private var pitchLimit: ClosedRange<SwiftUI.Angle> = .degrees(-.infinity) ... .degrees(.infinity)
 
     @State
@@ -121,14 +118,8 @@ struct SoftwareRendererMeshDemoView: View, DemoView {
                 break
             }
         }
-        .onChange(of: ballConstraint.transform, initial: true) {
-            cameraTransform = ballConstraint.transform
-        }
-        .overlay(alignment: .topTrailing) {
-            CameraRotationWidgetView(ballConstraint: $ballConstraint)
-                .frame(width: 120, height: 120)
-        }
-        .ballRotation($ballConstraint.rollPitchYaw, pitchLimit: pitchLimit, yawLimit: yawLimit)
+        .modifier(NewBallControllerViewModifier(constraint: .init(radius: 5), transform: $cameraTransform))
+
         .toolbar {
             Picker("Source", selection: $source) {
                 Text("None").tag(Source?.none)

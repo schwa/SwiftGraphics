@@ -18,9 +18,6 @@ struct SoftwareRendererBoxesDemoView: View, DemoView {
     private var cameraProjection: Projection = .perspective(.init())
 
     @State
-    private var ballConstraint = BallConstraint()
-
-    @State
     private var rasterizerOptions = Rasterizer.Options.default
 
     init() {
@@ -45,14 +42,7 @@ struct SoftwareRendererBoxesDemoView: View, DemoView {
                 }
             }
         }
-        .onChange(of: ballConstraint.transform, initial: true) {
-            cameraTransform = ballConstraint.transform
-        }
-        .overlay(alignment: .topTrailing) {
-            CameraRotationWidgetView(ballConstraint: $ballConstraint)
-                .frame(width: 120, height: 120)
-        }
-        .ballRotation($ballConstraint.rollPitchYaw)
+        .modifier(NewBallControllerViewModifier(constraint: .init(radius: 5), transform: $cameraTransform))
         .inspector {
             Form {
                 Section("Map") {

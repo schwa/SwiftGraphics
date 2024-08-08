@@ -95,7 +95,6 @@ struct PointCloudView: View, DemoView {
                 pointCloud = PointCloud(count: points.count, points: .init(try! device.makeBuffer(bytesOf: points, options: .storageModeShared)), pointMesh: pointMesh)
             }
         }
-        .modifier(SceneGraphViewModifier(scene: $scene))
     }
 }
 

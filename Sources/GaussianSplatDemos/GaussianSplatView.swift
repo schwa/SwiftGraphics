@@ -27,9 +27,6 @@ public struct GaussianSplatView: View {
     private var cameraRotation = RollPitchYaw()
 
     @State
-    private var ballConstraint = BallConstraint(radius: 0.4)
-
-    @State
     private var isTargeted = false
 
     @State
@@ -75,14 +72,7 @@ public struct GaussianSplatView: View {
             #if os(iOS)
             .ignoresSafeArea()
             #endif
-            .onChange(of: cameraRotation, initial: true) {
-                ballConstraint.rollPitchYaw = cameraRotation
-            }
-            .onChange(of: ballConstraint, initial: true) {
-                scene.currentCameraNode?.transform = ballConstraint.transform
-            }
-            .ballRotation($cameraRotation, pitchLimit: .degrees(-.infinity) ... .degrees(.infinity))
-            .zoomGesture(zoom: $ballConstraint.radius)
+            .modifier(NewBallControllerViewModifier(constraint: .init(radius: 5), transform: $scene.unsafeCurrentCameraNode.transform))
             .onDrop(of: [.splat], isTargeted: $isTargeted) { items in
                 if let item = items.first {
                     item.loadItem(forTypeIdentifier: UTType.splat.identifier, options: nil) { data, _ in
