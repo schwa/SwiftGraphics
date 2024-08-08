@@ -86,7 +86,6 @@ public struct PackedHalf2: Hashable, Sendable {
     }
 }
 
-
 public struct PackedHalf3: Hashable, Sendable {
     public var x: Float16
     public var y: Float16

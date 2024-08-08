@@ -2,7 +2,6 @@ import BaseSupport
 import simd
 import SIMDSupport
 
-
 // extension DotSplatSceneReader.EncodedSplatPoint {
 //    var splatScenePoint: SplatScenePoint {
 //        SplatScenePoint(position: position,
@@ -52,7 +51,6 @@ public extension SplatC {
 
         self = SplatC(position: position, color: color, cov_a: cov_a, cov_b: cov_b)
     }
-
 }
 
 public func convert_b_to_c <C>(_ splats: C) -> [SplatC] where C: Collection, C.Element == SplatB {
