@@ -98,6 +98,7 @@ public struct GaussianSplatRenderPass <Splat>: RenderPassProtocol where Splat: S
                 guard let splats = element.node.splats(Splat.self) else {
                     continue
                 }
+
                 let uniforms = GaussianSplatUniforms(
                     modelViewProjectionMatrix: helper.projectionMatrix * cameraTransform.matrix.inverse * element.modelMatrix,
                     modelViewMatrix: helper.cameraMatrix.inverse * element.modelMatrix,

@@ -6,6 +6,9 @@ import SwiftUI
 import SwiftUISupport
 
 public struct DemosScene: Scene {
+    @AppStorage("Logging")
+    var logging: Bool = false
+
     public init() {
     }
 
@@ -13,11 +16,17 @@ public struct DemosScene: Scene {
         #if os(macOS)
         Window("Demos", id: "demos") {
             DemosView()
+                .logger(logging ? Logger() : nil)
         }
         .commands {
             SidebarCommands()
             ToolbarCommands()
         }
+
+        Settings {
+            SettingsView()
+        }
+
         #else
         WindowGroup("Demos", id: "demos") {
             DemosView()
@@ -119,7 +128,6 @@ struct DemosView: View {
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .logger(Logger())
             .inlineNotificationOverlay()
         }
     }
@@ -146,5 +154,19 @@ struct DemosView: View {
                     .lineLimit(1)
             }
         }
+    }
+}
+
+struct SettingsView: View {
+    @AppStorage("Logging")
+    var logging: Bool = false
+
+    var body: some View {
+        Form {
+            Toggle(isOn: $logging) {
+                Text("Logging")
+            }
+        }
+        .frame(minWidth: 320, minHeight: 240)
     }
 }
