@@ -10,6 +10,8 @@ struct GaussianSplatUniforms {
     simd_float4x4 modelViewMatrix;
     simd_float4x4 projectionMatrix;
     simd_float4x4 viewMatrix;
+    simd_float4x4 modelMatrix;
+    simd_float3x3 inverseModelRotationMatrix;
     simd_float3 cameraPosition;
     simd_float2 drawableSize;
     float discardRate;
