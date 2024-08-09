@@ -71,28 +71,12 @@ public struct GaussianSplatNewMinimalView: View {
                     NewBallControllerViewModifier(constraint: ballConstraint, transform: $scene.unsafeCurrentCameraNode.transform)
                 }
             }
-            .inspector(isPresented: .constant(true)) {
-                Form {
-                    Picker("Controller", selection: $controller) {
-                        Text("None").tag(Controller.none)
-                        Text("Ball").tag(Controller.ball)
-                        Text("Cone").tag(Controller.cone)
-                        Text("FPV").tag(Controller.fpv)
-                    }
-
-                    Section("Cone") {
-                        TextField("Apex", value: $cameraCone.apex, format: .vector)
-                        TextField("Axis", value: $cameraCone.axis, format: .vector)
-                        TextField("H1", value: $cameraCone.h1, format: .number)
-                        TextField("H2", value: $cameraCone.h2, format: .number)
-                        TextField("R1", value: $cameraCone.r1, format: .number)
-                        TextField("R2", value: $cameraCone.r2, format: .number)
-                    }
-                    .disabled(controller != .cone)
-                    LabeledContent("Ball.Radius") {
-                        TextField("Ball Radius", value: $ballConstraint.radius, format: .number)
-                        Slider(value: $ballConstraint.radius, in: 0...10).frame(width: 120)
-                    }
+            .toolbar {
+                Picker("Controller", selection: $controller) {
+                    Text("None").tag(Controller.none)
+                    Text("Ball").tag(Controller.ball)
+                    Text("Cone").tag(Controller.cone)
+                    Text("FPV").tag(Controller.fpv)
                 }
             }
     }
