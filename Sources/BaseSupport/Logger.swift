@@ -8,7 +8,7 @@ public extension EnvironmentValues {
 }
 
 public extension View {
-    func logger(_ logger: Logger = .init()) -> some View {
+    func logger(_ logger: Logger? = .init()) -> some View {
         environment(\.logger, logger)
     }
 }
