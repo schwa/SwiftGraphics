@@ -3,10 +3,16 @@ import SIMDSupport
 import SwiftUI
 
 public struct CameraConeController: ViewModifier {
-    @State
+
     private var cameraConeConstraint: CameraConeConstraint
 
-    @Binding var transform: Transform
+    @Binding
+    var transform: Transform
+
+    @State
+    private var angle: Angle = .zero
+    @State
+    private var height: Double = .zero
 
     public init(cameraCone: CameraCone, transform: Binding<Transform>) {
         self.cameraConeConstraint = .init(cameraCone: cameraCone)
@@ -15,11 +21,16 @@ public struct CameraConeController: ViewModifier {
 
     public func body(content: Content) -> some View {
         content
-            .draggableParameter($cameraConeConstraint.height, axis: .vertical, range: 0...1, scale: 0.01, behavior: .clamping)
-            .draggableParameter($cameraConeConstraint.angle.degrees, axis: .horizontal, range: 0...360, scale: 0.1, behavior: .wrapping)
-            .onChange(of: cameraConeConstraint.position, initial: true) {
-                let cameraPosition = cameraConeConstraint.position
-                transform.matrix = look(at: cameraConeConstraint.lookAt, from: cameraPosition, up: [0, 1, 0])
+            .draggableParameter($height, axis: .vertical, range: 0...1, scale: 0.01, behavior: .clamping)
+            .draggableParameter($angle.degrees, axis: .horizontal, range: 0...360, scale: 0.1, behavior: .wrapping)
+            .onChange(of: cameraConeConstraint, initial: true) {
+                transform = .init(cameraConeConstraint.transform(angle: angle, height: height))
+            }
+            .onChange(of: angle, initial: true) {
+                transform = .init(cameraConeConstraint.transform(angle: angle, height: height))
+            }
+            .onChange(of: height, initial: true) {
+                transform = .init(cameraConeConstraint.transform(angle: angle, height: height))
             }
     }
 }
@@ -29,18 +40,16 @@ public struct CameraConeController: ViewModifier {
 public struct CameraConeConstraint: Equatable {
     public var cameraCone: CameraCone
     public var lookAt: SIMD3<Float>
-    public var position: SIMD3<Float> {
-        cameraCone.position(h: Float(height), angle: angle)
-    }
 
-    public var angle: Angle
-    public var height: Double
-
-    public init(cameraCone: CameraCone, lookAt: SIMD3<Float> = .zero, angle: Angle = .zero, height: Double = .zero) {
+    public init(cameraCone: CameraCone, lookAt: SIMD3<Float> = .zero) {
         self.cameraCone = cameraCone
         self.lookAt = lookAt
-        self.angle = angle
-        self.height = height
+    }
+
+    func transform(angle: Angle, height: Double) -> simd_float4x4 {
+        let position = cameraCone.position(h: Float(height), angle: angle)
+
+        return look(at: lookAt, from: position, up: [0, 1, 0])
     }
 }
 
@@ -49,18 +58,18 @@ public struct CameraConeConstraint: Equatable {
 public struct CameraCone: Equatable {
     public var apex: SIMD3<Float>
     public var axis: SIMD3<Float>
-    public var apexToTopBase: Float
-    public var topBaseRadius: Float
-    public var bottomBaseRadius: Float
-    public var height: Float
+    public var h1: Float
+    public var r1: Float
+    public var r2: Float
+    public var h2: Float
 
-    public init(apex: SIMD3<Float>, axis: SIMD3<Float>, apexToTopBase: Float, topBaseRadius: Float, bottomBaseRadius: Float, height: Float) {
+    public init(apex: SIMD3<Float>, axis: SIMD3<Float>, h1: Float, r1: Float, r2: Float, h2: Float) {
         self.apex = apex
         self.axis = axis
-        self.apexToTopBase = apexToTopBase
-        self.topBaseRadius = topBaseRadius
-        self.bottomBaseRadius = bottomBaseRadius
-        self.height = height
+        self.h1 = h1
+        self.r1 = r1
+        self.r2 = r2
+        self.h2 = h2
     }
 }
 
@@ -69,11 +78,11 @@ public extension CameraCone {
         // Ensure h is between 0 and 1
         let clampedH = max(0, min(1, h))
 
-        // Calculate the radius at height h
-        let radius = topBaseRadius + (bottomBaseRadius - topBaseRadius) * clampedH
+        // Calculate the radius at h2 h
+        let radius = r1 + (r2 - r1) * clampedH
 
-        // Calculate the center point at height h
-        let center = apex + axis * (apexToTopBase + height * clampedH)
+        // Calculate the center point at h2 h
+        let center = apex + axis * (h1 + h2 * clampedH)
 
         // Calculate the point on the circle at the given angle
         let angleInRadians = Float(angle.radians)
