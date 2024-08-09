@@ -11,7 +11,7 @@ struct GaussianSplatUniforms {
     simd_float4x4 projectionMatrix;
     simd_float4x4 viewMatrix;
     simd_float4x4 modelMatrix;
-    simd_float3x3 inverseModelRotationMatrix;
+    simd_float4x4 unrotatedModelMatrix;
     simd_float3 cameraPosition;
     simd_float2 drawableSize;
     float discardRate;
@@ -117,7 +117,7 @@ namespace GaussianSplatShaders {
         return { v1, v2 };
     }
 
-    Tuple2<float2> decomposeDalcCovariance2D(float3 viewPos, packed_half3 cov3Da, packed_half3 cov3Db, float4x4 viewMatrix, float4x4 projectionMatrix, float2 drawableSize) {
+    Tuple2<float2> decomposedCalcCovariance2D(float3 viewPos, packed_half3 cov3Da, packed_half3 cov3Db, float4x4 viewMatrix, float4x4 projectionMatrix, float2 drawableSize) {
         const float3 cov2D = calcCovariance2D(viewPos, cov3Da, cov3Db, viewMatrix, projectionMatrix, drawableSize);
         const Tuple2<float2> axes = decomposeCovariance(cov2D);
         return axes;

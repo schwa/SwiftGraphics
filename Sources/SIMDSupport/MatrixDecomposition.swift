@@ -7,7 +7,13 @@ import simd
 
 public extension simd_float4x4 {
     var translation: SIMD3<Float> {
-        columns.3.xyz
+        get {
+            columns.3.xyz
+        }
+        set {
+            columns.3 = SIMD4<Float>(newValue, 1)
+        }
+
     }
 
     // TODO: We need an "isApproxAffine" because this can fail just due to float math
