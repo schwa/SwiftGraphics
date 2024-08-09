@@ -24,9 +24,6 @@ public struct GaussianSplatNewMinimalView: View {
     private var scene: SceneGraph
 
     @State
-    private var pitch = Angle.zero
-
-    @State
     private var cameraCone: CameraCone = .init(apex: [0, 0, 0], axis: [1, 0, 0], apexToTopBase: 0, topBaseRadius: 2, bottomBaseRadius: 2, height: 2)
 
     enum Controller {
@@ -48,9 +45,10 @@ public struct GaussianSplatNewMinimalView: View {
         self.device = device
         let root = Node(label: "root") {
             Node(label: "camera", content: Camera())
-            Node(label: "splats", content: splats)
+            Node(label: "splats", content: splats).transformed(roll: .zero, pitch: .degrees(270), yaw: .zero).transformed(roll: .zero, pitch: .zero, yaw: .degrees(90))
         }
         self.scene = SceneGraph(root: root)
+        print(self.scene.splatsNode.transform)
     }
 
     public var body: some View {
@@ -68,18 +66,12 @@ public struct GaussianSplatNewMinimalView: View {
                     NewBallControllerViewModifier(constraint: ballConstraint, transform: $scene.unsafeCurrentCameraNode.transform)
                 }
             }
-            .onChange(of: pitch) {
-                try! scene.modify(label: "splats") { node in
-                    node?.transform.rotation = Rotation(RollPitchYaw(pitch: pitch))
-                }
-            }
-            .overlay(alignment: .topTrailing) {
-                RotationWidget(rotation: $scene.unsafeCurrentCameraNode.transform.rotation)
-                    .frame(width: 100, height: 100)
-                    .padding()
-            }
             .inspector(isPresented: .constant(true)) {
                 Form {
+//                    Text("\(scene.splatsNode.transform)\n\(scene.unsafeCurrentCameraNode.transform)")
+//                        .textSelection(.enabled)
+//                        .monospaced()
+
                     Picker("Controller", selection: $controller) {
                         Text("Ball").tag(Controller.ball)
                         Text("Cone").tag(Controller.cone)
@@ -95,12 +87,6 @@ public struct GaussianSplatNewMinimalView: View {
                         TextField("R2", value: $cameraCone.bottomBaseRadius, format: .number)
                     }
                     .disabled(controller != .cone)
-                    LabeledContent("Model") {
-                        RotationWidget(rotation: $scene.splatsNode.transform.rotation)
-                            .frame(width: 100, height: 100)
-                            .padding()
-                        Slider(value: $pitch.degrees, in: 0...360).frame(width: 120)
-                    }
                     LabeledContent("Ball.Radius") {
                         TextField("Ball Radius", value: $ballConstraint.radius, format: .number)
                         Slider(value: $ballConstraint.radius, in: 0...10).frame(width: 120)

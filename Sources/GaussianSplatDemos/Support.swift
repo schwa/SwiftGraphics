@@ -30,6 +30,7 @@ extension Int {
 }
 
 extension SceneGraph {
+    // TODO: Rename - `unsafeSplatsNode`
     var splatsNode: Node {
         get {
             let accessor = self.firstAccessor(label: "splats")!
