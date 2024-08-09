@@ -15,7 +15,7 @@ import SwiftUI
 import SwiftUISupport
 import UniformTypeIdentifiers
 import Projection
-
+import CoreGraphicsUnsafeConformances
 
 // swiftlint:disable force_unwrapping
 
@@ -27,7 +27,7 @@ public struct GaussianSplatNewMinimalView: View {
     private var scene: SceneGraph
 
     @State
-    private var cameraCone: CameraCone = .init(apex: [0, 0, 0], axis: [0, 1, 0], apexToTopBase: 0, topBaseRadius: 2, bottomBaseRadius: 2, height: 2)
+    private var cameraCone: CameraCone = .init(apex: [0, 0, 0], axis: [0, 1, 0], h1: 0, r1: 0.5, r2: 0.75, h2: 0.5)
 
     enum Controller {
         case none
@@ -49,7 +49,7 @@ public struct GaussianSplatNewMinimalView: View {
         self.device = device
         let root = Node(label: "root") {
             Node(label: "camera", content: Camera())
-            Node(label: "splats", content: splats).transformed(roll: .zero, pitch: .degrees(270), yaw: .zero).transformed(roll: .zero, pitch: .zero, yaw: .degrees(90))
+            Node(label: "splats", content: splats).transformed(roll: .zero, pitch: .degrees(270), yaw: .zero).transformed(roll: .zero, pitch: .zero, yaw: .degrees(90)).transformed(translation: [0, 0.25, 0.5])
         }
         self.scene = SceneGraph(root: root)
     }
@@ -71,30 +71,6 @@ public struct GaussianSplatNewMinimalView: View {
                     NewBallControllerViewModifier(constraint: ballConstraint, transform: $scene.unsafeCurrentCameraNode.transform)
                 }
             }
-            .overlay {
-                Canvas { context, size in
-                    let cameraProjection = scene.currentCamera!.projection
-                    let cameraTransform = scene.currentCameraNode!.transform
-                    let projection = Projection3DHelper(size: size, cameraProjection: cameraProjection, cameraTransform: cameraTransform)
-                    context.draw3DLayer(projection: projection) { context2D, context3D in
-                        context3D.drawAxisMarkers()
-//                        context3D.draw(cone: cone)
-
-//                        let p0 = projection.worldSpaceToScreenSpace(.zero)
-//                        let position = cone.position(h: h, angle: angle)
-//                        let p1 = projection.worldSpaceToScreenSpace(position)
-//                        context2D.fill(Path.circle(center: p0, radius: 10), with: .color(.purple))
-//                        context2D.fill(Path.circle(center: p1, radius: 10), with: .color(.purple))
-//                        context2D.stroke(Path(lineSegments: [(p0, p1)]), with: .color(.purple), lineWidth: 2)
-                    }
-                }
-                .allowsHitTesting(false)
-            }
-            .overlay(alignment: .topTrailing) {
-                RotationWidget(rotation: $scene.unsafeCurrentCameraNode.transform.rotation)
-                    .frame(width: 100, height: 100)
-                    .padding()
-            }
             .inspector(isPresented: .constant(true)) {
                 Form {
                     Picker("Controller", selection: $controller) {
@@ -107,10 +83,10 @@ public struct GaussianSplatNewMinimalView: View {
                     Section("Cone") {
                         TextField("Apex", value: $cameraCone.apex, format: .vector)
                         TextField("Axis", value: $cameraCone.axis, format: .vector)
-                        TextField("H1", value: $cameraCone.apexToTopBase, format: .number)
-                        TextField("H2", value: $cameraCone.height, format: .number)
-                        TextField("R1", value: $cameraCone.topBaseRadius, format: .number)
-                        TextField("R2", value: $cameraCone.bottomBaseRadius, format: .number)
+                        TextField("H1", value: $cameraCone.h1, format: .number)
+                        TextField("H2", value: $cameraCone.h2, format: .number)
+                        TextField("R1", value: $cameraCone.r1, format: .number)
+                        TextField("R2", value: $cameraCone.r2, format: .number)
                     }
                     .disabled(controller != .cone)
                     LabeledContent("Ball.Radius") {
