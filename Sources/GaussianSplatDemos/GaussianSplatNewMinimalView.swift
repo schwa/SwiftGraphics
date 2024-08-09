@@ -14,6 +14,8 @@ import SwiftFormats
 import SwiftUI
 import SwiftUISupport
 import UniformTypeIdentifiers
+import Projection
+
 
 // swiftlint:disable force_unwrapping
 
@@ -25,7 +27,7 @@ public struct GaussianSplatNewMinimalView: View {
     private var scene: SceneGraph
 
     @State
-    private var cameraCone: CameraCone = .init(apex: [0, 0, 0], axis: [1, 0, 0], apexToTopBase: 0, topBaseRadius: 2, bottomBaseRadius: 2, height: 2)
+    private var cameraCone: CameraCone = .init(apex: [0, 0, 0], axis: [0, 1, 0], apexToTopBase: 0, topBaseRadius: 2, bottomBaseRadius: 2, height: 2)
 
     enum Controller {
         case none
@@ -50,14 +52,13 @@ public struct GaussianSplatNewMinimalView: View {
             Node(label: "splats", content: splats).transformed(roll: .zero, pitch: .degrees(270), yaw: .zero).transformed(roll: .zero, pitch: .zero, yaw: .degrees(90))
         }
         self.scene = SceneGraph(root: root)
-        print(self.scene.splatsNode.transform)
     }
 
     public var body: some View {
         GaussianSplatRenderView<SplatC>(scene: scene, debugMode: false, sortRate: 15, metalFXRate: 2)
-            #if os(iOS)
+#if os(iOS)
             .ignoresSafeArea()
-            #endif
+#endif
             .modifier {
                 switch controller {
                 case .none:
@@ -70,12 +71,32 @@ public struct GaussianSplatNewMinimalView: View {
                     NewBallControllerViewModifier(constraint: ballConstraint, transform: $scene.unsafeCurrentCameraNode.transform)
                 }
             }
+            .overlay {
+                Canvas { context, size in
+                    let cameraProjection = scene.currentCamera!.projection
+                    let cameraTransform = scene.currentCameraNode!.transform
+                    let projection = Projection3DHelper(size: size, cameraProjection: cameraProjection, cameraTransform: cameraTransform)
+                    context.draw3DLayer(projection: projection) { context2D, context3D in
+                        context3D.drawAxisMarkers()
+//                        context3D.draw(cone: cone)
+
+//                        let p0 = projection.worldSpaceToScreenSpace(.zero)
+//                        let position = cone.position(h: h, angle: angle)
+//                        let p1 = projection.worldSpaceToScreenSpace(position)
+//                        context2D.fill(Path.circle(center: p0, radius: 10), with: .color(.purple))
+//                        context2D.fill(Path.circle(center: p1, radius: 10), with: .color(.purple))
+//                        context2D.stroke(Path(lineSegments: [(p0, p1)]), with: .color(.purple), lineWidth: 2)
+                    }
+                }
+                .allowsHitTesting(false)
+            }
+            .overlay(alignment: .topTrailing) {
+                RotationWidget(rotation: $scene.unsafeCurrentCameraNode.transform.rotation)
+                    .frame(width: 100, height: 100)
+                    .padding()
+            }
             .inspector(isPresented: .constant(true)) {
                 Form {
-//                    Text("\(scene.splatsNode.transform)\n\(scene.unsafeCurrentCameraNode.transform)")
-//                        .textSelection(.enabled)
-//                        .monospaced()
-
                     Picker("Controller", selection: $controller) {
                         Text("None").tag(Controller.none)
                         Text("Ball").tag(Controller.ball)

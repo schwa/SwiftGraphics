@@ -87,39 +87,6 @@ struct CameraWidgetButtonStyle: ButtonStyle {
     }
 }
 
-public extension Axis3D {
-    var color: Color {
-        switch self {
-        case .x:
-            .red
-        case .y:
-            .green
-        case .z:
-            .blue
-        }
-    }
-}
-
-extension RollPitchYaw {
-    mutating func setAxis(_ vector: SIMD3<Float>) {
-        switch vector {
-        case [-1, 0, 0]:
-            self = .init(roll: .degrees(0), pitch: .degrees(0), yaw: .degrees(90))
-        case [1, 0, 0]:
-            self = .init(roll: .degrees(0), pitch: .degrees(0), yaw: .degrees(270))
-        case [0, -1, 0]:
-            self = .init(roll: .degrees(0), pitch: .degrees(90), yaw: .degrees(0))
-        case [0, 1, 0]:
-            self = .init(roll: .degrees(0), pitch: .degrees(270), yaw: .degrees(0))
-        case [0, 0, -1]:
-            self = .init(roll: .degrees(0), pitch: .degrees(180), yaw: .degrees(0))
-        case [0, 0, 1]:
-            self = .init(roll: .degrees(0), pitch: .degrees(0), yaw: .degrees(0))
-        default:
-            break
-        }
-    }
-}
 
 extension View {
     func log(_ value: some Equatable, initial: Bool = false, string: @escaping @autoclosure () -> String) -> some View {
