@@ -29,11 +29,11 @@ namespace GaussianSplatShaders {
     struct VertexOut {
         float4 position [[position]];
         float2 relativePosition; // Ranges from -kBoundsRadius to +kBoundsRadius
-        float4 color;
+        half4 color;
     };
 
     struct FragmentOut {
-        float4 fragColor [[color(0)]];
+        half4 fragColor [[color(0)]];
     };
 
     typedef GaussianSplatUniforms VertexUniforms;
@@ -44,6 +44,14 @@ namespace GaussianSplatShaders {
 
     constant static const float kBoundsRadius = 2;
     constant static const float kBoundsRadiusSquared = kBoundsRadius * kBoundsRadius;
+
+    float3x3 convert(const float4x4 m) {
+        return float3x3(m[0].xyz, m[1].xyz, m[2].xyz);
+    }
+
+    bool isOutOfBounds(const float4 v, const float bounds) {
+        return v.z < -v.w || v.x < -bounds || v.x > bounds || v.y < -bounds || v.y > bounds;
+    }
 
     [[vertex]]
     VertexOut VertexShader(
@@ -60,11 +68,11 @@ namespace GaussianSplatShaders {
 //    simd_float4x4 modelViewMatrix;           // USED
 //    simd_float4x4 projectionMatrix;          // USED
 //    simd_float4x4 viewMatrix;                // USED
+//    simd_float4x4 modelMatrix;                // ?
+//    simd_float3x3 inverseModelRotationMatrix;
 //    simd_float3 cameraPosition;              // NOT USED
 //    simd_float2 drawableSize;                // USED
 //    float discardRate;                       // USED (VS ONLY)
-
-
 
         VertexOut out;
 
@@ -75,35 +83,32 @@ namespace GaussianSplatShaders {
         const float2 vertexModelSpacePosition = in.position.xy;
         auto indexedDistance = indexedDistances[instance_id];
         auto splat = splats[indexedDistance.index];
-        const float4 splatWorldSpacePosition = uniforms.modelViewMatrix * float4(float3(splat.position), 1);
+        const float4 splatWorldSpacePosition = uniforms.viewMatrix * float4(float3(splat.position), 1);
         const float4 splatClipSpacePosition = uniforms.projectionMatrix * splatWorldSpacePosition;
 
-        const auto bounds = 1.2 * splatClipSpacePosition.w;
-        if (splatClipSpacePosition.z < -splatClipSpacePosition.w
-            || splatClipSpacePosition.x < -bounds
-            || splatClipSpacePosition.x > bounds
-            || splatClipSpacePosition.y < -bounds
-            || splatClipSpacePosition.y > bounds) {
+        if (isOutOfBounds(splatClipSpacePosition, 1.2 * splatClipSpacePosition.w)) {
             if (use_counters) {
                 atomic_fetch_add_explicit(&(my_counters->vertices_culled), 1, memory_order_relaxed);
             }
             out.position = float4(1, 1, 0, 1);
             return out;
         }
-        const float3 cov2D = calcCovariance2D(splatWorldSpacePosition.xyz, splat.cov_a, splat.cov_b, uniforms.viewMatrix, uniforms.projectionMatrix, uniforms.drawableSize);
+
+        const float3 covPosition = splatWorldSpacePosition.xyz;
+        const float3 cov2D = calcCovariance2D(covPosition, splat.cov_a, splat.cov_b, uniforms.viewMatrix, uniforms.projectionMatrix, uniforms.drawableSize);
         const Tuple2<float2> axes = decomposeCovariance(cov2D);
 
         const float2 projectedScreenDelta = (vertexModelSpacePosition.x * axes.v0 + vertexModelSpacePosition.y * axes.v1) * 2 * kBoundsRadius / uniforms.drawableSize;
         out.position = splatClipSpacePosition + float4(projectedScreenDelta.xy * splatClipSpacePosition.w, 0, 0);
         out.relativePosition = vertexModelSpacePosition * kBoundsRadius;
-        out.color = float4(splat.color);
+        out.color = splat.color;
         return out;
     }
 
     // MARK: -
 
     [[fragment]]
-    float4 FragmentShader(
+    half4 FragmentShader(
         FragmentIn in [[stage_in]],
         constant FragmentUniforms &uniforms [[buffer(0)]]
     ) {
@@ -117,7 +122,7 @@ namespace GaussianSplatShaders {
         if (alpha < uniforms.discardRate) {
             discard_fragment();
         }
-        return float4(in.color.rgb * alpha, alpha);
+        return half4(in.color.rgb * alpha, alpha);
     }
 }
 #endif // __METAL_VERSION__

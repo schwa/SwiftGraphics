@@ -28,14 +28,14 @@ namespace GaussianSplatShaders {
         VertexOut out;
         auto splat = splats[indexedDistances[instance_id].index];
         out.position = uniforms.modelViewProjectionMatrix * float4(float3(splat.position) + in.position, 1.0),
-        out.color = float4(splat.color);
+        out.color = splat.color;
         return out;
     }
 
     // MARK: -
 
     [[fragment]]
-    float4 FragmentPointShader(
+    half4 FragmentPointShader(
         FragmentIn in [[stage_in]],
         constant FragmentUniforms &uniforms [[buffer(0)]],
         constant Splat *splats [[buffer(1)]],

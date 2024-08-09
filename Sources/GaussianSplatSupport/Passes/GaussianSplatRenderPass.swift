@@ -104,6 +104,8 @@ public struct GaussianSplatRenderPass <Splat>: RenderPassProtocol where Splat: S
                     modelViewMatrix: helper.cameraMatrix.inverse * element.modelMatrix,
                     projectionMatrix: helper.projectionMatrix,
                     viewMatrix: helper.cameraMatrix.inverse,
+                    modelMatrix: element.modelMatrix,
+                    inverseModelRotationMatrix: float3x3(element.modelMatrix).inverse,
                     cameraPosition: helper.cameraMatrix.translation,
                     drawableSize: try renderPassDescriptor.colorAttachments[0].size,
                     discardRate: discardRate
