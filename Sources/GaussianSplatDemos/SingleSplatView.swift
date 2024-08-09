@@ -41,9 +41,10 @@ public struct SingleSplatView: View {
         let splat = SplatD(position: [0, 0, 0], scale: [1, 0.5, 0.25], color: [1, 0, 1, 1], rotation: .init(angle: .zero, axis: [0, 0, 0]))
         self.device = device
         self.splat = splat
+
         let root = Node(label: "root") {
             Node(label: "camera", content: Camera())
-            Node(label: "splats")
+            Node(label: "splats").transformed(roll: .zero, pitch: .degrees(270), yaw: .zero).transformed(roll: .zero, pitch: .zero, yaw: .degrees(90))
         }
         self.scene = SceneGraph(root: root)
     }

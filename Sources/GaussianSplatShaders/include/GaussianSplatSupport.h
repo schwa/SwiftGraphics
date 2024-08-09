@@ -8,13 +8,10 @@ struct IndexedDistance {
 struct GaussianSplatUniforms {
     simd_float4x4 modelViewProjectionMatrix;
     simd_float4x4 modelViewMatrix;
-    simd_float4x4 projectionMatrix;
-    simd_float4x4 viewMatrix;
-    simd_float4x4 modelMatrix;
-    simd_float4x4 unrotatedModelMatrix;
-    simd_float3 cameraPosition;
     simd_float2 drawableSize;
     float discardRate;
+    simd_float2 focalSize; // drawableSize * helper.projectionMatrix.diagonal.xy / 2
+    simd_float2 limit; // 1.3 * 1 / helper.projectionMatrix[0][0]/[1][1]
 };
 
 #ifdef __METAL_VERSION__
@@ -30,6 +27,7 @@ struct SplatB {
 struct SplatC {
     packed_half3 position;
     packed_half4 color;
+// TODO: could be replaced by half3x2
     packed_half3 cov_a;
     packed_half3 cov_b;
 };
@@ -45,27 +43,20 @@ using namespace metal;
 
 namespace GaussianSplatShaders {
 
-    float3 calcCovariance2D(float3 viewPos, packed_half3 cov3Da, packed_half3 cov3Db, float4x4 viewMatrix, float4x4 projectionMatrix, float2 drawableSize)
+    float3 calcCovariance2D(float3 viewPos, packed_half3 cov3Da, packed_half3 cov3Db, float4x4 modelViewMatrix, float2 focalSize, float2 limit)
     {
         float invViewPosZ = 1 / viewPos.z;
         float invViewPosZSquared = invViewPosZ * invViewPosZ;
 
-        float tanHalfFovX = 1 / projectionMatrix[0][0];
-        float tanHalfFovY = 1 / projectionMatrix[1][1];
-        float limX = 1.3 * tanHalfFovX;
-        float limY = 1.3 * tanHalfFovY;
-        viewPos.x = clamp(viewPos.x * invViewPosZ, -limX, limX) * viewPos.z;
-        viewPos.y = clamp(viewPos.y * invViewPosZ, -limY, limY) * viewPos.z;
-
-        float focalX = drawableSize.x * projectionMatrix[0][0] / 2;
-        float focalY = drawableSize.y * projectionMatrix[1][1] / 2;
+        viewPos.x = clamp(viewPos.x * invViewPosZ, -limit.x, limit.x) * viewPos.z;
+        viewPos.y = clamp(viewPos.y * invViewPosZ, -limit.y, limit.y) * viewPos.z;
 
         float3x3 J = float3x3(
-            focalX * invViewPosZ, 0, 0,
-            0, focalY * invViewPosZ, 0,
-            -(focalX * viewPos.x) * invViewPosZSquared, -(focalY * viewPos.y) * invViewPosZSquared, 0
+            focalSize.x * invViewPosZ, 0, 0,
+            0, focalSize.y * invViewPosZ, 0,
+            -(focalSize.x * viewPos.x) * invViewPosZSquared, -(focalSize.y * viewPos.y) * invViewPosZSquared, 0
         );
-        float3x3 W = float3x3(viewMatrix[0].xyz, viewMatrix[1].xyz, viewMatrix[2].xyz);
+        float3x3 W = float3x3(modelViewMatrix[0].xyz, modelViewMatrix[1].xyz, modelViewMatrix[2].xyz);
         float3x3 T = J * W;
         float3x3 Vrk = float3x3(
             cov3Da.x, cov3Da.y, cov3Da.z,
@@ -117,8 +108,8 @@ namespace GaussianSplatShaders {
         return { v1, v2 };
     }
 
-    Tuple2<float2> decomposedCalcCovariance2D(float3 viewPos, packed_half3 cov3Da, packed_half3 cov3Db, float4x4 viewMatrix, float4x4 projectionMatrix, float2 drawableSize) {
-        const float3 cov2D = calcCovariance2D(viewPos, cov3Da, cov3Db, viewMatrix, projectionMatrix, drawableSize);
+    Tuple2<float2> decomposedCalcCovariance2D(float3 viewPos, packed_half3 cov3Da, packed_half3 cov3Db, float4x4 modelViewMatrix, float2 focalSize, float2 limit) {
+        const float3 cov2D = calcCovariance2D(viewPos, cov3Da, cov3Db, modelViewMatrix, focalSize, limit);
         const Tuple2<float2> axes = decomposeCovariance(cov2D);
         return axes;
     }
