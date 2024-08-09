@@ -70,7 +70,7 @@ public struct GaussianSplatNewMinimalView: View {
             }
             .onChange(of: pitch) {
                 try! scene.modify(label: "splats") { node in
-                    node?.transform.rotation = .rollPitchYaw(.init(pitch: pitch))
+                    node?.transform.rotation = Rotation(RollPitchYaw(pitch: pitch))
                 }
             }
             .overlay(alignment: .topTrailing) {
@@ -96,7 +96,7 @@ public struct GaussianSplatNewMinimalView: View {
                     }
                     .disabled(controller != .cone)
                     LabeledContent("Model") {
-                        RotationWidget(rotation: $scene.labeledNodes.splats.transform.rotation)
+                        RotationWidget(rotation: $scene.splatsNode.transform.rotation)
                             .frame(width: 100, height: 100)
                             .padding()
                         Slider(value: $pitch.degrees, in: 0...360).frame(width: 120)
@@ -107,38 +107,5 @@ public struct GaussianSplatNewMinimalView: View {
                     }
                 }
             }
-    }
-}
-
-@dynamicMemberLookup
-struct LabeledNodes {
-    let scene: SceneGraph
-    var changes: [String: Node] = [:]
-
-    subscript(dynamicMember label: String) -> Node {
-        get {
-            guard let node = scene.firstNode(label: label) else {
-                fatalError("No node found with label: \(label)")
-            }
-            return node
-        }
-        set {
-            changes[newValue.label] = newValue
-        }
-    }
-}
-
-extension SceneGraph {
-    var labeledNodes: LabeledNodes {
-        get {
-            LabeledNodes(scene: self)
-        }
-        set {
-            for (label, newValue) in newValue.changes {
-                try! modify(label: label) { node in
-                    node = newValue
-                }
-            }
-        }
     }
 }

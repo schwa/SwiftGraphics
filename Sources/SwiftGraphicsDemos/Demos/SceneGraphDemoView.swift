@@ -74,28 +74,22 @@ extension SceneGraph {
         return SceneGraph(root:
                             Node(label: "root") {
                                 Node(label: "camera-ball") {
-                                    Node(label: "camera")
-                                        .content(Camera())
-                                        .transform(translation: [0, 0, 5])
+                                    Node(label: "camera", content: Camera())
+                                        .transformed(translation: [0, 0, 5])
                                 }
-                                Node(label: "pano")
-                                    .content(Geometry(mesh: panoramaMesh, materials: [UnlitMaterialX(baseColorTexture: panoramaTexture)]))
+                                Node(label: "pano", content: Geometry(mesh: panoramaMesh, materials: [UnlitMaterialX(baseColorTexture: panoramaTexture)]))
                                 Node(label: "models") {
-                                    Node(label: "model-1")
-                                        .content(Geometry(mesh: sphere, materials: [DiffuseMaterial(diffuseColor: .red)]))
-                                        .transform(translation: [-1, 0, 0])
-                                    Node(label: "model-2")
-                                        .content(Geometry(mesh: cylinder, materials: [DiffuseMaterial(diffuseColor: .green)]))
-                                        .transform(translation: [0, 0, 0])
-                                    Node(label: "model-3")
-                                        .content(Geometry(mesh: cone, materials: [DiffuseMaterial(diffuseColor: .blue)]))
-                                        .transform(translation: [1, 0, 0])
-                                        .transform(.init(rotation: .rotation(angle: .degrees(45), axis: [1, 0, 0])))
-                                    Node(label: "model-4")
-                                        .content(Geometry(mesh: quad, materials: [UnlitMaterialX(baseColorTexture: grassTexture)]))
-                                        .transform(scale: [10, 10, 10])
-                                        .transform(.init(rotation: .rotation(angle: .degrees(90), axis: [1, 0, 0])))
-                                        .transform(translation: [0, -1, 0])
+                                    Node(label: "model-1", content: Geometry(mesh: sphere, materials: [DiffuseMaterial(diffuseColor: .red)]))
+                                        .transformed(translation: [-1, 0, 0])
+                                    Node(label: "model-2", content: Geometry(mesh: cylinder, materials: [DiffuseMaterial(diffuseColor: .green)]))
+                                        .transformed(translation: [0, 0, 0])
+                                    Node(label: "model-3", content: Geometry(mesh: cone, materials: [DiffuseMaterial(diffuseColor: .blue)]))
+                                        .transformed(translation: [1, 0, 0])
+                                        .transformed(.init(rotation: .rotation(angle: .degrees(45), axis: [1, 0, 0])))
+                                    Node(label: "model-4", content: Geometry(mesh: quad, materials: [UnlitMaterialX(baseColorTexture: grassTexture)]))
+                                        .transformed(scale: [10, 10, 10])
+                                        .transformed(.init(rotation: .rotation(angle: .degrees(90), axis: [1, 0, 0])))
+                                        .transformed(translation: [0, -1, 0])
                                 }
                             }
         )

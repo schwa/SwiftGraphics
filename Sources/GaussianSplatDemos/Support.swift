@@ -32,10 +32,11 @@ extension Int {
 extension SceneGraph {
     var splatsNode: Node {
         get {
-            firstNode(label: "splats")!
+            let accessor = self.firstAccessor(label: "splats")!
+            return self[accessor: accessor]!
         }
         set {
-            let accessor = firstAccessor(label: "splats")!
+            let accessor = self.firstAccessor(label: "splats")!
             self[accessor: accessor] = newValue
         }
     }

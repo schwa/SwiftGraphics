@@ -35,11 +35,11 @@ extension SRT: Hashable {
 
 public extension SRT {
     init(scale: SIMD3<Float> = .unit, rotation: simd_quatf, translation: SIMD3<Float> = .zero) {
-        self.init(scale: scale, rotation: .quaternion(rotation), translation: translation)
+        self.init(scale: scale, rotation: Rotation(rotation), translation: translation)
     }
 
     init(scale: SIMD3<Float> = .unit, rotation: RollPitchYaw, translation: SIMD3<Float> = .zero) {
-        self.init(scale: scale, rotation: .rollPitchYaw(rotation), translation: translation)
+        self.init(scale: scale, rotation: Rotation(rotation), translation: translation)
     }
 
     init(scale: SIMD3<Float> = .unit, rotation: simd_float4x4, translation: SIMD3<Float> = .zero) {

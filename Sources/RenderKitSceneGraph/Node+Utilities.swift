@@ -18,7 +18,7 @@ public extension Node {
 }
 
 public extension Node {
-    func transform(_ transform: Transform) -> Node {
+    func transformed(_ transform: Transform) -> Node {
         var copy = self
         if copy.transform == .identity {
             copy.transform = transform
@@ -28,24 +28,26 @@ public extension Node {
         }
         return copy
     }
-    func transform(scale: SIMD3<Float>) -> Node {
-        transform(Transform(scale: scale))
+    func transformed(scale: SIMD3<Float>) -> Node {
+        transformed(Transform(scale: scale))
     }
-    func transform(rotation: Rotation) -> Node {
-        transform(Transform(rotation: rotation))
+    func transformed(rotation: Rotation) -> Node {
+        transformed(Transform(rotation: rotation))
     }
-    func transform(roll: Angle, pitch: Angle, yaw: Angle) -> Node {
-        transform(Transform(roll: roll, pitch: pitch, yaw: yaw))
+    func transformed(roll: Angle, pitch: Angle, yaw: Angle) -> Node {
+        transformed(Transform(roll: roll, pitch: pitch, yaw: yaw))
     }
-    func transform(translation: SIMD3<Float>) -> Node {
-        transform(.translation(translation))
+    func transformed(translation: SIMD3<Float>) -> Node {
+        transformed(.translation(translation))
     }
-    func content(_ content: Content) -> Node {
+    @available(*, deprecated, message: "Deprecated")
+    func withContent(_ content: Content) -> Node {
         var copy = self
         copy.content = content
         return copy
     }
-    func children(@NodeBuilder _  children: () -> [Node]) -> Node {
+    @available(*, deprecated, message: "Deprecated")
+    func withChildren(@NodeBuilder _  children: () -> [Node]) -> Node {
         var copy = self
         copy.children = children()
         return copy
