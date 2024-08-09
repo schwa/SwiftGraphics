@@ -32,10 +32,6 @@ namespace GaussianSplatShaders {
         half4 color;
     };
 
-    struct FragmentOut {
-        half4 fragColor [[color(0)]];
-    };
-
     typedef GaussianSplatUniforms VertexUniforms;
     typedef GaussianSplatUniforms FragmentUniforms;
     typedef VertexOut FragmentIn;
@@ -80,7 +76,6 @@ namespace GaussianSplatShaders {
             atomic_fetch_add_explicit(&(my_counters->vertices_submitted), 1, memory_order_relaxed);
         }
 
-        const float2 vertexModelSpacePosition = in.position.xy;
         auto indexedDistance = indexedDistances[instance_id];
         auto splat = splats[indexedDistance.index];
         const float4 splatWorldSpacePosition = uniforms.viewMatrix * float4(float3(splat.position), 1);
@@ -95,11 +90,11 @@ namespace GaussianSplatShaders {
         }
 
         const float3 covPosition = splatWorldSpacePosition.xyz;
-        const float3 cov2D = calcCovariance2D(covPosition, splat.cov_a, splat.cov_b, uniforms.viewMatrix, uniforms.projectionMatrix, uniforms.drawableSize);
-        const Tuple2<float2> axes = decomposeCovariance(cov2D);
+        const Tuple2<float2> axes = decomposeDalcCovariance2D(covPosition, splat.cov_a, splat.cov_b, uniforms.viewMatrix, uniforms.projectionMatrix, uniforms.drawableSize);
 
-        const float2 projectedScreenDelta = (vertexModelSpacePosition.x * axes.v0 + vertexModelSpacePosition.y * axes.v1) * 2 * kBoundsRadius / uniforms.drawableSize;
-        out.position = splatClipSpacePosition + float4(projectedScreenDelta.xy * splatClipSpacePosition.w, 0, 0);
+        const float2 vertexModelSpacePosition = in.position.xy;
+        const float2 projectedScreenDelta = (vertexModelSpacePosition.x * axes.v0 + vertexModelSpacePosition.y * axes.v1) * 2 * kBoundsRadius / uniforms.drawableSize * splatClipSpacePosition.w;
+        out.position = splatClipSpacePosition + float4(projectedScreenDelta, 0, 0);
         out.relativePosition = vertexModelSpacePosition * kBoundsRadius;
         out.color = splat.color;
         return out;
