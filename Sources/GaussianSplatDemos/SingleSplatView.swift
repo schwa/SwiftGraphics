@@ -1,3 +1,4 @@
+import RenderKitUISupport
 import BaseSupport
 import Constraints3D
 import Everything
@@ -64,6 +65,12 @@ public struct SingleSplatView: View {
     @ViewBuilder
     func makeInspector() -> some View {
         Form {
+            LabeledContent("Model") {
+                RotationWidget(rotation: $scene.labeledNodes.splats.transform.rotation)
+                    .frame(width: 100, height: 100)
+                    .padding()
+            }
+
             ValueView(value: false) { isPresented in
                 ValueView(value: Optional<Data>.none) { data in
                     Button("Save Splat") {
