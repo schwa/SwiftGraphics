@@ -55,6 +55,17 @@ namespace GaussianSplatShaders {
         constant IndexedDistance *indexedDistances [[buffer(3)]],
         device MyCounters* my_counters [[buffer(4), function_constant(use_counters)]]
    ) {
+   // Uniforms
+//    simd_float4x4 modelViewProjectionMatrix; // NOT USED
+//    simd_float4x4 modelViewMatrix;           // USED
+//    simd_float4x4 projectionMatrix;          // USED
+//    simd_float4x4 viewMatrix;                // USED
+//    simd_float3 cameraPosition;              // NOT USED
+//    simd_float2 drawableSize;                // USED
+//    float discardRate;                       // USED (VS ONLY)
+
+
+
         VertexOut out;
 
         if (use_counters) {
@@ -79,9 +90,6 @@ namespace GaussianSplatShaders {
             out.position = float4(1, 1, 0, 1);
             return out;
         }
-
-
-        // float3 calcCovariance2D(float3 viewPos, packed_half3 cov3Da, packed_half3 cov3Db, float4x4 viewMatrix, float4x4 projectionMatrix, float2 screenSize)
         const float3 cov2D = calcCovariance2D(splatWorldSpacePosition.xyz, splat.cov_a, splat.cov_b, uniforms.viewMatrix, uniforms.projectionMatrix, uniforms.drawableSize);
         const Tuple2<float2> axes = decomposeCovariance(cov2D);
 
