@@ -99,13 +99,20 @@ public struct GaussianSplatRenderPass <Splat>: RenderPassProtocol where Splat: S
                     continue
                 }
 
+                var unrotatedModelMatrix = element.modelMatrix
+                var p = unrotatedModelMatrix.translation
+                unrotatedModelMatrix.translation = .zero
+                p = (SIMD4<Float>(p, 0) * unrotatedModelMatrix).xyz
+                unrotatedModelMatrix = .translation(p)
+
+
                 let uniforms = GaussianSplatUniforms(
                     modelViewProjectionMatrix: helper.projectionMatrix * cameraTransform.matrix.inverse * element.modelMatrix,
                     modelViewMatrix: helper.cameraMatrix.inverse * element.modelMatrix,
                     projectionMatrix: helper.projectionMatrix,
                     viewMatrix: helper.cameraMatrix.inverse,
                     modelMatrix: element.modelMatrix,
-                    inverseModelRotationMatrix: float3x3(element.modelMatrix).inverse,
+                    unrotatedModelMatrix: unrotatedModelMatrix,
                     cameraPosition: helper.cameraMatrix.translation,
                     drawableSize: try renderPassDescriptor.colorAttachments[0].size,
                     discardRate: discardRate

@@ -48,17 +48,6 @@ namespace GaussianSplatShaders {
     bool isOutOfBounds(const float4 v, const float bounds) {
         return v.z < -v.w || v.x < -bounds || v.x > bounds || v.y < -bounds || v.y > bounds;
     }
-
-    [[vertex]]
-    VertexOut VertexShader(
-        VertexIn in [[stage_in]],
-        uint instance_id[[instance_id]],
-        uint vertex_id[[vertex_id]],
-        constant VertexUniforms &uniforms [[buffer(1)]],
-        constant SplatC *splats [[buffer(2)]],
-        constant IndexedDistance *indexedDistances [[buffer(3)]],
-        device MyCounters* my_counters [[buffer(4), function_constant(use_counters)]]
-   ) {
    // Uniforms
 //    simd_float4x4 modelViewProjectionMatrix; // NOT USED
 //    simd_float4x4 modelViewMatrix;           // USED
@@ -70,6 +59,51 @@ namespace GaussianSplatShaders {
 //    simd_float2 drawableSize;                // USED
 //    float discardRate;                       // USED (VS ONLY)
 
+
+    vertex
+    VertexOut VertexShader(
+        VertexIn in [[stage_in]],
+        uint instance_id[[instance_id]],
+        uint vertex_id[[vertex_id]],
+        constant VertexUniforms &uniforms [[buffer(1)]],
+        constant SplatC *splats [[buffer(2)]],
+        constant IndexedDistance *indexedDistances [[buffer(3)]]
+   ) {
+        VertexOut out;
+
+        auto indexedDistance = indexedDistances[instance_id];
+        auto splat = splats[indexedDistance.index];
+        const float4 splatModelSpacePosition = float4(float3(splat.position), 1);
+        const float4 splatClipSpacePosition = uniforms.projectionMatrix * uniforms.viewMatrix * uniforms.modelMatrix * splatModelSpacePosition;;
+
+        if (isOutOfBounds(splatClipSpacePosition, 1.2 * splatClipSpacePosition.w)) {
+            out.position = float4(1, 1, 0, 1);
+            return out;
+        }
+
+        const float4 splatWorldSpacePosition =  uniforms.viewMatrix * uniforms.modelMatrix * splatModelSpacePosition;
+        const float3 covPosition = splatWorldSpacePosition.xyz;
+        const Tuple2<float2> axes = decomposedCalcCovariance2D(covPosition, splat.cov_a, splat.cov_b, uniforms.viewMatrix, uniforms.projectionMatrix, uniforms.drawableSize);
+
+        const float2 vertexModelSpacePosition = in.position.xy;
+        const float2 projectedScreenDelta = (vertexModelSpacePosition.x * axes.v0 + vertexModelSpacePosition.y * axes.v1) * 2 * kBoundsRadius / uniforms.drawableSize * splatClipSpacePosition.w;
+        out.position = splatClipSpacePosition + float4(projectedScreenDelta, 0, 0);
+        out.relativePosition = vertexModelSpacePosition * kBoundsRadius;
+        out.color = splat.color;
+        return out;
+    }
+
+
+    [[vertex]]
+    VertexOut VertexShaderOLD(
+        VertexIn in [[stage_in]],
+        uint instance_id[[instance_id]],
+        uint vertex_id[[vertex_id]],
+        constant VertexUniforms &uniforms [[buffer(1)]],
+        constant SplatC *splats [[buffer(2)]],
+        constant IndexedDistance *indexedDistances [[buffer(3)]],
+        device MyCounters* my_counters [[buffer(4), function_constant(use_counters)]]
+   ) {
         VertexOut out;
 
         if (use_counters) {
@@ -78,8 +112,8 @@ namespace GaussianSplatShaders {
 
         auto indexedDistance = indexedDistances[instance_id];
         auto splat = splats[indexedDistance.index];
-        const float4 splatWorldSpacePosition = uniforms.viewMatrix * float4(float3(splat.position), 1);
-        const float4 splatClipSpacePosition = uniforms.projectionMatrix * splatWorldSpacePosition;
+        const float4 splatModelSpacePosition = float4(float3(splat.position), 1);
+        const float4 splatClipSpacePosition = uniforms.projectionMatrix * uniforms.viewMatrix * uniforms.modelMatrix * splatModelSpacePosition;;
 
         if (isOutOfBounds(splatClipSpacePosition, 1.2 * splatClipSpacePosition.w)) {
             if (use_counters) {
@@ -89,8 +123,9 @@ namespace GaussianSplatShaders {
             return out;
         }
 
+        const float4 splatWorldSpacePosition =  uniforms.viewMatrix * uniforms.modelMatrix * splatModelSpacePosition;
         const float3 covPosition = splatWorldSpacePosition.xyz;
-        const Tuple2<float2> axes = decomposeDalcCovariance2D(covPosition, splat.cov_a, splat.cov_b, uniforms.viewMatrix, uniforms.projectionMatrix, uniforms.drawableSize);
+        const Tuple2<float2> axes = decomposedCalcCovariance2D(covPosition, splat.cov_a, splat.cov_b, uniforms.viewMatrix, uniforms.projectionMatrix, uniforms.drawableSize);
 
         const float2 vertexModelSpacePosition = in.position.xy;
         const float2 projectedScreenDelta = (vertexModelSpacePosition.x * axes.v0 + vertexModelSpacePosition.y * axes.v1) * 2 * kBoundsRadius / uniforms.drawableSize * splatClipSpacePosition.w;
