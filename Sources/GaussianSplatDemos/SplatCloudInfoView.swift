@@ -29,14 +29,6 @@ public struct SplatCloudInfoView: View {
                 Divider()
                 LabeledContent("# splats", value: splats.count, format: .number)
 
-                //                TaskView(id: splats, "Bounding box") {
-                //                    let positions = splats.map { SIMD3<Float>($0.position) }
-                //                    let minimums = positions.reduce([.greatestFiniteMagnitude, .greatestFiniteMagnitude, .greatestFiniteMagnitude], min)
-                //                    let maximums = positions.reduce([-.greatestFiniteMagnitude, -.greatestFiniteMagnitude, -.greatestFiniteMagnitude], max)
-                //                    let size = maximums - minimums
-                //                    return "\(minimums, format: .vector) ... \(maximums, format: .vector), size: (\(size, format: .vector))"
-                //                }
-
                 Text("Splat size: \(bytes(splats.count * MemoryLayout<SplatB>.stride).formatted())")
                 TaskView(id: splats, "Low Hanging Fruit Size") {
                     bytes(computeLowHangingFruitSize(splats: splats)).formatted()

@@ -12,6 +12,7 @@ import simd
 import SIMDSupport
 import SwiftFormats
 import SwiftUI
+import SwiftUISupport
 import UniformTypeIdentifiers
 
 // swiftlint:disable force_unwrapping
@@ -27,13 +28,14 @@ public struct GaussianSplatNewMinimalView: View {
     private var cameraCone: CameraCone = .init(apex: [0, 0, 0], axis: [1, 0, 0], apexToTopBase: 0, topBaseRadius: 2, bottomBaseRadius: 2, height: 2)
 
     enum Controller {
+        case none
         case cone
         case fpv
         case ball
     }
 
     @State
-    private var controller = Controller.ball
+    private var controller = Controller.cone
 
     @State
     private var ballConstraint: NewBallConstraint = .init(radius: 0.25)
@@ -58,6 +60,8 @@ public struct GaussianSplatNewMinimalView: View {
             #endif
             .modifier {
                 switch controller {
+                case .none:
+                    EmptyViewModifier()
                 case .cone:
                     CameraConeController(cameraCone: cameraCone, transform: $scene.unsafeCurrentCameraNode.transform)
                 case .fpv:
@@ -73,6 +77,7 @@ public struct GaussianSplatNewMinimalView: View {
 //                        .monospaced()
 
                     Picker("Controller", selection: $controller) {
+                        Text("None").tag(Controller.none)
                         Text("Ball").tag(Controller.ball)
                         Text("Cone").tag(Controller.cone)
                         Text("FPV").tag(Controller.fpv)

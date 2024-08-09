@@ -91,31 +91,24 @@ public struct GaussianSplatRenderPass <Splat>: RenderPassProtocol where Splat: S
                 commandEncoder.setTriangleFillMode(.lines)
             }
             let helper = try SceneGraphRenderHelper(scene: scene, targetColorAttachment: renderPassDescriptor.colorAttachments[0])
-            guard let cameraTransform = scene.currentCameraNode?.transform else {
-                throw BaseError.missingValue
-            }
             for element in helper.elements() {
                 guard let splats = element.node.splats(Splat.self) else {
                     continue
                 }
 
-                var unrotatedModelMatrix = element.modelMatrix
-                var p = unrotatedModelMatrix.translation
-                unrotatedModelMatrix.translation = .zero
-                p = (SIMD4<Float>(p, 0) * unrotatedModelMatrix).xyz
-                unrotatedModelMatrix = .translation(p)
-
+                let viewMatrix = helper.cameraMatrix.inverse
+                let modelViewMatrix = viewMatrix * element.modelMatrix
+                let drawableSize = try renderPassDescriptor.colorAttachments[0].size
+                let focalSize = drawableSize * helper.projectionMatrix.diagonal.xy / 2
+                let limit = 1.3 * 1 / helper.projectionMatrix.diagonal.xy
 
                 let uniforms = GaussianSplatUniforms(
-                    modelViewProjectionMatrix: helper.projectionMatrix * cameraTransform.matrix.inverse * element.modelMatrix,
-                    modelViewMatrix: helper.cameraMatrix.inverse * element.modelMatrix,
-                    projectionMatrix: helper.projectionMatrix,
-                    viewMatrix: helper.cameraMatrix.inverse,
-                    modelMatrix: element.modelMatrix,
-                    unrotatedModelMatrix: unrotatedModelMatrix,
-                    cameraPosition: helper.cameraMatrix.translation,
+                    modelViewProjectionMatrix: helper.projectionMatrix * modelViewMatrix,
+                    modelViewMatrix: modelViewMatrix,
                     drawableSize: try renderPassDescriptor.colorAttachments[0].size,
-                    discardRate: discardRate
+                    discardRate: discardRate,
+                    focalSize: focalSize,
+                    limit: limit
                 )
 
                 if useVertexCounting {
