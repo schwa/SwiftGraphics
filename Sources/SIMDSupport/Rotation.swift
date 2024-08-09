@@ -9,7 +9,7 @@ public struct Rotation {
 
     public var storage: Storage
 
-    public static let identity = Self.quaternion(.identity)
+    public static let identity = Self(.identity)
 }
 
 extension Rotation: Sendable {
@@ -39,14 +39,6 @@ public extension Rotation {
 
     init(_ rollPitchYaw: RollPitchYaw) {
         storage = .rollPitchYaw(rollPitchYaw)
-    }
-
-    static func quaternion(_ quaternion: simd_quatf) -> Self {
-        .init(quaternion)
-    }
-
-    static func rollPitchYaw(_ rollPitchYaw: RollPitchYaw) -> Self {
-        .init(rollPitchYaw)
     }
 }
 
@@ -88,7 +80,7 @@ extension Rotation: Hashable {
 
 public extension Rotation {
     init(angle: Angle, axis: SIMD3<Float>) {
-        self = .quaternion(.init(angle: angle, axis: axis))
+        self = .init(.init(angle: angle, axis: axis))
     }
 }
 

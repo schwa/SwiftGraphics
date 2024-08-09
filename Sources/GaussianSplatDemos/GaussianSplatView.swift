@@ -49,7 +49,7 @@ public struct GaussianSplatView: View {
             Node(label: "ball") {
                 Node(label: "camera", content: Camera())
             }
-            Node(label: "splats").content(splats)
+            Node(label: "splats", content: splats)
         }
 
         self.device = device

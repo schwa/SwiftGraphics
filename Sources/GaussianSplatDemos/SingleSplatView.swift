@@ -1,4 +1,3 @@
-import RenderKitUISupport
 import BaseSupport
 import Constraints3D
 import Everything
@@ -11,6 +10,7 @@ import MetalSupport
 import Observation
 import RenderKit
 import RenderKitSceneGraph
+import RenderKitUISupport
 import simd
 import SIMDSupport
 import SwiftFields
@@ -62,13 +62,33 @@ public struct SingleSplatView: View {
             }
     }
 
+    func axisEditor(label: String, value: Binding<Angle>) -> some View {
+        LabeledContent(label) {
+            Wheel(value: value.projectedValue.degrees, rate: 30)
+            TextField(label, value: value.projectedValue.degrees, format: .number)
+                .monospacedDigit()
+                .frame(width: 80)
+                .labelsHidden()
+        }
+    }
+
     @ViewBuilder
     func makeInspector() -> some View {
         Form {
-            LabeledContent("Model") {
-                RotationWidget(rotation: $scene.labeledNodes.splats.transform.rotation)
-                    .frame(width: 100, height: 100)
-                    .padding()
+            ValueView(value: true) { expanded in
+                DisclosureGroup("Model Transform", isExpanded: expanded) {
+                    VStack {
+                        RotationWidget(rotation: $scene.splatsNode.transform.rotation)
+                            .frame(width: 100, height: 100)
+                            .padding()
+
+                        axisEditor(label: "Roll", value: $scene.splatsNode.transform.rotation.rollPitchYaw.roll)
+                        axisEditor(label: "Pitch", value: $scene.splatsNode.transform.rotation.rollPitchYaw.pitch)
+                        axisEditor(label: "Yaw", value: $scene.splatsNode.transform.rotation.rollPitchYaw.yaw)
+
+                        //                    TransformEditor($scene.splatsNode.transform)
+                    }
+                }
             }
 
             ValueView(value: false) { isPresented in
