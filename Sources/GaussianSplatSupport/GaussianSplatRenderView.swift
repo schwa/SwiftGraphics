@@ -63,16 +63,14 @@ public struct GaussianSplatRenderView <Splat>: View where Splat: SplatProtocol {
                 drawableSize = SIMD2<Float>(size)
                 logger?.debug("\(type(of: self)).\(#function): \(drawableSize)")
                 try makeMetalFXTextures(device: device, pixelFormat: configuration.colorPixelFormat, size: drawableSize)
-            }
-            catch {
+            } catch {
                 fatalError("Failed to create texture.")
             }
         }
         .onChange(of: metalFXRate) {
             do {
                 try makeMetalFXTextures(device: device, pixelFormat: .bgra8Unorm_srgb, size: drawableSize)
-            }
-            catch {
+            } catch {
                 logger?.error("Failed to make metal textures: \(error)")
             }
         }

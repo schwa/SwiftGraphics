@@ -10,8 +10,7 @@ struct CountersDemoView: DemoView {
                         Counters.shared.increment(counter: "Hello world")
                         try await Task.sleep(for: .seconds(0.1))
                     }
-                }
-                catch {
+                } catch {
                 }
             }
     }

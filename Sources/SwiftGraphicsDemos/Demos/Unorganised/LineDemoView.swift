@@ -13,7 +13,7 @@ struct LineDemoView: View, DemoView {
     @CodableAppStorage("KEY")
     var elements: [Element] = [
         .init(id: "1", lineSegment: .init(1, 1, 4, 4), color: .orange),
-        .init(id: "2", lineSegment: .init(1, 4, 4, 1), color: .indigo),
+        .init(id: "2", lineSegment: .init(1, 4, 4, 1), color: .indigo)
     ]
 
     @CodableAppStorage("SELECTION")
@@ -139,8 +139,7 @@ struct LineDemoView: View, DemoView {
                     ColorPicker("Color", selection: binding.color)
                     LineSegmentInfoView(lineSegment: binding.lineSegment)
                 }
-            }
-            else {
+            } else {
                 ContentUnavailableView("No selection")
             }
         }
@@ -206,14 +205,12 @@ struct LineSegmentInfoView: View {
             LabeledContent("isVertical", value: line1.isVertical, format: .bool)
             if let xIntercept = line1.xIntercept {
                 LabeledContent("xIntercept", value: xIntercept, format: .point)
-            }
-            else {
+            } else {
                 LabeledContent("xIntercept", value: "none")
             }
             if let yIntercept = line1.yIntercept {
                 LabeledContent("yIntercept", value: yIntercept, format: .point)
-            }
-            else {
+            } else {
                 LabeledContent("yIntercept", value: "none")
             }
             LabeledContent("Slope", value: line1.slope, format: .number)
@@ -222,8 +219,7 @@ struct LineSegmentInfoView: View {
             if let slopeInterceptForm = line1.slopeInterceptForm {
                 LabeledContent("m", value: slopeInterceptForm.m, format: .number)
                 LabeledContent("b", value: slopeInterceptForm.b, format: .number)
-            }
-            else {
+            } else {
                 Text("VERTICAL")
             }
         }

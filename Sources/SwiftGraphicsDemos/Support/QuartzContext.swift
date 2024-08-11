@@ -82,8 +82,7 @@ struct QuartzContext: GraphicsContextProtocol {
         if options.contains(.inverse) {
             let contextPath = Path(CGRect(origin: .zero, size: size))
             cgContext.addPath(contextPath.subtracting(path).cgPath)
-        }
-        else {
+        } else {
             cgContext.addPath(path.cgPath)
         }
         cgContext.clip()

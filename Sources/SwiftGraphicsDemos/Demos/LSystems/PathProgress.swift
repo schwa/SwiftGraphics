@@ -13,7 +13,7 @@ struct PathProgress: View {
                 let parameters: [(offset: Double, width: Double, speed: Double, color: Color)] = [
                     (0, 0.05, 1.0, .green.opacity(0.25)),
                     (0.5, 0.05, 1.0, .green.opacity(0.5)),
-                    (0.75, 0.05, 1.0, .green),
+                    (0.75, 0.05, 1.0, .green)
                 ]
 
                 for (offset, width, speed, color) in parameters {
@@ -44,7 +44,7 @@ struct PathProgress: View {
                     (0, 0.20, -0.5, .green.opacity(0.5)),
                     (0.25, 0.15, 0.4, .yellow.opacity(0.5)),
                     (0.50, 0.10, -0.3, .red.opacity(0.5)),
-                    (0.75, 0.05, 0.2, .blue),
+                    (0.75, 0.05, 0.2, .blue)
                 ]
                 context.stroke(path, with: .color(.gray.opacity(0.5)), lineWidth: lineWidth)
 

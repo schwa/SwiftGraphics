@@ -85,8 +85,7 @@ public extension Ellipse {
             assert(a == b)
             assert(F == 0.0)
             return Circle(center: center, radius: a)
-        }
-        else {
+        } else {
             return nil
         }
     }

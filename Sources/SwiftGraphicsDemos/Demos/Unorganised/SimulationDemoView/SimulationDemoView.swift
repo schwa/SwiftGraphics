@@ -16,7 +16,7 @@ struct SimulationDemoView: View, DemoView {
 
     let gradient = MyGradient(colors: [
         [0, 0, 1, 0.5],
-        [1, 0, 0, 0.5],
+        [1, 0, 0, 0.5]
     ])
 
     @State
@@ -207,7 +207,7 @@ extension GraphicsContext.BlendMode: @retroactive CaseIterable {
             .destinationAtop,
             .xor,
             .plusDarker,
-            .plusLighter,
+            .plusLighter
         ]
     }
 }

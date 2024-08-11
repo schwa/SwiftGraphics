@@ -87,8 +87,7 @@ public extension MTLDevice {
     func makeDebugLibrary(bundle: Bundle) throws -> MTLLibrary {
         if let url = bundle.url(forResource: "debug", withExtension: "metallib") {
             return try makeLibrary(URL: url)
-        }
-        else {
+        } else {
             logger?.warning("Failed to load debug metal library, falling back to bundle's default library.")
             return try makeDefaultLibrary(bundle: bundle)
         }

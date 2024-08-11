@@ -12,8 +12,7 @@ struct Names {
         do {
             adjectives = try String(contentsOf: Bundle.module.url(forResource: "adjectives", withExtension: "txt"), encoding: .utf8).split(whereSeparator: \.isNewline)
             nouns = try String(contentsOf: Bundle.module.url(forResource: "nouns", withExtension: "txt"), encoding: .utf8).split(whereSeparator: \.isNewline)
-        }
-        catch {
+        } catch {
             fatalError("\(error)")
         }
     }
@@ -25,8 +24,7 @@ struct Names {
             let max = Int(pow(10, Double(pad)))
             let pad = Int.random(in: 1 ..< max)
             return "\(adjective)-\(noun)-\(pad)"
-        }
-        else {
+        } else {
             return "\(adjective)-\(noun)"
         }
     }
@@ -42,8 +40,7 @@ struct Names {
             let pad = value % padCount
             value /= padCount
             return "\(adjective)-\(noun)-\(pad)"
-        }
-        else {
+        } else {
             return "\(adjective)-\(noun)"
         }
     }

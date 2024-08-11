@@ -21,8 +21,7 @@ struct GameControllerWidget: View {
                     Button("Start Scanning") {
                         model.startDiscovery()
                     }
-                }
-                else {
+                } else {
                     Button("Stop Scanning") {
                         model.stopDiscovery()
                     }
@@ -34,13 +33,12 @@ struct GameControllerWidget: View {
                         model.virtualController?.disconnect()
                         model.virtualController = nil
                     }
-                }
-                else {
+                } else {
                     Button("Enable Touch Controller") {
                         Task {
                             let configuration = GCVirtualController.Configuration()
                             configuration.elements = [
-                                GCInputLeftThumbstick, GCInputRightThumbstick, GCInputLeftShoulder, GCInputRightShoulder,
+                                GCInputLeftThumbstick, GCInputRightThumbstick, GCInputLeftShoulder, GCInputRightShoulder
                                 //                        GCInputButtonA,
                                 //                        GCInputButtonB,
                                 //                        GCInputButtonX,
@@ -80,8 +78,7 @@ struct GameControllerWidget: View {
                     icon: {
                         if model.devices.isEmpty {
                             Image(systemName: "gamecontroller")
-                        }
-                        else {
+                        } else {
                             Image(systemName: "gamecontroller.fill")
                         }
                     }

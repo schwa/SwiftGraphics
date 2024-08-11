@@ -186,8 +186,7 @@ struct TextureSpecifier: Equatable, Sendable, Hashable {
                     throw BaseError.resourceCreationFailure
                 }
                 texture = try textureLoader.newTexture(URL: url, options: options)
-            }
-            else {
+            } else {
                 texture = try textureLoader.newTexture(name: resource.name, scaleFactor: scaleFactor, bundle: resource.bundle.resolve(), options: options)
             }
             return texture

@@ -15,7 +15,7 @@ struct SpatialLookupTable<Positions> where Positions: Collection, Positions.Elem
         [0, 1],
         [1, -1],
         [1, 0],
-        [1, 1],
+        [1, 1]
     ]
 
     init(size: SIMD2<Float>) {

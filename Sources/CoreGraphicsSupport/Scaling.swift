@@ -32,8 +32,7 @@ public func scaleAndAlignRectToRect(source: CGRect, destination: CGRect, scaling
         var theScaleFactor: CGFloat = 1
         if destination.size.width / source.size.width < destination.size.height / source.size.height {
             theScaleFactor = destination.size.width / source.size.width
-        }
-        else {
+        } else {
             theScaleFactor = destination.size.height / source.size.height
         }
         theScaledImageSize.width *= theScaleFactor

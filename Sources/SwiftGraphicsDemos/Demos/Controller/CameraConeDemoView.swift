@@ -1,13 +1,13 @@
-//import Constraints3D
-//import Widgets3D
-//import Projection
-//import RenderKitSceneGraph
-//import RenderKitUISupport
-//import simd
-//import SIMDSupport
-//import SwiftUI
+// import Constraints3D
+// import Widgets3D
+// import Projection
+// import RenderKitSceneGraph
+// import RenderKitUISupport
+// import simd
+// import SIMDSupport
+// import SwiftUI
 //
-//struct CameraConeDemoView: DemoView {
+// struct CameraConeDemoView: DemoView {
 //    @State
 //    private var cameraTransform: Transform = .translation([0, 0, -5])
 //
@@ -104,13 +104,13 @@
 //            }
 //        }
 //    }
-//}
+// }
 //
-//extension ClosedRange where Bound == Angle {
+// extension ClosedRange where Bound == Angle {
 //    static let unlimited: Self = .degrees(-.infinity) ... .degrees(.infinity)
-//}
+// }
 //
-//extension Path3D {
+// extension Path3D {
 //    static func circle(center: SIMD3<Float>, axis: SIMD3<Float>, radius: Float, segments: Int) -> Path3D {
 //        Path3D { path in
 //            // Ensure we have a valid axis and radius
@@ -148,9 +148,9 @@
 //            path.addLine(to: firstPoint)
 //        }
 //    }
-//}
+// }
 //
-//extension GraphicsContext3D {
+// extension GraphicsContext3D {
 //    func draw(cone: CameraCone) {
 //        var path = Path3D()
 //
@@ -184,4 +184,4 @@
 //        // Draw the path
 //        stroke(path: path, with: .color(.cyan))
 //    }
-//}
+// }

@@ -33,12 +33,10 @@ public extension LineSegment {
         if case .point(let point) = result {
             if lhs.contains(point) && rhs.contains(point) {
                 return result
-            }
-            else {
+            } else {
                 return .none
             }
-        }
-        else {
+        } else {
             return result
         }
     }
@@ -115,8 +113,7 @@ public extension LineSegment {
             if v.x != 0 {
                 t0 = w.x / v.x
                 t1 = w2.x / v.x
-            }
-            else {
+            } else {
                 t0 = w.y / v.y
                 t1 = w2.y / v.y
             }
@@ -139,8 +136,7 @@ public extension LineSegment {
                 if t0 == 0 {
                     assert((S2.start + t0 * v) == S2.start)
                     return .endIntersect(S2.start)
-                }
-                else if t0 == 1 {
+                } else if t0 == 1 {
                     assert((S2.start + t0 * v) == S2.end)
                     return .endIntersect(S2.end)
                 }
@@ -168,8 +164,7 @@ public extension LineSegment {
         if sI == 0 {
             assert((S1.start + sI * u) == S1.start)
             return .endIntersect(S1.start)
-        }
-        else if sI == 1 {
+        } else if sI == 1 {
             assert((S1.start + sI * u) == S1.end)
             return .endIntersect(S1.end)
         }
@@ -184,8 +179,7 @@ public extension Line {
     func distance(to point: CGPoint) -> Double {
         if isVertical {
             return abs(point.x - xIntercept!.x)
-        }
-        else {
+        } else {
             let (m, b) = slopeInterceptForm!.tuple
             return abs(m * point.x - point.y + b) / sqrt(m * m + 1)
         }

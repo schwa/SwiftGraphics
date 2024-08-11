@@ -112,6 +112,7 @@ let package = Package(
         .target(
             name: "Widgets3D",
             dependencies: [
+                "Constraints3D",
                 "CoreGraphicsSupport",
                 "CoreGraphicsUnsafeConformances",
                 "Shapes2D",

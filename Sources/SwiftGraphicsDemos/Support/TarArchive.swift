@@ -34,8 +34,7 @@ extension TarArchive.Header: CustomStringConvertible {
     var description: String {
         do {
             return try "Header(buffer: \(buffer.startIndex)..<\(buffer.endIndex), filename: \(filename), filesize: \(fileSize)"
-        }
-        catch {
+        } catch {
             return "Header(buffer: \(buffer.startIndex)..<\(buffer.endIndex), invalid!)"
         }
     }

@@ -31,8 +31,7 @@ public struct MeasurementField <Label, UnitType>: View where Label: View, UnitTy
             if units.count == 1 {
                 Text(measurement.unit.symbol)
                     .foregroundColor(.primary.opacity(0.5))
-            }
-            else {
+            } else {
                 Menu(measurement.unit.symbol) {
                     ForEach(units, id: \.self) { unit in
                         Button("\(unit.symbol)") {
@@ -86,7 +85,7 @@ public extension MeasurementField where Label == Text {
         UnitAngle.degrees,
         UnitAngle.radians,
         UnitAngle.gradians,
-        UnitAngle.revolutions,
+        UnitAngle.revolutions
     ]
     MeasurementField(title: "Angle", measurement: $measurement, units: units)
         .frame(width: 120)

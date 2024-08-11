@@ -49,14 +49,14 @@ public class EllipticalArc {
             [3.92478, -13.5822, -0.233377, 0.0128206],
             [-1.08814, 0.859987, 0.000362265, 0.000229036],
             [-0.942512, 0.390456, 0.0080909, 0.00723895],
-            [-0.736228, 0.20998, 0.0129867, 0.0103456],
+            [-0.736228, 0.20998, 0.0129867, 0.0103456]
         ],
         [
             [-0.395018, 6.82464, 0.0995293, 0.0122198],
             [-0.545608, 0.0774863, 0.0267327, 0.0132482],
             [0.0534754, -0.0884167, 0.012595, 0.0343396],
-            [0.209052, -0.0599987, -0.00723897, 0.00789976],
-        ],
+            [0.209052, -0.0599987, -0.00723897, 0.00789976]
+        ]
     ]
 
     // coefficients for error estimation
@@ -67,20 +67,20 @@ public class EllipticalArc {
             [0.0863805, -11.5595, -2.68765, 0.181224],
             [0.242856, -1.81073, 1.56876, 1.68544],
             [0.233337, -0.455621, 0.222856, 0.403469],
-            [0.0612978, -0.104879, 0.0446799, 0.00867312],
+            [0.0612978, -0.104879, 0.0446799, 0.00867312]
         ],
         [
             [0.028973, 6.68407, 0.171472, 0.0211706],
             [0.0307674, -0.0517815, 0.0216803, -0.0749348],
             [-0.0471179, 0.1288, -0.0781702, 2.0],
-            [-0.0309683, 0.0531557, -0.0227191, 0.0434511],
-        ],
+            [-0.0309683, 0.0531557, -0.0227191, 0.0434511]
+        ]
     ]
 
     // safety factor to convert the "best" error approximation
     // into a "max bound" error
     private static let safety2 = [
-        0.02, 2.83, 0.125, 0.01,
+        0.02, 2.83, 0.125, 0.01
     ]
 
     // coefficients for error estimation
@@ -91,14 +91,14 @@ public class EllipticalArc {
             [3.85268, -21.229, -0.330434, 0.0127842],
             [-1.61486, 0.706564, 0.225945, 0.263682],
             [-0.910164, 0.388383, 0.00551445, 0.00671814],
-            [-0.630184, 0.192402, 0.0098871, 0.0102527],
+            [-0.630184, 0.192402, 0.0098871, 0.0102527]
         ],
         [
             [-0.162211, 9.94329, 0.13723, 0.0124084],
             [-0.253135, 0.00187735, 0.0230286, 0.01264],
             [-0.0695069, -0.0437594, 0.0120636, 0.0163087],
-            [-0.0328856, -0.00926032, -0.00173573, 0.00527385],
-        ],
+            [-0.0328856, -0.00926032, -0.00173573, 0.00527385]
+        ]
     ]
 
     // coefficients for error estimation
@@ -109,20 +109,20 @@ public class EllipticalArc {
             [0.0899116, -19.2349, -4.11711, 0.183362],
             [0.138148, -1.45804, 1.32044, 1.38474],
             [0.230903, -0.450262, 0.219963, 0.414038],
-            [0.0590565, -0.101062, 0.0430592, 0.0204699],
+            [0.0590565, -0.101062, 0.0430592, 0.0204699]
         ],
         [
             [0.0164649, 9.89394, 0.0919496, 0.00760802],
             [0.0191603, -0.0322058, 0.0134667, -0.0825018],
             [0.0156192, -0.017535, 0.00326508, -0.228157],
-            [-0.0236752, 0.0405821, -0.0173086, 0.176187],
-        ],
+            [-0.0236752, 0.0405821, -0.0173086, 0.176187]
+        ]
     ]
 
     // safety factor to convert the "best" error approximation
     // into a "max bound" error
     private static let safety3 = [
-        0.001, 4.98, 0.207, 0.0067,
+        0.001, 4.98, 0.207, 0.0067
     ]
 
     /* Abscissa of the center of the ellipse. */
@@ -379,23 +379,20 @@ public class EllipticalArc {
                 etaXMax = etaXMin + .pi
                 etaYMin = 0.5 * .pi - atan(tanTheta / bOnA)
                 etaYMax = etaYMin + .pi
-            }
-            else {
+            } else {
                 etaXMax = -atan(tanTheta * bOnA)
                 etaXMin = etaXMax - .pi
                 etaYMax = 0.5 * .pi - atan(tanTheta / bOnA)
                 etaYMin = etaYMax - .pi
             }
-        }
-        else {
+        } else {
             let invTanTheta = cosTheta / sinTheta
             if sinTheta < 0 {
                 etaXMax = 0.5 * .pi + atan(invTanTheta / bOnA)
                 etaXMin = etaXMax - .pi
                 etaYMin = atan(invTanTheta * bOnA)
                 etaYMax = etaYMin + .pi
-            }
-            else {
+            } else {
                 etaXMin = 0.5 * .pi + atan(invTanTheta / bOnA)
                 etaXMax = etaXMin + .pi
                 etaYMax = atan(invTanTheta * bOnA)
@@ -473,8 +470,7 @@ public class EllipticalArc {
 
             return abs(x * dy - y * dx + xB * yA - xA * yB)
                 / sqrt(dx * dx + dy * dy)
-        }
-        else {
+        } else {
             let x = b / a
             let dEta = etaB - etaA
             let cos2 = cos(2 * eta)
@@ -488,8 +484,7 @@ public class EllipticalArc {
             if degree == 2 {
                 coeffs = (x < 0.25) ? Self.coeffs2Low : Self.coeffs2High
                 safety = Self.safety2
-            }
-            else {
+            } else {
                 coeffs = (x < 0.25) ? Self.coeffs3Low : Self.coeffs3High
                 safety = Self.safety3
             }
@@ -551,8 +546,7 @@ public class EllipticalArc {
             var eta = atan2(v / b, u / a)
             eta -= twoPi * floor((eta - eta1) / twoPi)
             return (eta <= eta2)
-        }
-        else {
+        } else {
             // check the location of the test point with respect to the
             // line joining the start and end points
             let dx = x2 - x1
@@ -686,8 +680,7 @@ public class EllipticalArc {
         if isPieSlice {
             return (Self.intersect(cx, cy, x1, y1, xA, yA, xB, yB)
                         || Self.intersect(cx, cy, x2, y2, xA, yA, xB, yB))
-        }
-        else {
+        } else {
             return Self.intersect(x1, y1, x2, y2, xA, yA, xB, yB)
         }
     }
@@ -797,8 +790,7 @@ public class EllipticalArc {
         if isPieSlice {
             path.move(to: CGPoint(cx, cy))
             path.addLine(to: CGPoint(xB, yB))
-        }
-        else {
+        } else {
             path.move(to: CGPoint(xB, yB))
         }
 
@@ -825,12 +817,10 @@ public class EllipticalArc {
             yBDot = -aSinEtaB * sinTheta + bCosEtaB * cosTheta
             if degree == 1 {
                 path.addLine(to: CGPoint(xB, yB))
-            }
-            else if degree == 2 {
+            } else if degree == 2 {
                 let k = (yBDot * (xB - xA) - xBDot * (yB - yA)) / (xADot * yBDot - yADot * xBDot)
                 path.addQuadCurve(to: CGPoint(xB, yB), control: CGPoint(xA + k * xADot, yA + k * yADot))
-            }
-            else {
+            } else {
                 path.addCurve(to: CGPoint(xB, yB), control1: CGPoint(xA + alpha * xADot, yA + alpha * yADot), control2: CGPoint(xB - alpha * xBDot, yB - alpha * yBDot))
             }
         }

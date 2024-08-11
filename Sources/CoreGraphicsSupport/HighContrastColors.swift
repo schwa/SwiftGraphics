@@ -26,7 +26,7 @@ public let kellyColors: [(Float, Float, Float)] = [
     0x93AA00, // Vivid Yellowish Green
     0x593315, // Deep Yellowish Brown
     0xF13A13, // Vivid Reddish Orange
-    0x232C16, // Dark Olive Green
+    0x232C16 // Dark Olive Green
 ].map { hex in
     let red = hex >> 16 & 0xFF
     let green = hex >> 8 & 0xFF

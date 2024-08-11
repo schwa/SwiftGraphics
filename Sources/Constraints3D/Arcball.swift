@@ -32,8 +32,7 @@ public struct Arcball {
         let length_squared = coord.x * coord.x + coord.y * coord.y
         if length_squared <= 1 {
             coord.z = sqrt(1 - length_squared)
-        }
-        else {
+        } else {
             coord = normalize(coord)
         }
         return coord

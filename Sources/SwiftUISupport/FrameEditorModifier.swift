@@ -24,7 +24,7 @@ public struct FrameEditorModifier: ViewModifier {
         ("iPhone 15 Pro", 3.0, CGSize(width: 1179, height: 2556)),
         ("iPhone 15", 3.0, CGSize(width: 1179, height: 2556)),
         ("iPhone 14 Pro", 3.0, CGSize(width: 1179, height: 2556)),
-        ("iPhone 11 Pro", 3.0, CGSize(width: 828, height: 1792)),
+        ("iPhone 11 Pro", 3.0, CGSize(width: 828, height: 1792))
     ]
 
     public func body(content: Content) -> some View {
@@ -53,8 +53,7 @@ public struct FrameEditorModifier: ViewModifier {
                     TextField("Size", value: .constant(lockedSize), format: .size)
                         .foregroundStyle(.black)
                         .frame(maxWidth: 120)
-                }
-                else {
+                } else {
                     Text("\(size, format: .size)")
                     Text("\(size.width / size.height, format: .number)")
                 }

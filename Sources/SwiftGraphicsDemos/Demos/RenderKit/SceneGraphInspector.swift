@@ -25,8 +25,7 @@ struct SceneGraphInspector: View {
         List([scene.root], children: \.optionalChildren, selection: $selection) { node in
             if !node.label.isEmpty {
                 Text("Node: \"\(node.label)\"")
-            }
-            else {
+            } else {
                 Text("Node: <unnamed>")
             }
         }
@@ -45,8 +44,7 @@ struct SceneGraphInspector: View {
                     VectorEditor(node.transform.translation)
                 }
             }
-        }
-        else {
+        } else {
             ContentUnavailableView { Text("No node selected") }
         }
     }

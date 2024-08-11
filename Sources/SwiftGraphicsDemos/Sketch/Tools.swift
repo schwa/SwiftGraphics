@@ -71,8 +71,7 @@ struct LineTool: ViewModifier {
                 if lastPoint != nil {
                     onCommit()
                     lastPoint = nil
-                }
-                else {
+                } else {
                     lastPoint = value.location
                 }
             })
@@ -114,8 +113,7 @@ struct CircleTool: ViewModifier {
                 if center != nil {
                     onCommit()
                     center = nil
-                }
-                else {
+                } else {
                     center = value.location
                 }
             })

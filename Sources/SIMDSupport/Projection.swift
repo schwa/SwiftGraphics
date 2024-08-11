@@ -156,6 +156,6 @@ public func dx_look(at target: SIMD3<Float>, from eye: SIMD3<Float>, up: SIMD3<F
         SIMD4<Float>(xaxis, -simd_dot(xaxis, eye)),
         SIMD4<Float>(yaxis, -simd_dot(yaxis, eye)),
         SIMD4<Float>(zaxis, -simd_dot(zaxis, eye)),
-        SIMD4<Float>(0, 0, 0, 1),
+        SIMD4<Float>(0, 0, 0, 1)
     ])
 }

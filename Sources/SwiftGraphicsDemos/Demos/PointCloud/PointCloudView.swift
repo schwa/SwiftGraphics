@@ -71,8 +71,7 @@ struct PointCloudView: View, DemoView {
                 try scene.modify(label: "point-cloud") { node in
                     node!.content = pointCloud
                 }
-            }
-            catch {
+            } catch {
                 fatalError(error)
             }
         }

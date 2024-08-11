@@ -34,7 +34,7 @@ public extension MetalBindable {
                 let bindingIndex = try reflection.binding(for: name, of: .vertex)
                 self[keyPath: keyPath] = bindingIndex
             default:
-                throw BaseError.invalidParameter
+                throw BaseError.missingBinding(name)
             }
         }
     }

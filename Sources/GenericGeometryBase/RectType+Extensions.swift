@@ -266,8 +266,7 @@ public extension RectType where Scalar == Point.Scalar, Scalar == Size.Scalar, S
     func union(_ point: Point) -> Self {
         if isNull {
             return Self(origin: point, size: Size.zero)
-        }
-        else {
+        } else {
             let minX = min(minX, point.x)
             let minY = min(minY, point.y)
             let maxX = max(maxX, point.x)
@@ -279,8 +278,7 @@ public extension RectType where Scalar == Point.Scalar, Scalar == Size.Scalar, S
     func union(_ rect: Self) -> Self {
         if isNull {
             return rect
-        }
-        else {
+        } else {
             let minX = min(minX, rect.minX)
             let minY = min(minY, rect.minY)
             let maxX = max(maxX, rect.maxX)
@@ -321,8 +319,7 @@ public extension RectType where Scalar == Int, Scalar == Point.Scalar, Scalar ==
     func contains(point: Point) -> Bool {
         if point.x < minX || point.x >= maxX || point.y < minY || point.y >= maxY {
             false
-        }
-        else {
+        } else {
             true
         }
     }

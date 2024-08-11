@@ -142,11 +142,9 @@ public extension CGSize {
     var orientation: AreaOrientation {
         if abs(width) > abs(height) {
             .landscape
-        }
-        else if abs(width) == abs(height) {
+        } else if abs(width) == abs(height) {
             .square
-        }
-        else {
+        } else {
             .portrait
         }
     }

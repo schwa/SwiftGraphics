@@ -83,10 +83,10 @@ public struct UnlitShadingPass: RenderPassProtocol {
                     }
                     commandEncoder.withDebugGroup("Node: \(element.node.id)") {
                         commandEncoder.withDebugGroup("VertexShader") {
-                            let cameraUniforms = CameraUniforms(projectionMatrix: helper.projectionMatrix)
+                            let cameraUniforms = CameraUniformsNEW(viewMatrix: helper.viewMatrix, projectionMatrix: helper.projectionMatrix)
                             commandEncoder.setVertexBytes(of: cameraUniforms, index: bindings.vertexCameraIndex)
 
-                            let modelTransforms = ModelTransforms(modelViewMatrix: element.modelViewMatrix, modelNormalMatrix: element.modelNormalMatrix)
+                            let modelTransforms = ModelTransformsNEW(modelViewMatrix: element.modelViewMatrix, modelNormalMatrix: element.modelNormalMatrix)
                             commandEncoder.setVertexBytes(of: modelTransforms, index: bindings.vertexModelsIndex)
                         }
 
@@ -96,8 +96,7 @@ public struct UnlitShadingPass: RenderPassProtocol {
                             if let texture = material.baseColorTexture {
                                 commandEncoder.setFragmentBytes(of: UnlitMaterial(color: material.baseColorFactor, textureIndex: 0), index: bindings.fragmentMaterialsIndex)
                                 commandEncoder.setFragmentTextures([texture], range: 0..<(bindings.fragmentTexturesIndex + 1))
-                            }
-                            else {
+                            } else {
                                 commandEncoder.setFragmentBytes(of: UnlitMaterial(color: material.baseColorFactor, textureIndex: -1), index: bindings.fragmentMaterialsIndex)
                             }
                         }

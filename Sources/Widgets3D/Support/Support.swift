@@ -115,8 +115,7 @@ public extension Path {
         let to = to.wrapped(to: 0...1)
         if from < to {
             return trimmedPath(from: from, to: to)
-        }
-        else {
+        } else {
             let a = trimmedPath(from: from, to: 1.0)
             let b = trimmedPath(from: 0, to: to)
             return a + b

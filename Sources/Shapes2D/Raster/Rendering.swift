@@ -18,14 +18,11 @@ public func verticalLine(start: IntPoint, length: Int, plot: (IntPoint) -> Void)
 public func line(start: IntPoint, end: IntPoint, plot: (IntPoint) -> Void) {
     if start == end {
         plot(start)
-    }
-    else if start.y == end.y {
+    } else if start.y == end.y {
         horizontalLine(start: start, length: end.x - start.x, plot: plot)
-    }
-    else if start.x == end.x {
+    } else if start.x == end.x {
         verticalLine(start: start, length: end.y - start.y, plot: plot)
-    }
-    else {
+    } else {
         bresenhamLine(start: start, end: end, plot: plot)
     }
 }
@@ -52,8 +49,7 @@ public func bresenhamLine(start: IntPoint, end: IntPoint, plot: (IntPoint) -> Vo
     for x in p0.x ..< p1.x {
         if steep == false {
             plot(IntPoint(x: x, y: y))
-        }
-        else {
+        } else {
             plot(IntPoint(x: y, y: x))
         }
         error -= dY

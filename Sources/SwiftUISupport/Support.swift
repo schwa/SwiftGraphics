@@ -99,8 +99,7 @@ public extension View {
     nonisolated func modifier<T>(enabled: Bool, _ modifier: T) -> some View where T: ViewModifier {
         if enabled {
             self.modifier(modifier)
-        }
-        else {
+        } else {
             self
         }
     }
@@ -111,8 +110,7 @@ public extension View {
     func modifier(@ViewModifierBuilder _ modifier: () -> (some ViewModifier)?) -> some View {
         if let modifier = modifier() {
             self.modifier(modifier)
-        }
-        else {
+        } else {
             self
         }
     }

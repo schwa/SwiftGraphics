@@ -35,8 +35,7 @@ public struct SceneGraphRenderHelper {
                     if transformStack.isEmpty {
                         modelMatrix = node.transform.matrix
                         transformStack = [modelMatrix]
-                    }
-                    else {
+                    } else {
                         guard let parentTransform = transformStack.last else {
                             fatalError("Popping from empty transform stack")
                         }

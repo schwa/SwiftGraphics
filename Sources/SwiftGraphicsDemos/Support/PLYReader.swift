@@ -75,8 +75,7 @@ public struct Ply {
         mutating get throws {
             if let processedElements {
                 return processedElements
-            }
-            else {
+            } else {
                 var scanner = CollectionScanner(elements: elementData)
                 let elements = try header.elements.map { definition in
                     guard let element = try scanner.scanPLYElement(definition: definition, format: header.format) else {
@@ -397,11 +396,9 @@ extension CollectionScanner where Element == UInt8 {
             while !scanner.atEnd {
                 if scanner.scanPrefixedLine(prefix: "comment") != nil {
                     // This block intentionally left blank.
-                }
-                else if scanner.scanPrefixedLine(prefix: "end_header") != nil {
+                } else if scanner.scanPrefixedLine(prefix: "end_header") != nil {
                     break
-                }
-                else if let element = try scanner.scanPLYHeaderElement() {
+                } else if let element = try scanner.scanPLYHeaderElement() {
                     elements.append(element)
                 }
             }

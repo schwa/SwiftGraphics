@@ -8,6 +8,6 @@ struct MetalSupportMacrosPlugin: CompilerPlugin {
     let providingMacros: [Macro.Type] = [
         MetalBindingsMacro.self,
         MetalBindingMacro.self,
-        MetalBindingIgnoredMacro.self,
+        MetalBindingIgnoredMacro.self
     ]
 }

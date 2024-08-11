@@ -12,8 +12,7 @@ public extension SceneGraph {
                     fatalError("Trying to set current camera node, but no accessor for existing camera.")
                 }
                 root[accessor: currentCameraAccessor] = newValue
-            }
-            else {
+            } else {
                 currentCameraAccessor = nil
             }
         }

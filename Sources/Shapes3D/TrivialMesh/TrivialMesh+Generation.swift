@@ -27,7 +27,7 @@ public extension TrivialMesh where Vertex == SimpleVertex {
             (0 ..< segments.x).flatMap { x in
                 [
                     xyToIndex(x: x, y: y), xyToIndex(x: x + 1, y: y + 1), xyToIndex(x: x, y: y + 1),
-                    xyToIndex(x: x, y: y), xyToIndex(x: x + 1, y: y), xyToIndex(x: x + 1, y: y + 1),
+                    xyToIndex(x: x, y: y), xyToIndex(x: x + 1, y: y), xyToIndex(x: x + 1, y: y + 1)
                 ]
             }
         }

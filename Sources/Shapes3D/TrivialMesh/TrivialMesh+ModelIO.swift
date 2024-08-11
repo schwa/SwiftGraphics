@@ -37,8 +37,7 @@ public extension TrivialMesh where Vertex == SimpleVertex {
         let positions = try mesh.positions
         let normals: [PackedFloat3] = if mesh.hasNormals {
             try mesh.normals
-        }
-        else {
+        } else {
             Array(repeating: [0, 0, 0], count: positions.count)
         }
         let vertices = zip(positions, normals).map {

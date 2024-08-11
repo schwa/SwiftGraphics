@@ -48,8 +48,7 @@ public extension Angle {
         let degrees = degrees.truncatingRemainder(dividingBy: 360)
         if degrees < 0 {
             return .degrees(degrees + 360)
-        }
-        else {
+        } else {
             return .degrees(degrees)
         }
     }

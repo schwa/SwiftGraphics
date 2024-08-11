@@ -43,7 +43,7 @@ extension Box3D: HalfEdgeMeshConvertable {
                 // Front face (viewed from front)
                 .init(vertices: [box.minXMinYMinZ, box.minXMinYMaxZ, box.maxXMinYMaxZ, box.maxXMinYMinZ]),
                 // Back face (viewed from back)
-                .init(vertices: [box.minXMaxYMinZ, box.maxXMaxYMinZ, box.maxXMaxYMaxZ, box.minXMaxYMaxZ]),
+                .init(vertices: [box.minXMaxYMinZ, box.maxXMaxYMinZ, box.maxXMaxYMaxZ, box.minXMaxYMaxZ])
             ])
         }
     }

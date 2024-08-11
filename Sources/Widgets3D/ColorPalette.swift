@@ -19,7 +19,7 @@ public struct ColorPalette: View {
         .black,
         .accentColor,
         .primary,
-        .secondary,
+        .secondary
     ]
 
     @Binding

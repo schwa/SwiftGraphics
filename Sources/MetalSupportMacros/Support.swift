@@ -32,8 +32,7 @@ extension SyntaxProtocol {
         }
         if path.count == 1 {
             return result
-        }
-        else {
+        } else {
             let path = Array(path.dropFirst())
             return result.flatMap { $0.match(path: path, viewMode: viewMode) }
         }

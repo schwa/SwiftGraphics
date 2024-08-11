@@ -70,8 +70,7 @@ public struct SceneGraphMapView: View {
                 try scene.modify(node: node) { node in
                     node?.transform.translation.xz = SIMD2<Float>(value.location / scale)
                 }
-            }
-            catch {
+            } catch {
                 fatalError(error)
             }
         }

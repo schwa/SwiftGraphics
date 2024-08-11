@@ -39,11 +39,9 @@ public struct ConditionalViewModifier<TrueModifier, FalseModifier>: ViewModifier
     public func body(content: Content) -> some View {
         if let trueModifier {
             content.modifier(trueModifier)
-        }
-        else if let falseModifier {
+        } else if let falseModifier {
             content.modifier(falseModifier)
-        }
-        else {
+        } else {
             fatalError("Either trueModifier or falseModifier must be non-nil.")
         }
     }

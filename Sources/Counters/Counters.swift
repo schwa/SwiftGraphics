@@ -43,8 +43,7 @@ public actor Counters {
                 now - time > 10
             })
             records[key] = record
-        }
-        else {
+        } else {
             records[key] = Record(id: key, value: .count(0), first: now, last: now, history: [now])
         }
     }

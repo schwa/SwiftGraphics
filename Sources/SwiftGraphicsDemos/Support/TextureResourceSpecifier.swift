@@ -99,7 +99,7 @@ extension TextureResourceSpecifier {
                 components.path = name
                 if bundle !== Bundle.main {
                     components.queryItems = [
-                        .init(name: "bundle-identifier", value: bundle.bundleIdentifier),
+                        .init(name: "bundle-identifier", value: bundle.bundleIdentifier)
                     ]
                 }
                 guard let url = components.url else {
@@ -124,8 +124,7 @@ extension TextureResourceSpecifier: ExpressibleByStringLiteral {
     init(stringLiteral value: String) {
         do {
             try self.init(value)
-        }
-        catch {
+        } catch {
             fatalError("Failed to create TextureResourceSpecifier from `value`")
         }
     }

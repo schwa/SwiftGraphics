@@ -21,11 +21,11 @@ struct Fragment {
 Fragment unlitVertexShader(
     Vertex in [[stage_in]],
     ushort instance_id[[instance_id]],
-    constant CameraUniforms &camera[[buffer(1)]],
-    constant ModelTransforms *models[[buffer(2)]] // TODO: rename to modelTransforms
+    constant CameraUniformsNEW &camera[[buffer(1)]],
+    constant ModelTransformsNEW *models[[buffer(2)]] // TODO: rename to modelTransforms
 )
 {
-    const ModelTransforms model = models[instance_id];
+    const ModelTransformsNEW model = models[instance_id];
     const float4 modelVertex = model.modelViewMatrix * float4(in.position, 1.0);
     return {
         .position = camera.projectionMatrix * modelVertex,

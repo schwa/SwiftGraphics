@@ -53,8 +53,7 @@ public class Cache<Key, Value> where Key: Hashable {
         try lock.withUnsafeLock {
             if let value = storage[key] {
                 return value
-            }
-            else {
+            } else {
                 //                logger?.info("Cache miss: \(String(describing: key)).")
                 let value = try `default`()
                 storage[key] = value
@@ -103,8 +102,7 @@ extension Cache {
         }
         if let value {
             return value
-        }
-        else {
+        } else {
             // TODO: Potential race condition here if storage[key] chanes while `default` is in flight.
             logger?.info("Cache miss: \(String(describing: key)).")
             let value = try await `default`()

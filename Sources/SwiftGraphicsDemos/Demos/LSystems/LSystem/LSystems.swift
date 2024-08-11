@@ -11,7 +11,7 @@ protocol LSystemRecipe {
 struct FractalBinaryTree_: LSystemRecipe {
     let system = LSystem(initialState: "0", rules: [
         "1": "11",
-        "0": "1[0]0",
+        "0": "1[0]0"
     ])
 
     func apply<Turtle>(symbol: Symbol, in turtle: inout Turtle) where Turtle: TurtleProtocol {

@@ -27,7 +27,7 @@ struct SoftwareRendererMeshDemoView: View, DemoView {
         .file("Models/Square"),
         .extrusion("star"),
         .extrusion("square"),
-        .revolve("?"),
+        .revolve("?")
     ]
 
     @State
@@ -109,7 +109,7 @@ struct SoftwareRendererMeshDemoView: View, DemoView {
                     [0, 0, 0],
                     [-1, 0, 0],
                     [-1, 2.5, 0],
-                    [0, 2.5, 0],
+                    [0, 2.5, 0]
                 ])
                 let axis = Line3D(point: [0, 0, 0], direction: [0, 1, 0])
                 let mesh = revolve(polygonalChain: polygonalChain, axis: axis, range: .degrees(0) ... .degrees(360), segments: 12)

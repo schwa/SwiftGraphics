@@ -22,7 +22,7 @@ struct HalfEdge2DDemoView: View, DemoView {
         //        ]
         let polygons: [[CGPoint]] = [
             [[0, 0], [0, 100], [100, 100]],
-            [[100, 0], [0, 0], [100, 100]],
+            [[100, 0], [0, 0], [100, 100]]
         ]
         let mesh = HalfEdgeMesh<CGPoint>(polygons: polygons)
         let faceColors = Dictionary(uniqueKeysWithValues: mesh.faces.map { ($0.id, Color(white: 0.8)) })
@@ -135,12 +135,10 @@ struct BetterHalfEdgeMeshInspectorView <Position>: View where Position: Hashable
                 #if os(macOS)
                 .buttonStyle(.link)
                 #endif
-            }
-            else {
+            } else {
                 ContentUnavailableView("No face in mesh", systemImage: "exclamationmark.triangle")
             }
-        }
-        else {
+        } else {
             ContentUnavailableView("No face in mesh", systemImage: "exclamationmark.triangle")
         }
     }
@@ -154,12 +152,10 @@ struct BetterHalfEdgeMeshInspectorView <Position>: View where Position: Hashable
                 #if os(macOS)
                 .buttonStyle(.link)
                 #endif
-            }
-            else {
+            } else {
                 ContentUnavailableView("No half-edge in mesh", systemImage: "exclamationmark.triangle")
             }
-        }
-        else {
+        } else {
             Text("none").foregroundStyle(.secondary)
         }
     }
@@ -230,8 +226,7 @@ struct MaybeLabeledContent <Value, PresentContent, AbsentContent> where PresentC
     init(_ value: Value?, @ViewBuilder present: (Value) -> PresentContent, @ViewBuilder absent: () -> AbsentContent) {
         if let value {
             content = .present(present(value))
-        }
-        else {
+        } else {
             content = .absent(absent())
         }
     }
@@ -240,8 +235,7 @@ struct MaybeLabeledContent <Value, PresentContent, AbsentContent> where PresentC
         Group {
             if case let .present(content) = content {
                 content
-            }
-            else if case let .absent(content) = content {
+            } else if case let .absent(content) = content {
                 content
             }
         }

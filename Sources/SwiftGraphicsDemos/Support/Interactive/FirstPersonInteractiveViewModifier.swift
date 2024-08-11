@@ -79,8 +79,7 @@ struct FirstPersonInteractiveViewModifier <FirstPersonCamera: FirstPersonCameraP
                         if renderViewFocused {
                             // Image(systemName: "dot.square.fill").foregroundStyle(.selection)
                             Text("Focused")
-                        }
-                        else {
+                        } else {
                             Text("Unfocused")
                             // Image(systemName: "dot.square").foregroundStyle(.selection)
                         }

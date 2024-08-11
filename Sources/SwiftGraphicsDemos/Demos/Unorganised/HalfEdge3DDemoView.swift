@@ -149,20 +149,17 @@ struct HalfEdgeMeshInspectorView: View {
                             HStack {
                                 if let faceIndex = halfEdge.face.map({ mesh.faces.firstIndex(identifiedBy: $0.id) }) {
                                     Text("Face: #\(faceIndex!)")
-                                }
-                                else {
+                                } else {
                                     Text("No face").foregroundStyle(.red)
                                 }
                                 if let nextIndex = halfEdge.next.map({ mesh.halfEdges.firstIndex(identifiedBy: $0.id) }) {
                                     Text("Next: #\(nextIndex!)")
-                                }
-                                else {
+                                } else {
                                     Text("No next").foregroundStyle(.red)
                                 }
                                 if let twinIndex = halfEdge.twin.map({ mesh.halfEdges.firstIndex(identifiedBy: $0.id) }) {
                                     Text("Twin: #\(twinIndex!)")
-                                }
-                                else {
+                                } else {
                                     Text("No twin").foregroundStyle(.red)
                                 }
                             }

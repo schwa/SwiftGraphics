@@ -121,8 +121,7 @@ struct SplineToolModifier: ViewModifier {
                 if dragging == false {
                     spline.knots.append(.init(position: value.location))
                     dragging = true
-                }
-                else {
+                } else {
                     spline.knots[relative: -1].absoluteControlPointA = value.location
                 }
             }

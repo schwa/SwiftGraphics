@@ -62,8 +62,7 @@ public extension Array {
             precondition(last != nil)
             if let newValue {
                 self[index(before: endIndex)] = newValue
-            }
-            else {
+            } else {
                 _ = popLast()
             }
         }
