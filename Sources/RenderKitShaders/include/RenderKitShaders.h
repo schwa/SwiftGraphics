@@ -13,4 +13,5 @@
 
 #import "DebugShaders.h"
 #import "PointCloudShader.h"
+#import "DiffuseShadingShaders.h"
 #import "SimplePBRShader.h"
