@@ -498,5 +498,7 @@ let package = Package(
 
 
     ],
-    swiftLanguageModes: [.v6]
+    // TODO: Switch here when github supports it.
+    //swiftLanguageModes: [.v6]
+    swiftLanguageVersions: [.v6]
 )
