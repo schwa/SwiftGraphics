@@ -26,7 +26,6 @@ let package = Package(
         .library(name: "MetalUISupport", targets: ["MetalUISupport"]),
         .library(name: "MetalUnsafeConformances", targets: ["MetalUnsafeConformances"]),
         .library(name: "Projection", targets: ["Projection"]),
-        .library(name: "Raster", targets: ["Raster"]),
         .library(name: "RenderKit", targets: ["RenderKit"]),
         .library(name: "RenderKitSceneGraph", targets: ["RenderKitSceneGraph"]),
         .library(name: "RenderKitShaders", targets: ["RenderKitShaders"]),
@@ -164,21 +163,6 @@ let package = Package(
                 "MetalSupport",
                 .product(name: "Everything", package: "Everything"),
             ],
-            swiftSettings: [
-            ]
-        ),
-
-        // MARK: Raster
-
-        .target(
-            name: "Raster",
-            dependencies: [
-                .product(name: "Algorithms", package: "swift-algorithms"),
-                "CoreGraphicsSupport",
-                "GenericGeometryBase",
-                "Shapes2D",
-            ],
-            exclude: ["README.md"],
             swiftSettings: [
             ]
         ),
@@ -324,7 +308,6 @@ let package = Package(
                 "GenericGeometryBase",
                 "MetalSupport",
                 "Projection",
-                "Raster",
                 "RenderKit",
                 "RenderKitShaders",
                 "RenderKitShadersLegacy",

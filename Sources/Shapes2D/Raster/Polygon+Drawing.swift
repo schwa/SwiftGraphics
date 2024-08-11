@@ -1,6 +1,5 @@
 import Algorithms
 import CoreGraphics
-import Shapes2D
 
 public extension Polygon {
     func toScanlines(step: CGFloat = 1.0) -> [LineSegment] {
