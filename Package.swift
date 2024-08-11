@@ -6,10 +6,9 @@ import CompilerPluginSupport
 let package = Package(
     name: "SwiftGraphics",
     platforms: [
-        .iOS(.v18),
-        .macOS(.v15),
-        .macCatalyst(.v18),
-        .tvOS(.v18),
+        .iOS(.v17),
+        .macOS(.v14),
+        .macCatalyst(.v17),
         .visionOS(.v2),
     ],
     products: [
