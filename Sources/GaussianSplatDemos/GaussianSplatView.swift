@@ -58,7 +58,6 @@ public struct GaussianSplatView: View {
     @State
     private var ballConstraint: NewBallConstraint = .init(radius: 0.25)
 
-
     public init() {
         let device = MTLCreateSystemDefaultDevice()!
         let url = Bundle.module.url(forResource: "vision_dr", withExtension: "splat")!

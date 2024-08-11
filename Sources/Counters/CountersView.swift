@@ -56,8 +56,7 @@ public struct CountersView: View {
                         self.records = records
                     }
                 }
-            }
-            catch {
+            } catch {
             }
         }
     }

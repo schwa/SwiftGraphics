@@ -53,8 +53,7 @@ struct GameControllerInspector: View {
                     await viewModel.startScanning()
                 }
             }
-        }
-        else {
+        } else {
             ProgressView()
             Button("Stop Scanning") {
                 viewModel.stopScanning()
@@ -69,11 +68,9 @@ struct GameControllerInspector: View {
                 Group {
                     if device is GCController {
                         Image(systemName: "gamecontroller")
-                    }
-                    else if device is GCKeyboard {
+                    } else if device is GCKeyboard {
                         Image(systemName: "keyboard")
-                    }
-                    else if device is GCMouse {
+                    } else if device is GCMouse {
                         Image(systemName: "computermouse")
                     }
                 }

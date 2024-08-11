@@ -49,8 +49,7 @@ public extension Array where Element: Identifiable {
     mutating func remove(identifiedBy id: Element.ID) -> Element {
         if let index = firstIndex(identifiedBy: id) {
             remove(at: index)
-        }
-        else {
+        } else {
             fatalError("No element identified by \(id)")
         }
     }

@@ -78,8 +78,7 @@ public struct SplatCloudInfoView: View {
                 if case let .success(url) = result {
                     do {
                         splats = try load(url: url)
-                    }
-                    catch {
+                    } catch {
                         fatalError(error)
                     }
                 }
@@ -121,7 +120,7 @@ func channelInfo(splats: [SplatB]) -> [ChannelInfo] {
         ("Red", Color.red, 0),
         ("Green", Color.green, 1),
         ("Blue", Color.blue, 2),
-        ("Alpha", Color.black, 3),
+        ("Alpha", Color.black, 3)
     ]
 
     return channels.map { channel in
@@ -168,8 +167,7 @@ struct TaskView <ID, Value, Content>: View where ID: Equatable, Value: Sendable,
         Group {
             if let value {
                 content(value)
-            }
-            else {
+            } else {
                 ProgressView()
             }
         }

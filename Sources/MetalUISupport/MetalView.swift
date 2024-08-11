@@ -52,8 +52,7 @@ public struct MetalView: View {
             if let error {
                 ContentUnavailableView(String(describing: error), systemImage: "exclamationmark.triangle")
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-            }
-            else {
+            } else {
                 ViewAdaptor<MTKView> {
                     logger?.debug("ViewAdaptor.Make")
                     let view = MTKView()
@@ -116,8 +115,7 @@ internal class MetalViewModel: NSObject, MTKViewDelegate {
                 view.needsDisplay = true
                 #endif
             }
-        }
-        catch {
+        } catch {
             set(error: error)
         }
     }
@@ -129,8 +127,7 @@ internal class MetalViewModel: NSObject, MTKViewDelegate {
         }
         do {
             try drawCallback(device, view.configuration, view.drawableSize, currentDrawable, currentRenderPassDescriptor)
-        }
-        catch {
+        } catch {
             set(error: error)
         }
     }
@@ -149,8 +146,7 @@ internal class MetalViewModel: NSObject, MTKViewDelegate {
                 try drawableSizeWillChangeCallback?(device, &configuration, view.drawableSize)
             }
             view.configuration = configuration
-        }
-        catch {
+        } catch {
             set(error: error)
         }
     }

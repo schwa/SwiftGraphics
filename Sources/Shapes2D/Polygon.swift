@@ -32,8 +32,7 @@ public struct Polygon {
             let zcrossproduct = dx1 * dy2 - dy1 * dx2
             if i == 0 {
                 sign = zcrossproduct > 0
-            }
-            else if sign != (zcrossproduct > 0) {
+            } else if sign != (zcrossproduct > 0) {
                 return false
             }
         }
@@ -77,7 +76,7 @@ public extension Polygon {
             CGPoint(x: rect.minX, y: rect.minY),
             CGPoint(x: rect.maxX, y: rect.minY),
             CGPoint(x: rect.maxX, y: rect.maxY),
-            CGPoint(x: rect.minX, y: rect.maxY),
+            CGPoint(x: rect.minX, y: rect.maxY)
         ]
         self.init(vertices)
     }

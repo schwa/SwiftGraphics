@@ -22,8 +22,7 @@ public extension Node {
         var copy = self
         if copy.transform == .identity {
             copy.transform = transform
-        }
-        else {
+        } else {
             copy.transform.matrix = transform.matrix * copy.transform.matrix
         }
         return copy

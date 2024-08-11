@@ -196,8 +196,7 @@ public extension Path {
             let point = CGPoint(x: radius * cos(angle), y: radius * sin(angle))
             if path.isEmpty {
                 path.move(to: point)
-            }
-            else {
+            } else {
                 path.addLine(to: point)
             }
             angle += .pi / Double(points)
@@ -329,8 +328,7 @@ public extension Path {
                                 default:
                                     unreachable()
                                 }
-                            }
-                            else {
+                            } else {
                                 return element
                             }
                         })

@@ -50,8 +50,7 @@ extension MyGradient {
             var factor: Float = 0
             if (stop.controls.0 ... stop.controls.1).contains(position) {
                 factor = inverseLerp(value: position, startValue: stop.controls.0, endValue: stop.controls.1)
-            }
-            else if (stop.controls.1 ... stop.controls.2).contains(position) {
+            } else if (stop.controls.1 ... stop.controls.2).contains(position) {
                 factor = 1 - inverseLerp(value: position, startValue: stop.controls.1, endValue: stop.controls.2)
             }
             let color = stop.color * factor

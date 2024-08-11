@@ -49,22 +49,19 @@ public extension SplatCloud where Splat == SplatC {
         let splats: TypedMTLBuffer<SplatC>
         if url.pathExtension == "splatc" {
             splats = try device.makeTypedBuffer(data: data, options: .storageModeShared).labelled("Splats")
-        }
-        else if url.pathExtension == "splat" {
+        } else if url.pathExtension == "splat" {
             let splatArray = data.withUnsafeBytes { buffer in
                 buffer.withMemoryRebound(to: SplatB.self) { splats in
                     let splats = if let bitsPerPositionScalar {
                         splats.downsamplePositions(bits: bitsPerPositionScalar).downsampleScale(bits: bitsPerPositionScalar).downsampleColor()
-                    }
-                    else {
+                    } else {
                         Array(splats)
                     }
                     return convert_b_to_c(splats)
                 }
             }
             splats = try device.makeTypedBuffer(data: splatArray, options: .storageModeShared).labelled("Splats")
-        }
-        else {
+        } else {
             throw BaseError.illegalValue
         }
         try self.init(device: device, splats: splats)

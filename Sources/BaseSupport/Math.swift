@@ -20,11 +20,9 @@ public extension FloatingPoint {
 public func sign(_ v: Double) -> Double {
     if v < 0 {
         return -1
-    }
-    else if v == 0 {
+    } else if v == 0 {
         return 0
-    }
-    else {
+    } else {
         return 1
     }
 }

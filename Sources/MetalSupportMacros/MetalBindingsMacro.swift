@@ -24,13 +24,13 @@ extension MetalBindingsMacro: ExtensionMacro {
             MemberBlockSyntax.self,
             MemberBlockItemListSyntax.self,
             MemberBlockItemSyntax.self,
-            VariableDeclSyntax.self,
+            VariableDeclSyntax.self
         ], viewMode: .sourceAccurate, as: VariableDeclSyntax.self)
         .compactMap {
             // Find all bindings of this variable...
             let patternBinding = $0.match(path: [
                 PatternBindingListSyntax.self,
-                PatternBindingSyntax.self,
+                PatternBindingSyntax.self
             ], viewMode: .sourceAccurate, as: PatternBindingSyntax.self).first
             guard let patternBinding else {
                 fatalError("Expected a pattern binding")

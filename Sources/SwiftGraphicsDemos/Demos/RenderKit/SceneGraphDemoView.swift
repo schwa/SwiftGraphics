@@ -25,7 +25,7 @@ struct SceneGraphDemoView: View, DemoView {
         RenderView(passes: [
             DiffuseShadingRenderPass(id: "diffuse", scene: scene),
             UnlitShadingPass(id: "unlit", scene: scene),
-            DebugRenderPass(id: "debug", scene: scene),
+            DebugRenderPass(id: "debug", scene: scene)
         ])
         .rendererCallbacks { pass, _, passInfo in
             switch pass.id {

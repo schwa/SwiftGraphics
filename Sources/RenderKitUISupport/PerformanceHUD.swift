@@ -69,7 +69,7 @@ public struct PerformanceHUD: View {
 
         var modes: [Mode] = [
             .init(id: "Exp. MA") { Text($0.movingAverage.exponentialMovingAverage, format: Self.millisecondsStyle) },
-            .init(id: "Latest") { Text(Double($0.samples.last?.value ?? 0), format: Self.millisecondsStyle) },
+            .init(id: "Latest") { Text(Double($0.samples.last?.value ?? 0), format: Self.millisecondsStyle) }
         ]
         var measurement: GPUCounters.Measurement
         static let millisecondsStyle = FloatingPointFormatStyle<Double>.number.scale(1 / 1_000_000).precision(.significantDigits(4))

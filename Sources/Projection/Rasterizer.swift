@@ -120,11 +120,9 @@ public struct Rasterizer {
 func compare<C>(_ lhs: C, _ rhs: C) -> ComparisonResult where C: Comparable {
     if lhs == rhs {
         return .orderedSame
-    }
-    else if lhs < rhs {
+    } else if lhs < rhs {
         return .orderedAscending
-    }
-    else {
+    } else {
         return .orderedDescending
     }
 }
@@ -134,8 +132,7 @@ func compare<C>(_ lhs: (C, C), _ rhs: (C, C)) -> ComparisonResult where C: Compa
     let r = compare(lhs.0, rhs.0)
     if r == .orderedSame {
         return compare(lhs.1, rhs.1)
-    }
-    else {
+    } else {
         return r
     }
 }
@@ -145,8 +142,7 @@ func compare<C>(_ lhs: (C, C, C), _ rhs: (C, C, C)) -> ComparisonResult where C:
     let r = compare((lhs.0, lhs.1), (rhs.0, rhs.1))
     if r == .orderedSame {
         return compare(lhs.2, rhs.2)
-    }
-    else {
+    } else {
         return r
     }
 }

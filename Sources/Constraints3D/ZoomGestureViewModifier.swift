@@ -10,7 +10,6 @@ public struct ZoomGestureViewModifier: ViewModifier {
     @State
     var initialZoom: Float?
 
-
     public init(zoom: Binding<Float>, range: ClosedRange<Float>) {
         self._zoom = zoom
         self.range = range

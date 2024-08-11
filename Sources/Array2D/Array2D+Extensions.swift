@@ -14,14 +14,14 @@ public extension Array2D {
             [-1, 0],
             [1, 0],
             [0, -1],
-            [0, 1],
+            [0, 1]
         ]
         if includeDiagonal {
             offsets += [
                 [-1, -1],
                 [-1, 1],
                 [1, -1],
-                [1, 1],
+                [1, 1]
             ]
         }
         return offsets.map { p.point + $0 }

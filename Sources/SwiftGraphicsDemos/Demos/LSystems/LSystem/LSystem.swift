@@ -40,27 +40,27 @@ extension LSystem where Symbol == Character {
 extension LSystem where Symbol == Character {
     static let algae = LSystem(initialState: "A", rules: [
         "A": "AB",
-        "B": "A",
+        "B": "A"
     ])
 
     static let fractalBinaryTree = LSystem(initialState: "0", rules: [
         "1": "11",
-        "0": "1[0]0",
+        "0": "1[0]0"
     ])
 
     static let sierpinskiTriangle = LSystem(initialState: "F-G-G", rules: [
         "F": "F-G+F+G-F",
-        "G": "GG",
+        "G": "GG"
     ])
 
     static let dragonCurve = LSystem(initialState: "F", rules: [
         "F": "F+G",
-        "G": "F-G",
+        "G": "F-G"
     ])
 
     static let hilbertCurve = LSystem(initialState: "A", rules: [
         "A": "+BF-AFA-FB+",
         "B": "-AF+BFB+FA-",
-        "F": "",
+        "F": ""
     ])
 }

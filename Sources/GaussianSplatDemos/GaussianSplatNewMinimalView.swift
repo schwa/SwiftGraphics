@@ -56,9 +56,9 @@ public struct GaussianSplatNewMinimalView: View {
 
     public var body: some View {
         GaussianSplatRenderView<SplatC>(scene: scene, debugMode: false, sortRate: 15, metalFXRate: 2)
-#if os(iOS)
+            #if os(iOS)
             .ignoresSafeArea()
-#endif
+            #endif
             .modifier {
                 switch controller {
                 case .none:

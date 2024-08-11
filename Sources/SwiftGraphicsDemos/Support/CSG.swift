@@ -299,8 +299,7 @@ extension Polygon3D where Vertex == SimpleVertex {
         case .coplanar:
             if splitter.normal.dot(plane.normal) - plane.w > 0 {
                 coplanarFront.append(self)
-            }
-            else {
+            } else {
                 coplanarBack.append(self)
             }
         case .front:

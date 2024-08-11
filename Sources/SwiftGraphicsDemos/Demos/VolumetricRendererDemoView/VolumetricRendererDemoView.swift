@@ -105,8 +105,7 @@ struct VolumetricRendererDemoView: DemoView {
                     volumeRepresentation.transferFunctionTexture.replace(region: region, mipmapLevel: 0, slice: 0, withBytes: buffer.baseAddress!, bytesPerRow: bytesPerRow, bytesPerImage: 0)
                     node!.content = volumeRepresentation
                 }
-            }
-            catch {
+            } catch {
                 fatalError(error)
             }
         }

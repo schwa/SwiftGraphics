@@ -6,7 +6,7 @@ public extension CGRect {
             LineSegment(minXMinY, maxXMinY),
             LineSegment(maxXMinY, maxXMaxY),
             LineSegment(maxXMaxY, maxXMinY),
-            LineSegment(maxXMinY, minXMinY),
+            LineSegment(maxXMinY, minXMinY)
         ]
     }
 }

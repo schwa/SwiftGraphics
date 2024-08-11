@@ -81,8 +81,7 @@ public extension Line {
         let y2 = points.1.y
         if x1 == x2 {
             self.init(a: 1, b: 0, c: x1)
-        }
-        else {
+        } else {
             let m = (y2 - y1) / (x2 - x1)
             let b = y1 - m * x1
             self = .slopeIntercept(m: m, b: b)
@@ -95,8 +94,7 @@ public extension Line {
     init(point: CGPoint, angle: Angle) {
         if angle.degrees == 90 || angle.degrees == 270 {
             self.init(a: 1, b: 0, c: point.x)
-        }
-        else {
+        } else {
             let m = tan(angle.radians)
             let b = -m * point.x + point.y
             self = .slopeIntercept(m: m, b: b)

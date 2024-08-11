@@ -165,8 +165,7 @@ public extension SIMD2 where Scalar: FloatingPoint {
         }
         if collinear(a, b, c) || collinear(a, b, d) || collinear(c, d, a) || collinear(c, d, b) {
             return false
-        }
-        else {
+        } else {
             return xor(left(a, b, c), left(a, b, d))
                 && xor(left(c, d, c), left(c, d, b))
         }
@@ -179,8 +178,7 @@ public extension SIMD2 where Scalar: FloatingPoint {
         }
         if a.x != b.x {
             return ((a.x <= c.x) && (c.x <= b.x)) || ((a.x >= c.x) && (c.x >= b.x))
-        }
-        else {
+        } else {
             return ((a.y <= c.y) && (c.y <= b.y)) || ((a.y >= c.y) && (c.y >= b.y))
         }
     }
@@ -189,11 +187,9 @@ public extension SIMD2 where Scalar: FloatingPoint {
     static func intersect(_ a: Self, _ b: Self, _ c: Self, _ d: Self) -> Bool {
         if intersectProp(a, b, c, d) {
             true
-        }
-        else if between(a, b, c) || between(a, b, d) || between(c, d, a) || between(c, d, b) {
+        } else if between(a, b, c) || between(a, b, d) || between(c, d, a) || between(c, d, b) {
             true
-        }
-        else {
+        } else {
             false
         }
     }

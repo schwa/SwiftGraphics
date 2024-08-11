@@ -31,7 +31,7 @@ struct SimplePBRSceneGraphDemoView: View, DemoView {
         RenderView(passes: [
             DiffuseShadingRenderPass(id: "diffuse", scene: scene),
             UnlitShadingPass(id: "unlit", scene: scene),
-            SimplePBRShadingPass(id: "pbr", scene: scene),
+            SimplePBRShadingPass(id: "pbr", scene: scene)
             //            DebugRenderPass(scene: scene),
         ])
         .showFrameEditor()

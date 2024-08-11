@@ -35,8 +35,7 @@ public extension TrivialMesh {
     mutating func append(vertex: Vertex, optimizing: Bool = true) {
         if optimizing, let index = vertices.firstIndex(of: vertex) {
             indices.append(index)
-        }
-        else {
+        } else {
             indices.append(vertices.count)
             vertices.append(vertex)
         }

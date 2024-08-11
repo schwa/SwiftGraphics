@@ -13,16 +13,13 @@ public extension Quadrant {
         if point.y >= 0 {
             if point.x >= 0 {
                 .maxXMaxY
-            }
-            else {
+            } else {
                 .minXMaxY
             }
-        }
-        else {
+        } else {
             if point.x >= 0 {
                 .maxXMinY
-            }
-            else {
+            } else {
                 .minXMinY
             }
         }

@@ -32,10 +32,10 @@ extension CSG where Vertex == SimpleVertex {
         encoder.encodeElementDefinition(name: "vertex", count: vertices.count, properties: [
             (.float, "x"), (.float, "y"), (.float, "z"),
             (.float, "nx"), (.float, "ny"), (.float, "nz"),
-            (.uchar, "red"), (.uchar, "green"), (.uchar, "blue"),
+            (.uchar, "red"), (.uchar, "green"), (.uchar, "blue")
         ], to: &s)
         encoder.encodeElementDefinition(name: "face", count: faces.count, properties: [
-            (.list(count: .uchar, element: .int), "vertex_indices"),
+            (.list(count: .uchar, element: .int), "vertex_indices")
         ], to: &s)
         encoder.encodeEndHeader(to: &s)
 
@@ -43,7 +43,7 @@ extension CSG where Vertex == SimpleVertex {
             encoder.encodeElement([
                 .float(vertex.position.x), .float(vertex.position.y), .float(vertex.position.z),
                 .float(vertex.normal.x), .float(vertex.normal.y), .float(vertex.normal.z),
-                .uchar(128), .uchar(128), .uchar(128),
+                .uchar(128), .uchar(128), .uchar(128)
             ], to: &s)
         }
         for face in faces {

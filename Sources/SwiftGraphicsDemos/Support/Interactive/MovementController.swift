@@ -234,7 +234,7 @@ class MovementController: @unchecked Sendable {
             let rotation = turn.value
             let events = [
                 movement != .zero ? Event.movement(movement) : nil,
-                rotation != .zero ? Event.rotation(rotation) : nil,
+                rotation != .zero ? Event.rotation(rotation) : nil
             ].compacted()
 
             allEvents += events

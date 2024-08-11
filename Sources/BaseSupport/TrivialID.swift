@@ -53,8 +53,7 @@ extension TrivialID: CustomStringConvertible {
     public var description: String {
         if scope.name.isEmpty {
             return "#\(serial)"
-        }
-        else {
+        } else {
             return "\(scope.name):#\(serial)"
         }
     }

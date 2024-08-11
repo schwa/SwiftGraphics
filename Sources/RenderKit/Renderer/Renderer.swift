@@ -96,8 +96,7 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
             info.time = now
             info.drawableSize = drawableSize
             self.info = info
-        }
-        else {
+        } else {
             guard let configuration else {
                 throw BaseError.missingValue
             }
@@ -168,8 +167,7 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
                 commandBuffer.addCompletedHandler { [logger] commandBuffer in
                     do {
                         try gpuCounters?.gatherData()
-                    }
-                    catch {
+                    } catch {
                         logger?.error("Failed to gather GPU counters: \(error.localizedDescription)")
                     }
                     completedHandler?(commandBuffer)

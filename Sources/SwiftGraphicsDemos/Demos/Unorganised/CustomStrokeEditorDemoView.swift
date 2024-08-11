@@ -41,8 +41,7 @@ struct CustomStrokeView: View {
                     let second = segments[1].parallel(offset: offset)
                     if case .point(let point) = Line.intersection(first.line, second.line) {
                         return point
-                    }
-                    else {
+                    } else {
                         unreachable()
                     }
                 }

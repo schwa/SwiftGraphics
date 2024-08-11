@@ -58,8 +58,7 @@ public class QuadTreeNode<T> {
             if items.count >= config.maximumObjectsPerNode && canExpand {
                 expand()
             }
-        }
-        else {
+        } else {
             let subnode = subnodeForPoint(item.point)!
             subnode.addItem(item)
         }
@@ -91,7 +90,7 @@ public class QuadTreeNode<T> {
             QuadTreeNode(config: config, frame: frame.quadrant(.minXMinY)),
             QuadTreeNode(config: config, frame: frame.quadrant(.maxXMinY)),
             QuadTreeNode(config: config, frame: frame.quadrant(.minXMaxY)),
-            QuadTreeNode(config: config, frame: frame.quadrant(.maxXMaxY)),
+            QuadTreeNode(config: config, frame: frame.quadrant(.maxXMaxY))
         ]
         for item in items {
             let node = subnodeForPoint(item.point)!
@@ -119,8 +118,7 @@ public class QuadTreeNode<T> {
             case .maxXMaxY:
                 subnodes[3]
             }
-        }
-        else {
+        } else {
             nil
         }
     }

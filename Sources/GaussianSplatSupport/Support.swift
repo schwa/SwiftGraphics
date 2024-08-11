@@ -32,8 +32,7 @@ public extension Bundle {
         let parentDirectory = bundleURL.deletingLastPathComponent()
         if let `extension` {
             return Bundle(url: parentDirectory.appendingPathComponent(name + "." + `extension`))
-        }
-        else {
+        } else {
             return Bundle(url: parentDirectory.appendingPathComponent(name))
         }
     }

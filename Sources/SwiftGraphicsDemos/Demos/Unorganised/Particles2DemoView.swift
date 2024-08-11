@@ -164,8 +164,7 @@ struct Particles2DemoView: View, DemoView {
                 LabeledContent("Objects", value: "\(solver.objects.count)")
                 if let dt, dt != 0 {
                     LabeledContent("FPS", value: "\(1 / dt, format: .number.precision(.fractionLength(3)))")
-                }
-                else {
+                } else {
                     LabeledContent("FPS", value: "0")
                 }
                 LabeledContent("#0", value: "\(String(describing: solver.objects.first))")

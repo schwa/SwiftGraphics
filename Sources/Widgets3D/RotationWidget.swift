@@ -70,7 +70,7 @@ public struct RotationWidget: View {
             ("+\(Axis3D.y)", "top", Axis3D.y.color, KeyboardShortcut("7", modifiers: .command), Axis3D.y.vector * 1),
             ("-\(Axis3D.y)", "bottom", Axis3D.y.color, nil, Axis3D.y.vector * -1),
             ("+\(Axis3D.z)", "front", Axis3D.z.color, KeyboardShortcut("1", modifiers: .command), Axis3D.z.vector * 1),
-            ("-\(Axis3D.z)", "back", Axis3D.z.color, nil, Axis3D.z.vector * -1),
+            ("-\(Axis3D.z)", "back", Axis3D.z.color, nil, Axis3D.z.vector * -1)
         ]
     }
 }
@@ -86,7 +86,6 @@ struct CameraWidgetButtonStyle: ButtonStyle {
             }
     }
 }
-
 
 extension View {
     func log(_ value: some Equatable, initial: Bool = false, string: @escaping @autoclosure () -> String) -> some View {

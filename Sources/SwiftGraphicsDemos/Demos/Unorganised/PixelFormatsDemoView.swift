@@ -143,26 +143,19 @@ extension PixelFormatMetadata {
         let convertsSRGB = format.hasSuffix("_srgb")
         let channelType: ChannelType = if format.contains("Unorm") {
             .normalizedUnsignedInteger
-        }
-        else if format.contains("Snorm") {
+        } else if format.contains("Snorm") {
             .normalizedSignedInteger
-        }
-        else if format.contains("Uint") {
+        } else if format.contains("Uint") {
             .unsignedInteger
-        }
-        else if format.contains("Sint") {
+        } else if format.contains("Sint") {
             .signedInteger
-        }
-        else if format.contains("Float") {
+        } else if format.contains("Float") {
             .float
-        }
-        else if format.contains("bgr10_xr") || format.contains("bgra10_xr") {
+        } else if format.contains("bgr10_xr") || format.contains("bgra10_xr") {
             .fixedPoint
-        }
-        else if format.contains("gbgr422") || format.contains("bgrg422") {
+        } else if format.contains("gbgr422") || format.contains("bgrg422") {
             .unknown
-        }
-        else {
+        } else {
             .unknown
         }
 
@@ -173,54 +166,43 @@ extension PixelFormatMetadata {
             usage = .color
             channels = 4
             includesAlpha = true
-        }
-        else if format.hasPrefix("r8") || format.hasPrefix("r16") || format.hasPrefix("r32") {
+        } else if format.hasPrefix("r8") || format.hasPrefix("r16") || format.hasPrefix("r32") {
             usage = .color
             channels = 1
             includesAlpha = false
-        }
-        else if format.hasPrefix("rg8") || format.hasPrefix("rg16") || format.hasPrefix("rg32") || format.hasPrefix("gbgr422") || format.hasPrefix("bgrg422") {
+        } else if format.hasPrefix("rg8") || format.hasPrefix("rg16") || format.hasPrefix("rg32") || format.hasPrefix("gbgr422") || format.hasPrefix("bgrg422") {
             usage = .color
             channels = 2
             includesAlpha = false
-        }
-        else if format.hasPrefix("b5g6r5") || format.hasPrefix("rg11b10") || format.hasPrefix("bgr10") {
+        } else if format.hasPrefix("b5g6r5") || format.hasPrefix("rg11b10") || format.hasPrefix("bgr10") {
             usage = .color
             channels = 3
             includesAlpha = false
-        }
-        else if format.hasPrefix("a1bgr5") || format.hasPrefix("abgr4") || format.hasPrefix("bgr5A1") || format.hasPrefix("bgra8") || format.hasPrefix("rgb10a2") || format.hasPrefix("rgb9e5Float") || format.hasPrefix("bgr10a2") {
+        } else if format.hasPrefix("a1bgr5") || format.hasPrefix("abgr4") || format.hasPrefix("bgr5A1") || format.hasPrefix("bgra8") || format.hasPrefix("rgb10a2") || format.hasPrefix("rgb9e5Float") || format.hasPrefix("bgr10a2") {
             usage = .color
             channels = 4
             includesAlpha = true
-        }
-
-        else if format.hasPrefix("a8") {
+        } else if format.hasPrefix("a8") {
             usage = .color
             channels = 1
             includesAlpha = true
-        }
-        else if format.hasPrefix("depth8") || format.hasPrefix("depth16") || format.hasPrefix("depth32") {
+        } else if format.hasPrefix("depth8") || format.hasPrefix("depth16") || format.hasPrefix("depth32") {
             usage = .depth
             channels = 1
             includesAlpha = false
-        }
-        else if format.hasPrefix("stencil8") || format.hasPrefix("stencil16") {
+        } else if format.hasPrefix("stencil8") || format.hasPrefix("stencil16") {
             usage = .stencil
             channels = 1
             includesAlpha = false
-        }
-        else if format == "depth24Unorm_stencil8" {
+        } else if format == "depth24Unorm_stencil8" {
             usage = .depthAndStencil
             channels = 1
             includesAlpha = false
-        }
-        else if format == "x32_stencil8" || format == "x24_stencil8" {
+        } else if format == "x32_stencil8" || format == "x24_stencil8" {
             usage = .stencil
             channels = 1
             includesAlpha = false
-        }
-        else {
+        } else {
             unimplemented()
         }
 

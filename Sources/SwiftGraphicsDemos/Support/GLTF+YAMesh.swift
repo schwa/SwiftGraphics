@@ -59,7 +59,7 @@ extension YAMesh {
         let semantics: [(SwiftGLTF.Mesh.Primitive.Semantic, VertexDescriptor.Attribute.Semantic, Int)] = [
             (.POSITION, .position, 10),
             (.NORMAL, .normal, 11),
-            (.TEXCOORD_0, .textureCoordinate, 12),
+            (.TEXCOORD_0, .textureCoordinate, 12)
         ]
 
         var descriptor = VertexDescriptor()
@@ -75,7 +75,7 @@ extension YAMesh {
             bufferViews.append(BufferView(buffer: mtlBuffer, offset: 0))
 
             descriptor.layouts.append(.init(label: nil, bufferIndex: index, stride: 0, stepFunction: .perVertex, stepRate: 1, attributes: [
-                .init(semantic: semantic, format: accessor.vertexFormat!, offset: 0),
+                .init(semantic: semantic, format: accessor.vertexFormat!, offset: 0)
             ]))
         }
         descriptor.setPackedOffsets()

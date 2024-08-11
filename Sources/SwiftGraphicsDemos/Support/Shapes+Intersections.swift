@@ -19,8 +19,7 @@ extension LineSegment3D {
 
         if t >= 0, t <= 1, u >= 0, u <= 1 {
             return LineSegment3D(start: start + t * direction, end: start + t * direction)
-        }
-        else {
+        } else {
             return nil
         }
     }

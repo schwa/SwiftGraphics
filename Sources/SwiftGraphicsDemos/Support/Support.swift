@@ -387,8 +387,7 @@ extension Array {
     func get(index: Index) -> Element? {
         if (startIndex ..< endIndex).contains(index) {
             self[index]
-        }
-        else {
+        } else {
             nil
         }
     }
@@ -426,8 +425,7 @@ struct PeekingWindowIterator<I>: IteratorProtocol where I: IteratorProtocol {
             let next = iterator.next()
             element = (previous: nil, current: current, next: next)
             return element
-        }
-        else {
+        } else {
             guard let previous = element else {
                 fatalError("No previous element.")
             }
@@ -461,8 +459,7 @@ extension Dictionary where Value: Identifiable, Key == Value.ID {
     mutating func insert(_ newMember: Value) -> (inserted: Bool, memberAfterInsert: Value) {
         if let oldMember = self[newMember.id] {
             return (false, oldMember)
-        }
-        else {
+        } else {
             self[newMember.id] = newMember
             return (true, newMember)
         }
@@ -492,7 +489,7 @@ struct MarkingsView: View {
     }
 
     let guides = [
-        Self.rulerGuides(width: 20, angle: .zero),
+        Self.rulerGuides(width: 20, angle: .zero)
     ]
 
     var body: some View {
@@ -596,8 +593,7 @@ struct CodableAppStorage<Value>: DynamicProperty, Sendable where Value: Codable 
                 let data = try JSONEncoder().encode(newValue)
                 let string = String(decoding: data, as: UTF8.self)
                 UserDefaults.standard.setValue(string, forKey: key)
-            }
-            catch {
+            } catch {
                 fatalError(error)
             }
         }
@@ -610,12 +606,10 @@ struct CodableAppStorage<Value>: DynamicProperty, Sendable where Value: Codable 
                 let data = string.data(using: .utf8)!
                 let value = try JSONDecoder().decode(Value.self, from: data)
                 _storage = .init(initialValue: value)
-            }
-            else {
+            } else {
                 _storage = .init(initialValue: wrappedValue)
             }
-        }
-        catch {
+        } catch {
             fatalError(error)
         }
     }
@@ -638,12 +632,10 @@ extension CodableAppStorage where Value: ExpressibleByNilLiteral {
                 let data = string.data(using: .utf8)!
                 let value = try JSONDecoder().decode(Value.self, from: data)
                 _storage = .init(initialValue: value)
-            }
-            else {
+            } else {
                 _storage = .init(initialValue: nil)
             }
-        }
-        catch {
+        } catch {
             fatalError(error)
         }
     }
@@ -682,16 +674,14 @@ extension Array {
         get {
             if index >= 0 {
                 self[index]
-            }
-            else {
+            } else {
                 self[count + index]
             }
         }
         set {
             if index >= 0 {
                 self[index] = newValue
-            }
-            else {
+            } else {
                 self[count + index] = newValue
             }
         }

@@ -316,7 +316,7 @@ extension MTLGPUFamily: @retroactive CaseIterable, @retroactive CustomStringConv
             .common1,
             .common2,
             .common3,
-            .metal3,
+            .metal3
         ]
         #if os(iOS)
         result += [.apple9]
@@ -381,7 +381,7 @@ extension MTLCompareFunction: @retroactive CaseIterable, @retroactive CustomStri
         .greater,
         .notEqual,
         .greaterEqual,
-        .always,
+        .always
     ]
 
     public var description: String {
@@ -436,7 +436,7 @@ extension MTLResourceUsage: Codable {
         let strings = try container.decode([String].self)
         let mapping = [
             "read": MTLResourceUsage.read,
-            "write": MTLResourceUsage.write,
+            "write": MTLResourceUsage.write
         ]
         assert(!strings.contains("sample"))
         let usages: [MTLResourceUsage] = try strings.map { try mapping[$0].safelyUnwrap(BaseError.unknown) }
@@ -447,7 +447,7 @@ extension MTLResourceUsage: Codable {
         var container = encoder.singleValueContainer()
         let mapping = [
             (MTLResourceUsage.read, "read"),
-            (MTLResourceUsage.write, "write"),
+            (MTLResourceUsage.write, "write")
         ]
         let strings = mapping.compactMap { contains($0.0) ? $0.1 : nil }
         try container.encode(strings)
@@ -488,17 +488,13 @@ extension MTLTextureUsage: @retroactive CustomStringConvertible {
         var atoms: [String] = []
         if self == .unknown {
             return "unknown"
-        }
-        else if contains(.shaderRead) {
+        } else if contains(.shaderRead) {
             atoms.append("shaderRead")
-        }
-        else if contains(.shaderWrite) {
+        } else if contains(.shaderWrite) {
             atoms.append("shaderWrite")
-        }
-        else if contains(.renderTarget) {
+        } else if contains(.renderTarget) {
             atoms.append("renderTarget")
-        }
-        else if contains(.pixelFormatView) {
+        } else if contains(.pixelFormatView) {
             atoms.append("pixelFormatView")
         }
         return atoms.joined(separator: ", ")
@@ -657,13 +653,13 @@ extension MTLPixelFormat: @retroactive CaseIterable {
             .depth32Float,
             .stencil8,
             .depth32Float_stencil8,
-            .x32_stencil8,
+            .x32_stencil8
         ]
 
         #if os(macOS)
         return baseCases + [
             .depth24Unorm_stencil8,
-            .x24_stencil8,
+            .x24_stencil8
         ]
         #else
         return baseCases

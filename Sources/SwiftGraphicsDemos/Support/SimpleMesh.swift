@@ -17,7 +17,7 @@ extension YAMesh {
         let vertices = [
             triangle.vertices.0,
             triangle.vertices.1,
-            triangle.vertices.2,
+            triangle.vertices.2
         ]
         .map {
             // TODO; Normal not impacted by transform. It should be.

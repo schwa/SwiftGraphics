@@ -7,8 +7,7 @@ internal extension Line {
     func compare(point: CGPoint) -> ComparisonResult {
         if isVertical {
             return ComparisonResult.compare(xIntercept!.x, point.x)
-        }
-        else {
+        } else {
             let (m, b) = slopeInterceptForm!.tuple
             return ComparisonResult.compare(m * point.x + b, point.y)
         }

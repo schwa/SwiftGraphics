@@ -14,5 +14,4 @@ extension Bundle {
         fatalError("Could not find shaders bundle")
     }()
 
-
 }

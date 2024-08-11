@@ -37,8 +37,7 @@ public extension Node {
             let indexPath = accessor.path.dropFirst()
             if indexPath.isEmpty {
                 return child
-            }
-            else {
+            } else {
                 return child[accessor: .init(indexPath)]
             }
         }
@@ -50,8 +49,7 @@ public extension Node {
             let indexPath = accessor.path.dropFirst()
             if indexPath.isEmpty {
                 children[index] = newValue
-            }
-            else {
+            } else {
                 children[index][accessor: .init(indexPath)] = newValue
             }
         }

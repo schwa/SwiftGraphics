@@ -22,8 +22,7 @@ public extension Polygon {
                         // http://www.sunshine2k.de/coding/java/Polygon/Filling/FillPolygon.htm
                         if intersection == segment.end {
                             return []
-                        }
-                        else if intersection == segment.start {
+                        } else if intersection == segment.start {
                             let previousSegment = segments[(segments.count + index - 1) % segments.count]
                             if (previousSegment.start.y - y).sign == (segment.end.y - y).sign {
                                 return [intersection, intersection]
@@ -65,8 +64,7 @@ public func polygonToScanlines(_ polygon: Polygon, step: CGFloat = 1.0) -> [Line
                     // http://www.sunshine2k.de/coding/java/Polygon/Filling/FillPolygon.htm
                     if intersection == segment.end {
                         return []
-                    }
-                    else if intersection == segment.start {
+                    } else if intersection == segment.start {
                         let previousSegment = segments[(segments.count + index - 1) % segments.count]
                         if (previousSegment.start.y - y).sign == (segment.end.y - y).sign {
                             return [intersection, intersection]

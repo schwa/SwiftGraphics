@@ -85,13 +85,13 @@ struct TextureView: View {
 
             let mesh = try YAMesh.simpleMesh(label: "rectangle", primitiveType: .triangle, device: device) {
                 let indices: [UInt16] = [
-                    0, 1, 2, 0, 3, 2,
+                    0, 1, 2, 0, 3, 2
                 ]
                 let vertices = [SIMD2<Float>]([
                     [0, 0],
                     [1, 0],
                     [1, 1],
-                    [0, 1],
+                    [0, 1]
                 ])
                 .map {
                     SimpleVertex(position: SIMD3<Float>($0, 0), normal: .zero, textureCoordinate: $0)
