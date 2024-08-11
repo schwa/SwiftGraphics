@@ -20,7 +20,7 @@ using namespace metal;
 
 constant bool flat_shading [[function_constant(0)]];
 
-typedef VertexIn DiffuseShadingVertexIn;
+typedef SimpleVertex DiffuseShadingVertexIn;
 
 struct DiffuseShadingVertexOut {
     float4 position [[position]]; // in projection space
