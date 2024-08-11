@@ -231,8 +231,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 45DA91492BF15B070070FD0C /* SwiftGraphicsDemos-Debug.xcconfig */;
 			buildSettings = {
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
-				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17;
+				MACOSX_DEPLOYMENT_TARGET = 14.6;
 			};
 			name = Debug;
 		};
@@ -240,8 +240,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 45DA914A2BF15B070070FD0C /* SwiftGraphicsDemos-Release.xcconfig */;
 			buildSettings = {
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
-				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17;
+				MACOSX_DEPLOYMENT_TARGET = 14.6;
 			};
 			name = Release;
 		};
