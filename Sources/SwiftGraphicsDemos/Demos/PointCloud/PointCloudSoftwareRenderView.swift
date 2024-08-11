@@ -1,6 +1,6 @@
 import Constraints3D
 import CoreGraphicsSupport
-import Fields3D
+import Widgets3D
 import Projection
 import RenderKitUISupport
 import SIMDSupport

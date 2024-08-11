@@ -1,4 +1,4 @@
-import Fields3D
+import Widgets3D
 import SwiftUI
 
 struct FieldsTestBedView: View, DemoView {
