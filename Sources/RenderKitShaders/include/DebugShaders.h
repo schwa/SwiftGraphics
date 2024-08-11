@@ -11,7 +11,7 @@ struct DebugFragmentShaderUniforms
 
 #ifdef __METAL_VERSION__
 using namespace metal;
-typedef VertexIn DebugVertexIn;
+typedef SimpleVertex DebugVertexIn;
 
 struct DebugVertexOut {
     float4 position [[position]];

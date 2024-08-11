@@ -9,6 +9,7 @@
 #import "Support_GLSLCompat.h"
 #import "Support_KellyColor.h"
 #import "Support_Random.h"
+#import "Support_SRGB.h"
 
 #import "DebugShaders.h"
 #import "DiffuseShadingShaders.h"
