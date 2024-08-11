@@ -3,7 +3,7 @@ import MetalKit
 import MetalSupport
 import ModelIO
 import os
-import RenderKitShadersLegacy
+import RenderKitShaders
 import Shapes2D
 import SwiftUI
 

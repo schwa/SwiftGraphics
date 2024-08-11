@@ -3,7 +3,7 @@ import Metal
 import MetalKit
 import ModelIO
 import Observation
-import RenderKitShadersLegacy
+import SwiftGraphicsDemosShaders
 import SIMDSupport
 import SwiftFormats
 import SwiftUI

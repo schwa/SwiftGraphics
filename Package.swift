@@ -29,7 +29,6 @@ let package = Package(
         .library(name: "RenderKit", targets: ["RenderKit"]),
         .library(name: "RenderKitSceneGraph", targets: ["RenderKitSceneGraph"]),
         .library(name: "RenderKitShaders", targets: ["RenderKitShaders"]),
-        .library(name: "RenderKitShadersLegacy", targets: ["RenderKitShadersLegacy"]),
         .library(name: "RenderKitUISupport", targets: ["RenderKitUISupport"]),
         .library(name: "Shapes2D", targets: ["Shapes2D"]),
         .library(name: "Shapes3D", targets: ["Shapes3D"]),
@@ -180,13 +179,12 @@ let package = Package(
 
         .target(
             name: "RenderKitShaders",
-            dependencies: ["RenderKitShadersLegacy"],
             plugins: [
                  .plugin(name: "MetalCompilerPlugin", package: "MetalCompilerPlugin")
             ]
         ),
         .target(
-            name: "RenderKitShadersLegacy",
+            name: "SwiftGraphicsDemosShaders",
             cSettings: [
                 .unsafeFlags(["-Wno-incomplete-umbrella"])
             ],
@@ -311,7 +309,7 @@ let package = Package(
                 "Projection",
                 "RenderKit",
                 "RenderKitShaders",
-                "RenderKitShadersLegacy",
+                "SwiftGraphicsDemosShaders",
                 "Shapes2D",
                 "Shapes3D",
                 "Shapes3DTessellation",
@@ -476,7 +474,6 @@ let package = Package(
                 "MetalSupport",
                 "RenderKit",
                 "RenderKitShaders",
-                "RenderKitShadersLegacy",
                 "SIMDSupport",
             ],
             swiftSettings: [

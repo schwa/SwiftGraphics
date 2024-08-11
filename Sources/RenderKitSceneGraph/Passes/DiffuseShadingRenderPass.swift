@@ -37,7 +37,7 @@ public struct DiffuseShadingRenderPass: RenderPassProtocol {
     }
 
     public func setup(device: MTLDevice, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State {
-        let library = try device.makeDebugLibrary(bundle: .renderKitShadersLegacy)
+        let library = try device.makeDebugLibrary(bundle: .renderKitShaders)
         let useFlatShading = false
         let constantValues = MTLFunctionConstantValues(dictionary: [0: useFlatShading])
         let renderPipelineDescriptor = renderPipelineDescriptor()
