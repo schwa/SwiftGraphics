@@ -37,8 +37,16 @@ public struct RenderView: View {
     @Environment(\.gpuCounters)
     var gpuCounters
 
-    public init(passes: [any PassProtocol], configure: @escaping Configure = { _ in }, sizeWillChange: @escaping SizeWillChange = { _, _, _ in }) {
-        self.configure = configure
+
+
+
+
+    public init(colorPixelFormat: MTLPixelFormat = .bgra8Unorm_srgb, depthStencilPixelFormat: MTLPixelFormat = .depth32Float, passes: [any PassProtocol], configure: @escaping Configure = { _ in }, sizeWillChange: @escaping SizeWillChange = { _, _, _ in }) {
+        self.configure = { configuration in
+            configuration.colorPixelFormat = colorPixelFormat
+            configuration.depthStencilPixelFormat = depthStencilPixelFormat
+            configure(&configuration)
+        }
         self.sizeWillChange = sizeWillChange
         let passes = PassCollection(passes)
         self.passes = passes

@@ -1,10 +1,22 @@
-#include <metal_stdlib>
-#include <simd/simd.h>
+#import <simd/simd.h>
 
-#import "include/RenderKitShaders.h"
+struct DebugVertexShaderUniforms
+{
+    float4x4 modelViewProjectionMatrix;
+    float3 positionOffset;
+};
+
+struct DebugFragmentShaderUniforms
+{
+    float2 windowSize;
+};
+
+
+#ifdef __METAL_VERSION__
+#import <metal_stdlib>
+#import "Random.h"
 
 using namespace metal;
-
 typedef VertexIn DebugVertexIn;
 
 struct DebugVertexOut {
@@ -77,3 +89,4 @@ fragment DebugFragmentOut DebugFragmentShader(DebugFragmentIn in [[stage_in]],
         .fragColor = baseColor
     };
 }
+#endif

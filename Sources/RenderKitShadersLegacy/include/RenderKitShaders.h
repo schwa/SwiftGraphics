@@ -9,7 +9,6 @@
 #import "Random.h"
 
 #import "Common.h"
-#import "DebugShaders.h"
 #import "FlatRenderShaders.h"
 #import "DiffuseShadingShaders.h"
 #import "SmoothPanoramaShaders.h"
