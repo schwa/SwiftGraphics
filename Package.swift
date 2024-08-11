@@ -312,20 +312,6 @@ let package = Package(
             "SIMDSupport",
         ]),
 
-        // MARK: TrivialMeshCLI
-
-        .executableTarget(
-            name: "TrivialMeshCLI",
-            dependencies: [
-                .product(name: "ArgumentParser", package: "swift-argument-parser"),
-                "Shapes3D",
-                "CoreGraphicsUnsafeConformances",
-            ],
-            swiftSettings: [
-                .interoperabilityMode(.Cxx)
-            ]
-        ),
-
         // MARK: SwiftGraphicsDemos
 
         .target(
