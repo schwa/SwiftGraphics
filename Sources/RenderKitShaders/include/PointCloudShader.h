@@ -1,5 +1,3 @@
-#import <simd/simd.h>
-
 struct PointCloudVertexUniforms {
     simd_float4x4 modelViewProjectionMatrix;
 };
@@ -8,8 +6,6 @@ struct PointCloudFragmentUniforms {
 };
 
 #ifdef __METAL_VERSION__
-#import <metal_stdlib>
-
 namespace PointCloudShader {
 
     using namespace metal;

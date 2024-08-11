@@ -1,5 +1,3 @@
-#import <simd/simd.h>
-
 struct ArgumentBufferExample {
     TEXTURE2D(float, access::write) a;
     SAMPLER c;
@@ -32,9 +30,6 @@ struct SimplePBRFragmentUniforms {
 };
 
 #ifdef __METAL_VERSION__
-#include <metal_stdlib>
-#include <metal_math>
-
 namespace SimplePBRShader {
 
     using namespace metal;

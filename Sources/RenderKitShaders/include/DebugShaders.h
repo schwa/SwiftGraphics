@@ -1,5 +1,3 @@
-#import <simd/simd.h>
-
 struct DebugVertexShaderUniforms
 {
     float4x4 modelViewProjectionMatrix;
@@ -11,11 +9,7 @@ struct DebugFragmentShaderUniforms
     float2 windowSize;
 };
 
-
 #ifdef __METAL_VERSION__
-#import <metal_stdlib>
-#import "Random.h"
-
 using namespace metal;
 typedef VertexIn DebugVertexIn;
 

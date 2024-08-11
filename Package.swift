@@ -180,6 +180,7 @@ let package = Package(
 
         .target(
             name: "RenderKitShaders",
+            dependencies: ["RenderKitShadersLegacy"],
             plugins: [
                  .plugin(name: "MetalCompilerPlugin", package: "MetalCompilerPlugin")
             ]

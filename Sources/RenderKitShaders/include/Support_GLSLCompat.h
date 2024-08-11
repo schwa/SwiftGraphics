@@ -1,6 +1,4 @@
 #ifdef __METAL_VERSION__
-#import <metal_stdlib>
-
 using namespace metal;
 
 namespace glslCompatible {
