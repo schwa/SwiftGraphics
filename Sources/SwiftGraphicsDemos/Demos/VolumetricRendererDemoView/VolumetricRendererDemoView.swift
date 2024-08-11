@@ -9,7 +9,7 @@ import ModelIO
 import os
 import RenderKit
 import RenderKitSceneGraph
-import RenderKitShadersLegacy
+import SwiftGraphicsDemosShaders
 import RenderKitUISupport
 import SwiftUI
 

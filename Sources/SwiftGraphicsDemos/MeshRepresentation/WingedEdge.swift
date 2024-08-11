@@ -1,7 +1,7 @@
 import Algorithms
 import Metal
 import MetalSupport
-import RenderKitShadersLegacy
+import RenderKitShaders
 import simd
 
 // swiftlint:disable conditional_returns_on_newline

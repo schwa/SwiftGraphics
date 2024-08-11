@@ -1,6 +1,6 @@
 import BaseSupport
 import Metal
-import RenderKitShadersLegacy
+import SwiftGraphicsDemosShaders
 import Shapes2D
 
 struct VolumeRepresentation: @unchecked Sendable {

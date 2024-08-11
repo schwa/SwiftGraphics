@@ -44,7 +44,7 @@ public struct UnlitShadingPass: RenderPassProtocol {
     }
 
     public func setup(device: MTLDevice, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State {
-        let library = try device.makeDebugLibrary(bundle: .renderKitShadersLegacy)
+        let library = try device.makeDebugLibrary(bundle: .renderKitShaders)
         let renderPipelineDescriptor = renderPipelineDescriptor()
         renderPipelineDescriptor.vertexFunction = library.makeFunction(name: "unlitVertexShader")
         renderPipelineDescriptor.fragmentFunction = library.makeFunction(name: "unlitFragmentShader")
