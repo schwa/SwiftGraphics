@@ -1,7 +1,7 @@
 import BaseSupport
 import Constraints3D
 import Everything
-import Fields3D
+import Widgets3D
 import GaussianSplatShaders
 import GaussianSplatSupport
 @preconcurrency import Metal

@@ -1,7 +1,7 @@
 import Constraints3D
 import CoreGraphicsSupport
 import Everything
-import Fields3D
+import Widgets3D
 import MetalSupport
 import Projection
 import RenderKitUISupport

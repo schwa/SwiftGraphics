@@ -14,11 +14,11 @@ let package = Package(
     products: [
         .library(name: "Array2D", targets: ["Array2D"]),
         .library(name: "BaseSupport", targets: ["BaseSupport"]),
+        .library(name: "Constraints3D", targets: ["Constraints3D"]),
         .library(name: "CoreGraphicsSupport", targets: ["CoreGraphicsSupport"]),
         .library(name: "CoreGraphicsUnsafeConformances", targets: ["CoreGraphicsUnsafeConformances"]),
         .library(name: "Counters", targets: ["Counters"]),
         .library(name: "Earcut", targets: ["Earcut"]),
-        .library(name: "Fields3D", targets: ["Fields3D"]),
         .library(name: "GaussianSplatDemos", targets: ["GaussianSplatDemos"]),
         .library(name: "GaussianSplatSupport", targets: ["GaussianSplatSupport"]),
         .library(name: "GenericGeometryBase", targets: ["GenericGeometryBase"]),
@@ -39,7 +39,7 @@ let package = Package(
         .library(name: "SIMDUnsafeConformances", targets: ["SIMDUnsafeConformances"]),
         .library(name: "SwiftGraphicsDemos", targets: ["SwiftGraphicsDemos"]),
         .library(name: "SwiftUISupport", targets: ["SwiftUISupport"]),
-        .library(name: "Constraints3D", targets: ["Constraints3D"]),
+        .library(name: "Widgets3D", targets: ["Widgets3D"]),
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-algorithms", from: "1.1.0"),
@@ -112,7 +112,7 @@ let package = Package(
         // MARK: GenericGeometryBase
 
         .target(
-            name: "Fields3D",
+            name: "Widgets3D",
             dependencies: [
                 "CoreGraphicsSupport",
                 "CoreGraphicsUnsafeConformances",
@@ -336,7 +336,7 @@ let package = Package(
                 "SwiftGLTF",
                 "WrappingHStack",
                 "MetalUnsafeConformances",
-                "Fields3D",
+                "Widgets3D",
                 .product(name: "SwiftFields", package: "swiftfields"),
                 "GaussianSplatDemos",
                 "RenderKitUISupport",
@@ -387,7 +387,7 @@ let package = Package(
                 "GaussianSplatSupport",
                 "RenderKitUISupport",
                 "Counters",
-                "Fields3D",
+                "Widgets3D",
                 "RenderKitSceneGraph"
             ],
             resources: [
