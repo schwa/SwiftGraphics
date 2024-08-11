@@ -3,7 +3,7 @@ import BaseSupport
 import MetalSupport
 import ModelIO
 import RenderKit
-import RenderKitShadersLegacy
+import RenderKitShaders
 
 public struct UnlitMaterialX: MaterialProtocol {
     public var baseColorFactor: SIMD4<Float>
