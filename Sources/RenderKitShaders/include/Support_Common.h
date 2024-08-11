@@ -46,3 +46,12 @@ struct ModelTransforms {
 struct CameraUniforms {
     float4x4 projectionMatrix;
 };
+
+struct RenderKitModelTransforms {
+    float4x4 modelViewMatrix; // model space -> camera space
+    float3x3 modelNormalMatrix; // model space - used for non-uniform scaled normal transformation. See https://www.youtube.com/watch?v=esC1HnyD9Bk&list=PLplnkTzzqsZS3R5DjmCQsqupu43oS9CFN
+};
+
+struct RenderKitCameraUniforms {
+    float4x4 projectionMatrix;
+};
