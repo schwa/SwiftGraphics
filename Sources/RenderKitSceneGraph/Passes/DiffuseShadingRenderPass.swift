@@ -3,7 +3,7 @@ import BaseSupport
 import MetalKit
 import MetalSupport
 import RenderKit
-import RenderKitShadersLegacy
+import RenderKitShaders
 import SwiftUI
 
 public struct DiffuseMaterial: MaterialProtocol {
