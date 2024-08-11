@@ -5,7 +5,7 @@ import MetalSupport
 import ModelIO
 import Observation
 import RenderKit
-import RenderKitShadersLegacy
+import RenderKitShaders
 import simd
 
 public struct DebugRenderPass: RenderPassProtocol {
@@ -31,7 +31,7 @@ public struct DebugRenderPass: RenderPassProtocol {
     }
 
     public func setup(device: MTLDevice, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State {
-        let library = try device.makeDebugLibrary(bundle: .renderKitShadersLegacy)
+        let library = try device.makeDebugLibrary(bundle: .renderKitShaders)
         let renderPipelineDescriptor = renderPipelineDescriptor()
         renderPipelineDescriptor.vertexFunction = library.makeFunction(name: "DebugVertexShader")
         renderPipelineDescriptor.fragmentFunction = library.makeFunction(name: "DebugFragmentShader")

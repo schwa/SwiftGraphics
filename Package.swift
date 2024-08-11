@@ -474,6 +474,7 @@ let package = Package(
                 "BaseSupport",
                 "MetalSupport",
                 "RenderKit",
+                "RenderKitShaders",
                 "RenderKitShadersLegacy",
                 "SIMDSupport",
             ],

@@ -1,6 +1,13 @@
 #pragma once
 
-#ifndef __METAL_VERSION__
+#ifdef __METAL_VERSION__
+#include <metal_stdlib>
+using namespace metal;
+typedef simd_float2 vec2;
+typedef simd_float2 vec2;
+typedef simd_float3 vec3;
+typedef simd_float4 vec4;
+#else
 #include <simd/simd.h>
 typedef simd_float2 float2;
 typedef simd_float3 float3;
