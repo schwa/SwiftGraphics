@@ -4,7 +4,7 @@ import Metal
 import RenderKit
 
 struct LineShaderRenderPass: RenderPassProtocol {
-    struct State: PassState {
+    struct State: Sendable {
 
     }
 

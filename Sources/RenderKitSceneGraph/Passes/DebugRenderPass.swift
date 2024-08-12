@@ -20,7 +20,7 @@ public struct DebugRenderPass: RenderPassProtocol {
 
     let vertexDescriptor = MTLVertexDescriptor(MDLVertexDescriptor.simpleVertexDescriptor)
 
-    public struct State: PassState {
+    public struct State: Sendable {
         var depthStencilState: MTLDepthStencilState
         var renderPipelineState: MTLRenderPipelineState
     }

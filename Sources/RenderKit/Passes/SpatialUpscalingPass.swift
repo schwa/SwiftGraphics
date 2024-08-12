@@ -3,7 +3,7 @@ import BaseSupport
 @preconcurrency import MetalFX
 
 public struct SpatialUpscalingPass: GeneralPassProtocol {
-    public struct State: PassState {
+    public struct State: Sendable {
     }
 
     public var id: PassID

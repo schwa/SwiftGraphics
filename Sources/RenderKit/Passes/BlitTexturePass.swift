@@ -2,7 +2,7 @@ import BaseSupport
 @preconcurrency import Metal
 
 public struct BlitTexturePass: GeneralPassProtocol {
-    public struct State: PassState {
+    public struct State: Sendable {
     }
 
     public var id: PassID

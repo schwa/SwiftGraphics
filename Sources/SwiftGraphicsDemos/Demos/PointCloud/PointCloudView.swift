@@ -110,7 +110,7 @@ struct PointCloud: Equatable, @unchecked Sendable {
 }
 
 struct PointCloudRenderPass: RenderPassProtocol {
-    struct State: PassState {
+    struct State: Sendable {
         struct Bindings {
             var vertexBuffer0: Int
             var vertexUniforms: Int

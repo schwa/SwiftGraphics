@@ -15,7 +15,7 @@ struct VolumetricRenderPass: RenderPassProtocol {
     let id: PassID = "VolumetricRenderPass"
     var scene: SceneGraph
 
-    struct State: PassState {
+    struct State: Sendable {
         var renderPipelineState: MTLRenderPipelineState
         var depthStencilState: MTLDepthStencilState
     }
