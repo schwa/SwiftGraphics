@@ -117,7 +117,6 @@ struct DemosView: View {
                 group(named: "Failing", disclosed: false) {
                     row(for: CSGDemoView.self)  // TODO: Broken
                     row(for: LineDemoView.self) // TODO: Broken
-                    row(for: TextureDemoView.self) // TODO: Broken
                 }
             }
         } detail: {

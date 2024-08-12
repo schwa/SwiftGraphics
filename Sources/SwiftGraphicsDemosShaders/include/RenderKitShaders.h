@@ -3,14 +3,10 @@
 #import "ImmersiveShaders.h"
 #import "PanoramicShaders.h"
 #import "VolumeShaders.h"
-#import "FlatShader.h"
-#import "UnlitShader.h"
 #import "GLSLCompat.h"
 #import "Random.h"
 
 #import "Common.h"
-#import "FlatRenderShaders.h"
-#import "DiffuseShadingShaders.h"
 #import "SmoothPanoramaShaders.h"
 #import "Support.h"
 
