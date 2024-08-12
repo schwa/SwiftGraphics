@@ -18,7 +18,7 @@ public struct LineSegment {
 public extension LineSegment {
     func isApproximatelyEqual(to other: Self, absoluteTolerance: Double.Magnitude) -> Bool {
         start.isApproximatelyEqual(to: other.start, absoluteTolerance: CGPoint.Magnitude(absoluteTolerance))
-            && end.isApproximatelyEqual(to: other.end, absoluteTolerance: CGPoint.Magnitude(absoluteTolerance))
+        && end.isApproximatelyEqual(to: other.end, absoluteTolerance: CGPoint.Magnitude(absoluteTolerance))
     }
 }
 
@@ -54,10 +54,26 @@ public extension LineSegment {
     }
 
     func parallel(offset: Double) -> LineSegment {
-        let angle = Angle(from: start, to: end) - .degrees(90)
-        let offset = CGPoint(distance: offset, angle: angle)
-        return map { $0 + offset }
+        // Calculate the direction vector of the line
+        let dx = end.x - start.x
+        let dy = end.y - start.y
+
+        // Calculate the length of the line
+        let length = sqrt(dx * dx + dy * dy)
+
+        // Calculate the unit normal vector
+        let nx = -dy / length
+        let ny = dx / length
+
+        // Calculate the offset vector
+        let offsetX = nx * CGFloat(offset)
+        let offsetY = ny * CGFloat(offset)
+
+        // Create the new start and end points
+        let newStart = CGPoint(x: start.x + offsetX, y: start.y + offsetY)
+        let newEnd = CGPoint(x: end.x + offsetX, y: end.y + offsetY)
+
+        // Return the new parallel line segment
+        return LineSegment(newStart, newEnd)
     }
 }
-
-// MARK: -

@@ -33,6 +33,8 @@ struct CustomStrokeView: View {
 
     var body: some View {
         Canvas { context, _ in
+            context.stroke(Path(lines: points), with: .color(.indigo.opacity(0.1)), lineWidth: 120)
+
             context.stroke(Path(lines: points).strokedPath(strokeStyle), with: .color(.indigo.opacity(0.2)), lineWidth: 10)
             let points = [60.0, -60.0].map { offset in
                 [segments.first!.parallel(offset: offset).start] + segments.windows(ofCount: 2).map { segments in
