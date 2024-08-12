@@ -8,7 +8,7 @@ import simd
 public struct GaussianSplatDistanceComputePass<Splat>: ComputePassProtocol where Splat: SplatProtocol {
     typealias Bindings = GaussianSplatDistanceComputePassBindings
 
-    public struct State: PassState {
+    public struct State: Sendable {
         var pipelineState: MTLComputePipelineState
         var bindings: Bindings
     }

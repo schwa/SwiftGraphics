@@ -15,7 +15,7 @@ public struct GaussianSplatRenderPass <Splat>: RenderPassProtocol where Splat: S
     typealias VertexBindings = GaussianSplatRenderPassVertexBindings
     typealias FragmentBindings = GaussianSplatRenderPassFragmentBindings
 
-    public struct State: PassState {
+    public struct State: Sendable {
         var quadMesh: MTKMesh
         var vertexBindings: VertexBindings
         var fragmentBindings: FragmentBindings

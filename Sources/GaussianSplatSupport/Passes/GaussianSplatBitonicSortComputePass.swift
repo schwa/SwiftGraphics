@@ -6,7 +6,7 @@ import RenderKit
 import simd
 
 public struct GaussianSplatBitonicSortComputePass <Splat>: ComputePassProtocol where Splat: SplatProtocol {
-    public struct State: PassState {
+    public struct State: Sendable {
         var pipelineState: MTLComputePipelineState
         var bindings: Bindings
     }

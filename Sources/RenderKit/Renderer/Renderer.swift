@@ -36,7 +36,7 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
     private var callbacks: Callbacks
     private var gpuCounters: GPUCounters?
 
-    private var statesByPasses: [PassID: any PassState] = [:]
+    private var statesByPasses: [PassID: any Sendable] = [:]
     private var configuration: MetalConfiguration?
     private var info: PassInfo?
     private var phase: Phase {

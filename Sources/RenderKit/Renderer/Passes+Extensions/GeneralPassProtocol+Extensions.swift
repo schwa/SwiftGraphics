@@ -2,7 +2,7 @@ import BaseSupport
 import Metal
 
 internal extension GeneralPassProtocol {
-    func encode(commandBuffer: MTLCommandBuffer, info: PassInfo, untypedState: any PassState) throws {
+    func encode(commandBuffer: MTLCommandBuffer, info: PassInfo, untypedState: any Sendable) throws {
         guard let state = untypedState as? State else {
             throw BaseError.typeMismatch
         }

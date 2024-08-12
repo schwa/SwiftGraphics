@@ -7,7 +7,7 @@ import RenderKitShaders
 import MetalSupport
 
 struct SimplePBRShadingPass: RenderPassProtocol {
-    struct State: PassState {
+    struct State: Sendable {
         var renderPipelineState: MTLRenderPipelineState
         var depthStencilState: MTLDepthStencilState
 

@@ -10,7 +10,7 @@ public extension RenderPassProtocol {
 // MARK: -
 
 public extension RenderPassProtocol {
-    func drawableSizeWillChange(device: MTLDevice, size: SIMD2<Float>, untypedState: inout any PassState) throws {
+    func drawableSizeWillChange(device: MTLDevice, size: SIMD2<Float>, untypedState: inout any Sendable) throws {
         guard var state = untypedState as? State else {
             throw BaseError.typeMismatch
         }
@@ -18,7 +18,7 @@ public extension RenderPassProtocol {
         untypedState = state
     }
 
-    func render(commandBuffer: MTLCommandBuffer, renderPassDescriptor: MTLRenderPassDescriptor, info: PassInfo, untypedState: any PassState) throws {
+    func render(commandBuffer: MTLCommandBuffer, renderPassDescriptor: MTLRenderPassDescriptor, info: PassInfo, untypedState: any Sendable) throws {
         guard let state = untypedState as? State else {
             throw BaseError.typeMismatch
         }

@@ -22,10 +22,6 @@ public protocol PassProtocol: Equatable, Sendable {
     var id: PassID { get }
 }
 
-// IDEA: Allow for empty state - make Never or () conform to PassState???
-public protocol PassState: Sendable {
-}
-
 public struct PassInfo: Sendable {
     public var drawableSize: SIMD2<Float>
     public var frame: Int
@@ -40,7 +36,7 @@ public struct PassInfo: Sendable {
 // MARK: -
 
 public protocol ShaderPassProtocol: PassProtocol {
-    associatedtype State: PassState
+    associatedtype State: Sendable
 }
 
 // MARK: -
@@ -61,7 +57,7 @@ public protocol RenderPassProtocol: ShaderPassProtocol {
 // MARK: -
 
 public protocol GeneralPassProtocol: PassProtocol {
-    associatedtype State: PassState
+    associatedtype State: Sendable
     func setup(device: MTLDevice) throws -> State
     func encode(commandBuffer: MTLCommandBuffer, info: PassInfo, state: State) throws
 }

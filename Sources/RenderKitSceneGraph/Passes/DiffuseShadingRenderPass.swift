@@ -26,7 +26,7 @@ public struct DiffuseShadingRenderPass: RenderPassProtocol {
     let lightPosition: SIMD3<Float> = [0, 10, 0]
     let lightPower: Float = 16
 
-    public struct State: PassState {
+    public struct State: Sendable {
         var renderPipelineState: MTLRenderPipelineState
         var depthStencilState: MTLDepthStencilState
     }

@@ -2,7 +2,7 @@ import BaseSupport
 import Metal
 
 internal extension ComputePassProtocol {
-    func compute(commandBuffer: MTLCommandBuffer, info: PassInfo, untypedState: PassState) throws {
+    func compute(commandBuffer: MTLCommandBuffer, info: PassInfo, untypedState: Sendable) throws {
         guard let state = untypedState as? State else {
             throw BaseError.typeMismatch
         }
