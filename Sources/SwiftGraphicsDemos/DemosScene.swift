@@ -69,6 +69,7 @@ struct DemosView: View {
     var body: some View {
         NavigationSplitView {
             List(selection: $currentDemo) {
+                row(for: CustomStrokeEditorDemoView.self)
                 row(for: CameraControllerDemo.self)
                 group(named: "Gaussian Splat") {
                     row(for: GaussianSplatView.self)
@@ -100,7 +101,6 @@ struct DemosView: View {
                 group(named: "Unorganized", disclosed: false) {
                     row(for: AngleDemoView.self)
                     row(for: BeziersDemoView.self)
-                    row(for: CustomStrokeEditorDemoView.self)
                     row(for: HalfEdge2DDemoView.self)
                     row(for: HalfEdge3DDemoView.self)
                     row(for: HobbyCurveDemoView.self)
