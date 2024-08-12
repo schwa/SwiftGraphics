@@ -1,4 +1,4 @@
-#import "include/SwiftGraphicsDemosShaders.h"
+#import "include/RenderKitShaders.h"
 
 typedef SimpleVertex Vertex;
 

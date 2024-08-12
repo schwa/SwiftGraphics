@@ -1,13 +1,3 @@
-#import <simd/simd.h>
-
-#ifndef __METAL_VERSION__
-typedef simd_float2 float2;
-typedef simd_float3 float3;
-typedef simd_float4 float4;
-typedef simd_float3x3 float3x3;
-typedef simd_float4x4 float4x4;
-#endif
-
 #pragma pack(push, 1)
 struct VolumeTransforms {
     simd_float4x4 modelViewMatrix;
