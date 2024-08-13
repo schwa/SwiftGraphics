@@ -22,6 +22,9 @@ struct CustomStrokeEditorDemoView: View, DemoView {
 struct CustomStrokeView: View {
     let points: [CGPoint]
 
+    @State
+    var thickness = 120.0
+
     let strokeStyle = StrokeStyle(lineWidth: 120, lineCap: .butt, lineJoin: .miter, miterLimit: 199_990)
 
     var segments: [LineSegment] {
@@ -35,7 +38,7 @@ struct CustomStrokeView: View {
             context.stroke(Path(lines: points), with: .color(.indigo.opacity(0.05)), lineWidth: 120)
 
             context.stroke(Path(lines: points).strokedPath(strokeStyle), with: .color(.indigo.opacity(0.2)), lineWidth: 10)
-            let points = [60.0, -60.0].map { offset in
+            let points = [thickness * 0.5, thickness * -0.5].map { offset in
                 [segments.first!.parallel(offset: offset).start] + segments.windows(ofCount: 2).map { segments in
                     let segments = Array(segments)
                     let first = segments[0].parallel(offset: offset)

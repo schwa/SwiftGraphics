@@ -39,7 +39,7 @@ struct LineGeometryShaderView: DemoView {
             .onChange(of: timeline.date, initial: true) {
                 buffer.withUnsafeMutableBufferPointer { buffer in
                     for (index, instance) in buffer.enumerated() {
-                        buffer[index] = LineGeometryShadersInstance(start: [Float.random(in: 0...Float(size.width * displayScale * 2)), Float.random(in: 0...Float(size.height * displayScale * 2))], end: [Float.random(in: 0...Float(size.width * displayScale * 2)), Float.random(in: 0...Float(size.height * displayScale * 2))], width: 1, color: [Float.random(in: 0...1), Float.random(in: 0...1), Float.random(in: 0...1), 1])
+                        buffer[index] = LineGeometryShadersInstance(start: [Float.random(in: 0...Float(size.width * displayScale * 2)), Float.random(in: 0...Float(size.height * displayScale * 2))], end: [Float.random(in: 0...Float(size.width * displayScale * 2)), Float.random(in: 0...Float(size.height * displayScale * 2))], width: 5, color: [Float.random(in: 0...1), Float.random(in: 0...1), Float.random(in: 0...1), 1])
                     }
                 }
                 count = buffer.count
