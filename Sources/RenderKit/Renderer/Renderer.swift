@@ -194,13 +194,7 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
         for pass in passes {
             switch pass {
             case let pass as any RenderPassProtocol:
-                let renderPipelineDescriptor = {
-                    let renderPipelineDescriptor = MTLRenderPipelineDescriptor()
-                    renderPipelineDescriptor.colorAttachments[0].pixelFormat = configuration.colorPixelFormat
-                    renderPipelineDescriptor.depthAttachmentPixelFormat = configuration.depthStencilPixelFormat
-                    return renderPipelineDescriptor
-                }
-                let state = try pass.setup(device: device, renderPipelineDescriptor: renderPipelineDescriptor)
+                let state = try pass.setup(device: device, configuration: configuration)
                 statesByPasses[pass.id] = state
             case let pass as any ComputePassProtocol:
                 let state = try pass.setup(device: device)
@@ -301,5 +295,13 @@ public struct RendererCallbacks: Sendable {
         self.renderCompleted = renderCompleted
         self.prePass = prePass
         self.postPass = postPass
+    }
+}
+
+public extension MTLRenderPipelineDescriptor {
+    convenience init(_ configuration: some MetalConfigurationProtocol) {
+        self.init()
+        colorAttachments[0].pixelFormat = configuration.colorPixelFormat
+        depthAttachmentPixelFormat = configuration.depthStencilPixelFormat
     }
 }
