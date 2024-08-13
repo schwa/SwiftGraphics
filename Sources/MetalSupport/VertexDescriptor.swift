@@ -14,7 +14,7 @@ public struct VertexDescriptor: Hashable, Sendable {
         public var stepRate: Int
         public var attributes: [Attribute]
 
-        public init(label: String? = nil, bufferIndex: Int, stride: Int, stepFunction: MTLVertexStepFunction, stepRate: Int, attributes: [Attribute]) {
+        public init(label: String? = nil, bufferIndex: Int = 0, stride: Int = 0, stepFunction: MTLVertexStepFunction = .perVertex, stepRate: Int = 1, attributes: [Attribute]) {
             assert(bufferIndex >= 0)
             assert(bufferIndex >= 0)
             assert(stride >= 0)

@@ -3,7 +3,7 @@ import simd
 import SwiftFormats
 import SwiftUI
 
-extension Binding where Value: FormattableMatrix {
+extension Binding where Value: FormattableMatrix & Sendable {
     subscript(column: Int, row: Int) -> Binding<Value.Scalar> {
         Binding<Value.Scalar> {
             self.wrappedValue[column, row]

@@ -125,6 +125,13 @@ public extension MTLDevice {
             return TypedMTLBuffer(mtlBuffer: buffer)
         }
     }
+
+    func makeTypedBuffer<Element>(count: Int, options: MTLResourceOptions = []) throws -> TypedMTLBuffer<Element> {
+        guard let buffer = makeBuffer(length: MemoryLayout<Element>.stride * count, options: options) else {
+            throw BaseError.resourceCreationFailure
+        }
+        return TypedMTLBuffer(mtlBuffer: buffer)
+    }
 }
 
 // MARK: -

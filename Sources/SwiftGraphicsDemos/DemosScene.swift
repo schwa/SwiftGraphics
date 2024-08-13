@@ -69,6 +69,7 @@ struct DemosView: View {
     var body: some View {
         NavigationSplitView {
             List(selection: $currentDemo) {
+                row(for: LineGeometryShaderView.self)
                 row(for: CustomStrokeEditorDemoView.self)
                 row(for: CameraControllerDemo.self)
                 group(named: "Gaussian Splat") {

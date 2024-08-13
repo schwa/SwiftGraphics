@@ -1,5 +1,5 @@
 import BaseSupport
-import Metal
+@preconcurrency import Metal
 import MetalKit
 import MetalSupport
 import ModelIO
@@ -13,7 +13,7 @@ import ModelIO
 
 // MARK: -
 
-struct BufferView: Labeled {
+struct BufferView: Labeled, Sendable {
     var label: String?
     var buffer: MTLBuffer
     var offset: Int
@@ -34,7 +34,7 @@ extension BufferView: CustomStringConvertible {
 // MARK: -
 
 // TODO: Deprecate?
-struct YAMesh: Identifiable, Labeled {
+struct YAMesh: Identifiable, Labeled, Sendable {
     var id = TrivialID(for: Self.self)
     var label: String?
     var submeshes: [Submesh]
@@ -48,7 +48,7 @@ struct YAMesh: Identifiable, Labeled {
         self.vertexBufferViews = vertexBufferViews
     }
 
-    struct Submesh: Labeled {
+    struct Submesh: Labeled, Sendable {
         var label: String?
         var indexType: MTLIndexType
         var indexBufferView: BufferView
@@ -102,6 +102,7 @@ extension MTLRenderCommandEncoder {
     }
 
     func draw(_ mesh: YAMesh) {
+
         for submesh in mesh.submeshes {
             drawIndexedPrimitives(type: submesh.primitiveType, indexCount: submesh.indexCount, indexType: submesh.indexType, indexBuffer: submesh.indexBufferView.buffer, indexBufferOffset: submesh.indexBufferView.offset)
         }
