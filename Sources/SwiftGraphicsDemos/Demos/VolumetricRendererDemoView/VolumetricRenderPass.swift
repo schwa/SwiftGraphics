@@ -20,12 +20,12 @@ struct VolumetricRenderPass: RenderPassProtocol {
         var depthStencilState: MTLDepthStencilState
     }
 
-    func setup(device: MTLDevice, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State {
+    func setup(device: MTLDevice, configuration: some MetalConfigurationProtocol) throws -> State {
         let library = try device.makeDebugLibrary(bundle: .swiftGraphicsDemosShaders)
         let vertexFunction = library.makeFunction(name: "volumeVertexShader")!
         let fragmentFunction = library.makeFunction(name: "volumeFragmentShader")
 
-        let renderPipelineDescriptor = renderPipelineDescriptor()
+        let renderPipelineDescriptor = MTLRenderPipelineDescriptor(configuration)
         renderPipelineDescriptor.vertexFunction = vertexFunction
         renderPipelineDescriptor.fragmentFunction = fragmentFunction
         renderPipelineDescriptor.colorAttachments[0].isBlendingEnabled = true

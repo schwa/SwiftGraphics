@@ -41,14 +41,14 @@ public struct GaussianSplatRenderPass <Splat>: RenderPassProtocol where Splat: S
         self.discardRate = discardRate
     }
 
-    public func setup(device: MTLDevice, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State {
+    public func setup(device: MTLDevice, configuration: some MetalConfigurationProtocol) throws -> State {
         let allocator = MTKMeshBufferAllocator(device: device)
         let quadMesh = try MTKMesh(mesh: MDLMesh(planeWithExtent: [2, 2, 0], segments: [1, 1], geometryType: .triangles, allocator: allocator), device: device)
 
         let constantValues = MTLFunctionConstantValues(dictionary: [0: useVertexCounting])
 
         let library = try device.makeDebugLibrary(bundle: .gaussianSplatShaders)
-        let renderPipelineDescriptor = renderPipelineDescriptor()
+        let renderPipelineDescriptor = MTLRenderPipelineDescriptor(configuration)
         renderPipelineDescriptor.label = "\(type(of: self))"
         renderPipelineDescriptor.vertexDescriptor = MTLVertexDescriptor(MDLVertexDescriptor.simpleVertexDescriptor)
         renderPipelineDescriptor.vertexFunction = try library.makeFunction(name: vertexShaderName, constantValues: constantValues)

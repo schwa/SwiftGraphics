@@ -73,9 +73,9 @@ public struct LineShaderRenderPass: RenderPassProtocol {
     var instances: TypedMTLBuffer<LineGeometryShadersInstance>
     var count: Int
 
-    public func setup(device: MTLDevice, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State {
+    public func setup(device: MTLDevice, configuration: some MetalConfigurationProtocol) throws -> State {
         let library = try device.makeDebugLibrary(bundle: .swiftGraphicsDemosShaders)
-        let renderPipelineDescriptor = renderPipelineDescriptor()
+        let renderPipelineDescriptor = MTLRenderPipelineDescriptor(configuration)
         renderPipelineDescriptor.vertexFunction = library.makeFunction(name: "LineGeometryShaders::vertexShader")
         renderPipelineDescriptor.fragmentFunction = library.makeFunction(name: "LineGeometryShaders::fragmentShader")
         renderPipelineDescriptor.label = "\(type(of: self))"

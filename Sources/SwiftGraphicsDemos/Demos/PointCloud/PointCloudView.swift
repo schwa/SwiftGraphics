@@ -126,9 +126,9 @@ struct PointCloudRenderPass: RenderPassProtocol {
 
     var scene: SceneGraph
 
-    func setup(device: MTLDevice, renderPipelineDescriptor: () -> MTLRenderPipelineDescriptor) throws -> State {
+    func setup(device: MTLDevice, configuration: some MetalConfigurationProtocol) throws -> State {
         let library = try device.makeDebugLibrary(bundle: .renderKitShaders)
-        let renderPipelineDescriptor = renderPipelineDescriptor()
+        let renderPipelineDescriptor = MTLRenderPipelineDescriptor(configuration)
         renderPipelineDescriptor.label = "\(type(of: self))"
         renderPipelineDescriptor.vertexDescriptor = MTLVertexDescriptor(MDLVertexDescriptor.simpleVertexDescriptor)
         renderPipelineDescriptor.vertexFunction = library.makeFunction(name: "PointCloudShader::VertexShader")
