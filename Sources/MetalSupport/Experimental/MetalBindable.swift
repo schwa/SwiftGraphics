@@ -26,16 +26,20 @@ public extension MetalBindable {
             throw BaseError.error(.resourceCreationFailure)
         }
         for (name, functionType, keyPath) in Self.bindingMappings {
+            let bindingIndex: Int
             switch functionType {
             case .fragment:
-                let bindingIndex = try reflection.binding(for: name, of: .fragment)
-                self[keyPath: keyPath] = bindingIndex
+                bindingIndex = try reflection.binding(for: name, of: .fragment)
             case .vertex:
-                let bindingIndex = try reflection.binding(for: name, of: .vertex)
-                self[keyPath: keyPath] = bindingIndex
+                bindingIndex = try reflection.binding(for: name, of: .vertex)
+            case .object:
+                bindingIndex = try reflection.binding(for: name, of: .object)
+            case .mesh:
+                bindingIndex = try reflection.binding(for: name, of: .mesh)
             default:
                 throw BaseError.error(.missingBinding(name))
             }
+            self[keyPath: keyPath] = bindingIndex
         }
     }
 }

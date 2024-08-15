@@ -34,6 +34,24 @@ public extension MTLComputeCommandEncoder {
 // MARK: -
 
 public extension MTLRenderCommandEncoder {
+    func setVertexBytes(_ bytes: UnsafeRawBufferPointer, index: Int) {
+        setVertexBytes(bytes.baseAddress!, length: bytes.count, index: index)
+    }
+
+    func setVertexBytes(of value: some Any, index: Int) {
+        withUnsafeBytes(of: value) { buffer in
+            setVertexBytes(buffer, index: index)
+        }
+    }
+
+    func setVertexBytes(of value: [some Any], index: Int) {
+        value.withUnsafeBytes { buffer in
+            setVertexBytes(buffer, index: index)
+        }
+    }
+
+    // MARK: -
+
     func setFragmentBytes(_ bytes: UnsafeRawBufferPointer, index: Int) {
         setFragmentBytes(bytes.baseAddress!, length: bytes.count, index: index)
     }
@@ -52,19 +70,37 @@ public extension MTLRenderCommandEncoder {
 
     // MARK: -
 
-    func setVertexBytes(_ bytes: UnsafeRawBufferPointer, index: Int) {
-        setVertexBytes(bytes.baseAddress!, length: bytes.count, index: index)
+    func setObjectBytes(_ bytes: UnsafeRawBufferPointer, index: Int) {
+        setObjectBytes(bytes.baseAddress!, length: bytes.count, index: index)
     }
 
-    func setVertexBytes(of value: some Any, index: Int) {
+    func setObjectBytes(of value: some Any, index: Int) {
         withUnsafeBytes(of: value) { buffer in
-            setVertexBytes(buffer, index: index)
+            setObjectBytes(buffer, index: index)
         }
     }
 
-    func setVertexBytes(of value: [some Any], index: Int) {
+    func setObjectBytes(of value: [some Any], index: Int) {
         value.withUnsafeBytes { buffer in
-            setVertexBytes(buffer, index: index)
+            setObjectBytes(buffer, index: index)
+        }
+    }
+
+    // MARK: -
+
+    func setMeshBytes(_ bytes: UnsafeRawBufferPointer, index: Int) {
+        setMeshBytes(bytes.baseAddress!, length: bytes.count, index: index)
+    }
+
+    func setMeshBytes(of value: some Any, index: Int) {
+        withUnsafeBytes(of: value) { buffer in
+            setMeshBytes(buffer, index: index)
+        }
+    }
+
+    func setMeshBytes(of value: [some Any], index: Int) {
+        value.withUnsafeBytes { buffer in
+            setMeshBytes(buffer, index: index)
         }
     }
 }

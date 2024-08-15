@@ -1,4 +1,5 @@
 import BaseSupport
+import CoreGraphicsSupport
 @preconcurrency import Metal
 import MetalSupport
 import RenderKit
@@ -18,33 +19,51 @@ struct LineGeometryShaderView: DemoView {
     @Environment(\.metalDevice)
     var device
 
-
     @State
-    var buffer: TypedMTLBuffer<LineGeometryShadersInstance>
+    var buffer: TypedMTLBuffer<LineGeometrySegment>
 
     @State
     var count = 0
 
+    @State
+    private var points: [CGPoint] = [[50, 50], [250, 50], [300, 100]]
+
     init() {
         let device = MTLCreateSystemDefaultDevice()!
-        buffer = try! device.makeTypedBuffer(count: 5000)
+        buffer = try! device.makeTypedBuffer(count: 2).labelled("LineGeometrySegment")
     }
 
     var body: some View {
-        TimelineView(.animation) { timeline in
+        ZStack {
             RenderView(depthStencilPixelFormat: .invalid, passes: [
-                LineShaderRenderPass(id: "-", instances: buffer, count: count)
-            ])
-            .onGeometryChange(for: CGSize.self, of: \.size, action: { size = $0; print($0) })
-            .onChange(of: timeline.date, initial: true) {
-                buffer.withUnsafeMutableBufferPointer { buffer in
-                    for (index, instance) in buffer.enumerated() {
-                        buffer[index] = LineGeometryShadersInstance(start: [Float.random(in: 0...Float(size.width * displayScale * 2)), Float.random(in: 0...Float(size.height * displayScale * 2))], end: [Float.random(in: 0...Float(size.width * displayScale * 2)), Float.random(in: 0...Float(size.height * displayScale * 2))], width: 5, color: [Float.random(in: 0...1), Float.random(in: 0...1), Float.random(in: 0...1), 1])
-                    }
+                LineShaderRenderPass(id: "-", lineSegments: buffer, count: count, displayScale: Float(displayScale))
+            ]) { configuration in
+                configuration.clearColor = .init(red: 0.9, green: 0.9, blue: 0.9, alpha: 1)
+            }
+            LegacyPathEditor(points: $points)
+        }
+        .gesture(SpatialTapGesture().onEnded { value in
+            points.append(value.location)
+        })
+        .onGeometryChange(for: CGSize.self, of: \.size) { size = $0 }
+        .onChange(of: points, initial: true) {
+            let segments = points.windows(ofCount: 2).enumerated().map { index, points in
+                let points = Array(points)
+                let color = kellyColors[index % kellyColors.count]
+                return LineGeometrySegment(start: [Float(points[0].x), Float(points[0].y)], end: [Float(points[1].x), Float(points[1].y)], width: 5, color: [color.0, color.1, color.2, 1])
+            }
+            buffer = try! device.makeTypedBuffer(data: segments, options: []).labelled("LineGeometrySegment")
+            count = buffer.count
+        }
+        .contextMenu {
+            Button("Add 10") {
+                for N in 0..<1000 {
+                    points.append(CGPoint.random(in: CGRect(origin: .zero, size: size)))
+
                 }
-                count = buffer.count
             }
         }
+
     }
 }
 
@@ -54,15 +73,31 @@ public struct LineShaderRenderPass: RenderPassProtocol {
 
         @MetalBindings
         struct Bindings {
-            @MetalBinding(function: .vertex)
-            var drawableSize: Int = -1
+            @MetalBinding(name: "segments", function: .object)
+            var objectSegments: Int = -1
 
-            @MetalBinding(function: .vertex)
-            var instances: Int = -1
+            @MetalBinding(name: "segmentCount", function: .object)
+            var objectSegmentCount: Int = -1
+
+            @MetalBinding(name: "drawableSize", function: .object)
+            var objectDrawableSize: Int = -1
+
+            @MetalBinding(name: "displayScale", function: .object)
+            var objectDisplayScale: Int = -1
+
+            @MetalBinding(name: "segments", function: .mesh)
+            var meshSegments: Int = -1
+
+            @MetalBinding(name: "segmentCount", function: .mesh)
+            var meshSegmentCount: Int = -1
+
+            @MetalBinding(name: "drawableSize", function: .mesh)
+            var meshDrawableSize: Int = -1
+
+            @MetalBinding(name: "displayScale", function: .mesh)
+            var meshDisplayScale: Int = -1
         }
         var bindings: Bindings
-
-        var mesh: YAMesh
     }
 
     struct Vertex: Equatable {
@@ -70,57 +105,61 @@ public struct LineShaderRenderPass: RenderPassProtocol {
     }
 
     public var id: PassID
-    var instances: TypedMTLBuffer<LineGeometryShadersInstance>
+    var lineSegments: TypedMTLBuffer<LineGeometrySegment>
     var count: Int
+    var displayScale: Float
 
     public func setup(device: MTLDevice, configuration: some MetalConfigurationProtocol) throws -> State {
         let library = try device.makeDebugLibrary(bundle: .swiftGraphicsDemosShaders)
-        let renderPipelineDescriptor = MTLRenderPipelineDescriptor(configuration)
-        renderPipelineDescriptor.vertexFunction = library.makeFunction(name: "LineGeometryShaders::vertexShader")
-        renderPipelineDescriptor.fragmentFunction = library.makeFunction(name: "LineGeometryShaders::fragmentShader")
-        renderPipelineDescriptor.label = "\(type(of: self))"
-
-        var vertexDescriptor = VertexDescriptor(layouts: [
-            .init(attributes: [
-                .init(semantic: .position, format: .float2, offset: 0)
-            ])
-        ])
-        vertexDescriptor.setPackedOffsets()
-        vertexDescriptor.setPackedStrides()
-        renderPipelineDescriptor.vertexDescriptor = MTLVertexDescriptor(vertexDescriptor)
-        let (renderPipelineState, reflection) = try device.makeRenderPipelineState(descriptor: renderPipelineDescriptor, options: [.bindingInfo])
+        let meshPipelineDescriptor = MTLMeshRenderPipelineDescriptor()
+        meshPipelineDescriptor.colorAttachments[0].pixelFormat = configuration.colorPixelFormat
+        meshPipelineDescriptor.depthAttachmentPixelFormat = configuration.depthStencilPixelFormat
+        meshPipelineDescriptor.objectFunction = library.makeFunction(name: "LineGeometryShaders::objectShader")
+        meshPipelineDescriptor.meshFunction = library.makeFunction(name: "LineGeometryShaders::meshShader")
+        meshPipelineDescriptor.fragmentFunction = library.makeFunction(name: "LineGeometryShaders::fragmentShader")
+        meshPipelineDescriptor.payloadMemoryLength = MemoryLayout<LineGeometrySegment>.stride * 32
+        // meshPipelineDescriptor.maxTotalThreadsPerObjectThreadgroup = 6
+        meshPipelineDescriptor.label = "\(type(of: self))"
+        let (renderPipelineState, reflection) = try device.makeRenderPipelineState(descriptor: meshPipelineDescriptor, options: [.bindingInfo])
         var bindings = State.Bindings()
         try bindings.updateBindings(with: reflection)
-
-        var trivialMesh = TrivialMesh<Vertex>()
-        trivialMesh.append(vertex: .init(position: [0, 0]))
-        trivialMesh.append(vertex: .init(position: [1, 1]))
-        trivialMesh.append(vertex: .init(position: [1, 0]))
-
-        trivialMesh.append(vertex: .init(position: [0, 0]))
-        trivialMesh.append(vertex: .init(position: [1, 1]))
-        trivialMesh.append(vertex: .init(position: [0, 1]))
-
-        let mesh = try YAMesh(device: device, vertexDescriptor: vertexDescriptor, mesh: trivialMesh)
-        return State(renderPipelineState: renderPipelineState, bindings: bindings, mesh: mesh)
+        return State(renderPipelineState: renderPipelineState, bindings: bindings)
     }
 
     public func render(commandBuffer: MTLCommandBuffer, renderPassDescriptor: MTLRenderPassDescriptor, info: PassInfo, state: State) throws {
         try commandBuffer.withRenderCommandEncoder(descriptor: renderPassDescriptor, label: "\(type(of: self))") { commandEncoder in
             commandEncoder.withDebugGroup("Start encoding for \(type(of: self))") {
                 commandEncoder.setRenderPipelineState(state.renderPipelineState)
-                commandEncoder.withDebugGroup("VertexShader") {
-                    commandEncoder.setVertexBytes(of: info.drawableSize, index: state.bindings.drawableSize)
-                    instances.withUnsafeMTLBuffer { instances in
-                        commandEncoder.setVertexBuffer(instances, offset: 0, index: state.bindings.instances)
+                commandEncoder.withDebugGroup("ObjectShader") {
+                    lineSegments.withUnsafeMTLBuffer { lineSegments in
+                        commandEncoder.setObjectBuffer(lineSegments, offset: 0, index: state.bindings.objectSegments)
                     }
+                    commandEncoder.setObjectBytes(of: UInt32(count), index: state.bindings.objectSegmentCount)
+                    commandEncoder.setObjectBytes(of: info.drawableSize, index: state.bindings.objectDrawableSize)
+                    commandEncoder.setObjectBytes(of: displayScale, index: state.bindings.objectDisplayScale)
                 }
-                commandEncoder.withDebugGroup("FragmentShader") {
+                commandEncoder.withDebugGroup("MeshShader") {
+                    lineSegments.withUnsafeMTLBuffer { lineSegments in
+                        commandEncoder.setMeshBuffer(lineSegments, offset: 0, index: state.bindings.meshSegments)
+                    }
+                    commandEncoder.setMeshBytes(of: UInt32(count), index: state.bindings.meshSegmentCount)
+                    commandEncoder.setMeshBytes(of: info.drawableSize, index: state.bindings.meshDrawableSize)
+                    commandEncoder.setMeshBytes(of: displayScale, index: state.bindings.meshDisplayScale)
                 }
-                commandEncoder.setVertexBuffers(state.mesh)
-                commandEncoder.draw(state.mesh, instanceCount: instances.count)
             }
+            //            commandEncoder.drawMeshThreads(MTLSize(width: count), threadsPerObjectThreadgroup: MTLSize(width: 1), threadsPerMeshThreadgroup: MTLSize(width: count))
+
+            commandEncoder.drawMesh(threadgroupsPerGrid: count, threadsPerObjectThreadgroup: 1, threadsPerMeshThreadgroup: 6)
         }
+    }
+}
+
+extension MTLRenderCommandEncoder {
+    func drawMesh(threadgroupsPerGrid: Int, threadsPerObjectThreadgroup: Int, threadsPerMeshThreadgroup: Int) {
+        drawMeshThreadgroups(MTLSize(width: threadgroupsPerGrid), threadsPerObjectThreadgroup: MTLSize(width: threadsPerObjectThreadgroup), threadsPerMeshThreadgroup: MTLSize(width: threadsPerMeshThreadgroup))
+    }
+    func drawMesh(threadsPerGrid: Int, threadsPerObjectThreadgroup: Int, threadsPerMeshThreadgroup: Int) {
+        drawMeshThreads(MTLSize(width: threadsPerGrid), threadsPerObjectThreadgroup: MTLSize(width: threadsPerObjectThreadgroup), threadsPerMeshThreadgroup: MTLSize(width: threadsPerMeshThreadgroup))
     }
 }
 
@@ -143,5 +182,5 @@ extension MTLRenderCommandEncoder {
     }
 }
 
-extension LineGeometryShadersInstance: @retroactive Equatable, UnsafeMemoryEquatable {
+extension LineGeometrySegment: @retroactive Equatable, UnsafeMemoryEquatable {
 }

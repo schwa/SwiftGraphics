@@ -28,7 +28,7 @@ public extension MTLRenderPipelineReflection {
             unimplemented()
         }
         guard let binding = bindings.first(where: { $0.name == name }) else {
-            throw BaseError.error(.invalidParameter)
+            throw BaseError.error(.missingBinding(name))
         }
         return binding.index
     }
