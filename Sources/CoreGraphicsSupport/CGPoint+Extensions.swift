@@ -35,7 +35,6 @@ public extension CGPoint {
     }
 }
 
-@available(*, deprecated, message: "Deprecated.")
 public extension CGPoint {
     init(tuple: (CGFloat, CGFloat)) {
         self.init(x: tuple.0, y: tuple.1)
