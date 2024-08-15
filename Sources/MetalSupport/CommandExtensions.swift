@@ -18,9 +18,11 @@ public extension MTLCommandQueue {
     }
 
     func withCommandBuffer<R>(descriptor: MTLCommandBufferDescriptor? = nil, drawable: (any MTLDrawable)? = nil, block: (MTLCommandBuffer) throws -> R) throws -> R {
+
         let descriptor = descriptor ?? MTLCommandBufferDescriptor()
+
         guard let commandBuffer = makeCommandBuffer(descriptor: descriptor) else {
-            throw BaseError.resourceCreationFailure
+            throw BaseError.error(.resourceCreationFailure)
         }
         defer {
             if let drawable {
