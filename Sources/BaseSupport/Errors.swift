@@ -18,6 +18,13 @@ public enum BaseError: Error {
     case missingBinding(String)
 }
 
+public extension BaseError {
+    static func error(_ error: Self) -> Self {
+        // NOTE: Hook here to add logging or special breakpoint handling.
+        return error
+    }
+}
+
 public func fatalError(_ error: Error) -> Never {
     fatalError("\(error)")
 }
