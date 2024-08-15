@@ -78,7 +78,6 @@ public extension SliderPopoverButton where Label == EmptyView {
 
 /// A view modifier that does nothing.
 public struct EmptyViewModifier: ViewModifier {
-
     public init() {
     }
 

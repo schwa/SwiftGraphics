@@ -3,7 +3,6 @@ import SIMDSupport
 import SwiftUI
 
 public struct CameraConeController: ViewModifier {
-
     private var cameraConeConstraint: CameraConeConstraint
 
     @Binding

@@ -21,7 +21,7 @@ public enum BaseError: Error {
 public extension BaseError {
     static func error(_ error: Self) -> Self {
         // NOTE: Hook here to add logging or special breakpoint handling.
-        return error
+        error
     }
 }
 

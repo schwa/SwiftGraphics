@@ -1,7 +1,7 @@
 import BaseSupport
 import Metal
-import SwiftGraphicsDemosShaders
 import Shapes2D
+import SwiftGraphicsDemosShaders
 
 struct VolumeRepresentation: @unchecked Sendable {
     var volumeData: VolumeData

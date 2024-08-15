@@ -1,10 +1,10 @@
 import BaseSupport
 @preconcurrency import Metal
+import MetalSupport
 import ModelIO
 import RenderKit
 import RenderKitSceneGraph
 import RenderKitShaders
-import MetalSupport
 
 struct SimplePBRShadingPass: RenderPassProtocol {
     struct State: Sendable {

@@ -11,8 +11,6 @@ struct CustomStrokeEditorDemoView: View, DemoView {
     @State
     private var points: [CGPoint] = [[50, 50], [250, 50], [300, 100]]
 
-
-
     var body: some View {
         ZStack {
             LegacyPathEditor(points: $points)
@@ -36,7 +34,6 @@ struct CustomStrokeView: View {
 
     @State
     private var miterLimit: Double = 100
-
 
     var segments: [LineSegment] {
         points.windows(ofCount: 2).map(\.tuple2).map {

@@ -2,9 +2,9 @@ import Metal
 import MetalKit
 import ModelIO
 import Observation
-import SwiftGraphicsDemosShaders
 import SIMDSupport
 import SwiftFormats
+import SwiftGraphicsDemosShaders
 import SwiftUI
 
 struct SimulationDemoView: View, DemoView {

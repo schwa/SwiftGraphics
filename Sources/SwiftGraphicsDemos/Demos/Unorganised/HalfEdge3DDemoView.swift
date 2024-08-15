@@ -1,12 +1,12 @@
 import Constraints3D
 import CoreGraphicsSupport
-import Widgets3D
 import Projection
 import RenderKitUISupport
 import Shapes3D
 import simd
 import SIMDSupport
 import SwiftUI
+import Widgets3D
 
 struct HalfEdge3DDemoView: View, DemoView {
     @State

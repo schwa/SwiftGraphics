@@ -1,7 +1,6 @@
 import Constraints3D
 import CoreGraphicsSupport
 import Everything
-import Widgets3D
 import MetalSupport
 import Projection
 import RenderKitUISupport
@@ -11,6 +10,7 @@ import Shapes3DTessellation
 import SIMDSupport
 import SwiftFormats
 import SwiftUI
+import Widgets3D
 
 struct SoftwareRendererMeshDemoView: View, DemoView {
     enum Source: Hashable {

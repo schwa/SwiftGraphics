@@ -102,7 +102,6 @@ extension MTLRenderCommandEncoder {
     }
 
     func draw(_ mesh: YAMesh) {
-
         for submesh in mesh.submeshes {
             drawIndexedPrimitives(type: submesh.primitiveType, indexCount: submesh.indexCount, indexType: submesh.indexType, indexBuffer: submesh.indexBufferView.buffer, indexBufferOffset: submesh.indexBufferView.offset)
         }

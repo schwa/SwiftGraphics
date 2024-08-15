@@ -1,11 +1,11 @@
 import Constraints3D
 import CoreGraphicsSupport
-import Widgets3D
 import Projection
 import RenderKitUISupport
 import Shapes3D
 import SIMDSupport
 import SwiftUI
+import Widgets3D
 
 struct SoftwareRendererBoxesDemoView: View, DemoView {
     @State
