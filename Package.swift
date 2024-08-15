@@ -6,9 +6,9 @@ import CompilerPluginSupport
 let package = Package(
     name: "SwiftGraphics",
     platforms: [
-        .iOS(.v17),
-        .macOS(.v14),
-        .macCatalyst(.v17),
+        .iOS(.v18),
+        .macOS(.v15),
+        .macCatalyst(.v18),
         .visionOS(.v2),
     ],
     products: [
@@ -193,7 +193,7 @@ let package = Package(
                 .unsafeFlags(["-Wno-incomplete-umbrella"])
             ],
             plugins: [
-                  .plugin(name: "MetalCompilerPlugin", package: "MetalCompilerPlugin")
+                .plugin(name: "MetalCompilerPlugin", package: "MetalCompilerPlugin")
             ]
         ),
         .testTarget(

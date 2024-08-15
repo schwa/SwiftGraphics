@@ -36,6 +36,8 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
     private var callbacks: Callbacks
     private var gpuCounters: GPUCounters?
 
+    private var logState: MTLLogState?
+
     private var statesByPasses: [PassID: any Sendable] = [:]
     private var configuration: MetalConfiguration?
     private var info: PassInfo?
@@ -47,17 +49,29 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
         }
     }
 
-    init(device: MTLDevice, passes: PassCollection, logger: Logger? = nil, callbacks: Callbacks = .init(), gpuCounters: GPUCounters? = nil) {
+    init(device: MTLDevice, passes: PassCollection, logger: Logger? = nil, callbacks: Callbacks = .init(), gpuCounters: GPUCounters? = nil) throws {
         logger?.debug("Renderer.\(#function)")
         self.device = device
         self.passes = passes
         self.phase = .initialized
         self.callbacks = callbacks
         self.gpuCounters = gpuCounters
+
+        if true {
+            let logStateDescriptor = MTLLogStateDescriptor()
+            logStateDescriptor.bufferSize = 1024 * 1024 * 1024
+            let logState = try device.makeLogState(descriptor: logStateDescriptor)
+            logState.addLogHandler { x, y, level, message in
+                logger?.log("\(message)")
+            }
+            self.logState = logState
+        }
     }
 
     mutating func configure(_ configuration: inout MetalConfiguration) throws {
         logger?.debug("Renderer.\(#function)")
+
+
         assert(phase == .initialized)
         self.phase = .configured(sizeKnown: false)
         // Assume view has been configured by this point.
@@ -156,7 +170,9 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
     }
 
     mutating func draw(commandQueue: MTLCommandQueue, currentRenderPassDescriptor: MTLRenderPassDescriptor, currentDrawable: MTLDrawable, drawableSize: SIMD2<Float>) throws {
-        try commandQueue.withCommandBuffer(drawable: currentDrawable) { commandBuffer in
+        let descriptor = MTLCommandBufferDescriptor()
+        descriptor.logState = logState
+        try commandQueue.withCommandBuffer(descriptor: descriptor, drawable: currentDrawable) { commandBuffer in
             if let scheduledHandler = callbacks.renderScheduled {
                 commandBuffer.addScheduledHandler(scheduledHandler)
             }

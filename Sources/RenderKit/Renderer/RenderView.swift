@@ -53,7 +53,7 @@ public struct RenderView: View {
             do {
                 configure(&configuration)
                 commandQueue = device.makeCommandQueue().forceUnwrap("Could not create command queue.")
-                renderer = Renderer<MetalViewConfiguration>(device: device, passes: passes, logger: logger, callbacks: rendererCallbacks ?? .init(), gpuCounters: gpuCounters)
+                renderer = try Renderer<MetalViewConfiguration>(device: device, passes: passes, logger: logger, callbacks: rendererCallbacks ?? .init(), gpuCounters: gpuCounters)
                 try renderer?.configure(&configuration)
             } catch {
                 renderErrorHandler.send(error, logger: logger)
