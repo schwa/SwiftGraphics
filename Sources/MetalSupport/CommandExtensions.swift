@@ -6,7 +6,7 @@ public extension MTLCommandQueue {
     func withCommandBuffer<R>(descriptor: MTLCommandBufferDescriptor? = nil, waitAfterCommit wait: Bool, block: (MTLCommandBuffer) throws -> R) throws -> R {
         let descriptor = descriptor ?? .init()
         guard let commandBuffer = makeCommandBuffer(descriptor: descriptor) else {
-            throw BaseError.resourceCreationFailure
+            throw BaseError.error(.resourceCreationFailure)
         }
         defer {
             commandBuffer.commit()
@@ -19,7 +19,7 @@ public extension MTLCommandQueue {
 
     func withCommandBuffer<R>(drawable: (any MTLDrawable)? = nil, block: (MTLCommandBuffer) throws -> R) throws -> R {
         guard let commandBuffer = makeCommandBuffer() else {
-            throw BaseError.resourceCreationFailure
+            throw BaseError.error(.resourceCreationFailure)
         }
         defer {
             if let drawable {
@@ -36,7 +36,7 @@ public extension MTLCommandQueue {
 public extension MTLCommandBuffer {
     func withRenderCommandEncoder<R>(descriptor: MTLRenderPassDescriptor, label: String? = nil, useDebugGroup: Bool = false, block: (MTLRenderCommandEncoder) throws -> R) throws -> R {
         guard let renderCommandEncoder = makeRenderCommandEncoder(descriptor: descriptor) else {
-            throw BaseError.resourceCreationFailure
+            throw BaseError.error(.resourceCreationFailure)
         }
         if let label {
             renderCommandEncoder.label = label

@@ -239,7 +239,7 @@ public extension SceneGraph {
     /// - Throws: BaseError.missingValue if the node is not found, or rethrows any error thrown by the modification closure.
     mutating func modify<R>(label: String, _ block: (inout Node?) throws -> R) throws -> R {
         guard let accessor = firstAccessor(label: label) else {
-            throw BaseError.missingValue
+            throw BaseError.error(.missingValue)
         }
         return try modify(accessor: accessor, block)
     }
@@ -253,7 +253,7 @@ public extension SceneGraph {
     /// - Throws: BaseError.missingValue if the node is not found, or rethrows any error thrown by the modification closure.
     mutating func modify<R>(id: Node.ID, _ block: (inout Node?) throws -> R) throws -> R {
         guard let accessor = firstAccessor(id: id) else {
-            throw BaseError.missingValue
+            throw BaseError.error(.missingValue)
         }
         return try modify(accessor: accessor, block)
     }

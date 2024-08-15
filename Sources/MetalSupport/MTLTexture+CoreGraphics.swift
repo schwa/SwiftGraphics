@@ -8,12 +8,12 @@ import MetalPerformanceShaders
 public extension MTLTexture {
     func convert(pixelFormat: MTLPixelFormat, destinationColorSpace: CGColorSpace, sourceAlpha: MPSAlphaType, destinationAlpha: MPSAlphaType) throws -> MTLTexture {
         guard let sourceColorSpace = pixelFormat.colorSpace else {
-            throw BaseError.illegalValue
+            throw BaseError.error(.illegalValue)
         }
         let destinationTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: pixelFormat, width: width, height: height, mipmapped: false)
         destinationTextureDescriptor.usage = [.shaderRead, .shaderWrite]
         guard let destinationTexture = device.makeTexture(descriptor: destinationTextureDescriptor) else {
-            throw BaseError.resourceCreationFailure
+            throw BaseError.error(.resourceCreationFailure)
         }
         let conversionInfo = CGColorConversionInfo(src: sourceColorSpace, dst: destinationColorSpace)
         let conversion = MPSImageConversion(device: device, srcAlpha: sourceAlpha, destAlpha: destinationAlpha, backgroundColor: nil, conversionInfo: conversionInfo)
@@ -45,26 +45,26 @@ public extension MTLTexture {
             let context = try CGContext.bitmapContext(definition: bitmapDefinition)
             assert(context.bytesPerRow == bitmapDefinition.bytesPerRow)
             guard let pixelBytes = context.data else {
-                throw BaseError.resourceCreationFailure
+                throw BaseError.error(.resourceCreationFailure)
             }
             getBytes(pixelBytes, bytesPerRow: bitmapDefinition.bytesPerRow, from: MTLRegion(origin: .zero, size: MTLSize(width, height, 1)), mipmapLevel: 0)
             guard let image = context.makeImage() else {
-                throw BaseError.resourceCreationFailure
+                throw BaseError.error(.resourceCreationFailure)
             }
             return image
         }
         //            // https://developer.apple.com/documentation/metal/mtltexture/1515598-newtextureviewwithpixelformat
         else {
             guard let srcColorSpace = pixelFormat.colorSpace else {
-                throw BaseError.invalidParameter
+                throw BaseError.error(.invalidParameter)
             }
             guard let dstColorSpace = colorSpace else {
-                throw BaseError.invalidParameter
+                throw BaseError.error(.invalidParameter)
             }
             let destinationTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba32Float, width: width, height: height, mipmapped: false)
             destinationTextureDescriptor.usage = [.shaderRead, .shaderWrite]
             guard let destinationTexture = device.makeTexture(descriptor: destinationTextureDescriptor) else {
-                throw BaseError.resourceCreationFailure
+                throw BaseError.error(.resourceCreationFailure)
             }
             let conversionInfo = CGColorConversionInfo(src: srcColorSpace, dst: dstColorSpace)
             // TODO: we're just assuming premultiplied here.

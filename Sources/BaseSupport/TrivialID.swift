@@ -72,13 +72,13 @@ extension TrivialID: Codable {
         let string = try container.decode(String.self)
         let pattern = #/^(?<scopeName>.+)\.(?<scopeToken>.+):(?<serial>\d+)$/#
         guard let match = string.wholeMatch(of: pattern) else {
-            throw BaseError.parsingFailure
+            throw BaseError.error(.parsingFailure)
         }
         guard let scopeToken = Int(match.output.scopeToken, radix: 16) else {
-            throw BaseError.parsingFailure
+            throw BaseError.error(.parsingFailure)
         }
         guard let serial = Int(match.output.serial) else {
-            throw BaseError.parsingFailure
+            throw BaseError.error(.parsingFailure)
         }
         let scope = Scope(name: String(match.output.scopeName), token: scopeToken)
         TrivialID.staticState.withLock { staticState in

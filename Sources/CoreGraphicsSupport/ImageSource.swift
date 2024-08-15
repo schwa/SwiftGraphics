@@ -64,7 +64,7 @@ import AppKit
 public extension CGImage {
     static func image(contentsOf url: URL) throws -> CGImage {
         guard let nsImage = NSImage(contentsOf: url) else {
-            throw BaseError.inputOutputFailure
+            throw BaseError.error(.inputOutputFailure)
         }
         return nsImage.cgImage
     }

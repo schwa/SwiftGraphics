@@ -15,7 +15,7 @@ public extension MTLDevice {
         let alignment = minimumLinearTextureAlignment(for: pixelFormat)
         let bytesPerRow = align(Int(size.width) * bytesPerPixel, alignment: alignment)
         guard let buffer = makeBuffer(length: bytesPerRow * Int(size.height), options: .storageModeShared) else {
-            throw BaseError.resourceCreationFailure
+            throw BaseError.error(.resourceCreationFailure)
         }
         return buffer
     }
@@ -58,16 +58,16 @@ public extension MTLDevice {
         textureDescriptor.height = source.height
         textureDescriptor.depth = source.depth
         guard let destination = makeTexture(descriptor: textureDescriptor) else {
-            throw BaseError.resourceCreationFailure
+            throw BaseError.error(.resourceCreationFailure)
         }
         destination.label = source.label.map { "\($0)-private-copy" }
 
         guard let commandQueue = makeCommandQueue() else {
-            throw BaseError.resourceCreationFailure
+            throw BaseError.error(.resourceCreationFailure)
         }
         try commandQueue.withCommandBuffer(waitAfterCommit: true) { commandBuffer in
             guard let encoder = commandBuffer.makeBlitCommandEncoder() else {
-                throw BaseError.resourceCreationFailure
+                throw BaseError.error(.resourceCreationFailure)
             }
             encoder.copy(from: source, to: destination)
             encoder.endEncoding()

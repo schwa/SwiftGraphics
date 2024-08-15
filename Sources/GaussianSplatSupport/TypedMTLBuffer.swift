@@ -100,11 +100,11 @@ public extension MTLDevice {
     ///           `BaseError.resourceCreationFailure` if the buffer creation fails.
     func makeTypedBuffer<Element>(data: Data, options: MTLResourceOptions = []) throws -> TypedMTLBuffer<Element> {
         if !data.count.isMultiple(of: MemoryLayout<Element>.size) {
-            throw BaseError.illegalValue
+            throw BaseError.error(.illegalValue)
         }
         return try data.withUnsafeBytes { buffer in
             guard let buffer = makeBuffer(bytes: buffer.baseAddress!, length: buffer.count, options: options) else {
-                throw BaseError.resourceCreationFailure
+                throw BaseError.error(.resourceCreationFailure)
             }
             return TypedMTLBuffer(mtlBuffer: buffer)
         }
@@ -120,7 +120,7 @@ public extension MTLDevice {
     func makeTypedBuffer<Element>(data: [Element], options: MTLResourceOptions = []) throws -> TypedMTLBuffer<Element> {
         try data.withUnsafeBytes { buffer in
             guard let buffer = makeBuffer(bytes: buffer.baseAddress!, length: buffer.count, options: options) else {
-                throw BaseError.resourceCreationFailure
+                throw BaseError.error(.resourceCreationFailure)
             }
             return TypedMTLBuffer(mtlBuffer: buffer)
         }
@@ -128,7 +128,7 @@ public extension MTLDevice {
 
     func makeTypedBuffer<Element>(count: Int, options: MTLResourceOptions = []) throws -> TypedMTLBuffer<Element> {
         guard let buffer = makeBuffer(length: MemoryLayout<Element>.stride * count, options: options) else {
-            throw BaseError.resourceCreationFailure
+            throw BaseError.error(.resourceCreationFailure)
         }
         return TypedMTLBuffer(mtlBuffer: buffer)
     }

@@ -68,7 +68,7 @@ public struct RenderView: View {
         } draw: { _, _, size, currentDrawable, currentRenderPassDescriptor in
             do {
                 guard let commandQueue else {
-                    throw BaseError.missingValue
+                    throw BaseError.error(.missingValue)
                 }
                 try renderer?.draw(commandQueue: commandQueue, currentRenderPassDescriptor: currentRenderPassDescriptor, currentDrawable: currentDrawable, drawableSize: SIMD2<Float>(size))
             } catch {

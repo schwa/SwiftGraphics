@@ -15,7 +15,7 @@ import MetalPerformanceShaders
 @MainActor
 func testImages() throws {
     guard let sourceImage = try ImageRenderer(content: TestCard()).cgImage?.convert(to: .rgba8) else {
-        throw BaseError.resourceCreationFailure
+        throw BaseError.error(.resourceCreationFailure)
     }
     #expect(sourceImage.alphaInfo == .premultipliedLast)
 
@@ -60,11 +60,11 @@ struct ImageComparator {
             }
             if writeToTempOnFailure {
                 guard let imageA = contextA.makeImage() else {
-                    throw BaseError.resourceCreationFailure
+                    throw BaseError.error(.resourceCreationFailure)
                 }
                 try imageA.write(to: URL(fileURLWithPath: "/tmp/testimage-a.png"))
                 guard let imageB = contextB.makeImage() else {
-                    throw BaseError.resourceCreationFailure
+                    throw BaseError.error(.resourceCreationFailure)
                 }
                 try imageB.write(to: URL(fileURLWithPath: "/tmp/testimage-b.png"))
             }
@@ -106,7 +106,7 @@ extension CGImage {
             let context = try CGContext.bitmapContext(definition: bitmapDefinition)
             context.draw(self, in: bounds)
             guard let data = context.data else {
-                throw BaseError.resourceCreationFailure
+                throw BaseError.error(.resourceCreationFailure)
             }
             return Data(bytes: data, count: bytesPerRow * height)
         }
@@ -130,7 +130,7 @@ extension CGImage {
         let context = try CGContext.bitmapContext(definition: bitmapDefinition)
         context.draw(self, in: bounds)
         guard let converted = context.makeImage() else {
-            throw BaseError.resourceCreationFailure
+            throw BaseError.error(.resourceCreationFailure)
         }
         return converted
     }
@@ -186,16 +186,16 @@ extension Color {
         let pattern = #/^#(?<red>[0-9a-fA-F]{2})(?<green>[0-9a-fA-F]{2})(?<blue>[0-9a-fA-F]{2})$/#
 
         guard let match = try pattern.firstMatch(in: string) else {
-            throw BaseError.parsingFailure
+            throw BaseError.error(.parsingFailure)
         }
         guard let red = Int(match.output.red, radix: 16).map({ Double($0) / 255}) else {
-            throw BaseError.parsingFailure
+            throw BaseError.error(.parsingFailure)
         }
         guard let green = Int(match.output.green, radix: 16).map({ Double($0) / 255}) else {
-            throw BaseError.parsingFailure
+            throw BaseError.error(.parsingFailure)
         }
         guard let blue = Int(match.output.blue, radix: 16).map({ Double($0) / 255}) else {
-            throw BaseError.parsingFailure
+            throw BaseError.error(.parsingFailure)
         }
         self = .init(red: red, green: green, blue: blue, opacity: opacity)
     }

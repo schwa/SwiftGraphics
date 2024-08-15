@@ -136,7 +136,7 @@ struct PointCloudRenderPass: RenderPassProtocol {
 
         let (renderPipelineState, reflection) = try device.makeRenderPipelineState(descriptor: renderPipelineDescriptor, options: [.bindingInfo])
         guard let reflection else {
-            throw BaseError.resourceCreationFailure
+            throw BaseError.error(.resourceCreationFailure)
         }
 
         let bindings = State.Bindings(

@@ -73,7 +73,7 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
         phase = .configured(sizeKnown: true)
         for renderPass in passes.renderPasses {
             guard var state = statesByPasses[renderPass.id] else {
-                throw BaseError.missingValue
+                throw BaseError.error(.missingValue)
             }
             try renderPass.drawableSizeWillChange(device: device, size: size, untypedState: &state)
             statesByPasses[renderPass.id] = state
@@ -98,12 +98,12 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
             self.info = info
         } else {
             guard let configuration else {
-                throw BaseError.missingValue
+                throw BaseError.error(.missingValue)
             }
             info = PassInfo(drawableSize: drawableSize, frame: 0, start: now, time: now, deltaTime: 0, configuration: configuration, gpuCounters: gpuCounters)
         }
         guard let info else {
-            throw BaseError.missingValue
+            throw BaseError.error(.missingValue)
         }
 
         if let preRender = callbacks.preRender {
@@ -129,24 +129,24 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
             case let pass as any RenderPassProtocol:
                 // It is important that render passes have their render pass descriptor's load/store actions set correctly. You can use prePass to set that up.
                 guard let state = statesByPasses[pass.id] else {
-                    throw BaseError.missingValue
+                    throw BaseError.error(.missingValue)
                 }
                 try pass.render(commandBuffer: commandBuffer, renderPassDescriptor: renderPassDescriptor, info: info, untypedState: state)
             case let pass as any ComputePassProtocol:
                 guard let state = statesByPasses[pass.id] else {
-                    throw BaseError.missingValue
+                    throw BaseError.error(.missingValue)
                 }
                 try pass.compute(commandBuffer: commandBuffer, info: info, untypedState: state)
             case let pass as any GeneralPassProtocol:
                 guard let state = statesByPasses[pass.id] else {
-                    throw BaseError.missingValue
+                    throw BaseError.error(.missingValue)
                 }
                 try pass.encode(commandBuffer: commandBuffer, info: info, untypedState: state)
             case let pass as any GroupPassProtocol:
                 let children = try pass.children()
                 try _render(commandBuffer: commandBuffer, renderPassDescriptor: pass.renderPassDescriptor ?? renderPassDescriptor, passes: children, info: info)
             default:
-                throw BaseError.typeMismatch
+                throw BaseError.error(.typeMismatch)
             }
 
             if let postPass = callbacks.postPass {

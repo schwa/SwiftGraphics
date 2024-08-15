@@ -60,7 +60,7 @@ struct VolumetricRenderPass: RenderPassProtocol {
                         continue
                     }
                     guard let cameraNode = scene.currentCameraNode else {
-                        throw BaseError.missingValue
+                        throw BaseError.error(.missingValue)
                     }
                     // TODO: we need to remove this.
                     let rollPitchYaw = cameraNode.transform.rotation.rollPitchYaw

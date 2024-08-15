@@ -9,17 +9,17 @@ public extension TrivialMesh where Vertex == SIMD3<Float> {
         let asset = MDLAsset(url: url)
 
         guard let mesh = asset.object(at: 0) as? MDLMesh else {
-            throw BaseError.missingValue
+            throw BaseError.error(.missingValue)
         }
         let positions = try mesh.positions
         guard let submesh = mesh.submeshes?[0] as? MDLSubmesh else {
-            throw BaseError.missingValue
+            throw BaseError.error(.missingValue)
         }
         guard submesh.geometryType == .triangles else {
-            throw BaseError.invalidParameter
+            throw BaseError.error(.invalidParameter)
         }
         guard submesh.indexType == .uint32 else {
-            throw BaseError.invalidParameter
+            throw BaseError.error(.invalidParameter)
         }
         let indexBuffer = submesh.indexBuffer
         let indexBytes = UnsafeRawBufferPointer(start: indexBuffer.map().bytes, count: indexBuffer.length)
@@ -44,13 +44,13 @@ public extension TrivialMesh where Vertex == SimpleVertex {
             SimpleVertex(packedPosition: $0.0, packedNormal: $0.1)
         }
         guard let submesh = mesh.submeshes?[0] as? MDLSubmesh else {
-            throw BaseError.missingValue
+            throw BaseError.error(.missingValue)
         }
         guard submesh.geometryType == .triangles else {
-            throw BaseError.invalidParameter
+            throw BaseError.error(.invalidParameter)
         }
         guard submesh.indexType == .uint32 else {
-            throw BaseError.invalidParameter
+            throw BaseError.error(.invalidParameter)
         }
         let indexBuffer = submesh.indexBuffer
         let indexBytes = UnsafeRawBufferPointer(start: indexBuffer.map().bytes, count: indexBuffer.length)
@@ -64,13 +64,13 @@ extension MDLMesh {
     var positions: [PackedFloat3] {
         get throws {
             guard let attribute = vertexDescriptor.attributes.compactMap({ $0 as? MDLVertexAttribute }).first(where: { $0.name == MDLVertexAttributePosition }) else {
-                throw BaseError.invalidParameter
+                throw BaseError.error(.invalidParameter)
             }
             guard attribute.format == .float3 else {
-                throw BaseError.typeMismatch
+                throw BaseError.error(.typeMismatch)
             }
             guard let bufferLayout = vertexDescriptor.layouts[attribute.bufferIndex] as? MDLVertexBufferLayout else {
-                throw BaseError.missingValue
+                throw BaseError.error(.missingValue)
             }
             let buffer = vertexBuffers[attribute.bufferIndex]
             let bytes = UnsafeRawBufferPointer(start: buffer.map().bytes, count: buffer.length)
@@ -90,13 +90,13 @@ extension MDLMesh {
     var normals: [PackedFloat3] {
         get throws {
             guard let attribute = vertexDescriptor.attributes.compactMap({ $0 as? MDLVertexAttribute }).first(where: { $0.name == MDLVertexAttributeNormal }) else {
-                throw BaseError.invalidParameter
+                throw BaseError.error(.invalidParameter)
             }
             guard attribute.format == .float3 else {
-                throw BaseError.typeMismatch
+                throw BaseError.error(.typeMismatch)
             }
             guard let bufferLayout = vertexDescriptor.layouts[attribute.bufferIndex] as? MDLVertexBufferLayout else {
-                throw BaseError.missingValue
+                throw BaseError.error(.missingValue)
             }
             let buffer = vertexBuffers[attribute.bufferIndex]
             let bytes = UnsafeRawBufferPointer(start: buffer.map().bytes, count: buffer.length)
@@ -155,7 +155,7 @@ public extension MDLMesh {
                 try allocator.newBuffer(from: nil, data: Data(buffer), type: .index).safelyUnwrap(BaseError.resourceCreationFailure)
             }
         default:
-            throw BaseError.invalidParameter
+            throw BaseError.error(.invalidParameter)
         }
         let submesh = MDLSubmesh(indexBuffer: indexBuffer, indexCount: mesh.indices.count, indexType: indexType, geometryType: .triangles, material: nil)
         self.init(vertexBuffer: vertexBuffer, vertexCount: mesh.vertices.count, descriptor: descriptor, submeshes: [submesh])

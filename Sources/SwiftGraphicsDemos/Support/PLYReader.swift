@@ -79,7 +79,7 @@ public struct Ply {
                 var scanner = CollectionScanner(elements: elementData)
                 let elements = try header.elements.map { definition in
                     guard let element = try scanner.scanPLYElement(definition: definition, format: header.format) else {
-                        throw BaseError.extended(BaseError.parsingFailure, "Failed to scan element data.")
+                        throw BaseError.error(.extended(BaseError.parsingFailure, "Failed to scan element data."))
                     }
                     return element
                 }
@@ -93,7 +93,7 @@ public struct Ply {
         var scanner = CollectionScanner(elements: data)
 
         guard let header = try scanner.scanPLYHeader() else {
-            throw BaseError.extended(BaseError.parsingFailure, "Failed to scan ply header.")
+            throw BaseError.error(.extended(BaseError.parsingFailure, "Failed to scan ply header."))
         }
         self.header = header
         self.elementData = data[scanner.current ..< data.endIndex]
@@ -113,7 +113,7 @@ public struct Ply {
 extension Ply {
     init(string: String, processElements: Bool = false) throws {
         guard let data = string.data(using: .utf8) else {
-            throw BaseError.extended(BaseError.encodingFailure, "Could not encode string.")
+            throw BaseError.error(.extended(BaseError.encodingFailure, "Could not encode string."))
         }
         try self.init(data: data, processElements: processElements)
     }
@@ -328,11 +328,11 @@ extension Ply.Header.Element.Specification {
 public extension Ply.Header {
     init(source: String) throws {
         guard let data = source.data(using: .utf8) else {
-            throw BaseError.extended(BaseError.encodingFailure, "Could not convert data.")
+            throw BaseError.error(.extended(BaseError.encodingFailure, "Could not convert data."))
         }
         var scanner = CollectionScanner(elements: data)
         guard let header = try scanner.scanPLYHeader() else {
-            throw BaseError.extended(BaseError.parsingFailure, "Could not scan PLY header")
+            throw BaseError.error(.extended(BaseError.parsingFailure, "Could not scan PLY header"))
         }
         self = header
     }
@@ -376,20 +376,20 @@ extension CollectionScanner where Element == UInt8 {
     mutating func scanPLYHeader() throws -> Ply.Header? {
         try scan_ { scanner in
             guard scanner.scanPrefixedLine(prefix: "ply") != nil else {
-                throw BaseError.extended(BaseError.parsingFailure, "Data does not start with \"ply\"")
+                throw BaseError.error(.extended(BaseError.parsingFailure, "Data does not start with \"ply\""))
             }
             guard let format = scanner.scanPrefixedLine(prefix: "format") else {
-                throw BaseError.extended(BaseError.parsingFailure, "Failed to scan format")
+                throw BaseError.error(.extended(BaseError.parsingFailure, "Failed to scan format"))
             }
             // TODO: Version can be _anything_
             let pattern = #/^(?<format>(ascii|binary_little_endian))\s+(?<version>.+)\s*$/#
             guard let match = format.firstMatch(of: pattern) else {
-                throw BaseError.extended(BaseError.parsingFailure, "Unknown format line.")
+                throw BaseError.error(.extended(BaseError.parsingFailure, "Unknown format line."))
             }
             //  ascii 1.0\n
 
             guard let format = Ply.Header.Format(rawValue: String(match.output.format)) else {
-                throw BaseError.extended(BaseError.parsingFailure, "Unknown format.")
+                throw BaseError.error(.extended(BaseError.parsingFailure, "Unknown format."))
             }
             let version = String(match.output.version)
             var elements: [Ply.Header.Element] = []
@@ -413,11 +413,11 @@ extension CollectionScanner where Element == UInt8 {
             }
             let pattern = #/^(?<name>[A-Za-z]+)\s+(?<count>\d+)\s*$/#
             guard let match = line.firstMatch(of: pattern) else {
-                throw BaseError.extended(BaseError.parsingFailure, "Could not parse element.")
+                throw BaseError.error(.extended(BaseError.parsingFailure, "Could not parse element."))
             }
             let name = String(match.output.name)
             guard let count = Int(match.output.count) else {
-                throw BaseError.extended(BaseError.parsingFailure, "Could not get count of properties")
+                throw BaseError.error(.extended(BaseError.parsingFailure, "Could not get count of properties"))
             }
             guard let specification = try scanner.scanPLYHeaderElementSpecification() else {
                 return nil
@@ -437,10 +437,10 @@ extension CollectionScanner where Element == UInt8 {
                 return nil
             }
             guard let countType = Ply.ScalarType(rawValue: String(match.output.count_type)) else {
-                throw BaseError.extended(BaseError.parsingFailure, "Unknown scalar type \"\(match.output.count_type)\".")
+                throw BaseError.error(.extended(BaseError.parsingFailure, "Unknown scalar type \"\(match.output.count_type)\"."))
             }
             guard let valueType = Ply.ScalarType(rawValue: String(match.output.value_type)) else {
-                throw BaseError.extended(BaseError.parsingFailure, "Unknown scalar type \"\(match.output.value_type)\".")
+                throw BaseError.error(.extended(BaseError.parsingFailure, "Unknown scalar type \"\(match.output.value_type)\"."))
             }
             let name = String(match.output.name)
             return .list(.init(name: name, countType: countType, valueType: valueType))
@@ -461,7 +461,7 @@ extension CollectionScanner where Element == UInt8 {
                 }
                 let name = String(match.output.name)
                 guard let valueType = Ply.ScalarType(rawValue: String(match.output.value_type)) else {
-                    throw BaseError.extended(BaseError.parsingFailure, "Unknown scalar type \"\(match.output.value_type)\".")
+                    throw BaseError.error(.extended(BaseError.parsingFailure, "Unknown scalar type \"\(match.output.value_type)\"."))
                 }
                 properties.append(.init(name: name, valueType: valueType))
             }
@@ -509,49 +509,49 @@ extension CollectionScanner where Element == UInt8 {
         switch format {
         case .ascii:
             guard let word = scanWord(), let scalar = Ply.ScalarValue(type: type, string: word) else {
-                throw BaseError.extended(BaseError.parsingFailure, "Could not scan value of type \"\(type)\".")
+                throw BaseError.error(.extended(BaseError.parsingFailure, "Could not scan value of type \"\(type)\"."))
             }
             return scalar
         case .binaryLittleEndian:
             switch type {
             case .char:
                 guard let value = scan(type: Int8.self) else {
-                    throw BaseError.parsingFailure
+                    throw BaseError.error(.parsingFailure)
                 }
                 return .char(value)
             case .uchar:
                 guard let value = scan(type: UInt8.self) else {
-                    throw BaseError.parsingFailure
+                    throw BaseError.error(.parsingFailure)
                 }
                 return .uchar(value)
             case .short:
                 guard let value = scan(type: Int16.self) else {
-                    throw BaseError.parsingFailure
+                    throw BaseError.error(.parsingFailure)
                 }
                 return .short(value)
             case .ushort:
                 guard let value = scan(type: UInt16.self) else {
-                    throw BaseError.parsingFailure
+                    throw BaseError.error(.parsingFailure)
                 }
                 return .ushort(value)
             case .int:
                 guard let value = scan(type: Int32.self) else {
-                    throw BaseError.parsingFailure
+                    throw BaseError.error(.parsingFailure)
                 }
                 return .int(value)
             case .uint:
                 guard let value = scan(type: UInt32.self) else {
-                    throw BaseError.parsingFailure
+                    throw BaseError.error(.parsingFailure)
                 }
                 return .uint(value)
             case .float:
                 guard let value = scan(type: Float.self) else {
-                    throw BaseError.parsingFailure
+                    throw BaseError.error(.parsingFailure)
                 }
                 return .float(value)
             case .double:
                 guard let value = scan(type: Double.self) else {
-                    throw BaseError.parsingFailure
+                    throw BaseError.error(.parsingFailure)
                 }
                 return .double(value)
             }

@@ -59,7 +59,7 @@ public struct SceneGraphRenderHelper {
 public extension SceneGraphRenderHelper {
     init(scene: SceneGraph, targetColorAttachment: MTLRenderPassColorAttachmentDescriptor) throws {
         guard let texture = targetColorAttachment.texture else {
-            throw BaseError.invalidParameter
+            throw BaseError.error(.invalidParameter)
         }
         let size = SIMD2<Float>(Float(texture.width), Float(texture.height))
         self.init(scene: scene, renderTargetSize: size)
