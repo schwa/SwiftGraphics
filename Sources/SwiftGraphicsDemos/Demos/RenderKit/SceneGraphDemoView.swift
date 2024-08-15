@@ -1,5 +1,4 @@
 import Constraints3D
-import Widgets3D
 import Metal
 import MetalKit
 import MetalSupport
@@ -10,6 +9,7 @@ import Shapes3D
 import simd
 import SIMDSupport
 import SwiftUI
+import Widgets3D
 
 struct SceneGraphDemoView: View, DemoView {
     @State

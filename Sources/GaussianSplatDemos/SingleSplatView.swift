@@ -1,7 +1,6 @@
 import BaseSupport
 import Constraints3D
 import Everything
-import Widgets3D
 import GaussianSplatShaders
 import GaussianSplatSupport
 @preconcurrency import Metal
@@ -16,6 +15,7 @@ import SIMDSupport
 import SwiftFields
 import SwiftUI
 import UniformTypeIdentifiers
+import Widgets3D
 
 public struct SingleSplatView: View {
     @State

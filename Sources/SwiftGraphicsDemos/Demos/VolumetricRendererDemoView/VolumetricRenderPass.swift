@@ -7,8 +7,8 @@ import ModelIO
 import os
 import RenderKit
 import RenderKitSceneGraph
-import SwiftGraphicsDemosShaders
 import SIMDSupport
+import SwiftGraphicsDemosShaders
 import SwiftUI
 
 struct VolumetricRenderPass: RenderPassProtocol {

@@ -13,7 +13,6 @@ public extension simd_float4x4 {
         set {
             columns.3 = SIMD4<Float>(newValue, 1)
         }
-
     }
 
     // TODO: We need an "isApproxAffine" because this can fail just due to float math

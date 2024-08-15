@@ -61,7 +61,7 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
             let logStateDescriptor = MTLLogStateDescriptor()
             logStateDescriptor.bufferSize = 1024 * 1024 * 1024
             let logState = try device.makeLogState(descriptor: logStateDescriptor)
-            logState.addLogHandler { x, y, level, message in
+            logState.addLogHandler { _, _, _, message in
                 logger?.log("\(message)")
             }
             self.logState = logState

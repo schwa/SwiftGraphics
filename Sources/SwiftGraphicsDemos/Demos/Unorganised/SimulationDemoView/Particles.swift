@@ -3,9 +3,9 @@ import Metal
 import MetalKit
 import ModelIO
 import Observation
-import SwiftGraphicsDemosShaders
 import SIMDSupport
 import SwiftFormats
+import SwiftGraphicsDemosShaders
 import SwiftUI
 
 // https://www.youtube.com/watch?v=rSKMYc1CQHE&t=1746s

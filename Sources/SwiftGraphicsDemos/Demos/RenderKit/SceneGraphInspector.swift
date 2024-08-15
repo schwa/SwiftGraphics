@@ -1,6 +1,6 @@
-import Widgets3D
 import RenderKitSceneGraph
 import SwiftUI
+import Widgets3D
 
 struct SceneGraphInspector: View {
     @Binding

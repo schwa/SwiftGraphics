@@ -1,15 +1,14 @@
 import BaseSupport
 import CoreGraphicsSupport
+import GaussianSplatSupport // for TypedMTLBuffer
 @preconcurrency import Metal
 import MetalSupport
 import RenderKit
 import Shapes3D
-import SwiftUI
 import SwiftGraphicsDemosShaders
-import GaussianSplatSupport // for TypedMTLBuffer
+import SwiftUI
 
 struct LineGeometryShaderView: DemoView {
-
     @State
     var size: CGSize = .zero
 
@@ -59,11 +58,9 @@ struct LineGeometryShaderView: DemoView {
             Button("Add 10") {
                 for N in 0..<1000 {
                     points.append(CGPoint.random(in: CGRect(origin: .zero, size: size)))
-
                 }
             }
         }
-
     }
 }
 

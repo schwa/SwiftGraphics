@@ -1,5 +1,4 @@
 import Constraints3D
-import Widgets3D
 import Metal
 import MetalKit
 import RenderKit
@@ -8,6 +7,7 @@ import simd
 import SIMDSupport
 import SwiftUI
 import SwiftUISupport
+import Widgets3D
 
 @available(*, deprecated, message: "Deprecated")
 public struct SceneGraphView: View {

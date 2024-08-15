@@ -12,8 +12,8 @@ import simd
 import SIMDSupport
 import SwiftFormats
 import SwiftUI
-import UniformTypeIdentifiers
 import SwiftUISupport
+import UniformTypeIdentifiers
 
 // swiftlint:disable force_unwrapping
 

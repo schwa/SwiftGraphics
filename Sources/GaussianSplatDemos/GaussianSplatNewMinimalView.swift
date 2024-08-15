@@ -1,10 +1,12 @@
 import BaseSupport
 import Constraints3D
+import CoreGraphicsUnsafeConformances
 import Everything
 import Foundation
 import GaussianSplatSupport
 import MetalKit
 import Observation
+import Projection
 import RenderKit
 import RenderKitSceneGraph
 import RenderKitUISupport
@@ -14,8 +16,6 @@ import SwiftFormats
 import SwiftUI
 import SwiftUISupport
 import UniformTypeIdentifiers
-import Projection
-import CoreGraphicsUnsafeConformances
 
 // swiftlint:disable force_unwrapping
 
