@@ -5,20 +5,19 @@ import SwiftUI
 // We treat SwiftUI.Angle as part of CoreGraphics - because it's too useful not to be.
 
 public extension Angle {
-    init(to point: CGPoint) {
-        self = Angle(radians: CoreGraphics.atan2(point.y, point.x))
-    }
-
-    init(from lhs: CGPoint, to rhs: CGPoint) {
-        self = Angle(radians: CoreGraphics.atan2(rhs.y - lhs.y, rhs.x - lhs.x))
-    }
-
-    init(vertex: CGPoint, p1: CGPoint, p2: CGPoint) {
-        self = Angle(from: p1, to: vertex) - Angle(from: p2, to: vertex)
-    }
-
     static func atan2(y: CGFloat, x: CGFloat) -> Angle {
         .init(radians: CoreGraphics.atan2(y, x))
+    }
+
+    init(from lhs: CGPoint = .zero, to rhs: CGPoint) {
+        let delta = rhs - lhs
+        self = .atan2(y: delta.y, x: delta.x)
+    }
+
+    init(vertex: CGPoint, p1: CGPoint, p2: CGPoint, clockwise: Bool = false) {
+        let angle1 = Angle(from: vertex, to: p1)
+        let angle2 = Angle(from: vertex, to: p2)
+        self = !clockwise ? angle2 - angle1 : angle1 - angle2
     }
 }
 

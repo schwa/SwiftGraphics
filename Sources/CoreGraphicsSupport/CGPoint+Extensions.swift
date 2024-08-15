@@ -35,27 +35,7 @@ public extension CGPoint {
     }
 }
 
-public extension CGPoint {
-    var length: CGFloat {
-        get {
-            sqrt(lengthSquared)
-        }
-        set {
-            self = .init(distance: newValue, angle: angle)
-        }
-    }
-
-    var lengthSquared: CGFloat {
-        x * x + y * y
-    }
-}
-
-public extension CGPoint {
-    func map(_ block: (CGFloat) throws -> CGFloat) rethrows -> Self {
-        try Self(block(x), block(y))
-    }
-}
-
+@available(*, deprecated, message: "Deprecated.")
 public extension CGPoint {
     init(tuple: (CGFloat, CGFloat)) {
         self.init(x: tuple.0, y: tuple.1)
@@ -73,7 +53,7 @@ public extension CGPoint {
 
 public extension CGPoint {
     static prefix func - (rhs: Self) -> Self {
-        Self(-rhs.x, -rhs.y)
+        .init(-rhs.x, -rhs.y)
     }
 
     static func + (lhs: Self, rhs: Self) -> Self {
@@ -85,7 +65,7 @@ public extension CGPoint {
     }
 
     static func - (lhs: Self, rhs: Self) -> Self {
-        Self(lhs.x - rhs.x, lhs.y - rhs.y)
+        .init(lhs.x - rhs.x, lhs.y - rhs.y)
     }
 
     static func -= (lhs: inout Self, rhs: Self) {
@@ -93,7 +73,7 @@ public extension CGPoint {
     }
 
     static func * (lhs: Self, rhs: Self) -> Self {
-        Self(lhs.x * rhs.x, lhs.y * rhs.y)
+        .init(lhs.x * rhs.x, lhs.y * rhs.y)
     }
 
     static func *= (lhs: inout Self, rhs: Self) {
@@ -101,7 +81,7 @@ public extension CGPoint {
     }
 
     static func / (lhs: Self, rhs: Self) -> Self {
-        Self(lhs.x / rhs.x, lhs.y / rhs.y)
+        .init(lhs.x / rhs.x, lhs.y / rhs.y)
     }
 
     static func /= (lhs: inout Self, rhs: Self) {
@@ -111,7 +91,7 @@ public extension CGPoint {
 
 public extension CGPoint {
     static func * (lhs: Self, rhs: CGFloat) -> Self {
-        Self(lhs.x * rhs, lhs.y * rhs)
+        .init(lhs.x * rhs, lhs.y * rhs)
     }
 
     static func *= (lhs: inout Self, rhs: CGFloat) {
@@ -119,7 +99,7 @@ public extension CGPoint {
     }
 
     static func / (lhs: Self, rhs: CGFloat) -> Self {
-        Self(lhs.x / rhs, lhs.y / rhs)
+        .init(lhs.x / rhs, lhs.y / rhs)
     }
 
     static func /= (lhs: inout Self, rhs: CGFloat) {
@@ -127,7 +107,7 @@ public extension CGPoint {
     }
 
     static func * (lhs: CGFloat, rhs: Self) -> Self {
-        Self(lhs * rhs.x, lhs * rhs.y)
+        .init(lhs * rhs.x, lhs * rhs.y)
     }
 }
 
@@ -135,7 +115,7 @@ public extension CGPoint {
 
 public extension CGPoint {
     static func random(x: ClosedRange<CGFloat>, y: ClosedRange<CGFloat>, using generator: inout some RandomNumberGenerator) -> Self {
-        Self(x: CGFloat.random(in: x, using: &generator), y: CGFloat.random(in: y, using: &generator))
+        .init(x: CGFloat.random(in: x, using: &generator), y: CGFloat.random(in: y, using: &generator))
     }
 
     static func random(x: ClosedRange<CGFloat>, y: ClosedRange<CGFloat>) -> Self {
@@ -165,47 +145,54 @@ public extension CGPoint {
 // MARK: Misc
 
 public extension CGPoint {
-    var magnitude: CGFloat {
+    var length: CGFloat {
+        get {
+            sqrt(lengthSquared)
+        }
+        set {
+            self = .init(length: newValue, angle: angle)
+        }
+    }
+
+    var lengthSquared: CGFloat {
         x * x + y * y
     }
 
-    var distance: CGFloat {
-        sqrt(magnitude)
+    @available(*, deprecated, message: "Use lengthSquared")
+    var magnitude: CGFloat {
+        lengthSquared
     }
 
     func distance(to other: Self) -> CGFloat {
-        let dx = x - other.x
-        let dy = y - other.y
-        return sqrt(dx * dx + dy * dy)
+        Self.distance(self, other)
     }
 
     static func distance(_ lhs: CGPoint, _ rhs: CGPoint) -> CGFloat {
-        let d = rhs - lhs
-        return sqrt(d.x * d.x + d.y * d.y)
+        (rhs - lhs).length
     }
 
     var normalized: Self {
         isZero ? self : self / length
     }
 
-    var orthogonal: Self {
-        Self(x: -y, y: x)
-    }
-
     var transposed: Self {
-        Self(x: y, y: x)
+        .init(x: y, y: x)
     }
 
-    init(origin: CGPoint = .zero, distance d: CGFloat, angle: Angle) {
+    var perpendicular: Self {
+        .init(x: -y, y: x)
+    }
+
+    init(origin: CGPoint = .zero, length d: CGFloat, angle: Angle) {
         self = CGPoint(x: origin.x + Darwin.cos(angle.radians) * d, y: origin.y + sin(angle.radians) * d)
     }
 
     var angle: Angle {
         get {
-            .radians(atan2(y, x))
+            .init(to: self)
         }
-        set(v) {
-            self = .init(distance: distance, angle: v)
+        set {
+            self = .init(length: length, angle: newValue)
         }
     }
 }

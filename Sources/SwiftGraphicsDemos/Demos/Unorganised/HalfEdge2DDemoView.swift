@@ -45,7 +45,7 @@ struct HalfEdge2DDemoView: View, DemoView {
                     let from = halfEdges.0.vertex.position
                     let to = halfEdges.1.vertex.position
 
-                    let sideOffset = CGPoint(distance: -5, angle: Angle(from: from, to: to) + 90)
+                    let sideOffset = CGPoint(length: -5, angle: Angle(from: from, to: to) + 90)
 
                     let fromOffset: CGPoint = (to - from).normalized * 15
                     let toOffset = (from - to).normalized * 15
