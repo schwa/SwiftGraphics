@@ -214,9 +214,9 @@ extension Shapes2D.Circle {
 
 extension Triangle {
     init(containing circle: Shapes2D.Circle) {
-        let a = circle.center + CGPoint(distance: circle.radius * 2, angle: Angle.degrees(0))
-        let b = circle.center + CGPoint(distance: circle.radius * 2, angle: Angle.degrees(120))
-        let c = circle.center + CGPoint(distance: circle.radius * 2, angle: Angle.degrees(240))
+        let a = circle.center + CGPoint(length: circle.radius * 2, angle: Angle.degrees(0))
+        let b = circle.center + CGPoint(length: circle.radius * 2, angle: Angle.degrees(120))
+        let c = circle.center + CGPoint(length: circle.radius * 2, angle: Angle.degrees(240))
         self = .init(a, b, c)
     }
 }
@@ -514,7 +514,7 @@ struct MarkingsView: View {
 
     static func rulerGuides(width: Double, angle: Angle, includeZero: Bool = true) -> (_ origin: CGPoint, _ bounds: CGRect) -> [Guide] {
         { _, bounds in
-            let d = CGPoint(bounds.size).distance
+            let d = CGPoint(bounds.size).length
             return stride(from: includeZero ? 0 : width, through: d, by: width).map { Guide.line(.vertical(x: $0)) }
         }
     }

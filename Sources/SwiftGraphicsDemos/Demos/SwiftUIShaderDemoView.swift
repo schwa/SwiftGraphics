@@ -7,7 +7,7 @@ struct SwiftUIShaderDemoView: DemoView {
     var body: some View {
         ZStack {
             Color.white
-                .colorEffect(ShaderFunction.stripeFunction(color1: .red, color2: .black, width: offset.distance, gap: offset.distance, angle: offset.angle))
+                .colorEffect(ShaderFunction.stripeFunction(color1: .red, color2: .black, width: offset.length, gap: offset.length, angle: offset.angle))
             Circle().fill(Color.black).frame(width: 20, height: 20)
                 .contentShape(Circle())
                 .gesture {

@@ -448,6 +448,7 @@ let package = Package(
                 "GaussianSplatDemos",
                 "GaussianSplatShaders",
                 "GaussianSplatSupport",
+                "Projection",
             ],
             resources: [
                 .copy("Resources/lastchance.splat"),
@@ -458,6 +459,7 @@ let package = Package(
             name: "CoreGraphicsSupportTests",
             dependencies: [
                 "CoreGraphicsSupport",
+                "CoreGraphicsUnsafeConformances",
             ]
         ),
 

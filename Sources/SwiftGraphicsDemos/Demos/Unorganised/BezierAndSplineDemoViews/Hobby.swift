@@ -33,7 +33,7 @@ func hobby(points: [CGPoint], omega: Double = 0.0) -> [CGPoint] {
     var d = Array(repeating: 0.0, count: n)
     for i in 0 ..< n {
         chords[i] = points[i + 1] - points[i]
-        d[i] = chords[i].distance
+        d[i] = chords[i].length
         // no chord can be zero-length (i.e. no two successive points can be the same)
         assert(d[i] > 0)
     }
@@ -195,7 +195,7 @@ func vSub(_ lhs: CGPoint, _ rhs: CGPoint) -> CGPoint {
 }
 
 func vNorm(_ point: CGPoint) -> CGPoint {
-    let l = point.distance
+    let l = point.length
     return point / l
 }
 
