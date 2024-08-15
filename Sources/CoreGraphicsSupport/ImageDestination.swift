@@ -16,7 +16,7 @@ public struct ImageDestination {
         let type = try type ?? Self.type(for: url)
 
         guard let destination = CGImageDestinationCreateWithURL(url as CFURL, type.identifier as CFString, count, nil) else {
-            throw BaseError.resourceCreationFailure
+            throw BaseError.error(.resourceCreationFailure)
         }
         self.destination = destination
     }

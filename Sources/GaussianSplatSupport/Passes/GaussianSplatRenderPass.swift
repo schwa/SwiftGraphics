@@ -64,7 +64,7 @@ public struct GaussianSplatRenderPass <Splat>: RenderPassProtocol where Splat: S
 
         let (renderPipelineState, reflection) = try device.makeRenderPipelineState(descriptor: renderPipelineDescriptor, options: [.bindingInfo])
         guard let reflection else {
-            throw BaseError.resourceCreationFailure
+            throw BaseError.error(.resourceCreationFailure)
         }
 
         var vertexBindings = VertexBindings()
@@ -146,7 +146,7 @@ extension MTLRenderPassColorAttachmentDescriptor {
     var size: SIMD2<Float> {
         get throws {
             guard let texture else {
-                throw BaseError.invalidParameter
+                throw BaseError.error(.invalidParameter)
             }
             return SIMD2<Float>(Float(texture.width), Float(texture.height))
         }

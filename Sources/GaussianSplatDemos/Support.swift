@@ -62,7 +62,7 @@ public extension SplatCloud where Splat == SplatC {
             }
             splats = try device.makeTypedBuffer(data: splatArray, options: .storageModeShared).labelled("Splats")
         } else {
-            throw BaseError.illegalValue
+            throw BaseError.error(.illegalValue)
         }
         try self.init(device: device, splats: splats)
     }

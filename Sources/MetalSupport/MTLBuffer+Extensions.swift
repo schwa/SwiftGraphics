@@ -5,7 +5,7 @@ public extension MTLDevice {
     // TODO: Rename
     func makeBufferEx(bytes pointer: UnsafeRawPointer, length: Int, options: MTLResourceOptions = []) throws -> MTLBuffer {
         guard let buffer = makeBuffer(bytes: pointer, length: length, options: options) else {
-            throw BaseError.resourceCreationFailure
+            throw BaseError.error(.resourceCreationFailure)
         }
         return buffer
     }
@@ -13,7 +13,7 @@ public extension MTLDevice {
     // TODO: Rename
     func makeBufferEx(length: Int, options: MTLResourceOptions = []) throws -> MTLBuffer {
         guard let buffer = makeBuffer(length: length, options: options) else {
-            throw BaseError.resourceCreationFailure
+            throw BaseError.error(.resourceCreationFailure)
         }
         return buffer
     }
@@ -22,7 +22,7 @@ public extension MTLDevice {
         try data.withUnsafeBytes { buffer in
             let baseAddress = buffer.baseAddress.forceUnwrap("No baseAddress.")
             guard let buffer = makeBuffer(bytes: baseAddress, length: buffer.count, options: options) else {
-                throw BaseError.resourceCreationFailure
+                throw BaseError.error(.resourceCreationFailure)
             }
             return buffer
         }
@@ -32,7 +32,7 @@ public extension MTLDevice {
         try withUnsafeBytes(of: content) { buffer in
             let baseAddress = buffer.baseAddress.forceUnwrap("No baseAddress.")
             guard let buffer = makeBuffer(bytes: baseAddress, length: buffer.count, options: options) else {
-                throw BaseError.resourceCreationFailure
+                throw BaseError.error(.resourceCreationFailure)
             }
             return buffer
         }
@@ -42,7 +42,7 @@ public extension MTLDevice {
         try content.withUnsafeBytes { buffer in
             let baseAddress = buffer.baseAddress.forceUnwrap("No baseAddress.")
             guard let buffer = makeBuffer(bytes: baseAddress, length: buffer.count, options: options) else {
-                throw BaseError.resourceCreationFailure
+                throw BaseError.error(.resourceCreationFailure)
             }
             return buffer
         }

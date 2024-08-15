@@ -6,7 +6,7 @@ public extension MTLComputePipelineReflection {
         guard let binding = bindings.first(where: { $0.name == name }) else {
             let bindings = bindings.map(\.name)
             logger?.debug("Failed to find binding for \(name). Valid binding names are: \(bindings.joined(separator: ", "))")
-            throw BaseError.missingValue
+            throw BaseError.error(.missingValue)
         }
         return binding.index
     }
@@ -28,7 +28,7 @@ public extension MTLRenderPipelineReflection {
             unimplemented()
         }
         guard let binding = bindings.first(where: { $0.name == name }) else {
-            throw BaseError.invalidParameter
+            throw BaseError.error(.invalidParameter)
         }
         return binding.index
     }

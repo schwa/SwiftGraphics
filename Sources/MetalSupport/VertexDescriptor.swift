@@ -233,14 +233,14 @@ public extension VertexDescriptor {
         let maxVertexAttributesCount = 31
         let layouts: [Layout] = try (0 ..< maxBufferArgumentEntriesCount).compactMap { bufferIndex in
             guard let mdlLayout = mdlDescriptor.layouts[bufferIndex] as? MDLVertexBufferLayout else {
-                throw BaseError.invalidParameter
+                throw BaseError.error(.invalidParameter)
             }
             guard mdlLayout.stride != 0 else {
                 return nil
             }
             let attributes: [Attribute] = try (0 ..< maxVertexAttributesCount).compactMap { attributeIndex in
                 guard let mdlAttribute = mdlDescriptor.attributes[attributeIndex] as? MDLVertexAttribute else {
-                    throw BaseError.invalidParameter
+                    throw BaseError.error(.invalidParameter)
                 }
                 guard mdlAttribute.bufferIndex == bufferIndex, mdlAttribute.format != .invalid else {
                     return nil

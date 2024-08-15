@@ -570,7 +570,7 @@ extension Color: Codable {
     public func encode(to encoder: any Encoder) throws {
         var container = encoder.singleValueContainer()
         guard let components = resolve(in: .init()).cgColor.converted(to: CGColorSpace(name: CGColorSpace.sRGB)!, intent: .defaultIntent, options: nil)?.components else {
-            throw BaseError.parsingFailure
+            throw BaseError.error(.parsingFailure)
         }
         try container.encode(components)
     }
@@ -792,7 +792,7 @@ extension UTType {
 extension Bundle {
     func url(forResource resource: String?, withExtension extension: String?) throws -> URL {
         guard let url = url(forResource: resource, withExtension: `extension`) else {
-            throw BaseError.resourceCreationFailure
+            throw BaseError.error(.resourceCreationFailure)
         }
         return url
     }

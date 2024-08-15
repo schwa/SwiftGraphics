@@ -87,16 +87,16 @@ extension View {
 extension Image {
     init(url: URL) throws {
         if try url.checkResourceIsReachable() == false {
-            throw BaseError.inputOutputFailure
+            throw BaseError.error(.inputOutputFailure)
         }
         #if os(macOS)
         guard let nsImage = NSImage(contentsOf: url) else {
-            throw BaseError.inputOutputFailure
+            throw BaseError.error(.inputOutputFailure)
         }
         self = Image(nsImage: nsImage)
         #elseif os(iOS)
         guard let uiImage = UIImage(contentsOfFile: url.path) else {
-            throw BaseError.inputOutputFailure
+            throw BaseError.error(.inputOutputFailure)
         }
         self = Image(uiImage: uiImage)
         #endif

@@ -4,7 +4,7 @@ import Metal
 internal extension ComputePassProtocol {
     func compute(commandBuffer: MTLCommandBuffer, info: PassInfo, untypedState: Sendable) throws {
         guard let state = untypedState as? State else {
-            throw BaseError.typeMismatch
+            throw BaseError.error(.typeMismatch)
         }
         try compute(commandBuffer: commandBuffer, info: info, state: state)
     }

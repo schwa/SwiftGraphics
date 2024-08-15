@@ -44,7 +44,7 @@ public extension Circle {
         let c = points.2 - points.0
         let d = 2 * (b.x * c.y - b.y * c.x)
         guard d != 0 else {
-            throw BaseError.invalidParameter
+            throw BaseError.error(.invalidParameter)
         }
         let bms = b.lengthSquared
         let cms = c.lengthSquared

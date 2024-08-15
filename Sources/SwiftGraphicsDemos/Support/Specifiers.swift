@@ -92,7 +92,7 @@ struct MeshSpecifier: Equatable {
 
         case .bundleResource(let resource):
             guard let url = try resource.resolve() else {
-                throw BaseError.resourceCreationFailure
+                throw BaseError.error(.resourceCreationFailure)
             }
             mesh = try load(url: url, device: device, vertexDescriptor: vertexDescriptor)
 
@@ -107,7 +107,7 @@ struct MeshSpecifier: Equatable {
         let bufferAllocator = MTKMeshBufferAllocator(device: device)
         let asset = MDLAsset(url: url, vertexDescriptor: vertexDescriptor, bufferAllocator: bufferAllocator)
         guard let mdlMesh = asset.object(at: 0) as? MDLMesh else {
-            throw BaseError.resourceCreationFailure
+            throw BaseError.error(.resourceCreationFailure)
         }
         return try MTKMesh(mesh: mdlMesh, device: device)
     }
@@ -183,7 +183,7 @@ struct TextureSpecifier: Equatable, Sendable, Hashable {
             let texture: MTLTexture
             if resource.name.contains("/") {
                 guard let url = try resource.resolve() else {
-                    throw BaseError.resourceCreationFailure
+                    throw BaseError.error(.resourceCreationFailure)
                 }
                 texture = try textureLoader.newTexture(URL: url, options: options)
             } else {
