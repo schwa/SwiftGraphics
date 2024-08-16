@@ -152,7 +152,6 @@ internal class MetalViewModel: NSObject, MTKViewDelegate {
     }
 
     func set(error: Error) {
-        fatalError(error)
         logger?.debug("MetalViewModel.\(#function)")
         self.error = (self.error.0 + 1, error)
     }

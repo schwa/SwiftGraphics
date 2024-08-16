@@ -56,7 +56,7 @@ struct LineGeometryShaderView: DemoView {
         }
         .contextMenu {
             Button("Add 10") {
-                for N in 0..<1000 {
+                for _ in 0..<1000 {
                     points.append(CGPoint.random(in: CGRect(origin: .zero, size: size)))
                 }
             }
