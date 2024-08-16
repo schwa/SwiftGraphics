@@ -2,6 +2,9 @@ import CoreGraphics
 import SwiftUI
 
 // TODO: Made available in macOS 15/iOS 18
+
+@available(macOS, obsoleted: 15)
+@available(iOS, obsoleted: 18)
 extension CGPoint: @retroactive Hashable {
     public func hash(into hasher: inout Hasher) {
         x.hash(into: &hasher)
