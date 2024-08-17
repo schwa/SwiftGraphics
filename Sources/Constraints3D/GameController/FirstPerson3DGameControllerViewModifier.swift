@@ -39,7 +39,6 @@ public struct FirstPerson3DGameControllerViewModifier: ViewModifier {
 struct FirstPerson3D {
     var controller: GCController?
     var transform: simd_float4x4
-    var lastUpdate: Date?
     var orientation: RollPitchYaw
 
     var forwardCurve: (Float, TimeInterval) -> Float = { input, deltaTime in
