@@ -6,11 +6,14 @@ public struct BlitTexturePass: GeneralPassProtocol {
     }
 
     public var id: PassID
+    public var enabled: Bool = true
+
     public var source: Box<MTLTexture>
     public var destination: Box<MTLTexture>?
 
-    public init(id: PassID, source: MTLTexture, destination: MTLTexture?) {
+    public init(id: PassID, enabled: Bool = true, source: MTLTexture, destination: MTLTexture?) {
         self.id = id
+        self.enabled = true
         self.source = Box(source)
         self.destination = destination.map { Box($0) }
     }
@@ -20,6 +23,7 @@ public struct BlitTexturePass: GeneralPassProtocol {
     }
 
     public func encode(commandBuffer: MTLCommandBuffer, info: PassInfo, state: State) throws {
+        info.logger?.log("\(type(of: self)).\(#function)")
         let source = source()
         guard let destination = destination?() ?? info.currentRenderPassDescriptor?.colorAttachments[0].texture else {
             throw BaseError.error(.invalidParameter)

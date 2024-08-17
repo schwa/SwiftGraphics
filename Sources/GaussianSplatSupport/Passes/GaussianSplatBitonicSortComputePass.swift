@@ -13,11 +13,14 @@ public struct GaussianSplatBitonicSortComputePass <Splat>: ComputePassProtocol w
 
     typealias Bindings = GaussianSplatBitonicSortComputePassBindings
 
-    public var id = PassID("GaussianSplatBitonicSortComputePass")
+    public var id: PassID
+    public var enabled: Bool = true
     var splats: SplatCloud<Splat>
     var sortRate: Int
 
-    public init(splats: SplatCloud<Splat>, sortRate: Int) {
+    public init(id: PassID, enabled: Bool = true, splats: SplatCloud<Splat>, sortRate: Int) {
+        self.id = id
+        self.enabled = enabled
         self.splats = splats
         self.sortRate = sortRate
     }

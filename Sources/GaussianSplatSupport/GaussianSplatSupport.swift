@@ -27,16 +27,6 @@ public extension Collection where Element == PackedFloat3 {
 
 public extension Bundle {
     // GaussianSplatTests.xctest/Contents/Resources/SwiftGraphics_GaussianSplatSupport.bundle
-
-    func peerBundle(named name: String, withExtension extension: String? = nil) -> Bundle? {
-        let parentDirectory = bundleURL.deletingLastPathComponent()
-        if let `extension` {
-            return Bundle(url: parentDirectory.appendingPathComponent(name + "." + `extension`))
-        } else {
-            return Bundle(url: parentDirectory.appendingPathComponent(name))
-        }
-    }
-
     static let gaussianSplatShaders: Bundle = {
         Bundle.module.peerBundle(named: "SwiftGraphics_GaussianSplatShaders", withExtension: "bundle").forceUnwrap("Could not find bundle.")
     }()

@@ -102,6 +102,7 @@ public struct LineShaderRenderPass: RenderPassProtocol {
     }
 
     public var id: PassID
+    public var enabled = true
     var lineSegments: TypedMTLBuffer<LineGeometrySegment>
     var count: Int
     var displayScale: Float

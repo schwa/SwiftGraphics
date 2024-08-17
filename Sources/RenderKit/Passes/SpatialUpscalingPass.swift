@@ -7,10 +7,12 @@ public struct SpatialUpscalingPass: GeneralPassProtocol {
     }
 
     public var id: PassID
+    public var enabled: Bool = true
     public var spatialScaler: Box<MTLFXSpatialScaler>
 
-    public init(id: PassID, device: MTLDevice, source: MTLTexture, destination: MTLTexture, colorProcessingMode: MTLFXSpatialScalerColorProcessingMode) throws {
+    public init(id: PassID, enabled: Bool = true, device: MTLDevice, source: MTLTexture, destination: MTLTexture, colorProcessingMode: MTLFXSpatialScalerColorProcessingMode) throws {
         self.id = id
+        self.enabled = enabled
 
         let spatialScalerDescriptor = MTLFXSpatialScalerDescriptor()
         spatialScalerDescriptor.inputWidth = source.width

@@ -13,13 +13,16 @@ public struct GaussianSplatDistanceComputePass<Splat>: ComputePassProtocol where
         var bindings: Bindings
     }
 
-    public var id = PassID("GaussianSplatPreCalcComputePass")
+    public var id: PassID
+    public var enabled: Bool = true
     var splats: SplatCloud<Splat>
     var modelMatrix: simd_float3x3
     var cameraPosition: SIMD3<Float>
     var sortRate: Int
 
-    public init(splats: SplatCloud<Splat>, modelMatrix: simd_float3x3, cameraPosition: SIMD3<Float>, sortRate: Int) {
+    public init(id: PassID, enabled: Bool = true, splats: SplatCloud<Splat>, modelMatrix: simd_float3x3, cameraPosition: SIMD3<Float>, sortRate: Int) {
+        self.id = id
+        self.enabled = enabled
         self.splats = splats
         self.modelMatrix = modelMatrix
         self.cameraPosition = cameraPosition
