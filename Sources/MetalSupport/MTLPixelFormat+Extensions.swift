@@ -1,4 +1,3 @@
-import BaseSupport
 import Metal
 
 public extension MTLPixelFormat {

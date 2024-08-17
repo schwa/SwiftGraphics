@@ -13,7 +13,7 @@ public struct BlitTexturePass: GeneralPassProtocol {
 
     public init(id: PassID, enabled: Bool = true, source: MTLTexture, destination: MTLTexture?) {
         self.id = id
-        self.enabled = true
+        self.enabled = enabled
         self.source = Box(source)
         self.destination = destination.map { Box($0) }
     }
