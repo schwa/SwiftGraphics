@@ -13,6 +13,7 @@ import SwiftUI
 
 struct VolumetricRenderPass: RenderPassProtocol {
     let id: PassID = "VolumetricRenderPass"
+    var enabled = true
     var scene: SceneGraph
 
     struct State: Sendable {

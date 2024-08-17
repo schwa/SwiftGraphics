@@ -123,6 +123,7 @@ struct PointCloudRenderPass: RenderPassProtocol {
     }
 
     var id: PassID = "PointCloudRenderPass"
+    var enabled = true
 
     var scene: SceneGraph
 

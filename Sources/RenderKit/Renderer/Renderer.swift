@@ -53,6 +53,7 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
         logger?.debug("Renderer.\(#function)")
         self.device = device
         self.passes = passes
+        self.logger = logger
         self.phase = .initialized
         self.callbacks = callbacks
         self.gpuCounters = gpuCounters
@@ -108,6 +109,7 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
             info.deltaTime = now - info.time
             info.time = now
             info.drawableSize = drawableSize
+            info.logger = logger
             self.info = info
         } else {
             guard let configuration else {
@@ -132,7 +134,9 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
         var info = info
         info.currentRenderPassDescriptor = renderPassDescriptor
 
-        for pass in passes {
+        logger?.log("Rendering: \(passes.filter { $0.enabled }.map(\.id))")
+
+        for pass in passes where pass.enabled == true {
             if let prePass = callbacks.prePass {
                 prePass(pass, commandBuffer, info)
             }

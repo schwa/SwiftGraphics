@@ -1,5 +1,7 @@
 // periphery:ignore:all
 
+import os
+
 @preconcurrency import Metal
 
 public struct PassID: Hashable, Sendable {
@@ -20,6 +22,7 @@ extension PassID: ExpressibleByStringLiteral {
 
 public protocol PassProtocol: Equatable, Sendable {
     var id: PassID { get }
+    var enabled: Bool { get }
 }
 
 public struct PassInfo: Sendable {
@@ -31,6 +34,7 @@ public struct PassInfo: Sendable {
     public var configuration: any MetalConfigurationProtocol
     public var currentRenderPassDescriptor: MTLRenderPassDescriptor?
     public var gpuCounters: GPUCounters?
+    public var logger: Logger?
 }
 
 // MARK: -
@@ -71,32 +75,19 @@ public protocol GroupPassProtocol: PassProtocol {
 
 public struct GroupPass: GroupPassProtocol {
     public var id: PassID
+    public var enabled: Bool
     internal var _children: PassCollection
     public var renderPassDescriptor: MTLRenderPassDescriptor?
 
-    //    public init(id: PassID, renderPassDescriptor: MTLRenderPassDescriptor? = nil, children: [any PassProtocol]) {
-    //        self.id = id
-    //        self.renderPassDescriptor = renderPassDescriptor
-    //        self._children = PassCollection(children)
-    //    }
+    public init(id: PassID, enabled: Bool = true, renderPassDescriptor: MTLRenderPassDescriptor? = nil, @RenderPassBuilder content: () throws -> [any PassProtocol]) rethrows {
+        self.id = id
+        self.enabled = enabled
+        self.renderPassDescriptor = renderPassDescriptor
+        self._children = try PassCollection(content())
+    }
 
     public func children() throws -> [any PassProtocol] {
         _children.elements
-    }
-}
-
-// public struct EmptyPass: GeneralPassProtocol {
-//    public struct State {
-//    }
-//
-//    public let id = PassID(rawValue: "\(UUID())")
-// }
-
-public extension GroupPass {
-    init(id: PassID, renderPassDescriptor: MTLRenderPassDescriptor? = nil, @RenderPassBuilder content: () throws -> [any PassProtocol]) rethrows {
-        self.id = id
-        self.renderPassDescriptor = renderPassDescriptor
-        self._children = try PassCollection(content())
     }
 }
 

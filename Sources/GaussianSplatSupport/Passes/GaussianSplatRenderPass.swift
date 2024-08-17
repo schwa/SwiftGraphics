@@ -25,16 +25,19 @@ public struct GaussianSplatRenderPass <Splat>: RenderPassProtocol where Splat: S
         var vertexCounterBuffer: MTLBuffer
     }
 
-    public var id: PassID = "GaussianSplatRenderPass"
+    public var id: PassID
+    public var enabled: Bool
     public var scene: SceneGraph
     public var debugMode: Bool
-    public var useVertexCounting = false
-    public var discardRate: Float = 0.05
+    public var useVertexCounting: Bool
+    public var discardRate: Float
 
     let vertexShaderName = "GaussianSplatShaders::VertexShader"
     let fragmentShaderName = "GaussianSplatShaders::FragmentShader"
 
-    init(scene: SceneGraph, debugMode: Bool, useVertexCounting: Bool = false, discardRate: Float) {
+    init(id: PassID, enabled: Bool = true, scene: SceneGraph, debugMode: Bool = false, useVertexCounting: Bool = false, discardRate: Float = 0.0) {
+        self.id = id
+        self.enabled = enabled
         self.scene = scene
         self.debugMode = debugMode
         self.useVertexCounting = useVertexCounting

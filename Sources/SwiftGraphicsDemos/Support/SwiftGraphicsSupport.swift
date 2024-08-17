@@ -10,14 +10,8 @@ import SwiftUI
 import AppKit
 #endif
 
-import BaseSupport
-import CoreGraphics
-import CoreGraphicsSupport
 import CoreGraphicsUnsafeConformances
 import Everything
-import Foundation
-import Metal
-import MetalKit
 import MetalPerformanceShaders
 import MetalSupport
 import ModelIO
@@ -26,9 +20,7 @@ import Projection
 import Shapes2D
 import Shapes3D
 import simd
-import SIMDSupport
 import SwiftFormats
-import SwiftUI
 import UniformTypeIdentifiers
 
 extension MTKMesh {
@@ -912,20 +904,4 @@ extension Path3D {
 
 extension UTType {
     static let plyFile = UTType(importedAs: "public.polygon-file-format")
-}
-
-extension Bundle {
-    func url(forResource resource: String?, withExtension extension: String?) throws -> URL {
-        guard let url = url(forResource: resource, withExtension: `extension`) else {
-            throw BaseError.error(.resourceCreationFailure)
-        }
-        return url
-    }
-}
-
-extension Bundle {
-    static func bundle(forProject project: String, target: String) -> Bundle? {
-        let url = Bundle.main.url(forResource: "\(project)_\(target)", withExtension: "bundle")!
-        return Bundle(url: url)
-    }
 }

@@ -1,14 +1,14 @@
 import os
 import SwiftUI
 
-struct RenderErrorHandler: Sendable {
+public struct RenderErrorHandler: Sendable {
     var handler: @Sendable (Error) -> Void
 
-    init(handler: @Sendable @escaping (Error) -> Void = { _ in }) {
+    public init(handler: @Sendable @escaping (Error) -> Void = { _ in }) {
         self.handler = handler
     }
 
-    func send(_ error: Error, logger: Logger? = nil) {
+    public func send(_ error: Error, logger: Logger? = nil) {
         if let logger {
             logger.error("\(error)")
             handler(error)
@@ -16,11 +16,11 @@ struct RenderErrorHandler: Sendable {
     }
 }
 
-struct RenderErrorHandlerKey: EnvironmentKey {
-    static let defaultValue = RenderErrorHandler()
+public struct RenderErrorHandlerKey: EnvironmentKey {
+    public static let defaultValue = RenderErrorHandler()
 }
 
-extension EnvironmentValues {
+public extension EnvironmentValues {
     var renderErrorHandler: RenderErrorHandler {
         get {
             self[RenderErrorHandlerKey.self]

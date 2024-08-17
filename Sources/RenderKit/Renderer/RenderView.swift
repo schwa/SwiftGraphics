@@ -11,10 +11,12 @@ import SwiftUI
 public struct RenderView: View {
     public typealias Configure = (inout MetalViewConfiguration) -> Void
     public typealias SizeWillChange = (MTLDevice, inout MetalViewConfiguration, CGSize) -> Void
+    public typealias DidDraw = () -> Void
 
     var passes: PassCollection
     var configure: Configure
     var sizeWillChange: SizeWillChange
+    var didDraw: DidDraw
 
     @Environment(\.metalDevice)
     var device
@@ -37,13 +39,14 @@ public struct RenderView: View {
     @Environment(\.gpuCounters)
     var gpuCounters
 
-    public init(colorPixelFormat: MTLPixelFormat = .bgra8Unorm_srgb, depthStencilPixelFormat: MTLPixelFormat = .depth32Float, passes: [any PassProtocol], configure: @escaping Configure = { _ in }, sizeWillChange: @escaping SizeWillChange = { _, _, _ in }) {
+    public init(colorPixelFormat: MTLPixelFormat = .bgra8Unorm_srgb, depthStencilPixelFormat: MTLPixelFormat = .depth32Float, passes: [any PassProtocol], configure: @escaping Configure = { _ in }, sizeWillChange: @escaping SizeWillChange = { _, _, _ in }, didDraw: @escaping DidDraw = { }) {
         self.configure = { configuration in
             configuration.colorPixelFormat = colorPixelFormat
             configuration.depthStencilPixelFormat = depthStencilPixelFormat
             configure(&configuration)
         }
         self.sizeWillChange = sizeWillChange
+        self.didDraw = didDraw
         let passes = PassCollection(passes)
         self.passes = passes
     }
@@ -71,6 +74,7 @@ public struct RenderView: View {
                     throw BaseError.error(.missingValue)
                 }
                 try renderer?.draw(commandQueue: commandQueue, currentRenderPassDescriptor: currentRenderPassDescriptor, currentDrawable: currentDrawable, drawableSize: SIMD2<Float>(size))
+                didDraw()
             } catch {
                 renderErrorHandler.send(error, logger: logger)
             }
@@ -94,8 +98,8 @@ public struct RenderView: View {
 //
 
 public extension RenderView {
-    init(pass: (any PassProtocol)?, configure: @escaping Configure = { _ in }, sizeWillChange: @escaping SizeWillChange = { _, _, _ in }) {
-        self.init(passes: pass.map { [$0] } ?? [], configure: configure, sizeWillChange: sizeWillChange)
+    init(pass: (any PassProtocol)?, configure: @escaping Configure = { _ in }, sizeWillChange: @escaping SizeWillChange = { _, _, _ in }, didDraw: @escaping DidDraw = { }) {
+        self.init(passes: pass.map { [$0] } ?? [], configure: configure, sizeWillChange: sizeWillChange, didDraw: didDraw)
     }
 }
 

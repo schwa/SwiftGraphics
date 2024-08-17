@@ -26,6 +26,7 @@ struct SimplePBRShadingPass: RenderPassProtocol {
     }
 
     var id: PassID
+    var enabled = true
     var scene: SceneGraph
 
     func setup(device: MTLDevice, configuration: some MetalConfigurationProtocol) throws -> State {
