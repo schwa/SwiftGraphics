@@ -115,6 +115,7 @@ let package = Package(
                 "Constraints3D",
                 "CoreGraphicsSupport",
                 "CoreGraphicsUnsafeConformances",
+                "Projection",
                 "Shapes2D",
                 "SIMDSupport",
                 "SwiftUISupport",
