@@ -11,7 +11,9 @@ struct LineGeometrySegment {
 
 #import <metal_logging>
 #import <metal_mesh>
+#if __METAL_VERSION__ >= 320
 #import <metal_stdlib>
+#endif
 
 using namespace metal;
 
@@ -42,16 +44,18 @@ namespace LineGeometryShaders {
 
     uint thread_position_in_grid [[thread_position_in_grid]];
     uint threads_per_grid [[threads_per_grid]];
-uint threadgroups_per_grid [[threadgroups_per_grid]];
-uint threads_per_threadgroup [[threads_per_threadgroup]];
+    uint threadgroups_per_grid [[threadgroups_per_grid]];
+    uint threads_per_threadgroup [[threads_per_threadgroup]];
 
 
 
     void log_attributes(int id) {
+#if __METAL_VERSION__ >= 320
         if (thread_position_in_grid != 0) {
             return;
         }
         os_log_default.log("[%d] threadgroups_per_grid: %d / threads_per_threadgroup: %d / threads_per_grid: %d", id, threadgroups_per_grid, threads_per_threadgroup,  threads_per_grid);
+#endif
     }
 
     [[object]]
