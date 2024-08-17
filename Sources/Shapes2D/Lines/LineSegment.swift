@@ -1,5 +1,4 @@
 import Algorithms
-import BaseSupport
 import CoreGraphics
 import CoreGraphicsSupport
 import Foundation

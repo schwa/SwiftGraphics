@@ -1,8 +1,6 @@
 // swiftlint:disable file_length
 
-import BaseSupport
 import CoreGraphics
-import CoreGraphicsSupport
 import Foundation
 import Metal
 import MetalKit
