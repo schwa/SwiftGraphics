@@ -16,6 +16,7 @@ import SwiftFormats
 import SwiftUI
 import SwiftUISupport
 import UniformTypeIdentifiers
+import Shapes3D
 
 // swiftlint:disable force_unwrapping
 
@@ -53,12 +54,17 @@ public struct GaussianSplatNewMinimalView: View {
         self.metalFXRate = metalFXRate
         self.discardRate = discardRate
         self.device = device
+
+        let panoramaMesh = try Sphere3D(radius: 400).toMTKMesh(device: device, inwardNormals: true)
+        let loader = MTKTextureLoader(device: device)
+        let panoramaTexture = try loader.newTexture(name: "SplitSkybox", scaleFactor: 2, bundle: Bundle.module)
+
         let root = Node(label: "root") {
             Node(label: "camera", content: Camera())
+            Node(label: "pano", content: Geometry(mesh: panoramaMesh, materials: [UnlitMaterialX(baseColorTexture: panoramaTexture)]))
             Node(label: "splats", content: splats).transformed(roll: .zero, pitch: .degrees(270), yaw: .zero).transformed(roll: .zero, pitch: .zero, yaw: .degrees(90)).transformed(translation: [0, 0.25, 0.5])
         }
         let scene = SceneGraph(root: root)
-
         self.viewModel = try GaussianSplatViewModel<SplatC>(device: device, scene: scene, debugMode: false, sortRate: sortRate, metalFXRate: metalFXRate, discardRate: discardRate)
     }
 
