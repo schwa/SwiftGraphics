@@ -7,7 +7,7 @@ import SwiftUISupport
 
 public struct DemosScene: Scene {
     @AppStorage("Logging")
-    var logging: Bool = false
+    var logging: Bool = true
 
     public init() {
     }
@@ -30,6 +30,7 @@ public struct DemosScene: Scene {
         #else
         WindowGroup("Demos", id: "demos") {
             DemosView()
+            .logger(Logger())
         }
         #endif
     }
@@ -156,7 +157,7 @@ struct DemosView: View {
 }
 
 struct SettingsView: View {
-    @AppStorage("XLogging")
+    @AppStorage("Logging")
     var logging: Bool = true
 
     var body: some View {

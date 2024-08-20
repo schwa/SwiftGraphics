@@ -23,7 +23,6 @@ public struct BlitTexturePass: GeneralPassProtocol {
     }
 
     public func encode(commandBuffer: MTLCommandBuffer, info: PassInfo, state: State) throws {
-        info.logger?.log("\(type(of: self)).\(#function)")
         let source = source()
         guard let destination = destination?() ?? info.currentRenderPassDescriptor?.colorAttachments[0].texture else {
             throw BaseError.error(.invalidParameter)
