@@ -19,7 +19,6 @@ let package = Package(
         .library(name: "CoreGraphicsUnsafeConformances", targets: ["CoreGraphicsUnsafeConformances"]),
         .library(name: "Counters", targets: ["Counters"]),
         .library(name: "Earcut", targets: ["Earcut"]),
-        .library(name: "GaussianSplatDemos", targets: ["GaussianSplatDemos"]),
         .library(name: "GaussianSplatSupport", targets: ["GaussianSplatSupport"]),
         .library(name: "GenericGeometryBase", targets: ["GenericGeometryBase"]),
         .library(name: "MetalSupport", targets: ["MetalSupport"]),
@@ -306,6 +305,7 @@ let package = Package(
                 "Constraints3D",
                 "CoreGraphicsSupport",
                 "CoreGraphicsUnsafeConformances",
+                "Counters",
                 "GenericGeometryBase",
                 "MetalSupport",
                 "Projection",
@@ -322,10 +322,10 @@ let package = Package(
                 "MetalUnsafeConformances",
                 "Widgets3D",
                 .product(name: "SwiftFields", package: "swiftfields"),
-                "GaussianSplatDemos",
                 "RenderKitUISupport",
                 "SwiftUISupport",
-                "RenderKitSceneGraph"
+                "RenderKitSceneGraph",
+                "GaussianSplatSupport"
             ],
             exclude: [
                 "Demos/VolumetricRendererDemoView/README.md",
@@ -339,6 +339,7 @@ let package = Package(
                 .copy("Resources/adjectives.txt"),
                 .copy("Resources/nouns.txt"),
                 .copy("Resources/StanfordVolumeData.tar"),
+                .copy("Resources/vision_dr.splat"),
             ],
             swiftSettings: [
                 .interoperabilityMode(.Cxx),
@@ -364,23 +365,6 @@ let package = Package(
             swiftSettings: [.interoperabilityMode(.Cxx)]
         ),
 
-        .target(
-            name: "GaussianSplatDemos",
-            dependencies: [
-                "Constraints3D",
-                "GaussianSplatSupport",
-                "RenderKitUISupport",
-                "Counters",
-                "Widgets3D",
-                "RenderKitSceneGraph"
-            ],
-            resources: [
-                .copy("Resources/lastchance.splat"),
-                .copy("Resources/train.splat"),
-                .copy("Resources/winter_fountain.splat"),
-                .copy("Resources/vision_dr.splat"),
-            ]
-        ),
         .target(
             name: "GaussianSplatShaders",
             plugins: [
@@ -446,7 +430,6 @@ let package = Package(
         .testTarget(
             name: "GaussianSplatTests",
             dependencies: [
-                "GaussianSplatDemos",
                 "GaussianSplatShaders",
                 "GaussianSplatSupport",
                 "Projection",
