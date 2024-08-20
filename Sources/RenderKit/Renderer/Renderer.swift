@@ -95,12 +95,6 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
     }
 
     mutating func render(commandBuffer: MTLCommandBuffer, currentRenderPassDescriptor: MTLRenderPassDescriptor, drawableSize: SIMD2<Float>) throws {
-
-
-//        let passes = self.passes.flattened()
-
-//        logger?.log("Rendering: \(passes.count) passes")
-
         guard phase == .configured(sizeKnown: true) || phase == .rendering else {
             logger?.debug("Renderer not configured, skipping render.")
             return
