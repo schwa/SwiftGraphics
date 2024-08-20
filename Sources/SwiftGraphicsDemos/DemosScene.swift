@@ -157,8 +157,8 @@ struct DemosView: View {
 }
 
 struct SettingsView: View {
-    @AppStorage("Logging")
-    var logging: Bool = false
+    @AppStorage("XLogging")
+    var logging: Bool = true
 
     var body: some View {
         Form {
