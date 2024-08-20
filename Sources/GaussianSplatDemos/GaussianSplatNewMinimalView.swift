@@ -59,7 +59,7 @@ public struct GaussianSplatNewMinimalView: View {
         }
         let scene = SceneGraph(root: root)
 
-        self.viewModel = GaussianSplatViewModel<SplatC>(device: device, scene: scene, debugMode: false, sortRate: sortRate, metalFXRate: metalFXRate, discardRate: discardRate)
+        self.viewModel = try GaussianSplatViewModel<SplatC>(device: device, scene: scene, debugMode: false, sortRate: sortRate, metalFXRate: metalFXRate, discardRate: discardRate)
     }
 
     public var body: some View {

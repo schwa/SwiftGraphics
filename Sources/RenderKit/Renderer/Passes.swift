@@ -68,12 +68,7 @@ public protocol GeneralPassProtocol: PassProtocol {
 
 // MARK: -
 
-public protocol GroupPassProtocol: PassProtocol {
-    var renderPassDescriptor: MTLRenderPassDescriptor? { get }
-    func children() throws -> [any PassProtocol]
-}
-
-public struct GroupPass: GroupPassProtocol {
+public struct GroupPass: PassProtocol {
     public var id: PassID
     public var enabled: Bool
     internal var _children: PassCollection
