@@ -7,5 +7,5 @@ extension GaussianSplatNewMinimalView: DemoView {
     }
 }
 
- extension SingleSplatView: DemoView {
- }
+extension SingleSplatView: DemoView {
+}

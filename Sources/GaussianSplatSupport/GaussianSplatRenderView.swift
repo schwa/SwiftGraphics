@@ -136,7 +136,7 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
             return
         }
 
-//        let sceneChanged = scene != lastScene
+        //        let sceneChanged = scene != lastScene
         lastScene = scene
         let sceneChanged = true
 
