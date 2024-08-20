@@ -29,7 +29,7 @@ public struct DemosScene: Scene {
         #else
         WindowGroup("Demos", id: "demos") {
             DemosView()
-            .logger(Logger())
+                .logger(Logger())
         }
         #endif
     }

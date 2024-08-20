@@ -134,7 +134,6 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
         var info = info
         info.currentRenderPassDescriptor = renderPassDescriptor
 
-
         for pass in passes where pass.enabled == true {
             if let prePass = callbacks.prePass {
                 prePass(pass, commandBuffer, info)
