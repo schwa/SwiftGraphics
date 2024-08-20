@@ -1,12 +1,6 @@
 import Foundation
 import GaussianSplatDemos
 
-extension SplatCloudInfoView: DemoView {
-}
-
-// extension GaussianSplatView: DemoView {
-// }
-
 extension GaussianSplatNewMinimalView: DemoView {
     init() {
         let url = Bundle.main.url(forResource: "vision_dr", withExtension: "splat", recursive: true)!
@@ -14,5 +8,5 @@ extension GaussianSplatNewMinimalView: DemoView {
     }
 }
 
-// extension SingleSplatView: DemoView {
-// }
+ extension SingleSplatView: DemoView {
+ }
