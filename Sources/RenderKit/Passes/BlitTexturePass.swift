@@ -28,7 +28,13 @@ public struct BlitTexturePass: GeneralPassProtocol {
         guard let destination = destination?() ?? info.currentRenderPassDescriptor?.colorAttachments[0].texture else {
             throw BaseError.error(.invalidParameter)
         }
-        assert(source !== destination)
+        guard source !== destination else {
+            throw BaseError.error(.generic("Trying to blit to itself"))
+        }
+        guard(source.size.width == destination.size.width && source.size.height == destination.size.height && source.size.depth == destination.size.depth) else {
+            // NOTE: this is not quite accurate: "(destinationOrigin.x + destinationSize.width) must be <= width. (destinationOrigin.y + destinationSize.height) must be <= height."
+            throw BaseError.error(.generic("Trying to blit between textures of different sizes"))
+        }
 
         let blitCommandEncoder = try commandBuffer.makeBlitCommandEncoder().safelyUnwrap(BaseError.resourceCreationFailure)
         blitCommandEncoder.label = "BlitTexturePass(\(id))"
