@@ -3,7 +3,10 @@ import UniformTypeIdentifiers
 
 public extension Bundle {
     func urls(withExtension extension: String) throws -> [URL] {
-        try FileManager().contentsOfDirectory(at: resourceURL!, includingPropertiesForKeys: nil).filter {
+        guard let resourceURL else {
+            return []
+        }
+        return try FileManager().contentsOfDirectory(at: resourceURL, includingPropertiesForKeys: nil).filter {
             $0.pathExtension == `extension`
         }
     }
@@ -31,6 +34,36 @@ public extension Bundle {
         }
         .compactMap { url in
             Bundle(url: url)
+        }
+    }
+
+    func url <Pattern>(forResourceMatching pattern: Pattern, withExtension extension: String, recursive: Bool) -> URL? where Pattern: RegexComponent {
+        guard let resourceURL else {
+            return nil
+        }
+        do {
+            let match = try FileManager().contentsOfDirectory(at: resourceURL, includingPropertiesForKeys: nil).first {
+                $0.lastPathComponent.wholeMatch(of: pattern) != nil
+            }
+            if let match {
+                return match
+            }
+            if recursive {
+                for bundle in childBundles {
+                    if let url = bundle.url(forResourceMatching: pattern, withExtension: `extension`, recursive: false) {
+                        return url
+                    }
+                }
+                for bundle in childBundles {
+                    if let url = bundle.url(forResourceMatching: pattern, withExtension: `extension`, recursive: true) {
+                        return url
+                    }
+                }
+            }
+            return nil
+        }
+        catch {
+            return nil
         }
     }
 
@@ -63,7 +96,9 @@ public extension Bundle {
     }
 
     static func bundle(forProject project: String, target: String) -> Bundle? {
-        let url = Bundle.main.url(forResource: "\(project)_\(target)", withExtension: "bundle")!
+        guard let url = Bundle.main.url(forResource: "\(project)_\(target)", withExtension: "bundle") else {
+            return nil
+        }
         return Bundle(url: url)
     }
 }
