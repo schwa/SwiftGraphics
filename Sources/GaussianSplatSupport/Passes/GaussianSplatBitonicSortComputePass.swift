@@ -43,7 +43,6 @@ public struct GaussianSplatBitonicSortComputePass <Splat>: ComputePassProtocol w
         if sortRate > 1 && info.frame > 1 && !info.frame.isMultiple(of: sortRate) {
             return
         }
-        //        logger?.debug("GPU Sort: \(info.frame) / \(sortRate)")
 
         let computePipelineState = state.pipelineState
 

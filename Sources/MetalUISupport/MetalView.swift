@@ -54,7 +54,6 @@ public struct MetalView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 ViewAdaptor<MTKView> {
-                    logger?.debug("ViewAdaptor.Make")
                     let view = MTKView()
                     view.device = device
                     view.delegate = model
@@ -64,12 +63,10 @@ public struct MetalView: View {
                     model.view = view
                     return view
                 } update: { _ in
-                    //                    logger?.debug("ViewAdaptor.Update")
                 }
             }
         }
         .onChange(of: model, initial: true) {
-            logger?.debug("ViewAdaptor.onChange(of: model)")
             model.logger = logger
             model.setupCallback = setup
             model.drawableSizeWillChangeCallback = drawableSizeWillChange
@@ -96,7 +93,6 @@ internal class MetalViewModel: NSObject, MTKViewDelegate {
     // MARK: MTKViewDelegate
 
     func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
-        logger?.debug("MetalViewModel.\(#function)")
         guard let device = view.device else {
             fatalError("No device in `\(#function)`.")
         }
@@ -121,7 +117,6 @@ internal class MetalViewModel: NSObject, MTKViewDelegate {
     }
 
     func draw(in view: MTKView) {
-        // logger?.debug("MetalViewModel.\(#function)")
         guard let device = view.device, let currentDrawable = view.currentDrawable, let currentRenderPassDescriptor = view.currentRenderPassDescriptor, let drawCallback else {
             fatalError("No device, drawable, or draw in `\(#function)`.")
         }
@@ -135,7 +130,6 @@ internal class MetalViewModel: NSObject, MTKViewDelegate {
     // MARK: -
 
     func doSetup() {
-        logger?.debug("MetalViewModel.\(#function)")
         guard let view, let device = view.device, let setupCallback else {
             fatalError("No device or setup in `\(#function)`.")
         }
@@ -152,7 +146,6 @@ internal class MetalViewModel: NSObject, MTKViewDelegate {
     }
 
     func set(error: Error) {
-        logger?.debug("MetalViewModel.\(#function)")
         self.error = (self.error.0 + 1, error)
     }
 }
