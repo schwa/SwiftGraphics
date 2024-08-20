@@ -109,7 +109,7 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
         }
     }
 
-    public init(device: MTLDevice, scene: SceneGraph, debugMode: Bool, sortRate: Int, metalFXRate: Float, gpuCounters: GPUCounters? = nil, discardRate: Float) {
+    public init(device: MTLDevice, scene: SceneGraph, debugMode: Bool = false, sortRate: Int = 1, metalFXRate: Float = 1, gpuCounters: GPUCounters? = nil, discardRate: Float = 0, logger: Logger? = nil) throws {
         self.device = device
         self.scene = scene
         self.debugMode = debugMode
@@ -117,22 +117,28 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
         self.metalFXRate = metalFXRate
         self.gpuCounters = gpuCounters
         self.discardRate = discardRate
+        self.logger = logger
+
+        try updatePass()
     }
 
     func updatePass() throws {
         guard let downscaledTexture, let outputTexture else {
+            logger?.log("Missing texture")
             return
         }
         guard let splatsNode = scene.firstNode(label: "splats"), let splats = splatsNode.content as? SplatCloud<Splat> else {
+            logger?.log("Missing splats")
             return
         }
         guard let cameraNode = scene.firstNode(label: "camera") else {
+            logger?.log("Missing camera")
             return
         }
 
-        let sceneChanged = scene != lastScene
+//        let sceneChanged = scene != lastScene
         lastScene = scene
-        //                let sceneChanged = true
+        let sceneChanged = true
 
         logger?.log("Scene changed? \(sceneChanged). metalFXRate: \(self.metalFXRate). sortRate: \(self.sortRate)")
 

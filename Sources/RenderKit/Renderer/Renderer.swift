@@ -95,6 +95,12 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
     }
 
     mutating func render(commandBuffer: MTLCommandBuffer, currentRenderPassDescriptor: MTLRenderPassDescriptor, drawableSize: SIMD2<Float>) throws {
+
+
+//        let passes = self.passes.flattened()
+
+//        logger?.log("Rendering: \(passes.count) passes")
+
         guard phase == .configured(sizeKnown: true) || phase == .rendering else {
             logger?.debug("Renderer not configured, skipping render.")
             return
@@ -134,7 +140,6 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
         var info = info
         info.currentRenderPassDescriptor = renderPassDescriptor
 
-        logger?.log("Rendering: \(passes.filter { $0.enabled }.map(\.id))")
 
         for pass in passes where pass.enabled == true {
             if let prePass = callbacks.prePass {
@@ -159,7 +164,7 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
                     throw BaseError.error(.missingValue)
                 }
                 try pass.encode(commandBuffer: commandBuffer, info: info, untypedState: state)
-            case let pass as any GroupPassProtocol:
+            case let pass as GroupPass:
                 let children = try pass.children()
                 try _render(commandBuffer: commandBuffer, renderPassDescriptor: pass.renderPassDescriptor ?? renderPassDescriptor, passes: children, info: info)
             default:
@@ -200,7 +205,7 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
     func expand(passes: [any PassProtocol]) throws -> [any PassProtocol] {
         try passes.flatMap { pass in
             switch pass {
-            case let pass as any GroupPassProtocol:
+            case let pass as GroupPass:
                 return try expand(passes: pass.children())
             default:
                 return [pass]
@@ -268,6 +273,10 @@ struct PassCollection: Equatable {
     var renderPasses: [any RenderPassProtocol] {
         elements.compactMap { $0 as? any RenderPassProtocol }
     }
+
+    var count: Int {
+        self.elements.count
+    }
 }
 
 extension CollectionDifference.Change {
@@ -322,5 +331,25 @@ public extension MTLRenderPipelineDescriptor {
         self.init()
         colorAttachments[0].pixelFormat = configuration.colorPixelFormat
         depthAttachmentPixelFormat = configuration.depthStencilPixelFormat
+    }
+}
+
+extension PassCollection {
+    func flattened() -> PassCollection {
+        func flatten(_ passes: [any PassProtocol]) -> [any PassProtocol] {
+            var children: [any PassProtocol] = []
+            for pass in passes {
+                switch pass {
+                case let pass as GroupPass:
+                    // swiftlint:disable:next force_try
+                    children.append(contentsOf: flatten(try! pass.children()))
+                default:
+                    children.append(pass)
+                }
+            }
+            return children
+        }
+
+        return .init(flatten(elements))
     }
 }
