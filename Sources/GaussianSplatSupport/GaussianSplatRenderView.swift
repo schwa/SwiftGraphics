@@ -43,22 +43,13 @@ public struct GaussianSplatRenderView <Splat>: View where Splat: SplatProtocol {
                     return
                 }
                 drawableSize = SIMD2<Float>(size)
-                logger?.debug("\(type(of: self)).\(#function): \(drawableSize)")
-                try viewModel.makeTextures(pixelFormat: configuration.colorPixelFormat, size: drawableSize)
+                try viewModel.makeResources(pixelFormat: configuration.colorPixelFormat, size: drawableSize)
             } catch {
                 fatalError("Failed to create texture.")
             }
         }
         didDraw: {
             viewModel.frame += 1
-        }
-        // TODO: FIXME this should be in viewmodel
-        .onChange(of: viewModel.configuration.metalFXRate) {
-            do {
-                try viewModel.makeTextures(pixelFormat: .bgra8Unorm_srgb, size: drawableSize)
-            } catch {
-                logger?.error("Failed to make metal textures: \(error)")
-            }
         }
     }
 }
@@ -81,11 +72,11 @@ public struct GaussianSplatRenderingConfiguration {
     }
 }
 
-//struct GaussianSplatResources {
-//    var downscaledTexture: MTLTexture? {
-//    var downscaledDepthTexture: MTLTexture? {
-//    var outputTexture: MTLTexture? {
-//}
+struct GaussianSplatResources {
+    var downscaledTexture: MTLTexture
+    var downscaledDepthTexture: MTLTexture
+    var outputTexture: MTLTexture
+}
 
 @Observable
 @MainActor
@@ -95,34 +86,17 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
             try! updatePass()
         }
     }
-    @ObservationIgnored
-    public var lastScene: SceneGraph?
+
+    public var pass: GroupPass?
+
     @ObservationIgnored
     public let device: MTLDevice
+
     @ObservationIgnored
     public var configuration: GaussianSplatRenderingConfiguration
 
     @ObservationIgnored
-    private var downscaledTexture: MTLTexture? {
-        didSet {
-            try! updatePass()
-        }
-    }
-
-    @ObservationIgnored
-    private var downscaledDepthTexture: MTLTexture? {
-        didSet {
-            try! updatePass()
-        }
-    }
-
-    @ObservationIgnored
-    private var outputTexture: MTLTexture? {
-        didSet {
-            try! updatePass()
-        }
-    }
-    public var pass: GroupPass?
+    var resources: GaussianSplatResources?
 
     @ObservationIgnored
     public var frame: Int = 0 {
@@ -143,8 +117,8 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
     }
 
     func updatePass() throws {
-        guard let downscaledTexture, let outputTexture else {
-            logger?.log("Missing texture")
+        guard let resources else {
+            logger?.log("Missing resources")
             return
         }
         guard let splatsNode = scene.firstNode(label: "splats"), let splats = splatsNode.content as? SplatCloud<Splat> else {
@@ -156,17 +130,11 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
             return
         }
 
-        //        let sceneChanged = scene != lastScene
-        lastScene = scene
-        let sceneChanged = true
+        let fullRedraw = true
         let sortEnabled = configuration.sortRate <= 1 || (frame <= 1 || frame.isMultiple(of: configuration.sortRate))
 
-
-//        logger?.log("Scene changed? \(sceneChanged). metalFXRate: \(self.metalFXRate). sortRate: \(self.sortRate)")
-
-
         self.pass = try GroupPass(id: "FullPass") {
-            GroupPass(id: "GaussianSplatRenderGroup", enabled: sceneChanged, renderPassDescriptor: offscreenRenderPassDescriptor) {
+            GroupPass(id: "GaussianSplatRenderGroup", enabled: fullRedraw, renderPassDescriptor: offscreenRenderPassDescriptor) {
                 GaussianSplatDistanceComputePass(
                     id: "SplatDistanceCompute",
                     enabled: sortEnabled,
@@ -188,13 +156,13 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
                 )
             }
             #if !targetEnvironment(simulator)
-            try SpatialUpscalingPass(id: "SpatialUpscalingPass", enabled: configuration.metalFXRate > 1 && sceneChanged, device: device, source: downscaledTexture, destination: outputTexture, colorProcessingMode: .perceptual)
+            try SpatialUpscalingPass(id: "SpatialUpscalingPass", enabled: configuration.metalFXRate > 1 && fullRedraw, device: device, source: resources.downscaledTexture, destination: resources.outputTexture, colorProcessingMode: .perceptual)
             #endif
-            BlitTexturePass(id: "BlitTexturePass", source: outputTexture, destination: nil)
+            BlitTexturePass(id: "BlitTexturePass", source: resources.outputTexture, destination: nil)
         }
     }
 
-    func makeTextures(pixelFormat: MTLPixelFormat, size: SIMD2<Float>) throws {
+    func makeResources(pixelFormat: MTLPixelFormat, size: SIMD2<Float>) throws {
         logger?.debug("makeMetalFXTextures - \(size) \(self.configuration.metalFXRate)")
         let downscaledSize = SIMD2<Int>(ceil(size / configuration.metalFXRate))
 
@@ -203,36 +171,35 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
         colorTextureDescriptor.usage = [.renderTarget, .shaderRead]
         let colorTexture = try device.makeTexture(descriptor: colorTextureDescriptor).safelyUnwrap(BaseError.resourceCreationFailure)
         colorTexture.label = "reduce-resolution-color-\(colorTexture.size.shortDescription)"
-        self.downscaledTexture = colorTexture
 
         let depthTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .depth32Float, width: downscaledSize.x, height: downscaledSize.y, mipmapped: false)
         depthTextureDescriptor.storageMode = .private
         depthTextureDescriptor.usage = [.renderTarget, .shaderRead]
         let depthTexture = try device.makeTexture(descriptor: depthTextureDescriptor).safelyUnwrap(BaseError.resourceCreationFailure)
         depthTexture.label = "reduce-resolution-depth-\(depthTexture.size.shortDescription)"
-        self.downscaledDepthTexture = depthTexture
 
         let upscaledTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: pixelFormat, width: Int(ceil(size.x)), height: Int(ceil(size.y)), mipmapped: false)
         upscaledTextureDescriptor.storageMode = .private
         upscaledTextureDescriptor.usage = .renderTarget
         let upscaledTexture = try device.makeTexture(descriptor: upscaledTextureDescriptor).safelyUnwrap(BaseError.resourceCreationFailure)
         upscaledTexture.label = "reduce-resolution-upscaled-\(upscaledTexture.size.shortDescription)"
-        self.outputTexture = upscaledTexture
+
+        self.resources = .init(downscaledTexture: colorTexture, downscaledDepthTexture: depthTexture, outputTexture: upscaledTexture)
     }
 
     var offscreenRenderPassDescriptor: MTLRenderPassDescriptor {
-        guard let outputTexture, let downscaledTexture, let downscaledDepthTexture else {
-            fatalError("Tried to create renderpass without textures.")
+        guard let resources else {
+            fatalError("Tried to create renderpass without resources.")
         }
         let offscreenRenderPassDescriptor = MTLRenderPassDescriptor()
         offscreenRenderPassDescriptor.colorAttachments[0].clearColor = MTLClearColor(red: 0, green: 0, blue: 0, alpha: 1)
-        offscreenRenderPassDescriptor.colorAttachments[0].texture = configuration.metalFXRate <= 1 ? outputTexture : downscaledTexture
+        offscreenRenderPassDescriptor.colorAttachments[0].texture = configuration.metalFXRate <= 1 ? resources.outputTexture : resources.downscaledTexture
         offscreenRenderPassDescriptor.colorAttachments[0].loadAction = .load
         offscreenRenderPassDescriptor.colorAttachments[0].storeAction = .store
         offscreenRenderPassDescriptor.depthAttachment.loadAction = .clear
         offscreenRenderPassDescriptor.depthAttachment.storeAction = .dontCare
         offscreenRenderPassDescriptor.depthAttachment.clearDepth = 1.0
-        offscreenRenderPassDescriptor.depthAttachment.texture = downscaledDepthTexture
+        offscreenRenderPassDescriptor.depthAttachment.texture = resources.downscaledDepthTexture
         return offscreenRenderPassDescriptor
     }
 }
