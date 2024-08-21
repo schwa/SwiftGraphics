@@ -36,20 +36,30 @@ extension SceneGraph {
 }
 
 public extension SplatCloud where Splat == SplatC {
-    init(device: MTLDevice, url: URL, bitsPerPositionScalar: Int? = nil) throws {
+    init(device: MTLDevice, url: URL, splatLimit: Int? = nil) throws {
         let data = try Data(contentsOf: url)
         let splats: TypedMTLBuffer<SplatC>
-        if url.pathExtension == "splatc" {
-            splats = try device.makeTypedBuffer(data: data, options: .storageModeShared).labelled("Splats")
-        } else if url.pathExtension == "splat" {
+        if url.pathExtension == "splat" {
             let splatArray = data.withUnsafeBytes { buffer in
                 buffer.withMemoryRebound(to: SplatB.self) { splats in
-                    let splats = if let bitsPerPositionScalar {
-                        splats.downsamplePositions(bits: bitsPerPositionScalar).downsampleScale(bits: bitsPerPositionScalar).downsampleColor()
-                    } else {
-                        Array(splats)
+                    // NOTE: This is horrendously expensive.
+                    if let splatLimit, splatLimit < splats.count {
+                        let positions = splats.map { SIMD3<Float>($0.position) }
+                        // swiftlint:disable:next reduce_into
+                        let minimums = positions.reduce([.greatestFiniteMagnitude, .greatestFiniteMagnitude, .greatestFiniteMagnitude], min)
+                        // swiftlint:disable:next reduce_into
+                        let maximums = positions.reduce([-.greatestFiniteMagnitude, -.greatestFiniteMagnitude, -.greatestFiniteMagnitude], max)
+                        let center = (minimums + maximums) * 0.5
+                        let splats = splats.sorted { lhs, rhs in
+                            let lhs = SIMD3<Float>(lhs.position).distance(to: center)
+                            let rhs = SIMD3<Float>(rhs.position).distance(to: center)
+                            return lhs < rhs
+                        }
+                        return convert_b_to_c(splats.prefix(splatLimit))
                     }
-                    return convert_b_to_c(splats)
+                    else {
+                        return convert_b_to_c(splats)
+                    }
                 }
             }
             splats = try device.makeTypedBuffer(data: splatArray, options: .storageModeShared).labelled("Splats")
@@ -62,7 +72,6 @@ public extension SplatCloud where Splat == SplatC {
 
 extension UTType {
     static let splat = UTType(filenameExtension: "splat")!
-    static let splatC = UTType(filenameExtension: "splatc")!
 }
 
 extension SplatCloud: @retroactive CustomDebugStringConvertible {

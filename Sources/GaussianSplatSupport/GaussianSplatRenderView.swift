@@ -108,10 +108,11 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
     @ObservationIgnored
     public var logger: Logger?
 
-    public init(device: MTLDevice, scene: SceneGraph, configuration: GaussianSplatRenderingConfiguration = .init()) throws {
+    public init(device: MTLDevice, scene: SceneGraph, configuration: GaussianSplatRenderingConfiguration = .init(), logger: Logger? = nil) throws {
         self.device = device
         self.scene = scene
         self.configuration = configuration
+        self.logger = logger
 
         try updatePass()
     }
