@@ -21,7 +21,11 @@ public struct CameraConeController: ViewModifier {
     public func body(content: Content) -> some View {
         content
             .draggableParameter($height, axis: .vertical, range: 0...1, scale: 0.01, behavior: .clamping)
+        #if os(macOS)
             .draggableParameter($angle.degrees, axis: .horizontal, range: 0...360, scale: 0.1, behavior: .wrapping)
+        #else
+            .draggableParameter($angle.degrees, axis: .horizontal, range: 0...360, scale: -0.25, behavior: .wrapping)
+        #endif
             .onChange(of: cameraConeConstraint, initial: true) {
                 transform = .init(cameraConeConstraint.transform(angle: angle, height: height))
             }
