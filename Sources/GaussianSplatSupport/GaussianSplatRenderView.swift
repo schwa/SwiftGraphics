@@ -52,7 +52,8 @@ public struct GaussianSplatRenderView <Splat>: View where Splat: SplatProtocol {
         didDraw: {
             viewModel.frame += 1
         }
-        .onChange(of: viewModel.metalFXRate) {
+        // TODO: FIXME this should be in viewmodel
+        .onChange(of: viewModel.configuration.metalFXRate) {
             do {
                 try viewModel.makeTextures(pixelFormat: .bgra8Unorm_srgb, size: drawableSize)
             } catch {
@@ -64,15 +65,22 @@ public struct GaussianSplatRenderView <Splat>: View where Splat: SplatProtocol {
 
 // MARK: -
 
-//public struct GaussianSplatRenderingConfiguration {
-//    public var debugMode: Bool
-//    public var sortRate: Int
-//    public var metalFXRate: Float
-//    public var discardRate: Float
-//    public var gpuCounters: GPUCounters?
-//    public var logger: Logger?
-//}
-//
+public struct GaussianSplatRenderingConfiguration {
+    public var debugMode: Bool
+    public var sortRate: Int
+    public var metalFXRate: Float
+    public var discardRate: Float
+    public var gpuCounters: GPUCounters?
+
+    public init(debugMode: Bool = false, sortRate: Int = 15, metalFXRate: Float = 2, discardRate: Float = 0.0, gpuCounters: GPUCounters? = nil) {
+        self.debugMode = debugMode
+        self.sortRate = sortRate
+        self.metalFXRate = metalFXRate
+        self.discardRate = discardRate
+        self.gpuCounters = gpuCounters
+    }
+}
+
 //struct GaussianSplatResources {
 //    var downscaledTexture: MTLTexture? {
 //    var downscaledDepthTexture: MTLTexture? {
@@ -92,17 +100,7 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
     @ObservationIgnored
     public let device: MTLDevice
     @ObservationIgnored
-    public let debugMode: Bool
-    @ObservationIgnored
-    public let sortRate: Int
-    @ObservationIgnored
-    public let metalFXRate: Float
-    @ObservationIgnored
-    public let gpuCounters: GPUCounters?
-    @ObservationIgnored
-    public let discardRate: Float
-    @ObservationIgnored
-    public var logger: Logger?
+    public var configuration: GaussianSplatRenderingConfiguration
 
     @ObservationIgnored
     private var downscaledTexture: MTLTexture? {
@@ -133,15 +131,13 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
         }
     }
 
-    public init(device: MTLDevice, scene: SceneGraph, debugMode: Bool = false, sortRate: Int = 1, metalFXRate: Float = 1, gpuCounters: GPUCounters? = nil, discardRate: Float = 0, logger: Logger? = nil) throws {
+    @ObservationIgnored
+    public var logger: Logger?
+
+    public init(device: MTLDevice, scene: SceneGraph, configuration: GaussianSplatRenderingConfiguration = .init()) throws {
         self.device = device
         self.scene = scene
-        self.debugMode = debugMode
-        self.sortRate = sortRate
-        self.metalFXRate = metalFXRate
-        self.gpuCounters = gpuCounters
-        self.discardRate = discardRate
-        self.logger = logger
+        self.configuration = configuration
 
         try updatePass()
     }
@@ -163,7 +159,7 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
         //        let sceneChanged = scene != lastScene
         lastScene = scene
         let sceneChanged = true
-        let sortEnabled = sortRate <= 1 || (frame <= 1 || frame.isMultiple(of: sortRate))
+        let sortEnabled = configuration.sortRate <= 1 || (frame <= 1 || frame.isMultiple(of: configuration.sortRate))
 
 
 //        logger?.log("Scene changed? \(sceneChanged). metalFXRate: \(self.metalFXRate). sortRate: \(self.sortRate)")
@@ -188,19 +184,19 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
                     id: "SplatRender",
                     enabled: true,
                     scene: scene,
-                    discardRate: discardRate
+                    discardRate: configuration.discardRate
                 )
             }
             #if !targetEnvironment(simulator)
-            try SpatialUpscalingPass(id: "SpatialUpscalingPass", enabled: metalFXRate > 1 && sceneChanged, device: device, source: downscaledTexture, destination: outputTexture, colorProcessingMode: .perceptual)
+            try SpatialUpscalingPass(id: "SpatialUpscalingPass", enabled: configuration.metalFXRate > 1 && sceneChanged, device: device, source: downscaledTexture, destination: outputTexture, colorProcessingMode: .perceptual)
             #endif
             BlitTexturePass(id: "BlitTexturePass", source: outputTexture, destination: nil)
         }
     }
 
     func makeTextures(pixelFormat: MTLPixelFormat, size: SIMD2<Float>) throws {
-        logger?.debug("makeMetalFXTextures - \(size) \(self.metalFXRate)")
-        let downscaledSize = SIMD2<Int>(ceil(size / metalFXRate))
+        logger?.debug("makeMetalFXTextures - \(size) \(self.configuration.metalFXRate)")
+        let downscaledSize = SIMD2<Int>(ceil(size / configuration.metalFXRate))
 
         let colorTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: pixelFormat, width: downscaledSize.x, height: downscaledSize.y, mipmapped: false)
         colorTextureDescriptor.storageMode = .private
@@ -230,7 +226,7 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
         }
         let offscreenRenderPassDescriptor = MTLRenderPassDescriptor()
         offscreenRenderPassDescriptor.colorAttachments[0].clearColor = MTLClearColor(red: 0, green: 0, blue: 0, alpha: 1)
-        offscreenRenderPassDescriptor.colorAttachments[0].texture = metalFXRate <= 1 ? outputTexture : downscaledTexture
+        offscreenRenderPassDescriptor.colorAttachments[0].texture = configuration.metalFXRate <= 1 ? outputTexture : downscaledTexture
         offscreenRenderPassDescriptor.colorAttachments[0].loadAction = .load
         offscreenRenderPassDescriptor.colorAttachments[0].storeAction = .store
         offscreenRenderPassDescriptor.depthAttachment.loadAction = .clear
