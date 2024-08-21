@@ -1,9 +1,8 @@
 import GaussianSplatSupport
-import SwiftUI
 import RenderKit
+import SwiftUI
 
 public struct GaussianSplatLobbyView: View {
-
     @Environment(\.metalDevice)
     var device
 
@@ -20,7 +19,9 @@ public struct GaussianSplatLobbyView: View {
     private var backgroundColor = Color.blue
 
     @State
-    private var source: URL? = Bundle.main.url(forResource: "vision_dr", withExtension: "splat", recursive: true)!
+    private var source: URL
+
+    let sources: [URL]
 
     enum Mode {
         case config
@@ -30,11 +31,29 @@ public struct GaussianSplatLobbyView: View {
     @State
     private var mode: Mode = .config
 
+    init(sources: [URL]) {
+        self.sources = sources
+        self.source = sources.first!
+    }
+
     public var body: some View {
         Group {
             switch mode {
             case .config:
                 VStack {
+                    LabeledContent("Source") {
+                        Picker("Source", selection: $source) {
+                            ForEach(sources, id: \.self) { source in
+                                Label {
+                                    Text(source.deletingPathExtension().lastPathComponent)
+                                } icon: {
+                                    Image(systemName: "doc")
+                                }
+                                .tag(source)
+                            }
+                        }
+                        .labelsHidden()
+                    }
                     Form {
                         optionsView
                     }
@@ -42,12 +61,20 @@ public struct GaussianSplatLobbyView: View {
                         mode = .render
                     }
                 }
+                .onChange(of: useGPUCounters) {
+                    if useGPUCounters {
+                        let gpuCounters = try! GPUCounters(device: device)
+                        configuration.gpuCounters = gpuCounters
+                    }
+                    else {
+                        configuration.gpuCounters = nil
+                    }
+                }
+                #if os(macOS)
+                .frame(width: 320)
+                #endif
             case .render:
-
-                let splatCloud = try! SplatCloud<SplatC>(device: device, url: source!)
-
-
-                try! GaussianSplatNewMinimalView(splatCloud: splatCloud, configuration: configuration)
+                GaussianSplatLoadingView(url: source, initialConfiguration: configuration, splatLimit: splatLimit)
                     .overlay(alignment: .topLeading) {
                         Button("Back") {
                             mode = .config
@@ -57,26 +84,11 @@ public struct GaussianSplatLobbyView: View {
                     }
             }
         }
-        .onChange(of: useGPUCounters) {
-            if useGPUCounters {
-                let gpuCounters = try! GPUCounters(device: device)
-                configuration.gpuCounters = gpuCounters
-            }
-            else {
-                configuration.gpuCounters = nil
-            }
-        }
     }
 
     @ViewBuilder
     var optionsView: some View {
         Section("Options") {
-            LabeledContent("Source") {
-                Picker("Source", selection: $source) {
-                    Text("vision_dr").tag(Bundle.main.url(forResource: "vision_dr", withExtension: "splat", recursive: true)!)
-                }
-                .labelsHidden()
-            }
             LabeledContent("Sort Rate") {
                 VStack(alignment: .leading) {
                     TextField("Sort Rate", value: $configuration.sortRate, format: .number)
@@ -95,21 +107,21 @@ public struct GaussianSplatLobbyView: View {
                 VStack(alignment: .leading) {
                     TextField("Discard Rate", value: $configuration.discardRate, format: .number)
                         .labelsHidden()
-                    Text("TODO").font(.caption)
+                    Text("This is the minimum rate for alpha to show a splat. (Should be zero. Higher values mean more splats will be discarded as they are too transparent.)").font(.caption)
                 }
             }
             LabeledContent("Splat Limit") {
                 VStack(alignment: .leading) {
                     TextField("Splat Limit", value: $splatLimit, format: .number)
                         .labelsHidden()
-                    Text("TODO").font(.caption)
+                    Text("Limit number of splats to load. This is for testing purposes only (splats are sorted by distance from the center of the splatcloud. This can be expensive).").font(.caption)
                 }
             }
             LabeledContent("GPU Counters") {
                 VStack(alignment: .leading) {
                     Toggle("GPU Counters", isOn: $useGPUCounters)
                         .labelsHidden()
-                    Text("TODO").font(.caption)
+                    Text("Show info on framerate, GPU usage etc.").font(.caption)
                 }
             }
             LabeledContent("Background Color") {
@@ -120,11 +132,11 @@ public struct GaussianSplatLobbyView: View {
                 }
             }
         }
-#if os(macOS)
-        .frame(width: 320)
-#endif
     }
 }
 
 extension GaussianSplatLobbyView: DemoView {
+    init() {
+        self.init(sources: [Bundle.main.url(forResource: "vision_dr", withExtension: "splat", recursive: true)!])
+    }
 }

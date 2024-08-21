@@ -20,6 +20,66 @@ import UniformTypeIdentifiers
 
 // swiftlint:disable force_unwrapping
 
+public struct GaussianSplatLoadingView: View {
+    @Environment(\.metalDevice)
+    private var device
+
+    let url: URL
+    let configuration: GaussianSplatRenderingConfiguration
+    let splatLimit: Int?
+
+    @State
+    private var subtitle: String = "Processing"
+
+    @State
+    private var splatCloud: SplatCloud<SplatC>?
+
+    public init(url: URL, initialConfiguration: GaussianSplatRenderingConfiguration, splatLimit: Int?) {
+        self.url = url
+        self.configuration = initialConfiguration
+        self.splatLimit = splatLimit
+    }
+
+    public var body: some View {
+        ZStack {
+            if let splatCloud {
+                GaussianSplatNewMinimalView(splatCloud: splatCloud, configuration: configuration)
+            }
+            else {
+                VStack {
+                    ProgressView()
+                    Text(subtitle)
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .task {
+            do {
+                switch url.scheme {
+                case "http", "https":
+                    subtitle = "Downloading"
+                    let request = URLRequest(url: url)
+                    let (localURL, response) = try await URLSession.shared.download(for: request)
+                    guard let response = response as? HTTPURLResponse else {
+                        fatalError()
+                    }
+                    if response.statusCode != 200 {
+                        throw BaseError.generic("OOPS")
+                    }
+                    try FileManager().createSymbolicLink(at: localURL.appendingPathExtension("splat"), withDestinationURL: localURL)
+                    subtitle = "Processing"
+                    splatCloud = try SplatCloud<SplatC>(device: device, url: localURL, splatLimit: splatLimit)
+                default:
+                    splatCloud = try SplatCloud<SplatC>(device: device, url: url, splatLimit: splatLimit)
+                }
+            }
+            catch {
+                fatalError(error)
+            }
+        }
+    }
+}
+
 public struct GaussianSplatNewMinimalView: View {
     let initialSplatCloud: SplatCloud<SplatC>
     let initialConfiguration: GaussianSplatRenderingConfiguration
@@ -33,7 +93,7 @@ public struct GaussianSplatNewMinimalView: View {
     @State
     private var viewModel: GaussianSplatViewModel<SplatC>?
 
-    public init(splatCloud: SplatCloud<SplatC>, configuration: GaussianSplatRenderingConfiguration = .init()) throws {
+    public init(splatCloud: SplatCloud<SplatC>, configuration: GaussianSplatRenderingConfiguration = .init()) {
         self.initialSplatCloud = splatCloud
         self.initialConfiguration = configuration
     }
@@ -42,7 +102,7 @@ public struct GaussianSplatNewMinimalView: View {
         ZStack {
             if let viewModel {
                 GaussianSplatNewMinimalView_()
-                .environment(viewModel)
+                    .environment(viewModel)
             }
         }
         .task {
@@ -50,7 +110,6 @@ public struct GaussianSplatNewMinimalView: View {
                 let panoramaMesh = try Sphere3D(radius: 400).toMTKMesh(device: device, inwardNormals: true)
                 let loader = MTKTextureLoader(device: device)
                 let panoramaTexture = try loader.newTexture(name: "SplitSkybox", scaleFactor: 2, bundle: Bundle.module)
-
                 let root = Node(label: "root") {
                     Node(label: "camera", content: Camera())
                     Node(label: "pano", content: Geometry(mesh: panoramaMesh, materials: [UnlitMaterialX(baseColorTexture: panoramaTexture)]))
@@ -58,11 +117,10 @@ public struct GaussianSplatNewMinimalView: View {
                 }
                 let scene = SceneGraph(root: root)
 
-                self.viewModel = try GaussianSplatViewModel<SplatC>(device: device, scene: scene, configuration: initialConfiguration)
-//                viewModel.logger = logger
+                viewModel = try GaussianSplatViewModel<SplatC>(device: device, scene: scene, configuration: initialConfiguration, logger: logger)
             }
             catch {
-
+                fatalError(error)
             }
         }
     }
@@ -86,17 +144,17 @@ struct GaussianSplatNewMinimalView_: View {
         var viewModel = viewModel
 
         GaussianSplatRenderView<SplatC>()
-        #if os(iOS)
-        .ignoresSafeArea()
-        #endif
-        .modifier(CameraConeController(cameraCone: cameraCone, transform: $viewModel.scene.unsafeCurrentCameraNode.transform))
-        .environment(\.gpuCounters, gpuCounters)
-        .overlay(alignment: .top) {
-            if let gpuCounters {
-                TimelineView(.periodic(from: .now, by: 0.25)) { _ in
-                    PerformanceHUD(measurements: gpuCounters.current())
+            #if os(iOS)
+            .ignoresSafeArea()
+            #endif
+            .modifier(CameraConeController(cameraCone: cameraCone, transform: $viewModel.scene.unsafeCurrentCameraNode.transform))
+            .environment(\.gpuCounters, gpuCounters)
+            .overlay(alignment: .top) {
+                if let gpuCounters {
+                    TimelineView(.periodic(from: .now, by: 0.25)) { _ in
+                        PerformanceHUD(measurements: gpuCounters.current())
+                    }
                 }
             }
-        }
     }
 }
