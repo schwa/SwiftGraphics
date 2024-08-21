@@ -65,7 +65,9 @@ public struct GaussianSplatNewMinimalView: View {
             Node(label: "splats", content: splats).transformed(roll: .zero, pitch: .degrees(270), yaw: .zero).transformed(roll: .zero, pitch: .zero, yaw: .degrees(90)).transformed(translation: [0, 0.25, 0.5])
         }
         let scene = SceneGraph(root: root)
-        self.viewModel = try GaussianSplatViewModel<SplatC>(device: device, scene: scene, debugMode: false, sortRate: sortRate, metalFXRate: metalFXRate, discardRate: discardRate)
+
+        let configuration = GaussianSplatRenderingConfiguration(debugMode: false, sortRate: sortRate, metalFXRate: metalFXRate, discardRate: discardRate)
+        self.viewModel = try GaussianSplatViewModel<SplatC>(device: device, scene: scene, configuration: configuration)
     }
 
     public var body: some View {
