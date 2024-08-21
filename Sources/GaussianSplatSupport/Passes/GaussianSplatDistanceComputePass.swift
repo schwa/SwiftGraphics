@@ -18,15 +18,13 @@ public struct GaussianSplatDistanceComputePass<Splat>: ComputePassProtocol where
     var splats: SplatCloud<Splat>
     var modelMatrix: simd_float3x3
     var cameraPosition: SIMD3<Float>
-    var sortRate: Int
 
-    public init(id: PassID, enabled: Bool = true, splats: SplatCloud<Splat>, modelMatrix: simd_float3x3, cameraPosition: SIMD3<Float>, sortRate: Int) {
+    public init(id: PassID, enabled: Bool = true, splats: SplatCloud<Splat>, modelMatrix: simd_float3x3, cameraPosition: SIMD3<Float>) {
         self.id = id
         self.enabled = enabled
         self.splats = splats
         self.modelMatrix = modelMatrix
         self.cameraPosition = cameraPosition
-        self.sortRate = sortRate
     }
 
     public func setup(device: MTLDevice) throws -> State {
@@ -42,9 +40,6 @@ public struct GaussianSplatDistanceComputePass<Splat>: ComputePassProtocol where
     }
 
     public func compute(commandBuffer: MTLCommandBuffer, info: PassInfo, state: State) throws {
-        if sortRate > 1 && info.frame > 1 && !info.frame.isMultiple(of: sortRate) {
-            return
-        }
         let computePipelineState = state.pipelineState
         let commandEncoder = commandBuffer.makeComputeCommandEncoder().forceUnwrap()
         commandEncoder.label = "GaussianSplatPreCalcComputePass"
