@@ -16,13 +16,11 @@ public struct GaussianSplatBitonicSortComputePass <Splat>: ComputePassProtocol w
     public var id: PassID
     public var enabled: Bool = true
     var splats: SplatCloud<Splat>
-    var sortRate: Int
 
-    public init(id: PassID, enabled: Bool = true, splats: SplatCloud<Splat>, sortRate: Int) {
+    public init(id: PassID, enabled: Bool = true, splats: SplatCloud<Splat>) {
         self.id = id
         self.enabled = enabled
         self.splats = splats
-        self.sortRate = sortRate
     }
 
     public func setup(device: MTLDevice) throws -> State {
@@ -40,12 +38,7 @@ public struct GaussianSplatBitonicSortComputePass <Splat>: ComputePassProtocol w
     }
 
     public func compute(commandBuffer: MTLCommandBuffer, info: PassInfo, state: State) throws {
-        if sortRate > 1 && info.frame > 1 && !info.frame.isMultiple(of: sortRate) {
-            return
-        }
-
         let computePipelineState = state.pipelineState
-
         let computePassDescriptor = MTLComputePassDescriptor()
         info.gpuCounters?.updateComputePassDescriptor(computePassDescriptor)
         let commandEncoder = commandBuffer.makeComputeCommandEncoder(descriptor: computePassDescriptor).forceUnwrap()
