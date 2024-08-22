@@ -61,7 +61,7 @@ public struct GaussianSplatLobbyView: View {
                         mode = .render
                     }
                 }
-                .onChange(of: useGPUCounters) {
+                .onChange(of: useGPUCounters, initial: true) {
                     if useGPUCounters {
                         let gpuCounters = try! GPUCounters(device: device)
                         configuration.gpuCounters = gpuCounters
@@ -69,6 +69,11 @@ public struct GaussianSplatLobbyView: View {
                     else {
                         configuration.gpuCounters = nil
                     }
+                }
+                .onChange(of: backgroundColor, initial: true) {
+                    let color = backgroundColor.resolve(in: .init()).cgColor.converted(to: CGColorSpaceCreateDeviceRGB(), intent: .perceptual, options: nil)!
+                    let components = color.components!
+                    configuration.clearColor = MTLClearColor(red: components[0], green: components[1], blue: components[2], alpha: components[3])
                 }
                 #if os(macOS)
                 .frame(width: 320)
