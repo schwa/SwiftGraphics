@@ -34,6 +34,7 @@ public struct GaussianSplatRenderView <Splat>: View where Splat: SplatProtocol {
         RenderView(pass: viewModel.pass) { configuration in
             configuration.colorPixelFormat = .bgra8Unorm_srgb
             configuration.depthStencilPixelFormat = .depth32Float
+            configuration.clearColor = configuration.clearColor
             configuration.framebufferOnly = false
         }
         sizeWillChange: { _, configuration, size in
@@ -62,13 +63,15 @@ public struct GaussianSplatRenderingConfiguration {
     public var metalFXRate: Float
     public var discardRate: Float
     public var gpuCounters: GPUCounters?
+    public var clearColor: MTLClearColor
 
-    public init(debugMode: Bool = false, sortRate: Int = 15, metalFXRate: Float = 2, discardRate: Float = 0.0, gpuCounters: GPUCounters? = nil) {
+    public init(debugMode: Bool = false, sortRate: Int = 15, metalFXRate: Float = 2, discardRate: Float = 0.0, gpuCounters: GPUCounters? = nil, clearColor: MTLClearColor = .init(red: 0, green: 0, blue: 0, alpha: 1)) {
         self.debugMode = debugMode
         self.sortRate = sortRate
         self.metalFXRate = metalFXRate
         self.discardRate = discardRate
         self.gpuCounters = gpuCounters
+        self.clearColor = clearColor
     }
 }
 
@@ -193,7 +196,7 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
             fatalError("Tried to create renderpass without resources.")
         }
         let offscreenRenderPassDescriptor = MTLRenderPassDescriptor()
-        offscreenRenderPassDescriptor.colorAttachments[0].clearColor = MTLClearColor(red: 0, green: 0, blue: 0, alpha: 1)
+        offscreenRenderPassDescriptor.colorAttachments[0].clearColor = configuration.clearColor
         offscreenRenderPassDescriptor.colorAttachments[0].texture = configuration.metalFXRate <= 1 ? resources.outputTexture : resources.downscaledTexture
         offscreenRenderPassDescriptor.colorAttachments[0].loadAction = .load
         offscreenRenderPassDescriptor.colorAttachments[0].storeAction = .store

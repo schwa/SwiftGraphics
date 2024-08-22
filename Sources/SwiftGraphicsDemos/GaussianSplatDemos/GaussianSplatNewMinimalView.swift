@@ -66,9 +66,10 @@ public struct GaussianSplatLoadingView: View {
                     if response.statusCode != 200 {
                         throw BaseError.generic("OOPS")
                     }
-                    try FileManager().createSymbolicLink(at: localURL.appendingPathExtension("splat"), withDestinationURL: localURL)
+                    let symlinkURL = localURL.appendingPathExtension("splat")
+                    try FileManager().createSymbolicLink(at: symlinkURL, withDestinationURL: localURL)
                     subtitle = "Processing"
-                    splatCloud = try SplatCloud<SplatC>(device: device, url: localURL, splatLimit: splatLimit)
+                    splatCloud = try SplatCloud<SplatC>(device: device, url: symlinkURL, splatLimit: splatLimit)
                 default:
                     splatCloud = try SplatCloud<SplatC>(device: device, url: url, splatLimit: splatLimit)
                 }
