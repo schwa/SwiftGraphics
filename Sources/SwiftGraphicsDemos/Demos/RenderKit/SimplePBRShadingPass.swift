@@ -30,7 +30,7 @@ struct SimplePBRShadingPass: RenderPassProtocol {
     var scene: SceneGraph
 
     func setup(device: MTLDevice, configuration: some MetalConfigurationProtocol) throws -> State {
-        let library = try device.makeDebugLibrary(bundle: .renderKitShaders)
+        let library = try device.makeDebugLibrary(bundle: Bundle.main.bundle(forTarget: "RenderKitShaders")!)
         let renderPipelineDescriptor = MTLRenderPipelineDescriptor(configuration)
         renderPipelineDescriptor.vertexFunction = library.makeFunction(name: "SimplePBRShader::VertexShader")!
         renderPipelineDescriptor.fragmentFunction = library.makeFunction(name: "SimplePBRShader::FragmentShader")!

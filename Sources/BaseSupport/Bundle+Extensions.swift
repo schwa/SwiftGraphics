@@ -1,5 +1,6 @@
 import Foundation
 import UniformTypeIdentifiers
+import RegexBuilder
 
 public extension Bundle {
     func urls(withExtension extension: String) throws -> [URL] {
@@ -20,6 +21,7 @@ public extension Bundle {
         }
     }
 
+
     var childBundles: [Bundle] {
         guard let resourceURL else {
             return []
@@ -37,6 +39,7 @@ public extension Bundle {
         }
     }
 
+    @available(*, deprecated, message: "Deprecated")
     func url <Pattern>(forResourceMatching pattern: Pattern, withExtension extension: String, recursive: Bool) -> URL? where Pattern: RegexComponent {
         guard let resourceURL else {
             return nil
@@ -67,6 +70,7 @@ public extension Bundle {
         }
     }
 
+    @available(*, deprecated, message: "Deprecated")
     func url(forResource name: String, withExtension extension: String, recursive: Bool) -> URL? {
         if let url = url(forResource: name, withExtension: `extension`) {
             return url
@@ -88,6 +92,7 @@ public extension Bundle {
         return nil
     }
 
+    @available(*, deprecated, message: "Deprecated")
     func url(forResource resource: String?, withExtension extension: String?) throws -> URL {
         guard let url = url(forResource: resource, withExtension: `extension`) else {
             throw BaseError.error(.resourceCreationFailure)
@@ -95,10 +100,38 @@ public extension Bundle {
         return url
     }
 
+    @available(*, deprecated, message: "Deprecated")
     static func bundle(forProject project: String, target: String) -> Bundle? {
         guard let url = Bundle.main.url(forResource: "\(project)_\(target)", withExtension: "bundle") else {
             return nil
         }
         return Bundle(url: url)
     }
+
+    func bundle(forTarget target: String) -> Bundle? {
+        let pattern = Regex {
+            OneOrMore {
+                /./
+            }
+            "_"
+            target
+            ".bundle"
+        }
+        return childBundles.first { bundle in
+            bundle.bundleURL.lastPathComponent.firstMatch(of: pattern) != nil
+        }
+    }
+
+    func bundle(forTarget target: String, recursive: Bool) -> Bundle? {
+        if !recursive {
+            return bundle(forTarget: target)
+        }
+        if let result = bundle(forTarget: target) {
+            return result
+        }
+        else {
+            return childBundles.compactMap { $0.bundle(forTarget: target, recursive: true) }.first
+        }
+    }
+
 }

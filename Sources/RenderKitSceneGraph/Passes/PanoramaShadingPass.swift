@@ -5,7 +5,7 @@ import ModelIO
 import RenderKit
 import RenderKitShaders
 
-public struct UnlitMaterial: MaterialProtocol {
+public struct PanoramaMaterial: MaterialProtocol {
     public var baseColorFactor: SIMD4<Float>
     public var baseColorTexture: MTLTexture?
 
@@ -20,7 +20,7 @@ public struct UnlitMaterial: MaterialProtocol {
     }
 }
 
-public struct UnlitShadingPass: RenderPassProtocol {
+public struct PanoramaShadingPass: RenderPassProtocol {
     public struct State: Sendable {
         var renderPipelineState: MTLRenderPipelineState
         var depthStencilState: MTLDepthStencilState
@@ -58,7 +58,7 @@ public struct UnlitShadingPass: RenderPassProtocol {
         let library = try device.makeDebugLibrary(bundle: .main.bundle(forTarget: "RenderKitShaders", recursive: true)!)
         let renderPipelineDescriptor = MTLRenderPipelineDescriptor(configuration)
         renderPipelineDescriptor.vertexFunction = library.makeFunction(name: "UnlitShader::unlitVertexShader")
-        let constantValues = MTLFunctionConstantValues(dictionary: [1: UInt32(0)]) // TODO: Use name
+        let constantValues = MTLFunctionConstantValues(dictionary: [1: UInt32(1)])
         renderPipelineDescriptor.fragmentFunction = try library.makeFunction(name: "UnlitShader::unlitFragmentShader", constantValues: constantValues)
         let depthStencilDescriptor = MTLDepthStencilDescriptor(depthCompareFunction: .less, isDepthWriteEnabled: true)
         let depthStencilState = try device.makeDepthStencilState(descriptor: depthStencilDescriptor).safelyUnwrap(BaseError.resourceCreationFailure)
@@ -79,7 +79,7 @@ public struct UnlitShadingPass: RenderPassProtocol {
                 commandEncoder.setRenderPipelineState(state.renderPipelineState)
                 let bindings = state.bindings
                 for element in elements {
-                    guard let geometry = element.node.geometry, let material = geometry.materials.compactMap({ $0 as? UnlitMaterial }).first else {
+                    guard let geometry = element.node.geometry, let material = geometry.materials.compactMap({ $0 as? PanoramaMaterial }).first else {
                         continue
                     }
                     commandEncoder.withDebugGroup("Node: \(element.node.id)") {

@@ -84,8 +84,7 @@ struct PointCloudView: View, DemoView {
         }
         .toolbar {
             Button("Load Splat") {
-                let gaussianSplatsDemoBundle = Bundle.bundle(forProject: "SwiftGraphics", target: "GaussianSplatDemos")!
-
+                let gaussianSplatsDemoBundle = Bundle.main.bundle(forTarget: "GaussianSplatDemos")!
                 let url = gaussianSplatsDemoBundle.url(forResource: "train", withExtension: "splatc")!
                 let data = try! Data(contentsOf: url)
                 let points = data.withUnsafeBytes { buffer in
@@ -128,7 +127,8 @@ struct PointCloudRenderPass: RenderPassProtocol {
     var scene: SceneGraph
 
     func setup(device: MTLDevice, configuration: some MetalConfigurationProtocol) throws -> State {
-        let library = try device.makeDebugLibrary(bundle: .renderKitShaders)
+
+        let library = try device.makeDebugLibrary(bundle: Bundle.main.bundle(forTarget: "RenderKitShaders")!)
         let renderPipelineDescriptor = MTLRenderPipelineDescriptor(configuration)
         renderPipelineDescriptor.label = "\(type(of: self))"
         renderPipelineDescriptor.vertexDescriptor = MTLVertexDescriptor(MDLVertexDescriptor.simpleVertexDescriptor)
