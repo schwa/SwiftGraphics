@@ -1,6 +1,5 @@
 index_exclude:
 - Sources/ComputeDemos/**
-- Sources/GaussianSplatDemos/**
 - Sources/GaussianSplatSupport/**
 - Sources/SwiftGraphicsDemos/**
 - Sources/SwiftGraphicsDemosCLI/**

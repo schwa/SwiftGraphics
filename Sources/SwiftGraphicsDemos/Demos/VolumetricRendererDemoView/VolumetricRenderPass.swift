@@ -22,7 +22,7 @@ struct VolumetricRenderPass: RenderPassProtocol {
     }
 
     func setup(device: MTLDevice, configuration: some MetalConfigurationProtocol) throws -> State {
-        let library = try device.makeDebugLibrary(bundle: .swiftGraphicsDemosShaders)
+        let library = try device.makeDebugLibrary(bundle: Bundle.main.bundle(forTarget: "SwiftGraphicsDemosShaders")!)
         let vertexFunction = library.makeFunction(name: "volumeVertexShader")!
         let fragmentFunction = library.makeFunction(name: "volumeFragmentShader")
 

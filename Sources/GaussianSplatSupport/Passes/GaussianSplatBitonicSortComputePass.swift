@@ -24,7 +24,7 @@ public struct GaussianSplatBitonicSortComputePass <Splat>: ComputePassProtocol w
     }
 
     public func setup(device: MTLDevice) throws -> State {
-        let library = try device.makeDebugLibrary(bundle: .gaussianSplatShaders)
+        let library = try device.makeDebugLibrary(bundle: Bundle.main.bundle(forTarget: "GaussianSplatShaders")!)
         let function = library.makeFunction(name: "GaussianSplatShaders::BitonicSortSplats").forceUnwrap("No function found")
         let (pipelineState, reflection) = try device.makeComputePipelineState(function: function, options: .bindingInfo)
 

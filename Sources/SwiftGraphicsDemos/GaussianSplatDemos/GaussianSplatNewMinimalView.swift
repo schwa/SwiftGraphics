@@ -49,10 +49,10 @@ public struct GaussianSplatNewMinimalView: View {
             do {
                 let panoramaMesh = try Box3D(min: [-400, -400, -400], max: [400, 400, 400]).toMTKMesh(device: device, inwardNormals: true)
                 let loader = MTKTextureLoader(device: device)
-                let panoramaTexture = try loader.newTexture(name: "SplitSkybox", scaleFactor: 2, bundle: Bundle.module)
+                let panoramaTexture = try loader.newTexture(name: "Grid", scaleFactor: 2, bundle: Bundle.module)
                 let root = Node(label: "root") {
                     Node(label: "camera", content: Camera())
-                    Node(label: "pano", content: Geometry(mesh: panoramaMesh, materials: [UnlitMaterialX(baseColorTexture: panoramaTexture)]))
+                    Node(label: "pano", content: Geometry(mesh: panoramaMesh, materials: [PanoramaMaterial(baseColorTexture: panoramaTexture)]))
                     Node(label: "splats", content: initialSplatCloud).transformed(roll: .zero, pitch: .degrees(270), yaw: .zero).transformed(roll: .zero, pitch: .zero, yaw: .degrees(90)).transformed(translation: [0, 0.25, 0.5])
                 }
                 let scene = SceneGraph(root: root)

@@ -71,11 +71,11 @@ extension SceneGraph {
                             Node(label: "root") {
                                 Node(label: "camera", content: Camera()) {
                                     // TODO: Pano location should always be tied to camera location
-                                    Node(label: "pano", content: Geometry(mesh: panoramaMesh, materials: [UnlitMaterialX(baseColorTexture: panoramaTexture)]))
+                                    Node(label: "pano", content: Geometry(mesh: panoramaMesh, materials: [UnlitMaterial(baseColorTexture: panoramaTexture)]))
                                 }
                                 .transformed(translation: [0, 0, 5])
                                 Node(label: "model-1", content: Geometry(mesh: sphere, materials: [SimplePBRMaterial(baseColor: [1, 0, 0], metallic: 0.5, roughness: 0.5)]))
-                                Node(label: "model-2", content: Geometry(mesh: quad, materials: [UnlitMaterialX(baseColorTexture: grassTexture)]))
+                                Node(label: "model-2", content: Geometry(mesh: quad, materials: [UnlitMaterial(baseColorTexture: grassTexture)]))
                                     .transformed(scale: [10, 10, 10])
                                     .transformed(.init(rotation: .rotation(angle: .degrees(90), axis: [1, 0, 0])))
                                     .transformed(translation: [0, -1, 0])

@@ -151,7 +151,7 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
                     enabled: sortEnabled,
                     splats: splats
                 )
-                UnlitShadingPass(id: "Unlit", scene: scene)
+                PanoramaShadingPass(id: "Panorama", scene: scene)
                 GaussianSplatRenderPass<Splat>(
                     id: "SplatRender",
                     enabled: true,

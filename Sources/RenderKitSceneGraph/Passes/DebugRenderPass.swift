@@ -33,7 +33,7 @@ public struct DebugRenderPass: RenderPassProtocol {
     }
 
     public func setup(device: MTLDevice, configuration: some MetalConfigurationProtocol) throws -> State {
-        let library = try device.makeDebugLibrary(bundle: .renderKitShaders)
+        let library = try device.makeDebugLibrary(bundle: Bundle.main.bundle(forTarget: "RenderKitShaders")!)
         let renderPipelineDescriptor = MTLRenderPipelineDescriptor(configuration)
         renderPipelineDescriptor.vertexFunction = library.makeFunction(name: "DebugVertexShader")
         renderPipelineDescriptor.fragmentFunction = library.makeFunction(name: "DebugFragmentShader")
