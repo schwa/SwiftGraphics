@@ -1,5 +1,6 @@
 import Foundation
 
+@available(*, deprecated, message: "Deprecated")
 extension Bundle {
     static let swiftGraphicsDemosShaders: Bundle = {
         // Step 1. Find the bundle as a child of main bundle.

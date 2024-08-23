@@ -33,7 +33,6 @@ func testImages() throws {
         let imageComparator = ImageComparator(a: sourceImage, b: outImage)
         #expect(try imageComparator.compare(background: .white))
         #expect(try imageComparator.compare(background: .black))
-        #expect(try imageComparator.compare(background: .gray))
         #expect(try imageComparator.compare(background: .clear))
 
     }

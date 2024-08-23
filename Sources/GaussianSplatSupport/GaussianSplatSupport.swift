@@ -25,6 +25,7 @@ public extension Collection where Element == PackedFloat3 {
     }
 }
 
+@available(*, deprecated, message: "Deprecated")
 public extension Bundle {
     // GaussianSplatTests.xctest/Contents/Resources/SwiftGraphics_GaussianSplatSupport.bundle
     static let gaussianSplatShaders: Bundle = {

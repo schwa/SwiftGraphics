@@ -41,3 +41,28 @@ public func temporarilyDisabled(_ message: @autoclosure () -> String = String(),
 public func unreachable(_ message: @autoclosure () -> String = String(), file: StaticString = #file, line: UInt = #line) -> Never {
     fatalError(message(), file: file, line: line)
 }
+
+// MARK: -
+
+public extension Optional {
+    func safelyUnwrap(_ error: @autoclosure () -> Error) throws -> Wrapped {
+        guard let wrapped = self else {
+            throw error()
+        }
+        return wrapped
+    }
+
+    func forceUnwrap() -> Wrapped {
+        guard let wrapped = self else {
+            fatalError("Cannot unwrap nil optional.")
+        }
+        return wrapped
+    }
+
+    func forceUnwrap(_ message: @autoclosure () -> String) -> Wrapped {
+        guard let wrapped = self else {
+            fatalError(message())
+        }
+        return wrapped
+    }
+}
