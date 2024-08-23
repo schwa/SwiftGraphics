@@ -1,3 +1,5 @@
+// periphery:ignore:all
+
 import simd
 import SIMDSupport
 import SwiftUI

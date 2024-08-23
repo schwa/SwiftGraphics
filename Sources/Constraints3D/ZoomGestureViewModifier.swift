@@ -1,4 +1,5 @@
 import BaseSupport
+import Everything
 import SwiftUI
 
 public struct ZoomGestureViewModifier: ViewModifier {

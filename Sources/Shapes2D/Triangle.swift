@@ -2,6 +2,8 @@ import CoreGraphics
 import CoreGraphicsSupport
 import SwiftUI
 
+// swiftlint:disable force_unwrapping
+
 public struct Triangle {
     public var vertices: (CGPoint, CGPoint, CGPoint)
 

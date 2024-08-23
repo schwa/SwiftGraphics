@@ -36,6 +36,10 @@ public extension SIMD3 where Scalar == Float {
     var normalized: SIMD3<Scalar> {
         simd.normalize(self)
     }
+
+    func distance(to other: Self) -> Scalar {
+        (other - self).length
+    }
 }
 
 public extension SIMD3 where Scalar == Double {

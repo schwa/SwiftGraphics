@@ -1,13 +1,13 @@
 {
-  "originHash" : "497442fdcf5706805040c2585bdcf4f7801fb2d6c07e5f3b5b1546cc3da0a947",
+  "originHash" : "9a4601f8909c3bb2b641091730a5b5a5e20c3eed46bb9fd0d665e03d8fea671d",
   "pins" : [
     {
       "identity" : "everything",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/schwa/Everything",
       "state" : {
-        "revision" : "c697f4e0c452283fdc1e3490f1cf6360fc214977",
-        "version" : "1.1.0"
+        "branch" : "jwight/swift-6",
+        "revision" : "e24a8c69a41cfb9abdae4e91a4b7f056f2e36bbb"
       }
     },
     {

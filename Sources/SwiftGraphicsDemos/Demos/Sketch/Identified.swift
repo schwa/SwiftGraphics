@@ -1,4 +1,3 @@
-import Everything
 import Foundation
 
 public struct Identified<ID, Content>: Identifiable where ID: Hashable {
@@ -40,17 +39,6 @@ public extension Array {
     func identifiedByIndex() -> [Identified<Int, Element>] {
         enumerated().map {
             Identified(id: $0.offset, content: $0.element)
-        }
-    }
-}
-
-public extension Array where Element: Identifiable {
-    @discardableResult
-    mutating func remove(identifiedBy id: Element.ID) -> Element {
-        if let index = firstIndex(identifiedBy: id) {
-            remove(at: index)
-        } else {
-            fatalError("No element identified by \(id)")
         }
     }
 }
