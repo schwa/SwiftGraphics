@@ -136,7 +136,7 @@ public extension MTLDevice {
 
 // MARK: -
 
-extension MTLRenderCommandEncoder {
+public extension MTLRenderCommandEncoder {
     /// Sets a vertex buffer for the render command encoder.
     ///
     /// - Parameters:
@@ -162,7 +162,7 @@ extension MTLRenderCommandEncoder {
     }
 }
 
-extension MTLComputeCommandEncoder {
+public extension MTLComputeCommandEncoder {
     /// Sets a buffer for the compute command encoder.
     ///
     /// - Parameters:
