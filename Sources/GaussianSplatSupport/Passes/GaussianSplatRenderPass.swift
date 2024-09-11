@@ -93,7 +93,7 @@ public struct GaussianSplatRenderPass <Splat>: RenderPassProtocol where Splat: S
             }
             let helper = try SceneGraphRenderHelper(scene: scene, targetColorAttachment: renderPassDescriptor.colorAttachments[0])
             for element in helper.elements() {
-                guard let splats = element.node.splats(Splat.self) else {
+                guard let splats = element.node.splats(Splat.self), splats.count >= 1 else {
                     continue
                 }
 

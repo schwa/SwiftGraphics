@@ -40,6 +40,9 @@ public struct GaussianSplatDistanceComputePass<Splat>: ComputePassProtocol where
     }
 
     public func compute(commandBuffer: MTLCommandBuffer, info: PassInfo, state: State) throws {
+        guard splats.splats.count > 1 else {
+            return
+        }
         let computePipelineState = state.pipelineState
         let commandEncoder = commandBuffer.makeComputeCommandEncoder().forceUnwrap()
         commandEncoder.label = "GaussianSplatPreCalcComputePass"
