@@ -38,6 +38,9 @@ public struct GaussianSplatBitonicSortComputePass <Splat>: ComputePassProtocol w
     }
 
     public func compute(commandBuffer: MTLCommandBuffer, info: PassInfo, state: State) throws {
+        guard splats.splats.count >= 2 else {
+            return
+        }
         let computePipelineState = state.pipelineState
         let computePassDescriptor = MTLComputePassDescriptor()
         info.gpuCounters?.updateComputePassDescriptor(computePassDescriptor)

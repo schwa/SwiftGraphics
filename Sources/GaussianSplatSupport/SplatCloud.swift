@@ -1,3 +1,5 @@
+import Algorithms
+import AsyncAlgorithms
 import BaseSupport
 import GaussianSplatShaders
 import Metal
@@ -38,6 +40,10 @@ public struct SplatCloud <Splat>: Equatable, @unchecked Sendable where Splat: Sp
         lhs.splats == rhs.splats
             && lhs.indexedDistances == rhs.indexedDistances
             && lhs.cameraPosition == rhs.cameraPosition
+    }
+
+    public var count: Int {
+        return splats.count
     }
 }
 
@@ -124,5 +130,11 @@ public extension SplatCloud where Splat == SplatC {
             throw BaseError.error(.illegalValue)
         }
         try self.init(device: device, splats: splats)
+    }
+}
+
+public extension SplatCloud where Splat == SplatC {
+    init(device: MTLDevice, let splatStream: AsyncMapSequence<AsyncChunksOfCountSequence<URLSession.AsyncBytes, [URLSession.AsyncBytes.Element]>, SplatC>, splatLimit: Int? = nil) throws {
+        fatalError()
     }
 }

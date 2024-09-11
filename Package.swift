@@ -380,7 +380,8 @@ let package = Package(
                 "RenderKitSceneGraph"
             ],
             resources: [
-                .copy("Bundle.txt")
+                .copy("Bundle.txt"),
+                .process("Assets.xcassets"),
             ]
         ),
         .target(

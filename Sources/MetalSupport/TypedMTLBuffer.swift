@@ -12,20 +12,25 @@ import BaseSupport
 /// - Note: The generic type `Element` should be a POD (Plain Old Data) type.
 public struct TypedMTLBuffer<Element>: Equatable, Sendable {
     /// The underlying Metal buffer.
-    private var base: MTLBuffer
+    private var base: MTLBuffer?
 
     /// Initializes a new `TypedMTLBuffer` with the given Metal buffer.
     ///
     /// - Parameter mtlBuffer: The Metal buffer to wrap.
     /// - Precondition: The generic type `Element` must be a POD type.
-    public init(mtlBuffer: MTLBuffer) {
+    public init(mtlBuffer: MTLBuffer?) {
         assert(_isPOD(Element.self))
         self.base = mtlBuffer
     }
 
     /// The number of elements of type `Element` that can fit in the buffer.
     public var count: Int {
-        base.length / MemoryLayout<Element>.size
+        if let base {
+            return base.length / MemoryLayout<Element>.size
+        }
+        else {
+            return 0
+        }
     }
 
     /// Compares two `TypedMTLBuffer` instances for equality.
@@ -49,7 +54,7 @@ public extension TypedMTLBuffer {
     /// - Parameter block: A closure that takes an `MTLBuffer` and returns a value.
     /// - Returns: The value returned by the `block`.
     /// - Throws: Rethrows any error thrown by the `block`.
-    func withUnsafeMTLBuffer<R>(_ block: (MTLBuffer) throws -> R) rethrows -> R {
+    func withUnsafeMTLBuffer<R>(_ block: (MTLBuffer?) throws -> R) rethrows -> R {
         try block(base)
     }
 
@@ -59,10 +64,15 @@ public extension TypedMTLBuffer {
     /// - Returns: The value returned by the `block`.
     /// - Throws: Rethrows any error thrown by the `block`.
     func withUnsafeBufferPointer<R>(_ block: (UnsafeBufferPointer<Element>) throws -> R) rethrows -> R {
-        let contents = base.contents()
-        let pointer = contents.bindMemory(to: Element.self, capacity: count)
-        let buffer = UnsafeBufferPointer(start: pointer, count: count)
-        return try block(buffer)
+        if let base {
+            let contents = base.contents()
+            let pointer = contents.bindMemory(to: Element.self, capacity: count)
+            let buffer = UnsafeBufferPointer(start: pointer, count: count)
+            return try block(buffer)
+        }
+        else {
+            return try block(UnsafeBufferPointer<Element>(start: nil, count: 0))
+        }
     }
 
     /// Provides unsafe mutable access to the buffer's contents.
@@ -70,11 +80,16 @@ public extension TypedMTLBuffer {
     /// - Parameter block: A closure that takes an `UnsafeMutableBufferPointer<T>` and returns a value.
     /// - Returns: The value returned by the `block`.
     /// - Throws: Rethrows any error thrown by the `block`.
-    func withUnsafeMutableBufferPointer<R>(_ block: (UnsafeMutableBufferPointer<Element>) throws -> R) rethrows -> R {
-        let contents = base.contents()
-        let pointer = contents.bindMemory(to: Element.self, capacity: count)
-        let buffer = UnsafeMutableBufferPointer(start: pointer, count: count)
-        return try block(buffer)
+    func withUnsafeMutableBufferPointer<R>(_ block: (UnsafeMutableBufferPointer<Element>?) throws -> R) rethrows -> R {
+        if let base {
+            let contents = base.contents()
+            let pointer = contents.bindMemory(to: Element.self, capacity: count)
+            let buffer = UnsafeMutableBufferPointer(start: pointer, count: count)
+            return try block(buffer)
+        }
+        else {
+            return try block(UnsafeMutableBufferPointer<Element>(start: nil, count: 0))
+        }
     }
 
     /// Sets a label for the underlying Metal buffer.
@@ -82,7 +97,7 @@ public extension TypedMTLBuffer {
     /// - Parameter label: The label to set.
     /// - Returns: The `TypedMTLBuffer` instance with the updated label.
     func labelled(_ label: String) -> Self {
-        self.base.label = label
+        self.base?.label = label
         return self
     }
 }
@@ -118,19 +133,30 @@ public extension MTLDevice {
     /// - Returns: A new `TypedMTLBuffer` containing the specified data.
     /// - Throws: `BaseError.resourceCreationFailure` if the buffer creation fails.
     func makeTypedBuffer<Element>(data: [Element], options: MTLResourceOptions = []) throws -> TypedMTLBuffer<Element> {
-        try data.withUnsafeBytes { buffer in
-            guard let buffer = makeBuffer(bytes: buffer.baseAddress!, length: buffer.count, options: options) else {
-                throw BaseError.error(.resourceCreationFailure)
+        if data.isEmpty {
+            return TypedMTLBuffer<Element>(mtlBuffer: nil)
+        }
+        else {
+            return try data.withUnsafeBytes { buffer in
+                guard let buffer = makeBuffer(bytes: buffer.baseAddress!, length: buffer.count, options: options) else {
+                    throw BaseError.error(.resourceCreationFailure)
+                }
+                return TypedMTLBuffer<Element>(mtlBuffer: buffer)
             }
-            return TypedMTLBuffer(mtlBuffer: buffer)
         }
     }
 
     func makeTypedBuffer<Element>(count: Int, options: MTLResourceOptions = []) throws -> TypedMTLBuffer<Element> {
-        guard let buffer = makeBuffer(length: MemoryLayout<Element>.stride * count, options: options) else {
-            throw BaseError.error(.resourceCreationFailure)
+        // swiftlint:disable:next empty_count
+        if count == 0 {
+            return TypedMTLBuffer<Element>(mtlBuffer: nil)
         }
-        return TypedMTLBuffer(mtlBuffer: buffer)
+        else {
+            guard let buffer = makeBuffer(length: MemoryLayout<Element>.stride * count, options: options) else {
+                throw BaseError.error(.resourceCreationFailure)
+            }
+            return TypedMTLBuffer(mtlBuffer: buffer)
+        }
     }
 }
 

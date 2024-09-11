@@ -45,12 +45,10 @@ public struct SingleSplatView: View {
         self.device = device
         self.splat = splat
 
-        let root = Node(label: "root") {
-            Node(label: "camera", content: Camera())
-            Node(label: "splats").transformed(roll: .zero, pitch: .degrees(270), yaw: .zero).transformed(roll: .zero, pitch: .zero, yaw: .degrees(90))
-        }
-        let scene = SceneGraph(root: root)
-        self.viewModel = try! GaussianSplatViewModel<SplatC>(device: device, scene: scene)
+        let splats = [splat].map(SplatC.init)
+        let splatCloud = try! SplatCloud(device: device, splats: splats)
+
+        self.viewModel = try! GaussianSplatViewModel<SplatC>(device: device, splatCloud: splatCloud)
     }
 
     public var body: some View {
