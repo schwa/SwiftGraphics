@@ -2,9 +2,6 @@ import BaseSupport
 import Foundation
 import os
 import SIMDSupport
-
-/// A hierarchical structure representing a node in a tree-like data structure.
-/// Each node can have content, children, and various properties that define its state and behavior.
 public struct Node: Identifiable, Sendable {
     /// The type of content that can be stored in the node.
     public typealias Content = any Sendable
