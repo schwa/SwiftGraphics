@@ -109,17 +109,11 @@ public extension Bundle {
     }
 
     func bundle(forTarget target: String) -> Bundle? {
-        let pattern = Regex {
-            OneOrMore {
-                /./
-            }
-            "_"
-            target
-            ".bundle"
+        let bundle = childBundles.first { bundle in
+            let filename = bundle.bundleURL.deletingPathExtension().lastPathComponent
+            return filename.hasSuffix("_\(target)")
         }
-        return childBundles.first { bundle in
-            bundle.bundleURL.lastPathComponent.firstMatch(of: pattern) != nil
-        }
+        return bundle
     }
 
     func bundle(forTarget target: String, recursive: Bool) -> Bundle? {
