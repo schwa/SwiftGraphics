@@ -196,7 +196,7 @@ public extension GaussianSplatViewModel where Splat == SplatC {
         headRequest.httpMethod = "HEAD"
         let (_, headResponse) = try await session.data(for: headRequest)
         guard let headResponse = headResponse as? HTTPURLResponse else {
-            fatalError()
+            fatalError("Oops")
         }
         guard headResponse.statusCode == 200 else {
             throw BaseError.missingResource
@@ -217,12 +217,11 @@ public extension GaussianSplatViewModel where Splat == SplatC {
         let request = URLRequest(url: url)
         let (byteStream, bytesResponse) = try await session.bytes(for: request)
         guard let bytesResponse = bytesResponse as? HTTPURLResponse else {
-            fatalError()
+            fatalError("Oops")
         }
         guard bytesResponse.statusCode == 200 else {
             throw BaseError.missingResource
         }
-
         let splatStream = byteStream.chunks(ofCount: MemoryLayout<SplatB>.stride).map { bytes in
             bytes.withUnsafeBytes { buffer in
                 let splatB = buffer.load(as: SplatB.self)
@@ -236,5 +235,13 @@ public extension GaussianSplatViewModel where Splat == SplatC {
             loadProgress.completedUnitCount = Int64(splatCloud.count)
         }
         assert(splatCloud.count == splatCount)
+
+        let data = try Data(contentsOf: url)
+        print(data.count, contentLength)
+        let splats = try SplatCloud<SplatC>(device: device, data: data)
+        print(splats.count == splatCloud.count)
+        print(splats.count, splatCloud.count)
+        print(Data(splats.splats.unsafeBase!.contentsBuffer()) == Data(splatCloud.splats.unsafeBase!.contentsBuffer()))
+        print(splats.splats.unsafeBase!.length, splatCloud.splats.unsafeBase!.length)
     }
 }
