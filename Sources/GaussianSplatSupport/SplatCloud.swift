@@ -14,12 +14,15 @@ public protocol SplatProtocol: Equatable, Sendable {
 // TODO: @unchecked Sendable
 public struct SplatCloud <Splat>: Equatable, @unchecked Sendable where Splat: SplatProtocol {
     public var splats: TypedMTLBuffer<Splat>
-    public var indexedDistances: TypedMTLBuffer<IndexedDistance>
+    public var indexedDistances: TupleBuffered<TypedMTLBuffer<IndexedDistance>>
     //    public var boundingBox: (SIMD3<Float>, SIMD3<Float>)
 
     public init(device: MTLDevice, capacity: Int) throws {
         self.splats = try device.makeTypedBuffer(capacity: capacity)
-        self.indexedDistances = try device.makeTypedBuffer(capacity: capacity)
+        self.indexedDistances = .init(keys: ["onscreen", "offscreen"], elements: [
+            try device.makeTypedBuffer(capacity: capacity).labelled("Splats-IndexDistances-1"),
+            try device.makeTypedBuffer(capacity: capacity).labelled("Splats-IndexDistances-2"),
+        ])
     }
 
     public init(device: MTLDevice) throws {
@@ -30,8 +33,12 @@ public struct SplatCloud <Splat>: Equatable, @unchecked Sendable where Splat: Sp
         self.splats = splats
 
         let indexedDistances = (0 ..< splats.count).map { IndexedDistance(index: UInt32($0), distance: 0.0) }
+        self.indexedDistances = .init(keys: ["onscreen", "offscreen"], elements: [
+            try device.makeTypedBuffer(data: indexedDistances, options: .storageModeShared).labelled("Splats-IndexDistances-1"),
+            try device.makeTypedBuffer(data: indexedDistances, options: .storageModeShared).labelled("Splats-IndexDistances-2"),
+        ])
 
-        self.indexedDistances = try device.makeTypedBuffer(data: indexedDistances, options: .storageModeShared).labelled("Splats-IndexDistances-1") //
+
 
         //        self.boundingBox = splats.withUnsafeBufferPointer { buffer in
         //            let positions = buffer.map { SIMD3<Float>($0.floatPosition) }
@@ -49,7 +56,8 @@ public struct SplatCloud <Splat>: Equatable, @unchecked Sendable where Splat: Sp
     }
 
     public var count: Int {
-        assert(splats.count == indexedDistances.count)
+        assert(splats.count == indexedDistances.onscreen.count)
+        assert(splats.count == indexedDistances.offscreen.count)
         return splats.count
     }
 }
@@ -65,7 +73,8 @@ public extension SplatCloud {
     mutating func append(splats: [Splat]) throws {
         let count = count
         try self.splats.append(contentsOf: splats)
-        try self.indexedDistances.append(contentsOf: (0 ..< splats.count).map { IndexedDistance(index: UInt32(count + $0), distance: 0.0) })
+        try self.indexedDistances.onscreen.append(contentsOf: (0 ..< splats.count).map { IndexedDistance(index: UInt32(count + $0), distance: 0.0) })
+        try self.indexedDistances.offscreen.append(contentsOf: (0 ..< splats.count).map { IndexedDistance(index: UInt32(count + $0), distance: 0.0) })
     }
 }
 

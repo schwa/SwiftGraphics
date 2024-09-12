@@ -86,7 +86,7 @@ public extension TypedMTLBuffer {
     /// - Parameter block: A closure that takes an `UnsafeMutableBufferPointer<T>` and returns a value.
     /// - Returns: The value returned by the `block`.
     /// - Throws: Rethrows any error thrown by the `block`.
-    func withUnsafeMutableBufferPointer<R>(_ block: (UnsafeMutableBufferPointer<Element>?) throws -> R) rethrows -> R {
+    func withUnsafeMutableBufferPointer<R>(_ block: (UnsafeMutableBufferPointer<Element>) throws -> R) rethrows -> R {
         if let base {
             let contents = base.contents()
             let pointer = contents.bindMemory(to: Element.self, capacity: count)

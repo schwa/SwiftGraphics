@@ -122,7 +122,7 @@ public struct GaussianSplatRenderPass <Splat>: RenderPassProtocol where Splat: S
                     commandEncoder.setVertexBuffersFrom(mesh: state.quadMesh)
                     commandEncoder.setVertexBytes(of: uniforms, index: state.vertexBindings.uniforms)
                     commandEncoder.setVertexBuffer(splats.splats, offset: 0, index: state.vertexBindings.splats)
-                    commandEncoder.setVertexBuffer(splats.indexedDistances, offset: 0, index: state.vertexBindings.indexedDistances)
+                    commandEncoder.setVertexBuffer(splats.indexedDistances.onscreen, offset: 0, index: state.vertexBindings.indexedDistances)
                     // TODO: FIXME
                     //                    if useVertexCounting {
                     //                        commandEncoder.setVertexBuffer(state.vertexCounterBuffer, offset: 0, index: state.bindings.vertexCounterBuffer)
