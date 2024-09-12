@@ -16,6 +16,7 @@ public enum BaseError: Error {
     case extended(Error, String)
     case decodingFailure
     case missingBinding(String)
+    case overflow
 }
 
 public extension BaseError {

@@ -8,11 +8,11 @@ import MetalSupport
 import os
 import RenderKit
 import RenderKitSceneGraph
+import Shapes3D
 import simd
 import SIMDSupport
 import SwiftUI
 import SwiftUISupport
-import Shapes3D
 
 @Observable
 @MainActor
@@ -58,9 +58,6 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
             Node(label: "splats", content: splatCloud).transformed(roll: .zero, pitch: .degrees(270), yaw: .zero).transformed(roll: .zero, pitch: .zero, yaw: .degrees(90)).transformed(translation: [0, 0.25, 0.5])
         }
         self.scene = SceneGraph(root: root)
-
-
-
         try updatePass()
     }
 
