@@ -40,9 +40,3 @@ extension SceneGraph {
 extension UTType {
     static let splat = UTType(filenameExtension: "splat")!
 }
-
-extension SplatCloud: @retroactive CustomDebugStringConvertible {
-    public var debugDescription: String {
-        "Splats()"
-    }
-}

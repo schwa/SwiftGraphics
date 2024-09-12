@@ -61,9 +61,6 @@ public struct SingleSplatView: View {
                     node!.content = try SplatCloud(device: device, splats: splats)
                 }
             }
-            .task {
-                viewModel.logger = logger
-            }
             .inspector(isPresented: .constant(true)) {
                 makeInspector()
             }
