@@ -73,11 +73,6 @@ struct DemosView: View {
                 row(for: LineGeometryShaderView.self)
                 row(for: CustomStrokeEditorDemoView.self)
                 row(for: CameraControllerDemo.self)
-                group(named: "Gaussian Splat") {
-                    //                    row(for: GaussianSplatView.self)
-                    //                    row(for: GaussianSplatNewMinimalView.self)
-                    //                    row(for: SingleSplatView.self)
-                }
                 group(named: "RenderKit") {
                     // TODO: All failing right now
                     row(for: PointCloudView.self)

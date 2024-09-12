@@ -2,6 +2,7 @@ import BaseSupport
 import GaussianSplatSupport
 import SwiftUI
 import Algorithms
+import os
 
 public struct GaussianSplatLoadingView: View {
     @Environment(\.metalDevice)
@@ -26,7 +27,11 @@ public struct GaussianSplatLoadingView: View {
     public var body: some View {
         ZStack {
             if let splatCloud {
-                GaussianSplatNewMinimalView(splatCloud: splatCloud, configuration: configuration)
+
+                let viewModel = try! GaussianSplatViewModel<SplatC>(device: device, splatCloud: splatCloud, configuration: configuration, logger: Logger())
+
+                GaussianSplatNewMinimalView()
+                .environment(viewModel)
             }
             else {
                 VStack {
