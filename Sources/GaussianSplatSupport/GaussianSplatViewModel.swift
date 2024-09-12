@@ -29,13 +29,18 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
     @ObservationIgnored
     public var frame: Int = 0 {
         didSet {
-            try! updatePass()
+            try! sceneChanged()
         }
     }
 
     public var scene: SceneGraph {
         didSet {
-            try! updatePass()
+
+            if oldValue.currentCameraNode?.transform != scene.currentCameraNode?.transform {
+                cameraChanged()
+            }
+
+            try! sceneChanged()
         }
     }
 
@@ -72,12 +77,41 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
             Node(label: "splats", content: splatCloud).transformed(roll: .zero, pitch: .degrees(270), yaw: .zero).transformed(roll: .zero, pitch: .zero, yaw: .degrees(90)).transformed(translation: [0, 0.25, 0.5])
         }
         self.scene = SceneGraph(root: root)
-        try updatePass()
+        try sceneChanged()
         loadProgress.completedUnitCount = Int64(splatCloud.count)
         loadProgress.totalUnitCount = Int64(splatCloud.count)
     }
 
-    func updatePass() throws {
+    var isSorting = false
+
+    func cameraChanged() {
+        print("CAMERA CHANGED")
+        guard isSorting == false else {
+            return
+        }
+        guard let cameraNode = scene.firstNode(label: "camera") else {
+            logger?.log("Missing camera")
+            return
+        }
+        guard let splatsAccessor = scene.firstAccessor(label: "splats") else {
+            fatalError()
+        }
+        guard let splatCloud = scene[accessor: splatsAccessor]?.content as? SplatCloud<Splat> else {
+            fatalError()
+        }
+        isSorting = true
+        Task.detached {
+            print("SORT STARTED")
+            splatCloud.sortIndices(camera: cameraNode.transform.matrix)
+            await MainActor.run {
+                splatCloud.indexedDistances.rotate()
+                print("SORT ENDED")
+                self.isSorting = false
+            }
+        }
+    }
+
+    func sceneChanged() throws {
         guard let resources else {
             logger?.log("Missing resources")
             return
@@ -94,20 +128,28 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
         let fullRedraw = true
         let sortEnabled = configuration.sortRate <= 1 || (frame <= 1 || frame.isMultiple(of: configuration.sortRate))
 
+//        if sortEnabled {
+//            try scene.modify(label: "splats") { node in
+//                var splats = node!.content as! SplatCloud<Splat>
+//                splats.sortIndices(camera: cameraNode.transform.matrix)
+//                node!.content = splats
+//            }
+//        }
+
         self.pass = try GroupPass(id: "FullPass") {
             GroupPass(id: "GaussianSplatRenderGroup", enabled: fullRedraw, renderPassDescriptor: offscreenRenderPassDescriptor) {
-                GaussianSplatDistanceComputePass(
-                    id: "SplatDistanceCompute",
-                    enabled: sortEnabled,
-                    splats: splats,
-                    modelMatrix: simd_float3x3(truncating: splatsNode.transform.matrix),
-                    cameraPosition: cameraNode.transform.translation
-                )
-                GaussianSplatBitonicSortComputePass(
-                    id: "SplatBitonicSort",
-                    enabled: sortEnabled,
-                    splats: splats
-                )
+//                GaussianSplatDistanceComputePass(
+//                    id: "SplatDistanceCompute",
+//                    enabled: sortEnabled,
+//                    splats: splats,
+//                    modelMatrix: simd_float3x3(truncating: splatsNode.transform.matrix),
+//                    cameraPosition: cameraNode.transform.translation
+//                )
+//                GaussianSplatBitonicSortComputePass(
+//                    id: "SplatBitonicSort",
+//                    enabled: sortEnabled,
+//                    splats: splats
+//                )
                 PanoramaShadingPass(id: "Panorama", scene: scene)
                 GaussianSplatRenderPass<Splat>(
                     id: "SplatRender",

@@ -7,14 +7,11 @@ import MetalSupport
 import simd
 import SIMDSupport
 
-public protocol SplatProtocol: Equatable, Sendable {
-    var floatPosition: SIMD3<Float> { get }
-}
-
 // TODO: @unchecked Sendable
-public struct SplatCloud <Splat>: Equatable, @unchecked Sendable where Splat: SplatProtocol {
+public final class SplatCloud <Splat>: Equatable, @unchecked Sendable where Splat: SplatProtocol {
     public var splats: TypedMTLBuffer<Splat>
     public var indexedDistances: TupleBuffered<TypedMTLBuffer<IndexedDistance>>
+    public var temporaryIndexedDistances: [IndexedDistance]
     //    public var boundingBox: (SIMD3<Float>, SIMD3<Float>)
 
     public init(device: MTLDevice, capacity: Int) throws {
@@ -23,9 +20,10 @@ public struct SplatCloud <Splat>: Equatable, @unchecked Sendable where Splat: Sp
             try device.makeTypedBuffer(capacity: capacity).labelled("Splats-IndexDistances-1"),
             try device.makeTypedBuffer(capacity: capacity).labelled("Splats-IndexDistances-2"),
         ])
+        self.temporaryIndexedDistances = []
     }
 
-    public init(device: MTLDevice) throws {
+    public convenience init(device: MTLDevice) throws {
         try self.init(device: device, capacity: 0)
     }
 
@@ -37,22 +35,12 @@ public struct SplatCloud <Splat>: Equatable, @unchecked Sendable where Splat: Sp
             try device.makeTypedBuffer(data: indexedDistances, options: .storageModeShared).labelled("Splats-IndexDistances-1"),
             try device.makeTypedBuffer(data: indexedDistances, options: .storageModeShared).labelled("Splats-IndexDistances-2"),
         ])
-
-
-
-        //        self.boundingBox = splats.withUnsafeBufferPointer { buffer in
-        //            let positions = buffer.map { SIMD3<Float>($0.floatPosition) }
-        //            // swiftlint:disable:next reduce_into
-        //            let minimums = positions.reduce([.greatestFiniteMagnitude, .greatestFiniteMagnitude, .greatestFiniteMagnitude], min)
-        //            // swiftlint:disable:next reduce_into
-        //            let maximums = positions.reduce([-.greatestFiniteMagnitude, -.greatestFiniteMagnitude, -.greatestFiniteMagnitude], max)
-        //            return (minimums, maximums)
-        //        }
+        temporaryIndexedDistances = Array(repeating: .init(index: 0, distance: 0), count: splats.count)
     }
 
-    public static func == (lhs: Self, rhs: Self) -> Bool {
+    public static func == (lhs: SplatCloud, rhs: SplatCloud) -> Bool {
         lhs.splats == rhs.splats
-            && lhs.indexedDistances == rhs.indexedDistances
+        && lhs.indexedDistances == rhs.indexedDistances
     }
 
     public var count: Int {
@@ -63,18 +51,19 @@ public struct SplatCloud <Splat>: Equatable, @unchecked Sendable where Splat: Sp
 }
 
 public extension SplatCloud {
-    init(device: MTLDevice, splats: [Splat]) throws {
+    convenience init(device: MTLDevice, splats: [Splat]) throws {
         let typedMTLBuffer = try device.makeTypedBuffer(data: splats)
         try self.init(device: device, splats: typedMTLBuffer)
     }
 }
 
 public extension SplatCloud {
-    mutating func append(splats: [Splat]) throws {
-        let count = count
+    func append(splats: [Splat]) throws {
+        let originalCount = count
         try self.splats.append(contentsOf: splats)
-        try self.indexedDistances.onscreen.append(contentsOf: (0 ..< splats.count).map { IndexedDistance(index: UInt32(count + $0), distance: 0.0) })
-        try self.indexedDistances.offscreen.append(contentsOf: (0 ..< splats.count).map { IndexedDistance(index: UInt32(count + $0), distance: 0.0) })
+        try self.indexedDistances.onscreen.append(contentsOf: (0 ..< splats.count).map { IndexedDistance(index: UInt32(originalCount + $0), distance: 0.0) })
+        try self.indexedDistances.offscreen.append(contentsOf: (0 ..< splats.count).map { IndexedDistance(index: UInt32(originalCount + $0), distance: 0.0) })
+        self.temporaryIndexedDistances += Array(repeating: .init(index: 0, distance: 0), count: splats.count)
     }
 }
 
@@ -84,53 +73,10 @@ extension SplatCloud: CustomDebugStringConvertible {
     }
 }
 
-// public extension SplatCloud {
-//    func center() -> SIMD3<Float> {
-//        (boundingBox.0 + boundingBox.1) / 2
-//    }
-// }
-
-// MARK: -
-
-public struct SplatB: Equatable, Sendable {
-    public var position: PackedFloat3
-    public var scale: PackedFloat3
-    public var color: SIMD4<UInt8>
-    public var rotation: SIMD4<UInt8>
-
-    public init(position: PackedFloat3, scale: PackedFloat3, color: SIMD4<UInt8>, rotation: SIMD4<UInt8>) {
-        self.position = position
-        self.scale = scale
-        self.color = color
-        self.rotation = rotation
-    }
-}
-
-// Metal Debugger: half3 position, half4 color, half3 cov_a, half3 cov_b
-public struct SplatC: Equatable, Sendable {
-    public var position: PackedHalf3
-    public var color: PackedHalf4
-    public var cov_a: PackedHalf3
-    public var cov_b: PackedHalf3
-
-    public init(position: PackedHalf3, color: PackedHalf4, cov_a: PackedHalf3, cov_b: PackedHalf3) {
-        self.position = position
-        self.color = color
-        self.cov_a = cov_a
-        self.cov_b = cov_b
-    }
-}
-
-extension SplatC: SplatProtocol {
-    public var floatPosition: SIMD3<Float> {
-        .init(position)
-    }
-}
-
 // MARK: -
 
 public extension SplatCloud where Splat == SplatC {
-    init(device: MTLDevice, data: Data, splatLimit: Int? = nil) throws {
+    convenience init(device: MTLDevice, data: Data, splatLimit: Int? = nil) throws {
         let splatArray = data.withUnsafeBytes { buffer in
             buffer.withMemoryRebound(to: SplatB.self) { splats in
                 // NOTE: This is horrendously expensive.
@@ -158,7 +104,7 @@ public extension SplatCloud where Splat == SplatC {
         try self.init(device: device, splats: splats)
     }
 
-    init(device: MTLDevice, url: URL, splatLimit: Int? = nil) throws {
+    convenience init(device: MTLDevice, url: URL, splatLimit: Int? = nil) throws {
         let data = try Data(contentsOf: url)
         let splats: TypedMTLBuffer<SplatC>
         if url.pathExtension == "splat" {
@@ -166,5 +112,49 @@ public extension SplatCloud where Splat == SplatC {
         } else {
             throw BaseError.error(.illegalValue)
         }
+    }
+}
+
+extension SplatCloud {
+    // TODO: Should add in model transform for splat cloud too.
+    func sortIndices(camera: simd_float4x4) {
+        guard indexedDistances.offscreen.count > 1 else {
+            return
+        }
+        indexedDistances.offscreen.withUnsafeMutableBufferPointer { indexedDistances in
+            // Compute distances.
+
+            var minDistance: Float = .greatestFiniteMagnitude
+            var maxDistance: Float = -.greatestFiniteMagnitude
+
+            timeit("CalcDistance") {
+                splats.withUnsafeBufferPointer { splats in
+                    for index in 0..<indexedDistances.count {
+                        let distance = splats[index].floatPosition.distance(to: camera.translation)
+                        indexedDistances[index] = .init(index: UInt32(index), distance: distance)
+                        minDistance = min(minDistance, distance)
+                        maxDistance = max(maxDistance, distance)
+                    }
+                }
+            }
+
+            // Sort
+            timeit("Sort") {
+                temporaryIndexedDistances.withUnsafeMutableBufferPointer { temporaryIndexedDistances in
+                    RadixSortCPU<IndexedDistance>().radixSort(input: indexedDistances, temp: temporaryIndexedDistances)
+                }
+            }
+        }
+    }
+}
+
+extension IndexedDistance: RadixSortable {
+//    var key: UInt32 {
+//        // TODO: this is a total hack that doesn't take min/max range into account.
+//        UInt32.max - UInt32(distance * 1_000_000 + 1_000_000)
+//    }
+
+    func key(shift: Int) -> Int {
+        fatalError()
     }
 }
