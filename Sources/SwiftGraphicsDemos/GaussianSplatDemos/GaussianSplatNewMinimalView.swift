@@ -19,43 +19,7 @@ import UniformTypeIdentifiers
 
 // swiftlint:disable force_unwrapping
 
-public struct GaussianSplatNewMinimalView: View {
-    let initialSplatCloud: SplatCloud<SplatC>
-    let initialConfiguration: GaussianSplatRenderingConfiguration
-
-    @Environment(\.metalDevice)
-    private var device
-
-    @Environment(\.logger)
-    private var logger
-
-    @State
-    private var viewModel: GaussianSplatViewModel<SplatC>?
-
-    public init(splatCloud: SplatCloud<SplatC>, configuration: GaussianSplatRenderingConfiguration = .init()) {
-        self.initialSplatCloud = splatCloud
-        self.initialConfiguration = configuration
-    }
-
-    public var body: some View {
-        ZStack {
-            if let viewModel {
-                GaussianSplatNewMinimalView_()
-                    .environment(viewModel)
-            }
-        }
-        .task {
-            do {
-                viewModel = try GaussianSplatViewModel<SplatC>(device: device, splatCloud: initialSplatCloud, configuration: initialConfiguration, logger: logger)
-            }
-            catch {
-                fatalError(error)
-            }
-        }
-    }
-}
-
-struct GaussianSplatNewMinimalView_: View {
+struct GaussianSplatNewMinimalView: View {
     @Environment(\.metalDevice)
     var device
 
@@ -73,17 +37,17 @@ struct GaussianSplatNewMinimalView_: View {
         var viewModel = viewModel
 
         GaussianSplatRenderView<SplatC>()
-            #if os(iOS)
-            .ignoresSafeArea()
-            #endif
-            .modifier(CameraConeController(cameraCone: cameraCone, transform: $viewModel.scene.unsafeCurrentCameraNode.transform))
-            .environment(\.gpuCounters, gpuCounters)
-            .overlay(alignment: .top) {
-                if let gpuCounters {
-                    TimelineView(.periodic(from: .now, by: 0.25)) { _ in
-                        PerformanceHUD(measurements: gpuCounters.current())
-                    }
+        #if os(iOS)
+        .ignoresSafeArea()
+        #endif
+        .modifier(CameraConeController(cameraCone: cameraCone, transform: $viewModel.scene.unsafeCurrentCameraNode.transform))
+        .environment(\.gpuCounters, gpuCounters)
+        .overlay(alignment: .top) {
+            if let gpuCounters {
+                TimelineView(.periodic(from: .now, by: 0.25)) { _ in
+                    PerformanceHUD(measurements: gpuCounters.current())
                 }
             }
+        }
     }
 }
