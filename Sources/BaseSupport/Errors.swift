@@ -47,23 +47,26 @@ public func unreachable(_ message: @autoclosure () -> String = String(), file: S
 
 public extension Optional {
     func safelyUnwrap(_ error: @autoclosure () -> Error) throws -> Wrapped {
-        guard let wrapped = self else {
+        // swiftlint:disable:next shorthand_optional_binding
+        guard let self = self else {
             throw error()
         }
-        return wrapped
+        return self
     }
 
     func forceUnwrap() -> Wrapped {
-        guard let wrapped = self else {
+        // swiftlint:disable:next shorthand_optional_binding
+        guard let self = self else {
             fatalError("Cannot unwrap nil optional.")
         }
-        return wrapped
+        return self
     }
 
     func forceUnwrap(_ message: @autoclosure () -> String) -> Wrapped {
-        guard let wrapped = self else {
+        // swiftlint:disable:next shorthand_optional_binding
+        guard let self = self else {
             fatalError(message())
         }
-        return wrapped
+        return self
     }
 }
