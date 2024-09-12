@@ -17,14 +17,6 @@ import SwiftUISupport
 @Observable
 @MainActor
 public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
-    public var scene: SceneGraph {
-        didSet {
-            try! updatePass()
-        }
-    }
-
-    public var pass: GroupPass?
-
     @ObservationIgnored
     public let device: MTLDevice
 
@@ -32,7 +24,7 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
     public var configuration: GaussianSplatRenderingConfiguration
 
     @ObservationIgnored
-    var resources: GaussianSplatResources?
+    private var resources: GaussianSplatResources?
 
     @ObservationIgnored
     public var frame: Int = 0 {
@@ -41,8 +33,30 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
         }
     }
 
+    public var scene: SceneGraph {
+        didSet {
+            try! updatePass()
+        }
+    }
+
+    public var pass: GroupPass?
+
+    public var loadProgress = Progress()
+
     @ObservationIgnored
-    public var logger: Logger?
+    private var logger: Logger?
+
+    // TODO: bang and try!
+    public var splatCloud: SplatCloud<SplatC> {
+        get {
+            scene.firstNode(label: "splats")!.content as! SplatCloud<SplatC>
+        }
+        set {
+            try! scene.modify(label: "splats") { node in
+                node!.content = newValue
+            }
+        }
+    }
 
     public init(device: MTLDevice, splatCloud: SplatCloud<SplatC>, configuration: GaussianSplatRenderingConfiguration = .init(), logger: Logger? = nil) throws {
         self.device = device
@@ -59,6 +73,9 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
         }
         self.scene = SceneGraph(root: root)
         try updatePass()
+        loadProgress.completedUnitCount = Int64(splatCloud.count)
+        loadProgress.totalUnitCount = Int64(splatCloud.count)
+
     }
 
     func updatePass() throws {
@@ -149,6 +166,7 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
     }
 }
 
+// MARK: -
 
 struct GaussianSplatResources {
     var downscaledTexture: MTLTexture
@@ -156,9 +174,69 @@ struct GaussianSplatResources {
     var outputTexture: MTLTexture
 }
 
-
 extension MTLSize {
     var shortDescription: String {
         depth == 1 ? "\(width)x\(height)" : "\(width)x\(height)x\(depth)"
+    }
+}
+
+// MARK: -
+
+public extension GaussianSplatViewModel where Splat == SplatC {
+    convenience init(device: MTLDevice, splatCount: Int, configuration: GaussianSplatRenderingConfiguration = .init(), logger: Logger? = nil) throws {
+        try self.init(device: device, splatCloud: SplatCloud<SplatC>(device: device), configuration: configuration, logger: logger)
+    }
+
+    func streamingLoad(url: URL) async throws {
+        assert(MemoryLayout<SplatB>.stride == MemoryLayout<SplatB>.size)
+
+        let session = URLSession.shared
+
+        // Perform a HEAD request to compute the number of splats.
+        var headRequest = URLRequest(url: url)
+        headRequest.httpMethod = "HEAD"
+        let (_, headResponse) = try await session.data(for: headRequest)
+        guard let headResponse = headResponse as? HTTPURLResponse else {
+            fatalError()
+        }
+        guard headResponse.statusCode == 200 else {
+            throw BaseError.missingResource
+        }
+        guard let contentLength = try (headResponse.allHeaderFields["Content-Length"] as? String).map(Int.init)?.safelyUnwrap(BaseError.optionalUnwrapFailure) else {
+            fatalError("Oops")
+        }
+        guard contentLength.isMultiple(of: MemoryLayout<SplatB>.stride) else {
+            fatalError("Not an even multiple of \(MemoryLayout<SplatB>.stride)")
+        }
+        let splatCount = contentLength / MemoryLayout<SplatB>.stride
+        print("Content length: \(contentLength), splat count: \(splatCount)")
+
+        loadProgress.totalUnitCount = Int64(splatCount)
+
+        // Start loading splats into a new splat cloud with the right capacity...
+        splatCloud = try SplatCloud<Splat>(device: device, capacity: splatCount)
+        let request = URLRequest(url: url)
+        let (byteStream, bytesResponse) = try await session.bytes(for: request)
+        guard let bytesResponse = bytesResponse as? HTTPURLResponse else {
+            fatalError()
+        }
+        guard bytesResponse.statusCode == 200 else {
+            throw BaseError.missingResource
+        }
+
+        let splatStream = byteStream.chunks(ofCount: MemoryLayout<SplatB>.stride).map { bytes in
+            bytes.withUnsafeBytes { buffer in
+                let splatB = buffer.load(as: SplatB.self)
+                let splatC = SplatC(splatB)
+                return splatC
+            }
+        }
+        .chunks(ofCount: 2048)
+
+        for try await splats in splatStream {
+            try splatCloud.append(splats: splats)
+            loadProgress.completedUnitCount = Int64(splatCloud.count)
+        }
+        assert(splatCloud.count == splatCount)
     }
 }

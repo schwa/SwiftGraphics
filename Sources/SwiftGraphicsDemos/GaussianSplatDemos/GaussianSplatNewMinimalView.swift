@@ -33,20 +33,31 @@ struct GaussianSplatNewMinimalView: View {
     private var gpuCounters: GPUCounters?
 
     internal var body: some View {
-        @Bindable
-        var viewModel = viewModel
-
-        GaussianSplatRenderView<SplatC>()
-        #if os(iOS)
-        .ignoresSafeArea()
-        #endif
-        .modifier(CameraConeController(cameraCone: cameraCone, transform: $viewModel.scene.unsafeCurrentCameraNode.transform))
-        .environment(\.gpuCounters, gpuCounters)
+        Group {
+            @Bindable
+            var viewModel = viewModel
+            GaussianSplatRenderView<SplatC>()
+#if os(iOS)
+            .ignoresSafeArea()
+#endif
+            .modifier(CameraConeController(cameraCone: cameraCone, transform: $viewModel.scene.unsafeCurrentCameraNode.transform))
+            .environment(\.gpuCounters, gpuCounters)
+        }
         .overlay(alignment: .top) {
             if let gpuCounters {
                 TimelineView(.periodic(from: .now, by: 0.25)) { _ in
                     PerformanceHUD(measurements: gpuCounters.current())
                 }
+            }
+        }
+        .overlay(alignment: .bottom) {
+            if !viewModel.loadProgress.isFinished {
+                ProgressView(viewModel.loadProgress)
+                    .frame(maxWidth: 320)
+                    .padding()
+                    .background(.thinMaterial)
+                    .cornerRadius(8)
+                    .padding()
             }
         }
     }

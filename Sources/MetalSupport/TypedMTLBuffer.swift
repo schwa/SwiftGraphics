@@ -20,20 +20,31 @@ public struct TypedMTLBuffer<Element>: Sendable {
     ///
     /// - Parameter mtlBuffer: The Metal buffer to wrap.
     /// - Precondition: The generic type `Element` must be a POD type.
-    public init(mtlBuffer: MTLBuffer?) {
+    public init(mtlBuffer: MTLBuffer?, count: Int) {
         assert(_isPOD(Element.self))
         self.base = mtlBuffer
-        self.count = (base?.length ?? 0) / MemoryLayout<Element>.stride
+        self.count = count
+    }
+
+    public init() {
+        self.base = nil
+        self.count = 0
     }
 
     public var capacity: Int {
-        base?.length ?? 0 / MemoryLayout<Element>.stride
+        (base?.length ?? 0) / MemoryLayout<Element>.stride
     }
 }
 
 extension TypedMTLBuffer: Equatable {
     public static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.count == rhs.count && lhs.base === rhs.base
+    }
+}
+
+extension TypedMTLBuffer: CustomDebugStringConvertible {
+    public var debugDescription: String {
+        "TypedMTLBuffer<\(type(of: Element.self))>(count: \(count), capacity: \(capacity), base.label: \(base?.label), base.length: \(base?.length))"
     }
 }
 
@@ -99,7 +110,7 @@ public extension TypedMTLBuffer {
 }
 
 public extension TypedMTLBuffer {
-    func append(contentsOf elements: [Element]) throws {
+    mutating func append(contentsOf elements: [Element]) throws {
         if count + elements.count > capacity {
             throw BaseError.error(.overflow)
         }
@@ -111,6 +122,7 @@ public extension TypedMTLBuffer {
             let destination = base.contents().advanced(by: count)
             buffer.copyBytes(to: .init(start: destination, count: buffer.count))
         }
+        count += elements.count
     }
 }
 
@@ -126,14 +138,15 @@ public extension MTLDevice {
     /// - Throws: `BaseError.illegalValue` if the data size is not a multiple of the size of `Element`.
     ///           `BaseError.resourceCreationFailure` if the buffer creation fails.
     func makeTypedBuffer<Element>(data: Data, options: MTLResourceOptions = []) throws -> TypedMTLBuffer<Element> {
-        if !data.count.isMultiple(of: MemoryLayout<Element>.size) {
+        if !data.count.isMultiple(of: MemoryLayout<Element>.stride) {
             throw BaseError.error(.illegalValue)
         }
+        let count = data.count / MemoryLayout<Element>.stride
         return try data.withUnsafeBytes { buffer in
             guard let buffer = makeBuffer(bytes: buffer.baseAddress!, length: buffer.count, options: options) else {
                 throw BaseError.error(.resourceCreationFailure)
             }
-            return TypedMTLBuffer(mtlBuffer: buffer)
+            return TypedMTLBuffer(mtlBuffer: buffer, count: count)
         }
     }
 
@@ -146,14 +159,14 @@ public extension MTLDevice {
     /// - Throws: `BaseError.resourceCreationFailure` if the buffer creation fails.
     func makeTypedBuffer<Element>(data: [Element], options: MTLResourceOptions = []) throws -> TypedMTLBuffer<Element> {
         if data.isEmpty {
-            return TypedMTLBuffer<Element>(mtlBuffer: nil)
+            return TypedMTLBuffer<Element>()
         }
         else {
             return try data.withUnsafeBytes { buffer in
                 guard let buffer = makeBuffer(bytes: buffer.baseAddress!, length: buffer.count, options: options) else {
                     throw BaseError.error(.resourceCreationFailure)
                 }
-                return TypedMTLBuffer<Element>(mtlBuffer: buffer)
+                return TypedMTLBuffer<Element>(mtlBuffer: buffer, count: data.count)
             }
         }
     }
@@ -161,13 +174,13 @@ public extension MTLDevice {
     func makeTypedBuffer<Element>(element: Element.Type, capacity: Int, options: MTLResourceOptions = []) throws -> TypedMTLBuffer<Element> {
         // swiftlint:disable:next empty_count
         if capacity == 0 {
-            return TypedMTLBuffer<Element>(mtlBuffer: nil)
+            return TypedMTLBuffer<Element>()
         }
         else {
             guard let buffer = makeBuffer(length: MemoryLayout<Element>.stride * capacity, options: options) else {
                 throw BaseError.error(.resourceCreationFailure)
             }
-            return TypedMTLBuffer(mtlBuffer: buffer)
+            return TypedMTLBuffer(mtlBuffer: buffer, count: 0)
         }
     }
 

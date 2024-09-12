@@ -15,8 +15,16 @@ public protocol SplatProtocol: Equatable, Sendable {
 public struct SplatCloud <Splat>: Equatable, @unchecked Sendable where Splat: SplatProtocol {
     public var splats: TypedMTLBuffer<Splat>
     public var indexedDistances: TypedMTLBuffer<IndexedDistance>
-    public var cameraPosition: SIMD3<Float>
-    public var boundingBox: (SIMD3<Float>, SIMD3<Float>)
+//    public var boundingBox: (SIMD3<Float>, SIMD3<Float>)
+
+    public init(device: MTLDevice, capacity: Int) throws {
+        self.splats = try device.makeTypedBuffer(capacity: capacity)
+        self.indexedDistances = try device.makeTypedBuffer(capacity: capacity)
+    }
+
+    public init(device: MTLDevice) throws {
+        try self.init(device: device, capacity: 0)
+    }
 
     public init(device: MTLDevice, splats: TypedMTLBuffer<Splat>) throws {
         self.splats = splats
@@ -24,44 +32,56 @@ public struct SplatCloud <Splat>: Equatable, @unchecked Sendable where Splat: Sp
         let indexedDistances = (0 ..< splats.count).map { IndexedDistance(index: UInt32($0), distance: 0.0) }
 
         self.indexedDistances = try device.makeTypedBuffer(data: indexedDistances, options: .storageModeShared).labelled("Splats-IndexDistances-1") //
-        self.cameraPosition = [.nan, .nan, .nan]
 
-        self.boundingBox = splats.withUnsafeBufferPointer { buffer in
-            let positions = buffer.map { SIMD3<Float>($0.floatPosition) }
-            // swiftlint:disable:next reduce_into
-            let minimums = positions.reduce([.greatestFiniteMagnitude, .greatestFiniteMagnitude, .greatestFiniteMagnitude], min)
-            // swiftlint:disable:next reduce_into
-            let maximums = positions.reduce([-.greatestFiniteMagnitude, -.greatestFiniteMagnitude, -.greatestFiniteMagnitude], max)
-            return (minimums, maximums)
-        }
+//        self.boundingBox = splats.withUnsafeBufferPointer { buffer in
+//            let positions = buffer.map { SIMD3<Float>($0.floatPosition) }
+//            // swiftlint:disable:next reduce_into
+//            let minimums = positions.reduce([.greatestFiniteMagnitude, .greatestFiniteMagnitude, .greatestFiniteMagnitude], min)
+//            // swiftlint:disable:next reduce_into
+//            let maximums = positions.reduce([-.greatestFiniteMagnitude, -.greatestFiniteMagnitude, -.greatestFiniteMagnitude], max)
+//            return (minimums, maximums)
+//        }
     }
 
     public static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.splats == rhs.splats
             && lhs.indexedDistances == rhs.indexedDistances
-            && lhs.cameraPosition == rhs.cameraPosition
     }
 
     public var count: Int {
+        assert(splats.count == indexedDistances.count)
         return splats.count
     }
 }
 
 public extension SplatCloud {
     init(device: MTLDevice, splats: [Splat]) throws {
-        assert(!splats.isEmpty)
-        let mtlBuffer = try device.makeBuffer(bytesOf: splats, options: .storageModeShared)
-        mtlBuffer.label = "Splats-1"
-        let typedMTLBuffer = TypedMTLBuffer<Splat>(mtlBuffer: mtlBuffer)
+        let typedMTLBuffer = try device.makeTypedBuffer(data: splats)
         try self.init(device: device, splats: typedMTLBuffer)
     }
 }
 
 public extension SplatCloud {
-    func center() -> SIMD3<Float> {
-        (boundingBox.0 + boundingBox.1) / 2
+    mutating func append(splats: [Splat]) throws {
+        let count = count
+        try self.splats.append(contentsOf: splats)
+        try self.indexedDistances.append(contentsOf: (0 ..< splats.count).map { IndexedDistance(index: UInt32(count + $0), distance: 0.0) })
     }
 }
+
+extension SplatCloud: CustomDebugStringConvertible {
+    public var debugDescription: String {
+        "SplatCloud<\(type(of: Splat.self))>(splats: \(splats), indexedDistances: \(indexedDistances))"
+    }
+}
+
+//public extension SplatCloud {
+//    func center() -> SIMD3<Float> {
+//        (boundingBox.0 + boundingBox.1) / 2
+//    }
+//}
+
+// MARK: -
 
 public struct SplatB: Equatable, Sendable {
     public var position: PackedFloat3
@@ -97,6 +117,8 @@ extension SplatC: SplatProtocol {
         .init(position)
     }
 }
+
+// MARK: -
 
 public extension SplatCloud where Splat == SplatC {
     init(device: MTLDevice, url: URL, splatLimit: Int? = nil) throws {
