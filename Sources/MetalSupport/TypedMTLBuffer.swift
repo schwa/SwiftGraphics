@@ -118,7 +118,7 @@ public extension TypedMTLBuffer {
         }
 
         elements.withUnsafeBytes { buffer in
-            let destination = base.contents().advanced(by: count)
+            let destination = base.contents().advanced(by: count * MemoryLayout<Element>.stride)
             buffer.copyBytes(to: .init(start: destination, count: buffer.count))
         }
         count += elements.count
