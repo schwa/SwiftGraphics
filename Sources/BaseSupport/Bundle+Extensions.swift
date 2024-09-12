@@ -1,6 +1,6 @@
 import Foundation
-import UniformTypeIdentifiers
 import RegexBuilder
+import UniformTypeIdentifiers
 
 public extension Bundle {
     func urls(withExtension extension: String) throws -> [URL] {
@@ -20,7 +20,6 @@ public extension Bundle {
             return Bundle(url: parentDirectory.appendingPathComponent(name))
         }
     }
-
 
     var childBundles: [Bundle] {
         guard let resourceURL else {
@@ -109,11 +108,10 @@ public extension Bundle {
     }
 
     func bundle(forTarget target: String) -> Bundle? {
-        let bundle = childBundles.first { bundle in
+        childBundles.first { bundle in
             let filename = bundle.bundleURL.deletingPathExtension().lastPathComponent
             return filename.hasSuffix("_\(target)")
         }
-        return bundle
     }
 
     func bundle(forTarget target: String, recursive: Bool) -> Bundle? {
@@ -127,5 +125,4 @@ public extension Bundle {
             return childBundles.compactMap { $0.bundle(forTarget: target, recursive: true) }.first
         }
     }
-
 }

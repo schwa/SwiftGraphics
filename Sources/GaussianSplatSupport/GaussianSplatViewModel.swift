@@ -75,7 +75,6 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
         try updatePass()
         loadProgress.completedUnitCount = Int64(splatCloud.count)
         loadProgress.totalUnitCount = Int64(splatCloud.count)
-
     }
 
     func updatePass() throws {
@@ -227,8 +226,7 @@ public extension GaussianSplatViewModel where Splat == SplatC {
         let splatStream = byteStream.chunks(ofCount: MemoryLayout<SplatB>.stride).map { bytes in
             bytes.withUnsafeBytes { buffer in
                 let splatB = buffer.load(as: SplatB.self)
-                let splatC = SplatC(splatB)
-                return splatC
+                return SplatC(splatB)
             }
         }
         .chunks(ofCount: 2048)
