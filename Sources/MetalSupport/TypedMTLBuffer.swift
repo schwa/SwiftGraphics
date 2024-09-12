@@ -51,9 +51,8 @@ extension TypedMTLBuffer: CustomDebugStringConvertible {
 // MARK: -
 
 public extension TypedMTLBuffer {
-
     var unsafeBase: MTLBuffer? {
-        return base
+        base
     }
 
     /// Provides temporary access to the underlying `MTLBuffer`.
@@ -187,7 +186,6 @@ public extension MTLDevice {
     func makeTypedBuffer<Element>(capacity: Int, options: MTLResourceOptions = []) throws -> TypedMTLBuffer<Element> {
         try makeTypedBuffer(element: Element.self, capacity: capacity, options: options)
     }
-
 }
 
 // MARK: -

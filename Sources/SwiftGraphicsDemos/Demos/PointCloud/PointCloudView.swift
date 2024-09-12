@@ -127,7 +127,6 @@ struct PointCloudRenderPass: RenderPassProtocol {
     var scene: SceneGraph
 
     func setup(device: MTLDevice, configuration: some MetalConfigurationProtocol) throws -> State {
-
         let library = try device.makeDebugLibrary(bundle: Bundle.main.bundle(forTarget: "RenderKitShaders")!)
         let renderPipelineDescriptor = MTLRenderPipelineDescriptor(configuration)
         renderPipelineDescriptor.label = "\(type(of: self))"

@@ -15,7 +15,7 @@ public protocol SplatProtocol: Equatable, Sendable {
 public struct SplatCloud <Splat>: Equatable, @unchecked Sendable where Splat: SplatProtocol {
     public var splats: TypedMTLBuffer<Splat>
     public var indexedDistances: TypedMTLBuffer<IndexedDistance>
-//    public var boundingBox: (SIMD3<Float>, SIMD3<Float>)
+    //    public var boundingBox: (SIMD3<Float>, SIMD3<Float>)
 
     public init(device: MTLDevice, capacity: Int) throws {
         self.splats = try device.makeTypedBuffer(capacity: capacity)
@@ -33,14 +33,14 @@ public struct SplatCloud <Splat>: Equatable, @unchecked Sendable where Splat: Sp
 
         self.indexedDistances = try device.makeTypedBuffer(data: indexedDistances, options: .storageModeShared).labelled("Splats-IndexDistances-1") //
 
-//        self.boundingBox = splats.withUnsafeBufferPointer { buffer in
-//            let positions = buffer.map { SIMD3<Float>($0.floatPosition) }
-//            // swiftlint:disable:next reduce_into
-//            let minimums = positions.reduce([.greatestFiniteMagnitude, .greatestFiniteMagnitude, .greatestFiniteMagnitude], min)
-//            // swiftlint:disable:next reduce_into
-//            let maximums = positions.reduce([-.greatestFiniteMagnitude, -.greatestFiniteMagnitude, -.greatestFiniteMagnitude], max)
-//            return (minimums, maximums)
-//        }
+        //        self.boundingBox = splats.withUnsafeBufferPointer { buffer in
+        //            let positions = buffer.map { SIMD3<Float>($0.floatPosition) }
+        //            // swiftlint:disable:next reduce_into
+        //            let minimums = positions.reduce([.greatestFiniteMagnitude, .greatestFiniteMagnitude, .greatestFiniteMagnitude], min)
+        //            // swiftlint:disable:next reduce_into
+        //            let maximums = positions.reduce([-.greatestFiniteMagnitude, -.greatestFiniteMagnitude, -.greatestFiniteMagnitude], max)
+        //            return (minimums, maximums)
+        //        }
     }
 
     public static func == (lhs: Self, rhs: Self) -> Bool {
@@ -75,11 +75,11 @@ extension SplatCloud: CustomDebugStringConvertible {
     }
 }
 
-//public extension SplatCloud {
+// public extension SplatCloud {
 //    func center() -> SIMD3<Float> {
 //        (boundingBox.0 + boundingBox.1) / 2
 //    }
-//}
+// }
 
 // MARK: -
 

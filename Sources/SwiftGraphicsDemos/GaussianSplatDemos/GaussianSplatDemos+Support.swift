@@ -35,8 +35,6 @@ extension SceneGraph {
     }
 }
 
-
-
 extension UTType {
     static let splat = UTType(filenameExtension: "splat")!
 }

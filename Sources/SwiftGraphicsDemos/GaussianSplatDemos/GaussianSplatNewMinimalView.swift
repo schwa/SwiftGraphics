@@ -37,11 +37,11 @@ struct GaussianSplatNewMinimalView: View {
             @Bindable
             var viewModel = viewModel
             GaussianSplatRenderView<SplatC>()
-#if os(iOS)
-            .ignoresSafeArea()
-#endif
-            .modifier(CameraConeController(cameraCone: cameraCone, transform: $viewModel.scene.unsafeCurrentCameraNode.transform))
-            .environment(\.gpuCounters, gpuCounters)
+                #if os(iOS)
+                .ignoresSafeArea()
+                #endif
+                .modifier(CameraConeController(cameraCone: cameraCone, transform: $viewModel.scene.unsafeCurrentCameraNode.transform))
+                .environment(\.gpuCounters, gpuCounters)
         }
         .overlay(alignment: .top) {
             if let gpuCounters {

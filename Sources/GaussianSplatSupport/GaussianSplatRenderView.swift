@@ -8,11 +8,11 @@ import MetalSupport
 import os
 import RenderKit
 import RenderKitSceneGraph
+import Shapes3D
 import simd
 import SIMDSupport
 import SwiftUI
 import SwiftUISupport
-import Shapes3D
 
 public struct GaussianSplatRenderView <Splat>: View where Splat: SplatProtocol {
     @Environment(\.metalDevice)
