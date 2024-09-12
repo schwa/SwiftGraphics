@@ -107,6 +107,7 @@ public extension SplatCloud where Splat == SplatC {
                 buffer.withMemoryRebound(to: SplatB.self) { splats in
                     // NOTE: This is horrendously expensive.
                     if let splatLimit, splatLimit < splats.count {
+                        print("TODO: Sorting splats in CPU.") // TODO: FIXME - replace with radix sort.
                         let positions = splats.map { SIMD3<Float>($0.position) }
                         // swiftlint:disable:next reduce_into
                         let minimums = positions.reduce([.greatestFiniteMagnitude, .greatestFiniteMagnitude, .greatestFiniteMagnitude], min)
@@ -130,11 +131,5 @@ public extension SplatCloud where Splat == SplatC {
             throw BaseError.error(.illegalValue)
         }
         try self.init(device: device, splats: splats)
-    }
-}
-
-public extension SplatCloud where Splat == SplatC {
-    init(device: MTLDevice, let splatStream: AsyncMapSequence<AsyncChunksOfCountSequence<URLSession.AsyncBytes, [URLSession.AsyncBytes.Element]>, SplatC>, splatLimit: Int? = nil) throws {
-        fatalError()
     }
 }
