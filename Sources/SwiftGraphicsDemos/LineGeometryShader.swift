@@ -29,7 +29,7 @@ struct LineGeometryShaderView: DemoView {
 
     init() {
         let device = MTLCreateSystemDefaultDevice()!
-        buffer = try! device.makeTypedBuffer(count: 2).labelled("LineGeometrySegment")
+        buffer = try! device.makeTypedBuffer(element: LineGeometrySegment.self, capacity: 2).labelled("LineGeometrySegment")
     }
 
     var body: some View {

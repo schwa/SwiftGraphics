@@ -10,7 +10,9 @@ import BaseSupport
 ///   underlying `MTLBuffer` is not reused elsewhere. Ensure that the `MTLBuffer` is uniquely owned
 ///   by this `TypedMTLBuffer` instance to maintain thread safety when sending across concurrency domains.
 /// - Note: The generic type `Element` should be a POD (Plain Old Data) type.
-public struct TypedMTLBuffer<Element>: Equatable, Sendable {
+public struct TypedMTLBuffer<Element>: Sendable {
+    public private(set) var count: Int
+
     /// The underlying Metal buffer.
     private var base: MTLBuffer?
 
@@ -21,34 +23,28 @@ public struct TypedMTLBuffer<Element>: Equatable, Sendable {
     public init(mtlBuffer: MTLBuffer?) {
         assert(_isPOD(Element.self))
         self.base = mtlBuffer
+        self.count = (base?.length ?? 0) / MemoryLayout<Element>.stride
     }
 
-    /// The number of elements of type `Element` that can fit in the buffer.
-    public var count: Int {
-        if let base {
-            return base.length / MemoryLayout<Element>.size
-        }
-        else {
-            return 0
-        }
+    public var capacity: Int {
+        base?.length ?? 0 / MemoryLayout<Element>.stride
     }
+}
 
-    /// Compares two `TypedMTLBuffer` instances for equality.
-    ///
-    /// Two `TypedMTLBuffer` instances are considered equal if they wrap the same `MTLBuffer`.
-    ///
-    /// - Parameters:
-    ///   - lhs: The left-hand side of the comparison.
-    ///   - rhs: The right-hand side of the comparison.
-    /// - Returns: `true` if the two instances wrap the same `MTLBuffer`, `false` otherwise.
+extension TypedMTLBuffer: Equatable {
     public static func == (lhs: Self, rhs: Self) -> Bool {
-        lhs.base === rhs.base
+        lhs.count == rhs.count && lhs.base === rhs.base
     }
 }
 
 // MARK: -
 
 public extension TypedMTLBuffer {
+
+    var unsafeBase: MTLBuffer? {
+        return base
+    }
+
     /// Provides temporary access to the underlying `MTLBuffer`.
     ///
     /// - Parameter block: A closure that takes an `MTLBuffer` and returns a value.
@@ -97,8 +93,24 @@ public extension TypedMTLBuffer {
     /// - Parameter label: The label to set.
     /// - Returns: The `TypedMTLBuffer` instance with the updated label.
     func labelled(_ label: String) -> Self {
-        self.base?.label = label
+        base?.label = label
         return self
+    }
+}
+
+public extension TypedMTLBuffer {
+    func append(contentsOf elements: [Element]) throws {
+        if count + elements.count > capacity {
+            throw BaseError.error(.overflow)
+        }
+        guard let base else {
+            throw BaseError.error(.overflow)
+        }
+
+        elements.withUnsafeBytes { buffer in
+            let destination = base.contents().advanced(by: count)
+            buffer.copyBytes(to: .init(start: destination, count: buffer.count))
+        }
     }
 }
 
@@ -146,18 +158,23 @@ public extension MTLDevice {
         }
     }
 
-    func makeTypedBuffer<Element>(count: Int, options: MTLResourceOptions = []) throws -> TypedMTLBuffer<Element> {
+    func makeTypedBuffer<Element>(element: Element.Type, capacity: Int, options: MTLResourceOptions = []) throws -> TypedMTLBuffer<Element> {
         // swiftlint:disable:next empty_count
-        if count == 0 {
+        if capacity == 0 {
             return TypedMTLBuffer<Element>(mtlBuffer: nil)
         }
         else {
-            guard let buffer = makeBuffer(length: MemoryLayout<Element>.stride * count, options: options) else {
+            guard let buffer = makeBuffer(length: MemoryLayout<Element>.stride * capacity, options: options) else {
                 throw BaseError.error(.resourceCreationFailure)
             }
             return TypedMTLBuffer(mtlBuffer: buffer)
         }
     }
+
+    func makeTypedBuffer<Element>(capacity: Int, options: MTLResourceOptions = []) throws -> TypedMTLBuffer<Element> {
+        try makeTypedBuffer(element: Element.self, capacity: capacity, options: options)
+    }
+
 }
 
 // MARK: -
