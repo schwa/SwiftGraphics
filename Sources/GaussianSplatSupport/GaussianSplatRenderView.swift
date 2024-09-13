@@ -60,15 +60,13 @@ public struct GaussianSplatRenderView <Splat>: View where Splat: SplatProtocol {
 
 public struct GaussianSplatRenderingConfiguration {
     public var debugMode: Bool
-    public var sortRate: Int
     public var metalFXRate: Float
     public var discardRate: Float
     public var gpuCounters: GPUCounters?
     public var clearColor: MTLClearColor
 
-    public init(debugMode: Bool = false, sortRate: Int = 15, metalFXRate: Float = 2, discardRate: Float = 0.0, gpuCounters: GPUCounters? = nil, clearColor: MTLClearColor = .init(red: 0, green: 0, blue: 0, alpha: 1)) {
+    public init(debugMode: Bool = false, metalFXRate: Float = 2, discardRate: Float = 0.0, gpuCounters: GPUCounters? = nil, clearColor: MTLClearColor = .init(red: 0, green: 0, blue: 0, alpha: 1)) {
         self.debugMode = debugMode
-        self.sortRate = sortRate
         self.metalFXRate = metalFXRate
         self.discardRate = discardRate
         self.gpuCounters = gpuCounters

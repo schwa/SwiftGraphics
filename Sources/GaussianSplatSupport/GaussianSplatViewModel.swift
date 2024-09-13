@@ -85,29 +85,10 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
     var isSorting = false
 
     func cameraChanged() {
-        print("CAMERA CHANGED")
-        guard isSorting == false else {
-            return
+        sort()
         }
-        guard let splatsNode = scene.firstNode(label: "splats"), let splatCloud = splatsNode.content as? SplatCloud<Splat> else {
-            logger?.log("Missing splats")
-            return
-        }
-        guard let cameraNode = scene.firstNode(label: "camera") else {
-            logger?.log("Missing camera")
-            return
-        }
-        isSorting = true
-        Task.detached {
-            print("SORT STARTED")
-            splatCloud.sortIndices(camera: cameraNode.transform.matrix, model: splatsNode.transform.matrix)
-            await MainActor.run {
-                splatCloud.indexedDistances.rotate()
-                print("SORT ENDED")
-                self.isSorting = false
-            }
-        }
-    }
+
+
 
     func sceneChanged() throws {
         guard let resources else {
@@ -124,7 +105,7 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
         }
 
         let fullRedraw = true
-        let sortEnabled = configuration.sortRate <= 1 || (frame <= 1 || frame.isMultiple(of: configuration.sortRate))
+        //        let sortEnabled = (frame <= 1 || frame.isMultiple(of: configuration.sortRate))
 
 //        if sortEnabled {
 //            try scene.modify(label: "splats") { node in
@@ -203,6 +184,30 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
         offscreenRenderPassDescriptor.depthAttachment.texture = resources.downscaledDepthTexture
         return offscreenRenderPassDescriptor
     }
+
+    func sort() {
+        guard isSorting == false else {
+            return
+        }
+        guard let splatsNode = scene.firstNode(label: "splats"), let splatCloud = splatsNode.content as? SplatCloud<Splat> else {
+            logger?.log("Missing splats")
+            return
+        }
+        guard let cameraNode = scene.firstNode(label: "camera") else {
+            logger?.log("Missing camera")
+            return
+        }
+        isSorting = true
+        Task.detached {
+            print("SORT STARTED")
+            splatCloud.sortIndices(camera: cameraNode.transform.matrix, model: splatsNode.transform.matrix)
+            await MainActor.run {
+                splatCloud.indexedDistances.rotate()
+                print("SORT ENDED")
+                self.isSorting = false
+            }
+        }
+    }
 }
 
 // MARK: -
@@ -272,16 +277,18 @@ public extension GaussianSplatViewModel where Splat == SplatC {
 
         for try await splats in splatStream {
             try splatCloud.append(splats: splats)
+            self.sort()
             loadProgress.completedUnitCount = Int64(splatCloud.count)
+
         }
         assert(splatCloud.count == splatCount)
 
-        let data = try Data(contentsOf: url)
-        print(data.count, contentLength)
-        let splats = try SplatCloud<SplatC>(device: device, data: data)
-        print(splats.count == splatCloud.count)
-        print(splats.count, splatCloud.count)
-        print(Data(splats.splats.unsafeBase!.contentsBuffer()) == Data(splatCloud.splats.unsafeBase!.contentsBuffer()))
-        print(splats.splats.unsafeBase!.length, splatCloud.splats.unsafeBase!.length)
+//        let data = try Data(contentsOf: url)
+//        print(data.count, contentLength)
+//        let splats = try SplatCloud<SplatC>(device: device, data: data)
+//        print(splats.count == splatCloud.count)
+//        print(splats.count, splatCloud.count)
+//        print(Data(splats.splats.unsafeBase!.contentsBuffer()) == Data(splatCloud.splats.unsafeBase!.contentsBuffer()))
+//        print(splats.splats.unsafeBase!.length, splatCloud.splats.unsafeBase!.length)
     }
 }

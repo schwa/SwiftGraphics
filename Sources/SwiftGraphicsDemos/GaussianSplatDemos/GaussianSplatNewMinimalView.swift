@@ -29,8 +29,8 @@ struct GaussianSplatNewMinimalView: View {
     @State
     private var cameraCone: CameraCone = .init(apex: [0, 0, 0], axis: [0, 1, 0], h1: 0, r1: 0.5, r2: 0.75, h2: 0.5)
 
-    @State
-    private var gpuCounters: GPUCounters?
+    @Environment(\.gpuCounters)
+    private var gpuCounters
 
     internal var body: some View {
         Group {
@@ -42,6 +42,9 @@ struct GaussianSplatNewMinimalView: View {
                 #endif
                 .modifier(CameraConeController(cameraCone: cameraCone, transform: $viewModel.scene.unsafeCurrentCameraNode.transform))
                 .environment(\.gpuCounters, gpuCounters)
+        }
+        .onAppear {
+            print("VIEW", gpuCounters)
         }
         .overlay(alignment: .top) {
             if let gpuCounters {
