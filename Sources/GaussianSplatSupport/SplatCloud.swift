@@ -123,13 +123,12 @@ extension SplatCloud {
         indexedDistances.offscreen.withUnsafeMutableBufferPointer { indexedDistances in
             // Compute distances.
             let cameraPosition = camera.translation
-            let model = simd_float3x3(truncating: model)
-
+            let modelView = simd_float3x3(truncating: camera.inverse * model)
             timeit("CalcDistance") {
                 splats.withUnsafeBufferPointer { splats in
                     for index in 0..<indexedDistances.count {
-                        let position = model * splats[index].floatPosition
-                        let distance = position.distance(to: cameraPosition)
+                        let position = modelView * splats[index].floatPosition
+                        let distance = position.z
                         indexedDistances[index] = .init(index: UInt32(index), distance: distance)
                     }
                 }
@@ -147,7 +146,7 @@ extension SplatCloud {
 
 extension IndexedDistance: RadixSortable {
     func key(shift: Int) -> Int {
-        let bits = (-distance).bitPattern
+        let bits = distance.bitPattern
         let signMask: UInt32 = 0x80000000
         let key: UInt32 = (bits & signMask != 0) ? ~bits : bits ^ signMask
         return (Int(key) >> shift) & 0xFF
