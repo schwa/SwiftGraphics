@@ -89,20 +89,18 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
         guard isSorting == false else {
             return
         }
+        guard let splatsNode = scene.firstNode(label: "splats"), let splatCloud = splatsNode.content as? SplatCloud<Splat> else {
+            logger?.log("Missing splats")
+            return
+        }
         guard let cameraNode = scene.firstNode(label: "camera") else {
             logger?.log("Missing camera")
             return
         }
-        guard let splatsAccessor = scene.firstAccessor(label: "splats") else {
-            fatalError()
-        }
-        guard let splatCloud = scene[accessor: splatsAccessor]?.content as? SplatCloud<Splat> else {
-            fatalError()
-        }
         isSorting = true
         Task.detached {
             print("SORT STARTED")
-            splatCloud.sortIndices(camera: cameraNode.transform.matrix)
+            splatCloud.sortIndices(camera: cameraNode.transform.matrix, model: splatsNode.transform.matrix)
             await MainActor.run {
                 splatCloud.indexedDistances.rotate()
                 print("SORT ENDED")

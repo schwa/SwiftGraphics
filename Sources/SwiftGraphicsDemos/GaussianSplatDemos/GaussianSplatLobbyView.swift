@@ -84,7 +84,9 @@ public struct GaussianSplatLobbyView: View {
                         Button("Back") {
                             mode = .config
                         }
+                        #if os(macOS)
                         .buttonStyle(.link)
+                        #endif
                         .padding()
                     }
             }
