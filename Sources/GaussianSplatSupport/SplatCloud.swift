@@ -147,3 +147,12 @@ extension IndexedDistance: RadixSortable {
         return (Int(key) >> shift) & 0xFF
     }
 }
+
+
+struct SortData {
+    var camera: simd_float4x4
+    var model: simd_float4x4
+    var count: Int
+
+    var buffer: TypedMTLBuffer<IndexedDistance>
+}
