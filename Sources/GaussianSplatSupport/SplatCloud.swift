@@ -1,4 +1,3 @@
-import Algorithms
 import AsyncAlgorithms
 import BaseSupport
 import GaussianSplatShaders
@@ -123,22 +122,18 @@ extension SplatCloud {
         indexedDistances.offscreen.withUnsafeMutableBufferPointer { indexedDistances in
             // Compute distances.
             let cameraPosition = camera.translation
-            let modelView = simd_float3x3(truncating: camera.inverse * model)
-            timeit("CalcDistance") {
+            let modelView = camera.inverse * model
                 splats.withUnsafeBufferPointer { splats in
                     for index in 0..<indexedDistances.count {
-                        let position = modelView * splats[index].floatPosition
+                    let position = modelView * SIMD4<Float>(splats[index].floatPosition, 1.0)
                         let distance = position.z
                         indexedDistances[index] = .init(index: UInt32(index), distance: distance)
                     }
                 }
-            }
 
             // Sort
-            timeit("Sort") {
                 temporaryIndexedDistances.withUnsafeMutableBufferPointer { temporaryIndexedDistances in
                     RadixSortCPU<IndexedDistance>().radixSort(input: indexedDistances, temp: temporaryIndexedDistances)
-                }
             }
         }
     }

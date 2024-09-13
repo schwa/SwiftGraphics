@@ -10,13 +10,13 @@ public struct GaussianSplatLobbyView: View {
     private var configuration: GaussianSplatRenderingConfiguration = .init()
 
     @State
-    private var splatLimit: Int = 1_500_000
+    private var splatLimit: Int = 2_000_000
 
     @State
     private var useGPUCounters = false
 
     @State
-    private var backgroundColor = Color.blue
+    private var backgroundColor = Color.black
 
     @State
     private var source: URL
@@ -41,25 +41,34 @@ public struct GaussianSplatLobbyView: View {
             switch mode {
             case .config:
                 VStack {
+                    Form {
                     LabeledContent("Source") {
                         Picker("Source", selection: $source) {
                             ForEach(sources, id: \.self) { source in
                                 Label {
                                     Text(source.deletingPathExtension().lastPathComponent)
                                 } icon: {
+                                        switch source.scheme {
+                                        case "file":
                                     Image(systemName: "doc")
+                                        case "http", "https":
+                                            Image(systemName: "globe")
+                                        default:
+                                            EmptyView()
+                                        }
                                 }
                                 .tag(source)
                             }
                         }
                         .labelsHidden()
                     }
-                    Form {
                         optionsView
                     }
                     Button("Go!") {
                         mode = .render
                     }
+                    .frame(maxWidth: .infinity)
+                    .buttonStyle(.borderedProminent)
                 }
                 .onChange(of: useGPUCounters, initial: true) {
                     if useGPUCounters {
@@ -89,6 +98,7 @@ public struct GaussianSplatLobbyView: View {
                         #endif
                         .padding()
                     }
+                    .environment(\.gpuCounters, configuration.gpuCounters)
             }
         }
     }
@@ -96,13 +106,6 @@ public struct GaussianSplatLobbyView: View {
     @ViewBuilder
     var optionsView: some View {
         Section("Options") {
-            LabeledContent("Sort Rate") {
-                VStack(alignment: .leading) {
-                    TextField("Sort Rate", value: $configuration.sortRate, format: .number)
-                        .labelsHidden()
-                    Text("This is the # of samples to sort before re-sorting the splat cloud.").font(.caption)
-                }
-            }
             LabeledContent("MetalFX Rate") {
                 VStack(alignment: .leading) {
                     TextField("MetalFX Rate", value: $configuration.metalFXRate, format: .number)
@@ -135,9 +138,7 @@ public struct GaussianSplatLobbyView: View {
                 VStack(alignment: .leading) {
                     ColorPicker("Background Color", selection: $backgroundColor)
                         .labelsHidden()
-                    Text("TODO").font(.caption)
-                }
-            }
+                    Text("Colour of background (behind the splats)").font(.caption)
         }
     }
 }
