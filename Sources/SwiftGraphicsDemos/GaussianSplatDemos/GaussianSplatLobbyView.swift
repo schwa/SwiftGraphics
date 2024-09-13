@@ -42,26 +42,26 @@ public struct GaussianSplatLobbyView: View {
             case .config:
                 VStack {
                     Form {
-                    LabeledContent("Source") {
-                        Picker("Source", selection: $source) {
-                            ForEach(sources, id: \.self) { source in
-                                Label {
-                                    Text(source.deletingPathExtension().lastPathComponent)
-                                } icon: {
+                        LabeledContent("Source") {
+                            Picker("Source", selection: $source) {
+                                ForEach(sources, id: \.self) { source in
+                                    Label {
+                                        Text(source.deletingPathExtension().lastPathComponent)
+                                    } icon: {
                                         switch source.scheme {
                                         case "file":
-                                    Image(systemName: "doc")
+                                            Image(systemName: "doc")
                                         case "http", "https":
                                             Image(systemName: "globe")
                                         default:
                                             EmptyView()
                                         }
+                                    }
+                                    .tag(source)
                                 }
-                                .tag(source)
                             }
+                            .labelsHidden()
                         }
-                        .labelsHidden()
-                    }
                         optionsView
                     }
                     Button("Go!") {
@@ -84,18 +84,18 @@ public struct GaussianSplatLobbyView: View {
                     let components = color.components!
                     configuration.clearColor = MTLClearColor(red: components[0], green: components[1], blue: components[2], alpha: components[3])
                 }
-                #if os(macOS)
+#if os(macOS)
                 .frame(width: 320)
-                #endif
+#endif
             case .render:
                 GaussianSplatLoadingView(url: source, initialConfiguration: configuration, splatLimit: splatLimit)
                     .overlay(alignment: .topLeading) {
                         Button("Back") {
                             mode = .config
                         }
-                        #if os(macOS)
+#if os(macOS)
                         .buttonStyle(.link)
-                        #endif
+#endif
                         .padding()
                     }
                     .environment(\.gpuCounters, configuration.gpuCounters)
@@ -139,16 +139,8 @@ public struct GaussianSplatLobbyView: View {
                     ColorPicker("Background Color", selection: $backgroundColor)
                         .labelsHidden()
                     Text("Colour of background (behind the splats)").font(.caption)
+                }
+            }
         }
-    }
-}
-
-extension GaussianSplatLobbyView: DemoView {
-    init() {
-        self.init(sources: [
-            Bundle.main.url(forResource: "vision_dr", withExtension: "splat", recursive: true)!,
-            URL(string: "https://s.zillowstatic.com/z3d-home/models/ufo_demo/test1.splat")!,
-            URL(string: "https://s.zillowstatic.com/z3d-home/models/ufo_demo/steve_1.splat")!,
-        ])
     }
 }

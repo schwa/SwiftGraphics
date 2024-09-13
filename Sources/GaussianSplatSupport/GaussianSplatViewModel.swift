@@ -282,13 +282,5 @@ public extension GaussianSplatViewModel where Splat == SplatC {
 
         }
         assert(splatCloud.count == splatCount)
-
-//        let data = try Data(contentsOf: url)
-//        print(data.count, contentLength)
-//        let splats = try SplatCloud<SplatC>(device: device, data: data)
-//        print(splats.count == splatCloud.count)
-//        print(splats.count, splatCloud.count)
-//        print(Data(splats.splats.unsafeBase!.contentsBuffer()) == Data(splatCloud.splats.unsafeBase!.contentsBuffer()))
-//        print(splats.splats.unsafeBase!.length, splatCloud.splats.unsafeBase!.length)
     }
 }
