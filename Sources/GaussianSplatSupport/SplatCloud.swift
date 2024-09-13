@@ -106,8 +106,7 @@ public extension SplatCloud where Splat == SplatC {
 
     convenience init(device: MTLDevice, url: URL, splatLimit: Int? = nil) throws {
         let data = try Data(contentsOf: url)
-        let splats: TypedMTLBuffer<SplatC>
-        if url.pathExtension == "splat" {
+         if url.pathExtension == "splat" {
             try self.init(device: device, data: data)
         } else {
             throw BaseError.error(.illegalValue)
@@ -117,23 +116,21 @@ public extension SplatCloud where Splat == SplatC {
 
 extension SplatCloud {
     // TODO: Should add in model transform for splat cloud too.
-    func sortIndices(camera: simd_float4x4) {
+    func sortIndices(camera: simd_float4x4, model: simd_float4x4) {
         guard indexedDistances.offscreen.count > 1 else {
             return
         }
         indexedDistances.offscreen.withUnsafeMutableBufferPointer { indexedDistances in
             // Compute distances.
-
-            var minDistance: Float = .greatestFiniteMagnitude
-            var maxDistance: Float = -.greatestFiniteMagnitude
+            let cameraPosition = camera.translation
+            let model = simd_float3x3(truncating: model)
 
             timeit("CalcDistance") {
                 splats.withUnsafeBufferPointer { splats in
                     for index in 0..<indexedDistances.count {
-                        let distance = splats[index].floatPosition.distance(to: camera.translation)
+                        let position = model * splats[index].floatPosition
+                        let distance = position.distance(to: cameraPosition)
                         indexedDistances[index] = .init(index: UInt32(index), distance: distance)
-                        minDistance = min(minDistance, distance)
-                        maxDistance = max(maxDistance, distance)
                     }
                 }
             }
@@ -149,12 +146,10 @@ extension SplatCloud {
 }
 
 extension IndexedDistance: RadixSortable {
-//    var key: UInt32 {
-//        // TODO: this is a total hack that doesn't take min/max range into account.
-//        UInt32.max - UInt32(distance * 1_000_000 + 1_000_000)
-//    }
-
     func key(shift: Int) -> Int {
-        fatalError()
+        let bits = (-distance).bitPattern
+        let signMask: UInt32 = 0x80000000
+        let key: UInt32 = (bits & signMask != 0) ? ~bits : bits ^ signMask
+        return (Int(key) >> shift) & 0xFF
     }
 }
