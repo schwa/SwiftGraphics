@@ -131,7 +131,7 @@ extension SplatCloud {
                     }
                 }
 
-            // Sort
+            // Sor
                 temporaryIndexedDistances.withUnsafeMutableBufferPointer { temporaryIndexedDistances in
                     RadixSortCPU<IndexedDistance>().radixSort(input: indexedDistances, temp: temporaryIndexedDistances)
             }
@@ -148,8 +148,7 @@ extension IndexedDistance: RadixSortable {
     }
 }
 
-
-struct SortData {
+struct SortData: Sendable {
     var camera: simd_float4x4
     var model: simd_float4x4
     var count: Int

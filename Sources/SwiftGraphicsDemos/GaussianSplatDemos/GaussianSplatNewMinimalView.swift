@@ -43,9 +43,7 @@ struct GaussianSplatNewMinimalView: View {
                 .modifier(CameraConeController(cameraCone: cameraCone, transform: $viewModel.scene.unsafeCurrentCameraNode.transform))
                 .environment(\.gpuCounters, gpuCounters)
         }
-        .onAppear {
-            print("VIEW", gpuCounters)
-        }
+        .background(.black)
         .overlay(alignment: .top) {
             if let gpuCounters {
                 TimelineView(.periodic(from: .now, by: 0.25)) { _ in
