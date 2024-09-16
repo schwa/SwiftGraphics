@@ -35,11 +35,9 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
 
     public var scene: SceneGraph {
         didSet {
-
             if oldValue.currentCameraNode?.transform != scene.currentCameraNode?.transform {
                 cameraChanged()
             }
-
             try! sceneChanged()
         }
     }
@@ -72,7 +70,7 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
         let loader = MTKTextureLoader(device: device)
         let panoramaTexture = try loader.newTexture(name: "Grid", scaleFactor: 2, bundle: Bundle.module)
         let root = Node(label: "root") {
-            Node(label: "camera", content: Camera())
+            Node(label: "camera", content: Camera(projection: .perspective(.init(verticalAngleOfView: configuration.verticalAngleOfView))))
             Node(label: "pano", content: Geometry(mesh: panoramaMesh, materials: [PanoramaMaterial(baseColorTexture: panoramaTexture)]))
             Node(label: "splats", content: splatCloud).transformed(roll: .zero, pitch: .degrees(270), yaw: .zero).transformed(roll: .zero, pitch: .zero, yaw: .degrees(90)).transformed(translation: [0, 0.25, 0.5])
         }
@@ -84,13 +82,11 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
 
     var isSorting = false
 
-    func cameraChanged() {
+    internal func cameraChanged() {
         sort()
-        }
+    }
 
-
-
-    func sceneChanged() throws {
+    internal func sceneChanged() throws {
         guard let resources else {
             logger?.log("Missing resources")
             return
@@ -99,10 +95,10 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
             logger?.log("Missing splats")
             return
         }
-        guard let cameraNode = scene.firstNode(label: "camera") else {
-            logger?.log("Missing camera")
-            return
-        }
+//        guard let cameraNode = scene.firstNode(label: "camera") else {
+//            logger?.log("Missing camera")
+//            return
+//        }
 
         let fullRedraw = true
         //        let sortEnabled = (frame <= 1 || frame.isMultiple(of: configuration.sortRate))
@@ -144,8 +140,14 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
         }
     }
 
-    func makeResources(pixelFormat: MTLPixelFormat, size: SIMD2<Float>) throws {
-        logger?.debug("makeMetalFXTextures - \(size) \(self.configuration.metalFXRate)")
+    public func drawableChanged(pixelFormat: MTLPixelFormat, size: SIMD2<Float>) throws {
+        print("###################", #function, pixelFormat, size)
+        try makeResources(pixelFormat: pixelFormat, size: size)
+    }
+
+    // MARK: -
+
+    private func makeResources(pixelFormat: MTLPixelFormat, size: SIMD2<Float>) throws {
         let downscaledSize = SIMD2<Int>(ceil(size / configuration.metalFXRate))
 
         let colorTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: pixelFormat, width: downscaledSize.x, height: downscaledSize.y, mipmapped: false)
@@ -169,7 +171,7 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
         self.resources = .init(downscaledTexture: colorTexture, downscaledDepthTexture: depthTexture, outputTexture: upscaledTexture)
     }
 
-    var offscreenRenderPassDescriptor: MTLRenderPassDescriptor {
+    private var offscreenRenderPassDescriptor: MTLRenderPassDescriptor {
         guard let resources else {
             fatalError("Tried to create renderpass without resources.")
         }
@@ -185,7 +187,7 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
         return offscreenRenderPassDescriptor
     }
 
-    func sort() {
+    private func sort() {
         guard isSorting == false else {
             return
         }

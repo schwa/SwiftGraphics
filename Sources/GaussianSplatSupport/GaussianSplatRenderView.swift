@@ -45,7 +45,7 @@ public struct GaussianSplatRenderView <Splat>: View where Splat: SplatProtocol {
                     return
                 }
                 drawableSize = SIMD2<Float>(size)
-                try viewModel.makeResources(pixelFormat: configuration.colorPixelFormat, size: drawableSize)
+                try viewModel.drawableChanged(pixelFormat: configuration.colorPixelFormat, size: drawableSize)
             } catch {
                 fatalError("Failed to create texture.")
             }
@@ -64,12 +64,14 @@ public struct GaussianSplatRenderingConfiguration {
     public var discardRate: Float
     public var gpuCounters: GPUCounters?
     public var clearColor: MTLClearColor
+    public var verticalAngleOfView: Angle
 
-    public init(debugMode: Bool = false, metalFXRate: Float = 2, discardRate: Float = 0.0, gpuCounters: GPUCounters? = nil, clearColor: MTLClearColor = .init(red: 0, green: 0, blue: 0, alpha: 1)) {
+    public init(debugMode: Bool = false, metalFXRate: Float = 2, discardRate: Float = 0.0, gpuCounters: GPUCounters? = nil, clearColor: MTLClearColor = .init(red: 0, green: 0, blue: 0, alpha: 1), verticalAngleOfView: Angle = .degrees(90)) {
         self.debugMode = debugMode
         self.metalFXRate = metalFXRate
         self.discardRate = discardRate
         self.gpuCounters = gpuCounters
         self.clearColor = clearColor
+        self.verticalAngleOfView = verticalAngleOfView
     }
 }

@@ -120,6 +120,14 @@ public struct GaussianSplatLobbyView: View {
                     Text("This is the minimum rate for alpha to show a splat. (Should be zero. Higher values mean more splats will be discarded as they are too transparent.)").font(.caption)
                 }
             }
+            LabeledContent("Vertical Angle of View") {
+                VStack(alignment: .leading) {
+                    TextField("AoV", value: $configuration.verticalAngleOfView.degrees, format: .number)
+                        .labelsHidden()
+                    Text("Vertical Angle of View (FOV) in degrees.").font(.caption)
+                }
+            }
+
             LabeledContent("Splat Limit") {
                 VStack(alignment: .leading) {
                     TextField("Splat Limit", value: $splatLimit, format: .number)
