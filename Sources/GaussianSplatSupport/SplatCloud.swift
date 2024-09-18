@@ -131,9 +131,9 @@ extension SplatCloud {
                     }
                 }
 
-            // Sor
-                temporaryIndexedDistances.withUnsafeMutableBufferPointer { temporaryIndexedDistances in
-                    RadixSortCPU<IndexedDistance>().radixSort(input: indexedDistances, temp: temporaryIndexedDistances)
+            // Sort
+            temporaryIndexedDistances.withUnsafeMutableBufferPointer { temporaryIndexedDistances in
+                RadixSortCPU<IndexedDistance>().radixSort(input: indexedDistances, temp: temporaryIndexedDistances)
             }
         }
     }
