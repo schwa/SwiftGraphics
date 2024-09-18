@@ -1,7 +1,7 @@
+import Constraints3D
 import GaussianSplatSupport
 import RenderKit
 import SwiftUI
-import Constraints3D
 
 public struct GaussianSplatLobbyView: View {
     @Environment(\.metalDevice)
