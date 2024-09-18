@@ -15,6 +15,30 @@ import SIMDSupport
 import SwiftUI
 import SwiftUISupport
 
+// TODO: rename -Rendering
+public struct GaussianSplatRenderingConfiguration {
+    public var debugMode: Bool
+    public var metalFXRate: Float
+    public var discardRate: Float
+    public var gpuCounters: GPUCounters?
+    public var clearColor: MTLClearColor // TODO: make this a SwiftUI Color
+    public var verticalAngleOfView: Angle
+    public var useGPUSort: Bool
+    public var bounds: ConeBounds
+
+    public init(debugMode: Bool = false, metalFXRate: Float = 2, discardRate: Float = 0.0, gpuCounters: GPUCounters? = nil, clearColor: MTLClearColor = .init(red: 0, green: 0, blue: 0, alpha: 1), verticalAngleOfView: Angle = .degrees(90), useGPUSort: Bool = false, bounds: ConeBounds) {
+        self.debugMode = debugMode
+        self.metalFXRate = metalFXRate
+        self.discardRate = discardRate
+        self.gpuCounters = gpuCounters
+        self.clearColor = clearColor
+        self.verticalAngleOfView = verticalAngleOfView
+        self.useGPUSort = useGPUSort
+        self.bounds = bounds
+    }
+}
+
+
 @Observable
 @MainActor
 public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
@@ -43,7 +67,7 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
         }
     }
 
-    public var bounds: ConeBounds
+    public var splatResource: SplatResource
 
     public var pass: GroupPass?
 
@@ -64,9 +88,9 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
         }
     }
 
-    public init(device: MTLDevice, splatCloud: SplatCloud<SplatC>, bounds: ConeBounds, configuration: GaussianSplatRenderingConfiguration = .init(), logger: Logger? = nil) throws {
+    public init(device: MTLDevice, splatResource: SplatResource, splatCloud: SplatCloud<SplatC>, configuration: GaussianSplatRenderingConfiguration, logger: Logger? = nil) throws {
         self.device = device
-        self.bounds = bounds
+        self.splatResource = splatResource
         self.configuration = configuration
         self.logger = logger
 
@@ -99,36 +123,30 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
             logger?.log("Missing splats")
             return
         }
-        //        guard let cameraNode = scene.firstNode(label: "camera") else {
-        //            logger?.log("Missing camera")
-        //            return
-        //        }
+                guard let cameraNode = scene.firstNode(label: "camera") else {
+                    logger?.log("Missing camera")
+                    return
+                }
 
         let fullRedraw = true
-        //        let sortEnabled = (frame <= 1 || frame.isMultiple(of: configuration.sortRate))
-
-        //        if sortEnabled {
-        //            try scene.modify(label: "splats") { node in
-        //                var splats = node!.content as! SplatCloud<Splat>
-        //                splats.sortIndices(camera: cameraNode.transform.matrix)
-        //                node!.content = splats
-        //            }
-        //        }
+                let sortEnabled = (frame <= 1 || frame.isMultiple(of: 15))
 
         self.pass = try GroupPass(id: "FullPass") {
             GroupPass(id: "GaussianSplatRenderGroup", enabled: fullRedraw, renderPassDescriptor: offscreenRenderPassDescriptor) {
-                //                GaussianSplatDistanceComputePass(
-                //                    id: "SplatDistanceCompute",
-                //                    enabled: sortEnabled,
-                //                    splats: splats,
-                //                    modelMatrix: simd_float3x3(truncating: splatsNode.transform.matrix),
-                //                    cameraPosition: cameraNode.transform.translation
-                //                )
-                //                GaussianSplatBitonicSortComputePass(
-                //                    id: "SplatBitonicSort",
-                //                    enabled: sortEnabled,
-                //                    splats: splats
-                //                )
+                if configuration.useGPUSort {
+                    GaussianSplatDistanceComputePass(
+                        id: "SplatDistanceCompute",
+                        enabled: sortEnabled,
+                        splats: splats,
+                        modelMatrix: simd_float3x3(truncating: splatsNode.transform.matrix),
+                        cameraPosition: cameraNode.transform.translation
+                    )
+                    GaussianSplatBitonicSortComputePass(
+                        id: "SplatBitonicSort",
+                        enabled: sortEnabled,
+                        splats: splats
+                    )
+                }
                 PanoramaShadingPass(id: "Panorama", scene: scene)
                 GaussianSplatRenderPass<Splat>(
                     id: "SplatRender",
@@ -192,6 +210,9 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
     }
 
     private func sort() {
+        guard configuration.useGPUSort == false else {
+            return
+        }
         guard isSorting == false else {
             return
         }
@@ -233,8 +254,8 @@ extension MTLSize {
 // MARK: -
 
 public extension GaussianSplatViewModel where Splat == SplatC {
-    convenience init(device: MTLDevice, splatCount: Int, bounds: ConeBounds, configuration: GaussianSplatRenderingConfiguration = .init(), logger: Logger? = nil) throws {
-        try self.init(device: device, splatCloud: SplatCloud<SplatC>(device: device), bounds: bounds, configuration: configuration, logger: logger)
+    convenience init(device: MTLDevice, splatResource: SplatResource, splatCount: Int, configuration: GaussianSplatRenderingConfiguration, logger: Logger? = nil) throws {
+        try self.init(device: device, splatResource: splatResource, splatCloud: SplatCloud<SplatC>(device: device), configuration: configuration, logger: logger)
     }
 
     func streamingLoad(url: URL) async throws {
