@@ -19,7 +19,7 @@ import UniformTypeIdentifiers
 
 // swiftlint:disable force_unwrapping
 
-internal struct GaussianSplatNewMinimalView: View {
+internal struct GaussianSplatView: View {
     @Environment(\.metalDevice)
     private var device
 

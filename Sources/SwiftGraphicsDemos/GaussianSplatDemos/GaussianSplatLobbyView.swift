@@ -8,7 +8,7 @@ public struct GaussianSplatLobbyView: View {
     var device
 
     @State
-    private var configuration: GaussianSplatRenderingConfiguration = .init(bounds: ConeBounds(bottomHeight: 0.05, bottomInnerRadius: 0.4, topHeight: 0.8, topInnerRadius: 0.8)) // Random!
+    private var configuration: GaussianSplatConfiguration = .init(bounds: ConeBounds(bottomHeight: 0.05, bottomInnerRadius: 0.4, topHeight: 0.8, topInnerRadius: 0.8)) // Random!
 
     @State
     private var splatLimit: Int = 2_000_000

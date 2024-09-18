@@ -15,8 +15,8 @@ import SIMDSupport
 import SwiftUI
 import SwiftUISupport
 
-// TODO: rename -Rendering
-public struct GaussianSplatRenderingConfiguration {
+public struct GaussianSplatConfiguration {
+    public var bounds: ConeBounds
     public var debugMode: Bool
     public var metalFXRate: Float
     public var discardRate: Float
@@ -24,9 +24,8 @@ public struct GaussianSplatRenderingConfiguration {
     public var clearColor: MTLClearColor // TODO: make this a SwiftUI Color
     public var verticalAngleOfView: Angle
     public var useGPUSort: Bool
-    public var bounds: ConeBounds
 
-    public init(debugMode: Bool = false, metalFXRate: Float = 2, discardRate: Float = 0.0, gpuCounters: GPUCounters? = nil, clearColor: MTLClearColor = .init(red: 0, green: 0, blue: 0, alpha: 1), verticalAngleOfView: Angle = .degrees(90), useGPUSort: Bool = false, bounds: ConeBounds) {
+    public init(bounds: ConeBounds, debugMode: Bool = false, metalFXRate: Float = 2, discardRate: Float = 0.0, gpuCounters: GPUCounters? = nil, clearColor: MTLClearColor = .init(red: 0, green: 0, blue: 0, alpha: 1), verticalAngleOfView: Angle = .degrees(90), useGPUSort: Bool = false) {
         self.debugMode = debugMode
         self.metalFXRate = metalFXRate
         self.discardRate = discardRate
@@ -38,7 +37,6 @@ public struct GaussianSplatRenderingConfiguration {
     }
 }
 
-
 @Observable
 @MainActor
 public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
@@ -46,7 +44,7 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
     public let device: MTLDevice
 
     @ObservationIgnored
-    public var configuration: GaussianSplatRenderingConfiguration
+    public var configuration: GaussianSplatConfiguration
 
     @ObservationIgnored
     private var resources: GaussianSplatResources?
@@ -88,7 +86,7 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
         }
     }
 
-    public init(device: MTLDevice, splatResource: SplatResource, splatCloud: SplatCloud<SplatC>, configuration: GaussianSplatRenderingConfiguration, logger: Logger? = nil) throws {
+    public init(device: MTLDevice, splatResource: SplatResource, splatCloud: SplatCloud<SplatC>, configuration: GaussianSplatConfiguration, logger: Logger? = nil) throws {
         self.device = device
         self.splatResource = splatResource
         self.configuration = configuration
@@ -254,7 +252,7 @@ extension MTLSize {
 // MARK: -
 
 public extension GaussianSplatViewModel where Splat == SplatC {
-    convenience init(device: MTLDevice, splatResource: SplatResource, splatCount: Int, configuration: GaussianSplatRenderingConfiguration, logger: Logger? = nil) throws {
+    convenience init(device: MTLDevice, splatResource: SplatResource, splatCount: Int, configuration: GaussianSplatConfiguration, logger: Logger? = nil) throws {
         try self.init(device: device, splatResource: splatResource, splatCloud: SplatCloud<SplatC>(device: device), configuration: configuration, logger: logger)
     }
 
