@@ -58,6 +58,7 @@ public struct GaussianSplatRenderView <Splat>: View where Splat: SplatProtocol {
 
 // MARK: -
 
+// TODO: rename -Rendering
 public struct GaussianSplatRenderingConfiguration {
     public var debugMode: Bool
     public var metalFXRate: Float

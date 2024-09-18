@@ -29,12 +29,6 @@ internal struct GaussianSplatNewMinimalView: View {
     @Environment(\.gpuCounters)
     private var gpuCounters
 
-    private let bounds: ConeBounds
-
-    internal init(bounds: ConeBounds) {
-        self.bounds = bounds
-    }
-
     internal var body: some View {
         Group {
             @Bindable
@@ -43,7 +37,7 @@ internal struct GaussianSplatNewMinimalView: View {
                 #if os(iOS)
                 .ignoresSafeArea()
                 #endif
-                .modifier(CameraConeController(cameraCone: bounds, transform: $viewModel.scene.unsafeCurrentCameraNode.transform))
+                .modifier(CameraConeController(cameraCone: viewModel.bounds, transform: $viewModel.scene.unsafeCurrentCameraNode.transform))
                 .environment(\.gpuCounters, gpuCounters)
         }
         .background(.black)
