@@ -165,7 +165,7 @@ extension CubicBezierCurve {
     }
 }
 
-extension CubicBezierCurve: @retroactive PathConvertible {
+extension CubicBezierCurve: PathConvertible {
     public var path: Path {
         Path { path in
             path.move(to: controlPoints.0)
