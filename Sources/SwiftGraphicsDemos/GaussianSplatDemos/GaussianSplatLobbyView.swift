@@ -84,18 +84,18 @@ public struct GaussianSplatLobbyView: View {
                     let components = color.components!
                     configuration.clearColor = MTLClearColor(red: components[0], green: components[1], blue: components[2], alpha: components[3])
                 }
-#if os(macOS)
+                #if os(macOS)
                 .frame(width: 320)
-#endif
+                #endif
             case .render:
                 GaussianSplatLoadingView(url: source, initialConfiguration: configuration, splatLimit: splatLimit)
                     .overlay(alignment: .topLeading) {
                         Button("Back") {
                             mode = .config
                         }
-#if os(macOS)
+                        #if os(macOS)
                         .buttonStyle(.link)
-#endif
+                        #endif
                         .padding()
                     }
                     .environment(\.gpuCounters, configuration.gpuCounters)

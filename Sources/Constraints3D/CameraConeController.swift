@@ -15,7 +15,7 @@ public struct CameraConeController: ViewModifier {
     @State
     private var height: Double = .zero
 
-    public init(cameraCone: CameraCone, transform: Binding<Transform>) {
+    public init(cameraCone: ConeBounds, transform: Binding<Transform>) {
         self.cameraConeConstraint = .init(cameraCone: cameraCone)
         self._transform = transform
     }
@@ -43,63 +43,65 @@ public struct CameraConeController: ViewModifier {
 // MARK: -
 
 public struct CameraConeConstraint: Equatable {
-    public var cameraCone: CameraCone
+    public var cameraCone: ConeBounds
     public var lookAt: SIMD3<Float>
 
-    public init(cameraCone: CameraCone, lookAt: SIMD3<Float> = .zero) {
+    public init(cameraCone: ConeBounds, lookAt: SIMD3<Float> = .zero) {
         self.cameraCone = cameraCone
         self.lookAt = lookAt
     }
 
     func transform(angle: Angle, height: Double) -> simd_float4x4 {
         let position = cameraCone.position(h: Float(height), angle: angle)
-
         return look(at: lookAt, from: position, up: [0, 1, 0])
     }
 }
 
-// MARK: -
+/// Represents the bounds of a truncated cone/frustum. The origin.z is level with bottomHeight.
+public struct ConeBounds {
+    public var origin: SIMD3<Float>
+    public var bottomHeight: Float
+    public var bottomInnerRadius: Float
+    public var topHeight: Float
+    public var topInnerRadius: Float
 
-public struct CameraCone: Equatable {
-    public var apex: SIMD3<Float>
-    public var axis: SIMD3<Float>
-    public var h1: Float
-    public var r1: Float
-    public var r2: Float
-    public var h2: Float
-
-    public init(apex: SIMD3<Float>, axis: SIMD3<Float>, h1: Float, r1: Float, r2: Float, h2: Float) {
-        self.apex = apex
-        self.axis = axis
-        self.h1 = h1
-        self.r1 = r1
-        self.r2 = r2
-        self.h2 = h2
+    public init(origin: SIMD3<Float> = .zero, bottomHeight: Float, bottomInnerRadius: Float, topHeight: Float, topInnerRadius: Float) {
+        self.origin = origin
+        self.bottomHeight = bottomHeight
+        self.bottomInnerRadius = bottomInnerRadius
+        self.topHeight = topHeight
+        self.topInnerRadius = topInnerRadius
     }
 }
 
-public extension CameraCone {
-    func position(h: Float, angle: Angle) -> SIMD3<Float> {
-        // Ensure h is between 0 and 1
-        let clampedH = max(0, min(1, h))
+extension ConeBounds: Sendable {
+}
 
-        // Calculate the radius at h2 h
-        let radius = r1 + (r2 - r1) * clampedH
+extension ConeBounds: Equatable {
+}
 
-        // Calculate the center point at h2 h
-        let center = apex + axis * (h1 + h2 * clampedH)
+public extension ConeBounds {
+    func position2(h: Float, angle: Angle) -> SIMD3<Float> {
+        let clampedH = max(min(h, 1), 0)
+        let height = bottomHeight + (topHeight - bottomHeight) * clampedH
+        let radius = bottomInnerRadius + (topInnerRadius - bottomInnerRadius) * clampedH
+        let x = radius * Float(cos(angle.radians))
+        let y = radius * Float(sin(angle.radians))
+        let z = height - bottomHeight
+        return origin + SIMD3<Float>(x, y, z)
+    }
 
-        // Calculate the point on the circle at the given angle
-        let angleInRadians = Float(angle.radians)
-        let x = radius * cos(angleInRadians)
-        let z = radius * sin(angleInRadians)
-
-        // Create a coordinate system where Y is along the axis
-        let up = axis
-        let right = SIMD3<Float>(up.z, up.x, up.y) // Arbitrary perpendicular vector
-        let forward = simd_cross(up, right)
-
-        // Transform the point to the cone's coordinate system
-        return center + right * x + forward * z
+    func position(h: Float, angle: Angle, isVerticalScreen: Bool = true) -> SIMD3<Float> {
+        let heightSplatCS = topHeight - h * (topHeight - bottomHeight)
+        var topInnerRadius = topInnerRadius
+        // Since view is scaled based on height of screen we need to zoom out for vertical viewports
+        if isVerticalScreen {
+            topInnerRadius *= 1.5
+        }
+        let radius = topInnerRadius - h * (topInnerRadius - bottomInnerRadius)
+        let x = radius * Float(sin(angle.radians))
+        let y = heightSplatCS
+        let z = radius * Float(cos(angle.radians))
+        return SIMD3<Float>(x, y, z)
     }
 }

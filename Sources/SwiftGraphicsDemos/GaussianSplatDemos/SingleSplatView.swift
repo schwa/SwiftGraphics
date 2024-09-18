@@ -54,7 +54,7 @@ public struct SingleSplatView: View {
     public var body: some View {
         GaussianSplatRenderView<SplatC>()
             .environment(viewModel)
-            .modifier(CameraConeController(cameraCone: .init(apex: [0, 0, 0], axis: [0, 1, 0], h1: 0, r1: 2, r2: 2, h2: 2), transform: $viewModel.scene.unsafeCurrentCameraNode.transform))
+            // .modifier(CameraConeController(cameraCone: .init(apex: [0, 0, 0], axis: [0, 1, 0], h1: 0, r1: 2, r2: 2, h2: 2), transform: $viewModel.scene.unsafeCurrentCameraNode.transform))
             .onChange(of: splat, initial: true) {
                 try! viewModel.scene.modify(label: "splats") { node in
                     let splats = [splat].map(SplatC.init)
