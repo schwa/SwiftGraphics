@@ -204,7 +204,7 @@ extension View {
     }
 }
 
-extension [LineSegment]: @retroactive PathConvertible {
+extension [LineSegment]: PathConvertible {
     public var path: Path {
         Path(lineSegments: map { ($0.start, $0.end) })
     }
