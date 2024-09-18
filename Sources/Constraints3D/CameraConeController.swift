@@ -38,6 +38,7 @@ public struct CameraConeController: ViewModifier {
             .onChange(of: height, initial: true) {
                 transform = .init(cameraConeConstraint.transform(angle: angle, height: height))
             }
+        #if os(macOS)
             .overlay(alignment: .bottom) {
                 Form {
                     TextField("Angle", value: $angle.degrees, format: .number.precision(.fractionLength(0...0)))
@@ -58,6 +59,7 @@ public struct CameraConeController: ViewModifier {
                 .background(.thinMaterial)
                 .padding()
             }
+        #endif
     }
 }
 

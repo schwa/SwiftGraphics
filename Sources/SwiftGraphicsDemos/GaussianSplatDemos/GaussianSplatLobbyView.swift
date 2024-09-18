@@ -1,13 +1,14 @@
 import GaussianSplatSupport
 import RenderKit
 import SwiftUI
+import Constraints3D
 
 public struct GaussianSplatLobbyView: View {
     @Environment(\.metalDevice)
     var device
 
     @State
-    private var configuration: GaussianSplatRenderingConfiguration = .init()
+    private var configuration: GaussianSplatRenderingConfiguration = .init(bounds: ConeBounds(bottomHeight: 0.05, bottomInnerRadius: 0.4, topHeight: 0.8, topInnerRadius: 0.8)) // Random!
 
     @State
     private var splatLimit: Int = 2_000_000
@@ -68,6 +69,7 @@ public struct GaussianSplatLobbyView: View {
                         optionsView
                     }
                     Button("Go!") {
+                        configuration.bounds = source.bounds
                         mode = .render
                     }
                     .frame(maxWidth: .infinity)
@@ -91,7 +93,7 @@ public struct GaussianSplatLobbyView: View {
                 .frame(width: 320)
                 #endif
             case .render:
-                GaussianSplatLoadingView(url: source.url, bounds: source.bounds, initialConfiguration: configuration, splatLimit: splatLimit, progressiveLoad: progressiveLoad)
+                GaussianSplatLoadingView(url: source.url, splatResource: source, bounds: source.bounds, initialConfiguration: configuration, splatLimit: splatLimit, progressiveLoad: progressiveLoad)
                     .overlay(alignment: .topLeading) {
                         Button("Back") {
                             mode = .config
@@ -157,6 +159,13 @@ public struct GaussianSplatLobbyView: View {
                     Toggle("Progressive Load", isOn: $progressiveLoad)
                         .labelsHidden()
                     Text("Stream splats in (remote splats only).").font(.caption)
+                }
+            }
+            LabeledContent("GPU Sort") {
+                VStack(alignment: .leading) {
+                    Toggle("GPU Sort", isOn: $configuration.useGPUSort)
+                        .labelsHidden()
+                    Text("Use GPU Sorting").font(.caption)
                 }
             }
         }

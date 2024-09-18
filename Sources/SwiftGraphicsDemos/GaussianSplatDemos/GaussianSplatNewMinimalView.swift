@@ -37,16 +37,29 @@ internal struct GaussianSplatNewMinimalView: View {
                 #if os(iOS)
                 .ignoresSafeArea()
                 #endif
-                .modifier(CameraConeController(cameraCone: viewModel.bounds, transform: $viewModel.scene.unsafeCurrentCameraNode.transform))
+                .modifier(CameraConeController(cameraCone: viewModel.configuration.bounds, transform: $viewModel.scene.unsafeCurrentCameraNode.transform))
                 .environment(\.gpuCounters, gpuCounters)
         }
         .background(.black)
         .overlay(alignment: .top) {
-            if let gpuCounters {
-                TimelineView(.periodic(from: .now, by: 0.25)) { _ in
-                    PerformanceHUD(measurements: gpuCounters.current())
+            VStack {
+                #if os(macOS)
+                VStack {
+                    Text(viewModel.splatResource.name).font(.title)
+                    Link(viewModel.splatResource.url.absoluteString, destination: viewModel.splatResource.url)
+                }
+                .padding()
+                .background(.thinMaterial)
+                .cornerRadius(8)
+                .padding()
+                #endif
+                if let gpuCounters {
+                    TimelineView(.periodic(from: .now, by: 0.25)) { _ in
+                        PerformanceHUD(measurements: gpuCounters.current())
+                    }
                 }
             }
+
         }
         .overlay(alignment: .bottom) {
             if !viewModel.loadProgress.isFinished {

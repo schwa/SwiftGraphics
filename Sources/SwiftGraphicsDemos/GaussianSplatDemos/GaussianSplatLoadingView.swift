@@ -9,6 +9,7 @@ public struct GaussianSplatLoadingView: View {
     private var device
 
     let url: URL
+    let splatResource: SplatResource
     let configuration: GaussianSplatRenderingConfiguration
     let splatLimit: Int?
     let progressiveLoad: Bool
@@ -20,8 +21,9 @@ public struct GaussianSplatLoadingView: View {
     @State
     private var viewModel: GaussianSplatViewModel<SplatC>?
 
-    public init(url: URL, bounds: ConeBounds, initialConfiguration: GaussianSplatRenderingConfiguration, splatLimit: Int?, progressiveLoad: Bool) {
+    public init(url: URL, splatResource: SplatResource, bounds: ConeBounds, initialConfiguration: GaussianSplatRenderingConfiguration, splatLimit: Int?, progressiveLoad: Bool) {
         self.url = url
+        self.splatResource = splatResource
         self.bounds = bounds
         self.configuration = initialConfiguration
         self.splatLimit = splatLimit
@@ -47,7 +49,7 @@ public struct GaussianSplatLoadingView: View {
                 switch (progressiveLoad, url.scheme) {
                 case (true, "http"), (true, "https"):
                     subtitle = "Streaming"
-                    viewModel = try! GaussianSplatViewModel<SplatC>(device: device, splatCount: 0, bounds: bounds, configuration: configuration, logger: Logger())
+                    viewModel = try! GaussianSplatViewModel<SplatC>(device: device, splatResource: splatResource, splatCount: 0, configuration: configuration, logger: Logger())
                     Task.detached {
                         try await viewModel?.streamingLoad(url: url)
                     }
@@ -67,12 +69,12 @@ public struct GaussianSplatLoadingView: View {
                         try FileManager().createSymbolicLink(at: url, withDestinationURL: downloadedUrl)
                         try await MainActor.run {
                             let splatCloud = try SplatCloud<SplatC>(device: device, url: url, splatLimit: splatLimit)
-                            viewModel = try! GaussianSplatViewModel<SplatC>(device: device, splatCloud: splatCloud, bounds: bounds, configuration: configuration, logger: Logger())
+                            viewModel = try! GaussianSplatViewModel<SplatC>(device: device, splatResource: splatResource, splatCloud: splatCloud, configuration: configuration, logger: Logger())
                         }
                     }
                 default:
                     let splatCloud = try SplatCloud<SplatC>(device: device, url: url, splatLimit: splatLimit)
-                    viewModel = try! GaussianSplatViewModel<SplatC>(device: device, splatCloud: splatCloud, bounds: bounds, configuration: configuration, logger: Logger())
+                    viewModel = try! GaussianSplatViewModel<SplatC>(device: device, splatResource: splatResource, splatCloud: splatCloud, configuration: configuration, logger: Logger())
                 }
             }
             catch {
