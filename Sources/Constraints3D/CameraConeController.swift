@@ -81,16 +81,6 @@ extension ConeBounds: Equatable {
 }
 
 public extension ConeBounds {
-    func position2(h: Float, angle: Angle) -> SIMD3<Float> {
-        let clampedH = max(min(h, 1), 0)
-        let height = bottomHeight + (topHeight - bottomHeight) * clampedH
-        let radius = bottomInnerRadius + (topInnerRadius - bottomInnerRadius) * clampedH
-        let x = radius * Float(cos(angle.radians))
-        let y = radius * Float(sin(angle.radians))
-        let z = height - bottomHeight
-        return origin + SIMD3<Float>(x, y, z)
-    }
-
     func position(h: Float, angle: Angle, isVerticalScreen: Bool = true) -> SIMD3<Float> {
         let heightSplatCS = topHeight - h * (topHeight - bottomHeight)
         var topInnerRadius = topInnerRadius
@@ -102,6 +92,6 @@ public extension ConeBounds {
         let x = radius * Float(sin(angle.radians))
         let y = heightSplatCS
         let z = radius * Float(cos(angle.radians))
-        return SIMD3<Float>(x, y, z)
+        return origin + SIMD3<Float>(x, y, z)
     }
 }

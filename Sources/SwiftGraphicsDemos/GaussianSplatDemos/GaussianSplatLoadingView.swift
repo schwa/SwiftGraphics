@@ -10,6 +10,7 @@ public struct GaussianSplatLoadingView: View {
     let url: URL
     let configuration: GaussianSplatRenderingConfiguration
     let splatLimit: Int?
+    let progressiveLoad: Bool
 
     @State
     private var subtitle: String = "Processing"
@@ -17,10 +18,11 @@ public struct GaussianSplatLoadingView: View {
     @State
     private var viewModel: GaussianSplatViewModel<SplatC>?
 
-    public init(url: URL, initialConfiguration: GaussianSplatRenderingConfiguration, splatLimit: Int?) {
+    public init(url: URL, initialConfiguration: GaussianSplatRenderingConfiguration, splatLimit: Int?, progressiveLoad: Bool) {
         self.url = url
         self.configuration = initialConfiguration
         self.splatLimit = splatLimit
+        self.progressiveLoad = progressiveLoad
     }
 
     public var body: some View {
@@ -39,12 +41,31 @@ public struct GaussianSplatLoadingView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .task {
             do {
-                switch url.scheme {
-                case "http", "https":
-                    subtitle = "Downloading"
+                switch (progressiveLoad, url.scheme) {
+                case (true, "http"), (true, "https"):
+                    subtitle = "Streaming"
                     viewModel = try! GaussianSplatViewModel<SplatC>(device: device, splatCount: 0, configuration: configuration, logger: Logger())
                     Task.detached {
                         try await viewModel?.streamingLoad(url: url)
+                    }
+                case (false, "http"), (false, "https"):
+                    subtitle = "Downloading"
+                    Task.detached {
+                        let session = URLSession.shared
+                        let request = URLRequest(url: url)
+                        let (downloadedUrl, response) = try await session.download(for: request)
+                        guard let response = response as? HTTPURLResponse else {
+                            fatalError("Oops")
+                        }
+                        guard response.statusCode == 200 else {
+                            throw BaseError.missingResource
+                        }
+                        let url = downloadedUrl.appendingPathExtension("splat")
+                        try FileManager().createSymbolicLink(at: url, withDestinationURL: downloadedUrl)
+                        try await MainActor.run {
+                            let splatCloud = try SplatCloud<SplatC>(device: device, url: url, splatLimit: splatLimit)
+                            viewModel = try! GaussianSplatViewModel<SplatC>(device: device, splatCloud: splatCloud, configuration: configuration, logger: Logger())
+                        }
                     }
                 default:
                     let splatCloud = try SplatCloud<SplatC>(device: device, url: url, splatLimit: splatLimit)

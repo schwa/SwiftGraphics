@@ -16,6 +16,9 @@ public struct GaussianSplatLobbyView: View {
     private var useGPUCounters = false
 
     @State
+    private var progressiveLoad = false
+
+    @State
     private var backgroundColor = Color.black
 
     @State
@@ -88,7 +91,7 @@ public struct GaussianSplatLobbyView: View {
                 .frame(width: 320)
                 #endif
             case .render:
-                GaussianSplatLoadingView(url: source, initialConfiguration: configuration, splatLimit: splatLimit)
+                GaussianSplatLoadingView(url: source, initialConfiguration: configuration, splatLimit: splatLimit, progressiveLoad: progressiveLoad)
                     .overlay(alignment: .topLeading) {
                         Button("Back") {
                             mode = .config
@@ -147,6 +150,13 @@ public struct GaussianSplatLobbyView: View {
                     ColorPicker("Background Color", selection: $backgroundColor)
                         .labelsHidden()
                     Text("Colour of background (behind the splats)").font(.caption)
+                }
+            }
+            LabeledContent("Progressive Load") {
+                VStack(alignment: .leading) {
+                    Toggle("Progressive Load", isOn: $progressiveLoad)
+                        .labelsHidden()
+                    Text("Stream splats in (remote splats only).").font(.caption)
                 }
             }
         }
