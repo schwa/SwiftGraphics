@@ -22,9 +22,9 @@ public struct GaussianSplatLobbyView: View {
     private var backgroundColor = Color.black
 
     @State
-    private var source: URL
+    private var source: SplatResource
 
-    let sources: [URL]
+    let sources: [SplatResource]
 
     enum Mode {
         case config
@@ -34,7 +34,7 @@ public struct GaussianSplatLobbyView: View {
     @State
     private var mode: Mode = .config
 
-    init(sources: [URL]) {
+    init(sources: [SplatResource]) {
         self.sources = sources
         self.source = sources.first!
     }
@@ -49,9 +49,9 @@ public struct GaussianSplatLobbyView: View {
                             Picker("Source", selection: $source) {
                                 ForEach(sources, id: \.self) { source in
                                     Label {
-                                        Text(source.deletingPathExtension().lastPathComponent)
+                                        Text(source.name)
                                     } icon: {
-                                        switch source.scheme {
+                                        switch source.url.scheme {
                                         case "file":
                                             Image(systemName: "doc")
                                         case "http", "https":
@@ -91,7 +91,7 @@ public struct GaussianSplatLobbyView: View {
                 .frame(width: 320)
                 #endif
             case .render:
-                GaussianSplatLoadingView(url: source, initialConfiguration: configuration, splatLimit: splatLimit, progressiveLoad: progressiveLoad)
+                GaussianSplatLoadingView(url: source.url, bounds: source.bounds, initialConfiguration: configuration, splatLimit: splatLimit, progressiveLoad: progressiveLoad)
                     .overlay(alignment: .topLeading) {
                         Button("Back") {
                             mode = .config

@@ -48,7 +48,8 @@ public struct SingleSplatView: View {
         let splats = [splat].map(SplatC.init)
         let splatCloud = try! SplatCloud(device: device, splats: splats)
 
-        self.viewModel = try! GaussianSplatViewModel<SplatC>(device: device, splatCloud: splatCloud)
+        // self.viewModel = try! GaussianSplatViewModel<SplatC>(device: device, splatCloud: splatCloud)
+        fatalError()
     }
 
     public var body: some View {

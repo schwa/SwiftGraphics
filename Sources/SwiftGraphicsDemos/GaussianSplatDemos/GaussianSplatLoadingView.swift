@@ -1,4 +1,5 @@
 import BaseSupport
+import Constraints3D
 import GaussianSplatSupport
 import os
 import SwiftUI
@@ -11,6 +12,7 @@ public struct GaussianSplatLoadingView: View {
     let configuration: GaussianSplatRenderingConfiguration
     let splatLimit: Int?
     let progressiveLoad: Bool
+    let bounds: ConeBounds
 
     @State
     private var subtitle: String = "Processing"
@@ -18,8 +20,9 @@ public struct GaussianSplatLoadingView: View {
     @State
     private var viewModel: GaussianSplatViewModel<SplatC>?
 
-    public init(url: URL, initialConfiguration: GaussianSplatRenderingConfiguration, splatLimit: Int?, progressiveLoad: Bool) {
+    public init(url: URL, bounds: ConeBounds, initialConfiguration: GaussianSplatRenderingConfiguration, splatLimit: Int?, progressiveLoad: Bool) {
         self.url = url
+        self.bounds = bounds
         self.configuration = initialConfiguration
         self.splatLimit = splatLimit
         self.progressiveLoad = progressiveLoad
@@ -28,7 +31,7 @@ public struct GaussianSplatLoadingView: View {
     public var body: some View {
         ZStack {
             if let viewModel {
-                GaussianSplatNewMinimalView(bounds: .init(bottomHeight: 0.05, bottomInnerRadius: 0.4, topHeight: 0.8, topInnerRadius: 0.8))
+                GaussianSplatNewMinimalView(bounds: bounds)
                     .environment(viewModel)
             }
             else {
@@ -44,7 +47,7 @@ public struct GaussianSplatLoadingView: View {
                 switch (progressiveLoad, url.scheme) {
                 case (true, "http"), (true, "https"):
                     subtitle = "Streaming"
-                    viewModel = try! GaussianSplatViewModel<SplatC>(device: device, splatCount: 0, configuration: configuration, logger: Logger())
+                    viewModel = try! GaussianSplatViewModel<SplatC>(device: device, splatCount: 0, bounds: bounds, configuration: configuration, logger: Logger())
                     Task.detached {
                         try await viewModel?.streamingLoad(url: url)
                     }
@@ -64,12 +67,12 @@ public struct GaussianSplatLoadingView: View {
                         try FileManager().createSymbolicLink(at: url, withDestinationURL: downloadedUrl)
                         try await MainActor.run {
                             let splatCloud = try SplatCloud<SplatC>(device: device, url: url, splatLimit: splatLimit)
-                            viewModel = try! GaussianSplatViewModel<SplatC>(device: device, splatCloud: splatCloud, configuration: configuration, logger: Logger())
+                            viewModel = try! GaussianSplatViewModel<SplatC>(device: device, splatCloud: splatCloud, bounds: bounds, configuration: configuration, logger: Logger())
                         }
                     }
                 default:
                     let splatCloud = try SplatCloud<SplatC>(device: device, url: url, splatLimit: splatLimit)
-                    viewModel = try! GaussianSplatViewModel<SplatC>(device: device, splatCloud: splatCloud, configuration: configuration, logger: Logger())
+                    viewModel = try! GaussianSplatViewModel<SplatC>(device: device, splatCloud: splatCloud, bounds: bounds, configuration: configuration, logger: Logger())
                 }
             }
             catch {

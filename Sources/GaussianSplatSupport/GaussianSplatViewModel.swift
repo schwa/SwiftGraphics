@@ -3,6 +3,7 @@ import Metal
 #if !targetEnvironment(simulator)
 import MetalFX
 #endif
+import Constraints3D
 import MetalKit
 import MetalSupport
 import os
@@ -42,6 +43,8 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
         }
     }
 
+    public var bounds: ConeBounds
+
     public var pass: GroupPass?
 
     public var loadProgress = Progress()
@@ -61,8 +64,9 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
         }
     }
 
-    public init(device: MTLDevice, splatCloud: SplatCloud<SplatC>, configuration: GaussianSplatRenderingConfiguration = .init(), logger: Logger? = nil) throws {
+    public init(device: MTLDevice, splatCloud: SplatCloud<SplatC>, bounds: ConeBounds, configuration: GaussianSplatRenderingConfiguration = .init(), logger: Logger? = nil) throws {
         self.device = device
+        self.bounds = bounds
         self.configuration = configuration
         self.logger = logger
 
@@ -229,8 +233,8 @@ extension MTLSize {
 // MARK: -
 
 public extension GaussianSplatViewModel where Splat == SplatC {
-    convenience init(device: MTLDevice, splatCount: Int, configuration: GaussianSplatRenderingConfiguration = .init(), logger: Logger? = nil) throws {
-        try self.init(device: device, splatCloud: SplatCloud<SplatC>(device: device), configuration: configuration, logger: logger)
+    convenience init(device: MTLDevice, splatCount: Int, bounds: ConeBounds, configuration: GaussianSplatRenderingConfiguration = .init(), logger: Logger? = nil) throws {
+        try self.init(device: device, splatCloud: SplatCloud<SplatC>(device: device), bounds: bounds, configuration: configuration, logger: logger)
     }
 
     func streamingLoad(url: URL) async throws {
