@@ -10,7 +10,7 @@ public struct GaussianSplatLoadingView: View {
 
     let url: URL
     let splatResource: SplatResource
-    let configuration: GaussianSplatRenderingConfiguration
+    let configuration: GaussianSplatConfiguration
     let splatLimit: Int?
     let progressiveLoad: Bool
     let bounds: ConeBounds
@@ -21,7 +21,7 @@ public struct GaussianSplatLoadingView: View {
     @State
     private var viewModel: GaussianSplatViewModel<SplatC>?
 
-    public init(url: URL, splatResource: SplatResource, bounds: ConeBounds, initialConfiguration: GaussianSplatRenderingConfiguration, splatLimit: Int?, progressiveLoad: Bool) {
+    public init(url: URL, splatResource: SplatResource, bounds: ConeBounds, initialConfiguration: GaussianSplatConfiguration, splatLimit: Int?, progressiveLoad: Bool) {
         self.url = url
         self.splatResource = splatResource
         self.bounds = bounds
@@ -33,7 +33,7 @@ public struct GaussianSplatLoadingView: View {
     public var body: some View {
         ZStack {
             if let viewModel {
-                GaussianSplatNewMinimalView()
+                GaussianSplatView()
                     .environment(viewModel)
             }
             else {
