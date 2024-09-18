@@ -2,8 +2,8 @@
 
 import simd
 import SIMDSupport
-import SwiftUI
 import SwiftFields
+import SwiftUI
 
 public struct CameraConeController: ViewModifier {
     private var cameraConeConstraint: CameraConeConstraint
@@ -39,26 +39,26 @@ public struct CameraConeController: ViewModifier {
                 transform = .init(cameraConeConstraint.transform(angle: angle, height: height))
             }
         #if os(macOS)
-            .overlay(alignment: .bottom) {
-                Form {
-                    TextField("Angle", value: $angle.degrees, format: .number.precision(.fractionLength(0...0)))
-                    Slider(value: $angle.degrees, in: 0...360)
-                    TextField("Height", value: $height, format: .number.precision(.fractionLength(0...3)))
-                    Slider(value: $height, in: 0...1)
-                    LabeledContent("LookAt", value: cameraConeConstraint.lookAt, format: .vector)
-                    LabeledContent("Bounds.Origin", value: cameraConeConstraint.cameraCone.origin, format: .vector)
-                    LabeledContent("Bounds.bottomHeight", value: cameraConeConstraint.cameraCone.bottomHeight, format: .number)
-                    LabeledContent("Bounds.bottomInnerRadius", value: cameraConeConstraint.cameraCone.bottomInnerRadius, format: .number)
-                    LabeledContent("Bounds.topHeight", value: cameraConeConstraint.cameraCone.topHeight, format: .number)
-                    LabeledContent("Bounds.topInnerRadius", value: cameraConeConstraint.cameraCone.topInnerRadius, format: .number)
-                    LabeledContent("Camera Position", value: cameraConeConstraint.cameraCone.position(h: Float(height), angle: angle), format: .vector)
-                }
-                .controlSize(.mini)
-                .frame(maxWidth: 320)
-                .padding()
-                .background(.thinMaterial)
-                .padding()
-            }
+        .overlay(alignment: .bottom) {
+        Form {
+        TextField("Angle", value: $angle.degrees, format: .number.precision(.fractionLength(0...0)))
+        Slider(value: $angle.degrees, in: 0...360)
+        TextField("Height", value: $height, format: .number.precision(.fractionLength(0...3)))
+        Slider(value: $height, in: 0...1)
+        LabeledContent("LookAt", value: cameraConeConstraint.lookAt, format: .vector)
+        LabeledContent("Bounds.Origin", value: cameraConeConstraint.cameraCone.origin, format: .vector)
+        LabeledContent("Bounds.bottomHeight", value: cameraConeConstraint.cameraCone.bottomHeight, format: .number)
+        LabeledContent("Bounds.bottomInnerRadius", value: cameraConeConstraint.cameraCone.bottomInnerRadius, format: .number)
+        LabeledContent("Bounds.topHeight", value: cameraConeConstraint.cameraCone.topHeight, format: .number)
+        LabeledContent("Bounds.topInnerRadius", value: cameraConeConstraint.cameraCone.topInnerRadius, format: .number)
+        LabeledContent("Camera Position", value: cameraConeConstraint.cameraCone.position(h: Float(height), angle: angle), format: .vector)
+        }
+        .controlSize(.mini)
+        .frame(maxWidth: 320)
+        .padding()
+        .background(.thinMaterial)
+        .padding()
+        }
         #endif
     }
 }

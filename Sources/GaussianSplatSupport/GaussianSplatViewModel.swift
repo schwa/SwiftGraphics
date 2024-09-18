@@ -121,13 +121,13 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
             logger?.log("Missing splats")
             return
         }
-                guard let cameraNode = scene.firstNode(label: "camera") else {
-                    logger?.log("Missing camera")
-                    return
-                }
+        guard let cameraNode = scene.firstNode(label: "camera") else {
+            logger?.log("Missing camera")
+            return
+        }
 
         let fullRedraw = true
-                let sortEnabled = (frame <= 1 || frame.isMultiple(of: 15))
+        let sortEnabled = (frame <= 1 || frame.isMultiple(of: 15))
 
         self.pass = try GroupPass(id: "FullPass") {
             GroupPass(id: "GaussianSplatRenderGroup", enabled: fullRedraw, renderPassDescriptor: offscreenRenderPassDescriptor) {
