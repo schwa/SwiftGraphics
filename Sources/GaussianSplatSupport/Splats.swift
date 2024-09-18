@@ -9,7 +9,6 @@ public protocol SplatProtocol: Equatable, Sendable {
     var floatPosition: SIMD3<Float> { get }
 }
 
-
 public struct SplatB: Equatable, Sendable {
     public var position: PackedFloat3
     public var scale: PackedFloat3

@@ -95,36 +95,36 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
             logger?.log("Missing splats")
             return
         }
-//        guard let cameraNode = scene.firstNode(label: "camera") else {
-//            logger?.log("Missing camera")
-//            return
-//        }
+        //        guard let cameraNode = scene.firstNode(label: "camera") else {
+        //            logger?.log("Missing camera")
+        //            return
+        //        }
 
         let fullRedraw = true
         //        let sortEnabled = (frame <= 1 || frame.isMultiple(of: configuration.sortRate))
 
-//        if sortEnabled {
-//            try scene.modify(label: "splats") { node in
-//                var splats = node!.content as! SplatCloud<Splat>
-//                splats.sortIndices(camera: cameraNode.transform.matrix)
-//                node!.content = splats
-//            }
-//        }
+        //        if sortEnabled {
+        //            try scene.modify(label: "splats") { node in
+        //                var splats = node!.content as! SplatCloud<Splat>
+        //                splats.sortIndices(camera: cameraNode.transform.matrix)
+        //                node!.content = splats
+        //            }
+        //        }
 
         self.pass = try GroupPass(id: "FullPass") {
             GroupPass(id: "GaussianSplatRenderGroup", enabled: fullRedraw, renderPassDescriptor: offscreenRenderPassDescriptor) {
-//                GaussianSplatDistanceComputePass(
-//                    id: "SplatDistanceCompute",
-//                    enabled: sortEnabled,
-//                    splats: splats,
-//                    modelMatrix: simd_float3x3(truncating: splatsNode.transform.matrix),
-//                    cameraPosition: cameraNode.transform.translation
-//                )
-//                GaussianSplatBitonicSortComputePass(
-//                    id: "SplatBitonicSort",
-//                    enabled: sortEnabled,
-//                    splats: splats
-//                )
+                //                GaussianSplatDistanceComputePass(
+                //                    id: "SplatDistanceCompute",
+                //                    enabled: sortEnabled,
+                //                    splats: splats,
+                //                    modelMatrix: simd_float3x3(truncating: splatsNode.transform.matrix),
+                //                    cameraPosition: cameraNode.transform.translation
+                //                )
+                //                GaussianSplatBitonicSortComputePass(
+                //                    id: "SplatBitonicSort",
+                //                    enabled: sortEnabled,
+                //                    splats: splats
+                //                )
                 PanoramaShadingPass(id: "Panorama", scene: scene)
                 GaussianSplatRenderPass<Splat>(
                     id: "SplatRender",
@@ -281,7 +281,6 @@ public extension GaussianSplatViewModel where Splat == SplatC {
             try splatCloud.append(splats: splats)
             self.sort()
             loadProgress.completedUnitCount = Int64(splatCloud.count)
-
         }
         assert(splatCloud.count == splatCount)
     }

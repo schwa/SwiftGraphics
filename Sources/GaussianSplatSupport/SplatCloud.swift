@@ -39,7 +39,7 @@ public final class SplatCloud <Splat>: Equatable, @unchecked Sendable where Spla
 
     public static func == (lhs: SplatCloud, rhs: SplatCloud) -> Bool {
         lhs.splats == rhs.splats
-        && lhs.indexedDistances == rhs.indexedDistances
+            && lhs.indexedDistances == rhs.indexedDistances
     }
 
     public var count: Int {
@@ -105,7 +105,7 @@ public extension SplatCloud where Splat == SplatC {
 
     convenience init(device: MTLDevice, url: URL, splatLimit: Int? = nil) throws {
         let data = try Data(contentsOf: url)
-         if url.pathExtension == "splat" {
+        if url.pathExtension == "splat" {
             try self.init(device: device, data: data)
         } else {
             throw BaseError.error(.illegalValue)
@@ -123,13 +123,13 @@ extension SplatCloud {
             // Compute distances.
             let cameraPosition = camera.translation
             let modelView = camera.inverse * model
-                splats.withUnsafeBufferPointer { splats in
-                    for index in 0..<indexedDistances.count {
+            splats.withUnsafeBufferPointer { splats in
+                for index in 0..<indexedDistances.count {
                     let position = modelView * SIMD4<Float>(splats[index].floatPosition, 1.0)
-                        let distance = position.z
-                        indexedDistances[index] = .init(index: UInt32(index), distance: distance)
-                    }
+                    let distance = position.z
+                    indexedDistances[index] = .init(index: UInt32(index), distance: distance)
                 }
+            }
 
             // Sort
             temporaryIndexedDistances.withUnsafeMutableBufferPointer { temporaryIndexedDistances in

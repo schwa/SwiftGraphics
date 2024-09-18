@@ -19,18 +19,21 @@ import UniformTypeIdentifiers
 
 // swiftlint:disable force_unwrapping
 
-struct GaussianSplatNewMinimalView: View {
+internal struct GaussianSplatNewMinimalView: View {
     @Environment(\.metalDevice)
-    var device
+    private var device
 
     @Environment(GaussianSplatViewModel<SplatC>.self)
-    var viewModel
-
-    @State
-    private var cameraCone: CameraCone = .init(apex: [0, 0, 0], axis: [0, 1, 0], h1: 0, r1: 0.5, r2: 0.75, h2: 0.5)
+    private var viewModel
 
     @Environment(\.gpuCounters)
     private var gpuCounters
+
+    private let bounds: ConeBounds
+
+    internal init(bounds: ConeBounds) {
+        self.bounds = bounds
+    }
 
     internal var body: some View {
         Group {
@@ -40,7 +43,7 @@ struct GaussianSplatNewMinimalView: View {
                 #if os(iOS)
                 .ignoresSafeArea()
                 #endif
-                .modifier(CameraConeController(cameraCone: cameraCone, transform: $viewModel.scene.unsafeCurrentCameraNode.transform))
+                .modifier(CameraConeController(cameraCone: bounds, transform: $viewModel.scene.unsafeCurrentCameraNode.transform))
                 .environment(\.gpuCounters, gpuCounters)
         }
         .background(.black)

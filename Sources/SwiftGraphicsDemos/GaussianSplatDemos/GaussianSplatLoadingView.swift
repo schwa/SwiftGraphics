@@ -26,7 +26,7 @@ public struct GaussianSplatLoadingView: View {
     public var body: some View {
         ZStack {
             if let viewModel {
-                GaussianSplatNewMinimalView()
+                GaussianSplatNewMinimalView(bounds: .init(bottomHeight: 0.05, bottomInnerRadius: 0.4, topHeight: 0.8, topInnerRadius: 0.8))
                     .environment(viewModel)
             }
             else {
