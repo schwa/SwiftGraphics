@@ -3,6 +3,7 @@
 import simd
 import SIMDSupport
 import SwiftUI
+import SwiftFields
 
 public struct CameraConeController: ViewModifier {
     private var cameraConeConstraint: CameraConeConstraint
@@ -13,7 +14,7 @@ public struct CameraConeController: ViewModifier {
     @State
     private var angle: Angle = .zero
     @State
-    private var height: Double = .zero
+    private var height: Double = 0.5
 
     public init(cameraCone: ConeBounds, transform: Binding<Transform>) {
         self.cameraConeConstraint = .init(cameraCone: cameraCone)
@@ -22,7 +23,7 @@ public struct CameraConeController: ViewModifier {
 
     public func body(content: Content) -> some View {
         content
-            .draggableParameter($height, axis: .vertical, range: 0...1, scale: 0.02, behavior: .clamping)
+            .draggableParameter($height, axis: .vertical, range: 0...1, scale: -0.02, behavior: .clamping)
             #if os(macOS)
             .draggableParameter($angle.degrees, axis: .horizontal, range: 0...360, scale: 0.1, behavior: .wrapping)
             #else
@@ -36,6 +37,26 @@ public struct CameraConeController: ViewModifier {
             }
             .onChange(of: height, initial: true) {
                 transform = .init(cameraConeConstraint.transform(angle: angle, height: height))
+            }
+            .overlay(alignment: .bottom) {
+                Form {
+                    TextField("Angle", value: $angle.degrees, format: .number.precision(.fractionLength(0...0)))
+                    Slider(value: $angle.degrees, in: 0...360)
+                    TextField("Height", value: $height, format: .number.precision(.fractionLength(0...3)))
+                    Slider(value: $height, in: 0...1)
+                    LabeledContent("LookAt", value: cameraConeConstraint.lookAt, format: .vector)
+                    LabeledContent("Bounds.Origin", value: cameraConeConstraint.cameraCone.origin, format: .vector)
+                    LabeledContent("Bounds.bottomHeight", value: cameraConeConstraint.cameraCone.bottomHeight, format: .number)
+                    LabeledContent("Bounds.bottomInnerRadius", value: cameraConeConstraint.cameraCone.bottomInnerRadius, format: .number)
+                    LabeledContent("Bounds.topHeight", value: cameraConeConstraint.cameraCone.topHeight, format: .number)
+                    LabeledContent("Bounds.topInnerRadius", value: cameraConeConstraint.cameraCone.topInnerRadius, format: .number)
+                    LabeledContent("Camera Position", value: cameraConeConstraint.cameraCone.position(h: Float(height), angle: angle), format: .vector)
+                }
+                .controlSize(.mini)
+                .frame(maxWidth: 320)
+                .padding()
+                .background(.thinMaterial)
+                .padding()
             }
     }
 }
@@ -80,17 +101,16 @@ extension ConeBounds: Sendable {
 extension ConeBounds: Equatable {
 }
 
+extension ConeBounds: Hashable {
+}
+
 public extension ConeBounds {
     func position(h: Float, angle: Angle, isVerticalScreen: Bool = true) -> SIMD3<Float> {
-        let heightSplatCS = topHeight - h * (topHeight - bottomHeight)
-        var topInnerRadius = topInnerRadius
         // Since view is scaled based on height of screen we need to zoom out for vertical viewports
-        if isVerticalScreen {
-            topInnerRadius *= 1.5
-        }
-        let radius = topInnerRadius - h * (topInnerRadius - bottomInnerRadius)
+        let topInnerRadius = topInnerRadius * (isVerticalScreen ? 1.5 : 1.0)
+        let radius = bottomInnerRadius + h * (topInnerRadius - bottomInnerRadius)
         let x = radius * Float(sin(angle.radians))
-        let y = heightSplatCS
+        let y = bottomHeight + h * (topHeight - bottomHeight)
         let z = radius * Float(cos(angle.radians))
         return origin + SIMD3<Float>(x, y, z)
     }
