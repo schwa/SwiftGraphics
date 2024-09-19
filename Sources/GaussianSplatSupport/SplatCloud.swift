@@ -1,6 +1,7 @@
 import AsyncAlgorithms
 import BaseSupport
 import GaussianSplatShaders
+import os
 import Metal
 import MetalSupport
 import simd
@@ -8,10 +9,9 @@ import SIMDSupport
 
 // TODO: @unchecked Sendable
 public final class SplatCloud <Splat>: Equatable, @unchecked Sendable where Splat: SplatProtocol {
-    public var splats: TypedMTLBuffer<Splat>
-    public var indexedDistances: TupleBuffered<TypedMTLBuffer<IndexedDistance>>
-    public var temporaryIndexedDistances: [IndexedDistance]
-    //    public var boundingBox: (SIMD3<Float>, SIMD3<Float>)
+    public private(set) var splats: TypedMTLBuffer<Splat>
+    internal var indexedDistances: TupleBuffered<TypedMTLBuffer<IndexedDistance>>
+    internal let temporaryIndexedDistancePool: Pool<[IndexedDistance]> = .init()
 
     public init(device: MTLDevice, capacity: Int) throws {
         self.splats = try device.makeTypedBuffer(capacity: capacity)
@@ -19,7 +19,6 @@ public final class SplatCloud <Splat>: Equatable, @unchecked Sendable where Spla
             try device.makeTypedBuffer(capacity: capacity).labelled("Splats-IndexDistances-1"),
             try device.makeTypedBuffer(capacity: capacity).labelled("Splats-IndexDistances-2"),
         ])
-        self.temporaryIndexedDistances = []
     }
 
     public convenience init(device: MTLDevice) throws {
@@ -34,18 +33,20 @@ public final class SplatCloud <Splat>: Equatable, @unchecked Sendable where Spla
             try device.makeTypedBuffer(data: indexedDistances, options: .storageModeShared).labelled("Splats-IndexDistances-1"),
             try device.makeTypedBuffer(data: indexedDistances, options: .storageModeShared).labelled("Splats-IndexDistances-2"),
         ])
-        temporaryIndexedDistances = Array(repeating: .init(index: 0, distance: 0), count: splats.count)
     }
 
     public static func == (lhs: SplatCloud, rhs: SplatCloud) -> Bool {
-        lhs.splats == rhs.splats
-            && lhs.indexedDistances == rhs.indexedDistances
+        lhs === rhs
     }
 
     public var count: Int {
         assert(splats.count == indexedDistances.onscreen.count)
         assert(splats.count == indexedDistances.offscreen.count)
         return splats.count
+    }
+
+    public var onscreenIndexedDistances: TypedMTLBuffer<IndexedDistance> {
+        return indexedDistances.onscreen
     }
 }
 
@@ -62,7 +63,6 @@ public extension SplatCloud {
         try self.splats.append(contentsOf: splats)
         try self.indexedDistances.onscreen.append(contentsOf: (0 ..< splats.count).map { IndexedDistance(index: UInt32(originalCount + $0), distance: 0.0) })
         try self.indexedDistances.offscreen.append(contentsOf: (0 ..< splats.count).map { IndexedDistance(index: UInt32(originalCount + $0), distance: 0.0) })
-        self.temporaryIndexedDistances += Array(repeating: .init(index: 0, distance: 0), count: splats.count)
     }
 }
 
@@ -114,14 +114,12 @@ public extension SplatCloud where Splat == SplatC {
 }
 
 extension SplatCloud {
-    // TODO: Should add in model transform for splat cloud too.
     func sortIndices(camera: simd_float4x4, model: simd_float4x4) {
         guard indexedDistances.offscreen.count > 1 else {
             return
         }
         indexedDistances.offscreen.withUnsafeMutableBufferPointer { indexedDistances in
             // Compute distances.
-            let cameraPosition = camera.translation
             let modelView = camera.inverse * model
             splats.withUnsafeBufferPointer { splats in
                 for index in 0..<indexedDistances.count {
@@ -131,9 +129,11 @@ extension SplatCloud {
                 }
             }
 
-            // Sort
-            temporaryIndexedDistances.withUnsafeMutableBufferPointer { temporaryIndexedDistances in
-                RadixSortCPU<IndexedDistance>().radixSort(input: indexedDistances, temp: temporaryIndexedDistances)
+            //
+            temporaryIndexedDistancePool.withMutableElement(default: Array(repeating: IndexedDistance(), count: splats.count)) { temporaryIndexedDistances in
+                temporaryIndexedDistances.withUnsafeMutableBufferPointer { temporaryIndexedDistances in
+                    RadixSortCPU<IndexedDistance>().radixSort(input: indexedDistances, temp: temporaryIndexedDistances)
+                }
             }
         }
     }
@@ -148,10 +148,76 @@ extension IndexedDistance: RadixSortable {
     }
 }
 
-struct SortData: Sendable {
+struct SortDataKey: Sendable {
+    var date: Date
     var camera: simd_float4x4
     var model: simd_float4x4
     var count: Int
+    var sorted: Bool
+}
 
-    var buffer: TypedMTLBuffer<IndexedDistance>
+extension SortDataKey: Equatable {
+}
+
+extension SortDataKey: Hashable {
+    func hash(into hasher: inout Hasher) {
+        date.hash(into: &hasher)
+        camera.scalars.hash(into: &hasher)
+        model.scalars.hash(into: &hasher)
+        count.hash(into: &hasher)
+        sorted.hash(into: &hasher)
+    }
+}
+
+final class Pool <T>: Sendable where T: Sendable {
+    let elements: OSAllocatedUnfairLock<[T]> = .init(initialState: [])
+    let highWaterCount: OSAllocatedUnfairLock = .init(initialState: 0)
+    let logger: Logger? = .init()
+
+    init() {
+    }
+
+    private func push(element: T) {
+        elements.withLock { elements in
+            elements.append(element)
+            let count = elements.count
+            let highWaterCount: Int? = self.highWaterCount.withLock { highWaterCount in
+                if count > highWaterCount {
+                    highWaterCount = count
+                    return highWaterCount
+                }
+                return nil
+            }
+            if let highWaterCount {
+                logger?.log("High water mark: \(highWaterCount)")
+            }
+
+        }
+    }
+
+    private func pop(default: @Sendable () -> T) -> T {
+        elements.withLock { elements in
+            elements.popLast() ?? `default`()
+
+        }
+    }
+
+    func withElement <R>(default: @autoclosure @Sendable () -> T, _ closure: (T) throws -> R) rethrows -> R {
+        let element = pop(default: `default`)
+        defer {
+            push(element: element)
+        }
+        return try closure(element)
+    }
+
+    func withMutableElement <R>(default: @autoclosure @Sendable () -> T, _ closure: (inout T) throws -> R) rethrows -> R {
+        var element = pop(default: `default`)
+        defer {
+            push(element: element)
+        }
+        return try closure(&element)
+    }
+}
+
+extension IndexedDistance: @unchecked @retroactive Sendable {
 }
