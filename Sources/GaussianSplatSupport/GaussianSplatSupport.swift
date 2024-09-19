@@ -25,6 +25,8 @@ public extension Collection where Element == PackedFloat3 {
     }
 }
 
+// MARK: -
+
 @dynamicMemberLookup
 public struct TupleBuffered<Element> {
     var keys: [String: Int]
@@ -57,10 +59,4 @@ public struct TupleBuffered<Element> {
 }
 
 extension TupleBuffered: Sendable where Element: Sendable {
-}
-
-extension TupleBuffered: Equatable where Element: Equatable {
-}
-
-extension TupleBuffered: Hashable where Element: Hashable {
 }
