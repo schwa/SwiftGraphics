@@ -1,4 +1,4 @@
-import Charts
+//import Charts
 import RenderKit
 import SwiftUI
 
@@ -39,33 +39,34 @@ public struct PerformanceHUD: View {
 
     @ViewBuilder
     func frameSectorChart() -> some View {
-        if let frameMeasurement = measurements[.frame] {
-            // This is all so terrible, it's awesome.
-            let valueKeyPath = \GPUCounters.Measurement.movingAverage.exponentialMovingAverage
-            let subKinds: [GPUCounters.Measurement.Kind] = [.computeShader, .vertexShader, .fragmentShader]
-            let totalValue = frameMeasurement[keyPath: valueKeyPath]
-            let marks = subKinds.map { kind in
-                guard let measurement = measurements[kind] else {
-                    return (kind: kind, value: 0.0)
-                }
-                return (kind: kind, value: measurement[keyPath: valueKeyPath])
-            }
-            let subtotal = marks.map(\.value).reduce(0, +)
-            let data: [(name: String, color: Color, value: Double)] =
-                marks.map { kind, value in
-                    (kind.name, kind.color, value)
-                }
-                + [("Remaining", Color.white, totalValue - subtotal)]
-            Chart(data, id: \.name) { name, color, value in
-                SectorMark(
-                    angle: .value(name, value),
-                    innerRadius: .ratio(0.9),
-                    angularInset: 1
-                )
-                .foregroundStyle(color)
-                .cornerRadius(4)
-            }
-        }
+        EmptyView()
+//        if let frameMeasurement = measurements[.frame] {
+//            // This is all so terrible, it's awesome.
+//            let valueKeyPath = \GPUCounters.Measurement.movingAverage.exponentialMovingAverage
+//            let subKinds: [GPUCounters.Measurement.Kind] = [.computeShader, .vertexShader, .fragmentShader]
+//            let totalValue = frameMeasurement[keyPath: valueKeyPath]
+//            let marks = subKinds.map { kind in
+//                guard let measurement = measurements[kind] else {
+//                    return (kind: kind, value: 0.0)
+//                }
+//                return (kind: kind, value: measurement[keyPath: valueKeyPath])
+//            }
+//            let subtotal = marks.map(\.value).reduce(0, +)
+//            let data: [(name: String, color: Color, value: Double)] =
+//                marks.map { kind, value in
+//                    (kind.name, kind.color, value)
+//                }
+//                + [("Remaining", Color.white, totalValue - subtotal)]
+//            Chart(data, id: \.name) { name, color, value in
+//                SectorMark(
+//                    angle: .value(name, value),
+//                    innerRadius: .ratio(0.9),
+//                    angularInset: 1
+//                )
+//                .foregroundStyle(color)
+//                .cornerRadius(4)
+//            }
+//        }
     }
 
     struct MeasurementView: View {
