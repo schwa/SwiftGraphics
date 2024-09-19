@@ -16,13 +16,21 @@ public struct PerformanceHUD: View {
                     frameSectorChart()
                     MeasurementView(measurement: frameMeasurement)
                 }
+                #if os(macOS)
                 .frame(width: 128, height: 128)
+                #else
+                .frame(width: 80, height: 80)
+                #endif
             }
             let kinds: [GPUCounters.Measurement.Kind] = [.computeShader, .vertexShader, .fragmentShader]
             ForEach(kinds, id: \.self) { kind in
                 if let measurement = measurements[kind] {
                     MeasurementView(measurement: measurement)
+                    #if os(macOS)
                         .frame(width: 128, height: 128)
+                    #else
+                    .frame(width: 80, height: 80)
+                    #endif
                 }
             }
         }
@@ -90,14 +98,26 @@ public struct PerformanceHUD: View {
                     Text(measurement.id.name)
                         .textCase(.uppercase)
                         .opacity(0.666)
+                    #if os(macOS)
                         .font(.system(size: 12))
+                    #else
+                    .font(.system(size: 10))
+                    #endif
                     currentMode.text(measurement)
                         .bold()
                         .monospaced()
+                    #if os(macOS)
                         .font(.system(size: 28))
+                    #else
+                    .font(.system(size: 14))
+                    #endif
                     Text(currentMode.id)
                         .opacity(0.666)
+                    #if os(macOS)
                         .font(.system(size: 12))
+                    #else
+                    .font(.system(size: 10))
+                    #endif
                 }
             }
         }
