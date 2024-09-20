@@ -108,7 +108,10 @@ public struct LineShaderRenderPass: RenderPassProtocol {
     var displayScale: Float
 
     public func setup(device: MTLDevice, configuration: some MetalConfigurationProtocol) throws -> State {
-        let library = try device.makeDebugLibrary(bundle: Bundle.main.bundle(forTarget: "SwiftGraphicsDemosShaders")!)
+        guard let bundle = Bundle.main.bundle(forTarget: "SwiftGraphicsDemosShaders") else {
+            throw BaseError.error(.missingResource)
+        }
+        let library = try device.makeDebugLibrary(bundle: bundle)
         let meshPipelineDescriptor = MTLMeshRenderPipelineDescriptor()
         meshPipelineDescriptor.colorAttachments[0].pixelFormat = configuration.colorPixelFormat
         meshPipelineDescriptor.depthAttachmentPixelFormat = configuration.depthStencilPixelFormat
