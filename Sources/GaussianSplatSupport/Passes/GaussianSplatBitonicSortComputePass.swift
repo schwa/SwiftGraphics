@@ -24,7 +24,10 @@ public struct GaussianSplatBitonicSortComputePass <Splat>: ComputePassProtocol w
     }
 
     public func setup(device: MTLDevice) throws -> State {
-        let library = try device.makeDebugLibrary(bundle: Bundle.main.bundle(forTarget: "GaussianSplatShaders")!)
+        guard let bundle = Bundle.main.bundle(forTarget: "GaussianSplatShaders") else {
+            throw BaseError.error(.missingResource)
+        }
+        let library = try device.makeDebugLibrary(bundle: bundle)
         let function = library.makeFunction(name: "GaussianSplatShaders::BitonicSortSplats").forceUnwrap("No function found")
         let (pipelineState, reflection) = try device.makeComputePipelineState(function: function, options: .bindingInfo)
 
@@ -48,7 +51,6 @@ public struct GaussianSplatBitonicSortComputePass <Splat>: ComputePassProtocol w
         commandEncoder.label = "GaussianSplatBitonicSortComputePass"
         commandEncoder.withDebugGroup("GaussianSplatBitonicSortComputePass") {
             commandEncoder.setComputePipelineState(computePipelineState)
-
             commandEncoder.setBuffer(splats.onscreenIndexedDistances, offset: 0, index: state.bindings.indexedDistances)
             let splatCount = splats.splats.count
             let numStages = Int(log2(nextPowerOfTwo(Double(splatCount))))
