@@ -48,7 +48,10 @@ public struct GaussianSplatRenderPass <Splat>: RenderPassProtocol where Splat: S
         let allocator = MTKMeshBufferAllocator(device: device)
         let quadMesh = try MTKMesh(mesh: MDLMesh(planeWithExtent: [2, 2, 0], segments: [1, 1], geometryType: .triangles, allocator: allocator), device: device)
         let constantValues = MTLFunctionConstantValues(dictionary: [0: useVertexCounting])
-        let library = try device.makeDebugLibrary(bundle: Bundle.main.bundle(forTarget: "GaussianSplatShaders")!)
+        guard let bundle = Bundle.main.bundle(forTarget: "GaussianSplatShaders") else {
+            throw BaseError.error(.missingResource)
+        }
+        let library = try device.makeDebugLibrary(bundle: bundle)
         let renderPipelineDescriptor = MTLRenderPipelineDescriptor(configuration)
         renderPipelineDescriptor.label = "\(type(of: self))"
         renderPipelineDescriptor.vertexDescriptor = MTLVertexDescriptor(MDLVertexDescriptor.simpleVertexDescriptor)

@@ -84,8 +84,11 @@ struct PointCloudView: View, DemoView {
         }
         .toolbar {
             Button("Load Splat") {
-                let gaussianSplatsDemoBundle = Bundle.main.bundle(forTarget: "GaussianSplatDemos")!
-                let url = gaussianSplatsDemoBundle.url(forResource: "train", withExtension: "splatc")!
+                guard let bundle = Bundle.main.bundle(forTarget: "GaussianSplatShaders") else {
+                    fatalError("Missing resource")
+                }
+                let library = try device.makeDebugLibrary(bundle: bundle)
+                let url = bundle.url(forResource: "train", withExtension: "splatc")!
                 let data = try! Data(contentsOf: url)
                 let points = data.withUnsafeBytes { buffer in
                     let splats = buffer.bindMemory(to: SplatC.self)
@@ -127,7 +130,10 @@ struct PointCloudRenderPass: RenderPassProtocol {
     var scene: SceneGraph
 
     func setup(device: MTLDevice, configuration: some MetalConfigurationProtocol) throws -> State {
-        let library = try device.makeDebugLibrary(bundle: Bundle.main.bundle(forTarget: "RenderKitShaders")!)
+        guard let bundle = Bundle.main.bundle(forTarget: "RenderKitShaders") else {
+            throw BaseError.error(.missingResource)
+        }
+        let library = try device.makeDebugLibrary(bundle: bundle)
         let renderPipelineDescriptor = MTLRenderPipelineDescriptor(configuration)
         renderPipelineDescriptor.label = "\(type(of: self))"
         renderPipelineDescriptor.vertexDescriptor = MTLVertexDescriptor(MDLVertexDescriptor.simpleVertexDescriptor)

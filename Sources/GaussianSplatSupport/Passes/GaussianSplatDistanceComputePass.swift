@@ -28,7 +28,10 @@ public struct GaussianSplatDistanceComputePass<Splat>: ComputePassProtocol where
     }
 
     public func setup(device: MTLDevice) throws -> State {
-        let library = try device.makeDebugLibrary(bundle: Bundle.main.bundle(forTarget: "GaussianSplatShaders")!)
+        guard let bundle = Bundle.main.bundle(forTarget: "GaussianSplatShaders") else {
+            throw BaseError.error(.missingResource)
+        }
+        let library = try device.makeDebugLibrary(bundle: bundle)
         let function = library.makeFunction(name: "GaussianSplatShaders::DistancePreCalc").forceUnwrap("No function found (found: \(library.functionNames))")
         let (pipelineState, reflection) = try device.makeComputePipelineState(function: function, options: .bindingInfo)
         var bindings = Bindings()
