@@ -91,7 +91,6 @@ public extension Bundle {
         return nil
     }
 
-    @available(*, deprecated, message: "Deprecated")
     func url(forResource resource: String?, withExtension extension: String?) throws -> URL {
         guard let url = url(forResource: resource, withExtension: `extension`) else {
             throw BaseError.error(.resourceCreationFailure)
