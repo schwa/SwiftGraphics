@@ -44,7 +44,7 @@ extension TypedMTLBuffer: Equatable {
 
 extension TypedMTLBuffer: CustomDebugStringConvertible {
     public var debugDescription: String {
-        "TypedMTLBuffer<\(type(of: Element.self))>(count: \(count), capacity: \(capacity), base.label: \(base?.label), base.length: \(base?.length))"
+        "TypedMTLBuffer<\(type(of: Element.self))>(count: \(count), capacity: \(capacity), base.label: \(String(describing: base?.label)), base.length: \(String(describing: base?.length)))"
     }
 }
 
@@ -142,7 +142,10 @@ public extension MTLDevice {
         }
         let count = data.count / MemoryLayout<Element>.stride
         return try data.withUnsafeBytes { buffer in
-            guard let buffer = makeBuffer(bytes: buffer.baseAddress!, length: buffer.count, options: options) else {
+            guard let baseAddress = buffer.baseAddress else {
+                throw BaseError.error(.resourceCreationFailure)
+            }
+            guard let buffer = makeBuffer(bytes: baseAddress, length: buffer.count, options: options) else {
                 throw BaseError.error(.resourceCreationFailure)
             }
             return TypedMTLBuffer(mtlBuffer: buffer, count: count)
@@ -162,7 +165,10 @@ public extension MTLDevice {
         }
         else {
             return try data.withUnsafeBytes { buffer in
-                guard let buffer = makeBuffer(bytes: buffer.baseAddress!, length: buffer.count, options: options) else {
+                guard let baseAddress = buffer.baseAddress else {
+                    throw BaseError.error(.resourceCreationFailure)
+                }
+                guard let buffer = makeBuffer(bytes: baseAddress, length: buffer.count, options: options) else {
                     throw BaseError.error(.resourceCreationFailure)
                 }
                 return TypedMTLBuffer<Element>(mtlBuffer: buffer, count: data.count)
@@ -171,7 +177,6 @@ public extension MTLDevice {
     }
 
     func makeTypedBuffer<Element>(element: Element.Type, capacity: Int, options: MTLResourceOptions = []) throws -> TypedMTLBuffer<Element> {
-        // swiftlint:disable:next empty_count
         if capacity == 0 {
             return TypedMTLBuffer<Element>()
         }
