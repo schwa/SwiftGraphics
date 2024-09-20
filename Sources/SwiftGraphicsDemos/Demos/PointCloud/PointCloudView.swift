@@ -87,7 +87,6 @@ struct PointCloudView: View, DemoView {
                 guard let bundle = Bundle.main.bundle(forTarget: "GaussianSplatShaders") else {
                     fatalError("Missing resource")
                 }
-                let library = try device.makeDebugLibrary(bundle: bundle)
                 let url = bundle.url(forResource: "train", withExtension: "splatc")!
                 let data = try! Data(contentsOf: url)
                 let points = data.withUnsafeBytes { buffer in
