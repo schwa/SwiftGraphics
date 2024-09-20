@@ -59,7 +59,6 @@ internal struct GaussianSplatView: View {
                     }
                 }
             }
-
         }
         .overlay(alignment: .bottom) {
             if !viewModel.loadProgress.isFinished {
