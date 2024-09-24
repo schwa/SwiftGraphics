@@ -140,23 +140,6 @@ public struct GaussianSplatRenderPass <Splat>: RenderPassProtocol where Splat: S
     }
 }
 
-extension Node {
-    func splats <Splat>(_ type: Splat.Type) -> SplatCloud<Splat>? where Splat: SplatProtocol {
-        content as? SplatCloud<Splat>
-    }
-}
-
-extension MTLRenderPassColorAttachmentDescriptor {
-    var size: SIMD2<Float> {
-        get throws {
-            guard let texture else {
-                throw BaseError.error(.invalidParameter)
-            }
-            return SIMD2<Float>(Float(texture.width), Float(texture.height))
-        }
-    }
-}
-
 @MetalBindings(function: .vertex)
 struct GaussianSplatRenderPassVertexBindings {
     var uniforms: Int = -1
