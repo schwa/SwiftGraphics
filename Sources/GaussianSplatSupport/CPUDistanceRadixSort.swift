@@ -29,11 +29,13 @@ internal struct RadixSortCPU <T> where T: RadixSortable {
     }
 
     private func shuffle(_ input: UnsafeMutableBufferPointer<T>, summedHistogram histogram: [UInt32], shift: Int, output: UnsafeMutableBufferPointer<T>) {
+        assert(input.count <= output.count)
         var histogram = histogram
         for i in input.indices {
             let value = input[i]
             let key = value.key(shift: shift)
             let outputIndex = histogram[key]++
+            assert(outputIndex < output.count)
             output[Int(outputIndex)] = input[i]
         }
     }

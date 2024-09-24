@@ -88,6 +88,13 @@ public func getMachTimeInNanoseconds() -> UInt64 {
     return currentTime * UInt64(timebase.numer) / UInt64(timebase.denom)
 }
 
+public func getMachTime() -> TimeInterval {
+    var timebase = mach_timebase_info_data_t()
+    mach_timebase_info(&timebase)
+    let currentTime = mach_absolute_time() * UInt64(timebase.numer) / UInt64(timebase.denom)
+    return TimeInterval(currentTime) / 1_000_000_000
+}
+
 @discardableResult
 public func timeit<R>(_ label: String? = nil, _ block: () throws -> R) rethrows -> R {
     let start = getMachTimeInNanoseconds()
