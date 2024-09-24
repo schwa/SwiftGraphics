@@ -51,37 +51,3 @@ internal func releaseAssert(_ condition: @autoclosure () -> Bool, _ message: @au
         fatalError(message(), file: file, line: line)
     }
 }
-
-@dynamicMemberLookup
-public struct TupleBuffered<Element> {
-    var keys: [String: Int]
-    var elements: [Element]
-
-    public init(keys: [String], elements: [Element]) {
-        self.keys = Dictionary(uniqueKeysWithValues: zip(keys, keys.indices))
-        self.elements = elements
-    }
-
-    public mutating func rotate() {
-        let first = elements.removeFirst()
-        elements.append(first)
-    }
-
-    public subscript(dynamicMember key: String) -> Element {
-        get {
-            guard let index = keys[key] else {
-                fatalError("No index for key \(key)")
-            }
-            return elements[index]
-        }
-        set {
-            guard let index = keys[key] else {
-                fatalError("No index for key \(key)")
-            }
-            elements[index] = newValue
-        }
-    }
-}
-
-extension TupleBuffered: Sendable where Element: Sendable {
-}
