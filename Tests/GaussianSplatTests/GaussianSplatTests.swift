@@ -1,7 +1,7 @@
 import Foundation
 import Metal
 import MetalSupport
-import GaussianSplatSupport
+@testable import GaussianSplatSupport
 import GaussianSplatShaders
 import Testing
 
