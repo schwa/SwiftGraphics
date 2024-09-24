@@ -4,6 +4,7 @@ import BaseSupport
 import MetalFX
 #endif
 import Constraints3D
+import GaussianSplatShaders
 import MetalKit
 import MetalSupport
 import os
@@ -75,7 +76,7 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
     private var logger: Logger?
 
     var cpuSorter: CPUSorter<Splat>?
-    var cpuSorterTask: Task<Void, Never>?
+    var cpuSorterTask: Task<Void, Never>? // TODO: Do we clean this up?
 
     // TODO: bang and try!
     public var splatCloud: SplatCloud<SplatC> {
