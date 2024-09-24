@@ -11,7 +11,11 @@ import BaseSupport
 ///   by this `TypedMTLBuffer` instance to maintain thread safety when sending across concurrency domains.
 /// - Note: The generic type `Element` should be a POD (Plain Old Data) type.
 public struct TypedMTLBuffer<Element>: Sendable {
-    public private(set) var count: Int
+    public var count: Int {
+        willSet {
+            assert(count <= capacity)
+        }
+    }
 
     /// The underlying Metal buffer.
     private var base: MTLBuffer?
@@ -33,6 +37,15 @@ public struct TypedMTLBuffer<Element>: Sendable {
 
     public var capacity: Int {
         (base?.length ?? 0) / MemoryLayout<Element>.stride
+    }
+
+    public var label: String? {
+        get {
+            base?.label
+        }
+        set {
+            base?.label = newValue
+        }
     }
 }
 
@@ -184,6 +197,9 @@ public extension MTLDevice {
             guard let buffer = makeBuffer(length: MemoryLayout<Element>.stride * capacity, options: options) else {
                 throw BaseError.error(.resourceCreationFailure)
             }
+            // TODO: FIXME - remove this
+            memset(buffer.contents(), 0xFF, buffer.length)
+
             return TypedMTLBuffer(mtlBuffer: buffer, count: 0)
         }
     }

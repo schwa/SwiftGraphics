@@ -1,5 +1,5 @@
 import BaseSupport
-import Metal
+@preconcurrency import Metal
 #if !targetEnvironment(simulator)
 import MetalFX
 #endif
@@ -52,7 +52,7 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
     @ObservationIgnored
     public var frame: Int = 0 {
         didSet {
-            try! sceneChanged()
+//            try! sceneChanged()
         }
     }
 
@@ -61,7 +61,7 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
             if oldValue.currentCameraNode?.transform != scene.currentCameraNode?.transform {
                 cameraChanged()
             }
-            try! sceneChanged()
+            try? updatePass()
         }
     }
 
@@ -73,6 +73,9 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
 
     @ObservationIgnored
     private var logger: Logger?
+
+    var cpuSorter: CPUSorter<Splat>?
+    var cpuSorterTask: Task<Void, Never>?
 
     // TODO: bang and try!
     public var splatCloud: SplatCloud<SplatC> {
@@ -86,7 +89,9 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
         }
     }
 
-    public init(device: MTLDevice, splatResource: SplatResource, splatCloud: SplatCloud<SplatC>, configuration: GaussianSplatConfiguration, logger: Logger? = nil) throws {
+    // MARK: -
+
+    public init(device: MTLDevice, splatResource: SplatResource, splatCloud: SplatCloud<SplatC>, configuration: GaussianSplatConfiguration, logger: Logger? = nil) throws where Splat == SplatC {
         self.device = device
         self.splatResource = splatResource
         self.configuration = configuration
@@ -101,18 +106,28 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
             Node(label: "splats", content: splatCloud).transformed(roll: .zero, pitch: .degrees(270), yaw: .zero).transformed(roll: .zero, pitch: .zero, yaw: .degrees(90))
         }
         self.scene = SceneGraph(root: root)
-        try sceneChanged()
         loadProgress.completedUnitCount = Int64(splatCloud.count)
         loadProgress.totalUnitCount = Int64(splatCloud.count)
+
+        let cpuSorter = try CPUSorter<Splat>(device: device, splatCloud: splatCloud, capacity: splatCloud.capacity)
+        let cpuSorterTask = Task {
+            for await splatIndices in await cpuSorter.sortedIndicesChannel() {
+                splatCloud.indexedDistances = splatIndices
+                try? updatePass()
+            }
+        }
+        self.cpuSorter = cpuSorter
+        self.cpuSorterTask = cpuSorterTask
+        try updatePass()
     }
 
-    var isSorting = false
+    // MARK: -
 
     internal func cameraChanged() {
-        sort()
+        requestSort()
     }
 
-    internal func sceneChanged() throws {
+    internal func updatePass() throws {
         guard let resources else {
             logger?.log("Missing resources")
             return
@@ -128,6 +143,14 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
 
         let fullRedraw = true
         let sortEnabled = (frame <= 1 || frame.isMultiple(of: 15))
+
+//        guard let indexBytes = splats.indexedDistances.indices.unsafeBase?.contentsBuffer(of: UInt8.self) else {
+//            return
+//        }
+//        print("XYZZY: ", splats.indexedDistances.indices.count, indexBytes.count)
+//        print("XYZZY: ", indexBytes[0..<splats.indexedDistances.indices.count].allSatisfy({ $0 == 0xFF}) == false)
+//        print("XYZZY: ", indexBytes[splats.indexedDistances.indices.count...].allSatisfy({ $0 == 0xFF}) == true)
+        print("XYZZY: Indices: \(splats.indexedDistances), \(String(describing: splats.indexedDistances.indices.label))")
 
         self.pass = try GroupPass(id: "FullPass") {
             GroupPass(id: "GaussianSplatRenderGroup", enabled: fullRedraw, renderPassDescriptor: offscreenRenderPassDescriptor) {
@@ -207,11 +230,8 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
         return offscreenRenderPassDescriptor
     }
 
-    private func sort() {
-        guard configuration.useGPUSort == false else {
-            return
-        }
-        guard isSorting == false else {
+    public func requestSort() {
+        guard let cpuSorter else {
             return
         }
         guard let splatsNode = scene.firstNode(label: "splats"), let splatCloud = splatsNode.content as? SplatCloud<Splat> else {
@@ -222,16 +242,7 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
             logger?.log("Missing camera")
             return
         }
-        isSorting = true
-        Task.detached {
-            print("SORT STARTED")
-            splatCloud.sortIndices(camera: cameraNode.transform.matrix, model: splatsNode.transform.matrix)
-            await MainActor.run {
-                splatCloud.indexedDistances.rotate()
-                print("SORT ENDED")
-                self.isSorting = false
-            }
-        }
+        cpuSorter.requestSort(camera: cameraNode.transform.matrix, model: splatsNode.transform.matrix, count: splatCloud.splats.count)
     }
 }
 
@@ -252,59 +263,7 @@ extension MTLSize {
 // MARK: -
 
 public extension GaussianSplatViewModel where Splat == SplatC {
-    convenience init(device: MTLDevice, splatResource: SplatResource, splatCount: Int, configuration: GaussianSplatConfiguration, logger: Logger? = nil) throws {
-        try self.init(device: device, splatResource: splatResource, splatCloud: SplatCloud<SplatC>(device: device), configuration: configuration, logger: logger)
-    }
-
-    func streamingLoad(url: URL) async throws {
-        assert(MemoryLayout<SplatB>.stride == MemoryLayout<SplatB>.size)
-
-        let session = URLSession.shared
-
-        // Perform a HEAD request to compute the number of splats.
-        var headRequest = URLRequest(url: url)
-        headRequest.httpMethod = "HEAD"
-        let (_, headResponse) = try await session.data(for: headRequest)
-        guard let headResponse = headResponse as? HTTPURLResponse else {
-            fatalError("Oops")
-        }
-        guard headResponse.statusCode == 200 else {
-            throw BaseError.missingResource
-        }
-        guard let contentLength = try (headResponse.allHeaderFields["Content-Length"] as? String).map(Int.init)?.safelyUnwrap(BaseError.optionalUnwrapFailure) else {
-            fatalError("Oops")
-        }
-        guard contentLength.isMultiple(of: MemoryLayout<SplatB>.stride) else {
-            fatalError("Not an even multiple of \(MemoryLayout<SplatB>.stride)")
-        }
-        let splatCount = contentLength / MemoryLayout<SplatB>.stride
-        print("Content length: \(contentLength), splat count: \(splatCount)")
-
-        loadProgress.totalUnitCount = Int64(splatCount)
-
-        // Start loading splats into a new splat cloud with the right capacity...
-        splatCloud = try SplatCloud<Splat>(device: device, capacity: splatCount)
-        let request = URLRequest(url: url)
-        let (byteStream, bytesResponse) = try await session.bytes(for: request)
-        guard let bytesResponse = bytesResponse as? HTTPURLResponse else {
-            fatalError("Oops")
-        }
-        guard bytesResponse.statusCode == 200 else {
-            throw BaseError.missingResource
-        }
-        let splatStream = byteStream.chunks(ofCount: MemoryLayout<SplatB>.stride).map { bytes in
-            bytes.withUnsafeBytes { buffer in
-                let splatB = buffer.load(as: SplatB.self)
-                return SplatC(splatB)
-            }
-        }
-        .chunks(ofCount: 2048)
-
-        for try await splats in splatStream {
-            try splatCloud.append(splats: splats)
-            self.sort()
-            loadProgress.completedUnitCount = Int64(splatCloud.count)
-        }
-        assert(splatCloud.count == splatCount)
+    convenience init(device: MTLDevice, splatResource: SplatResource, splatCapacity: Int, configuration: GaussianSplatConfiguration, logger: Logger? = nil) throws {
+        try self.init(device: device, splatResource: splatResource, splatCloud: SplatCloud<SplatC>(device: device, capacity: splatCapacity), configuration: configuration, logger: logger)
     }
 }

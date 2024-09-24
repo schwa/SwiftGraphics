@@ -49,7 +49,7 @@ public struct GaussianSplatLoadingView: View {
                 switch (progressiveLoad, url.scheme) {
                 case (true, "http"), (true, "https"):
                     subtitle = "Streaming"
-                    viewModel = try! GaussianSplatViewModel<SplatC>(device: device, splatResource: splatResource, splatCount: 0, configuration: configuration, logger: Logger())
+                    viewModel = try! await GaussianSplatViewModel<SplatC>(device: device, splatResource: splatResource, progressiveURL: url, configuration: configuration, logger: Logger())
                     Task.detached {
                         try await viewModel?.streamingLoad(url: url)
                     }
@@ -81,5 +81,65 @@ public struct GaussianSplatLoadingView: View {
                 fatalError(error)
             }
         }
+    }
+}
+
+extension GaussianSplatViewModel where Splat == SplatC {
+    public convenience init(device: MTLDevice, splatResource: SplatResource, progressiveURL url: URL, configuration: GaussianSplatConfiguration, logger: Logger? = nil) async throws {
+        assert(MemoryLayout<SplatB>.stride == MemoryLayout<SplatB>.size)
+        let session = URLSession.shared
+        // Perform a HEAD request to compute the number of splats.
+        var headRequest = URLRequest(url: url)
+        headRequest.httpMethod = "HEAD"
+        let (_, headResponse) = try await session.data(for: headRequest)
+        guard let headResponse = headResponse as? HTTPURLResponse else {
+            fatalError("Oops")
+        }
+        guard headResponse.statusCode == 200 else {
+            throw BaseError.missingResource
+        }
+        guard let contentLength = try (headResponse.allHeaderFields["Content-Length"] as? String).map(Int.init)?.safelyUnwrap(BaseError.optionalUnwrapFailure) else {
+            fatalError("Oops")
+        }
+        guard contentLength.isMultiple(of: MemoryLayout<SplatB>.stride) else {
+            fatalError("Not an even multiple of \(MemoryLayout<SplatB>.stride)")
+        }
+        let splatCount = contentLength / MemoryLayout<SplatB>.stride
+        print("Content length: \(contentLength), splat count: \(splatCount)")
+
+        try self.init(device: device, splatResource: splatResource, splatCapacity: splatCount, configuration: configuration, logger: logger)
+    }
+
+    func streamingLoad(url: URL) async throws {
+        //        assert(MemoryLayout<SplatB>.stride == MemoryLayout<SplatB>.size)
+        //
+        let session = URLSession.shared
+
+        loadProgress.totalUnitCount = Int64(splatCloud.capacity)
+
+        // Start loading splats into a new splat cloud with the right capacity...
+        //        splatCloud = try SplatCloud<Splat>(device: device, capacity: splatCount)
+        let request = URLRequest(url: url)
+        let (byteStream, bytesResponse) = try await session.bytes(for: request)
+        guard let bytesResponse = bytesResponse as? HTTPURLResponse else {
+            fatalError("Oops")
+        }
+        guard bytesResponse.statusCode == 200 else {
+            throw BaseError.missingResource
+        }
+        let splatStream = byteStream.chunks(ofCount: MemoryLayout<SplatB>.stride).map { bytes in
+            bytes.withUnsafeBytes { buffer in
+                let splatB = buffer.load(as: SplatB.self)
+                return SplatC(splatB)
+            }
+        }
+        .chunks(ofCount: 2048)
+
+        for try await splats in splatStream {
+            try splatCloud.append(splats: splats)
+            self.requestSort()
+            loadProgress.completedUnitCount = Int64(splatCloud.count)
+        }
+        assert(splatCloud.count == splatCloud.capacity)
     }
 }
