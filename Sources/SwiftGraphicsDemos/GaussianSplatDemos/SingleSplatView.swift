@@ -39,18 +39,17 @@ public struct SingleSplatView: View {
     @Environment(\.logger)
     var logger
 
-//    public init() {
-//        let device = MTLCreateSystemDefaultDevice()!
-//        let splat = SplatD(position: [0, 0, 0], scale: [1, 0.5, 0.25], color: [1, 0, 1, 1], rotation: .init(angle: .zero, axis: [0, 0, 0]))
-//        self.device = device
-//        self.splat = splat
-//
-//        let splats = [splat].map(SplatC.init)
-//        let splatCloud = try! SplatCloud(device: device, splats: splats)
-//
-////        self.viewModel = try! GaussianSplatViewModel<SplatC>(device: device, splatResource: .init(name: "x", url: URL("file:///"), bounds: .init(bottomHeight: 0, bottomInnerRadius: 1, topHeight: 1, topInnerRadius: 1)), splatCloud: splat, configuration: .init(bounds: <#ConeBounds#>))
-        fatalError()
-//    }
+    //    public init() {
+    //        let device = MTLCreateSystemDefaultDevice()!
+    //        let splat = SplatD(position: [0, 0, 0], scale: [1, 0.5, 0.25], color: [1, 0, 1, 1], rotation: .init(angle: .zero, axis: [0, 0, 0]))
+    //        self.device = device
+    //        self.splat = splat
+    //
+    //        let splats = [splat].map(SplatC.init)
+    //        let splatCloud = try! SplatCloud(device: device, splats: splats)
+    //
+    ////        self.viewModel = try! GaussianSplatViewModel<SplatC>(device: device, splatResource: .init(name: "x", url: URL("file:///"), bounds: .init(bottomHeight: 0, bottomInnerRadius: 1, topHeight: 1, topInnerRadius: 1)), splatCloud: splat, configuration: .init(bounds: <#ConeBounds#>))
+    //    }
 
     public var body: some View {
         GaussianSplatRenderView<SplatC>()
