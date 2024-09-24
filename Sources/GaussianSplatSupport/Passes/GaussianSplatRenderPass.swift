@@ -31,17 +31,19 @@ public struct GaussianSplatRenderPass <Splat>: RenderPassProtocol where Splat: S
     public var debugMode: Bool
     public var useVertexCounting: Bool
     public var discardRate: Float
+    public var gpuWork: GPUWork<TypedMTLBuffer<IndexedDistance>>?
 
     let vertexShaderName = "GaussianSplatShaders::VertexShader"
     let fragmentShaderName = "GaussianSplatShaders::FragmentShader"
 
-    init(id: PassID, enabled: Bool = true, scene: SceneGraph, debugMode: Bool = false, useVertexCounting: Bool = false, discardRate: Float = 0.0) {
+    init(id: PassID, enabled: Bool = true, scene: SceneGraph, debugMode: Bool = false, useVertexCounting: Bool = false, discardRate: Float = 0.0, gpuWork: GPUWork<TypedMTLBuffer<IndexedDistance>>?) {
         self.id = id
         self.enabled = enabled
         self.scene = scene
         self.debugMode = debugMode
         self.useVertexCounting = useVertexCounting
         self.discardRate = discardRate
+        self.gpuWork = gpuWork
     }
 
     public func setup(device: MTLDevice, configuration: some MetalConfigurationProtocol) throws -> State {
@@ -86,6 +88,10 @@ public struct GaussianSplatRenderPass <Splat>: RenderPassProtocol where Splat: S
     }
 
     public func render(commandBuffer: MTLCommandBuffer, renderPassDescriptor: MTLRenderPassDescriptor, info: PassInfo, state: State) throws {
+        guard let gpuWork else {
+            print("NO GPU WORK")
+            return
+        }
         try commandBuffer.withRenderCommandEncoder(descriptor: renderPassDescriptor, label: "\(type(of: self))", useDebugGroup: true) { commandEncoder in
             if info.configuration.depthStencilPixelFormat != .invalid {
                 commandEncoder.setDepthStencilState(state.depthStencilState)
@@ -125,7 +131,8 @@ public struct GaussianSplatRenderPass <Splat>: RenderPassProtocol where Splat: S
                     commandEncoder.setVertexBuffersFrom(mesh: state.quadMesh)
                     commandEncoder.setVertexBytes(of: uniforms, index: state.vertexBindings.uniforms)
                     commandEncoder.setVertexBuffer(splats.splats, offset: 0, index: state.vertexBindings.splats)
-                    commandEncoder.setVertexBuffer(splats.indexedDistances.indices, offset: 0, index: state.vertexBindings.indexedDistances)
+                    commandEncoder.setVertexBuffer(gpuWork.element, offset: 0, index: state.vertexBindings.indexedDistances)
+
                     // TODO: FIXME
                     //                    if useVertexCounting {
                     //                        commandEncoder.setVertexBuffer(state.vertexCounterBuffer, offset: 0, index: state.bindings.vertexCounterBuffer)
@@ -136,6 +143,9 @@ public struct GaussianSplatRenderPass <Splat>: RenderPassProtocol where Splat: S
                 }
                 commandEncoder.draw(state.quadMesh, instanceCount: splats.splats.count)
             }
+
+
+            gpuWork.encodeSignal(on: commandBuffer)
         }
     }
 }

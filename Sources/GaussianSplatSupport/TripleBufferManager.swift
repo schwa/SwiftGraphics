@@ -32,17 +32,30 @@ class TripleBufferManager <T> where T: Sendable {
         }
     }
 
-    func cpuWork<R>(_ work: (inout T) throws -> R) rethrows -> R {
+    func requestCPUElement() -> T {
         guard var element = freeElements.popLast() else {
             fatalError("No free elements.")
         }
-        defer {
-            freeElements.append(contentsOf: cpuProcessedElements)
-            cpuProcessedElements.removeAll()
-            cpuProcessedElements.append(element)
-        }
-        return try work(&element)
+        return element
     }
+
+    func finishedWithCPUElement(_ element: T) {
+        freeElements.append(contentsOf: cpuProcessedElements)
+        cpuProcessedElements.removeAll()
+        cpuProcessedElements.append(element)
+    }
+
+//    func cpuWork<R>(_ work: @Sendable (inout T) throws -> R) rethrows -> R {
+//        guard var element = freeElements.popLast() else {
+//            fatalError("No free elements.")
+//        }
+//        defer {
+//            freeElements.append(contentsOf: cpuProcessedElements)
+//            cpuProcessedElements.removeAll()
+//            cpuProcessedElements.append(element)
+//        }
+//        return try work(&element)
+//    }
 
     func gpuWork() -> GPUWork<T> {
         guard let element = cpuProcessedElements.popLast() else {
@@ -53,12 +66,17 @@ class TripleBufferManager <T> where T: Sendable {
     }
 }
 
-struct GPUWork<T>: Sendable where T: Sendable {
-    var element: T
-    var sharedEvent: MTLSharedEvent
+public struct GPUWork<T>: Sendable, Equatable where T: Sendable {
+    public var id = UUID()
+    public var element: T
+    public var sharedEvent: MTLSharedEvent
 
-    func encodeSignal(on commandBuffer: MTLCommandBuffer) {
+    public func encodeSignal(on commandBuffer: MTLCommandBuffer) {
         commandBuffer.encodeSignalEvent(sharedEvent, value: sharedEvent.signaledValue + 1)
+    }
+
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+        return lhs.id == rhs.id
     }
 }
 

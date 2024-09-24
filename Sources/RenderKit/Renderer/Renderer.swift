@@ -173,26 +173,32 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
     mutating func draw(commandQueue: MTLCommandQueue, currentRenderPassDescriptor: MTLRenderPassDescriptor, currentDrawable: MTLDrawable, drawableSize: SIMD2<Float>) throws {
         let descriptor = MTLCommandBufferDescriptor()
         descriptor.logState = logState
-        try commandQueue.withCommandBuffer(descriptor: descriptor, drawable: currentDrawable) { commandBuffer in
-            if let scheduledHandler = callbacks.renderScheduled {
-                commandBuffer.addScheduledHandler(scheduledHandler)
-            }
 
-            let completedHandler = callbacks.renderCompleted
-            let gpuCounters = gpuCounters
-            if completedHandler != nil || gpuCounters != nil {
-                commandBuffer.addCompletedHandler { [logger] commandBuffer in
-                    do {
-                        try gpuCounters?.gatherData()
-                    } catch {
-                        logger?.error("Failed to gather GPU counters: \(error.localizedDescription)")
-                    }
-                    completedHandler?(commandBuffer)
-                }
-            }
-
-            try render(commandBuffer: commandBuffer, currentRenderPassDescriptor: currentRenderPassDescriptor, drawableSize: drawableSize)
+        guard let commandBuffer = commandQueue.makeCommandBuffer(descriptor: descriptor) else {
+            throw BaseError.error(.resourceCreationFailure)
         }
+
+        if let scheduledHandler = callbacks.renderScheduled {
+            commandBuffer.addScheduledHandler(scheduledHandler)
+        }
+
+        let completedHandler = callbacks.renderCompleted
+        let gpuCounters = gpuCounters
+        if completedHandler != nil || gpuCounters != nil {
+            commandBuffer.addCompletedHandler { [logger] commandBuffer in
+                do {
+                    try gpuCounters?.gatherData()
+                } catch {
+                    logger?.error("Failed to gather GPU counters: \(error.localizedDescription)")
+                }
+                completedHandler?(commandBuffer)
+            }
+        }
+
+        try render(commandBuffer: commandBuffer, currentRenderPassDescriptor: currentRenderPassDescriptor, drawableSize: drawableSize)
+
+        commandBuffer.present(currentDrawable)
+        commandBuffer.commit()
     }
 
     func expand(passes: [any PassProtocol]) throws -> [any PassProtocol] {

@@ -77,6 +77,7 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
 
     var cpuSorter: CPUSorter<Splat>?
     var cpuSorterTask: Task<Void, Never>? // TODO: Do we clean this up?
+    var gpuWork: GPUWork<TypedMTLBuffer<IndexedDistance>>?
 
     // TODO: bang and try!
     public var splatCloud: SplatCloud<SplatC> {
@@ -112,8 +113,9 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
 
         let cpuSorter = try CPUSorter<Splat>(device: device, splatCloud: splatCloud, capacity: splatCloud.capacity)
         let cpuSorterTask = Task {
-            for await splatIndices in await cpuSorter.sortedIndicesChannel() {
-                splatCloud.indexedDistances = splatIndices
+            for await gpuWork in await cpuSorter.gpuWorkChannel() {
+                self.gpuWork = gpuWork
+//                splatCloud.indexedDistances = splatIndices
                 try? updatePass()
             }
         }
@@ -174,7 +176,8 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
                     id: "SplatRender",
                     enabled: true,
                     scene: scene,
-                    discardRate: configuration.discardRate
+                    discardRate: configuration.discardRate,
+                    gpuWork: gpuWork
                 )
             }
             #if !targetEnvironment(simulator)
