@@ -1,4 +1,4 @@
-import Metal
+@preconcurrency import Metal
 
 class TripleBufferManager <T> where T: Sendable {
     var sharedEvent: MTLSharedEvent
@@ -44,15 +44,21 @@ class TripleBufferManager <T> where T: Sendable {
         return try work(&element)
     }
 
-    /// Returns a tuple of an element that has been processed by CPU and a signal closure that should be called with a MTLCommandBuffer when GPU is done with element.
-    func gpuWork() -> (element: T, signal: (MTLCommandBuffer) -> Void) {
+    func gpuWork() -> GPUWork<T> {
         guard let element = cpuProcessedElements.popLast() else {
             fatalError("No elements ready for GPU")
         }
         gpuInFlightElements.append(element)
-        return (element, { commandBuffer in
-            commandBuffer.encodeSignalEvent(self.sharedEvent, value: self.sharedEvent.signaledValue + 1)
-        })
+        return .init(element: element, sharedEvent: sharedEvent)
+    }
+}
+
+struct GPUWork<T>: Sendable where T: Sendable {
+    var element: T
+    var sharedEvent: MTLSharedEvent
+
+    func encodeSignal(on commandBuffer: MTLCommandBuffer) {
+        commandBuffer.encodeSignalEvent(sharedEvent, value: sharedEvent.signaledValue + 1)
     }
 }
 
