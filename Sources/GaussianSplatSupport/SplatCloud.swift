@@ -1,9 +1,9 @@
 import AsyncAlgorithms
 import BaseSupport
 import GaussianSplatShaders
-import os
 import Metal
 import MetalSupport
+import os
 import simd
 import SIMDSupport
 
@@ -46,7 +46,7 @@ public final class SplatCloud <Splat>: Equatable, @unchecked Sendable where Spla
     }
 
     public var onscreenIndexedDistances: TypedMTLBuffer<IndexedDistance> {
-        return indexedDistances.onscreen
+        indexedDistances.onscreen
     }
 }
 
@@ -191,14 +191,12 @@ final class Pool <T>: Sendable where T: Sendable {
             if let highWaterCount {
                 logger?.log("High water mark: \(highWaterCount)")
             }
-
         }
     }
 
     private func pop(default: @Sendable () -> T) -> T {
         elements.withLock { elements in
             elements.popLast() ?? `default`()
-
         }
     }
 
