@@ -36,7 +36,9 @@ let package = Package(
         .library(name: "SIMDUnsafeConformances", targets: ["SIMDUnsafeConformances"]),
         .library(name: "SwiftGraphicsDemos", targets: ["SwiftGraphicsDemos"]),
         .library(name: "SwiftUISupport", targets: ["SwiftUISupport"]),
+        .library(name: "Traces", targets: ["Traces"]),
         .library(name: "Widgets3D", targets: ["Widgets3D"]),
+
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-algorithms", from: "1.1.0"),
@@ -325,7 +327,8 @@ let package = Package(
                 "RenderKitUISupport",
                 "SwiftUISupport",
                 "RenderKitSceneGraph",
-                "GaussianSplatSupport"
+                "GaussianSplatSupport",
+                "Traces"
             ],
             exclude: [
                 "Demos/VolumetricRendererDemoView/README.md",
@@ -377,7 +380,8 @@ let package = Package(
                 "GaussianSplatShaders",
                 "RenderKit",
                 "Shapes3D",
-                "RenderKitSceneGraph"
+                "RenderKitSceneGraph",
+                "Traces",
             ],
             resources: [
                 .copy("Bundle.txt"),
@@ -484,7 +488,13 @@ let package = Package(
             ]
         ),
 
-
+        .target(
+            name: "Traces",
+            dependencies: [
+                "BaseSupport",
+                .product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
+            ]
+        ),
     ],
     // TODO: Switch here when github supports it.
     //swiftLanguageModes: [.v6]

@@ -15,6 +15,7 @@ import SIMDSupport
 import SwiftFormats
 import SwiftUI
 import SwiftUISupport
+import Traces
 import UniformTypeIdentifiers
 
 // swiftlint:disable force_unwrapping
@@ -70,6 +71,14 @@ internal struct GaussianSplatView: View {
                     .cornerRadius(8)
                     .padding()
             }
+        }
+        .overlay {
+            TracesView(traces: .shared)
+            .frame(maxWidth: 320, maxHeight: 320)
+            .allowsHitTesting(false)
+            .padding()
+            .background(.thinMaterial)
+            .padding()
         }
     }
 }

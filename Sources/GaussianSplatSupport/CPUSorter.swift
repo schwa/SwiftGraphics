@@ -69,7 +69,7 @@ internal actor CPUSorter <Splat> where Splat: SplatProtocol {
             catch is CancellationError {
             }
             catch {
-                //logger?.log("Failed to sort splats: \(error)")
+                await logger?.log("Failed to sort splats: \(error)")
             }
         }
     }

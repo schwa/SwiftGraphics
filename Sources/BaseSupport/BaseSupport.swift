@@ -88,6 +88,21 @@ public func getMachTimeInNanoseconds() -> UInt64 {
     return currentTime * UInt64(timebase.numer) / UInt64(timebase.denom)
 }
 
+public func machTimeInNanosecondsToDate(machTime: UInt64) -> Date {
+    var timebase = mach_timebase_info_data_t()
+    mach_timebase_info(&timebase)
+
+    let nanoSeconds = machTime * UInt64(timebase.numer) / UInt64(timebase.denom)
+    let timeInterval = TimeInterval(nanoSeconds) / TimeInterval(NSEC_PER_SEC)
+
+    // Use a reference date, typically the system boot time
+    let bootTime = ProcessInfo.processInfo.systemUptime
+    let currentTime = Date()
+    let referenceDate = currentTime.addingTimeInterval(-bootTime)
+
+    return referenceDate.addingTimeInterval(timeInterval)
+}
+
 public func getMachTime() -> TimeInterval {
     var timebase = mach_timebase_info_data_t()
     mach_timebase_info(&timebase)

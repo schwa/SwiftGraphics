@@ -9,7 +9,7 @@ public struct PerspectiveProjection: ProjectionProtocol {
     public var verticalAngleOfView: Angle
     public var zClip: ClosedRange<Float>
 
-    public init(verticalAngleOfView: Angle = .degrees(90), zClip: ClosedRange<Float> = 0.1 ... 1_000) {
+    public init(verticalAngleOfView: Angle = .degrees(90), zClip: ClosedRange<Float> = 0.01 ... 1_000) {
         self.verticalAngleOfView = verticalAngleOfView
         self.zClip = zClip
     }
