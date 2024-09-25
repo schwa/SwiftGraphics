@@ -14,6 +14,7 @@ import simd
 import SIMDSupport
 import SwiftUI
 import SwiftUISupport
+import Traces
 
 public struct GaussianSplatConfiguration {
     public var bounds: ConeBounds
@@ -97,11 +98,11 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
         self.configuration = configuration
         self.logger = logger
 
-        let panoramaMesh = try Box3D(min: [-400, -400, -400], max: [400, 400, 400]).toMTKMesh(device: device, inwardNormals: true)
+        let panoramaMesh = try Box3D(min: [-100, -100, -100], max: [100, 100, 100]).toMTKMesh(device: device, inwardNormals: true)
         let loader = MTKTextureLoader(device: device)
         let panoramaTexture = try loader.newTexture(name: "Grid", scaleFactor: 2, bundle: Bundle.module)
         let root = Node(label: "root") {
-            Node(label: "camera", content: Camera(projection: .perspective(.init(verticalAngleOfView: configuration.verticalAngleOfView))))
+            Node(label: "camera", content: Camera(projection: .perspective(.init(verticalAngleOfView: configuration.verticalAngleOfView, zClip: 0.001...200))))
             Node(label: "pano", content: Geometry(mesh: panoramaMesh, materials: [PanoramaMaterial(baseColorTexture: panoramaTexture)]))
             Node(label: "splats", content: splatCloud).transformed(roll: .zero, pitch: .degrees(270), yaw: .zero).transformed(roll: .zero, pitch: .zero, yaw: .degrees(90))
         }
@@ -111,7 +112,8 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
 
         let cpuSorter = try CPUSorter<Splat>(device: device, splatCloud: splatCloud, capacity: splatCloud.capacity)
         let cpuSorterTask = Task {
-            for await splatIndices in await cpuSorter.sortedIndicesChannel() {
+            for await splatIndices in await cpuSorter.sortedIndicesChannel().buffer(policy: .bufferingLatest(1)) {
+                Traces.shared.trace(name: "Sorted Splats")
                 splatCloud.indexedDistances = splatIndices
                 try? updatePass()
             }
@@ -124,6 +126,7 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
     // MARK: -
 
     internal func cameraChanged() {
+        Traces.shared.trace(name: "Camera Changed")
         requestSort()
     }
 
@@ -234,6 +237,7 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
             return
         }
         cpuSorter.requestSort(camera: cameraNode.transform.matrix, model: splatsNode.transform.matrix, count: splatCloud.splats.count)
+        Traces.shared.trace(name: "Sort Requested")
     }
 }
 
