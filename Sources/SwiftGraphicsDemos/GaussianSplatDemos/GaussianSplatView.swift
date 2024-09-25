@@ -47,6 +47,7 @@ internal struct GaussianSplatView: View {
                 VStack {
                     Text(viewModel.splatResource.name).font(.title)
                     Link(viewModel.splatResource.url.absoluteString, destination: viewModel.splatResource.url)
+                    Text(viewModel.splatCloud.capacity, format: .number)
                 }
                 .padding()
                 .background(.thinMaterial)
