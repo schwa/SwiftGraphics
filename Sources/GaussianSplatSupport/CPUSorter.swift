@@ -1,7 +1,7 @@
 import AsyncAlgorithms
 import BaseSupport
 import GaussianSplatShaders
-import Metal
+@preconcurrency import Metal
 import MetalSupport
 import os
 import simd
@@ -17,7 +17,6 @@ internal actor CPUSorter <Splat> where Splat: SplatProtocol {
 
     private static func sort(splats: TypedMTLBuffer<Splat>, indexedDistances: inout TypedMTLBuffer<IndexedDistance>, temporaryIndexedDistances: inout [IndexedDistance], camera: simd_float4x4, model: simd_float4x4) {
         guard splats.count > 1 else {
-            print("XYZZY: Not enough splats skipping")
             return
         }
         let start = getMachTime()
@@ -45,25 +44,33 @@ internal actor CPUSorter <Splat> where Splat: SplatProtocol {
         }
         indexedDistances.count = splats.count
         let end = getMachTime()
-        print("XYZZY: \(Measurement(value: end - start, unit: UnitDuration.seconds).converted(to: UnitDuration.milliseconds))")
+//        print("XYZZY: \(Measurement(value: end - start, unit: UnitDuration.seconds).converted(to: UnitDuration.milliseconds))")
     }
 
+    private var device: MTLDevice
     private var splatCloud: SplatCloud<Splat>
     private var temporaryIndexedDistances: [IndexedDistance]
-    private var indexedDistances: [TypedMTLBuffer<IndexedDistance>]
     private var _sortRequestChannel: AsyncChannel<SortState> = .init()
     private var _sortedIndicesChannel: AsyncChannel<SplatIndices> = .init()
+    private var capacity: Int
+    private var logger: Logger? = Logger()
 
     internal init(device: MTLDevice, splatCloud: SplatCloud<Splat>, capacity: Int) throws {
+        self.device = device
+        self.capacity = capacity
+        print("\(splatCloud.capacity) / \(capacity)")
         releaseAssert(capacity > 0, "You shouldn't be creating a CPUSorter with a capacity of zero.")
         self.splatCloud = splatCloud
         temporaryIndexedDistances = .init(repeating: .init(), count: capacity)
-        indexedDistances = [
-            try device.makeTypedBuffer(capacity: capacity).labelled("Splats-IndexDistances-1"),
-            try device.makeTypedBuffer(capacity: capacity).labelled("Splats-IndexDistances-2"),
-        ]
         Task(priority: .high) {
-            await sort()
+            do {
+                try await self.sort()
+            }
+            catch is CancellationError {
+            }
+            catch {
+                //logger?.log("Failed to sort splats: \(error)")
+            }
         }
     }
 
@@ -78,14 +85,27 @@ internal actor CPUSorter <Splat> where Splat: SplatProtocol {
         }
     }
 
-    private func sort() async {
+    private func sort() async throws {
+        let device = device
+        let capacity = capacity
+        let counter = OSAllocatedUnfairLock(initialState: 0)
         // swiftlint:disable:next empty_count
         for await state in _sortRequestChannel.removeDuplicates() where state.count > 0 {
             var temporaryIndexedDistances = temporaryIndexedDistances
-            var currentIndexedDistances = indexedDistances[0]
+            var currentIndexedDistances = try device.makeTypedBuffer(element: IndexedDistance.self, capacity: capacity).labelled("Splats-IndexDistances-\(counter.postIncrement())")
             Self.sort(splats: splatCloud.splats, indexedDistances: &currentIndexedDistances, temporaryIndexedDistances: &temporaryIndexedDistances, camera: state.camera, model: state.model)
-            indexedDistances.swapAt(0, 1)
             await self._sortedIndicesChannel.send(.init(state: state, indices: currentIndexedDistances))
+        }
+    }
+}
+
+extension OSAllocatedUnfairLock where State == Int {
+    func postIncrement() -> State {
+        withLock { state in
+            defer {
+                state += 1
+            }
+            return state
         }
     }
 }

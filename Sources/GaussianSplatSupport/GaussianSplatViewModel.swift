@@ -143,15 +143,6 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
 
         let fullRedraw = true
         let sortEnabled = (frame <= 1 || frame.isMultiple(of: 15))
-
-//        guard let indexBytes = splats.indexedDistances.indices.unsafeBase?.contentsBuffer(of: UInt8.self) else {
-//            return
-//        }
-//        print("XYZZY: ", splats.indexedDistances.indices.count, indexBytes.count)
-//        print("XYZZY: ", indexBytes[0..<splats.indexedDistances.indices.count].allSatisfy({ $0 == 0xFF}) == false)
-//        print("XYZZY: ", indexBytes[splats.indexedDistances.indices.count...].allSatisfy({ $0 == 0xFF}) == true)
-        print("XYZZY: Indices: \(splats.indexedDistances), \(String(describing: splats.indexedDistances.indices.label))")
-
         self.pass = try GroupPass(id: "FullPass") {
             GroupPass(id: "GaussianSplatRenderGroup", enabled: fullRedraw, renderPassDescriptor: offscreenRenderPassDescriptor) {
                 if configuration.useGPUSort {
