@@ -17,7 +17,7 @@ public struct GaussianSplatLobbyView: View {
     private var useGPUCounters = false
 
     @State
-    private var progressiveLoad = false
+    private var progressiveLoad = true
 
     @State
     private var backgroundColor = Color.black
