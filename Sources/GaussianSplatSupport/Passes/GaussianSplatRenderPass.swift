@@ -145,8 +145,8 @@ public struct GaussianSplatRenderPass <Splat>: RenderPassProtocol where Splat: S
             }
 
 
-            gpuWork.encodeSignal(on: commandBuffer)
         }
+        gpuWork.encodeSignal(on: commandBuffer)
     }
 }
 

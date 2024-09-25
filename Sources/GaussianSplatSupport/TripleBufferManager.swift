@@ -1,68 +1,65 @@
 @preconcurrency import Metal
+import os
 
-class TripleBufferManager <T> where T: Sendable {
+class TripleBufferManager <T>: @unchecked Sendable where T: Sendable {
     var sharedEvent: MTLSharedEvent
     var sharedEventListener: MTLSharedEventListener
 
-    var freeElements: [T] {
-        didSet {
-            releaseAssert(freeElements.count <= 3)
-        }
+    enum State {
+        case free
+        case inUseByCPU
+        case ready
+        case inUseByGPU
     }
-    var cpuProcessedElements: [T] = [] {
-        didSet {
-            releaseAssert(cpuProcessedElements.count <= 1)
-        }
+
+    struct ManagedValue: Identifiable {
+        var id: Int
+        var state: State
+        var value: T
     }
-    var gpuInFlightElements: [T] = [] {
-        didSet {
-            releaseAssert(gpuInFlightElements.count <= 1)
+
+    var managedValues: OSAllocatedUnfairLock<[ManagedValue]>
+
+    var count: Int {
+        managedValues.withLock { managedValues in
+            managedValues.count
         }
     }
 
-    init(device: MTLDevice, initialValue: T) {
+    init(device: MTLDevice, values: [T]) {
+        self.managedValues = .init(initialState: values.enumerated().map { .init(id: $0.0, state: .free, value: $0.1) })
         let myQueue = DispatchQueue(label: "com.example.apple-samplecode.MyQueue")
         sharedEventListener = MTLSharedEventListener(dispatchQueue: myQueue)
-        freeElements = Array(repeating: initialValue, count: 3)
         sharedEvent = device.makeSharedEvent()!
+    }
 
-        sharedEvent.notify(sharedEventListener, atValue: 0) { _, _ in
-            self.freeElements.append(contentsOf: self.gpuInFlightElements)
-            self.gpuInFlightElements.removeAll()
+    func requestCPUValue() -> ManagedValue {
+        let value = managedValues.withLock { managedValues -> ManagedValue? in
+            guard let index = managedValues.lastIndex(where: { $0.state == .free }) ?? managedValues.lastIndex(where: {
+                $0.state == .ready }) else {
+                return nil
+            }
+            managedValues[index].state = .inUseByCPU
+            return managedValues[index]
         }
-    }
-
-    func requestCPUElement() -> T {
-        guard var element = freeElements.popLast() else {
-            fatalError("No free elements.")
+        guard let value else {
+            fatalError()
         }
-        return element
+        return value
     }
 
-    func finishedWithCPUElement(_ element: T) {
-        freeElements.append(contentsOf: cpuProcessedElements)
-        cpuProcessedElements.removeAll()
-        cpuProcessedElements.append(element)
+    func finishedWithCPUValue(_ value: ManagedValue) {
+        fatalError()
     }
-
-//    func cpuWork<R>(_ work: @Sendable (inout T) throws -> R) rethrows -> R {
-//        guard var element = freeElements.popLast() else {
-//            fatalError("No free elements.")
-//        }
-//        defer {
-//            freeElements.append(contentsOf: cpuProcessedElements)
-//            cpuProcessedElements.removeAll()
-//            cpuProcessedElements.append(element)
-//        }
-//        return try work(&element)
-//    }
 
     func gpuWork() -> GPUWork<T> {
-        guard let element = cpuProcessedElements.popLast() else {
-            fatalError("No elements ready for GPU")
-        }
-        gpuInFlightElements.append(element)
-        return .init(element: element, sharedEvent: sharedEvent)
+        fatalError()
+    }
+}
+
+extension TripleBufferManager: CustomDebugStringConvertible {
+    var debugDescription: String {
+        "TripleBufferManager()"
     }
 }
 
@@ -70,30 +67,15 @@ public struct GPUWork<T>: Sendable, Equatable where T: Sendable {
     public var id = UUID()
     public var element: T
     public var sharedEvent: MTLSharedEvent
+    public var encode: @Sendable () -> Void
 
     public func encodeSignal(on commandBuffer: MTLCommandBuffer) {
+//        print("XYZZY: Encoding signal \(sharedEvent.signaledValue + 1).")
+        encode()
         commandBuffer.encodeSignalEvent(sharedEvent, value: sharedEvent.signaledValue + 1)
     }
 
     public static func == (lhs: Self, rhs: Self) -> Bool {
-        return lhs.id == rhs.id
-    }
-}
-
-/// Treat an Optional as a single element queue…
-extension Optional {
-    mutating func append(_ wrapped: Wrapped) {
-        self = .init(wrapped)
-    }
-
-    mutating func popLast() -> Wrapped? {
-        // swiftlint:disable:next self_binding
-        if let wrapped = self {
-            self = nil
-            return wrapped
-        }
-        else {
-            return nil
-        }
+        lhs.id == rhs.id
     }
 }

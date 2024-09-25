@@ -17,7 +17,6 @@ internal actor CPUSorter <Splat> where Splat: SplatProtocol {
 
     private static func sort(splats: TypedMTLBuffer<Splat>, indexedDistances: inout TypedMTLBuffer<IndexedDistance>, temporaryIndexedDistances: inout [IndexedDistance], camera: simd_float4x4, model: simd_float4x4) {
         guard splats.count > 1 else {
-            print("XYZZY: Not enough splats skipping")
             return
         }
         let start = getMachTime()
@@ -45,7 +44,6 @@ internal actor CPUSorter <Splat> where Splat: SplatProtocol {
         }
         indexedDistances.count = splats.count
         let end = getMachTime()
-        print("XYZZY: \(Measurement(value: end - start, unit: UnitDuration.seconds).converted(to: UnitDuration.milliseconds))")
     }
 
     private var splatCloud: SplatCloud<Splat>
@@ -58,7 +56,11 @@ internal actor CPUSorter <Splat> where Splat: SplatProtocol {
         releaseAssert(capacity > 0, "You shouldn't be creating a CPUSorter with a capacity of zero.")
         self.splatCloud = splatCloud
         temporaryIndexedDistances = .init(repeating: .init(), count: capacity)
-        tripleBufferManager = .init(device: device, initialValue: try device.makeTypedBuffer(capacity: capacity))
+        tripleBufferManager = .init(device: device, freeElements: [
+            try device.makeTypedBuffer(capacity: capacity).labelled("indexedDistances-1"),
+            try device.makeTypedBuffer(capacity: capacity).labelled("indexedDistances-2"),
+            try device.makeTypedBuffer(capacity: capacity).labelled("indexedDistances-3"),
+        ])
         Task(priority: .high) {
             await sort()
         }
@@ -79,9 +81,9 @@ internal actor CPUSorter <Splat> where Splat: SplatProtocol {
         // swiftlint:disable:next empty_count
         for await state in _sortRequestChannel.removeDuplicates() where state.count > 0 {
             var temporaryIndexedDistances = temporaryIndexedDistances
-            var currentIndexedDistances = tripleBufferManager.requestCPUElement()
+            var (index, currentIndexedDistances) = tripleBufferManager.requestCPUElement()
             Self.sort(splats: splatCloud.splats, indexedDistances: &currentIndexedDistances, temporaryIndexedDistances: &temporaryIndexedDistances, camera: state.camera, model: state.model)
-            tripleBufferManager.finishedWithCPUElement(currentIndexedDistances)
+            tripleBufferManager.finishedWithCPUElement((index, currentIndexedDistances))
             let gpuWork = tripleBufferManager.gpuWork()
             await self._gpuWorkChannel.send(gpuWork)
 

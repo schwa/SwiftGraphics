@@ -153,7 +153,7 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
 //        print("XYZZY: ", splats.indexedDistances.indices.count, indexBytes.count)
 //        print("XYZZY: ", indexBytes[0..<splats.indexedDistances.indices.count].allSatisfy({ $0 == 0xFF}) == false)
 //        print("XYZZY: ", indexBytes[splats.indexedDistances.indices.count...].allSatisfy({ $0 == 0xFF}) == true)
-        print("XYZZY: Indices: \(splats.indexedDistances), \(String(describing: splats.indexedDistances.indices.label))")
+//        print("XYZZY: Indices: \(splats.indexedDistances), \(String(describing: splats.indexedDistances.indices.label))")
 
         self.pass = try GroupPass(id: "FullPass") {
             GroupPass(id: "GaussianSplatRenderGroup", enabled: fullRedraw, renderPassDescriptor: offscreenRenderPassDescriptor) {
