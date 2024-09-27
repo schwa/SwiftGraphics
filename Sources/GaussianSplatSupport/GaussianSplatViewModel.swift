@@ -13,6 +13,8 @@ import Shapes3D
 import simd
 import SIMDSupport
 import SwiftUI
+import SwiftUISupport
+import Traces
 
 public struct GaussianSplatConfiguration {
     public var bounds: ConeBounds
@@ -106,6 +108,7 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
                 let allocator = MTKMeshBufferAllocator(device: device)
                 let panoramaMDLMesh = MDLMesh(sphereWithExtent: [200, 200, 200], segments: [36, 36], inwardNormals: true, geometryType: .triangles, allocator: allocator)
         //        let panoramaMDLMesh = MDLMesh(boxWithExtent: [400, 400, 400], segments: [8, 8, 8], inwardNormals: true, geometryType: .triangles, allocator: allocator)
+            Node(label: "camera", content: Camera(projection: .perspective(.init(verticalAngleOfView: configuration.verticalAngleOfView, zClip: 0.001...200))))
                 let panoramaMTKMesh = try! MTKMesh(mesh: panoramaMDLMesh, device: device)
                 Node(label: "skyBox", content: Geometry(mesh: panoramaMTKMesh, materials: [PanoramaMaterial(baseColorTexture: skyboxTexture)]))
             }
@@ -117,7 +120,8 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
 
         let cpuSorter = try CPUSorter<Splat>(device: device, splatCloud: splatCloud, capacity: splatCloud.capacity)
         let cpuSorterTask = Task {
-            for await splatIndices in await cpuSorter.sortedIndicesChannel() {
+            for await splatIndices in await cpuSorter.sortedIndicesChannel().buffer(policy: .bufferingLatest(1)) {
+                Traces.shared.trace(name: "Sorted Splats")
                 splatCloud.indexedDistances = splatIndices
                 try? updatePass()
             }
@@ -130,6 +134,7 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
     // MARK: -
 
     internal func cameraChanged() {
+        Traces.shared.trace(name: "Camera Changed")
         requestSort()
     }
 
@@ -267,6 +272,7 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
             return
         }
         cpuSorter.requestSort(camera: cameraNode.transform.matrix, model: splatsNode.transform.matrix, count: splatCloud.splats.count)
+        Traces.shared.trace(name: "Sort Requested")
     }
 }
 
