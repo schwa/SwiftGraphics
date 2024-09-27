@@ -45,7 +45,7 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-argument-parser", from: "1.3.0"),
         .package(url: "https://github.com/apple/swift-async-algorithms", from: "0.1.0"),
         .package(url: "https://github.com/ksemianov/WrappingHStack", from: "0.2.0"),
-        .package(url: "https://github.com/schwa/Everything", branch: "jwight/swift-6"),
+        .package(url: "https://github.com/schwa/Everything", from: "1.2.0"),
         .package(url: "https://github.com/schwa/MetalCompilerPlugin", branch: "jwight/develop"),
         .package(url: "https://github.com/schwa/swiftfields", from: "0.0.1"),
         .package(url: "https://github.com/schwa/swiftformats", from: "0.3.5"),
@@ -498,5 +498,5 @@ let package = Package(
     ],
     // TODO: Switch here when github supports it.
     //swiftLanguageModes: [.v6]
-    swiftLanguageVersions: [.v6]
+    swiftLanguageModes: [.v6]
 )
