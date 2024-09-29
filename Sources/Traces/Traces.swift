@@ -99,76 +99,83 @@ public struct TracesView: View {
         self.traces = traces
     }
 
-    public var body: some View {
-        HStack(alignment: .top) {
-            VStack(alignment: .leading, spacing: 0) {
-                Color.clear.frame(height: 15)
-                ForEach(Array(streams.values.sorted(by: { $0.index < $1.index})), id: \.name) { stream in
-                    Text(stream.name)
-                    .font(.caption)
-                    .foregroundStyle(.white)
-                    .padding([.top, .bottom], 1)
-                    .padding([.leading, .trailing], 4)
-                    .background(Capsule().fill(stream.color))
-                    .frame(height: 16)
-                    .fixedSize()
+    @ViewBuilder
+    func labels(currentTime: Date) -> some View {
+        Canvas { context, size in
+            // Calculate elapsed time since start
+            let elapsedTime = currentTime.timeIntervalSince(startDate)
+
+            // Time interval between markers (in seconds)
+            let markerInterval: TimeInterval = 1
+            // Calculate horizontal offset based on elapsed time
+            let offsetX = elapsedTime * Double(pixelsPerSecond)
+
+            // Draw time markers
+            let totalMarkers = Int((size.width + CGFloat(offsetX)) / (pixelsPerSecond * CGFloat(markerInterval)))
+            for i in 0...totalMarkers {
+                let markerTime = Double(i) * markerInterval
+                let markerX = size.width - CGFloat(offsetX) + CGFloat(markerTime) * pixelsPerSecond
+                if markerX >= 0 && markerX <= size.width {
+                    context.stroke(Path { path in
+                        path.move(to: CGPoint(x: markerX, y: 0))
+                        path.addLine(to: CGPoint(x: markerX, y: 10))
+                    }, with: .color(.gray), lineWidth: 1)
+                    let text = Text(markerTime, format: .number).font(.caption)
+                    context.draw(text, at: CGPoint(x: markerX, y: 20), anchor: .center)
                 }
             }
-            TimelineView(.animation) { timeline in
-                let currentTime = timeline.date
-                Canvas { context, size in
-                    let markerSize: CGFloat = 10
+        }
+        .frame(height: 16)
+    }
 
-                    // Calculate elapsed time since start
-                    let elapsedTime = timeline.date.timeIntervalSince(startDate)
-
-                    // Time interval between markers (in seconds)
-                    let markerInterval: TimeInterval = 1
-                    // Calculate horizontal offset based on elapsed time
-                    let offsetX = elapsedTime * Double(pixelsPerSecond)
-
-                    // Draw time markers
-                    let totalMarkers = Int((size.width + CGFloat(offsetX)) / (pixelsPerSecond * CGFloat(markerInterval)))
-                    for i in 0...totalMarkers {
-                        let markerTime = Double(i) * markerInterval
-                        let markerX = size.width - CGFloat(offsetX) + CGFloat(markerTime) * pixelsPerSecond
-                        if markerX >= 0 && markerX <= size.width {
-                            context.stroke(Path { path in
-                                path.move(to: CGPoint(x: markerX, y: 0))
-                                path.addLine(to: CGPoint(x: markerX, y: 10))
-                            }, with: .color(.gray), lineWidth: 1)
-                            let text = Text(markerTime, format: .number).font(.caption)
-                            context.draw(text, at: CGPoint(x: markerX, y: 20), anchor: .center)
+    @ViewBuilder
+    private func timeline(stream: Stream, currentTime: Date) -> some View {
+        Canvas { context, size in
+            let markerSize: CGFloat = 10
+            // Draw events
+            for event in currentEvents where event.name == stream.name {
+                let timeDifference = currentTime.timeIntervalSince(event.date)
+                let x = round(size.width - CGFloat(timeDifference) * pixelsPerSecond)
+                if x >= 0 {
+                    if stream.highFrequency {
+                        let path = Path { path in
+                            path.move(to: CGPoint(x: x, y: 0))
+                            path.addLine(to: CGPoint(x: x, y: markerSize))
                         }
+                        context.stroke(path, with: .color(stream.color), lineWidth: 1)
                     }
-
-                    // Draw events
-                    for event in currentEvents {
-                        guard let stream = streams[event.name] else {
-                            continue
-                        }
-                        let timeDifference = currentTime.timeIntervalSince(event.date)
-                        let x = round(size.width - CGFloat(timeDifference) * pixelsPerSecond)
-                        if x >= 0 {
-                            let y = Double(stream.index) * 16 + 32
-                            if stream.highFrequency {
-                                let path = Path { path in
-                                    path.move(to: CGPoint(x: x, y: y))
-                                    path.addLine(to: CGPoint(x: x, y: y + markerSize))
-                                }
-                                context.stroke(path, with: .color(stream.color), lineWidth: 1)
-                            }
-                            else {
-                                let rect = CGRect(x: x - markerSize / 2, y: y - markerSize / 2, width: markerSize, height: markerSize)
-                                context.fill(Path(ellipseIn: rect), with: .color(stream.color))
-                            }
-                        }
+                    else {
+                        let rect = CGRect(x: x - markerSize / 2, y: markerSize / 2, width: markerSize, height: markerSize)
+                        context.fill(Path(ellipseIn: rect), with: .color(stream.color))
                     }
                 }
-                .onGeometryChange(for: CGSize.self, of: \.size) { size = $0 }
-                .task(id: timeline.date) {
-                    await update(date: timeline.date)
+            }
+        }
+        .frame(height: 16)
+    }
+
+    public var body: some View {
+        TimelineView(.animation) { timeline in
+            Grid(alignment: .topTrailing) {
+                GridRow {
+                    Color.clear.gridCellUnsizedAxes([.horizontal, .vertical])
+                    labels(currentTime: timeline.date)
+                        .onGeometryChange(for: CGSize.self, of: \.size) { size = $0 }
                 }
+                ForEach(Array(streams.values), id: \.name) { stream in
+                    GridRow {
+                        Text(stream.name)
+                            .font(.caption)
+                            .foregroundStyle(.white)
+                            .padding([.leading, .trailing], 4)
+                            .padding([.top, .bottom], 2)
+                            .background(Capsule().fill(stream.color.gradient))
+                        self.timeline(stream: stream, currentTime: timeline.date)
+                    }
+                }
+            }
+            .task(id: timeline.date) {
+                await update(date: timeline.date)
             }
         }
     }
@@ -198,20 +205,20 @@ public struct TracesView: View {
 
 #Preview {
     TracesView(traces: .shared)
-    .background(Color.white)
-    .frame(width: 640, height: 480)
-    .task {
-        while Task.isCancelled == false {
-            try? await Task.sleep(for: .seconds(Double.random(in: 0...0.25)))
-            Traces.shared.trace(name: "B")
+        .background(Color.white)
+        .frame(width: 640, height: 480)
+        .task {
+            while Task.isCancelled == false {
+                try? await Task.sleep(for: .seconds(Double.random(in: 0...0.25)))
+                Traces.shared.trace(name: "B")
+            }
         }
-    }
-    .task {
-        while Task.isCancelled == false {
-            try? await Task.sleep(for: .seconds(Double.random(in: 0...0.5)))
-            Traces.shared.trace(name: "C")
+        .task {
+            while Task.isCancelled == false {
+                try? await Task.sleep(for: .seconds(Double.random(in: 0...0.5)))
+                Traces.shared.trace(name: "C")
+            }
         }
-    }
 
     Button("Trace") {
         Task {

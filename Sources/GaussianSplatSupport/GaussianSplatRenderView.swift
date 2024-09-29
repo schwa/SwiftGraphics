@@ -12,6 +12,7 @@ import Shapes3D
 import simd
 import SIMDSupport
 import SwiftUI
+import Traces
 
 public struct GaussianSplatRenderView <Splat>: View where Splat: SplatProtocol {
     @Environment(\.metalDevice)
@@ -48,8 +49,10 @@ public struct GaussianSplatRenderView <Splat>: View where Splat: SplatProtocol {
             } catch {
                 fatalError("Failed to create texture.")
             }
+            Traces.shared.trace(name: "sizeWillChange")
         }
         didDraw: {
+            Traces.shared.trace(name: "didDraw")
             viewModel.frame += 1
         }
     }
