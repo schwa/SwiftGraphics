@@ -13,8 +13,6 @@ import Shapes3D
 import simd
 import SIMDSupport
 import SwiftUI
-import SwiftUISupport
-import Traces
 
 public struct GaussianSplatConfiguration {
     public var bounds: ConeBounds
@@ -23,20 +21,24 @@ public struct GaussianSplatConfiguration {
     public var discardRate: Float
     public var gpuCounters: GPUCounters?
     public var clearColor: MTLClearColor // TODO: make this a SwiftUI Color
+    public var skyboxTexture: MTLTexture?
     public var verticalAngleOfView: Angle
     public var useGPUSort: Bool
 
-    public init(bounds: ConeBounds, debugMode: Bool = false, metalFXRate: Float = 2, discardRate: Float = 0.0, gpuCounters: GPUCounters? = nil, clearColor: MTLClearColor = .init(red: 0, green: 0, blue: 0, alpha: 1), verticalAngleOfView: Angle = .degrees(90), useGPUSort: Bool = false) {
+    public init(bounds: ConeBounds, debugMode: Bool = false, metalFXRate: Float = 2, discardRate: Float = 0.0, gpuCounters: GPUCounters? = nil, clearColor: MTLClearColor = .init(red: 0, green: 0, blue: 0, alpha: 1), skyboxTexture: MTLTexture? = nil, verticalAngleOfView: Angle = .degrees(90), useGPUSort: Bool = false) {
         self.debugMode = debugMode
         self.metalFXRate = metalFXRate
         self.discardRate = discardRate
         self.gpuCounters = gpuCounters
         self.clearColor = clearColor
+        self.skyboxTexture = skyboxTexture
         self.verticalAngleOfView = verticalAngleOfView
         self.useGPUSort = useGPUSort
         self.bounds = bounds
     }
 }
+
+// MARK: -
 
 @Observable
 @MainActor
@@ -98,12 +100,15 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
         self.configuration = configuration
         self.logger = logger
 
-        let panoramaMesh = try Box3D(min: [-100, -100, -100], max: [100, 100, 100]).toMTKMesh(device: device, inwardNormals: true)
-        let loader = MTKTextureLoader(device: device)
-        let panoramaTexture = try loader.newTexture(name: "Grid", scaleFactor: 2, bundle: Bundle.module)
-        let root = Node(label: "root") {
-            Node(label: "camera", content: Camera(projection: .perspective(.init(verticalAngleOfView: configuration.verticalAngleOfView, zClip: 0.001...200))))
-            Node(label: "pano", content: Geometry(mesh: panoramaMesh, materials: [PanoramaMaterial(baseColorTexture: panoramaTexture)]))
+        let root = try Node(label: "root") {
+            Node(label: "camera", content: Camera(projection: .perspective(.init(verticalAngleOfView: configuration.verticalAngleOfView, zClip: 0.001...250))))
+            if let skyboxTexture = configuration.skyboxTexture {
+                let allocator = MTKMeshBufferAllocator(device: device)
+                let panoramaMDLMesh = MDLMesh(sphereWithExtent: [200, 200, 200], segments: [36, 36], inwardNormals: true, geometryType: .triangles, allocator: allocator)
+        //        let panoramaMDLMesh = MDLMesh(boxWithExtent: [400, 400, 400], segments: [8, 8, 8], inwardNormals: true, geometryType: .triangles, allocator: allocator)
+                let panoramaMTKMesh = try! MTKMesh(mesh: panoramaMDLMesh, device: device)
+                Node(label: "skyBox", content: Geometry(mesh: panoramaMTKMesh, materials: [PanoramaMaterial(baseColorTexture: skyboxTexture)]))
+            }
             Node(label: "splats", content: splatCloud).transformed(roll: .zero, pitch: .degrees(270), yaw: .zero).transformed(roll: .zero, pitch: .zero, yaw: .degrees(90))
         }
         self.scene = SceneGraph(root: root)
@@ -112,8 +117,7 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
 
         let cpuSorter = try CPUSorter<Splat>(device: device, splatCloud: splatCloud, capacity: splatCloud.capacity)
         let cpuSorterTask = Task {
-            for await splatIndices in await cpuSorter.sortedIndicesChannel().buffer(policy: .bufferingLatest(1)) {
-                Traces.shared.trace(name: "Sorted Splats")
+            for await splatIndices in await cpuSorter.sortedIndicesChannel() {
                 splatCloud.indexedDistances = splatIndices
                 try? updatePass()
             }
@@ -126,7 +130,6 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
     // MARK: -
 
     internal func cameraChanged() {
-        Traces.shared.trace(name: "Camera Changed")
         requestSort()
     }
 
@@ -147,22 +150,33 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
         let fullRedraw = true
         let sortEnabled = (frame <= 1 || frame.isMultiple(of: 15))
         self.pass = try GroupPass(id: "FullPass") {
-            GroupPass(id: "GaussianSplatRenderGroup", enabled: fullRedraw, renderPassDescriptor: offscreenRenderPassDescriptor) {
-                if configuration.useGPUSort {
-                    GaussianSplatDistanceComputePass(
-                        id: "SplatDistanceCompute",
-                        enabled: sortEnabled,
-                        splats: splats,
-                        modelMatrix: simd_float3x3(truncating: splatsNode.transform.matrix),
-                        cameraPosition: cameraNode.transform.translation
-                    )
-                    GaussianSplatBitonicSortComputePass(
-                        id: "SplatBitonicSort",
-                        enabled: sortEnabled,
-                        splats: splats
-                    )
-                }
+//            GroupPass(id: "GaussianSplatRenderGroup", enabled: fullRedraw, renderPassDescriptor: offscreenRenderPassDescriptor) {
+//                if configuration.useGPUSort {
+//                    GaussianSplatDistanceComputePass(
+//                        id: "SplatDistanceCompute",
+//                        enabled: sortEnabled,
+//                        splats: splats,
+//                        modelMatrix: simd_float3x3(truncating: splatsNode.transform.matrix),
+//                        cameraPosition: cameraNode.transform.translation
+//                    )
+//                    GaussianSplatBitonicSortComputePass(
+//                        id: "SplatBitonicSort",
+//                        enabled: sortEnabled,
+//                        splats: splats
+//                    )
+//                }
+//                PanoramaShadingPass(id: "Panorama", scene: scene)
+//                GaussianSplatRenderPass<Splat>(
+//                    id: "SplatRender",
+//                    enabled: true,
+//                    scene: scene,
+//                    discardRate: configuration.discardRate
+//                )
+//            }
+            GroupPass(id: "GaussianSplatRenderGroup-1", enabled: fullRedraw, renderPassDescriptor: offscreenRenderPassDescriptor1) {
                 PanoramaShadingPass(id: "Panorama", scene: scene)
+            }
+            GroupPass(id: "GaussianSplatRenderGroup-2", enabled: fullRedraw, renderPassDescriptor: offscreenRenderPassDescriptor2) {
                 GaussianSplatRenderPass<Splat>(
                     id: "SplatRender",
                     enabled: true,
@@ -208,12 +222,28 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
         self.resources = .init(downscaledTexture: colorTexture, downscaledDepthTexture: depthTexture, outputTexture: upscaledTexture)
     }
 
-    private var offscreenRenderPassDescriptor: MTLRenderPassDescriptor {
+    private var offscreenRenderPassDescriptor1: MTLRenderPassDescriptor {
         guard let resources else {
             fatalError("Tried to create renderpass without resources.")
         }
         let offscreenRenderPassDescriptor = MTLRenderPassDescriptor()
         offscreenRenderPassDescriptor.colorAttachments[0].clearColor = configuration.clearColor
+        offscreenRenderPassDescriptor.colorAttachments[0].texture = configuration.metalFXRate <= 1 ? resources.outputTexture : resources.downscaledTexture
+        offscreenRenderPassDescriptor.colorAttachments[0].loadAction = .clear
+        offscreenRenderPassDescriptor.colorAttachments[0].storeAction = .store
+        offscreenRenderPassDescriptor.depthAttachment.loadAction = .clear
+        offscreenRenderPassDescriptor.depthAttachment.storeAction = .store
+        offscreenRenderPassDescriptor.depthAttachment.clearDepth = 1.0
+        offscreenRenderPassDescriptor.depthAttachment.texture = resources.downscaledDepthTexture
+        return offscreenRenderPassDescriptor
+    }
+
+
+    private var offscreenRenderPassDescriptor2: MTLRenderPassDescriptor {
+        guard let resources else {
+            fatalError("Tried to create renderpass without resources.")
+        }
+        let offscreenRenderPassDescriptor = MTLRenderPassDescriptor()
         offscreenRenderPassDescriptor.colorAttachments[0].texture = configuration.metalFXRate <= 1 ? resources.outputTexture : resources.downscaledTexture
         offscreenRenderPassDescriptor.colorAttachments[0].loadAction = .load
         offscreenRenderPassDescriptor.colorAttachments[0].storeAction = .store
@@ -237,7 +267,6 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
             return
         }
         cpuSorter.requestSort(camera: cameraNode.transform.matrix, model: splatsNode.transform.matrix, count: splatCloud.splats.count)
-        Traces.shared.trace(name: "Sort Requested")
     }
 }
 

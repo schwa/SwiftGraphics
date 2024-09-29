@@ -117,3 +117,35 @@ public extension ConeBounds {
         return origin + SIMD3<Float>(x, y, z)
     }
 }
+
+struct CompassIndicator: View {
+    let angle: Angle
+    let size: CGFloat
+
+    var body: some View {
+        Canvas { context, size in
+            let center = CGPoint(x: size.width / 2, y: size.height / 2)
+            let radius = min(size.width, size.height) / 2
+
+            // Draw circle
+            context.stroke(
+                Path(ellipseIn: CGRect(x: 0, y: 0, width: size.width, height: size.height).insetBy(dx: 1, dy: 1)),
+                with: .color(.blue),
+                lineWidth: 2
+            )
+
+            // Draw triangle
+            var trianglePath = Path()
+            let triangleSize = radius * 0.8
+            trianglePath.move(to: CGPoint(x: 0, y: -triangleSize))
+            trianglePath.addLine(to: CGPoint(x: triangleSize * 0.5, y: triangleSize * 0.5))
+            trianglePath.addLine(to: CGPoint(x: -triangleSize * 0.5, y: triangleSize * 0.5))
+            trianglePath.closeSubpath()
+
+            context.translateBy(x: center.x, y: center.y)
+            context.rotate(by: angle)
+            context.fill(trianglePath, with: .color(.yellow))
+        }
+        .frame(width: size, height: size)
+    }
+}

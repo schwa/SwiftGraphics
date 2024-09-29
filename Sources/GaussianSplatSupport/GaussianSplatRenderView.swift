@@ -12,7 +12,6 @@ import Shapes3D
 import simd
 import SIMDSupport
 import SwiftUI
-import SwiftUISupport
 
 public struct GaussianSplatRenderView <Splat>: View where Splat: SplatProtocol {
     @Environment(\.metalDevice)
