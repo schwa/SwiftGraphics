@@ -102,13 +102,11 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
         self.configuration = configuration
         self.logger = logger
 
-        let root = try Node(label: "root") {
+        let root = Node(label: "root") {
             Node(label: "camera", content: Camera(projection: .perspective(.init(verticalAngleOfView: configuration.verticalAngleOfView, zClip: 0.001...250))))
             if let skyboxTexture = configuration.skyboxTexture {
                 let allocator = MTKMeshBufferAllocator(device: device)
                 let panoramaMDLMesh = MDLMesh(sphereWithExtent: [200, 200, 200], segments: [36, 36], inwardNormals: true, geometryType: .triangles, allocator: allocator)
-        //        let panoramaMDLMesh = MDLMesh(boxWithExtent: [400, 400, 400], segments: [8, 8, 8], inwardNormals: true, geometryType: .triangles, allocator: allocator)
-            Node(label: "camera", content: Camera(projection: .perspective(.init(verticalAngleOfView: configuration.verticalAngleOfView, zClip: 0.001...200))))
                 let panoramaMTKMesh = try! MTKMesh(mesh: panoramaMDLMesh, device: device)
                 Node(label: "skyBox", content: Geometry(mesh: panoramaMTKMesh, materials: [PanoramaMaterial(baseColorTexture: skyboxTexture)]))
             }

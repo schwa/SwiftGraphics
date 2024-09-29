@@ -30,6 +30,12 @@ internal struct GaussianSplatView: View {
     @Environment(\.gpuCounters)
     private var gpuCounters
 
+    @State
+    var options: OptionsView.Options = .init()
+
+    @State
+    var showOptions: Bool = false
+
     internal var body: some View {
         Group {
             @Bindable
@@ -42,23 +48,43 @@ internal struct GaussianSplatView: View {
                 .environment(\.gpuCounters, gpuCounters)
         }
         .background(.black)
+        .overlay(alignment: .topTrailing) {
+            Button(systemImage: "gear") {
+                showOptions.toggle()
+            }
+            .buttonStyle(.borderless)
+            .padding()
+            .popover(isPresented: $showOptions) {
+                OptionsView(options: $options)
+                .padding()
+            }
+        }
         .overlay(alignment: .top) {
             VStack {
-                #if os(macOS)
-                VStack {
-                    Text(viewModel.splatResource.name).font(.title)
-                    Link(viewModel.splatResource.url.absoluteString, destination: viewModel.splatResource.url)
-                    Text(viewModel.splatCloud.capacity, format: .number)
-                }
-                .padding()
-                .background(.thinMaterial)
-                .cornerRadius(8)
-                .padding()
-                #endif
-                if let gpuCounters {
-                    TimelineView(.periodic(from: .now, by: 0.25)) { _ in
-                        PerformanceHUD(measurements: gpuCounters.current())
+                if options.showInfo {
+                    VStack {
+                        Text(viewModel.splatResource.name).font(.title)
+                        Link(viewModel.splatResource.url.absoluteString, destination: viewModel.splatResource.url)
+                        Text(viewModel.splatCloud.capacity, format: .number)
                     }
+                    .padding()
+                    .background(.thinMaterial)
+                    .cornerRadius(8)
+                    .padding()
+                }
+                if options.showCounters {
+                    if let gpuCounters {
+                        TimelineView(.periodic(from: .now, by: 0.25)) { _ in
+                            PerformanceHUD(measurements: gpuCounters.current())
+                        }
+                    }
+                }
+                if options.showTraces {
+                    TracesView(traces: .shared)
+                        .allowsHitTesting(false)
+                        .padding()
+                        .background(.thinMaterial)
+                        .padding()
                 }
             }
         }
@@ -72,13 +98,25 @@ internal struct GaussianSplatView: View {
                     .padding()
             }
         }
-        .overlay {
-            TracesView(traces: .shared)
-            .frame(maxWidth: 320, maxHeight: 320)
-            .allowsHitTesting(false)
-            .padding()
-            .background(.thinMaterial)
-            .padding()
+    }
+}
+
+struct OptionsView: View {
+
+    struct Options {
+        var showInfo: Bool = true
+        var showTraces: Bool = true
+        var showCounters: Bool = true
+    }
+
+    @Binding
+    var options: Options
+
+    var body: some View {
+        Form {
+            Toggle("Show Info", isOn: $options.showInfo)
+            Toggle("Show Traces", isOn: $options.showTraces)
+            Toggle("Show Counters", isOn: $options.showCounters)
         }
     }
 }
