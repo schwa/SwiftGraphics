@@ -342,7 +342,6 @@ let package = Package(
                 .copy("Resources/adjectives.txt"),
                 .copy("Resources/nouns.txt"),
                 .copy("Resources/StanfordVolumeData.tar"),
-                .copy("Resources/vision_dr.splat"),
             ],
             swiftSettings: [
                 .interoperabilityMode(.Cxx),
@@ -382,6 +381,8 @@ let package = Package(
                 "Shapes3D",
                 "RenderKitSceneGraph",
                 "Traces",
+                "Constraints3D",
+                .product(name: "SwiftFormats", package: "SwiftFormats"),
             ],
             resources: [
                 .copy("Bundle.txt"),
