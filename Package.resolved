@@ -1,13 +1,13 @@
 {
-  "originHash" : "9a4601f8909c3bb2b641091730a5b5a5e20c3eed46bb9fd0d665e03d8fea671d",
+  "originHash" : "a4acf933b9a4f484f884225cce0313985ae1be8694da81440840f9820f35c766",
   "pins" : [
     {
       "identity" : "everything",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/schwa/Everything",
       "state" : {
-        "branch" : "jwight/swift-6",
-        "revision" : "e24a8c69a41cfb9abdae4e91a4b7f056f2e36bbb"
+        "revision" : "a7a99f3637f6bc0c017ac9897fe1c8d851f7280d",
+        "version" : "1.2.0"
       }
     },
     {
@@ -15,7 +15,7 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/schwa/MetalCompilerPlugin",
       "state" : {
-        "branch" : "jwight/logging",
+        "branch" : "jwight/develop",
         "revision" : "86239f9d8a6610e6ab2c335a3ef6e96fdd242e48"
       }
     },
