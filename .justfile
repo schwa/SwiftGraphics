@@ -28,8 +28,20 @@ periphery-scan:
     swift package clean
     periphery scan
 
+periphery-clean-up-internal:
+    periphery scan --auto-remove \
+        --retain-public \
+        --retain-unused-protocol-func-params \
+        --retain-swift-ui-previews \
+        --retain-codable-properties \
+        --retain-files \
+            'Sources/SwiftGraphicsDemos/*' \
+            'Tests/*'
+
+
 periphery-clean-up:
     periphery scan --auto-remove \
+        --retain-public \
         --retain-unused-protocol-func-params \
         --retain-swift-ui-previews \
         --retain-codable-properties \
