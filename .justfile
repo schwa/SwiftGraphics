@@ -44,7 +44,7 @@ periphery-clean-up:
             'Sources/earcut_cpp/*' \
             'Sources/GaussianSplatShaders/*' \
             'Sources/GaussianSplatSupport/*' \
-            'Sources/GenericGeometryBase/*' \
+            # 'Sources/GenericGeometryBase/*' \
             'Sources/MetalSupport/*' \
             'Sources/MetalSupportMacros/*' \
             'Sources/MetalUISupport/*' \
