@@ -28,8 +28,20 @@ periphery-scan:
     swift package clean
     periphery scan
 
+periphery-clean-up-internal:
+    periphery scan --auto-remove \
+        --retain-public \
+        --retain-unused-protocol-func-params \
+        --retain-swift-ui-previews \
+        --retain-codable-properties \
+        --retain-files \
+            'Sources/SwiftGraphicsDemos/*' \
+            'Tests/*'
+
+
 periphery-clean-up:
     periphery scan --auto-remove \
+        --retain-public \
         --retain-unused-protocol-func-params \
         --retain-swift-ui-previews \
         --retain-codable-properties \
@@ -44,7 +56,7 @@ periphery-clean-up:
             'Sources/earcut_cpp/*' \
             'Sources/GaussianSplatShaders/*' \
             'Sources/GaussianSplatSupport/*' \
-            # 'Sources/GenericGeometryBase/*' \
+            'Sources/GenericGeometryBase/*' \
             'Sources/MetalSupport/*' \
             'Sources/MetalSupportMacros/*' \
             'Sources/MetalUISupport/*' \
