@@ -86,11 +86,3 @@ struct CameraWidgetButtonStyle: ButtonStyle {
             }
     }
 }
-
-extension View {
-    func log(_ value: some Equatable, initial: Bool = false, string: @escaping @autoclosure () -> String) -> some View {
-        onChange(of: value, initial: initial) {
-            print(string())
-        }
-    }
-}

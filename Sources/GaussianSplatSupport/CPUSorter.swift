@@ -127,17 +127,3 @@ extension IndexedDistance: @unchecked @retroactive Sendable {
 }
 
 // MARK: -
-
-/// Treat an Optional as a single element queue…
-extension Optional {
-    mutating func popLast() -> Wrapped? {
-        // swiftlint:disable:next self_binding
-        if let wrapped = self {
-            self = nil
-            return wrapped
-        }
-        else {
-            return nil
-        }
-    }
-}

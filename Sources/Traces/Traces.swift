@@ -22,7 +22,6 @@ public actor Traces {
         }
     }
 
-    var startTimestamp = Timestamp()
     var events: [Event] = []
 
     public nonisolated func trace(name: String, timestamp: Timestamp? = nil) {
