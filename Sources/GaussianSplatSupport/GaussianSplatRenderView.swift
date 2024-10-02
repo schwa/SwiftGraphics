@@ -15,11 +15,7 @@ import SwiftUI
 import Traces
 
 public struct GaussianSplatRenderView <Splat>: View where Splat: SplatProtocol {
-    @Environment(\.metalDevice)
-    var device
 
-    @Environment(\.logger)
-    var logger
 
     @State
     private var drawableSize: SIMD2<Float> = .zero

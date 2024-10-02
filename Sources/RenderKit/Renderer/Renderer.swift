@@ -267,9 +267,6 @@ struct PassCollection: Equatable {
         elements.compactMap { $0 as? any RenderPassProtocol }
     }
 
-    var count: Int {
-        self.elements.count
-    }
 }
 
 extension CollectionDifference.Change {
@@ -324,25 +321,5 @@ public extension MTLRenderPipelineDescriptor {
         self.init()
         colorAttachments[0].pixelFormat = configuration.colorPixelFormat
         depthAttachmentPixelFormat = configuration.depthStencilPixelFormat
-    }
-}
-
-extension PassCollection {
-    func flattened() -> PassCollection {
-        func flatten(_ passes: [any PassProtocol]) -> [any PassProtocol] {
-            var children: [any PassProtocol] = []
-            for pass in passes {
-                switch pass {
-                case let pass as GroupPass:
-                    // swiftlint:disable:next force_try
-                    children.append(contentsOf: flatten(try! pass.children()))
-                default:
-                    children.append(pass)
-                }
-            }
-            return children
-        }
-
-        return .init(flatten(elements))
     }
 }
