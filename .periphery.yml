@@ -1,7 +1,1 @@
-index_exclude:
-- Sources/ComputeDemos/**
-- Sources/GaussianSplatSupport/**
-- Sources/SwiftGraphicsDemos/**
-- Sources/SwiftGraphicsDemosCLI/**
-- Tests/**
 retain_public: true
