@@ -25,19 +25,6 @@ public extension MTLTexture {
         return destinationTexture
     }
 
-    func histogram() -> MTLBuffer {
-        let filter = MPSImageHistogram(device: device)
-        let size = filter.histogramSize(forSourceFormat: pixelFormat)
-        guard let histogram = device.makeBuffer(length: size) else {
-            fatalError(BaseError.resourceCreationFailure)
-        }
-        let commandQueue = device.makeCommandQueue().forceUnwrap("Failed to create command queue")
-        let commandBuffer = commandQueue.makeCommandBuffer().forceUnwrap("Failed to create command buffer")
-        filter.encode(to: commandBuffer, sourceTexture: self, histogram: histogram, histogramOffset: 0)
-        commandBuffer.commit()
-        commandBuffer.waitUntilCompleted()
-        return histogram
-    }
 
     func cgImage(colorSpace: CGColorSpace? = nil) throws -> CGImage {
         if let pixelFormat = PixelFormat(pixelFormat) {
