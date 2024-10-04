@@ -153,29 +153,29 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
         let fullRedraw = true
         let sortEnabled = (frame <= 1 || frame.isMultiple(of: 15))
         self.pass = try GroupPass(id: "FullPass") {
-//            GroupPass(id: "GaussianSplatRenderGroup", enabled: fullRedraw, renderPassDescriptor: offscreenRenderPassDescriptor) {
-//                if configuration.useGPUSort {
-//                    GaussianSplatDistanceComputePass(
-//                        id: "SplatDistanceCompute",
-//                        enabled: sortEnabled,
-//                        splats: splats,
-//                        modelMatrix: simd_float3x3(truncating: splatsNode.transform.matrix),
-//                        cameraPosition: cameraNode.transform.translation
-//                    )
-//                    GaussianSplatBitonicSortComputePass(
-//                        id: "SplatBitonicSort",
-//                        enabled: sortEnabled,
-//                        splats: splats
-//                    )
-//                }
-//                PanoramaShadingPass(id: "Panorama", scene: scene)
-//                GaussianSplatRenderPass<Splat>(
-//                    id: "SplatRender",
-//                    enabled: true,
-//                    scene: scene,
-//                    discardRate: configuration.discardRate
-//                )
-//            }
+            GroupPass(id: "GaussianSplatRenderGroup", enabled: fullRedraw, renderPassDescriptor: offscreenRenderPassDescriptor1) {
+                if configuration.useGPUSort {
+                    GaussianSplatDistanceComputePass(
+                        id: "SplatDistanceCompute",
+                        enabled: sortEnabled,
+                        splats: splats,
+                        modelMatrix: simd_float3x3(truncating: splatsNode.transform.matrix),
+                        cameraPosition: cameraNode.transform.translation
+                    )
+                    GaussianSplatBitonicSortComputePass(
+                        id: "SplatBitonicSort",
+                        enabled: sortEnabled,
+                        splats: splats
+                    )
+                }
+                PanoramaShadingPass(id: "Panorama", scene: scene)
+                GaussianSplatRenderPass<Splat>(
+                    id: "SplatRender",
+                    enabled: true,
+                    scene: scene,
+                    discardRate: configuration.discardRate
+                )
+            }
             GroupPass(id: "GaussianSplatRenderGroup-1", enabled: fullRedraw, renderPassDescriptor: offscreenRenderPassDescriptor1) {
                 PanoramaShadingPass(id: "Panorama", scene: scene)
             }
