@@ -5,8 +5,12 @@ postfix operator ++
 extension BinaryInteger {
     @available(*, deprecated, message: "Deprecated")
     static postfix func ++ (rhs: inout Self) -> Self {
-        let oldValue = rhs
-        rhs += 1
+        rhs.postIncrement()
+    }
+
+    mutating func postIncrement() -> Self {
+        let oldValue = self
+        self += 1
         return oldValue
     }
 }
