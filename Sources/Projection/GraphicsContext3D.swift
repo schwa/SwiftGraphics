@@ -33,15 +33,11 @@ extension Path3D {
             for element in elements {
                 switch element {
                 case .move(let point):
-                    let transform = projection.clipTransform * viewProjectionTransform
-                    var point = transform * SIMD4<Float>(point, 1.0)
-                    point /= point.w
-                    path2D.move(to: CGPoint(x: Double(point.x), y: Double(point.y)))
+                    let cgPoint = projection.worldSpaceToScreenSpace(point)
+                    path2D.move(to: cgPoint)
                 case .addLine(let point):
-                    let transform = projection.clipTransform * viewProjectionTransform
-                    var point = transform * SIMD4<Float>(point, 1.0)
-                    point /= point.w
-                    path2D.addLine(to: CGPoint(x: Double(point.x), y: Double(point.y)))
+                    let cgPoint = projection.worldSpaceToScreenSpace(point)
+                    path2D.addLine(to: cgPoint)
                 case .closePath:
                     path2D.closeSubpath()
                 }

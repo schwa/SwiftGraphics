@@ -20,8 +20,8 @@ struct SoftwareRendererMeshDemoView: View, DemoView {
     }
 
     static let sources: [Source] = [
-        .file("Models/Icosphere"),
         .file("Models/Teapot"),
+        .file("Models/Icosphere"),
         .file("Models/Monkey"),
         .file("Models/Cube"),
         .file("Models/Square"),
@@ -85,7 +85,7 @@ struct SoftwareRendererMeshDemoView: View, DemoView {
         .onAppear {
             source = Self.sources.first
         }
-        .onChange(of: source) {
+        .onChange(of: source, initial: true) {
             switch source {
             case .file(let name):
                 let url: URL = try! Bundle.module.url(forResource: name, withExtension: "ply")

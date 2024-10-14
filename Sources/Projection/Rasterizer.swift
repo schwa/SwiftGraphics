@@ -32,11 +32,9 @@ public struct Rasterizer {
 
         init(vertices: [SIMD3<Float>], projection: Projection3DHelper, stroke: (GraphicsContext.Shading, StrokeStyle)?, fill: (GraphicsContext.Shading, FillStyle)?) {
             modelSpaceVertices = vertices
-            let transform = projection.clipTransform * projection.projectionTransform * projection.viewTransform
             clipSpaceVertices = modelSpaceVertices.map {
-                transform * SIMD4<Float>($0, 1.0)
+                projection.worldSpaceToClipSpace($0)
             }
-
             clipSpaceMin = clipSpaceVertices.reduce(into: [.infinity, .infinity, .infinity]) { result, vertex in
                 result = [min(result.x, vertex.x), min(result.y, vertex.y), min(result.z, vertex.z)]
             }
@@ -86,8 +84,7 @@ public struct Rasterizer {
                 continue
             }
             let lines = fragment.clipSpaceVertices.map {
-                let screenSpace = SIMD3($0.x, $0.y, $0.z) / $0.w
-                return CGPoint(x: Double(screenSpace.x), y: Double(screenSpace.y))
+                graphicsContext.projection.clipSpaceToScreenSpace($0)
             }
 
             let path = Path { path in
