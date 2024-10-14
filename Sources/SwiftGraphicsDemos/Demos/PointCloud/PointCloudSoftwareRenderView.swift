@@ -33,7 +33,6 @@ struct PointCloudSoftwareRenderView: View, DemoView {
                 context3D.rasterize(options: rasterizerOptions) { _ in
                     for position in points {
                         let position2D = projection.worldSpaceToScreenSpace(position)
-
                         let path = Path(ellipseIn: CGRect(center: position2D, radius: 0.5))
                         context2D.fill(path, with: .color(.pink))
                     }

@@ -4,9 +4,9 @@ import SwiftUI
 
 public struct Projection3DHelper: Sendable {
     public var size: CGSize
-    public var projectionTransform = simd_float4x4(diagonal: .init(repeating: 1))
-    public var viewTransform = simd_float4x4(diagonal: .init(repeating: 1))
-    public var clipTransform = simd_float4x4(diagonal: .init(repeating: 1))
+    public var projectionTransform: simd_float4x4
+    public var viewTransform: simd_float4x4
+    public var clipTransform: simd_float4x4
 
     public init(size: CGSize, projectionTransform: simd_float4x4 = simd_float4x4(diagonal: [1, 1, 1, 1]), viewTransform: simd_float4x4 = simd_float4x4(diagonal: [1, 1, 1, 1]), clipTransform: simd_float4x4 = simd_float4x4(diagonal: [1, 1, 1, 1])) {
         self.size = size
@@ -22,14 +22,18 @@ public struct Projection3DHelper: Sendable {
         return gluUnproject(win: SIMD3<Float>(Float(point.x), Float(point.y), z), modelView: modelView, proj: projectionTransform, viewOrigin: .zero, viewSize: SIMD2<Float>(size))
     }
 
-    public func worldSpaceToScreenSpace(_ point: SIMD3<Float>) -> CGPoint {
-        var point = worldSpaceToClipSpace(point)
-        point /= point.w
+    public func worldSpaceToClipSpace(_ point: SIMD3<Float>) -> SIMD4<Float> {
+        clipTransform * projectionTransform * viewTransform * SIMD4<Float>(point, 1.0)
+    }
+
+    public func clipSpaceToScreenSpace(_ point: SIMD4<Float>) -> CGPoint {
+        let point = point / point.w
         return CGPoint(x: Double(point.x), y: Double(point.y))
     }
 
-    public func worldSpaceToClipSpace(_ point: SIMD3<Float>) -> SIMD4<Float> {
-        clipTransform * projectionTransform * viewTransform * SIMD4<Float>(point, 1.0)
+    public func worldSpaceToScreenSpace(_ point: SIMD3<Float>) -> CGPoint {
+        let point = worldSpaceToClipSpace(point)
+        return clipSpaceToScreenSpace(point)
     }
 
     public func isVisible(_ point: SIMD3<Float>) -> Bool {
