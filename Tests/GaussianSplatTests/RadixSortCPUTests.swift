@@ -41,9 +41,7 @@ func cpuSortTest1() throws {
 @Test
 func cpuSortTest2() throws {
     struct Value: RadixSortable, Equatable {
-
         let value: Float
-
         init() {
             self.value = 0
         }
@@ -103,4 +101,58 @@ func testFloatToInt() {
 //    print("Converted min, max: \(converted.min()!), \(converted.max()!)")
 //    print("Sort order preserved: \(originalSortOrder == convertedSortOrder)")
 
+}
+
+@Test
+func cpuSortTestStable() throws {
+    struct Value: RadixSortable, Equatable {
+        let key: UInt32
+        let value: Float
+        let index: Int
+
+        init() {
+            self.key = 0
+            self.value = 0
+            self.index = 0
+        }
+
+        init(key: UInt32, value: Float, index: Int) {
+            self.key = key
+            self.value = value
+            self.index = index
+        }
+
+        func key(shift: Int) -> Int {
+            (Int(key) >> shift) & 0xFF
+        }
+
+        static func ==(lhs: Value, rhs: Value) -> Bool {
+            return lhs.key == rhs.key && lhs.value == rhs.value && lhs.index == rhs.index
+        }
+    }
+
+    // Generate values with duplicate keys and unique indices
+    var values = (0..<1_500_000).map { i in
+        let n = UInt32.random(in: 0..<1000) // Limited range to create duplicates
+        return Value(key: n, value: Float(n), index: i)
+    }
+
+    // Use a stable sort considering key and index
+    let expectedResult = values.sorted { lhs, rhs in
+        if lhs.key != rhs.key {
+            return lhs.key < rhs.key
+        } else {
+            return lhs.index < rhs.index
+        }
+    }
+
+    var temp = Array(repeating: Value(), count: values.count)
+    values.withUnsafeMutableBufferPointer { values in
+        temp.withUnsafeMutableBufferPointer { temp in
+            RadixSortCPU<Value>().radixSort(input: values, temp: temp)
+        }
+    }
+
+    // Verify that the radix sort is stable
+    #expect(values == expectedResult)
 }
