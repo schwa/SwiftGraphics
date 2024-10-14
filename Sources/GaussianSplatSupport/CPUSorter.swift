@@ -7,19 +7,16 @@ import os
 import simd
 import SIMDSupport
 
-internal actor CPUSorter <Splat> where Splat: SplatProtocol {
-    internal static func sort(device: MTLDevice, splats: TypedMTLBuffer<Splat>, camera: simd_float4x4, model: simd_float4x4) throws -> SplatIndices {
-        var indexedDistances = try device.makeTypedBuffer(data: [IndexedDistance](repeating: .init(), count: splats.count)).labelled("Splats-IndexDistances-0")
-        var temporaryIndexedDistances = [IndexedDistance](repeating: .init(), count: splats.count)
-        sort(splats: splats, indexedDistances: &indexedDistances, temporaryIndexedDistances: &temporaryIndexedDistances, camera: camera, model: model)
-        return .init(state: .init(camera: camera, model: model, count: splats.count), indices: indexedDistances)
-    }
+protocol CPUSorterProtocol {
+    associatedtype Splat: SplatProtocol
+    static func sort(device: MTLDevice, splats: TypedMTLBuffer<Splat>, camera: simd_float4x4, model: simd_float4x4) throws -> SplatIndices
+}
 
+internal actor CPUSorter <Splat> where Splat: SplatProtocol {
     private static func sort(splats: TypedMTLBuffer<Splat>, indexedDistances: inout TypedMTLBuffer<IndexedDistance>, temporaryIndexedDistances: inout [IndexedDistance], camera: simd_float4x4, model: simd_float4x4) {
         guard splats.count > 1 else {
             return
         }
-        let start = getMachTime()
         releaseAssert(splats.count <= indexedDistances.capacity, "Too few indexed distances \(indexedDistances.count) for \(splats.capacity) splats.")
         releaseAssert(splats.count <= temporaryIndexedDistances.count, "Too few temporary indexed distances \(temporaryIndexedDistances.count) for \(splats.count) splats.")
         indexedDistances.withUnsafeMutableBufferPointer { indexedDistances in
@@ -43,8 +40,6 @@ internal actor CPUSorter <Splat> where Splat: SplatProtocol {
             }
         }
         indexedDistances.count = splats.count
-        let end = getMachTime()
-        //        print("XYZZY: \(Measurement(value: end - start, unit: UnitDuration.seconds).converted(to: UnitDuration.milliseconds))")
     }
 
     private var device: MTLDevice
@@ -98,6 +93,19 @@ internal actor CPUSorter <Splat> where Splat: SplatProtocol {
         }
     }
 }
+
+// MARK: -
+
+internal extension CPUSorter {
+    static func sort(device: MTLDevice, splats: TypedMTLBuffer<Splat>, camera: simd_float4x4, model: simd_float4x4) throws -> SplatIndices {
+        var indexedDistances = try device.makeTypedBuffer(data: [IndexedDistance](repeating: .init(), count: splats.count)).labelled("Splats-IndexDistances-0")
+        var temporaryIndexedDistances = [IndexedDistance](repeating: .init(), count: splats.count)
+        sort(splats: splats, indexedDistances: &indexedDistances, temporaryIndexedDistances: &temporaryIndexedDistances, camera: camera, model: model)
+        return .init(state: .init(camera: camera, model: model, count: splats.count), indices: indexedDistances)
+    }
+}
+
+// MARK: -
 
 extension OSAllocatedUnfairLock where State == Int {
     func postIncrement() -> State {
