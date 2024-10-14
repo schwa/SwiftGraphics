@@ -71,10 +71,10 @@ internal struct GaussianSplatView: View {
             VStack {
                 if options.showInfo {
                     InfoView()
-                    .padding()
-                    .background(.thinMaterial)
-                    .cornerRadius(8)
-                    .padding()
+                        .padding()
+                        .background(.thinMaterial)
+                        .cornerRadius(8)
+                        .padding()
                 }
                 if options.showCounters {
                     if let gpuCounters {

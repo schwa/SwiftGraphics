@@ -92,7 +92,7 @@ public struct GaussianSplatLobbyView: View {
                         )
                     }
                     Button("Go!") {
-//                        configuration.bounds = source.bounds
+                        //                        configuration.bounds = source.bounds
                         mode = .render
                     }
                     .frame(maxWidth: .infinity)
