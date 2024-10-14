@@ -2,7 +2,6 @@ import GaussianSplatSupport
 import SwiftUI
 
 struct GaussianSplatConfigurationView: View {
-
     @Binding
     var configuration: GaussianSplatConfiguration
 

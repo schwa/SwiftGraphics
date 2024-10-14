@@ -103,20 +103,13 @@ extension GaussianSplatViewModel where Splat == SplatC {
             fatalError("Not an even multiple of \(MemoryLayout<SplatB>.stride)")
         }
         let splatCount = contentLength / MemoryLayout<SplatB>.stride
-        print("Content length: \(contentLength), splat count: \(splatCount)")
 
         try self.init(device: device, splatResource: splatResource, splatCapacity: splatCount, configuration: configuration, logger: logger)
     }
 
     func streamingLoad(url: URL) async throws {
-        //        assert(MemoryLayout<SplatB>.stride == MemoryLayout<SplatB>.size)
-        //
         let session = URLSession.shared
-
         loadProgress.totalUnitCount = Int64(splatCloud.capacity)
-
-        // Start loading splats into a new splat cloud with the right capacity...
-        //        splatCloud = try SplatCloud<Splat>(device: device, capacity: splatCount)
         let request = URLRequest(url: url)
         let (byteStream, bytesResponse) = try await session.bytes(for: request)
         guard let bytesResponse = bytesResponse as? HTTPURLResponse else {
@@ -132,7 +125,6 @@ extension GaussianSplatViewModel where Splat == SplatC {
             }
         }
         .chunks(ofCount: 2048)
-
         for try await splats in splatStream {
             try splatCloud.append(splats: splats)
             self.requestSort()
