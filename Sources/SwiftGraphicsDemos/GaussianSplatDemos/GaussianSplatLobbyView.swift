@@ -12,9 +12,6 @@ public struct GaussianSplatLobbyView: View {
     private var configuration: GaussianSplatConfiguration = .init()
 
     @State
-    private var splatLimit: Int = 2_000_000
-
-    @State
     private var useGPUCounters = false
 
     @State
@@ -122,7 +119,7 @@ public struct GaussianSplatLobbyView: View {
                 .frame(width: 320)
                 #endif
             case .render:
-                GaussianSplatLoadingView(url: source.url, splatResource: source, bounds: source.bounds, initialConfiguration: configuration, splatLimit: splatLimit, progressiveLoad: progressiveLoad)
+                GaussianSplatLoadingView(url: source.url, splatResource: source, bounds: source.bounds, initialConfiguration: configuration, progressiveLoad: progressiveLoad)
                     .overlay(alignment: .topLeading) {
                         Button("Back") {
                             mode = .config
@@ -165,35 +162,6 @@ public struct GaussianSplatLobbyView: View {
     @ViewBuilder
     var optionsView: some View {
         Section("Options") {
-            LabeledContent("MetalFX Rate") {
-                VStack(alignment: .leading) {
-                    TextField("MetalFX Rate", value: $configuration.metalFXRate, format: .number)
-                        .labelsHidden()
-                    Text("This is how much to downscale the splat cloud before rendering, using MetalFX to for AI upscaling.").font(.caption)
-                }
-            }
-            LabeledContent("Discard Rate") {
-                VStack(alignment: .leading) {
-                    TextField("Discard Rate", value: $configuration.discardRate, format: .number)
-                        .labelsHidden()
-                    Text("This is the minimum rate for alpha to show a splat. (Should be zero. Higher values mean more splats will be discarded as they are too transparent.)").font(.caption)
-                }
-            }
-            LabeledContent("Vertical Angle of View") {
-                VStack(alignment: .leading) {
-                    TextField("AoV", value: $configuration.verticalAngleOfView.degrees, format: .number)
-                        .labelsHidden()
-                    Text("Vertical Angle of View (FOV) in degrees.").font(.caption)
-                }
-            }
-
-            LabeledContent("Splat Limit") {
-                VStack(alignment: .leading) {
-                    TextField("Splat Limit", value: $splatLimit, format: .number)
-                        .labelsHidden()
-                    Text("Limit number of splats to load. This is for testing purposes only (splats are sorted by distance from the center of the splatcloud. This can be expensive).").font(.caption)
-                }
-            }
             LabeledContent("GPU Counters") {
                 VStack(alignment: .leading) {
                     Toggle("GPU Counters", isOn: $useGPUCounters)
@@ -224,62 +192,7 @@ public struct GaussianSplatLobbyView: View {
                     Text("Stream splats in (remote splats only).").font(.caption)
                 }
             }
-            LabeledContent("GPU Sort") {
-                VStack(alignment: .leading) {
-                    Toggle("GPU Sort", isOn: $configuration.useGPUSort)
-                        .labelsHidden()
-                    Text("Use GPU Sorting").font(.caption)
-                }
-            }
+            GaussianSplatConfigurationView(configuration: $configuration)
         }
     }
-}
-
-extension CGImage {
-    func convert(bitmapInfo: CGBitmapInfo) -> CGImage? {
-        let width = width
-        let height = height
-        let bitsPerComponent = 8
-        let bytesPerPixel = 4
-        let bytesPerRow = width * bytesPerPixel
-        let colorSpace = CGColorSpaceCreateDeviceRGB()
-        guard let context = CGContext(data: nil, width: width, height: height, bitsPerComponent: bitsPerComponent, bytesPerRow: bytesPerRow, space: colorSpace, bitmapInfo: bitmapInfo.rawValue) else {
-            return nil
-        }
-        context.draw(self, in: CGRect(x: 0, y: 0, width: width, height: height))
-        return context.makeImage()
-    }
-}
-
-func convertCGImageEndianness2(_ inputImage: CGImage) -> CGImage? {
-    let width = inputImage.width
-    let height = inputImage.height
-    let bitsPerComponent = 8
-    let bytesPerPixel = 4
-    let bytesPerRow = width * bytesPerPixel
-    let colorSpace = CGColorSpaceCreateDeviceRGB()
-
-    // Choose the appropriate bitmap info for the target endianness
-    let bitmapInfo: CGBitmapInfo
-    if inputImage.byteOrderInfo == .order32Little {
-        bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedFirst.rawValue | CGBitmapInfo.byteOrder32Big.rawValue)
-    } else {
-        bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedFirst.rawValue | CGBitmapInfo.byteOrder32Little.rawValue)
-    }
-
-    guard let context = CGContext(data: nil,
-                                  width: width,
-                                  height: height,
-                                  bitsPerComponent: bitsPerComponent,
-                                  bytesPerRow: bytesPerRow,
-                                  space: colorSpace,
-                                  bitmapInfo: bitmapInfo.rawValue) else {
-        return nil
-    }
-
-    // Draw the original image into the new context
-    context.draw(inputImage, in: CGRect(x: 0, y: 0, width: width, height: height))
-
-    // Create a new CGImage from the context
-    return context.makeImage()
 }

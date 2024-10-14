@@ -11,7 +11,6 @@ public struct GaussianSplatLoadingView: View {
     let url: URL
     let splatResource: SplatResource
     let configuration: GaussianSplatConfiguration
-    let splatLimit: Int?
     let progressiveLoad: Bool
     let bounds: ConeBounds
 
@@ -21,12 +20,11 @@ public struct GaussianSplatLoadingView: View {
     @State
     private var viewModel: GaussianSplatViewModel<SplatC>?
 
-    public init(url: URL, splatResource: SplatResource, bounds: ConeBounds, initialConfiguration: GaussianSplatConfiguration, splatLimit: Int?, progressiveLoad: Bool) {
+    public init(url: URL, splatResource: SplatResource, bounds: ConeBounds, initialConfiguration: GaussianSplatConfiguration, progressiveLoad: Bool) {
         self.url = url
         self.splatResource = splatResource
         self.bounds = bounds
         self.configuration = initialConfiguration
-        self.splatLimit = splatLimit
         self.progressiveLoad = progressiveLoad
     }
 
@@ -68,12 +66,12 @@ public struct GaussianSplatLoadingView: View {
                         let url = downloadedUrl.appendingPathExtension("splat")
                         try FileManager().createSymbolicLink(at: url, withDestinationURL: downloadedUrl)
                         try await MainActor.run {
-                            let splatCloud = try SplatCloud<SplatC>(device: device, url: url, splatLimit: splatLimit)
+                            let splatCloud = try SplatCloud<SplatC>(device: device, url: url)
                             viewModel = try! GaussianSplatViewModel<SplatC>(device: device, splatResource: splatResource, splatCloud: splatCloud, configuration: configuration, logger: Logger())
                         }
                     }
                 default:
-                    let splatCloud = try SplatCloud<SplatC>(device: device, url: url, splatLimit: splatLimit)
+                    let splatCloud = try SplatCloud<SplatC>(device: device, url: url)
                     viewModel = try! GaussianSplatViewModel<SplatC>(device: device, splatResource: splatResource, splatCloud: splatCloud, configuration: configuration, logger: Logger())
                 }
             }
