@@ -24,9 +24,15 @@ public struct GaussianSplatConfiguration {
     public var clearColor: MTLClearColor // TODO: make this a SwiftUI Color
     public var skyboxTexture: MTLTexture?
     public var verticalAngleOfView: Angle
-    public var useGPUSort: Bool
 
-    public init(debugMode: Bool = false, metalFXRate: Float = 2, discardRate: Float = 0.0, gpuCounters: GPUCounters? = nil, clearColor: MTLClearColor = .init(red: 0, green: 0, blue: 0, alpha: 1), skyboxTexture: MTLTexture? = nil, verticalAngleOfView: Angle = .degrees(90), useGPUSort: Bool = false) {
+    public enum SortMethod {
+        case gpuBitonic
+        case cpuRadix
+    }
+
+    public var sortMethod: SortMethod
+
+    public init(debugMode: Bool = false, metalFXRate: Float = 2, discardRate: Float = 0.0, gpuCounters: GPUCounters? = nil, clearColor: MTLClearColor = .init(red: 0, green: 0, blue: 0, alpha: 1), skyboxTexture: MTLTexture? = nil, verticalAngleOfView: Angle = .degrees(90), sortMethod: SortMethod = .gpuBitonic) {
         self.debugMode = debugMode
         self.metalFXRate = metalFXRate
         self.discardRate = discardRate
@@ -34,7 +40,7 @@ public struct GaussianSplatConfiguration {
         self.clearColor = clearColor
         self.skyboxTexture = skyboxTexture
         self.verticalAngleOfView = verticalAngleOfView
-        self.useGPUSort = useGPUSort
+        self.sortMethod = sortMethod
     }
 }
 
@@ -155,7 +161,7 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
         let sortEnabled = (frame <= 1 || frame.isMultiple(of: 15))
         self.pass = try GroupPass(id: "FullPass") {
             GroupPass(id: "GaussianSplatRenderGroup", enabled: fullRedraw, renderPassDescriptor: offscreenRenderPassDescriptor1) {
-                if configuration.useGPUSort {
+                if configuration.sortMethod == .gpuBitonic {
                     GaussianSplatDistanceComputePass(
                         id: "SplatDistanceCompute",
                         enabled: sortEnabled,
