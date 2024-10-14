@@ -44,7 +44,7 @@ internal actor CPUSorter <Splat> where Splat: SplatProtocol {
         }
         indexedDistances.count = splats.count
         let end = getMachTime()
-//        print("XYZZY: \(Measurement(value: end - start, unit: UnitDuration.seconds).converted(to: UnitDuration.milliseconds))")
+        //        print("XYZZY: \(Measurement(value: end - start, unit: UnitDuration.seconds).converted(to: UnitDuration.milliseconds))")
     }
 
     private var device: MTLDevice

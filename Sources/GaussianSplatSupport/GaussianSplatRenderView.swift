@@ -15,8 +15,6 @@ import SwiftUI
 import Traces
 
 public struct GaussianSplatRenderView <Splat>: View where Splat: SplatProtocol {
-
-
     @State
     private var drawableSize: SIMD2<Float> = .zero
 

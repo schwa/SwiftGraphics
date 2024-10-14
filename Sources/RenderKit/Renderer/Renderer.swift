@@ -266,7 +266,6 @@ struct PassCollection: Equatable {
     var renderPasses: [any RenderPassProtocol] {
         elements.compactMap { $0 as? any RenderPassProtocol }
     }
-
 }
 
 extension CollectionDifference.Change {

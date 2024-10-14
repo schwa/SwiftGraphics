@@ -8,7 +8,7 @@ struct LinearGradient: Equatable {
 
 extension LinearGradient {
     func shading(size: CGSize) -> GraphicsContext.Shading {
-        let gradient = Gradient(stops: stops.sorted(by: { $0.location < $1.location }))
+        let gradient = Gradient(stops: stops.sorted { $0.location < $1.location })
         return .linearGradient(gradient, startPoint: CGPoint(x: size.width * startPoint.x, y: size.height * startPoint.y), endPoint: CGPoint(x: size.width * endPoint.x, y: size.height * endPoint.y))
     }
 
@@ -24,7 +24,7 @@ struct LinearGradientEditor: View {
     var value: LinearGradient
 
     @State
-    var showPopover: Bool = false
+    private var showPopover: Bool = false
 
     var body: some View {
         Button(role: .none) {
@@ -52,8 +52,8 @@ struct LinearGradientEditor: View {
                 Section("Stops") {
                     List($value.stops.indices, id: \.self) { index in
                         HStack {
-                            ColorPicker("Color \(index+1)", selection: $value.stops[index].color)
-                            TextField("Stop \(index+1)", value: $value.stops[index].location.double, format: .number)
+                            ColorPicker("Color \(index + 1)", selection: $value.stops[index].color)
+                            TextField("Stop \(index + 1)", value: $value.stops[index].location.double, format: .number)
                         }
                         .labelsHidden()
                     }
@@ -68,7 +68,7 @@ struct LinearGradientEditor: View {
 private extension CGFloat {
     var double: Double {
         get {
-            return self
+            self
         }
         set {
             self = newValue
