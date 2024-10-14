@@ -142,7 +142,7 @@ public struct GaussianSplatLobbyView: View {
             let image = skyboxGradient.image(size: .init(width: 1024, height: 1024))
 
             guard var cgImage = ImageRenderer(content: image).cgImage else {
-                fatalError()
+                fatalError("Could not render image.")
             }
             let bitmapInfo: CGBitmapInfo
             if cgImage.byteOrderInfo == .order32Little {
