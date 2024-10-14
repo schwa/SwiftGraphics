@@ -79,7 +79,7 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
     @ObservationIgnored
     private var logger: Logger?
 
-    var cpuSorter: CPUSorter<Splat>?
+    var cpuSorter: AsyncSortManager<Splat>?
     var cpuSorterTask: Task<Void, Never>?
 
     // TODO: bang and try!
@@ -116,7 +116,7 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
         loadProgress.completedUnitCount = Int64(splatCloud.count)
         loadProgress.totalUnitCount = Int64(splatCloud.count)
 
-        let cpuSorter = try CPUSorter<Splat>(device: device, splatCloud: splatCloud, capacity: splatCloud.capacity)
+        let cpuSorter = try AsyncSortManager<Splat>(device: device, splatCloud: splatCloud, capacity: splatCloud.capacity)
         let cpuSorterTask = Task {
             for await splatIndices in await cpuSorter.sortedIndicesChannel().buffer(policy: .bufferingLatest(1)) {
                 Traces.shared.trace(name: "Sorted Splats")

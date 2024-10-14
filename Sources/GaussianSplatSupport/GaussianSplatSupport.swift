@@ -66,3 +66,14 @@ public struct TupleBuffered<Element> {
 
 extension TupleBuffered: Sendable where Element: Sendable {
 }
+
+extension OSAllocatedUnfairLock where State == Int {
+    func postIncrement() -> State {
+        withLock { state in
+            defer {
+                state += 1
+            }
+            return state
+        }
+    }
+}
