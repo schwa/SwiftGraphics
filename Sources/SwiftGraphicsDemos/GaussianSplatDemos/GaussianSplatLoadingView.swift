@@ -33,7 +33,7 @@ public struct GaussianSplatLoadingView: View {
     public var body: some View {
         ZStack {
             if let viewModel {
-                GaussianSplatView()
+                GaussianSplatView(bounds: bounds)
                     .environment(viewModel)
             }
             else {
