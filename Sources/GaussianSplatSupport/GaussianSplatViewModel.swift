@@ -17,7 +17,6 @@ import SwiftUISupport
 import Traces
 
 public struct GaussianSplatConfiguration {
-    public var bounds: ConeBounds
     public var debugMode: Bool
     public var metalFXRate: Float
     public var discardRate: Float
@@ -27,7 +26,7 @@ public struct GaussianSplatConfiguration {
     public var verticalAngleOfView: Angle
     public var useGPUSort: Bool
 
-    public init(bounds: ConeBounds, debugMode: Bool = false, metalFXRate: Float = 2, discardRate: Float = 0.0, gpuCounters: GPUCounters? = nil, clearColor: MTLClearColor = .init(red: 0, green: 0, blue: 0, alpha: 1), skyboxTexture: MTLTexture? = nil, verticalAngleOfView: Angle = .degrees(90), useGPUSort: Bool = false) {
+    public init(debugMode: Bool = false, metalFXRate: Float = 2, discardRate: Float = 0.0, gpuCounters: GPUCounters? = nil, clearColor: MTLClearColor = .init(red: 0, green: 0, blue: 0, alpha: 1), skyboxTexture: MTLTexture? = nil, verticalAngleOfView: Angle = .degrees(90), useGPUSort: Bool = false) {
         self.debugMode = debugMode
         self.metalFXRate = metalFXRate
         self.discardRate = discardRate
@@ -36,7 +35,6 @@ public struct GaussianSplatConfiguration {
         self.skyboxTexture = skyboxTexture
         self.verticalAngleOfView = verticalAngleOfView
         self.useGPUSort = useGPUSort
-        self.bounds = bounds
     }
 }
 
@@ -79,8 +77,11 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
     @ObservationIgnored
     private var logger: Logger?
 
-    var cpuSorter: AsyncSortManager<Splat>?
-    var cpuSorterTask: Task<Void, Never>?
+    @ObservationIgnored
+    private var cpuSorter: AsyncSortManager<Splat>?
+
+    @ObservationIgnored
+    private var cpuSorterTask: Task<Void, Never>?
 
     // TODO: bang and try!
     public var splatCloud: SplatCloud<SplatC> {
