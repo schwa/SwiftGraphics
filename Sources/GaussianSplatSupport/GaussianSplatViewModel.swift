@@ -17,6 +17,11 @@ import SwiftUISupport
 import Traces
 
 public struct GaussianSplatConfiguration {
+    public enum SortMethod {
+        case gpuBitonic
+        case cpuRadix
+    }
+
     public var debugMode: Bool
     public var metalFXRate: Float
     public var discardRate: Float
@@ -24,12 +29,6 @@ public struct GaussianSplatConfiguration {
     public var clearColor: MTLClearColor // TODO: make this a SwiftUI Color
     public var skyboxTexture: MTLTexture?
     public var verticalAngleOfView: Angle
-
-    public enum SortMethod {
-        case gpuBitonic
-        case cpuRadix
-    }
-
     public var sortMethod: SortMethod
 
     public init(debugMode: Bool = false, metalFXRate: Float = 2, discardRate: Float = 0.0, gpuCounters: GPUCounters? = nil, clearColor: MTLClearColor = .init(red: 0, green: 0, blue: 0, alpha: 1), skyboxTexture: MTLTexture? = nil, verticalAngleOfView: Angle = .degrees(90), sortMethod: SortMethod = .gpuBitonic) {
@@ -50,20 +49,9 @@ public struct GaussianSplatConfiguration {
 @MainActor
 public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
     @ObservationIgnored
-    public let device: MTLDevice
+    private let device: MTLDevice
 
-    @ObservationIgnored
     public var configuration: GaussianSplatConfiguration
-
-    @ObservationIgnored
-    private var resources: GaussianSplatResources?
-
-    @ObservationIgnored
-    public var frame: Int = 0 {
-        didSet {
-            //            try! sceneChanged()
-        }
-    }
 
     public var scene: SceneGraph {
         didSet {
@@ -80,16 +68,6 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
 
     public var loadProgress = Progress()
 
-    @ObservationIgnored
-    private var logger: Logger?
-
-    @ObservationIgnored
-    private var cpuSorter: AsyncSortManager<Splat>?
-
-    @ObservationIgnored
-    private var cpuSorterTask: Task<Void, Never>?
-
-    // TODO: bang and try!
     public var splatCloud: SplatCloud<SplatC> {
         get {
             scene.firstNode(label: "splats")!.content as! SplatCloud<SplatC>
@@ -100,6 +78,25 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
             }
         }
     }
+
+    @ObservationIgnored
+    public var frame: Int = 0 {
+        didSet {
+            try! updatePass()
+        }
+    }
+
+    @ObservationIgnored
+    private var resources: GaussianSplatResources?
+
+    @ObservationIgnored
+    private var logger: Logger?
+
+    @ObservationIgnored
+    private var cpuSorter: AsyncSortManager<Splat>?
+
+    @ObservationIgnored
+    private var cpuSorterTask: Task<Void, Never>?
 
     // MARK: -
 
@@ -158,7 +155,7 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
         }
 
         let fullRedraw = true
-        let sortEnabled = (frame <= 1 || frame.isMultiple(of: 15))
+        let sortEnabled = configuration.sortMethod == .gpuBitonic && (frame <= 1 || frame.isMultiple(of: 15))
         self.pass = try GroupPass(id: "FullPass") {
             GroupPass(id: "GaussianSplatRenderGroup", enabled: fullRedraw, renderPassDescriptor: offscreenRenderPassDescriptor1) {
                 if configuration.sortMethod == .gpuBitonic {
@@ -264,7 +261,7 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
     }
 
     public func requestSort() {
-        guard let cpuSorter else {
+        guard configuration.sortMethod == .cpuRadix, let cpuSorter else {
             return
         }
         guard let splatsNode = scene.firstNode(label: "splats"), let splatCloud = splatsNode.content as? SplatCloud<Splat> else {

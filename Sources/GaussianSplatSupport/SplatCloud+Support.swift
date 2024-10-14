@@ -11,7 +11,7 @@ public extension SplatCloud where Splat == SplatC {
     convenience init(device: MTLDevice, data: Data) throws {
         let splatArray = data.withUnsafeBytes { buffer in
             buffer.withMemoryRebound(to: SplatB.self) { splats in
-                return convert_b_to_c(splats)
+                convert_b_to_c(splats)
             }
         }
         let splats = try device.makeTypedBuffer(data: splatArray, options: .storageModeShared).labelled("Splats")

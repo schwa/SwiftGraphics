@@ -120,14 +120,15 @@ public struct GaussianSplatLobbyView: View {
                 #endif
             case .render:
                 GaussianSplatLoadingView(url: source.url, splatResource: source, bounds: source.bounds, initialConfiguration: configuration, progressiveLoad: progressiveLoad)
-                    .overlay(alignment: .topLeading) {
-                        Button("Back") {
-                            mode = .config
+                    .toolbar {
+                        ToolbarItem(placement: .navigation) {
+                            Button("Back") {
+                                mode = .config
+                            }
+                            #if os(macOS)
+                            .buttonStyle(.link)
+                            #endif
                         }
-                        #if os(macOS)
-                        .buttonStyle(.link)
-                        #endif
-                        .padding()
                     }
                     .environment(\.gpuCounters, configuration.gpuCounters)
             }
@@ -152,7 +153,6 @@ public struct GaussianSplatLobbyView: View {
             let texture = try! textureLoader.newTexture(cgImage: cgImage, options: nil)
             texture.label = "Skybox Gradient"
             configuration.skyboxTexture = texture
-            print("Set skyboxTexture to \(texture)")
         }
         else {
             configuration.skyboxTexture = nil

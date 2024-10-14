@@ -44,9 +44,10 @@ internal struct GaussianSplatView: View {
     }
 
     internal var body: some View {
+        @Bindable
+        var viewModel = viewModel
+
         Group {
-            @Bindable
-            var viewModel = viewModel
             GaussianSplatRenderView<SplatC>()
                 #if os(iOS)
                 .ignoresSafeArea()
@@ -55,25 +56,21 @@ internal struct GaussianSplatView: View {
                 .environment(\.gpuCounters, gpuCounters)
         }
         .background(.black)
-        .overlay(alignment: .topTrailing) {
+        .toolbar {
             Button(systemImage: "gear") {
                 showOptions.toggle()
             }
             .buttonStyle(.borderless)
             .padding()
             .popover(isPresented: $showOptions) {
-                OptionsView(options: $options)
+                OptionsView(options: $options, configuration: $viewModel.configuration)
                     .padding()
             }
         }
         .overlay(alignment: .top) {
             VStack {
                 if options.showInfo {
-                    VStack {
-                        Text(viewModel.splatResource.name).font(.title)
-                        Link(viewModel.splatResource.url.absoluteString, destination: viewModel.splatResource.url)
-                        Text(viewModel.splatCloud.capacity, format: .number)
-                    }
+                    InfoView()
                     .padding()
                     .background(.thinMaterial)
                     .cornerRadius(8)
@@ -108,7 +105,7 @@ internal struct GaussianSplatView: View {
     }
 }
 
-struct OptionsView: View {
+private struct OptionsView: View {
     struct Options {
         var showInfo: Bool = true
         var showTraces: Bool = true
@@ -118,11 +115,29 @@ struct OptionsView: View {
     @Binding
     var options: Options
 
+    @Binding
+    var configuration: GaussianSplatConfiguration
+
     var body: some View {
         Form {
             Toggle("Show Info", isOn: $options.showInfo)
             Toggle("Show Traces", isOn: $options.showTraces)
             Toggle("Show Counters", isOn: $options.showCounters)
+            GaussianSplatConfigurationView(configuration: $configuration)
+        }
+    }
+}
+
+private struct InfoView: View {
+    @Environment(GaussianSplatViewModel<SplatC>.self)
+    private var viewModel
+
+    var body: some View {
+        VStack {
+            Text(viewModel.splatResource.name).font(.title)
+            Link(viewModel.splatResource.url.absoluteString, destination: viewModel.splatResource.url)
+            Text(viewModel.splatCloud.capacity, format: .number)
+            Text("\(viewModel.configuration.sortMethod)")
         }
     }
 }
