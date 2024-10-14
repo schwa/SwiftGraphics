@@ -57,7 +57,7 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
     @ObservationIgnored
     public var frame: Int = 0 {
         didSet {
-//            try! sceneChanged()
+            //            try! sceneChanged()
         }
     }
 
@@ -240,7 +240,6 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
         offscreenRenderPassDescriptor.depthAttachment.texture = resources.downscaledDepthTexture
         return offscreenRenderPassDescriptor
     }
-
 
     private var offscreenRenderPassDescriptor2: MTLRenderPassDescriptor {
         guard let resources else {

@@ -31,10 +31,10 @@ internal struct GaussianSplatView: View {
     private var gpuCounters
 
     @State
-    var options: OptionsView.Options = .init()
+    private var options: OptionsView.Options = .init()
 
     @State
-    var showOptions: Bool = false
+    private var showOptions: Bool = false
 
     internal var body: some View {
         Group {
@@ -56,7 +56,7 @@ internal struct GaussianSplatView: View {
             .padding()
             .popover(isPresented: $showOptions) {
                 OptionsView(options: $options)
-                .padding()
+                    .padding()
             }
         }
         .overlay(alignment: .top) {
@@ -102,7 +102,6 @@ internal struct GaussianSplatView: View {
 }
 
 struct OptionsView: View {
-
     struct Options {
         var showInfo: Bool = true
         var showTraces: Bool = true

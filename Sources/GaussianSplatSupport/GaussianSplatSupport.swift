@@ -8,9 +8,6 @@ import SIMDSupport
 
 // swiftlint:disable force_unwrapping
 
-
-
-
 // MARK: -
 
 internal extension Node {

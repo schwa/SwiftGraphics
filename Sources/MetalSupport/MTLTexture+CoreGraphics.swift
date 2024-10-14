@@ -25,7 +25,6 @@ public extension MTLTexture {
         return destinationTexture
     }
 
-
     func cgImage(colorSpace: CGColorSpace? = nil) throws -> CGImage {
         if let pixelFormat = PixelFormat(pixelFormat) {
             let bitmapDefinition = BitmapDefinition(width: width, height: height, pixelFormat: pixelFormat)

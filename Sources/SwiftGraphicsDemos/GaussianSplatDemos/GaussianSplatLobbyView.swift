@@ -89,9 +89,9 @@ public struct GaussianSplatLobbyView: View {
                         skyboxGradient = .init(stops: [
                             .init(color: .init(red: 1, green: 0, blue: 0).opacity(0), location: 1),
                             .init(color: .init(red: 1, green: 0, blue: 0).opacity(1), location: 0)
-                            ],
-                            startPoint: .init(x: 0, y: 0),
-                            endPoint: .init(x: 0, y: 1)
+                        ],
+                        startPoint: .init(x: 0, y: 0),
+                        endPoint: .init(x: 0, y: 1)
                         )
                     }
                     Button("Go!") {
@@ -160,9 +160,7 @@ public struct GaussianSplatLobbyView: View {
         else {
             configuration.skyboxTexture = nil
         }
-
     }
-
 
     @ViewBuilder
     var optionsView: some View {
