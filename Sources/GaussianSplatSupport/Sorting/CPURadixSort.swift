@@ -1,13 +1,6 @@
 import Foundation
 
-postfix operator ++
-
 extension BinaryInteger {
-    @available(*, deprecated, message: "Deprecated")
-    static postfix func ++ (rhs: inout Self) -> Self {
-        rhs.postIncrement()
-    }
-
     mutating func postIncrement() -> Self {
         let oldValue = self
         self += 1
@@ -38,7 +31,7 @@ internal struct RadixSortCPU <T> where T: RadixSortable {
         for i in input.indices {
             let value = input[i]
             let key = value.key(shift: shift)
-            let outputIndex = histogram[key]++
+            let outputIndex = histogram[key].postIncrement()
             assert(outputIndex < output.count)
             output[Int(outputIndex)] = input[i]
         }

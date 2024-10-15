@@ -98,11 +98,28 @@ public struct PackedHalf3: Hashable, Sendable {
     }
 }
 
-public extension PackedHalf4 {
-    init(_ other: SIMD4<Float>) {
-        self = PackedHalf4(x: Float16(other.x), y: Float16(other.y), z: Float16(other.z), w: Float16(other.w))
+extension PackedHalf3: ExpressibleByArrayLiteral {
+    public init(arrayLiteral elements: Float...) {
+        assert(elements.count == 3)
+        self = .init(x: Float16(elements[0]), y: Float16(elements[1]), z: Float16(elements[2]))
     }
 }
+
+// MARK: -
+
+public extension SIMD3 where Scalar == Float {
+    init(_ other: PackedHalf3) {
+        self = SIMD3(Scalar(other.x), Scalar(other.y), Scalar(other.z))
+    }
+}
+
+public extension PackedHalf3 {
+    init(_ other: SIMD3<Float>) {
+        self = PackedHalf3(x: Float16(other.x), y: Float16(other.y), z: Float16(other.z))
+    }
+}
+
+// MARK: -
 
 // IDEA: Bring back simd_packed_half4
 public struct PackedHalf4: Hashable, Sendable {
@@ -119,14 +136,15 @@ public struct PackedHalf4: Hashable, Sendable {
     }
 }
 
-public extension SIMD3 where Scalar == Float {
-    init(_ other: PackedHalf3) {
-        self = SIMD3(Scalar(other.x), Scalar(other.y), Scalar(other.z))
+public extension PackedHalf4 {
+    init(_ other: SIMD4<Float>) {
+        self = PackedHalf4(x: Float16(other.x), y: Float16(other.y), z: Float16(other.z), w: Float16(other.w))
     }
 }
 
-public extension PackedHalf3 {
-    init(_ other: SIMD3<Float>) {
-        self = PackedHalf3(x: Float16(other.x), y: Float16(other.y), z: Float16(other.z))
+extension PackedHalf4: ExpressibleByArrayLiteral {
+    public init(arrayLiteral elements: Float...) {
+        assert(elements.count == 4)
+        self = .init(x: Float16(elements[0]), y: Float16(elements[1]), z: Float16(elements[2]), w: Float16(elements[3]))
     }
 }
