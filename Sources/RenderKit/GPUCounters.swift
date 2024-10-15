@@ -98,22 +98,24 @@ public final class GPUCounters: @unchecked Sendable {
     public func gatherData() throws {
         let timestamp = getMachTimeInNanoseconds()
         if let lastSampleTimestamp {
-            let frameTime = timestamp - lastSampleTimestamp
-            addMeasurement(id: .frame, timestamp: timestamp, value: frameTime)
+            addMeasurement(id: .frame, timestamp: timestamp, from: lastSampleTimestamp, to: timestamp)
         }
-        if let counterSampleBuffer {
-            let data = try counterSampleBuffer.resolveCounterRange(0 ..< 6)
-            data?.withUnsafeBytes { buffer in
+        if let counterSampleBuffer, let data = try counterSampleBuffer.resolveCounterRange(0 ..< 6) {
+            data.withUnsafeBytes { buffer in
                 let timestamps = buffer.bindMemory(to: MTLCounterResultTimestamp.self)
-                addMeasurement(id: .vertexShader, timestamp: timestamp, value: timestamps[1].timestamp - timestamps[0].timestamp)
-                addMeasurement(id: .fragmentShader, timestamp: timestamp, value: timestamps[3].timestamp - timestamps[2].timestamp)
-                addMeasurement(id: .computeShader, timestamp: timestamp, value: timestamps[5].timestamp - timestamps[4].timestamp)
+                addMeasurement(id: .vertexShader, timestamp: timestamp, from: timestamps[0].timestamp, to: timestamps[1].timestamp)
+                addMeasurement(id: .fragmentShader, timestamp: timestamp, from: timestamps[2].timestamp, to: timestamps[3].timestamp)
+                addMeasurement(id: .computeShader, timestamp: timestamp, from: timestamps[4].timestamp, to: timestamps[5].timestamp)
             }
         }
         lastSampleTimestamp = timestamp
     }
 
-    func addMeasurement(id: Measurement.Kind, timestamp: UInt64, value: UInt64) {
+    func addMeasurement(id: Measurement.Kind, timestamp: UInt64, from: UInt64, to: UInt64) {
+        let (value, overflow) = to.subtractingReportingOverflow(from)
+        guard overflow == false else {
+            return
+        }
         measurements.withLock { measurements in
             measurements[id, default: .init(id: id, maxSamples: maxSamples)].addSample(timestamp: timestamp, value: value)
         }
