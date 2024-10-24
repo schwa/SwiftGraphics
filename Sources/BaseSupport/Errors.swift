@@ -46,6 +46,14 @@ public func unreachable(_ message: @autoclosure () -> String = String(), file: S
 // MARK: -
 
 public extension Optional {
+    func safelyUnwrap() throws -> Wrapped {
+        // swiftlint:disable:next shorthand_optional_binding
+        guard let self = self else {
+            throw BaseError.error(BaseError.resourceCreationFailure)
+        }
+        return self
+    }
+
     func safelyUnwrap(_ error: @autoclosure () -> Error) throws -> Wrapped {
         // swiftlint:disable:next shorthand_optional_binding
         guard let self = self else {

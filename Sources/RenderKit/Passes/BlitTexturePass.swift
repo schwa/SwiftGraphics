@@ -8,8 +8,8 @@ public struct BlitTexturePass: GeneralPassProtocol {
     public var id: PassID
     public var enabled: Bool = true
 
-    public var source: Box<MTLTexture>
-    public var destination: Box<MTLTexture>?
+    internal var source: Box<MTLTexture>
+    internal var destination: Box<MTLTexture>?
 
     public init(id: PassID, enabled: Bool = true, source: MTLTexture, destination: MTLTexture?) {
         self.id = id

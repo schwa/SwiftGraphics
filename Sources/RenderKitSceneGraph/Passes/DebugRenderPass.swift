@@ -33,10 +33,7 @@ public struct DebugRenderPass: RenderPassProtocol {
     }
 
     public func setup(device: MTLDevice, configuration: some MetalConfigurationProtocol) throws -> State {
-        guard let bundle = Bundle.main.bundle(forTarget: "RenderKitShaders") else {
-            throw BaseError.error(.missingResource)
-        }
-        let library = try device.makeDebugLibrary(bundle: bundle)
+        let library = try device.makeDebugLibrary(bundle: Bundle.main.bundle(forTarget: "RenderKitShaders").safelyUnwrap())
         let renderPipelineDescriptor = MTLRenderPipelineDescriptor(configuration)
         renderPipelineDescriptor.vertexFunction = library.makeFunction(name: "DebugVertexShader")
         renderPipelineDescriptor.fragmentFunction = library.makeFunction(name: "DebugFragmentShader")
