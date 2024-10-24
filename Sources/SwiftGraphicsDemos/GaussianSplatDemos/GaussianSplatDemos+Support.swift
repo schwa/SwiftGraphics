@@ -6,6 +6,7 @@ import Metal
 import RenderKit
 import RenderKitSceneGraph
 import UniformTypeIdentifiers
+import SwiftUI
 
 // swiftlint:disable force_unwrapping
 
@@ -40,51 +41,34 @@ extension UTType {
     static let splat = UTType(filenameExtension: "splat")!
 }
 
-extension CGImage {
-    func convert(bitmapInfo: CGBitmapInfo) -> CGImage? {
-        let width = width
-        let height = height
-        let bitsPerComponent = 8
-        let bytesPerPixel = 4
-        let bytesPerRow = width * bytesPerPixel
-        let colorSpace = CGColorSpaceCreateDeviceRGB()
-        guard let context = CGContext(data: nil, width: width, height: height, bitsPerComponent: bitsPerComponent, bytesPerRow: bytesPerRow, space: colorSpace, bitmapInfo: bitmapInfo.rawValue) else {
-            return nil
+
+struct PopupHelpButton: View {
+
+    @State
+    var isPresented: Bool = false
+
+    var help: String
+
+    var body: some View {
+
+        Button {
+            isPresented = true
+        } label: {
+            Image(systemName: "questionmark.circle")
         }
-        context.draw(self, in: CGRect(x: 0, y: 0, width: width, height: height))
-        return context.makeImage()
-    }
-}
-
-func convertCGImageEndianness2(_ inputImage: CGImage) -> CGImage? {
-    let width = inputImage.width
-    let height = inputImage.height
-    let bitsPerComponent = 8
-    let bytesPerPixel = 4
-    let bytesPerRow = width * bytesPerPixel
-    let colorSpace = CGColorSpaceCreateDeviceRGB()
-
-    // Choose the appropriate bitmap info for the target endianness
-    let bitmapInfo: CGBitmapInfo
-    if inputImage.byteOrderInfo == .order32Little {
-        bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedFirst.rawValue | CGBitmapInfo.byteOrder32Big.rawValue)
-    } else {
-        bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedFirst.rawValue | CGBitmapInfo.byteOrder32Little.rawValue)
+        #if os(macOS)
+        .buttonStyle(.link)
+        #endif
+        .popover(isPresented: $isPresented) {
+            Text(help)
+                .font(.caption)
+                .padding()
+                #if os(iOS)
+                .frame(maxHeight: .infinity, alignment: .leading)
+                .fixedSize(horizontal: false, vertical: true)
+                .presentationCompactAdaptation(.popover)
+                #endif
+        }
     }
 
-    guard let context = CGContext(data: nil,
-                                  width: width,
-                                  height: height,
-                                  bitsPerComponent: bitsPerComponent,
-                                  bytesPerRow: bytesPerRow,
-                                  space: colorSpace,
-                                  bitmapInfo: bitmapInfo.rawValue) else {
-        return nil
-    }
-
-    // Draw the original image into the new context
-    context.draw(inputImage, in: CGRect(x: 0, y: 0, width: width, height: height))
-
-    // Create a new CGImage from the context
-    return context.makeImage()
 }

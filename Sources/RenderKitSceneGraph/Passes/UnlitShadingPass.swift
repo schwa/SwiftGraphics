@@ -55,10 +55,7 @@ public struct UnlitShadingPass: RenderPassProtocol {
     }
 
     public func setup(device: MTLDevice, configuration: some MetalConfigurationProtocol) throws -> State {
-        guard let bundle = Bundle.main.bundle(forTarget: "RenderKitShaders") else {
-            throw BaseError.error(.missingResource)
-        }
-        let library = try device.makeDebugLibrary(bundle: bundle)
+        let library = try device.makeDebugLibrary(bundle: .main.bundle(forTarget: "RenderKitShaders", recursive: true).safelyUnwrap())
         let renderPipelineDescriptor = MTLRenderPipelineDescriptor(configuration)
         renderPipelineDescriptor.vertexFunction = library.makeFunction(name: "UnlitShader::unlitVertexShader")
         let constantValues = MTLFunctionConstantValues(dictionary: [1: UInt32(0)]) // TODO: Use name

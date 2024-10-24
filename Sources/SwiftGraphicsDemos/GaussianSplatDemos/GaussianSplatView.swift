@@ -57,14 +57,26 @@ internal struct GaussianSplatView: View {
         }
         .background(.black)
         .toolbar {
-            Button(systemImage: "gear") {
+            Button("Options") {
                 showOptions.toggle()
             }
             .buttonStyle(.borderless)
             .padding()
             .popover(isPresented: $showOptions) {
+                NavigationStack {
+                    Form {
                 OptionsView(options: $options, configuration: $viewModel.configuration)
+                    }
+                    .toolbar {
+                        Button("Close") {
+                            showOptions = false
+                        }
+                    }
+                }
+#if os(macOS)
                     .padding()
+#endif
+
             }
         }
         .overlay(alignment: .top) {
@@ -83,15 +95,8 @@ internal struct GaussianSplatView: View {
                         }
                     }
                 }
-                if options.showTraces {
-                    TracesView(traces: .shared)
-                        .allowsHitTesting(false)
-                        .padding()
-                        .background(.thinMaterial)
-                        .padding()
                 }
             }
-        }
         .overlay(alignment: .bottom) {
             if !viewModel.loadProgress.isFinished {
                 ProgressView(viewModel.loadProgress)
@@ -100,44 +105,7 @@ internal struct GaussianSplatView: View {
                     .background(.thinMaterial)
                     .cornerRadius(8)
                     .padding()
-            }
-        }
     }
-}
-
-private struct OptionsView: View {
-    struct Options {
-        var showInfo: Bool = true
-        var showTraces: Bool = true
-        var showCounters: Bool = true
-    }
-
-    @Binding
-    var options: Options
-
-    @Binding
-    var configuration: GaussianSplatConfiguration
-
-    var body: some View {
-        Form {
-            Toggle("Show Info", isOn: $options.showInfo)
-            Toggle("Show Traces", isOn: $options.showTraces)
-            Toggle("Show Counters", isOn: $options.showCounters)
-            GaussianSplatConfigurationView(configuration: $configuration)
-        }
-    }
-}
-
-private struct InfoView: View {
-    @Environment(GaussianSplatViewModel<SplatC>.self)
-    private var viewModel
-
-    var body: some View {
-        VStack {
-            Text(viewModel.splatResource.name).font(.title)
-            Link(viewModel.splatResource.url.absoluteString, destination: viewModel.splatResource.url)
-            Text(viewModel.splatCloud.capacity, format: .number)
-            Text("\(viewModel.configuration.sortMethod)")
         }
     }
 }

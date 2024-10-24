@@ -1,4 +1,5 @@
 import BaseSupport
+import CoreGraphics
 import Foundation
 import Metal
 import os
@@ -33,47 +34,51 @@ internal func releaseAssert(_ condition: @autoclosure () -> Bool, _ message: @au
     }
 }
 
-@dynamicMemberLookup
-public struct TupleBuffered<Element> {
-    var keys: [String: Int]
-    var elements: [Element]
-
-    public init(keys: [String], elements: [Element]) {
-        self.keys = Dictionary(uniqueKeysWithValues: zip(keys, keys.indices))
-        self.elements = elements
-    }
-
-    public mutating func rotate() {
-        let first = elements.removeFirst()
-        elements.append(first)
-    }
-
-    public subscript(dynamicMember key: String) -> Element {
-        get {
-            guard let index = keys[key] else {
-                fatalError("No index for key \(key)")
-            }
-            return elements[index]
+public extension CGImage {
+    func convert(bitmapInfo: CGBitmapInfo) -> CGImage? {
+        let width = width
+        let height = height
+        let bitsPerComponent = 8
+        let bytesPerPixel = 4
+        let bytesPerRow = width * bytesPerPixel
+        let colorSpace = CGColorSpaceCreateDeviceRGB()
+        guard let context = CGContext(data: nil, width: width, height: height, bitsPerComponent: bitsPerComponent, bytesPerRow: bytesPerRow, space: colorSpace, bitmapInfo: bitmapInfo.rawValue) else {
+            return nil
         }
-        set {
-            guard let index = keys[key] else {
-                fatalError("No index for key \(key)")
-            }
-            elements[index] = newValue
-        }
+        context.draw(self, in: CGRect(x: 0, y: 0, width: width, height: height))
+        return context.makeImage()
     }
 }
 
-extension TupleBuffered: Sendable where Element: Sendable {
-}
+internal func convertCGImageEndianness2(_ inputImage: CGImage) -> CGImage? {
+    let width = inputImage.width
+    let height = inputImage.height
+    let bitsPerComponent = 8
+    let bytesPerPixel = 4
+    let bytesPerRow = width * bytesPerPixel
+    let colorSpace = CGColorSpaceCreateDeviceRGB()
 
-extension OSAllocatedUnfairLock where State == Int {
-    func postIncrement() -> State {
-        withLock { state in
-            defer {
-                state += 1
-            }
-            return state
-        }
+    // Choose the appropriate bitmap info for the target endianness
+    let bitmapInfo: CGBitmapInfo
+    if inputImage.byteOrderInfo == .order32Little {
+        bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedFirst.rawValue | CGBitmapInfo.byteOrder32Big.rawValue)
+    } else {
+        bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedFirst.rawValue | CGBitmapInfo.byteOrder32Little.rawValue)
     }
+
+    guard let context = CGContext(data: nil,
+                                  width: width,
+                                  height: height,
+                                  bitsPerComponent: bitsPerComponent,
+                                  bytesPerRow: bytesPerRow,
+                                  space: colorSpace,
+                                  bitmapInfo: bitmapInfo.rawValue) else {
+        return nil
+    }
+
+    // Draw the original image into the new context
+    context.draw(inputImage, in: CGRect(x: 0, y: 0, width: width, height: height))
+
+    // Create a new CGImage from the context
+    return context.makeImage()
 }

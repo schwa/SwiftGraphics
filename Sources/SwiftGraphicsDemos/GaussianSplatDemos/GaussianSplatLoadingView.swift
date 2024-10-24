@@ -8,11 +8,8 @@ public struct GaussianSplatLoadingView: View {
     @Environment(\.metalDevice)
     private var device
 
-    let url: URL
-    let splatResource: SplatResource
+    let source: UFOSpecifier
     let configuration: GaussianSplatConfiguration
-    let progressiveLoad: Bool
-    let bounds: ConeBounds
 
     @State
     private var subtitle: String = "Processing"
@@ -20,19 +17,29 @@ public struct GaussianSplatLoadingView: View {
     @State
     private var viewModel: GaussianSplatViewModel<SplatC>?
 
-    public init(url: URL, splatResource: SplatResource, bounds: ConeBounds, initialConfiguration: GaussianSplatConfiguration, progressiveLoad: Bool) {
-        self.url = url
-        self.splatResource = splatResource
-        self.bounds = bounds
-        self.configuration = initialConfiguration
-        self.progressiveLoad = progressiveLoad
+    @AppStorage("ufo-progressive-load")
+    private var progressiveLoad: Bool = true
+
+    @AppStorage("ufo-view")
+    private var useUFOView = false
+
+    public init(source: UFOSpecifier) {
+        self.source = source
+        self.configuration = GaussianSplatConfiguration(skyboxTexture: GaussianSplatConfiguration.defaultSkyboxTexture(device: MTLCreateSystemDefaultDevice()!))
     }
 
     public var body: some View {
         ZStack {
             if let viewModel {
-                GaussianSplatView(bounds: bounds)
+                if useUFOView {
+                    UFOView(bounds: source.bounds)
                     .environment(viewModel)
+
+                }
+                else {
+                    GaussianSplatView(bounds: source.bounds)
+                        .environment(viewModel)
+                }
             }
             else {
                 VStack {
@@ -44,18 +51,18 @@ public struct GaussianSplatLoadingView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .task {
             do {
-                switch (progressiveLoad, url.scheme) {
+                switch (progressiveLoad, source.url.scheme) {
                 case (true, "http"), (true, "https"):
                     subtitle = "Streaming"
-                    viewModel = try! await GaussianSplatViewModel<SplatC>(device: device, splatResource: splatResource, progressiveURL: url, configuration: configuration, logger: Logger())
+                    viewModel = try! await GaussianSplatViewModel<SplatC>(device: device, source: source, progressiveURL: source.url, configuration: configuration, logger: Logger())
                     Task.detached {
-                        try await viewModel?.streamingLoad(url: url)
+                        try await viewModel?.streamingLoad(url: source.url)
                     }
                 case (false, "http"), (false, "https"):
                     subtitle = "Downloading"
                     Task.detached {
                         let session = URLSession.shared
-                        let request = URLRequest(url: url)
+                        let request = await URLRequest(url: source.url)
                         let (downloadedUrl, response) = try await session.download(for: request)
                         guard let response = response as? HTTPURLResponse else {
                             fatalError("Oops")
@@ -67,12 +74,12 @@ public struct GaussianSplatLoadingView: View {
                         try FileManager().createSymbolicLink(at: url, withDestinationURL: downloadedUrl)
                         try await MainActor.run {
                             let splatCloud = try SplatCloud<SplatC>(device: device, url: url)
-                            viewModel = try! GaussianSplatViewModel<SplatC>(device: device, splatResource: splatResource, splatCloud: splatCloud, configuration: configuration, logger: Logger())
+                            viewModel = try! GaussianSplatViewModel<SplatC>(device: device, splatCloud: splatCloud, configuration: configuration, logger: Logger())
                         }
                     }
                 default:
-                    let splatCloud = try SplatCloud<SplatC>(device: device, url: url)
-                    viewModel = try! GaussianSplatViewModel<SplatC>(device: device, splatResource: splatResource, splatCloud: splatCloud, configuration: configuration, logger: Logger())
+                    let splatCloud = try SplatCloud<SplatC>(device: device, url: source.url)
+                    viewModel = try! GaussianSplatViewModel<SplatC>(device: device, splatCloud: splatCloud, configuration: configuration, logger: Logger())
                 }
             }
             catch {
@@ -83,7 +90,7 @@ public struct GaussianSplatLoadingView: View {
 }
 
 extension GaussianSplatViewModel where Splat == SplatC {
-    public convenience init(device: MTLDevice, splatResource: SplatResource, progressiveURL url: URL, configuration: GaussianSplatConfiguration, logger: Logger? = nil) async throws {
+    public convenience init(device: MTLDevice, source: UFOSpecifier, progressiveURL url: URL, configuration: GaussianSplatConfiguration, logger: Logger? = nil) async throws {
         assert(MemoryLayout<SplatB>.stride == MemoryLayout<SplatB>.size)
         let session = URLSession.shared
         // Perform a HEAD request to compute the number of splats.
@@ -104,7 +111,7 @@ extension GaussianSplatViewModel where Splat == SplatC {
         }
         let splatCount = contentLength / MemoryLayout<SplatB>.stride
 
-        try self.init(device: device, splatResource: splatResource, splatCapacity: splatCount, configuration: configuration, logger: logger)
+        try self.init(device: device, splatCapacity: splatCount, configuration: configuration, logger: logger)
     }
 
     func streamingLoad(url: URL) async throws {

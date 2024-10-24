@@ -14,6 +14,7 @@ public extension SplatCloud where Splat == SplatC {
                 convert_b_to_c(splats)
             }
         }
+
         let splats = try device.makeTypedBuffer(data: splatArray, options: .storageModeShared).labelled("Splats")
         try self.init(device: device, splats: splats)
     }
