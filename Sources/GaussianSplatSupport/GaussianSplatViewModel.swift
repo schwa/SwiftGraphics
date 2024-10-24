@@ -13,37 +13,7 @@ import Shapes3D
 import simd
 import SIMDSupport
 import SwiftUI
-import SwiftUISupport
 import Traces
-
-public struct GaussianSplatConfiguration {
-    public enum SortMethod {
-        case gpuBitonic
-        case cpuRadix
-    }
-
-    public var debugMode: Bool
-    public var metalFXRate: Float
-    public var discardRate: Float
-    public var gpuCounters: GPUCounters?
-    public var clearColor: MTLClearColor // TODO: make this a SwiftUI Color
-    public var skyboxTexture: MTLTexture?
-    public var verticalAngleOfView: Angle
-    public var sortMethod: SortMethod
-
-    public init(debugMode: Bool = false, metalFXRate: Float = 2, discardRate: Float = 0.0, gpuCounters: GPUCounters? = nil, clearColor: MTLClearColor = .init(red: 0, green: 0, blue: 0, alpha: 1), skyboxTexture: MTLTexture? = nil, verticalAngleOfView: Angle = .degrees(90), sortMethod: SortMethod = .gpuBitonic) {
-        self.debugMode = debugMode
-        self.metalFXRate = metalFXRate
-        self.discardRate = discardRate
-        self.gpuCounters = gpuCounters
-        self.clearColor = clearColor
-        self.skyboxTexture = skyboxTexture
-        self.verticalAngleOfView = verticalAngleOfView
-        self.sortMethod = sortMethod
-    }
-}
-
-// MARK: -
 
 @Observable
 @MainActor
@@ -61,8 +31,6 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
             try? updatePass()
         }
     }
-
-    public var splatResource: SplatResource
 
     public var pass: GroupPass?
 
@@ -100,9 +68,8 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
 
     // MARK: -
 
-    public init(device: MTLDevice, splatResource: SplatResource, splatCloud: SplatCloud<SplatC>, configuration: GaussianSplatConfiguration, logger: Logger? = nil) throws where Splat == SplatC {
+    public init(device: MTLDevice, splatCloud: SplatCloud<SplatC>, configuration: GaussianSplatConfiguration, logger: Logger? = nil) throws where Splat == SplatC {
         self.device = device
-        self.splatResource = splatResource
         self.configuration = configuration
         self.logger = logger
 
@@ -164,7 +131,7 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
                         enabled: sortEnabled,
                         splats: splats,
                         modelMatrix: simd_float3x3(truncating: splatsNode.transform.matrix),
-                        cameraPosition: cameraNode.transform.translation
+                        cameraPosition: cameraNode.transform.matrix.translation
                     )
                     GaussianSplatBitonicSortComputePass(
                         id: "SplatBitonicSort",
@@ -172,41 +139,41 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
                         splats: splats
                     )
                 }
+                GroupPass(id: "Panorama Render", enabled: configuration.renderSkybox && fullRedraw, renderPassDescriptor: offscreenRenderPassDescriptor1) {
                 PanoramaShadingPass(id: "Panorama", scene: scene)
+            }
+                GroupPass(id: "Splats Render", enabled: configuration.renderSplats && fullRedraw, renderPassDescriptor: offscreenRenderPassDescriptor2) {
                 GaussianSplatRenderPass<Splat>(
                     id: "SplatRender",
                     enabled: true,
                     scene: scene,
                     discardRate: configuration.discardRate
                 )
-            }
-            GroupPass(id: "GaussianSplatRenderGroup-1", enabled: fullRedraw, renderPassDescriptor: offscreenRenderPassDescriptor1) {
-                PanoramaShadingPass(id: "Panorama", scene: scene)
-            }
-            GroupPass(id: "GaussianSplatRenderGroup-2", enabled: fullRedraw, renderPassDescriptor: offscreenRenderPassDescriptor2) {
-                GaussianSplatRenderPass<Splat>(
-                    id: "SplatRender",
-                    enabled: true,
-                    scene: scene,
-                    discardRate: configuration.discardRate
-                )
+                }
+
             }
             #if !targetEnvironment(simulator)
             try SpatialUpscalingPass(id: "SpatialUpscalingPass", enabled: configuration.metalFXRate > 1 && fullRedraw, device: device, source: resources.downscaledTexture, destination: resources.outputTexture, colorProcessingMode: .perceptual)
+            let blitTexture = resources.outputTexture
+            #else
+            let blitTexture = resources.downscaledTexture
             #endif
-            BlitTexturePass(id: "BlitTexturePass", source: resources.outputTexture, destination: nil)
+            BlitTexturePass(id: "BlitTexturePass", source: blitTexture, destination: nil)
         }
     }
 
     public func drawableChanged(pixelFormat: MTLPixelFormat, size: SIMD2<Float>) throws {
-        print("###################", #function, pixelFormat, size)
         try makeResources(pixelFormat: pixelFormat, size: size)
     }
 
     // MARK: -
 
     private func makeResources(pixelFormat: MTLPixelFormat, size: SIMD2<Float>) throws {
+        #if !targetEnvironment(simulator)
         let downscaledSize = SIMD2<Int>(ceil(size / configuration.metalFXRate))
+        #else
+        let downscaledSize = SIMD2<Int>(size)
+        #endif
 
         let colorTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: pixelFormat, width: downscaledSize.x, height: downscaledSize.y, mipmapped: false)
         colorTextureDescriptor.storageMode = .private
@@ -288,13 +255,5 @@ struct GaussianSplatResources {
 extension MTLSize {
     var shortDescription: String {
         depth == 1 ? "\(width)x\(height)" : "\(width)x\(height)x\(depth)"
-    }
-}
-
-// MARK: -
-
-public extension GaussianSplatViewModel where Splat == SplatC {
-    convenience init(device: MTLDevice, splatResource: SplatResource, splatCapacity: Int, configuration: GaussianSplatConfiguration, logger: Logger? = nil) throws {
-        try self.init(device: device, splatResource: splatResource, splatCloud: SplatCloud<SplatC>(device: device, capacity: splatCapacity), configuration: configuration, logger: logger)
     }
 }

@@ -16,8 +16,8 @@ public struct RenderErrorHandler: Sendable {
     }
 }
 
-public struct RenderErrorHandlerKey: EnvironmentKey {
-    public static let defaultValue = RenderErrorHandler()
+struct RenderErrorHandlerKey: EnvironmentKey {
+    static let defaultValue = RenderErrorHandler()
 }
 
 public extension EnvironmentValues {

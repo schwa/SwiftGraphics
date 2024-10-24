@@ -67,8 +67,8 @@ namespace GaussianSplatShaders {
 
         VertexOut out;
 
-        auto indexedDistance = indexedDistances[instance_id];
-        auto splat = splats[indexedDistance.index];
+        const IndexedDistance indexedDistance = indexedDistances[instance_id];
+        const SplatC splat = splats[indexedDistance.index];
         const float4 splatModelSpacePosition = float4(float3(splat.position), 1);
         const float4 splatClipSpacePosition = uniforms.modelViewProjectionMatrix * splatModelSpacePosition;
 
@@ -80,7 +80,7 @@ namespace GaussianSplatShaders {
             return out;
         }
 
-        const float4 splatWorldSpacePosition =  uniforms.modelViewMatrix * splatModelSpacePosition;
+        const float4 splatWorldSpacePosition = uniforms.modelViewMatrix * splatModelSpacePosition;
         const float3 covPosition = splatWorldSpacePosition.xyz;
         const Tuple2<float2> axes = decomposedCalcCovariance2D(covPosition, splat.cov_a, splat.cov_b, uniforms.modelViewMatrix, uniforms.focalSize, uniforms.limit);
 

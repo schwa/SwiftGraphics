@@ -3,7 +3,7 @@ import Foundation
 import simd
 import SwiftUI
 
-public struct SplatResource: Hashable {
+public struct UFOSpecifier: Hashable {
     public var name: String
     public var url: URL
     public var bounds: ConeBounds
