@@ -73,8 +73,8 @@ public extension XYZRotation {
         case zxy
         case zyx
 
-        // zyx order ensures correct matrix multiplication for roll (x), pitch (y), yaw (z)
-        public static let rollPitchYaw = Self.zyx
+        // xyz order ensures correct matrix multiplication for roll (x), pitch (y), yaw (z)
+        public static let rollPitchYaw = Self.xyz
     }
 
     func toMatrix3x3(order: Order) -> simd_float3x3 {
@@ -109,7 +109,7 @@ public extension XYZRotation {
 public extension XYZRotation {
     // THis only works for zyx order right now
     init(target: Target = .object, matrix: simd_float3x3, order: Order) {
-        assert(order == .zyx)
+        assert(order == .xyz)
         // https://web.archive.org/web/20220428033032/
         // http://planning.cs.uiuc.edu/node103.html
         let x = -atan2(matrix[2][1], matrix[2][2])

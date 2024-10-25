@@ -48,6 +48,6 @@ public struct NewBallConstraint: Equatable {
     }
 
     func transform(for rotation: RollPitchYaw) -> Transform {
-        Transform((rotation.toMatrix4x4(order: .rollPitchYaw) * simd_float4x4(translate: [0, 0, radius])))
+        Transform(simd_float4x4(translate: [0, 0, radius]) * rotation.toMatrix4x4(order: .rollPitchYaw))
     }
 }
