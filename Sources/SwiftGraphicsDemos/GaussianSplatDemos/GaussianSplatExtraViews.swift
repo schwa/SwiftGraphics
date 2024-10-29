@@ -80,7 +80,7 @@ struct OptionsView: View {
 }
 
 struct InfoView: View {
-    @Environment(GaussianSplatViewModel<SplatC>.self)
+    @Environment(GaussianSplatViewModel.self)
     private var viewModel
 
     var body: some View {

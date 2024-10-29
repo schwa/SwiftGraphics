@@ -6,14 +6,12 @@ public struct BlitTexturePass: GeneralPassProtocol {
     }
 
     public var id: PassID
-    public var enabled: Bool = true
 
     internal var source: Box<MTLTexture>
     internal var destination: Box<MTLTexture>?
 
-    public init(id: PassID, enabled: Bool = true, source: MTLTexture, destination: MTLTexture?) {
+    public init(id: PassID = .init(Self.self), source: MTLTexture, destination: MTLTexture?) {
         self.id = id
-        self.enabled = enabled
         self.source = Box(source)
         self.destination = destination.map { Box($0) }
     }

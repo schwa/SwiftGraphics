@@ -6,6 +6,7 @@ import os
 import RenderKitSceneGraph
 import simd
 import SIMDSupport
+import MetalKit
 
 // swiftlint:disable force_unwrapping
 
@@ -81,4 +82,30 @@ internal func convertCGImageEndianness2(_ inputImage: CGImage) -> CGImage? {
 
     // Create a new CGImage from the context
     return context.makeImage()
+}
+
+internal extension MTLSize {
+    var shortDescription: String {
+        depth == 1 ? "\(width)x\(height)" : "\(width)x\(height)x\(depth)"
+    }
+}
+
+extension Node {
+    static func skybox(device: MTLDevice, texture: MTLTexture) throws -> Node {
+        let allocator = MTKMeshBufferAllocator(device: device)
+        let panoramaMDLMesh = MDLMesh(sphereWithExtent: [200, 200, 200], segments: [36, 36], inwardNormals: true, geometryType: .triangles, allocator: allocator)
+        let panoramaMTKMesh = try MTKMesh(mesh: panoramaMDLMesh, device: device)
+        return Node(label: "skyBox", content: Geometry(mesh: panoramaMTKMesh, materials: [PanoramaMaterial(baseColorTexture: texture)]))
+    }
+}
+
+extension MTLDevice {
+    func makeTexture(pixelFormat: MTLPixelFormat, size: SIMD2<Int>, mipmapped: Bool = false, storageMode: MTLStorageMode = .private, usage: MTLTextureUsage, label: String? = nil) throws -> MTLTexture {
+        let descriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: pixelFormat, width: size.x, height: size.y, mipmapped: mipmapped)
+        descriptor.storageMode = storageMode
+        descriptor.usage = usage
+        let texture = try makeTexture(descriptor: descriptor).safelyUnwrap(BaseError.resourceCreationFailure)
+        texture.label = label
+        return texture
+    }
 }

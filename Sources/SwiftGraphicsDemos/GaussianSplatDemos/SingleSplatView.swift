@@ -19,7 +19,7 @@ import Widgets3D
 
 public struct SingleSplatView: View {
     @State
-    private var viewModel: GaussianSplatViewModel<SplatC>
+    private var viewModel: GaussianSplatViewModel
 
     @State
     private var cameraTransform: Transform = .translation([0, 0, 5])
@@ -48,11 +48,11 @@ public struct SingleSplatView: View {
     //        let splats = [splat].map(SplatC.init)
     //        let splatCloud = try! SplatCloud(device: device, splats: splats)
     //
-    ////        self.viewModel = try! GaussianSplatViewModel<SplatC>(device: device, splatResource: .init(name: "x", url: URL("file:///"), bounds: .init(bottomHeight: 0, bottomInnerRadius: 1, topHeight: 1, topInnerRadius: 1)), splatCloud: splat, configuration: .init(bounds: <#ConeBounds#>))
+    ////        self.viewModel = try! GaussianSplatViewModel(device: device, splatResource: .init(name: "x", url: URL("file:///"), bounds: .init(bottomHeight: 0, bottomInnerRadius: 1, topHeight: 1, topInnerRadius: 1)), splatCloud: splat, configuration: .init(bounds: <#ConeBounds#>))
     //    }
 
     public var body: some View {
-        GaussianSplatRenderView<SplatC>()
+        GaussianSplatRenderView()
             .environment(viewModel)
             // .modifier(CameraConeController(cameraCone: .init(apex: [0, 0, 0], axis: [0, 1, 0], h1: 0, r1: 2, r2: 2, h2: 2), transform: $viewModel.scene.unsafeCurrentCameraNode.transform))
             .onChange(of: splat, initial: true) {
