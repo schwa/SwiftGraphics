@@ -61,7 +61,7 @@ namespace GaussianSplatShaders {
         device MyCounters* my_counters [[buffer(4), function_constant(use_counters)]]
 
    ) {
-           if (use_counters) {
+        if (use_counters) {
             atomic_fetch_add_explicit(&(my_counters->vertices_submitted), 1, memory_order_relaxed);
         }
 

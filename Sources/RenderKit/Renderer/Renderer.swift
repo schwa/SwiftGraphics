@@ -71,12 +71,8 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
 
     mutating func configure(_ configuration: inout MetalConfiguration) throws {
         logger?.debug("Renderer.\(#function)")
-
         assert(phase == .initialized)
         self.phase = .configured(sizeKnown: false)
-        // Assume view has been configured by this point.
-        //        configuration.colorPixelFormat = .bgra8Unorm_srgb
-        //        configuration.depthStencilPixelFormat = .depth32Float
         try setupPasses(passes: passes.elements, configuration: &configuration)
         self.configuration = configuration
     }
@@ -134,7 +130,7 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
         var info = info
         info.currentRenderPassDescriptor = renderPassDescriptor
 
-        for pass in passes where pass.enabled == true {
+        for pass in passes {
             if let prePass = callbacks.prePass {
                 prePass(pass, commandBuffer, info)
             }

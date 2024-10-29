@@ -6,6 +6,16 @@ import os
 
 public struct PassID: Hashable, Sendable {
     var rawValue: String
+
+    public init(_ rawValue: String) {
+        self.rawValue = rawValue
+    }
+}
+
+public extension PassID {
+    init<P>(_ type: P.Type) where P: PassProtocol {
+        self.rawValue = "\(type)"
+    }
 }
 
 extension PassID: CustomDebugStringConvertible {
@@ -22,7 +32,6 @@ extension PassID: ExpressibleByStringLiteral {
 
 public protocol PassProtocol: Equatable, Sendable {
     var id: PassID { get }
-    var enabled: Bool { get }
 }
 
 public struct PassInfo: Sendable {
@@ -70,13 +79,11 @@ public protocol GeneralPassProtocol: PassProtocol {
 
 public struct GroupPass: PassProtocol {
     public var id: PassID
-    public var enabled: Bool
     internal var _children: PassCollection
     public var renderPassDescriptor: MTLRenderPassDescriptor?
 
-    public init(id: PassID, enabled: Bool = true, renderPassDescriptor: MTLRenderPassDescriptor? = nil, @RenderPassBuilder content: () throws -> [any PassProtocol]) rethrows {
+    public init(id: PassID = .init(Self.self), renderPassDescriptor: MTLRenderPassDescriptor? = nil, @RenderPassBuilder content: () throws -> [any PassProtocol]) rethrows {
         self.id = id
-        self.enabled = enabled
         self.renderPassDescriptor = renderPassDescriptor
         self._children = try PassCollection(content())
     }

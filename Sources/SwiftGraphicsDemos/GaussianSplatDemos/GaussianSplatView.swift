@@ -24,7 +24,7 @@ internal struct GaussianSplatView: View {
     @Environment(\.metalDevice)
     private var device
 
-    @Environment(GaussianSplatViewModel<SplatC>.self)
+    @Environment(GaussianSplatViewModel.self)
     private var viewModel
 
     @Environment(\.gpuCounters)
@@ -48,7 +48,7 @@ internal struct GaussianSplatView: View {
         var viewModel = viewModel
 
         Group {
-            GaussianSplatRenderView<SplatC>()
+            GaussianSplatRenderView()
                 #if os(iOS)
                 .ignoresSafeArea()
                 #endif

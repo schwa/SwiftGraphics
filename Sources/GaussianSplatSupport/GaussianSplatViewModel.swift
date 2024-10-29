@@ -14,10 +14,14 @@ import simd
 import SIMDSupport
 import SwiftUI
 import Traces
+import ModelIO
 
 @Observable
 @MainActor
-public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
+public class GaussianSplatViewModel {
+
+    public typealias Splat = SplatC
+
     @ObservationIgnored
     private let device: MTLDevice
 
@@ -38,7 +42,7 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
 
     public var splatCloud: SplatCloud<SplatC> {
         get {
-            scene.firstNode(label: "splats")!.content as! SplatCloud<SplatC>
+            scene.firstSplatCloud!
         }
         set {
             try! scene.modify(label: "splats") { node in
@@ -68,19 +72,19 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
 
     // MARK: -
 
-    public init(device: MTLDevice, splatCloud: SplatCloud<SplatC>, configuration: GaussianSplatConfiguration, logger: Logger? = nil) throws where Splat == SplatC {
+    public init(device: MTLDevice, splatCloud: SplatCloud<SplatC>, configuration: GaussianSplatConfiguration, logger: Logger? = nil) throws {
         self.device = device
         self.configuration = configuration
         self.logger = logger
 
-        let root = Node(label: "root") {
+        let root = try Node(label: "root") {
             Node(label: "camera", content: Camera(projection: .perspective(.init(verticalAngleOfView: configuration.verticalAngleOfView, zClip: 0.001...250))))
-            if let skyboxTexture = configuration.skyboxTexture {
-                let allocator = MTKMeshBufferAllocator(device: device)
-                let panoramaMDLMesh = MDLMesh(sphereWithExtent: [200, 200, 200], segments: [36, 36], inwardNormals: true, geometryType: .triangles, allocator: allocator)
-                let panoramaMTKMesh = try! MTKMesh(mesh: panoramaMDLMesh, device: device)
-                Node(label: "skyBox", content: Geometry(mesh: panoramaMTKMesh, materials: [PanoramaMaterial(baseColorTexture: skyboxTexture)]))
-            }
+//            if let skyboxTexture = configuration.skyboxTexture {
+//                try Node.skybox(device: device, texture: skyboxTexture)
+//                let panoramaMDLMesh = MDLMesh(sphereWithExtent: [200, 200, 200], segments: [36, 36], inwardNormals: true, geometryType: .triangles, allocator: allocator)
+//                let panoramaMTKMesh = try! MTKMesh(mesh: panoramaMDLMesh, device: device)
+//                Node(label: "skyBox", content: Geometry(mesh: panoramaMTKMesh, materials: [PanoramaMaterial(baseColorTexture: skyboxTexture)]))
+//            }
             Node(label: "splats", content: splatCloud).transformed(roll: .zero, pitch: .degrees(270), yaw: .zero).transformed(roll: .zero, pitch: .zero, yaw: .degrees(90))
         }
         self.scene = SceneGraph(root: root)
@@ -108,57 +112,45 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
     }
 
     internal func updatePass() throws {
-        guard let resources else {
-            logger?.log("Missing resources")
-            return
-        }
-        guard let splatsNode = scene.firstNode(label: "splats"), let splats = splatsNode.content as? SplatCloud<Splat> else {
-            logger?.log("Missing splats")
-            return
-        }
-        guard let cameraNode = scene.firstNode(label: "camera") else {
-            logger?.log("Missing camera")
+        guard let resources, let cameraNode = scene.currentCameraNode, let splatsNode = scene.firstSplatsNode, let splats = scene.firstSplatCloud else {
+            logger?.log("Missing dependencies")
             return
         }
 
         let fullRedraw = true
-        let sortEnabled = configuration.sortMethod == .gpuBitonic && (frame <= 1 || frame.isMultiple(of: 15))
         self.pass = try GroupPass(id: "FullPass") {
-            GroupPass(id: "GaussianSplatRenderGroup", enabled: fullRedraw, renderPassDescriptor: offscreenRenderPassDescriptor1) {
-                if configuration.sortMethod == .gpuBitonic {
-                    GaussianSplatDistanceComputePass(
-                        id: "SplatDistanceCompute",
-                        enabled: sortEnabled,
-                        splats: splats,
-                        modelMatrix: simd_float3x3(truncating: splatsNode.transform.matrix),
-                        cameraPosition: cameraNode.transform.matrix.translation
-                    )
-                    GaussianSplatBitonicSortComputePass(
-                        id: "SplatBitonicSort",
-                        enabled: sortEnabled,
-                        splats: splats
-                    )
+            if fullRedraw {
+                GroupPass {
+                    let sortEnabled = configuration.sortMethod == .gpuBitonic && (frame <= 1 || frame.isMultiple(of: 15))
+                    if configuration.sortMethod == .gpuBitonic && sortEnabled {
+                        GaussianSplatDistanceComputePass(
+                            splats: splats,
+                            modelMatrix: simd_float3x3(truncating: splatsNode.transform.matrix),
+                            cameraPosition: cameraNode.transform.matrix.translation
+                        )
+                        GaussianSplatBitonicSortComputePass(splats: splats)
+                    }
+                    if configuration.renderSkybox && fullRedraw {
+                        GroupPass(renderPassDescriptor: initialRenderPassDescriptor) {
+                            PanoramaShadingPass(scene: scene)
+                        }
+                    }
+                    if configuration.renderSplats && fullRedraw {
+                        GroupPass(renderPassDescriptor: secondaryRenderPassDescriptor) {
+                            GaussianSplatRenderPass<Splat>(scene: scene, discardRate: configuration.discardRate)
+                        }
+                    }
                 }
-                GroupPass(id: "Panorama Render", enabled: configuration.renderSkybox && fullRedraw, renderPassDescriptor: offscreenRenderPassDescriptor1) {
-                PanoramaShadingPass(id: "Panorama", scene: scene)
-            }
-                GroupPass(id: "Splats Render", enabled: configuration.renderSplats && fullRedraw, renderPassDescriptor: offscreenRenderPassDescriptor2) {
-                GaussianSplatRenderPass<Splat>(
-                    id: "SplatRender",
-                    enabled: true,
-                    scene: scene,
-                    discardRate: configuration.discardRate
-                )
-                }
-
             }
             #if !targetEnvironment(simulator)
-            try SpatialUpscalingPass(id: "SpatialUpscalingPass", enabled: configuration.metalFXRate > 1 && fullRedraw, device: device, source: resources.downscaledTexture, destination: resources.outputTexture, colorProcessingMode: .perceptual)
+            if configuration.metalFXRate > 1 && fullRedraw {
+                try SpatialUpscalingPass(id: "SpatialUpscalingPass", device: device, source: resources.downscaledTexture, destination: resources.outputTexture, colorProcessingMode: .perceptual)
+            }
             let blitTexture = resources.outputTexture
             #else
             let blitTexture = resources.downscaledTexture
             #endif
-            BlitTexturePass(id: "BlitTexturePass", source: blitTexture, destination: nil)
+            BlitTexturePass(source: blitTexture, destination: nil)
         }
     }
 
@@ -174,29 +166,14 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
         #else
         let downscaledSize = SIMD2<Int>(size)
         #endif
-
-        let colorTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: pixelFormat, width: downscaledSize.x, height: downscaledSize.y, mipmapped: false)
-        colorTextureDescriptor.storageMode = .private
-        colorTextureDescriptor.usage = [.renderTarget, .shaderRead]
-        let colorTexture = try device.makeTexture(descriptor: colorTextureDescriptor).safelyUnwrap(BaseError.resourceCreationFailure)
-        colorTexture.label = "reduce-resolution-color-\(colorTexture.size.shortDescription)"
-
-        let depthTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .depth32Float, width: downscaledSize.x, height: downscaledSize.y, mipmapped: false)
-        depthTextureDescriptor.storageMode = .private
-        depthTextureDescriptor.usage = [.renderTarget, .shaderRead]
-        let depthTexture = try device.makeTexture(descriptor: depthTextureDescriptor).safelyUnwrap(BaseError.resourceCreationFailure)
-        depthTexture.label = "reduce-resolution-depth-\(depthTexture.size.shortDescription)"
-
-        let upscaledTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: pixelFormat, width: Int(ceil(size.x)), height: Int(ceil(size.y)), mipmapped: false)
-        upscaledTextureDescriptor.storageMode = .private
-        upscaledTextureDescriptor.usage = .renderTarget
-        let upscaledTexture = try device.makeTexture(descriptor: upscaledTextureDescriptor).safelyUnwrap(BaseError.resourceCreationFailure)
-        upscaledTexture.label = "reduce-resolution-upscaled-\(upscaledTexture.size.shortDescription)"
+        let colorTexture = try device.makeTexture(pixelFormat: pixelFormat, size: downscaledSize, usage: [.renderTarget, .shaderRead], label: "reduce-resolution-color-\(size)")
+        let depthTexture = try device.makeTexture(pixelFormat: .depth32Float, size: downscaledSize, usage: [.renderTarget, .shaderRead], label: "reduce-resolution-depth-\(size)")
+        let upscaledTexture = try device.makeTexture(pixelFormat: pixelFormat, size: SIMD2<Int>(size), usage: [.renderTarget], label: "reduce-resolution-upscaled-\(size)")
 
         self.resources = .init(downscaledTexture: colorTexture, downscaledDepthTexture: depthTexture, outputTexture: upscaledTexture)
     }
 
-    private var offscreenRenderPassDescriptor1: MTLRenderPassDescriptor {
+    private var initialRenderPassDescriptor: MTLRenderPassDescriptor {
         guard let resources else {
             fatalError("Tried to create renderpass without resources.")
         }
@@ -212,7 +189,7 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
         return offscreenRenderPassDescriptor
     }
 
-    private var offscreenRenderPassDescriptor2: MTLRenderPassDescriptor {
+    private var secondaryRenderPassDescriptor: MTLRenderPassDescriptor {
         guard let resources else {
             fatalError("Tried to create renderpass without resources.")
         }
@@ -231,12 +208,8 @@ public class GaussianSplatViewModel <Splat> where Splat: SplatProtocol {
         guard configuration.sortMethod == .cpuRadix, let cpuSorter else {
             return
         }
-        guard let splatsNode = scene.firstNode(label: "splats"), let splatCloud = splatsNode.content as? SplatCloud<Splat> else {
-            logger?.log("Missing splats")
-            return
-        }
-        guard let cameraNode = scene.firstNode(label: "camera") else {
-            logger?.log("Missing camera")
+        guard let splatsNode = scene.firstSplatsNode, let splatCloud = scene.firstSplatCloud, let cameraNode = scene.currentCameraNode else {
+            logger?.log("Can't sort. Missing dependencies.")
             return
         }
         cpuSorter.requestSort(camera: cameraNode.transform.matrix, model: splatsNode.transform.matrix, count: splatCloud.splats.count)
@@ -252,8 +225,27 @@ struct GaussianSplatResources {
     var outputTexture: MTLTexture
 }
 
-extension MTLSize {
-    var shortDescription: String {
-        depth == 1 ? "\(width)x\(height)" : "\(width)x\(height)x\(depth)"
+// MARK: -
+
+@available(iOS 17, macOS 14, visionOS 1, *)
+public extension GaussianSplatViewModel {
+    convenience init(device: MTLDevice, splatCapacity: Int, configuration: GaussianSplatConfiguration, logger: Logger? = nil) throws {
+        try self.init(device: device, splatCloud: SplatCloud<SplatC>(device: device, capacity: splatCapacity), configuration: configuration, logger: logger)
+    }
+}
+
+public extension SceneGraph {
+    var firstSplatsNode: Node? {
+        guard let splatsNode = firstNode(label: "splats") else {
+            return nil
+        }
+        return splatsNode
+    }
+
+    var firstSplatCloud: SplatCloud<SplatC>? {
+        guard let splatsNode = firstSplatsNode, let splatCloud = splatsNode.content as? SplatCloud<SplatC> else {
+            return nil
+        }
+        return splatCloud
     }
 }

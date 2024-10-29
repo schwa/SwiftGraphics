@@ -5,7 +5,10 @@ import MetalSupport
 import RenderKit
 import simd
 
-public struct GaussianSplatDistanceComputePass<Splat>: ComputePassProtocol where Splat: SplatProtocol {
+public struct GaussianSplatDistanceComputePass: ComputePassProtocol {
+
+    public typealias Splat = SplatC
+
     typealias Bindings = GaussianSplatDistanceComputePassBindings
 
     public struct State: Sendable {
@@ -14,14 +17,12 @@ public struct GaussianSplatDistanceComputePass<Splat>: ComputePassProtocol where
     }
 
     public var id: PassID
-    public var enabled: Bool = true
     var splats: SplatCloud<Splat>
     var modelMatrix: simd_float3x3
     var cameraPosition: SIMD3<Float>
 
-    public init(id: PassID, enabled: Bool = true, splats: SplatCloud<Splat>, modelMatrix: simd_float3x3, cameraPosition: SIMD3<Float>) {
+    public init(id: PassID = .init(Self.self), splats: SplatCloud<Splat>, modelMatrix: simd_float3x3, cameraPosition: SIMD3<Float>) {
         self.id = id
-        self.enabled = enabled
         self.splats = splats
         self.modelMatrix = modelMatrix
         self.cameraPosition = cameraPosition
@@ -33,7 +34,7 @@ public struct GaussianSplatDistanceComputePass<Splat>: ComputePassProtocol where
         }
         let library = try device.makeDebugLibrary(bundle: bundle)
         let function = library.makeFunction(name: "GaussianSplatShaders::DistancePreCalc").forceUnwrap("No function found (found: \(library.functionNames))")
-        let (pipelineState, reflection) = try device.makeComputePipelineState(function: function, options: .bindingInfo)
+        let (pipelineState, reflection) = try device.makeComputePipelineState(function: function, options: .argumentInfo)
         var bindings = Bindings()
         try bindings.updateBindings(with: reflection)
         return State(

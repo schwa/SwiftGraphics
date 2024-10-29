@@ -14,11 +14,10 @@ import SIMDSupport
 import SwiftUI
 import Traces
 
-public struct GaussianSplatRenderView <Splat>: View where Splat: SplatProtocol {
-    @State
-    private var drawableSize: SIMD2<Float> = .zero
+@available(iOS 17, macOS 14, visionOS 1, *)
+public struct GaussianSplatRenderView: View {
 
-    @Environment(GaussianSplatViewModel<Splat>.self)
+    @Environment(GaussianSplatViewModel.self)
     var viewModel
 
     public init() {
@@ -34,12 +33,7 @@ public struct GaussianSplatRenderView <Splat>: View where Splat: SplatProtocol {
         }
         sizeWillChange: { _, configuration, size in
             do {
-                let size = SIMD2<Float>(size)
-                guard drawableSize != size else {
-                    return
-                }
-                drawableSize = SIMD2<Float>(size)
-                try viewModel.drawableChanged(pixelFormat: configuration.colorPixelFormat, size: drawableSize)
+                try viewModel.drawableChanged(pixelFormat: configuration.colorPixelFormat, size: SIMD2<Float>(size))
             } catch {
                 fatalError("Failed to create texture.")
             }
@@ -51,5 +45,3 @@ public struct GaussianSplatRenderView <Splat>: View where Splat: SplatProtocol {
         }
     }
 }
-
-// MARK: -
