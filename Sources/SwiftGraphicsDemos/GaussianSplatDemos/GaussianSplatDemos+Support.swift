@@ -5,8 +5,8 @@ import GaussianSplatSupport
 import Metal
 import RenderKit
 import RenderKitSceneGraph
-import UniformTypeIdentifiers
 import SwiftUI
+import UniformTypeIdentifiers
 
 // swiftlint:disable force_unwrapping
 
@@ -41,16 +41,13 @@ extension UTType {
     static let splat = UTType(filenameExtension: "splat")!
 }
 
-
 struct PopupHelpButton: View {
-
     @State
-    var isPresented: Bool = false
+    private var isPresented: Bool = false
 
     var help: String
 
     var body: some View {
-
         Button {
             isPresented = true
         } label: {
@@ -63,12 +60,11 @@ struct PopupHelpButton: View {
             Text(help)
                 .font(.caption)
                 .padding()
-                #if os(iOS)
-                .frame(maxHeight: .infinity, alignment: .leading)
-                .fixedSize(horizontal: false, vertical: true)
-                .presentationCompactAdaptation(.popover)
-                #endif
+            #if os(iOS)
+            .frame(maxHeight: .infinity, alignment: .leading)
+            .fixedSize(horizontal: false, vertical: true)
+            .presentationCompactAdaptation(.popover)
+            #endif
         }
     }
-
 }

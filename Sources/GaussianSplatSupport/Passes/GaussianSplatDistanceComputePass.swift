@@ -6,7 +6,6 @@ import RenderKit
 import simd
 
 public struct GaussianSplatDistanceComputePass: ComputePassProtocol {
-
     public typealias Splat = SplatC
 
     typealias Bindings = GaussianSplatDistanceComputePassBindings

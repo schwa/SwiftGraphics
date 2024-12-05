@@ -6,6 +6,7 @@ import MetalFX
 import Constraints3D
 import MetalKit
 import MetalSupport
+import ModelIO
 import os
 import RenderKit
 import RenderKitSceneGraph
@@ -14,12 +15,10 @@ import simd
 import SIMDSupport
 import SwiftUI
 import Traces
-import ModelIO
 
 @Observable
 @MainActor
 public class GaussianSplatViewModel {
-
     public typealias Splat = SplatC
 
     @ObservationIgnored
@@ -79,12 +78,12 @@ public class GaussianSplatViewModel {
 
         let root = try Node(label: "root") {
             Node(label: "camera", content: Camera(projection: .perspective(.init(verticalAngleOfView: configuration.verticalAngleOfView, zClip: 0.001...250))))
-//            if let skyboxTexture = configuration.skyboxTexture {
-//                try Node.skybox(device: device, texture: skyboxTexture)
-//                let panoramaMDLMesh = MDLMesh(sphereWithExtent: [200, 200, 200], segments: [36, 36], inwardNormals: true, geometryType: .triangles, allocator: allocator)
-//                let panoramaMTKMesh = try! MTKMesh(mesh: panoramaMDLMesh, device: device)
-//                Node(label: "skyBox", content: Geometry(mesh: panoramaMTKMesh, materials: [PanoramaMaterial(baseColorTexture: skyboxTexture)]))
-//            }
+            //            if let skyboxTexture = configuration.skyboxTexture {
+            //                try Node.skybox(device: device, texture: skyboxTexture)
+            //                let panoramaMDLMesh = MDLMesh(sphereWithExtent: [200, 200, 200], segments: [36, 36], inwardNormals: true, geometryType: .triangles, allocator: allocator)
+            //                let panoramaMTKMesh = try! MTKMesh(mesh: panoramaMDLMesh, device: device)
+            //                Node(label: "skyBox", content: Geometry(mesh: panoramaMTKMesh, materials: [PanoramaMaterial(baseColorTexture: skyboxTexture)]))
+            //            }
             Node(label: "splats", content: splatCloud).transformed(roll: .zero, pitch: .degrees(270), yaw: .zero).transformed(roll: .zero, pitch: .zero, yaw: .degrees(90))
         }
         self.scene = SceneGraph(root: root)
