@@ -56,11 +56,11 @@ public struct DraggableParamaterViewModifier: ViewModifier {
                 }
                 var newValue = initialValue.unsafelyUnwrapped + input * scale
                 if let range {
-                switch behavior {
-                case .clamping:
-                    newValue = newValue.clamped(to: range)
-                case .wrapping:
-                    newValue = newValue.wrapped(to: range)
+                    switch behavior {
+                    case .clamping:
+                        newValue = newValue.clamped(to: range)
+                    case .wrapping:
+                        newValue = newValue.wrapped(to: range)
                     }
                 }
                 parameter = newValue

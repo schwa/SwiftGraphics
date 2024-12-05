@@ -65,7 +65,7 @@ internal struct GaussianSplatView: View {
             .popover(isPresented: $showOptions) {
                 NavigationStack {
                     Form {
-                OptionsView(options: $options, configuration: $viewModel.configuration)
+                        OptionsView(options: $options, configuration: $viewModel.configuration)
                     }
                     .toolbar {
                         Button("Close") {
@@ -73,10 +73,9 @@ internal struct GaussianSplatView: View {
                         }
                     }
                 }
-#if os(macOS)
-                    .padding()
-#endif
-
+                #if os(macOS)
+                .padding()
+                #endif
             }
         }
         .overlay(alignment: .top) {
@@ -95,8 +94,8 @@ internal struct GaussianSplatView: View {
                         }
                     }
                 }
-                }
             }
+        }
         .overlay(alignment: .bottom) {
             if !viewModel.loadProgress.isFinished {
                 ProgressView(viewModel.loadProgress)
@@ -105,7 +104,7 @@ internal struct GaussianSplatView: View {
                     .background(.thinMaterial)
                     .cornerRadius(8)
                     .padding()
-    }
+            }
         }
     }
 }

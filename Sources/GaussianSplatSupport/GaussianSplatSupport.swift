@@ -2,11 +2,11 @@ import BaseSupport
 import CoreGraphics
 import Foundation
 import Metal
+import MetalKit
 import os
 import RenderKitSceneGraph
 import simd
 import SIMDSupport
-import MetalKit
 
 // swiftlint:disable force_unwrapping
 

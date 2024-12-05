@@ -16,7 +16,6 @@ import Traces
 
 @available(iOS 17, macOS 14, visionOS 1, *)
 public struct GaussianSplatRenderView: View {
-
     @Environment(GaussianSplatViewModel.self)
     var viewModel
 
