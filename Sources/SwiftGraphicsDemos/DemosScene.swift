@@ -69,6 +69,7 @@ struct DemosView: View {
     var body: some View {
         NavigationSplitView {
             List(selection: $currentDemo) {
+                row(for: SingleSplatView.self)
                 //                row(for: GaussianSplatLobbyView.self)
                 row(for: LineGeometryShaderView.self)
                 row(for: CustomStrokeEditorDemoView.self)
@@ -163,4 +164,7 @@ struct SettingsView: View {
         }
         .frame(minWidth: 320, minHeight: 240)
     }
+}
+
+extension SingleSplatView: DemoView {
 }
