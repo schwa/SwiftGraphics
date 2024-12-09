@@ -36,11 +36,7 @@ internal struct GaussianSplatView: View {
     @State
     private var showOptions: Bool = false
 
-    @State
-    private var bounds: ConeBounds
-
-    internal init(bounds: ConeBounds) {
-        self.bounds = bounds
+    internal init() {
     }
 
     internal var body: some View {
@@ -52,7 +48,7 @@ internal struct GaussianSplatView: View {
                 #if os(iOS)
                 .ignoresSafeArea()
                 #endif
-                .modifier(CameraConeController(cameraCone: bounds, transform: $viewModel.scene.unsafeCurrentCameraNode.transform))
+
                 .environment(\.gpuCounters, gpuCounters)
         }
         .background(.black)
