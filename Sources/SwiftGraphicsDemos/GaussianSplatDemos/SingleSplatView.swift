@@ -22,12 +22,6 @@ public struct SingleSplatView: View {
     private var viewModel: GaussianSplatViewModel
 
     @State
-    private var cameraTransform: Transform = .translation([0, 0, 5])
-
-    @State
-    private var cameraProjection: Projection = .perspective(.init())
-
-    @State
     private var modelTransform: Transform = .init(scale: [1, 1, 1])
 
     @State
@@ -39,23 +33,24 @@ public struct SingleSplatView: View {
     @Environment(\.logger)
     var logger
 
-    //    public init() {
-    //        let device = MTLCreateSystemDefaultDevice()!
-    //        let splat = SplatD(position: [0, 0, 0], scale: [1, 0.5, 0.25], color: [1, 0, 1, 1], rotation: .init(angle: .zero, axis: [0, 0, 0]))
-    //        self.device = device
-    //        self.splat = splat
-    //
-    //        let splats = [splat].map(SplatC.init)
-    //        let splatCloud = try! SplatCloud(device: device, splats: splats)
-    //
-    ////        self.viewModel = try! GaussianSplatViewModel(device: device, splatResource: .init(name: "x", url: URL("file:///"), bounds: .init(bottomHeight: 0, bottomInnerRadius: 1, topHeight: 1, topInnerRadius: 1)), splatCloud: splat, configuration: .init(bounds: <#ConeBounds#>))
-    //    }
+    public init() {
+        let device = MTLCreateSystemDefaultDevice()!
+        let splat = SplatD(position: [0, 0, 0], scale: [1, 0.5, 0.25], color: [1, 0, 1, 1], rotation: .init(angle: .zero, axis: [0, 0, 0]))
+        self.device = device
+        self.splat = splat
+
+        let splats = [splat].map(SplatC.init)
+        let splatCloud = try! SplatCloud(device: device, splats: splats)
+
+        self.viewModel = try! GaussianSplatViewModel(device: device, splatCloud: splatCloud, configuration: .init())
+    }
 
     public var body: some View {
         GaussianSplatRenderView()
+            .modifier(NewBallControllerViewModifier(constraint: .init(radius: 5), transform: $viewModel.scene.unsafeCurrentCameraNode.transform))
             .environment(viewModel)
-            // .modifier(CameraConeController(cameraCone: .init(apex: [0, 0, 0], axis: [0, 1, 0], h1: 0, r1: 2, r2: 2, h2: 2), transform: $viewModel.scene.unsafeCurrentCameraNode.transform))
             .onChange(of: splat, initial: true) {
+                print("**** Splat changed ****")
                 try! viewModel.scene.modify(label: "splats") { node in
                     let splats = [splat].map(SplatC.init)
                     node!.content = try SplatCloud(device: device, splats: splats)
@@ -108,7 +103,7 @@ public struct SingleSplatView: View {
             }
             ValueView(value: false) { expanded in
                 DisclosureGroup("Camera Transform", isExpanded: expanded) {
-                    TransformEditor($cameraTransform)
+                    TransformEditor($viewModel.scene.unsafeCurrentCameraNode.transform)
                 }
             }
             ValueView(value: true) { expanded in
@@ -158,40 +153,6 @@ public struct SingleSplatView: View {
                 }
             }
         }
-    }
-
-    func makeRandomSplats() -> [SplatD] {
-        var randomSplats: [SplatD] = []
-        for z: Float in stride(from: -1, through: 1, by: 1) {
-            for y: Float in stride(from: -1, through: 1, by: 1) {
-                for x: Float in stride(from: -1, through: 1, by: 1) {
-                    //                    let color: SIMD4<Float> = [Float.random(in: 0 ... 1), Float.random(in: 0 ... 1), Float.random(in: 0 ... 1), 1]
-                    var color: SIMD4<Float> = [1, 1, 1, 1]
-                    if x == -1 {
-                        color = [1, 0, 0, 1]
-                    }
-                    if x == 0 {
-                        color = [0, 1, 0, 1]
-                        if y == -1 {
-                            color = [1, 1, 1, 1]
-                        }
-                    }
-                    if x == 1 {
-                        color = [0, 0, 1, 1]
-                    }
-
-                    let rotation = Rotation(.init(
-                        roll: .degrees(Double(x) * 0),
-                        pitch: .degrees(Double(y) * 0),
-                        yaw: .degrees(Double(z) * 0)
-                    ))
-
-                    let randomSplat = SplatD(position: .init([x, y, z] + [1, 1, 1]), scale: .init([0.2, 0.0, 0.0]), color: color, rotation: rotation)
-                    randomSplats.append(randomSplat)
-                }
-            }
-        }
-        return randomSplats
     }
 }
 
