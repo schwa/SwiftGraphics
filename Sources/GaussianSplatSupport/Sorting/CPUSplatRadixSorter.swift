@@ -30,7 +30,7 @@ internal class CPUSplatRadixSorter <Splat> where Splat: SplatProtocol {
 // MARK: -
 
 private func cpuRadixSort<Splat>(splats: TypedMTLBuffer<Splat>, indexedDistances: inout TypedMTLBuffer<IndexedDistance>, temporaryIndexedDistances: inout [IndexedDistance], camera: simd_float4x4, model: simd_float4x4) where Splat: SplatProtocol {
-    guard splats.count > 1 else {
+    guard !splats.isEmpty else {
         return
     }
     releaseAssert(splats.count <= indexedDistances.capacity, "Too few indexed distances \(indexedDistances.count) for \(splats.capacity) splats.")
