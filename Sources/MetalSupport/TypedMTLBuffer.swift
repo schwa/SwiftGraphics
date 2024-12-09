@@ -17,6 +17,10 @@ public struct TypedMTLBuffer<Element>: Sendable {
         }
     }
 
+    public var isEmpty: Bool {
+        count == 0
+    }
+
     /// The underlying Metal buffer.
     private var base: MTLBuffer?
 
