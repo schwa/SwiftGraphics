@@ -78,15 +78,33 @@ struct SortState: Sendable {
 
 extension SortState: CustomDebugStringConvertible {
     var debugDescription: String {
-        "SortState(camera: \(camera.translation.shortDescription), model: \(model.translation.shortDescription), count: \(count))"
+        "SortState(camera: \(camera.hashValue), model: \(model.hashValue), count: \(count))"
     }
 }
 
-extension SortState: Equatable {
+extension SortState: Hashable {
+    func hash(into hasher: inout Hasher) {
+        camera.hash(into: &hasher)
+        model.hash(into: &hasher)
+        count.hash(into: &hasher)
+    }
 }
 
 extension SIMD3<Float> {
     var shortDescription: String {
         "[\(x.formatted()), \(y.formatted()), \(z.formatted())]"
+    }
+}
+
+extension simd_float4x4 {
+
+    var hashValue: Int {
+        var hasher = Hasher()
+        hash(into: &hasher)
+        return hasher.finalize()
+    }
+
+    func hash(into hasher: inout Hasher) {
+        scalars.hash(into: &hasher)
     }
 }
