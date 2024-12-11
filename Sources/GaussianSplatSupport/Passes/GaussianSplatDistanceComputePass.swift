@@ -20,7 +20,7 @@ public struct GaussianSplatDistanceComputePass: ComputePassProtocol {
     var modelMatrix: simd_float3x3
     var cameraPosition: SIMD3<Float>
 
-    public init(id: PassID = .init(Self.self), splats: SplatCloud<Splat>, modelMatrix: simd_float3x3, cameraPosition: SIMD3<Float>) {
+    public init(id: PassID, splats: SplatCloud<Splat>, modelMatrix: simd_float3x3, cameraPosition: SIMD3<Float>) {
         self.id = id
         self.splats = splats
         self.modelMatrix = modelMatrix

@@ -38,7 +38,7 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
 
     private var logState: MTLLogState?
 
-    private var statesByPasses: [PassID: any Sendable] = [:]
+    private var statesByPasses: [PassProtocol.PassID: any Sendable] = [:]
     private var configuration: MetalConfiguration?
     private var info: PassInfo?
     private var phase: Phase {

@@ -9,7 +9,7 @@ public struct SpatialUpscalingPass: GeneralPassProtocol {
     public var id: PassID
     internal var spatialScaler: Box<MTLFXSpatialScaler>
 
-    public init(id: PassID = .init(Self.self), device: MTLDevice, source: MTLTexture, destination: MTLTexture, colorProcessingMode: MTLFXSpatialScalerColorProcessingMode) throws {
+    public init(id: PassID, device: MTLDevice, source: MTLTexture, destination: MTLTexture, colorProcessingMode: MTLFXSpatialScalerColorProcessingMode) throws {
         self.id = id
 
         // TODO: We are doing this in init() when it really should happen in setup() because we can't easily cause a new setup if texture size changes.

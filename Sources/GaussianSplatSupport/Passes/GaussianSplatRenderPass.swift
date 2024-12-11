@@ -34,7 +34,7 @@ public struct GaussianSplatRenderPass <Splat>: RenderPassProtocol where Splat: S
     let vertexShaderName = "GaussianSplatShaders::VertexShader"
     let fragmentShaderName = "GaussianSplatShaders::FragmentShader"
 
-    init(id: PassID = .init(Self.self), scene: SceneGraph, debugMode: Bool = false, useVertexCounting: Bool = false, discardRate: Float = 0.0) {
+    init(id: PassID, scene: SceneGraph, debugMode: Bool = false, useVertexCounting: Bool = false, discardRate: Float = 0.0) {
         self.id = id
         self.scene = scene
         self.debugMode = debugMode

@@ -10,7 +10,7 @@ public struct BlitTexturePass: GeneralPassProtocol {
     internal var source: Box<MTLTexture>
     internal var destination: Box<MTLTexture>?
 
-    public init(id: PassID = .init(Self.self), source: MTLTexture, destination: MTLTexture?) {
+    public init(id: PassID, source: MTLTexture, destination: MTLTexture?) {
         self.id = id
         self.source = Box(source)
         self.destination = destination.map { Box($0) }
