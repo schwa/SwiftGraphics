@@ -25,7 +25,7 @@ public struct DebugRenderPass: RenderPassProtocol {
         var renderPipelineState: MTLRenderPipelineState
     }
 
-    public init(id: PassID = .init(Self.self), scene: SceneGraph) {
+    public init(id: PassID, scene: SceneGraph) {
         self.id = id
         self.scene = scene
     }

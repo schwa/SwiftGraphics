@@ -16,7 +16,7 @@ public struct GaussianSplatBitonicSortComputePass <Splat>: ComputePassProtocol w
     public var id: PassID
     var splats: SplatCloud<Splat>
 
-    public init(id: PassID = .init(Self.self), splats: SplatCloud<Splat>) {
+    public init(id: PassID, splats: SplatCloud<Splat>) {
         self.id = id
         self.splats = splats
     }

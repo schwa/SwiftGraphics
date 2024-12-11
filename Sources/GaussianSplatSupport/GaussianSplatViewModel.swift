@@ -119,24 +119,24 @@ public class GaussianSplatViewModel {
         let fullRedraw = true
         self.pass = try GroupPass(id: "FullPass") {
             if fullRedraw {
-                GroupPass {
+                GroupPass(id: "g1") {
                     let sortEnabled = configuration.sortMethod == .gpuBitonic && (frame <= 1 || frame.isMultiple(of: 15))
                     if configuration.sortMethod == .gpuBitonic && sortEnabled {
-                        GaussianSplatDistanceComputePass(
+                        GaussianSplatDistanceComputePass(id: "distance-compute",
                             splats: splats,
                             modelMatrix: simd_float3x3(truncating: splatsNode.transform.matrix),
                             cameraPosition: cameraNode.transform.matrix.translation
                         )
-                        GaussianSplatBitonicSortComputePass(splats: splats)
+                         GaussianSplatBitonicSortComputePass(id: "sort", splats: splats)
                     }
                     if configuration.renderSkybox && fullRedraw {
-                        GroupPass(renderPassDescriptor: initialRenderPassDescriptor) {
-                            PanoramaShadingPass(scene: scene)
+                        GroupPass(id: "g2", renderPassDescriptor: initialRenderPassDescriptor) {
+                            PanoramaShadingPass(id: "pano", scene: scene)
                         }
                     }
                     if configuration.renderSplats && fullRedraw {
-                        GroupPass(renderPassDescriptor: secondaryRenderPassDescriptor) {
-                            GaussianSplatRenderPass<Splat>(scene: scene, discardRate: configuration.discardRate)
+                        GroupPass(id: "g3", renderPassDescriptor: secondaryRenderPassDescriptor) {
+                            GaussianSplatRenderPass<Splat>(id: "gaussian-render", scene: scene, discardRate: configuration.discardRate)
                         }
                     }
                 }
@@ -149,7 +149,7 @@ public class GaussianSplatViewModel {
             #else
             let blitTexture = resources.downscaledTexture
             #endif
-            BlitTexturePass(source: blitTexture, destination: nil)
+            BlitTexturePass(id: "blit", source: blitTexture, destination: nil)
         }
     }
 

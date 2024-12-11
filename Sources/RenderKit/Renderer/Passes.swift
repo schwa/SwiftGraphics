@@ -4,34 +4,9 @@ import os
 
 @preconcurrency import Metal
 
-public struct PassID: Hashable, Sendable {
-    var rawValue: String
-
-    public init(_ rawValue: String) {
-        self.rawValue = rawValue
-    }
-}
-
-public extension PassID {
-    init<P>(_ type: P.Type) where P: PassProtocol {
-        self.rawValue = "\(type)"
-    }
-}
-
-extension PassID: CustomDebugStringConvertible {
-    public var debugDescription: String {
-        rawValue
-    }
-}
-
-extension PassID: ExpressibleByStringLiteral {
-    public init(stringLiteral value: String) {
-        self.rawValue = value
-    }
-}
-
 public protocol PassProtocol: Equatable, Sendable {
-    var id: PassID { get }
+    typealias PassID = AnyHashableSendable
+    var id: AnyHashableSendable { get }
 }
 
 public struct PassInfo: Sendable {
@@ -78,11 +53,11 @@ public protocol GeneralPassProtocol: PassProtocol {
 // MARK: -
 
 public struct GroupPass: PassProtocol {
-    public var id: PassID
+    public var id: AnyHashableSendable
     internal var _children: PassCollection
     public var renderPassDescriptor: MTLRenderPassDescriptor?
 
-    public init(id: PassID = .init(Self.self), renderPassDescriptor: MTLRenderPassDescriptor? = nil, @RenderPassBuilder content: () throws -> [any PassProtocol]) rethrows {
+    public init(id: PassID, renderPassDescriptor: MTLRenderPassDescriptor? = nil, @RenderPassBuilder content: () throws -> [any PassProtocol]) rethrows {
         self.id = id
         self.renderPassDescriptor = renderPassDescriptor
         self._children = try PassCollection(content())
@@ -118,5 +93,54 @@ public enum RenderPassBuilder {
 
     public static func buildEither(second passes: [any PassProtocol]) -> [any PassProtocol] {
         passes
+    }
+}
+
+// MARK:
+
+public struct AnyHashableSendable: Hashable, Sendable {
+    let base: any Hashable & Sendable
+    let eq: @Sendable (any Hashable & Sendable) -> Bool
+
+    public init<T>(_ base: T) where T: Hashable & Sendable {
+        self.base = base
+        self.eq = { other in
+            guard let other = other as? T else {
+                return false
+            }
+            return base == other
+        }
+    }
+
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.eq(rhs.base)
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        base.hash(into: &hasher)
+    }
+}
+
+extension AnyHashableSendable: CustomDebugStringConvertible {
+    public var debugDescription: String {
+        RenderKit.debugDescription(base)
+    }
+}
+
+func debugDescription(_ value: some Any) -> String {
+    if let value = value as? CustomDebugStringConvertible {
+        return value.debugDescription
+    }
+    else if let value = value as? CustomStringConvertible {
+        return value.description
+    }
+    else {
+        return "\(value)"
+    }
+}
+
+extension AnyHashableSendable: ExpressibleByStringLiteral {
+    public init(stringLiteral value: String) {
+        self.init(value)
     }
 }

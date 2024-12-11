@@ -47,7 +47,7 @@ public struct PanoramaShadingPass: RenderPassProtocol {
     public var id: PassID
     public var scene: SceneGraph
 
-    public init(id: PassID = .init(Self.self), scene: SceneGraph) {
+    public init(id: PassID, scene: SceneGraph) {
         self.id = id
         self.scene = scene
     }
