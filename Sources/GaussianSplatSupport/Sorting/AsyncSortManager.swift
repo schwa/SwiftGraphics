@@ -11,20 +11,22 @@ internal actor AsyncSortManager <Splat> where Splat: SplatProtocol {
     private var splatCloud: SplatCloud<Splat>
     private var _sortRequestChannel: AsyncChannel<SortState> = .init()
     private var _sortedIndicesChannel: AsyncChannel<SplatIndices> = .init()
-    private var logger: Logger? = Logger()
+    private var logger: Logger?
     private var sorter: CPUSplatRadixSorter<Splat>
 
-    internal init(device: MTLDevice, splatCloud: SplatCloud<Splat>, capacity: Int) throws {
+    internal init(device: MTLDevice, splatCloud: SplatCloud<Splat>, capacity: Int, logger: Logger? = nil) throws {
         self.sorter = .init(device: device, capacity: capacity)
         self.splatCloud = splatCloud
+        self.logger = logger
         Task(priority: .high) {
             do {
                 try await self.sort()
             }
             catch is CancellationError {
+                // This line intentionally left blank.
             }
             catch {
-                await logger?.log("Failed to sort splats: \(error)")
+                logger?.log("Failed to sort splats: \(error)")
             }
         }
     }
