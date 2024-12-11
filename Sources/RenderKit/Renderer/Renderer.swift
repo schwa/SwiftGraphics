@@ -58,7 +58,7 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
         self.callbacks = callbacks
         self.gpuCounters = gpuCounters
 
-        if false {
+        if true {
             let logStateDescriptor = MTLLogStateDescriptor()
             logStateDescriptor.bufferSize = 1024 * 1024 * 1024
             let logState = try device.makeLogState(descriptor: logStateDescriptor)
