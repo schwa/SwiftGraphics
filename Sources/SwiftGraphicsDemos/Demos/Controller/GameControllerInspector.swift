@@ -169,7 +169,7 @@ class GameControllerViewModel {
     var currentMouse: GCMouse?
     var coalescedKeyboard: GCKeyboard?
     var currentController: GCController?
-    var logger: Logger? = Logger()
+    var logger: Logger?
 
     var monitorTask: Task<(), Never>?
 

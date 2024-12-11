@@ -15,7 +15,7 @@ public struct DemosScene: Scene {
         #if os(macOS)
         Window("Demos", id: "demos") {
             DemosView()
-                .logger(logging ? Logger() : nil)
+                .logger(logging ? Logger(subsystem: "Demos", category: "Demos") : nil)
         }
         .commands {
             SidebarCommands()

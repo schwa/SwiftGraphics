@@ -54,7 +54,7 @@ extension Box3D: HalfEdgeMeshConvertable {
 }
 
 extension HalfEdgeMesh {
-    func isValid(logger: Logger? = .init()) -> Bool {
+    func isValid(logger: Logger? = nil) -> Bool {
         let allFaces = Set(faces.map(\.id))
         guard allFaces.count == faces.count else {
             logger?.error("Faces do not all have a unique id.")

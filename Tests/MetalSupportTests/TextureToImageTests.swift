@@ -42,7 +42,7 @@ struct ImageComparator {
     var a: CGImage
     var b: CGImage
     var writeToTempOnFailure: Bool = true
-    var logger: Logger? = Logger()
+    var logger: Logger?
 
     func compare(background: CGColor) throws -> Bool {
         let bitmapDefinition = BitmapDefinition(width: max(a.width, b.width), height: max(a.height, b.height), pixelFormat: .rgba8)

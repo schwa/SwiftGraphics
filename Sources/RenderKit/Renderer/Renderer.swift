@@ -58,12 +58,27 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
         self.callbacks = callbacks
         self.gpuCounters = gpuCounters
 
-        if true {
+        // Test environment variable
+        if ProcessInfo.processInfo.environment["METAL_LOGGING"] == "1" {
+            let logger = Logger(subsystem: "Metal", category: "Metal")
             let logStateDescriptor = MTLLogStateDescriptor()
-            logStateDescriptor.bufferSize = 1024 * 1024 * 1024
+            logStateDescriptor.bufferSize = 16 * 1024 * 1024
             let logState = try device.makeLogState(descriptor: logStateDescriptor)
-            logState.addLogHandler { _, _, _, message in
-                logger?.log("\(message)")
+            logState.addLogHandler { _, _, level, message in
+                let logLevel: OSLogType
+                switch level {
+                case .debug:
+                    logLevel = .debug
+                case .info:
+                    logLevel = .info
+                case .error:
+                    logLevel = .error
+                case .fault:
+                    logLevel = .fault
+                default:
+                    logLevel = .`default`
+                }
+                logger.log(level: logLevel, "\(message)")
             }
             self.logState = logState
         }
