@@ -20,7 +20,7 @@ internal actor AsyncSortManager <Splat> where Splat: SplatProtocol {
         self.logger = logger
         Task(priority: .high) {
             do {
-                try await self.sort()
+                try await self.startSorting()
             }
             catch is CancellationError {
                 // This line intentionally left blank.
@@ -38,16 +38,30 @@ internal actor AsyncSortManager <Splat> where Splat: SplatProtocol {
     nonisolated
     internal func requestSort(camera: simd_float4x4, model: simd_float4x4, count: Int) {
         Task {
-            await _sortRequestChannel.send(.init(camera: camera, model: model, count: count))
+            let request = SortState(camera: camera, model: model, count: count)
+            await logger?.log("Sort requested: \(String(describing: request))")
+            await _sortRequestChannel.send(request)
         }
     }
 
-    internal func sort() async throws {
+    private func startSorting() async throws {
+        logger?.log("Starting sort async loop.")
+
+        let channel = _sortRequestChannel.removeDuplicates { lhs, rhs in
+            lhs.camera == rhs.camera && lhs.model == rhs.model && lhs.count == rhs.count
+        }
+        .throttle(for: .milliseconds(33.333))
+
         // swiftlint:disable:next empty_count
-        for await state in _sortRequestChannel.removeDuplicates() where state.count > 0 {
+        for await state in channel where state.count > 0 {
+            logger?.log("Sort starting.")
+            let start = CFAbsoluteTimeGetCurrent()
             let currentIndexedDistances = try sorter.sort(splats: splatCloud.splats, camera: state.camera, model: state.model)
+            let end = CFAbsoluteTimeGetCurrent()
+            logger?.log("Sort ended (\(end - start)).")
             await self._sortedIndicesChannel.send(.init(state: state, indices: currentIndexedDistances))
         }
+        logger?.log("Ended sort async loop.")
     }
 }
 

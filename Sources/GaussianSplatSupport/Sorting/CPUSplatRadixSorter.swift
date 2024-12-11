@@ -21,9 +21,19 @@ internal class CPUSplatRadixSorter <Splat> where Splat: SplatProtocol {
     }
 
     internal func sort(splats: TypedMTLBuffer<Splat>, camera: simd_float4x4, model: simd_float4x4) throws -> TypedMTLBuffer<IndexedDistance> {
-        var currentIndexedDistances = try device.makeTypedBuffer(element: IndexedDistance.self, capacity: capacity).labelled("Splats-IndexDistances")
+        var currentIndexedDistances = try device.makeTypedBuffer(element: IndexedDistance.self, capacity: capacity).labelled("Splats-IndexDistances-\(Date.now.iso8601)")
         cpuRadixSort(splats: splats, indexedDistances: &currentIndexedDistances, temporaryIndexedDistances: &temporaryIndexedDistances, camera: camera, model: model)
         return currentIndexedDistances
+    }
+}
+
+extension Date {
+    var iso8601: String {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions.insert(.withFractionalSeconds)
+        formatter.formatOptions.remove(.withColonSeparatorInTime)
+        formatter.formatOptions.remove(.withDashSeparatorInDate)
+        return formatter.string(from: self)
     }
 }
 
