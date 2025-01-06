@@ -1,6 +1,15 @@
 {
-  "originHash" : "f54c244080f307f895a67831835efdd7ea3298ad7e0c77a1cbe6f7f2f7312d58",
+  "originHash" : "8a583861abe86c8b50abccbc3ecadda206025716fb79d8b673b69fbc125fae4a",
   "pins" : [
+    {
+      "identity" : "approximateequality",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/schwa/ApproximateEquality",
+      "state" : {
+        "revision" : "552f716baabbb06250f6b598a88dd0a401c72857",
+        "version" : "0.4.0"
+      }
+    },
     {
       "identity" : "everything",
       "kind" : "remoteSourceControl",
