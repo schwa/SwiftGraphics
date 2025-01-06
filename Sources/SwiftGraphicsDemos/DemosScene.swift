@@ -1,5 +1,6 @@
 import BaseSupport
 import Everything
+import GaussianSplatSupport
 import os
 import SwiftUI
 import SwiftUISupport

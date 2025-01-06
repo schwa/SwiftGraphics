@@ -11,6 +11,7 @@ import SIMDSupport
 public final class SplatCloud <Splat>: Equatable, @unchecked Sendable where Splat: SplatProtocol {
     public private(set) var splats: TypedMTLBuffer<Splat>
     internal var indexedDistances: SplatIndices // TODO: Rename from indexedDistances -> indices
+    public var label: String?
 
     // MARK: -
 
@@ -97,7 +98,7 @@ extension SIMD3<Float> {
 }
 
 extension simd_float4x4 {
-
+    // swiftlint:disable:next legacy_hashing
     var hashValue: Int {
         var hasher = Hasher()
         hash(into: &hasher)
