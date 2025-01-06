@@ -93,7 +93,7 @@ VertexOut vertexMain(
     const float2 position = vertexPosition.x * majorAxis / viewport + vertexPosition.y * minorAxis / viewport;
 
     out.position = float4(vCenter + position, 0.0, 1.0);
-    out.relativePosition = vertexPosition.xy;
+    out.relativePosition = in.position.xy * 2;
     out.color = clamp(pos2d.z / pos2d.w + 1.0, 0.0, 1.0) * float4(splat.color) / 255.0;
     return out;
 }
