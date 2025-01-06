@@ -80,7 +80,7 @@ public struct GaussianSplatAntimatter15RenderView: View {
     @MainActor
     public init(splatCloud: SplatCloud<SplatX>) {
         self.splatCloud = splatCloud
-        configuration = GaussianSplatAntimatter15RenderPass.Configuration(modelMatrix: .zero, cameraMatrix: .zero, debug: false)
+        configuration = GaussianSplatAntimatter15RenderPass.Configuration(modelMatrix: .init(rotationAngle: .degrees(180), axis: [0, 0, 1]), cameraMatrix: .init(diagonal: [1, 1, 1, 1]), debug: false)
         sortManager = try! AsyncSortManager(device: MTLCreateSystemDefaultDevice()!, splatCloud: splatCloud, capacity: splatCloud.capacity, logger: Logger())
         sortManager = try! AsyncSortManager(device: MTLCreateSystemDefaultDevice()!, splatCloud: splatCloud, capacity: splatCloud.capacity, logger: nil)
     }
