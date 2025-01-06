@@ -86,7 +86,7 @@ public struct GaussianSplatAntimatter15RenderView: View {
 
     public var body: some View {
         RenderView(pass: pass)
-        .modifier(NewBallControllerViewModifier(constraint: .init(radius: 5), transform: $configuration.cameraMatrix))
+        .modifier(NewBallControllerViewModifier(constraint: .init(radius: 5), transform: $configuration.cameraMatrix, debug: true))
         .task {
             let channel = await sortManager.sortedIndicesChannel()
             for await sort in channel {
@@ -101,6 +101,12 @@ public struct GaussianSplatAntimatter15RenderView: View {
                 Text("\(splatCloud.label ?? "")")
                 Text("\(splatCloud.count) splats")
                 Toggle("debug", isOn: $configuration.debug)
+                LabeledContent("Camera") {
+                    Text("\(configuration.cameraMatrix)")
+                }
+                LabeledContent("Model") {
+                    Text("\(configuration.modelMatrix)")
+                }
             }
         }
     }
