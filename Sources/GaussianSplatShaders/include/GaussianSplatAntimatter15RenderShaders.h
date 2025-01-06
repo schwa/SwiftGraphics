@@ -31,16 +31,17 @@ typedef VertexOut FragmentIn;
 
 [[vertex]]
 VertexOut vertexMain(
-     VertexIn in [[stage_in]],
-     uint instance_id[[instance_id]],
-     uint vertex_id[[vertex_id]],
-     constant SplatX *splats [[buffer(2)]],
-     constant IndexedDistance *indexedDistances [[buffer(3)]],
-     constant float4x4 &modelMatrix [[buffer(4)]],
-     constant float4x4 &viewMatrix [[buffer(5)]],
-     constant float4x4 &projectionMatrix [[buffer(6)]],
-     constant float2 &focal [[buffer(7)]],
-     constant float2 &viewport [[buffer(8)]]
+    VertexIn in [[stage_in]],
+    uint instance_id[[instance_id]],
+    uint vertex_id[[vertex_id]],
+    constant SplatX *splats [[buffer(2)]],
+    constant IndexedDistance *indexedDistances [[buffer(3)]],
+    constant float4x4 &modelMatrix [[buffer(4)]],
+    constant float4x4 &viewMatrix [[buffer(5)]],
+    constant float4x4 &projectionMatrix [[buffer(6)]],
+    constant float2 &focal [[buffer(7)]],
+    constant float2 &viewport [[buffer(8)]],
+    constant float &scale [[buffer(9)]]
 ) {
     VertexOut out;
     const uint splatIndex = indexedDistances[instance_id].index;
@@ -85,11 +86,14 @@ VertexOut vertexMain(
     const float2 majorAxis = min(sqrt(2.0 * lambda1), 1024.0) * diagonalVector;
     const float2 minorAxis = min(sqrt(2.0 * lambda2), 1024.0) * float2(diagonalVector.y, -diagonalVector.x);
 
-    const float2 vCenter = pos2d.xy / pos2d.w;
-    const float2 position = in.position.x * majorAxis / viewport + in.position.y * minorAxis / viewport;
+    const float2 vCenter = pos2d.xy / pos2d.w; // TODO: Rename to splat center.
+
+    const float3 vertexPosition = in.position * scale;
+
+    const float2 position = vertexPosition.x * majorAxis / viewport + vertexPosition.y * minorAxis / viewport;
 
     out.position = float4(vCenter + position, 0.0, 1.0);
-    out.relativePosition = in.position.xy;
+    out.relativePosition = vertexPosition.xy;
     out.color = clamp(pos2d.z / pos2d.w + 1.0, 0.0, 1.0) * float4(splat.color) / 255.0;
     return out;
 }
