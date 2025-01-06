@@ -33,7 +33,7 @@ public struct GaussianSplatDistanceComputePass: ComputePassProtocol {
         }
         let library = try device.makeDebugLibrary(bundle: bundle)
         let function = library.makeFunction(name: "GaussianSplatShaders::DistancePreCalc").forceUnwrap("No function found (found: \(library.functionNames))")
-        let (pipelineState, reflection) = try device.makeComputePipelineState(function: function, options: .argumentInfo)
+        let (pipelineState, reflection) = try device.makeComputePipelineState(function: function, options: .bindingInfo)
         var bindings = Bindings()
         try bindings.updateBindings(with: reflection)
         return State(

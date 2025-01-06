@@ -76,7 +76,7 @@ public class GaussianSplatViewModel {
         self.configuration = configuration
         self.logger = logger
 
-        let root = try Node(label: "root") {
+        let root = Node(label: "root") {
             Node(label: "camera", content: Camera(projection: .perspective(.init(verticalAngleOfView: configuration.verticalAngleOfView, zClip: 0.001...250))))
             //            if let skyboxTexture = configuration.skyboxTexture {
             //                try Node.skybox(device: device, texture: skyboxTexture)
@@ -122,7 +122,8 @@ public class GaussianSplatViewModel {
                 GroupPass(id: "g1") {
                     let sortEnabled = configuration.sortMethod == .gpuBitonic && (frame <= 1 || frame.isMultiple(of: 15))
                     if configuration.sortMethod == .gpuBitonic && sortEnabled {
-                        GaussianSplatDistanceComputePass(id: "distance-compute",
+                        GaussianSplatDistanceComputePass(
+                            id: "distance-compute",
                             splats: splats,
                             modelMatrix: simd_float3x3(truncating: splatsNode.transform.matrix),
                             cameraPosition: cameraNode.transform.matrix.translation
