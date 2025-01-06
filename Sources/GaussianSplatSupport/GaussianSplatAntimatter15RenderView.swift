@@ -102,19 +102,67 @@ public struct GaussianSplatAntimatter15RenderView: View {
                 Text("\(splatCloud.label ?? "")")
                 Text("\(splatCloud.count) splats")
                 Toggle("debug", isOn: $configuration.debug)
+                TextField("Scale", value: $configuration.scale, format: .number.precision(.fractionLength(0...3)))
+
+//                var sourceRGBBlendFactor: MTLBlendFactor
+//                var destinationRGBBlendFactor: MTLBlendFactor
+//                var rgbBlendOperation: MTLBlendOperation
+
+                //                var sourceAlphaBlendFactor: MTLBlendFactor
+//                var destinationAlphaBlendFactor: MTLBlendFactor
+//                var alphaBlendOperation: MTLBlendOperation
+
+                Picker("Source RGB Blend Factor", selection: $configuration.blendConfiguration.sourceRGBBlendFactor) {
+                    ForEach(MTLBlendFactor.allCases, id: \.self) { factor in
+                        Text("\(factor)")
+                            .tag(factor)
+                    }
+                }
+                Picker("Destination RGB Blend Factor", selection: $configuration.blendConfiguration.destinationRGBBlendFactor) {
+                    ForEach(MTLBlendFactor.allCases, id: \.self) { factor in
+                        Text("\(factor)")
+                            .tag(factor)
+                    }
+                }
+                Picker("RGB Blend Operation", selection: $configuration.blendConfiguration.rgbBlendOperation) {
+                    ForEach(MTLBlendOperation.allCases, id: \.self) { operation in
+                        Text("\(operation)")
+                            .tag(operation)
+                    }
+                }
+
+                Picker("Source Alpha Blend Factor", selection: $configuration.blendConfiguration.sourceAlphaBlendFactor) {
+                    ForEach(MTLBlendFactor.allCases, id: \.self) { factor in
+                        Text("\(factor)")
+                            .tag(factor)
+                    }
+                }
+                Picker("Destination Alpha Blend Factor", selection: $configuration.blendConfiguration.destinationAlphaBlendFactor) {
+                    ForEach(MTLBlendFactor.allCases, id: \.self) { factor in
+                        Text("\(factor)")
+                            .tag(factor)
+                    }
+                }
+                Picker("Alpha Blend Operation", selection: $configuration.blendConfiguration.alphaBlendOperation) {
+                    ForEach(MTLBlendOperation.allCases, id: \.self) { operation in
+                        Text("\(operation)")
+                            .tag(operation)
+                    }
+                }
+
                 LabeledContent("Camera") {
                     Text("\(configuration.cameraMatrix)")
                 }
                 LabeledContent("Model") {
                     Text("\(configuration.modelMatrix)")
                 }
-                TextField("Scale", value: $configuration.scale, format: .number.precision(.fractionLength(0...3)))
+
             }
         }
     }
 
     private var pass: GaussianSplatAntimatter15RenderPass {
-        .init(id: .init(CompositeHash("Antimatter15", configuration.debug)), splatCloud: splatCloud, configuration: configuration)
+        .init(id: .init(CompositeHash("Antimatter15", configuration.debug, configuration.blendConfiguration)), splatCloud: splatCloud, configuration: configuration)
     }
 }
 
@@ -144,6 +192,23 @@ struct GaussianSplatAntimatter15RenderPass: RenderPassProtocol {
         var cameraMatrix: simd_float4x4
         var debug: Bool
         var scale: Float = 2.0
+        var blendConfiguration: BlendConfiguration = .init(
+            sourceRGBBlendFactor: .sourceAlpha,
+            destinationRGBBlendFactor: .oneMinusSourceAlpha,
+            rgbBlendOperation: .add,
+            sourceAlphaBlendFactor: .sourceAlpha,
+            destinationAlphaBlendFactor: .oneMinusSourceAlpha,
+            alphaBlendOperation: .add
+        )
+    }
+
+    struct BlendConfiguration: Hashable {
+        var sourceRGBBlendFactor: MTLBlendFactor
+        var destinationRGBBlendFactor: MTLBlendFactor
+        var rgbBlendOperation: MTLBlendOperation
+        var sourceAlphaBlendFactor: MTLBlendFactor
+        var destinationAlphaBlendFactor: MTLBlendFactor
+        var alphaBlendOperation: MTLBlendOperation
     }
 
     var id: PassID
@@ -170,14 +235,14 @@ struct GaussianSplatAntimatter15RenderPass: RenderPassProtocol {
         renderPipelineDescriptor.fragmentFunction = try library.makeFunction(name: "GaussianSplatAntimatter15RenderShaders::fragmentMain", constantValues: constantValues)
 
         renderPipelineDescriptor.colorAttachments[0].isBlendingEnabled = true
-        renderPipelineDescriptor.colorAttachments[0].rgbBlendOperation = .add
-        renderPipelineDescriptor.colorAttachments[0].alphaBlendOperation = .add
+        renderPipelineDescriptor.colorAttachments[0].rgbBlendOperation = self.configuration.blendConfiguration.rgbBlendOperation
+        renderPipelineDescriptor.colorAttachments[0].alphaBlendOperation = self.configuration.blendConfiguration.alphaBlendOperation
 
-        renderPipelineDescriptor.colorAttachments[0].sourceRGBBlendFactor = .sourceAlpha
-        renderPipelineDescriptor.colorAttachments[0].sourceAlphaBlendFactor = .sourceAlpha
+        renderPipelineDescriptor.colorAttachments[0].sourceRGBBlendFactor = self.configuration.blendConfiguration.sourceRGBBlendFactor
+        renderPipelineDescriptor.colorAttachments[0].sourceAlphaBlendFactor = self.configuration.blendConfiguration.sourceAlphaBlendFactor
 
-        renderPipelineDescriptor.colorAttachments[0].destinationRGBBlendFactor = .oneMinusSourceAlpha
-        renderPipelineDescriptor.colorAttachments[0].destinationAlphaBlendFactor = .oneMinusSourceAlpha
+        renderPipelineDescriptor.colorAttachments[0].destinationRGBBlendFactor = self.configuration.blendConfiguration.destinationRGBBlendFactor
+        renderPipelineDescriptor.colorAttachments[0].destinationAlphaBlendFactor = self.configuration.blendConfiguration.destinationAlphaBlendFactor
 
             // TODO: OLD STYLE
 //        renderPipelineDescriptor.colorAttachments[0].rgbBlendOperation = .add
@@ -277,5 +342,55 @@ public extension SplatCloud where Splat == SplatX {
         let splatCloud = try! SplatCloud<SplatX>(device: MTLCreateSystemDefaultDevice()!, url: Bundle.main.url(forResource: "plane", withExtension: "splat")!)
         splatCloud.label = "plane"
         return splatCloud
+    }
+}
+
+extension MTLBlendOperation: @retroactive CaseIterable {
+    public static let allCases: [MTLBlendOperation] = [.add, .subtract, .reverseSubtract, .min, .max]
+}
+
+extension MTLBlendOperation: @retroactive CustomStringConvertible {
+    public var description: String {
+        switch self {
+        case .add: return "add"
+        case .subtract: return "subtract"
+        case .reverseSubtract: return "reverseSubtract"
+        case .min: return "min"
+        case .max: return "max"
+        @unknown default:
+            fatalError("Unknown MTLBlendOperation")
+        }
+    }
+}
+
+extension MTLBlendFactor: @retroactive CaseIterable {
+    public static let allCases: [MTLBlendFactor] = [.zero, .one, .sourceColor, .oneMinusSourceColor, .sourceAlpha, .oneMinusSourceAlpha, .destinationColor, .oneMinusDestinationColor, .destinationAlpha, .oneMinusDestinationAlpha, .sourceAlphaSaturated, .blendColor, .oneMinusBlendColor, .blendAlpha, .oneMinusBlendAlpha]
+}
+
+extension MTLBlendFactor: @retroactive CustomStringConvertible {
+    public var description: String {
+        switch self {
+        case .zero: return "zero"
+        case .one: return "one"
+        case .sourceColor: return "sourceColor"
+        case .oneMinusSourceColor: return "oneMinusSourceColor"
+        case .sourceAlpha: return "sourceAlpha"
+        case .oneMinusSourceAlpha: return "oneMinusSourceAlpha"
+        case .destinationColor: return "destinationColor"
+        case .oneMinusDestinationColor: return "oneMinusDestinationColor"
+        case .destinationAlpha: return "destinationAlpha"
+        case .oneMinusDestinationAlpha: return "oneMinusDestinationAlpha"
+        case .sourceAlphaSaturated: return "sourceAlphaSaturated"
+        case .blendColor: return "blendColor"
+        case .oneMinusBlendColor: return "oneMinusBlendColor"
+        case .blendAlpha: return "blendAlpha"
+        case .oneMinusBlendAlpha: return "oneMinusBlendAlpha"
+        case .source1Color: return "source1Color"
+        case .oneMinusSource1Color: return "oneMinusSource1Color"
+        case .source1Alpha: return "source1Alpha"
+        case .oneMinusSource1Alpha: return "oneMinusSource1Alpha"
+        @unknown default:
+            fatalError("Unknown MTLBlendFactor")
+        }
     }
 }
