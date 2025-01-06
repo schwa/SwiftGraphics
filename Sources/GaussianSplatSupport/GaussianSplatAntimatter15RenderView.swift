@@ -143,7 +143,7 @@ struct GaussianSplatAntimatter15RenderPass: RenderPassProtocol {
         var modelMatrix: simd_float4x4
         var cameraMatrix: simd_float4x4
         var debug: Bool
-        var scale: Float = 1.0
+        var scale: Float = 2.0
     }
 
     var id: PassID
@@ -225,7 +225,7 @@ struct GaussianSplatAntimatter15RenderPass: RenderPassProtocol {
             }
             commandEncoder.withDebugGroup("VertexShader") {
                 let vertices: [SIMD2<Float>] = [
-                    [-2, -2], [-2, 2], [2, -2], [2, 2]
+                    [-1, -1], [-1, 1], [1, -1], [1, 1]
                 ]
                 commandEncoder.setVertexBytes(of: vertices, index: 0)
                 commandEncoder.setVertexBuffer(splatCloud.splats.unsafeBase, offset: 0, index: state.vertexBindings.splats)
