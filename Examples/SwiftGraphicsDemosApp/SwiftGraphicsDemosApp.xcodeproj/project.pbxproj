@@ -8,13 +8,18 @@
 
 /* Begin PBXBuildFile section */
 		4501BD6F2C37204B002CE55F /* SwiftGraphicsDemos in Frameworks */ = {isa = PBXBuildFile; productRef = 4501BD6E2C37204B002CE55F /* SwiftGraphicsDemos */; };
+		450E7F492D0CD1A100067FD2 /* plane.splat in Resources */ = {isa = PBXBuildFile; fileRef = 450E7F482D0CD1A100067FD2 /* plane.splat */; };
+		455BF1262D0B8B4B00E20807 /* train.splat in Resources */ = {isa = PBXBuildFile; fileRef = 455BF1252D0B8B4B00E20807 /* train.splat */; };
 		45CDB0442BF4025700096326 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 45CDB0432BF4025700096326 /* Assets.xcassets */; };
 		45DA912C2BF158380070FD0C /* Info-visionOS.plist in Resources */ = {isa = PBXBuildFile; fileRef = 45DA90B12BF158380070FD0C /* Info-visionOS.plist */; };
 		45DEA3A82C174F92007481D8 /* cube_points.pointsply in Resources */ = {isa = PBXBuildFile; fileRef = 45DEA3A72C174F68007481D8 /* cube_points.pointsply */; };
 		45E5B5E32A8EA04100B46CDC /* SwiftGraphicsDemosApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E5B5E22A8EA04100B46CDC /* SwiftGraphicsDemosApp.swift */; };
+		45F93BB92D02AD2C0055A72D /* test.splatx in Resources */ = {isa = PBXBuildFile; fileRef = 45F93BB82D02AD2C0055A72D /* test.splatx */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		450E7F482D0CD1A100067FD2 /* plane.splat */ = {isa = PBXFileReference; lastKnownFileType = file; path = plane.splat; sourceTree = "<group>"; };
+		455BF1252D0B8B4B00E20807 /* train.splat */ = {isa = PBXFileReference; lastKnownFileType = file; path = train.splat; sourceTree = "<group>"; };
 		45B642022A9EC70500171EE0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		45CDB0432BF4025700096326 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		45DA90B12BF158380070FD0C /* Info-visionOS.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info-visionOS.plist"; sourceTree = "<group>"; };
@@ -30,6 +35,7 @@
 		45E5B5DF2A8EA04100B46CDC /* SwiftGraphicsDemosApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftGraphicsDemosApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		45E5B5E22A8EA04100B46CDC /* SwiftGraphicsDemosApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftGraphicsDemosApp.swift; sourceTree = "<group>"; };
 		45E5B5E82A8EA04400B46CDC /* SwiftGraphicsDemos.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SwiftGraphicsDemos.entitlements; sourceTree = "<group>"; };
+		45F93BB82D02AD2C0055A72D /* test.splatx */ = {isa = PBXFileReference; lastKnownFileType = file; path = test.splatx; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,7 +101,10 @@
 		45E5B5E12A8EA04100B46CDC /* SwiftGraphicsDemosApp */ = {
 			isa = PBXGroup;
 			children = (
+				455BF1252D0B8B4B00E20807 /* train.splat */,
 				45DEA3A72C174F68007481D8 /* cube_points.pointsply */,
+				450E7F482D0CD1A100067FD2 /* plane.splat */,
+				45F93BB82D02AD2C0055A72D /* test.splatx */,
 				45B642022A9EC70500171EE0 /* Info.plist */,
 				45E5B5E22A8EA04100B46CDC /* SwiftGraphicsDemosApp.swift */,
 				45DA90B12BF158380070FD0C /* Info-visionOS.plist */,
@@ -171,6 +180,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				45DEA3A82C174F92007481D8 /* cube_points.pointsply in Resources */,
+				450E7F492D0CD1A100067FD2 /* plane.splat in Resources */,
+				455BF1262D0B8B4B00E20807 /* train.splat in Resources */,
+				45F93BB92D02AD2C0055A72D /* test.splatx in Resources */,
 				45DA912C2BF158380070FD0C /* Info-visionOS.plist in Resources */,
 				45CDB0442BF4025700096326 /* Assets.xcassets in Resources */,
 			);
