@@ -88,6 +88,7 @@ public struct GaussianSplatAntimatter15RenderView: View {
     public var body: some View {
         RenderView(pass: pass)
         .modifier(NewBallControllerViewModifier(constraint: .init(radius: 5), transform: $configuration.cameraMatrix, debug: true))
+        .modifier(GameControllerModifier(cameraMatrix: $configuration.cameraMatrix))
         .task {
             let channel = await sortManager.sortedIndicesChannel()
             for await sort in channel {
