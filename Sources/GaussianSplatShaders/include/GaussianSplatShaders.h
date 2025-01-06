@@ -4,3 +4,4 @@
 #import "GaussianSplatPointRenderShaders.h"
 #import "GaussianSplatSupport.h"
 #import "GaussianSplatSplatX.h"
+#import "GaussianSplatAntimatter15RenderShaders.h"

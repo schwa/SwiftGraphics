@@ -109,3 +109,17 @@ extension MTLDevice {
         return texture
     }
 }
+
+extension MTLDevice {
+    func makeBuffer<T>(data: UnsafeBufferPointer<T>, options: MTLResourceOptions = []) -> MTLBuffer? {
+        makeBuffer(bytes: data.baseAddress!, length: data.count * MemoryLayout<T>.size, options: options)
+    }
+}
+
+extension simd_float4x4 {
+    static let zero = simd_float4x4()
+
+    var isZero: Bool {
+        self == .zero
+    }
+}
