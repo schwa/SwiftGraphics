@@ -108,6 +108,7 @@ public struct GaussianSplatAntimatter15RenderView: View {
                 LabeledContent("Model") {
                     Text("\(configuration.modelMatrix)")
                 }
+                TextField("Scale", value: $configuration.scale, format: .number.precision(.fractionLength(0...3)))
             }
         }
     }
@@ -129,6 +130,7 @@ struct GaussianSplatAntimatter15RenderPass: RenderPassProtocol {
         var projectionMatrix: Int = -1
         var focal: Int = -1
         var viewport: Int = -1
+        var scale: Int = -1
     }
 
     struct State {
@@ -141,6 +143,7 @@ struct GaussianSplatAntimatter15RenderPass: RenderPassProtocol {
         var modelMatrix: simd_float4x4
         var cameraMatrix: simd_float4x4
         var debug: Bool
+        var scale: Float = 1.0
     }
 
     var id: PassID
@@ -233,6 +236,7 @@ struct GaussianSplatAntimatter15RenderPass: RenderPassProtocol {
                 commandEncoder.setVertexBytes(of: projectionMatrix, index: state.vertexBindings.projectionMatrix)
                 commandEncoder.setVertexBytes(of: focal, index: state.vertexBindings.focal)
                 commandEncoder.setVertexBytes(of: drawableSize, index: state.vertexBindings.viewport)
+                commandEncoder.setVertexBytes(of: configuration.scale, index: state.vertexBindings.scale)
             }
             commandEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4, instanceCount: splatCloud.splats.count)
         }
