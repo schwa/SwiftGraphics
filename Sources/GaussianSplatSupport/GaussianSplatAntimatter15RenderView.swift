@@ -17,86 +17,79 @@ extension UTType {
 // MARK: -
 
 public struct GaussianSplatAntimatter15DemoView: View {
-    let splatCloud: SplatCloud<SplatX>
+    @State
+    private var splatCloud: SplatCloud<SplatX>
 
-    public init(splatCloud: SplatCloud<SplatX>) {
-        self.splatCloud = splatCloud
+    @State
+    private var isDropTargeted = false
+
+    public init() {
+        self.splatCloud = .singleSplat()
     }
 
     public var body: some View {
         GaussianSplatAntimatter15RenderView(splatCloud: splatCloud)
-    }
-}
+        .onDrop(of: [.splat], isTargeted: $isDropTargeted) { providers in
+            guard let provider = providers.first else {
+                return false
+            }
+            Task {
+                guard let url = try! await provider.loadItem(forTypeIdentifier: UTType.splat.identifier, options: nil) as? URL else {
+                    return
+                }
 
-public extension GaussianSplatAntimatter15DemoView {
-    init(url: URL) {
-        let data = try! Data(contentsOf: url)
-        let splats = data.withUnsafeBytes { bytes in
-            let splats = bytes.bindMemory(to: SplatB.self)
-            return splats.map { SplatX($0) }
+                let splatCloud = try! SplatCloud<SplatX>(device: MTLCreateSystemDefaultDevice()!, url: url)
+                splatCloud.label = "\(url)"
+                await MainActor.run {
+                    self.splatCloud = splatCloud
+                }
+            }
+            return true
         }
-        splatCloud = try! SplatCloud<SplatX>(device: MTLCreateSystemDefaultDevice()!, splats: splats)
-    }
-}
-
-public extension GaussianSplatAntimatter15DemoView {
-    init() {
-        self = Self.trainSplats()
-    }
-
-    static func singleSplat() -> Self {
-        let splatD = SplatD(position: [0, 0, 0], scale: [1, 1, 1], color: [1, 0, 0, 1], rotation: .identity)
-        let splatB = SplatB(splatD)
-        let splatX = SplatX(splatB)
-        let splats = [splatX]
-        let splatCloud = try! SplatCloud<SplatX>(device: MTLCreateSystemDefaultDevice()!, splats: splats)
-        return .init(splatCloud: splatCloud)
-    }
-
-    static func trainSplats() -> Self {
-        let url = Bundle.main.url(forResource: "train", withExtension: "splat")!
-        return .init(url: url)
     }
 }
 
 // MARK: -
 
 public struct GaussianSplatAntimatter15RenderView: View {
-    @State
-    private var pass: GaussianSplatAntimatter15RenderPass
+    private let splatCloud: SplatCloud<SplatX>
 
     @State
     private var sortManager: AsyncSortManager<SplatX>
 
+    @State
+    private var configuration: GaussianSplatAntimatter15RenderPass.Configuration
+
     @MainActor
     public init(splatCloud: SplatCloud<SplatX>) {
-        let configuration = GaussianSplatAntimatter15RenderPass.Configuration(modelMatrix: .zero, cameraMatrix: .zero, debug: false)
-        pass = GaussianSplatAntimatter15RenderPass(id: .init(CompositeHash("Antimatter15", false)), splatCloud: splatCloud, configuration: configuration)
+        self.splatCloud = splatCloud
+        configuration = GaussianSplatAntimatter15RenderPass.Configuration(modelMatrix: .zero, cameraMatrix: .zero, debug: false)
         sortManager = try! AsyncSortManager(device: MTLCreateSystemDefaultDevice()!, splatCloud: splatCloud, capacity: splatCloud.capacity, logger: Logger())
     }
 
     public var body: some View {
         RenderView(pass: pass)
-        .modifier(NewBallControllerViewModifier(constraint: .init(radius: 5), transform: $pass.configuration.cameraMatrix))
+        .modifier(NewBallControllerViewModifier(constraint: .init(radius: 5), transform: $configuration.cameraMatrix))
         .task {
             let channel = await sortManager.sortedIndicesChannel()
             for await sort in channel {
                 pass.splatCloud.indexedDistances = sort
             }
         }
-        .onChange(of: pass.configuration.debug, initial: true) {
-            pass = GaussianSplatAntimatter15RenderPass(id: .init(CompositeHash("Antimatter15", pass.configuration.debug)), splatCloud: pass.splatCloud, configuration: pass.configuration)
-        }
-        .onChange(of: pass.configuration.cameraMatrix) {
-            sortManager.requestSort(camera: pass.configuration.cameraMatrix, model: pass.configuration.modelMatrix, count: pass.splatCloud.count)
+        .onChange(of: configuration.cameraMatrix) {
+            sortManager.requestSort(camera: pass.configuration.cameraMatrix, model: configuration.modelMatrix, count: splatCloud.count)
         }
         .inspector(isPresented: .constant(true)) {
             Form {
-                Toggle("debug", isOn: $pass.configuration.debug)
-                Button("Sort") {
-                }
+                Text("\(splatCloud.label ?? "")")
+                Text("\(splatCloud.count) splats")
+                Toggle("debug", isOn: $configuration.debug)
             }
         }
+    }
+
+    private var pass: GaussianSplatAntimatter15RenderPass {
+        .init(id: .init(CompositeHash("Antimatter15", configuration.debug)), splatCloud: splatCloud, configuration: configuration)
     }
 }
 
