@@ -47,7 +47,7 @@ VertexOut vertexMain(
     const uint splatIndex = indexedDistances[instance_id].index;
     const SplatX splat = splats[splatIndex];
 
-    const float4 cam = viewMatrix * float4(splat.position, 1);
+    const float4 cam = viewMatrix * modelMatrix * float4(splat.position, 1);
     const float4 pos2d = projectionMatrix * cam;
 
     const float clip = 1.2 * pos2d.w;
