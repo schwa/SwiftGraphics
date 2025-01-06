@@ -87,6 +87,7 @@ public struct GaussianSplatAntimatter15RenderView: View {
         self.splatCloud = splatCloud
         configuration = GaussianSplatAntimatter15RenderPass.Configuration(modelMatrix: .zero, cameraMatrix: .zero, debug: false)
         sortManager = try! AsyncSortManager(device: MTLCreateSystemDefaultDevice()!, splatCloud: splatCloud, capacity: splatCloud.capacity, logger: Logger())
+        sortManager = try! AsyncSortManager(device: MTLCreateSystemDefaultDevice()!, splatCloud: splatCloud, capacity: splatCloud.capacity, logger: nil)
     }
 
     public var body: some View {
