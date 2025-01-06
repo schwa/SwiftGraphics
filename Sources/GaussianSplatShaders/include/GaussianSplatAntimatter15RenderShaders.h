@@ -51,7 +51,6 @@ VertexOut vertexMain(
 
     const float clip = 1.2 * pos2d.w;
     if (pos2d.z < -clip || pos2d.x < -clip || pos2d.x > clip || pos2d.y < -clip || pos2d.y > clip) {
-        os_log_default.log("clip: %f / (%f %f %f %f)", clip, pos2d.x, pos2d.y, pos2d.z, pos2d.w);
         out.position = float4(0.0, 0.0, 2.0, 1.0);
         return out;
     }
@@ -75,7 +74,6 @@ VertexOut vertexMain(
     const float lambda2 = mid - radius;
 
     if (lambda2 < 0.0) {
-        os_log_default.log("lambda2 < 0.0");
         out.position = float4(0.0, 0.0, 2.0, 1.0);
         return out;
     }
@@ -93,24 +91,6 @@ VertexOut vertexMain(
     out.position = float4(vCenter + position, 0.0, 1.0);
     out.relativePosition = in.position.xy;
     out.color = clamp(pos2d.z / pos2d.w + 1.0, 0.0, 1.0) * float4(splat.color) / 255.0;
-
-//    os_log_default.log("vertex_id: %d", vertex_id);
-//    if (vertex_id == 0) {
-//        os_log_default.log("###################################");
-//        os_log_default.log("viewMatrix: %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f", viewMatrix[0][0], viewMatrix[0][1], viewMatrix[0][2], viewMatrix[0][3], viewMatrix[1][0], viewMatrix[1][1], viewMatrix[1][2], viewMatrix[1][3], viewMatrix[2][0], viewMatrix[2][1], viewMatrix[2][2], viewMatrix[2][3], viewMatrix[3][0], viewMatrix[3][1], viewMatrix[3][2], viewMatrix[3][3]);
-//        os_log_default.log("projectionMatrix: %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f", projectionMatrix[0][0], projectionMatrix[0][1], projectionMatrix[0][2], projectionMatrix[0][3], projectionMatrix[1][0], projectionMatrix[1][1], projectionMatrix[1][2], projectionMatrix[1][3], projectionMatrix[2][0], projectionMatrix[2][1], projectionMatrix[2][2], projectionMatrix[2][3], projectionMatrix[3][0], projectionMatrix[3][1], projectionMatrix[3][2], projectionMatrix[3][3]);
-//        os_log_default.log("out.position: %f %f %f %f", out.position.x, out.position.y, out.position.z, out.position.w);
-//        os_log_default.log("Vrk: %f, %f, %f, %f, %f, %f, %f, %f, %f", Vrk[0][0], Vrk[0][1], Vrk[0][2], Vrk[1][0], Vrk[1][1], Vrk[1][2], Vrk[2][0], Vrk[2][1], Vrk[2][2]);
-//        os_log_default.log("J: %f, %f, %f, %f, %f, %f, %f, %f, %f", J[0][0], J[0][1], J[0][2],J[1][0], J[1][1], J[1][2],J[2][0], J[2][1], J[2][2]);
-//        os_log_default.log("cov2d: %f, %f, %f, %f, %f, %f, %f, %f, %f", cov2d[0][0], cov2d[0][1], cov2d[0][2], cov2d[1][0], cov2d[1][1], cov2d[1][2], cov2d[2][0], cov2d[2][1], cov2d[2][2]);
-////        os_log_default.log("vertex_id: %d", vertex_id);
-////        os_log_default.log("vCenter: %f %f", vCenter.x, vCenter.y);
-////        os_log_default.log("diagonalVector: %f %f", diagonalVector.x, diagonalVector.y);
-////        os_log_default.log("majorAxis: %f %f", majorAxis.x, majorAxis.y);
-////        os_log_default.log("minorAxis: %f %f", minorAxis.x, minorAxis.y);
-////        os_log_default.log("out.position: %f %f", out.position.x, out.position.y);
-//    }
-
     return out;
 }
 
@@ -129,14 +109,13 @@ float4 fragmentMain(
             case 1:
                 return float4(0, 1, 0, 1);
             default:
-                return float4(1, 1, 1, 1);
+                return float4(0, 0, 0, 0);
         }
 
     }
     else {
         float A = -dot(in.relativePosition, in.relativePosition);
         if (A < -4.0) {
-//            return float4(0.01, 0.01, 0.01, 1);
             discard_fragment();
         }
         float B = exp(A) * in.color.a;
