@@ -14,7 +14,6 @@
 		45DA912C2BF158380070FD0C /* Info-visionOS.plist in Resources */ = {isa = PBXBuildFile; fileRef = 45DA90B12BF158380070FD0C /* Info-visionOS.plist */; };
 		45DEA3A82C174F92007481D8 /* cube_points.pointsply in Resources */ = {isa = PBXBuildFile; fileRef = 45DEA3A72C174F68007481D8 /* cube_points.pointsply */; };
 		45E5B5E32A8EA04100B46CDC /* SwiftGraphicsDemosApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E5B5E22A8EA04100B46CDC /* SwiftGraphicsDemosApp.swift */; };
-		45F93BB92D02AD2C0055A72D /* test.splatx in Resources */ = {isa = PBXBuildFile; fileRef = 45F93BB82D02AD2C0055A72D /* test.splatx */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,7 +34,6 @@
 		45E5B5DF2A8EA04100B46CDC /* SwiftGraphicsDemosApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftGraphicsDemosApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		45E5B5E22A8EA04100B46CDC /* SwiftGraphicsDemosApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftGraphicsDemosApp.swift; sourceTree = "<group>"; };
 		45E5B5E82A8EA04400B46CDC /* SwiftGraphicsDemos.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SwiftGraphicsDemos.entitlements; sourceTree = "<group>"; };
-		45F93BB82D02AD2C0055A72D /* test.splatx */ = {isa = PBXFileReference; lastKnownFileType = file; path = test.splatx; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -104,7 +102,6 @@
 				455BF1252D0B8B4B00E20807 /* train.splat */,
 				45DEA3A72C174F68007481D8 /* cube_points.pointsply */,
 				450E7F482D0CD1A100067FD2 /* plane.splat */,
-				45F93BB82D02AD2C0055A72D /* test.splatx */,
 				45B642022A9EC70500171EE0 /* Info.plist */,
 				45E5B5E22A8EA04100B46CDC /* SwiftGraphicsDemosApp.swift */,
 				45DA90B12BF158380070FD0C /* Info-visionOS.plist */,
@@ -182,7 +179,6 @@
 				45DEA3A82C174F92007481D8 /* cube_points.pointsply in Resources */,
 				450E7F492D0CD1A100067FD2 /* plane.splat in Resources */,
 				455BF1262D0B8B4B00E20807 /* train.splat in Resources */,
-				45F93BB92D02AD2C0055A72D /* test.splatx in Resources */,
 				45DA912C2BF158380070FD0C /* Info-visionOS.plist in Resources */,
 				45CDB0442BF4025700096326 /* Assets.xcassets in Resources */,
 			);
