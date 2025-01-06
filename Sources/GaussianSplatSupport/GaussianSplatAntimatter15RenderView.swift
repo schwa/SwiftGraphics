@@ -8,6 +8,11 @@ import RenderKit
 import simd
 import SIMDSupport
 import SwiftUI
+import UniformTypeIdentifiers
+
+extension UTType {
+    static let splat = UTType(filenameExtension: "splat")!
+}
 
 public struct GaussianSplatAntimatter15DemoView: View {
     let splatCloud: SplatCloud<SplatX>
