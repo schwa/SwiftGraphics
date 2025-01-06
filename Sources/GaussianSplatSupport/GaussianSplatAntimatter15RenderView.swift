@@ -14,6 +14,8 @@ extension UTType {
     static let splat = UTType(filenameExtension: "splat")!
 }
 
+// MARK: -
+
 public struct GaussianSplatAntimatter15DemoView: View {
     let splatCloud: SplatCloud<SplatX>
 
@@ -208,5 +210,42 @@ struct GaussianSplatAntimatter15RenderPass: RenderPassProtocol {
             }
             commandEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4, instanceCount: splatCloud.splats.count)
         }
+    }
+}
+
+// MARK: -
+
+extension SplatCloud where Splat == SplatX {
+    convenience init(device: MTLDevice, url: URL) throws {
+        let data = try! Data(contentsOf: url)
+        let splats = data.withUnsafeBytes { bytes in
+            let splats = bytes.bindMemory(to: SplatB.self)
+            return splats.map { SplatX($0) }
+        }
+        try self.init(device: MTLCreateSystemDefaultDevice()!, splats: splats)
+    }
+}
+
+public extension SplatCloud where Splat == SplatX {
+    static func singleSplat() -> SplatCloud<SplatX> {
+        let splatD = SplatD(position: [0, 0, 0], scale: [1, 1, 1], color: [1, 0, 0, 1], rotation: .identity)
+        let splatB = SplatB(splatD)
+        let splatX = SplatX(splatB)
+        let splats = [splatX]
+        let splatCloud = try! SplatCloud<SplatX>(device: MTLCreateSystemDefaultDevice()!, splats: splats)
+        splatCloud.label = "single splat"
+        return splatCloud
+    }
+
+    static func trainSplats() -> SplatCloud<SplatX> {
+        let splatCloud = try! SplatCloud<SplatX>(device: MTLCreateSystemDefaultDevice()!, url: Bundle.main.url(forResource: "train", withExtension: "splat")!)
+        splatCloud.label = "train"
+        return splatCloud
+    }
+
+    static func planeSplats() -> SplatCloud<SplatX> {
+        let splatCloud = try! SplatCloud<SplatX>(device: MTLCreateSystemDefaultDevice()!, url: Bundle.main.url(forResource: "plane", withExtension: "splat")!)
+        splatCloud.label = "plane"
+        return splatCloud
     }
 }
