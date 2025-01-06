@@ -25,11 +25,6 @@ public struct GaussianSplatAntimatter15DemoView: View {
 
     public init() {
         self.splatCloud = .singleSplat()
-
-//        let url = Bundle.main.url(forResource: "plane", withExtension: "splat")!
-//        let splatCloud = try! SplatCloud<SplatX>(device: MTLCreateSystemDefaultDevice()!, url: url)
-//        splatCloud.label = "\(url.lastPathComponent)"
-//        self.splatCloud = splatCloud
     }
 
     public var body: some View {
