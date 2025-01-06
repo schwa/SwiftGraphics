@@ -46,6 +46,23 @@ public struct GaussianSplatAntimatter15DemoView: View {
             }
             return true
         }
+        .toolbar {
+            Button("Load Single Splat") {
+                splatCloud = .singleSplat()
+            }
+            Button("Load plane") {
+                let url = Bundle.main.url(forResource: "plane", withExtension: "splat")!
+                let splatCloud = try! SplatCloud<SplatX>(device: MTLCreateSystemDefaultDevice()!, url: url)
+                splatCloud.label = "\(url.lastPathComponent)"
+                self.splatCloud = splatCloud
+            }
+            Button("Load train") {
+                let url = Bundle.main.url(forResource: "train", withExtension: "splat")!
+                let splatCloud = try! SplatCloud<SplatX>(device: MTLCreateSystemDefaultDevice()!, url: url)
+                splatCloud.label = "\(url.lastPathComponent)"
+                self.splatCloud = splatCloud
+            }
+        }
     }
 }
 
