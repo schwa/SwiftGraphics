@@ -181,6 +181,15 @@ struct GaussianSplatAntimatter15RenderPass: RenderPassProtocol {
         renderPipelineDescriptor.colorAttachments[0].destinationRGBBlendFactor = .oneMinusSourceAlpha
         renderPipelineDescriptor.colorAttachments[0].destinationAlphaBlendFactor = .oneMinusSourceAlpha
 
+            // TODO: OLD STYLE
+//        renderPipelineDescriptor.colorAttachments[0].rgbBlendOperation = .add
+//        renderPipelineDescriptor.colorAttachments[0].alphaBlendOperation = .add
+//        renderPipelineDescriptor.colorAttachments[0].sourceRGBBlendFactor = .one
+//        renderPipelineDescriptor.colorAttachments[0].sourceAlphaBlendFactor = .one
+//        renderPipelineDescriptor.colorAttachments[0].destinationRGBBlendFactor = .oneMinusSourceAlpha
+//        renderPipelineDescriptor.colorAttachments[0].destinationAlphaBlendFactor = .oneMinusSourceAlpha
+
+
         let (renderPipelineState, reflection) = try device.makeRenderPipelineState(descriptor: renderPipelineDescriptor, options: [.bindingInfo])
         guard let reflection else {
             throw BaseError.error(.resourceCreationFailure)
