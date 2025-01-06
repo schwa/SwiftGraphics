@@ -80,7 +80,10 @@ VertexOut vertexMain(
         return out;
     }
 
-    const float2 diagonalVector = normalize(float2(cov2d[0][1], lambda1 - cov2d[0][0]));
+    float2 diagonalVector = normalize(float2(cov2d[0][1], lambda1 - cov2d[0][0]));
+    if (any(isnan(diagonalVector))) {
+        diagonalVector = float2(1.0, 0.0); // default value to avoid NaN
+    }
     const float2 majorAxis = min(sqrt(2.0 * lambda1), 1024.0) * diagonalVector;
     const float2 minorAxis = min(sqrt(2.0 * lambda2), 1024.0) * float2(diagonalVector.y, -diagonalVector.x);
 
