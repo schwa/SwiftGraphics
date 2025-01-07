@@ -32,20 +32,35 @@ public struct NewBallControllerViewModifier: ViewModifier {
             .draggableParameter($yaw.degrees, axis: .horizontal, range: yawRange.degrees, scale: 0.1, behavior: .wrapping)
             .onChange(of: [pitch, yaw], initial: true) {
                 transform = constraint.transform(for: RollPitchYaw(pitch: pitch, yaw: yaw)).matrix
-                if debug {
-                    print("Pitch/Yaw changed. pitch: \(pitch.degrees), yaw: \(yaw.degrees), transform: \(transform)")
-                }
             }
             .onChange(of: constraint) {
                 transform = constraint.transform(for: RollPitchYaw(pitch: pitch, yaw: yaw)).matrix
-                if debug {
-                    print("Constraint changed. pitch: \(pitch.degrees), yaw: \(yaw.degrees)")
-                }
             }
-            .onTapGesture {
+//            .onTapGesture {
+//                if debug {
+//                    pitch = .zero
+//                    yaw = .zero
+//                }
+//            }
+            .overlay(alignment: .bottom) {
                 if debug {
-                    pitch = .zero
-                    yaw = .zero
+                    HStack {
+                        LabeledContent("pitch") {
+                            TextField("pitch", value: $pitch.degrees, format: .number.precision(.fractionLength(0...2)))
+                        }
+                        LabeledContent("yaw") {
+                            TextField("yaw", value: $yaw.degrees, format: .number.precision(.fractionLength(0...2)))
+                        }
+                        Button("Reset") {
+                            pitch = .zero
+                            yaw = .zero
+                        }
+                    }
+                    .frame(width: 320)
+                    .controlSize(.small)
+                    .padding()
+                    .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 8))
+                    .padding()
                 }
             }
     }
