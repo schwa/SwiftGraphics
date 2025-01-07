@@ -99,8 +99,6 @@ struct DemosView: View {
                 group(named: "Unorganized", disclosed: false) {
                     row(for: AngleDemoView.self)
                     row(for: BeziersDemoView.self)
-                    row(for: HalfEdge2DDemoView.self)
-                    row(for: HalfEdge3DDemoView.self)
                     row(for: HobbyCurveDemoView.self)
                     row(for: PixelFormatsDemoView.self)
                     row(for: Particles2DemoView.self)
