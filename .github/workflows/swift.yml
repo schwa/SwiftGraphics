@@ -1,7 +1,5 @@
 name: Swift
 env:
-    XCODE_PROJECT_PATH: "./Examples/SwiftGraphicsDemosApp/SwiftGraphicsDemosApp.xcodeproj"
-    XCODE_SCHEME: "SwiftGraphicsDemosApp"
     XCODE_VERSION: "latest-stable"
 on:
   push:
@@ -14,16 +12,22 @@ jobs:
         with:
           xcode-version: ${{ env.XCODE_VERSION }}
       - uses: actions/checkout@v3
+        with:
+          submodules: true
       - run: swift build -v
       - run: swift test -v
   xcode-build:
-    strategy:
-      matrix:
-        destination: ["platform=iOS Simulator,name=iPhone 16 Plus", "generic/platform=iOS", "generic/platform=macOS"]
+    env:
+      XCODE_PROJECT_PATH: "./Examples/SwiftGraphicsDemosApp/SwiftGraphicsDemosApp.xcodeproj"
+      XCODE_SCHEME: "SwiftGraphicsDemosApp"
     runs-on: macos-15 # macos-latest
     steps:
         - uses: maxim-lobanov/setup-xcode@v1
           with:
             xcode-version: ${{ env.XCODE_VERSION }}
         - uses: actions/checkout@v3
-        - run: xcodebuild -project "${{ env.XCODE_PROJECT_PATH }}" -scheme "${{ env.XCODE_SCHEME }}" -destination "${{ matrix.destination }}" build CODE_SIGNING_ALLOWED=NO
+          with:
+            submodules: true
+        - run: xcodebuild -project "${{ env.XCODE_PROJECT_PATH }}" -scheme "${{ env.XCODE_SCHEME }}" -destination "generic/platform=macOS" -skipPackagePluginValidation build ARCHS=arm64 ONLY_ACTIVE_ARCH=NO CODE_SIGNING_ALLOWED=NO
+        - run: xcodebuild -project "${{ env.XCODE_PROJECT_PATH }}" -scheme "${{ env.XCODE_SCHEME }}" -destination "generic/platform=iOS" -skipPackagePluginValidation build CODE_SIGNING_ALLOWED=NO
+        - run: xcodebuild -project "${{ env.XCODE_PROJECT_PATH }}" -scheme "${{ env.XCODE_SCHEME }}" -destination "platform=iOS Simulator,name=iPhone 16 Plus" -skipPackagePluginValidation build CODE_SIGNING_ALLOWED=NO
