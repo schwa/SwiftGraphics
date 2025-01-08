@@ -1,7 +1,7 @@
 name: Swift
 env:
-    XCODE_SCHEME: "SwiftGrapjicsDemosApp"
-    XCODE_PROJECT_PATH: "./Examples"
+    XCODE_PROJECT_PATH: "./Examples/SwiftGraphicsDemosApp/SwiftGraphicsDemosApp.xcodeproj"
+    XCODE_SCHEME: "SwiftGraphicsDemosApp"
     XCODE_VERSION: "latest-stable"
 on:
   push:
@@ -26,5 +26,4 @@ jobs:
           with:
             xcode-version: ${{ env.XCODE_VERSION }}
         - uses: actions/checkout@v3
-        - run: xcodebuild -scheme "${{ env.XCODE_SCHEME }}" -destination "${{ matrix.destination }}" build CODE_SIGNING_ALLOWED=NO
-          working-directory: "${{ env.XCODE_PROJECT_PATH }}"
+        - run: xcodebuild -project "${{ env.XCODE_PROJECT_PATH }}" -scheme "${{ env.XCODE_SCHEME }}" -destination "${{ matrix.destination }}" build CODE_SIGNING_ALLOWED=NO
