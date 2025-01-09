@@ -3,7 +3,7 @@ import BaseSupport
 #if !targetEnvironment(simulator)
 import MetalFX
 #endif
-import Constraints3D
+import Widgets3D
 import MetalKit
 import MetalSupport
 import ModelIO

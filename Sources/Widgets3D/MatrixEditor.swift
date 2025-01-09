@@ -116,33 +116,7 @@ public struct MatrixEditor <Matrix>: View where Matrix: FormattableMatrix & Matr
 
 // MARK: -
 
-public struct MatrixView <Matrix>: View where Matrix: FormattableMatrix, Matrix.Scalar == Float {
-    var matrix: Matrix
 
-    public init(_ matrix: Matrix) {
-        self.matrix = matrix
-    }
-
-    public var body: some View {
-        Group {
-            Grid {
-                ForEach(0..<matrix.columnCount, id: \.self) { column in
-                    GridRow {
-                        ForEach(0..<matrix.rowCount, id: \.self) { row in
-                            let value = matrix[column, row]
-                            let color: Color = value == 0 ? .primary : (value < 0 ? .red : .green)
-                            Text("\(value)")
-                                .lineLimit(1)
-                                .monospacedDigit()
-                                .frame(maxWidth: .infinity, alignment: .trailing)
-                                .foregroundStyle(color)
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
 
 public protocol MatrixOperations {
     static var zero: Self { get }

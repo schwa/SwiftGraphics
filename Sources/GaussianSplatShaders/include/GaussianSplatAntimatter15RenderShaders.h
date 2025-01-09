@@ -47,7 +47,8 @@ VertexOut vertexMain(
     const uint splatIndex = indexedDistances[instance_id].index;
     const SplatX splat = splats[splatIndex];
 
-    const float4 cam = viewMatrix * modelMatrix * float4(splat.position, 1);
+    const float4x4 modelViewMatrix = viewMatrix * modelMatrix;
+    const float4 cam = modelViewMatrix * float4(splat.position, 1);
     const float4 pos2d = projectionMatrix * cam;
 
     const float clip = 1.2 * pos2d.w;
@@ -59,14 +60,17 @@ VertexOut vertexMain(
     const float2 u1 = float2(splat.u1);
     const float2 u2 = float2(splat.u2);
     const float2 u3 = float2(splat.u3);
-    const float3x3 Vrk = float3x3(u1.x, u1.y, u2.x, u1.y, u2.y, u3.x, u2.x, u3.x, u3.y);
-
+    const float3x3 Vrk = float3x3(
+        u1.x, u1.y, u2.x,
+        u1.y, u2.y, u3.x,
+        u2.x, u3.x, u3.y
+    );
     const float3x3 J = float3x3(
         focal.x / cam.z, 0, -(focal.x * cam.x) / (cam.z * cam.z),
         0, -focal.y / cam.z, (focal.y * cam.y) / (cam.z * cam.z),
         0, 0, 0
     );
-    const float3x3 T = transpose(truncateTo3x3(viewMatrix)) * J;
+    const float3x3 T = transpose(truncateTo3x3(modelViewMatrix)) * J;
     const float3x3 cov2d = transpose(T) * Vrk * T;
 
     const float mid = (cov2d[0][0] + cov2d[1][1]) / 2.0;
@@ -86,15 +90,15 @@ VertexOut vertexMain(
     const float2 majorAxis = min(sqrt(2.0 * lambda1), 1024.0) * diagonalVector;
     const float2 minorAxis = min(sqrt(2.0 * lambda2), 1024.0) * float2(diagonalVector.y, -diagonalVector.x);
 
-    const float2 vCenter = pos2d.xy / pos2d.w; // TODO: Rename to splat center.
+    out.color = clamp(pos2d.z / pos2d.w + 1.0, 0.0, 1.0) * float4(splat.color) / 255.0;
 
+    const float2 vCenter = pos2d.xy / pos2d.w;
     const float3 vertexPosition = in.position * scale;
-
     const float2 position = vertexPosition.x * majorAxis / viewport + vertexPosition.y * minorAxis / viewport;
+    out.relativePosition = in.position.xy * 2;
+
 
     out.position = float4(vCenter + position, 0.0, 1.0);
-    out.relativePosition = in.position.xy * 2;
-    out.color = clamp(pos2d.z / pos2d.w + 1.0, 0.0, 1.0) * float4(splat.color) / 255.0;
     return out;
 }
 

@@ -23,17 +23,18 @@ public struct DraggableParamaterViewModifier: ViewModifier {
     var range: ClosedRange<Double>?
     var scale: Double
     var behavior: DraggableParameterBehavior
+    var minimimDragDistance: Double
 
     @State
     var initialValue: Double?
 
-    public init(parameter: Binding<Double>, axis: DraggableParameterAxis, range: ClosedRange<Double>? = nil, scale: Double, behavior: DraggableParameterBehavior) {
+    public init(parameter: Binding<Double>, axis: DraggableParameterAxis, range: ClosedRange<Double>? = nil, scale: Double, behavior: DraggableParameterBehavior, minimimDragDistance: Double = 10) {
         self._parameter = parameter
         self.axis = axis
         self.range = range
         self.scale = scale
         self.behavior = behavior
-        self.initialValue = initialValue
+        self.minimimDragDistance = minimimDragDistance
     }
 
     public func body(content: Content) -> some View {
@@ -41,7 +42,7 @@ public struct DraggableParamaterViewModifier: ViewModifier {
     }
 
     var dragGesture: some Gesture {
-        DragGesture()
+        DragGesture(minimumDistance: minimimDragDistance)
             .onChanged { value in
                 if initialValue == nil {
                     initialValue = parameter

@@ -14,7 +14,6 @@ let package = Package(
     products: [
         .library(name: "Array2D", targets: ["Array2D"]),
         .library(name: "BaseSupport", targets: ["BaseSupport"]),
-        .library(name: "Constraints3D", targets: ["Constraints3D"]),
         .library(name: "CoreGraphicsSupport", targets: ["CoreGraphicsSupport"]),
         .library(name: "CoreGraphicsUnsafeConformances", targets: ["CoreGraphicsUnsafeConformances"]),
         .library(name: "Counters", targets: ["Counters"]),
@@ -76,15 +75,6 @@ let package = Package(
             ]
         ),
 
-        // MARK: Constraints3D
-
-        .target(name: "Constraints3D",
-            dependencies: [
-                "BaseSupport",
-                "SIMDSupport",
-            ]
-        ),
-
         // MARK: CoreGraphics*
 
         .target(name: "CoreGraphicsSupport",
@@ -140,13 +130,13 @@ let package = Package(
         ),
         .target(name: "GaussianSplatSupport",
             dependencies: [
-                "Constraints3D",
                 "GaussianSplatShaders",
                 "RenderKit",
                 "RenderKitSceneGraph",
                 "Shapes3D",
                 .product(name: "SwiftFormats", package: "SwiftFormats"),
                 "Traces",
+                "Widgets3D"
             ],
             resources: [
                 .process("Assets.xcassets"),
@@ -356,7 +346,6 @@ let package = Package(
         .target(name: "SwiftGraphicsDemos",
             dependencies: [
                 "Array2D",
-                "Constraints3D",
                 "CoreGraphicsSupport",
                 "CoreGraphicsUnsafeConformances",
                 "Counters",
@@ -450,7 +439,7 @@ let package = Package(
 
         .target(name: "Widgets3D",
             dependencies: [
-                "Constraints3D",
+                "BaseSupport",
                 "CoreGraphicsSupport",
                 "CoreGraphicsUnsafeConformances",
                 "Projection",

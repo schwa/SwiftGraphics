@@ -124,6 +124,7 @@ public extension simd_float4x4 {
         m[2][2] = depth / 2
         return m
     }
+
 }
 
 // https://www.khronos.org/opengl/wiki/GluLookAt_code
