@@ -56,6 +56,12 @@ public struct GaussianSplatAntimatter15DemoView: View {
                 splatCloud.label = "\(url.lastPathComponent)"
                 self.splatCloud = splatCloud
             }
+            Button("Load Last Chance") {
+                let url = Bundle.main.url(forResource: "lastchance", withExtension: "splat")!
+                let splatCloud = try! SplatCloud<SplatX>(device: MTLCreateSystemDefaultDevice()!, url: url)
+                splatCloud.label = "\(url.lastPathComponent)"
+                self.splatCloud = splatCloud
+            }
             Button("Load train") {
                 let url = Bundle.main.url(forResource: "train", withExtension: "splat")!
                 let splatCloud = try! SplatCloud<SplatX>(device: MTLCreateSystemDefaultDevice()!, url: url)
