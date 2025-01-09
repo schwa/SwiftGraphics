@@ -1,5 +1,5 @@
 import BaseSupport
-import Constraints3D
+import Widgets3D
 import GaussianSplatShaders
 @preconcurrency import Metal
 import MetalSupport
@@ -9,9 +9,11 @@ import simd
 import SIMDSupport
 import SwiftUI
 import UniformTypeIdentifiers
+import Spatial
 
 extension UTType {
     static let splat = UTType(filenameExtension: "splat")!
+    static let splatX = UTType(filenameExtension: "splatx")!
 }
 
 // MARK: -
@@ -24,7 +26,10 @@ public struct GaussianSplatAntimatter15DemoView: View {
     private var isDropTargeted = false
 
     public init() {
-        self.splatCloud = .singleSplat()
+        let url = Bundle.main.url(forResource: "centered_lastchance", withExtension: "splat")!
+        let splatCloud = try! SplatCloud<SplatX>(device: MTLCreateSystemDefaultDevice()!, url: url)
+        splatCloud.label = "\(url.lastPathComponent)"
+        self.splatCloud = splatCloud
     }
 
     public var body: some View {
@@ -47,26 +52,40 @@ public struct GaussianSplatAntimatter15DemoView: View {
             return true
         }
         .toolbar {
-            Button("Load Single Splat") {
-                splatCloud = .singleSplat()
-            }
-            Button("Load plane") {
-                let url = Bundle.main.url(forResource: "plane", withExtension: "splat")!
-                let splatCloud = try! SplatCloud<SplatX>(device: MTLCreateSystemDefaultDevice()!, url: url)
-                splatCloud.label = "\(url.lastPathComponent)"
-                self.splatCloud = splatCloud
-            }
-            Button("Load Last Chance") {
-                let url = Bundle.main.url(forResource: "lastchance", withExtension: "splat")!
-                let splatCloud = try! SplatCloud<SplatX>(device: MTLCreateSystemDefaultDevice()!, url: url)
-                splatCloud.label = "\(url.lastPathComponent)"
-                self.splatCloud = splatCloud
-            }
-            Button("Load train") {
-                let url = Bundle.main.url(forResource: "train", withExtension: "splat")!
-                let splatCloud = try! SplatCloud<SplatX>(device: MTLCreateSystemDefaultDevice()!, url: url)
-                splatCloud.label = "\(url.lastPathComponent)"
-                self.splatCloud = splatCloud
+            Menu("Load") {
+                Button("Load Single Splat") {
+                    splatCloud = .singleSplat()
+                }
+                Button("Load plane") {
+                    let url = Bundle.main.url(forResource: "plane", withExtension: "splat")!
+                    let splatCloud = try! SplatCloud<SplatX>(device: MTLCreateSystemDefaultDevice()!, url: url)
+                    splatCloud.label = "\(url.lastPathComponent)"
+                    self.splatCloud = splatCloud
+                }
+                Button("Load Last Chance") {
+                    let url = Bundle.main.url(forResource: "centered_lastchance", withExtension: "splat")!
+                    let splatCloud = try! SplatCloud<SplatX>(device: MTLCreateSystemDefaultDevice()!, url: url)
+                    splatCloud.label = "\(url.lastPathComponent)"
+                    self.splatCloud = splatCloud
+                }
+                Button("Load Last Chance (Rust/Splax)") {
+                    let url = Bundle.main.url(forResource: "centered_lastchance_rust", withExtension: "splatx")!
+                    let splatCloud = try! SplatCloud<SplatX>(device: MTLCreateSystemDefaultDevice()!, url: url)
+                    splatCloud.label = "\(url.lastPathComponent)"
+                    self.splatCloud = splatCloud
+                }
+                Button("Load Last Chance (JS/SplatX)") {
+                    let url = Bundle.main.url(forResource: "centered_lastchance_js", withExtension: "splatx")!
+                    let splatCloud = try! SplatCloud<SplatX>(device: MTLCreateSystemDefaultDevice()!, url: url)
+                    splatCloud.label = "\(url.lastPathComponent)"
+                    self.splatCloud = splatCloud
+                }
+                Button("Load train") {
+                    let url = Bundle.main.url(forResource: "train", withExtension: "splat")!
+                    let splatCloud = try! SplatCloud<SplatX>(device: MTLCreateSystemDefaultDevice()!, url: url)
+                    splatCloud.label = "\(url.lastPathComponent)"
+                    self.splatCloud = splatCloud
+                }
             }
         }
     }
@@ -83,6 +102,14 @@ public struct GaussianSplatAntimatter15RenderView: View {
     @State
     private var configuration: GaussianSplatAntimatter15RenderPass.Configuration
 
+    enum Controller {
+        case ball
+        case gameController
+    }
+
+    @State
+    private var controller = Controller.ball
+
     @MainActor
     public init(splatCloud: SplatCloud<SplatX>) {
         self.splatCloud = splatCloud
@@ -92,9 +119,16 @@ public struct GaussianSplatAntimatter15RenderView: View {
     }
 
     public var body: some View {
-        RenderView(pass: pass)
-        .modifier(NewBallControllerViewModifier(constraint: .init(radius: 5), transform: $configuration.cameraMatrix, debug: true))
-        .modifier(GameControllerModifier(cameraMatrix: $configuration.cameraMatrix))
+        RenderView(pass: pass) { configuration in
+            configuration.colorPixelFormat = .bgra8Unorm
+
+        }
+        .frame(width: 1024, height: 768)
+        .modifier(
+                NewBallControllerViewModifier(constraint: .init(radius: 2), transform: $configuration.cameraMatrix, debug: true)
+//                GameControllerModifier(cameraMatrix: $configuration.cameraMatrix)
+        )
+//        .modifier(GameControllerModifier(cameraMatrix: $configuration.cameraMatrix))
         .task {
             let channel = await sortManager.sortedIndicesChannel()
             for await sort in channel {
@@ -110,6 +144,8 @@ public struct GaussianSplatAntimatter15RenderView: View {
                 Text("\(splatCloud.count) splats")
                 Toggle("debug", isOn: $configuration.debug)
                 TextField("Scale", value: $configuration.scale, format: .number.precision(.fractionLength(0...3)))
+                TextField("Focal.x", value: $configuration.focal.x, format: .number.precision(.fractionLength(0...3)))
+                TextField("Focal.y", value: $configuration.focal.y, format: .number.precision(.fractionLength(0...3)))
 
 //                var sourceRGBBlendFactor: MTLBlendFactor
 //                var destinationRGBBlendFactor: MTLBlendFactor
@@ -119,51 +155,74 @@ public struct GaussianSplatAntimatter15RenderView: View {
 //                var destinationAlphaBlendFactor: MTLBlendFactor
 //                var alphaBlendOperation: MTLBlendOperation
 
-                Picker("Source RGB Blend Factor", selection: $configuration.blendConfiguration.sourceRGBBlendFactor) {
-                    ForEach(MTLBlendFactor.allCases, id: \.self) { factor in
-                        Text("\(factor)")
-                            .tag(factor)
+                DisclosureGroup("Blend") {
+                    Picker("Source RGB Blend Factor", selection: $configuration.blendConfiguration.sourceRGBBlendFactor) {
+                        ForEach(MTLBlendFactor.allCases, id: \.self) { factor in
+                            Text("\(factor)")
+                                .tag(factor)
+                        }
                     }
-                }
-                Picker("Destination RGB Blend Factor", selection: $configuration.blendConfiguration.destinationRGBBlendFactor) {
-                    ForEach(MTLBlendFactor.allCases, id: \.self) { factor in
-                        Text("\(factor)")
-                            .tag(factor)
+                    Picker("Destination RGB Blend Factor", selection: $configuration.blendConfiguration.destinationRGBBlendFactor) {
+                        ForEach(MTLBlendFactor.allCases, id: \.self) { factor in
+                            Text("\(factor)")
+                                .tag(factor)
+                        }
                     }
-                }
-                Picker("RGB Blend Operation", selection: $configuration.blendConfiguration.rgbBlendOperation) {
-                    ForEach(MTLBlendOperation.allCases, id: \.self) { operation in
-                        Text("\(operation)")
-                            .tag(operation)
+                    Picker("RGB Blend Operation", selection: $configuration.blendConfiguration.rgbBlendOperation) {
+                        ForEach(MTLBlendOperation.allCases, id: \.self) { operation in
+                            Text("\(operation)")
+                                .tag(operation)
+                        }
                     }
-                }
 
-                Picker("Source Alpha Blend Factor", selection: $configuration.blendConfiguration.sourceAlphaBlendFactor) {
-                    ForEach(MTLBlendFactor.allCases, id: \.self) { factor in
-                        Text("\(factor)")
-                            .tag(factor)
+                    Picker("Source Alpha Blend Factor", selection: $configuration.blendConfiguration.sourceAlphaBlendFactor) {
+                        ForEach(MTLBlendFactor.allCases, id: \.self) { factor in
+                            Text("\(factor)")
+                                .tag(factor)
+                        }
+                    }
+                    Picker("Destination Alpha Blend Factor", selection: $configuration.blendConfiguration.destinationAlphaBlendFactor) {
+                        ForEach(MTLBlendFactor.allCases, id: \.self) { factor in
+                            Text("\(factor)")
+                                .tag(factor)
+                        }
+                    }
+                    Picker("Alpha Blend Operation", selection: $configuration.blendConfiguration.alphaBlendOperation) {
+                        ForEach(MTLBlendOperation.allCases, id: \.self) { operation in
+                            Text("\(operation)")
+                                .tag(operation)
+                        }
                     }
                 }
-                Picker("Destination Alpha Blend Factor", selection: $configuration.blendConfiguration.destinationAlphaBlendFactor) {
-                    ForEach(MTLBlendFactor.allCases, id: \.self) { factor in
-                        Text("\(factor)")
-                            .tag(factor)
+                DisclosureGroup("Matrices") {
+                    LabeledContent("Camera") {
+                        MatrixView(configuration.cameraMatrix)
                     }
-                }
-                Picker("Alpha Blend Operation", selection: $configuration.blendConfiguration.alphaBlendOperation) {
-                    ForEach(MTLBlendOperation.allCases, id: \.self) { operation in
-                        Text("\(operation)")
-                            .tag(operation)
+                    LabeledContent("View") {
+                        MatrixView(configuration.cameraMatrix.inverse)
                     }
-                }
+                    LabeledContent("Model") {
+                        MatrixView(configuration.modelMatrix)
+                    }
+                    LabeledContent("Projection") {
+                        let perspectiveProjection = PerspectiveProjection(verticalAngleOfView: .degrees(75), zClip: 0.2 ... 200)
+                        var projectionMatrix = perspectiveProjection.projectionMatrix(for: [1024, 768]) // TODO: Hardcoded
+                        MatrixView(projectionMatrix)
+                    }
+                    LabeledContent("Antimatter 15 View (hardcoded)") {
+                        let m = simd_float4x4(scalars: [1,0,0.5,0,0,1,0,0,-0.5,0.01,0.876,0,1,0.04,5.004,1])
+                        MatrixView(m)
+                    }
+                    LabeledContent("Antimatter 15 Projection (hardcoded)") {
+                        let m = simd_float4x4(scalars: [2.2656,0,0,0,0,-3.0208,0,0,0,0,1.001,1,0,0,-0.2002,0])
+                        MatrixView(m)
+                    }
+                    LabeledContent("Spatial") {
 
-                LabeledContent("Camera") {
-                    Text("\(configuration.cameraMatrix)")
+                        let m = ProjectiveTransform3D(fovY: .init(degrees: 75), aspectRatio: 1024/768, nearZ: 0.2, farZ: 200).matrix
+                        MatrixView(m)
+                    }
                 }
-                LabeledContent("Model") {
-                    Text("\(configuration.modelMatrix)")
-                }
-
             }
         }
     }
@@ -199,11 +258,20 @@ struct GaussianSplatAntimatter15RenderPass: RenderPassProtocol {
         var cameraMatrix: simd_float4x4
         var debug: Bool
         var scale: Float = 2.0
+        var focal: SIMD2<Float> = [1000, 1000]
+//        var blendConfiguration: BlendConfiguration = .init(
+//            sourceRGBBlendFactor: .sourceAlpha,
+//            destinationRGBBlendFactor: .oneMinusSourceAlpha,
+//            rgbBlendOperation: .add,
+//            sourceAlphaBlendFactor: .sourceAlpha,
+//            destinationAlphaBlendFactor: .oneMinusSourceAlpha,
+//            alphaBlendOperation: .add
+//        )
         var blendConfiguration: BlendConfiguration = .init(
-            sourceRGBBlendFactor: .sourceAlpha,
+            sourceRGBBlendFactor: .one,
             destinationRGBBlendFactor: .oneMinusSourceAlpha,
             rgbBlendOperation: .add,
-            sourceAlphaBlendFactor: .sourceAlpha,
+            sourceAlphaBlendFactor: .one,
             destinationAlphaBlendFactor: .oneMinusSourceAlpha,
             alphaBlendOperation: .add
         )
@@ -281,11 +349,18 @@ struct GaussianSplatAntimatter15RenderPass: RenderPassProtocol {
         }
 
         let perspectiveProjection = PerspectiveProjection(verticalAngleOfView: .degrees(75), zClip: 0.2 ... 200)
-        let projectionMatrix = perspectiveProjection.projectionMatrix(for: info.drawableSize)
+        var projectionMatrix = perspectiveProjection.projectionMatrix(for: info.drawableSize)
+//        projectionMatrix.scalars = [2.2656,0,0,0,0,-3.0208,0,0,0,0,1.001,1,0,0,-0.2002,0]
         let f = min(info.drawableSize.x, info.drawableSize.y) / 4
-        let focal = SIMD2<Float>(f, f)
+//        var focal = SIMD2<Float>(f, f)
+//        focal = SIMD2<Float>(1160,1160)
         let drawableSize = info.drawableSize
-        let viewMatrix = configuration.cameraMatrix.inverse
+
+        var viewMatrix = configuration.cameraMatrix.inverse
+//        viewMatrix.scalars = [1,0,0.5,0,0,1,0,0,-0.5,0.01,0.876,0,1,0.04,5.004,1]
+
+        var modelMatrix = configuration.modelMatrix
+//        modelMatrix = .identity
 
         try commandBuffer.withRenderCommandEncoder(descriptor: renderPassDescriptor, label: "\(type(of: self))", useDebugGroup: true) { commandEncoder in
             if info.configuration.depthStencilPixelFormat != .invalid {
@@ -303,10 +378,10 @@ struct GaussianSplatAntimatter15RenderPass: RenderPassProtocol {
                 commandEncoder.setVertexBuffer(splatCloud.splats.unsafeBase, offset: 0, index: state.vertexBindings.splats)
                 commandEncoder.setVertexBuffer(splatCloud.indexedDistances.indices.unsafeBase, offset: 0, index: state.vertexBindings.indexedDistances)
 
-                commandEncoder.setVertexBytes(of: configuration.modelMatrix, index: state.vertexBindings.modelMatrix)
+                commandEncoder.setVertexBytes(of: modelMatrix, index: state.vertexBindings.modelMatrix)
                 commandEncoder.setVertexBytes(of: viewMatrix, index: state.vertexBindings.viewMatrix)
                 commandEncoder.setVertexBytes(of: projectionMatrix, index: state.vertexBindings.projectionMatrix)
-                commandEncoder.setVertexBytes(of: focal, index: state.vertexBindings.focal)
+                commandEncoder.setVertexBytes(of: configuration.focal, index: state.vertexBindings.focal)
                 commandEncoder.setVertexBytes(of: drawableSize, index: state.vertexBindings.viewport)
                 commandEncoder.setVertexBytes(of: configuration.scale, index: state.vertexBindings.scale)
             }
@@ -320,9 +395,20 @@ struct GaussianSplatAntimatter15RenderPass: RenderPassProtocol {
 extension SplatCloud where Splat == SplatX {
     convenience init(device: MTLDevice, url: URL) throws {
         let data = try! Data(contentsOf: url)
-        let splats = data.withUnsafeBytes { bytes in
-            let splats = bytes.bindMemory(to: SplatB.self)
-            return splats.map { SplatX($0) }
+        let splats: [SplatX]
+        switch url.pathExtension {
+        case "splat":
+            splats = data.withUnsafeBytes { bytes in
+                let splats = bytes.bindMemory(to: SplatB.self)
+                return splats.map { SplatX($0) }
+            }
+        case "splatx":
+            splats = data.withUnsafeBytes { bytes in
+                let splats = bytes.bindMemory(to: SplatX.self)
+                return Array(splats)
+            }
+        default:
+            fatalError("Unknown file extension")
         }
         try self.init(device: MTLCreateSystemDefaultDevice()!, splats: splats)
     }
@@ -330,7 +416,7 @@ extension SplatCloud where Splat == SplatX {
 
 public extension SplatCloud where Splat == SplatX {
     static func singleSplat() -> SplatCloud<SplatX> {
-        let splatD = SplatD(position: [0, 0, 0], scale: [1, 1, 1], color: [1, 0, 0, 1], rotation: .identity)
+        let splatD = SplatD(position: [0, 0, 0], scale: [1, 0.5, 0.25], color: [1, 0, 1, 1], rotation: .init(angle: .zero, axis: [0, 0, 0]))
         let splatB = SplatB(splatD)
         let splatX = SplatX(splatB)
         let splats = [splatX]

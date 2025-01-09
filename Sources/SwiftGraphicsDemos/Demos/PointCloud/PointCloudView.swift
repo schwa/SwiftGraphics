@@ -1,5 +1,5 @@
 import BaseSupport
-import Constraints3D
+import Widgets3D
 import GaussianSplatSupport
 @preconcurrency import Metal
 import MetalKit

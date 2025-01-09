@@ -1,6 +1,6 @@
 #if !os(visionOS)
 import BaseSupport
-import Constraints3D
+import Widgets3D
 import CoreGraphicsSupport
 import Metal
 import MetalKit
