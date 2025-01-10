@@ -5,9 +5,15 @@ public protocol ProjectionProtocol: Equatable, Sendable {
     func projectionMatrix(for viewSize: SIMD2<Float>) -> simd_float4x4
 }
 
+public enum Handedness: Hashable, Sendable {
+    case left
+    case right
+}
+
 public struct PerspectiveProjection: ProjectionProtocol {
     public var verticalAngleOfView: Angle
     public var zClip: ClosedRange<Float>
+    public var handedness: Handedness = .right
 
     public init(verticalAngleOfView: Angle = .degrees(90), zClip: ClosedRange<Float> = 0.01 ... 1_000) {
         self.verticalAngleOfView = verticalAngleOfView
@@ -16,7 +22,12 @@ public struct PerspectiveProjection: ProjectionProtocol {
 
     public func projectionMatrix(for viewSize: SIMD2<Float>) -> simd_float4x4 {
         let aspectRatio = viewSize.x / viewSize.y
-        return .perspective(aspectRatio: aspectRatio, fovy: Float(verticalAngleOfView.radians), near: zClip.lowerBound, far: zClip.upperBound)
+        switch handedness {
+        case .left:
+            return simd_float4x4.perspective_lefthand(aspectRatio: aspectRatio, fovy: Float(verticalAngleOfView.radians), near: zClip.lowerBound, far: zClip.upperBound)
+        case .right:
+            return simd_float4x4.perspective_righthand(aspectRatio: aspectRatio, fovy: Float(verticalAngleOfView.radians), near: zClip.lowerBound, far: zClip.upperBound)
+        }
     }
 
     public func horizontalAngleOfView(aspectRatio: Double) -> Angle {
@@ -99,6 +110,25 @@ public extension simd_float4x4 {
     }
 
     static func perspective(aspectRatio: Float, fovy: Float, near: Float, far: Float) -> Self {
+        perspective_righthand(aspectRatio: aspectRatio, fovy: fovy, near: near, far: far)
+    }
+
+    static func perspective_lefthand(aspectRatio: Float, fovy: Float, near: Float, far: Float) -> Self {
+        let yScale = 1 / tan(fovy * 0.5)
+        let xScale = yScale / aspectRatio
+        let zRange = far - near
+        let zScale = -(far + near) / zRange
+        let wzScale = -2 * far * near / zRange
+
+        let P: SIMD4<Float> = [xScale, 0, 0, 0]
+        let Q: SIMD4<Float> = [0, yScale, 0, 0]
+        let R: SIMD4<Float> = [0, 0, zScale, wzScale]
+        let S: SIMD4<Float> = [0, 0, -1, 0]
+
+        return simd_float4x4([P, Q, R, S])
+    }
+
+    static func perspective_righthand(aspectRatio: Float, fovy: Float, near: Float, far: Float) -> Self {
         let yScale = 1 / tan(fovy * 0.5)
         let xScale = yScale / aspectRatio
         let zRange = far - near
