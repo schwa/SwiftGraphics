@@ -113,7 +113,11 @@ public struct GaussianSplatAntimatter15RenderView: View {
     @MainActor
     public init(splatCloud: SplatCloud<SplatX>) {
         self.splatCloud = splatCloud
-        configuration = GaussianSplatAntimatter15RenderPass.Configuration(modelMatrix: .init(rotationAngle: .degrees(180), axis: [0, 0, 1]), cameraMatrix: .init(diagonal: [1, 1, 1, 1]), debug: false)
+
+//        let modelMatrix = simd_float4x4(rotationAngle: .degrees(180), axis: [0, 0, 1])
+        let modelMatrix = simd_float4x4.identity
+
+        configuration = GaussianSplatAntimatter15RenderPass.Configuration(modelMatrix: modelMatrix, cameraMatrix: .identity, debug: false)
         sortManager = try! AsyncSortManager(device: MTLCreateSystemDefaultDevice()!, splatCloud: splatCloud, capacity: splatCloud.capacity, logger: Logger())
         sortManager = try! AsyncSortManager(device: MTLCreateSystemDefaultDevice()!, splatCloud: splatCloud, capacity: splatCloud.capacity, logger: nil)
     }
@@ -351,6 +355,7 @@ struct GaussianSplatAntimatter15RenderPass: RenderPassProtocol {
         let perspectiveProjection = PerspectiveProjection(verticalAngleOfView: .degrees(75), zClip: 0.2 ... 200)
         var projectionMatrix = perspectiveProjection.projectionMatrix(for: info.drawableSize)
 //        projectionMatrix.scalars = [2.2656,0,0,0,0,-3.0208,0,0,0,0,1.001,1,0,0,-0.2002,0]
+        projectionMatrix[1][1] *= -1
         let f = min(info.drawableSize.x, info.drawableSize.y) / 4
 //        var focal = SIMD2<Float>(f, f)
 //        focal = SIMD2<Float>(1160,1160)
@@ -360,7 +365,7 @@ struct GaussianSplatAntimatter15RenderPass: RenderPassProtocol {
 //        viewMatrix.scalars = [1,0,0.5,0,0,1,0,0,-0.5,0.01,0.876,0,1,0.04,5.004,1]
 
         var modelMatrix = configuration.modelMatrix
-//        modelMatrix = .identity
+
 
         try commandBuffer.withRenderCommandEncoder(descriptor: renderPassDescriptor, label: "\(type(of: self))", useDebugGroup: true) { commandEncoder in
             if info.configuration.depthStencilPixelFormat != .invalid {
