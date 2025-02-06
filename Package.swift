@@ -159,9 +159,6 @@ let package = Package(
                 "GaussianSplatSupport",
                 "Projection",
                 "ApproximateEquality"
-            ],
-            resources: [
-                .copy("Resources/lastchance.splat"),
             ]
         ),
 
