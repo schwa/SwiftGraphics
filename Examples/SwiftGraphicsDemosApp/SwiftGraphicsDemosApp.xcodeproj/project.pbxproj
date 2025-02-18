@@ -8,27 +8,25 @@
 
 /* Begin PBXBuildFile section */
 		4501BD6F2C37204B002CE55F /* SwiftGraphicsDemos in Frameworks */ = {isa = PBXBuildFile; productRef = 4501BD6E2C37204B002CE55F /* SwiftGraphicsDemos */; };
-		450E7F492D0CD1A100067FD2 /* plane.splat in Resources */ = {isa = PBXBuildFile; fileRef = 450E7F482D0CD1A100067FD2 /* plane.splat */; };
-		455897442D305B4F0030CC88 /* lastchance.splat in Resources */ = {isa = PBXBuildFile; fileRef = 455897432D305B4F0030CC88 /* lastchance.splat */; };
-		455897482D3063C50030CC88 /* centered_lastchance.splat in Resources */ = {isa = PBXBuildFile; fileRef = 455897472D3063C50030CC88 /* centered_lastchance.splat */; };
-		455BF1262D0B8B4B00E20807 /* train.splat in Resources */ = {isa = PBXBuildFile; fileRef = 455BF1252D0B8B4B00E20807 /* train.splat */; };
+		455471BA2D6520D40035DFC1 /* plane.splat in Resources */ = {isa = PBXBuildFile; fileRef = 455471B62D6520D40035DFC1 /* plane.splat */; };
+		455471BB2D6520D40035DFC1 /* centered_lastchance.splat in Resources */ = {isa = PBXBuildFile; fileRef = 455471B42D6520D40035DFC1 /* centered_lastchance.splat */; };
+		455471BC2D6520D40035DFC1 /* winter fountain.cropped.playcanvas supersplat.splat in Resources */ = {isa = PBXBuildFile; fileRef = 455471B82D6520D40035DFC1 /* winter fountain.cropped.playcanvas supersplat.splat */; };
+		455471BD2D6520D40035DFC1 /* train.splat in Resources */ = {isa = PBXBuildFile; fileRef = 455471B72D6520D40035DFC1 /* train.splat */; };
+		455471BE2D6520D40035DFC1 /* lastchance.splat in Resources */ = {isa = PBXBuildFile; fileRef = 455471B52D6520D40035DFC1 /* lastchance.splat */; };
 		45CDB0442BF4025700096326 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 45CDB0432BF4025700096326 /* Assets.xcassets */; };
-		45D4F4CE2D3088D4007F74E9 /* centered_lastchance_js.splatx in Resources */ = {isa = PBXBuildFile; fileRef = 45D4F4CC2D3088D4007F74E9 /* centered_lastchance_js.splatx */; };
-		45D4F4CF2D3088D4007F74E9 /* centered_lastchance_rust.splatx in Resources */ = {isa = PBXBuildFile; fileRef = 45D4F4CD2D3088D4007F74E9 /* centered_lastchance_rust.splatx */; };
 		45DA912C2BF158380070FD0C /* Info-visionOS.plist in Resources */ = {isa = PBXBuildFile; fileRef = 45DA90B12BF158380070FD0C /* Info-visionOS.plist */; };
 		45DEA3A82C174F92007481D8 /* cube_points.pointsply in Resources */ = {isa = PBXBuildFile; fileRef = 45DEA3A72C174F68007481D8 /* cube_points.pointsply */; };
 		45E5B5E32A8EA04100B46CDC /* SwiftGraphicsDemosApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E5B5E22A8EA04100B46CDC /* SwiftGraphicsDemosApp.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		450E7F482D0CD1A100067FD2 /* plane.splat */ = {isa = PBXFileReference; lastKnownFileType = file; path = plane.splat; sourceTree = "<group>"; };
-		455897432D305B4F0030CC88 /* lastchance.splat */ = {isa = PBXFileReference; lastKnownFileType = file; path = lastchance.splat; sourceTree = "<group>"; };
-		455897472D3063C50030CC88 /* centered_lastchance.splat */ = {isa = PBXFileReference; lastKnownFileType = file; path = centered_lastchance.splat; sourceTree = "<group>"; };
-		455BF1252D0B8B4B00E20807 /* train.splat */ = {isa = PBXFileReference; lastKnownFileType = file; path = train.splat; sourceTree = "<group>"; };
+		455471B42D6520D40035DFC1 /* centered_lastchance.splat */ = {isa = PBXFileReference; lastKnownFileType = file; path = centered_lastchance.splat; sourceTree = "<group>"; };
+		455471B52D6520D40035DFC1 /* lastchance.splat */ = {isa = PBXFileReference; lastKnownFileType = file; path = lastchance.splat; sourceTree = "<group>"; };
+		455471B62D6520D40035DFC1 /* plane.splat */ = {isa = PBXFileReference; lastKnownFileType = file; path = plane.splat; sourceTree = "<group>"; };
+		455471B72D6520D40035DFC1 /* train.splat */ = {isa = PBXFileReference; lastKnownFileType = file; path = train.splat; sourceTree = "<group>"; };
+		455471B82D6520D40035DFC1 /* winter fountain.cropped.playcanvas supersplat.splat */ = {isa = PBXFileReference; lastKnownFileType = file; path = "winter fountain.cropped.playcanvas supersplat.splat"; sourceTree = "<group>"; };
 		45B642022A9EC70500171EE0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		45CDB0432BF4025700096326 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		45D4F4CC2D3088D4007F74E9 /* centered_lastchance_js.splatx */ = {isa = PBXFileReference; lastKnownFileType = file; path = centered_lastchance_js.splatx; sourceTree = "<group>"; };
-		45D4F4CD2D3088D4007F74E9 /* centered_lastchance_rust.splatx */ = {isa = PBXFileReference; lastKnownFileType = file; path = centered_lastchance_rust.splatx; sourceTree = "<group>"; };
 		45DA90B12BF158380070FD0C /* Info-visionOS.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info-visionOS.plist"; sourceTree = "<group>"; };
 		45DA91412BF15A020070FD0C /* DemosSupport */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = DemosSupport; path = Packages/DemosSupport; sourceTree = "<group>"; };
 		45DA91462BF15B070070FD0C /* Project-Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Project-Debug.xcconfig"; sourceTree = "<group>"; };
@@ -56,6 +54,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		455471B92D6520D40035DFC1 /* Splats */ = {
+			isa = PBXGroup;
+			children = (
+				455471B42D6520D40035DFC1 /* centered_lastchance.splat */,
+				455471B52D6520D40035DFC1 /* lastchance.splat */,
+				455471B62D6520D40035DFC1 /* plane.splat */,
+				455471B72D6520D40035DFC1 /* train.splat */,
+				455471B82D6520D40035DFC1 /* winter fountain.cropped.playcanvas supersplat.splat */,
+			);
+			path = Splats;
+			sourceTree = "<group>";
+		};
 		459F586B2BF311C50021EBA1 /* Packages */ = {
 			isa = PBXGroup;
 			children = (
@@ -107,18 +117,13 @@
 		45E5B5E12A8EA04100B46CDC /* SwiftGraphicsDemosApp */ = {
 			isa = PBXGroup;
 			children = (
-				455BF1252D0B8B4B00E20807 /* train.splat */,
+				455471B92D6520D40035DFC1 /* Splats */,
 				45DEA3A72C174F68007481D8 /* cube_points.pointsply */,
-				455897472D3063C50030CC88 /* centered_lastchance.splat */,
-				45D4F4CC2D3088D4007F74E9 /* centered_lastchance_js.splatx */,
-				45D4F4CD2D3088D4007F74E9 /* centered_lastchance_rust.splatx */,
-				450E7F482D0CD1A100067FD2 /* plane.splat */,
 				45B642022A9EC70500171EE0 /* Info.plist */,
 				45E5B5E22A8EA04100B46CDC /* SwiftGraphicsDemosApp.swift */,
 				45DA90B12BF158380070FD0C /* Info-visionOS.plist */,
 				45E5B5E82A8EA04400B46CDC /* SwiftGraphicsDemos.entitlements */,
 				45CDB0432BF4025700096326 /* Assets.xcassets */,
-				455897432D305B4F0030CC88 /* lastchance.splat */,
 			);
 			path = SwiftGraphicsDemosApp;
 			sourceTree = "<group>";
@@ -189,14 +194,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				45DEA3A82C174F92007481D8 /* cube_points.pointsply in Resources */,
-				450E7F492D0CD1A100067FD2 /* plane.splat in Resources */,
-				455BF1262D0B8B4B00E20807 /* train.splat in Resources */,
 				45DA912C2BF158380070FD0C /* Info-visionOS.plist in Resources */,
-				455897442D305B4F0030CC88 /* lastchance.splat in Resources */,
-				455897482D3063C50030CC88 /* centered_lastchance.splat in Resources */,
+				455471BA2D6520D40035DFC1 /* plane.splat in Resources */,
+				455471BB2D6520D40035DFC1 /* centered_lastchance.splat in Resources */,
+				455471BC2D6520D40035DFC1 /* winter fountain.cropped.playcanvas supersplat.splat in Resources */,
+				455471BD2D6520D40035DFC1 /* train.splat in Resources */,
+				455471BE2D6520D40035DFC1 /* lastchance.splat in Resources */,
 				45CDB0442BF4025700096326 /* Assets.xcassets in Resources */,
-				45D4F4CE2D3088D4007F74E9 /* centered_lastchance_js.splatx in Resources */,
-				45D4F4CF2D3088D4007F74E9 /* centered_lastchance_rust.splatx in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
