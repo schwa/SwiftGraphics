@@ -57,38 +57,29 @@ public struct GaussianSplatAntimatter15DemoView: View {
                 Button("Load Single Splat") {
                     splatCloud = .singleSplat()
                 }
-                Button("Load plane") {
-                    let url = Bundle.main.url(forResource: "plane", withExtension: "splat")!
-                    let splatCloud = try! SplatCloud<SplatX>(device: MTLCreateSystemDefaultDevice()!, url: url)
-                    splatCloud.label = "\(url.lastPathComponent)"
-                    self.splatCloud = splatCloud
-                }
-                Button("Load Last Chance") {
-                    let url = Bundle.main.url(forResource: "centered_lastchance", withExtension: "splat")!
-                    let splatCloud = try! SplatCloud<SplatX>(device: MTLCreateSystemDefaultDevice()!, url: url)
-                    splatCloud.label = "\(url.lastPathComponent)"
-                    self.splatCloud = splatCloud
-                }
-                Button("Load Last Chance (Rust/Splax)") {
-                    let url = Bundle.main.url(forResource: "centered_lastchance_rust", withExtension: "splatx")!
-                    let splatCloud = try! SplatCloud<SplatX>(device: MTLCreateSystemDefaultDevice()!, url: url)
-                    splatCloud.label = "\(url.lastPathComponent)"
-                    self.splatCloud = splatCloud
-                }
-                Button("Load Last Chance (JS/SplatX)") {
-                    let url = Bundle.main.url(forResource: "centered_lastchance_js", withExtension: "splatx")!
-                    let splatCloud = try! SplatCloud<SplatX>(device: MTLCreateSystemDefaultDevice()!, url: url)
-                    splatCloud.label = "\(url.lastPathComponent)"
-                    self.splatCloud = splatCloud
-                }
-                Button("Load train") {
-                    let url = Bundle.main.url(forResource: "train", withExtension: "splat")!
-                    let splatCloud = try! SplatCloud<SplatX>(device: MTLCreateSystemDefaultDevice()!, url: url)
-                    splatCloud.label = "\(url.lastPathComponent)"
-                    self.splatCloud = splatCloud
+                ForEach(allSplats(), id: \.self) { url in
+                    Button("Load \(url.lastPathComponent)") {
+                        let splatCloud = try! SplatCloud<SplatX>(device: MTLCreateSystemDefaultDevice()!, url: url)
+                        splatCloud.label = "\(url.lastPathComponent)"
+                        self.splatCloud = splatCloud
+                    }
+
                 }
             }
         }
+    }
+
+    func allSplats() -> [URL] {
+        let bundleURL = Bundle.main.resourceURL!
+        var splats: [URL] = []
+        let enumerator = FileManager().enumerator(at: bundleURL, includingPropertiesForKeys: nil)!
+        for element in enumerator {
+            let url = element as! URL
+            if url.pathExtension == "splat" {
+                splats.append(url)
+            }
+        }
+        return splats
     }
 }
 
