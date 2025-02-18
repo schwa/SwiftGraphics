@@ -10,6 +10,7 @@ import SIMDSupport
 import SwiftUI
 import UniformTypeIdentifiers
 import Spatial
+import CoreGraphicsSupport
 
 extension UTType {
     static let splat = UTType(filenameExtension: "splat")!
@@ -110,14 +111,23 @@ public struct GaussianSplatAntimatter15RenderView: View {
     @State
     private var controller = Controller.ball
 
+    @State
+    private var size: CGSize = .zero
+
+    @Environment(\.displayScale)
+    private var displayScale
+
     @MainActor
     public init(splatCloud: SplatCloud<SplatX>) {
         self.splatCloud = splatCloud
-
-//        let modelMatrix = simd_float4x4(rotationAngle: .degrees(180), axis: [0, 0, 1])
-        let modelMatrix = simd_float4x4.identity
-
-        configuration = GaussianSplatAntimatter15RenderPass.Configuration(modelMatrix: modelMatrix, cameraMatrix: .identity, debug: false)
+        let modelMatrix = simd_float4x4(columns: (
+            .init(1.0,  0.0,  0.0,  0.0),
+            .init(0.0,  1.0,  0.0,  0.0),
+            .init(0.0,  0.0,  1.0,  0.0),
+            .init(0.0,  0.0,  0.0,  1.0)
+        ))
+        let perspectiveProjection = PerspectiveProjection(verticalAngleOfView: .degrees(75), zClip: 0.2 ... 200)
+        configuration = GaussianSplatAntimatter15RenderPass.Configuration(modelMatrix: modelMatrix, cameraMatrix: .identity, projection: perspectiveProjection, debug: false)
         sortManager = try! AsyncSortManager(device: MTLCreateSystemDefaultDevice()!, splatCloud: splatCloud, capacity: splatCloud.capacity, logger: Logger())
         sortManager = try! AsyncSortManager(device: MTLCreateSystemDefaultDevice()!, splatCloud: splatCloud, capacity: splatCloud.capacity, logger: nil)
     }
@@ -128,10 +138,9 @@ public struct GaussianSplatAntimatter15RenderView: View {
 
         }
         .frame(width: 1024, height: 768)
-        .modifier(
-                NewBallControllerViewModifier(constraint: .init(radius: 2), transform: $configuration.cameraMatrix, debug: true)
-//                GameControllerModifier(cameraMatrix: $configuration.cameraMatrix)
-        )
+        .onGeometryChange(for: CGSize.self, of: \.size, action: { size = $0 })
+
+        .modifier(NewBallControllerViewModifier(constraint: .init(radius: 2), transform: $configuration.cameraMatrix, debug: true))
 //        .modifier(GameControllerModifier(cameraMatrix: $configuration.cameraMatrix))
         .task {
             let channel = await sortManager.sortedIndicesChannel()
@@ -148,16 +157,6 @@ public struct GaussianSplatAntimatter15RenderView: View {
                 Text("\(splatCloud.count) splats")
                 Toggle("debug", isOn: $configuration.debug)
                 TextField("Scale", value: $configuration.scale, format: .number.precision(.fractionLength(0...3)))
-                TextField("Focal.x", value: $configuration.focal.x, format: .number.precision(.fractionLength(0...3)))
-                TextField("Focal.y", value: $configuration.focal.y, format: .number.precision(.fractionLength(0...3)))
-
-//                var sourceRGBBlendFactor: MTLBlendFactor
-//                var destinationRGBBlendFactor: MTLBlendFactor
-//                var rgbBlendOperation: MTLBlendOperation
-
-                //                var sourceAlphaBlendFactor: MTLBlendFactor
-//                var destinationAlphaBlendFactor: MTLBlendFactor
-//                var alphaBlendOperation: MTLBlendOperation
 
                 DisclosureGroup("Blend") {
                     Picker("Source RGB Blend Factor", selection: $configuration.blendConfiguration.sourceRGBBlendFactor) {
@@ -198,35 +197,24 @@ public struct GaussianSplatAntimatter15RenderView: View {
                         }
                     }
                 }
-                DisclosureGroup("Matrices") {
-                    LabeledContent("Camera") {
-                        MatrixView(configuration.cameraMatrix)
-                    }
-                    LabeledContent("View") {
-                        MatrixView(configuration.cameraMatrix.inverse)
-                    }
-                    LabeledContent("Model") {
-                        MatrixView(configuration.modelMatrix)
-                    }
-                    LabeledContent("Projection") {
-                        let perspectiveProjection = PerspectiveProjection(verticalAngleOfView: .degrees(75), zClip: 0.2 ... 200)
-                        var projectionMatrix = perspectiveProjection.projectionMatrix(for: [1024, 768]) // TODO: Hardcoded
-                        MatrixView(projectionMatrix)
-                    }
-                    LabeledContent("Antimatter 15 View (hardcoded)") {
-                        let m = simd_float4x4(scalars: [1,0,0.5,0,0,1,0,0,-0.5,0.01,0.876,0,1,0.04,5.004,1])
-                        MatrixView(m)
-                    }
-                    LabeledContent("Antimatter 15 Projection (hardcoded)") {
-                        let m = simd_float4x4(scalars: [2.2656,0,0,0,0,-3.0208,0,0,0,0,1.001,1,0,0,-0.2002,0])
-                        MatrixView(m)
-                    }
-                    LabeledContent("Spatial") {
-
-                        let m = ProjectiveTransform3D(fovY: .init(degrees: 75), aspectRatio: 1024/768, nearZ: 0.2, farZ: 200).matrix
-                        MatrixView(m)
-                    }
+                DisclosureGroup("Projection") {
+                    PerspectiveProjectionEditor(projection: $configuration.projection, size: size, displayScale: displayScale)
+                    .controlSize(.mini)
                 }
+
+                DisclosureGroup("Camera") {
+                        MatrixView(configuration.cameraMatrix)
+                            .controlSize(.mini)
+                    }
+                DisclosureGroup("View") {
+                        MatrixView(configuration.cameraMatrix.inverse)
+                            .controlSize(.mini)
+                    }
+                DisclosureGroup("Model") {
+                        MatrixView(configuration.modelMatrix)
+                            .controlSize(.mini)
+                    }
+
             }
         }
     }
@@ -260,9 +248,9 @@ struct GaussianSplatAntimatter15RenderPass: RenderPassProtocol {
     struct Configuration: Equatable {
         var modelMatrix: simd_float4x4
         var cameraMatrix: simd_float4x4
+        var projection: PerspectiveProjection
         var debug: Bool
         var scale: Float = 2.0
-        var focal: SIMD2<Float> = [1000, 1000]
 //        var blendConfiguration: BlendConfiguration = .init(
 //            sourceRGBBlendFactor: .sourceAlpha,
 //            destinationRGBBlendFactor: .oneMinusSourceAlpha,
@@ -323,15 +311,6 @@ struct GaussianSplatAntimatter15RenderPass: RenderPassProtocol {
         renderPipelineDescriptor.colorAttachments[0].destinationRGBBlendFactor = self.configuration.blendConfiguration.destinationRGBBlendFactor
         renderPipelineDescriptor.colorAttachments[0].destinationAlphaBlendFactor = self.configuration.blendConfiguration.destinationAlphaBlendFactor
 
-            // TODO: OLD STYLE
-//        renderPipelineDescriptor.colorAttachments[0].rgbBlendOperation = .add
-//        renderPipelineDescriptor.colorAttachments[0].alphaBlendOperation = .add
-//        renderPipelineDescriptor.colorAttachments[0].sourceRGBBlendFactor = .one
-//        renderPipelineDescriptor.colorAttachments[0].sourceAlphaBlendFactor = .one
-//        renderPipelineDescriptor.colorAttachments[0].destinationRGBBlendFactor = .oneMinusSourceAlpha
-//        renderPipelineDescriptor.colorAttachments[0].destinationAlphaBlendFactor = .oneMinusSourceAlpha
-
-
         let (renderPipelineState, reflection) = try device.makeRenderPipelineState(descriptor: renderPipelineDescriptor, options: [.bindingInfo])
         guard let reflection else {
             throw BaseError.error(.resourceCreationFailure)
@@ -351,20 +330,26 @@ struct GaussianSplatAntimatter15RenderPass: RenderPassProtocol {
             print("Skipping pass - camera matrix is zero")
             return
         }
-
-        let perspectiveProjection = PerspectiveProjection(verticalAngleOfView: .degrees(75), zClip: 0.2 ... 200)
-        var projectionMatrix = perspectiveProjection.projectionMatrix(for: info.drawableSize)
-//        projectionMatrix.scalars = [2.2656,0,0,0,0,-3.0208,0,0,0,0,1.001,1,0,0,-0.2002,0]
-        projectionMatrix[1][1] *= -1
-        let f = min(info.drawableSize.x, info.drawableSize.y) / 4
-//        var focal = SIMD2<Float>(f, f)
-//        focal = SIMD2<Float>(1160,1160)
         let drawableSize = info.drawableSize
+//        print(drawableSize)
+        let viewMatrix = configuration.cameraMatrix.inverse
+        let modelMatrix = configuration.modelMatrix
+        var projectionMatrix = configuration.projection.projectionMatrix(for: info.drawableSize)
 
-        var viewMatrix = configuration.cameraMatrix.inverse
-//        viewMatrix.scalars = [1,0,0.5,0,0,1,0,0,-0.5,0.01,0.876,0,1,0.04,5.004,1]
 
-        var modelMatrix = configuration.modelMatrix
+        let focal = SIMD2<Float>(projectionMatrix[1, 1], -projectionMatrix[2, 2]) * info.drawableSize / 2
+        print(focal)
+
+
+
+
+
+        projectionMatrix[1][1] = -1
+
+
+
+
+
 
 
         try commandBuffer.withRenderCommandEncoder(descriptor: renderPassDescriptor, label: "\(type(of: self))", useDebugGroup: true) { commandEncoder in
@@ -386,7 +371,7 @@ struct GaussianSplatAntimatter15RenderPass: RenderPassProtocol {
                 commandEncoder.setVertexBytes(of: modelMatrix, index: state.vertexBindings.modelMatrix)
                 commandEncoder.setVertexBytes(of: viewMatrix, index: state.vertexBindings.viewMatrix)
                 commandEncoder.setVertexBytes(of: projectionMatrix, index: state.vertexBindings.projectionMatrix)
-                commandEncoder.setVertexBytes(of: configuration.focal, index: state.vertexBindings.focal)
+                commandEncoder.setVertexBytes(of: focal, index: state.vertexBindings.focal)
                 commandEncoder.setVertexBytes(of: drawableSize, index: state.vertexBindings.viewport)
                 commandEncoder.setVertexBytes(of: configuration.scale, index: state.vertexBindings.scale)
             }
@@ -491,4 +476,54 @@ extension MTLBlendFactor: @retroactive CustomStringConvertible {
             fatalError("Unknown MTLBlendFactor")
         }
     }
+}
+
+extension ClosedRange {
+    var editableLowerBound: Bound {
+        get {
+            lowerBound
+        }
+        set {
+            self = newValue ... upperBound
+        }
+    }
+    var editableUpperBound: Bound {
+        get {
+            upperBound
+        }
+        set {
+            self = lowerBound ... newValue
+        }
+    }
+}
+
+struct PerspectiveProjectionEditor: View {
+
+
+    @Binding
+    var projection: PerspectiveProjection
+
+    let size: CGSize
+    let displayScale: CGFloat
+
+    @State
+    var userSize = SIMD2<Float>(1024, 768)
+
+    var body: some View {
+            TextField("Angle", value: $projection.verticalAngleOfView.degrees, format: .number)
+            Slider(value: $projection.verticalAngleOfView.degrees, in: 0...360)
+
+            TextField("Near", value: $projection.zClip.editableLowerBound, format: .number)
+            TextField("Far", value: $projection.zClip.editableUpperBound, format: .number)
+
+            //            let size = size * displayScale
+            let projectionMatrix = projection.projectionMatrix(for: userSize)
+            TextField("Width", value: $userSize.x, format: .number)
+            TextField("Height", value: $userSize.y, format: .number)
+            LabeledContent("PRojection") {
+                MatrixView(projectionMatrix)
+            }
+
+    }
+
 }

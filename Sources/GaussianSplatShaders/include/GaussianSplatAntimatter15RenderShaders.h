@@ -49,7 +49,7 @@ VertexOut vertexMain(
 
     const float4x4 modelViewMatrix = viewMatrix * modelMatrix;
     const float4 cam = modelViewMatrix * float4(splat.position, 1);
-    const float4 pos2d = projectionMatrix * cam;
+    float4 pos2d = projectionMatrix * cam;
 
     const float clip = 1.2 * pos2d.w;
     if (pos2d.z < -clip || pos2d.x < -clip || pos2d.x > clip || pos2d.y < -clip || pos2d.y > clip) {

@@ -26,6 +26,11 @@ public struct MatrixView <Matrix>: View where Matrix: FormattableMatrix, Matrix.
                 }
             }
         }
+        .contextMenu {
+            Button("Copy") {
+
+            }
+        }
     }
 
     func color(for value: Matrix.Scalar) -> Color {
@@ -42,14 +47,6 @@ public struct MatrixView <Matrix>: View where Matrix: FormattableMatrix, Matrix.
         return base
     }
 }
-
-//extension MatrixView where Matrix == simd_float4x4, Matrix.Scal
-//    public init(_ matrix: simd_double4x4) {
-////        self.matrix = .init(matrix)
-//        fatalError()
-//    }
-//
-//}
 
 extension simd_double4x4: @retroactive FormattableMatrix {
     public var columnCount: Int { return 4 }
