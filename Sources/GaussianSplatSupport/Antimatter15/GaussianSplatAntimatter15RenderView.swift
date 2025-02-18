@@ -57,38 +57,29 @@ public struct GaussianSplatAntimatter15DemoView: View {
                 Button("Load Single Splat") {
                     splatCloud = .singleSplat()
                 }
-                Button("Load plane") {
-                    let url = Bundle.main.url(forResource: "plane", withExtension: "splat")!
-                    let splatCloud = try! SplatCloud<SplatX>(device: MTLCreateSystemDefaultDevice()!, url: url)
-                    splatCloud.label = "\(url.lastPathComponent)"
-                    self.splatCloud = splatCloud
-                }
-                Button("Load Last Chance") {
-                    let url = Bundle.main.url(forResource: "centered_lastchance", withExtension: "splat")!
-                    let splatCloud = try! SplatCloud<SplatX>(device: MTLCreateSystemDefaultDevice()!, url: url)
-                    splatCloud.label = "\(url.lastPathComponent)"
-                    self.splatCloud = splatCloud
-                }
-                Button("Load Last Chance (Rust/Splax)") {
-                    let url = Bundle.main.url(forResource: "centered_lastchance_rust", withExtension: "splatx")!
-                    let splatCloud = try! SplatCloud<SplatX>(device: MTLCreateSystemDefaultDevice()!, url: url)
-                    splatCloud.label = "\(url.lastPathComponent)"
-                    self.splatCloud = splatCloud
-                }
-                Button("Load Last Chance (JS/SplatX)") {
-                    let url = Bundle.main.url(forResource: "centered_lastchance_js", withExtension: "splatx")!
-                    let splatCloud = try! SplatCloud<SplatX>(device: MTLCreateSystemDefaultDevice()!, url: url)
-                    splatCloud.label = "\(url.lastPathComponent)"
-                    self.splatCloud = splatCloud
-                }
-                Button("Load train") {
-                    let url = Bundle.main.url(forResource: "train", withExtension: "splat")!
-                    let splatCloud = try! SplatCloud<SplatX>(device: MTLCreateSystemDefaultDevice()!, url: url)
-                    splatCloud.label = "\(url.lastPathComponent)"
-                    self.splatCloud = splatCloud
+                ForEach(allSplats(), id: \.self) { url in
+                    Button("Load \(url.lastPathComponent)") {
+                        let splatCloud = try! SplatCloud<SplatX>(device: MTLCreateSystemDefaultDevice()!, url: url)
+                        splatCloud.label = "\(url.lastPathComponent)"
+                        self.splatCloud = splatCloud
+                    }
+
                 }
             }
         }
+    }
+
+    func allSplats() -> [URL] {
+        let bundleURL = Bundle.main.resourceURL!
+        var splats: [URL] = []
+        let enumerator = FileManager().enumerator(at: bundleURL, includingPropertiesForKeys: nil)!
+        for element in enumerator {
+            let url = element as! URL
+            if url.pathExtension == "splat" {
+                splats.append(url)
+            }
+        }
+        return splats
     }
 }
 
@@ -117,17 +108,15 @@ public struct GaussianSplatAntimatter15RenderView: View {
     @Environment(\.displayScale)
     private var displayScale
 
+    @State
+    private var flipModel: Bool = true
+
     @MainActor
     public init(splatCloud: SplatCloud<SplatX>) {
         self.splatCloud = splatCloud
-        let modelMatrix = simd_float4x4(columns: (
-            .init(1.0,  0.0,  0.0,  0.0),
-            .init(0.0,  1.0,  0.0,  0.0),
-            .init(0.0,  0.0,  1.0,  0.0),
-            .init(0.0,  0.0,  0.0,  1.0)
-        ))
+        // Rotate the model by 180°
         let perspectiveProjection = PerspectiveProjection(verticalAngleOfView: .degrees(75), zClip: 0.2 ... 200)
-        configuration = GaussianSplatAntimatter15RenderPass.Configuration(modelMatrix: modelMatrix, cameraMatrix: .identity, projection: perspectiveProjection, debug: false)
+        configuration = GaussianSplatAntimatter15RenderPass.Configuration(modelMatrix: .identity, cameraMatrix: .identity, projection: perspectiveProjection, debug: false)
         sortManager = try! AsyncSortManager(device: MTLCreateSystemDefaultDevice()!, splatCloud: splatCloud, capacity: splatCloud.capacity, logger: Logger())
         sortManager = try! AsyncSortManager(device: MTLCreateSystemDefaultDevice()!, splatCloud: splatCloud, capacity: splatCloud.capacity, logger: nil)
     }
@@ -136,6 +125,20 @@ public struct GaussianSplatAntimatter15RenderView: View {
         RenderView(pass: pass) { configuration in
             configuration.colorPixelFormat = .bgra8Unorm
 
+        }
+        .onChange(of: flipModel, initial: true) {
+            if !flipModel {
+                configuration.modelMatrix = .identity
+            }
+            else {
+                configuration.modelMatrix = simd_float4x4(columns: (
+                    [1.0, 0.0, 0.0, 0.0],
+                    [0.0, -1.0, 0.0, 0.0],
+                    [0.0, 0.0, -1.0, 0.0],
+                    [0.0, 0.0, 0.0, 1.0]
+                ))
+
+            }
         }
         .frame(width: 1024, height: 768)
         .onGeometryChange(for: CGSize.self, of: \.size, action: { size = $0 })
@@ -156,7 +159,8 @@ public struct GaussianSplatAntimatter15RenderView: View {
                 Text("\(splatCloud.label ?? "")")
                 Text("\(splatCloud.count) splats")
                 Toggle("debug", isOn: $configuration.debug)
-                TextField("Scale", value: $configuration.scale, format: .number.precision(.fractionLength(0...3)))
+                Toggle("flip", isOn: $flipModel)
+                TextField("Splat Scale", value: $configuration.splatScale, format: .number.precision(.fractionLength(0...3)))
 
                 DisclosureGroup("Blend") {
                     Picker("Source RGB Blend Factor", selection: $configuration.blendConfiguration.sourceRGBBlendFactor) {
@@ -234,8 +238,8 @@ struct GaussianSplatAntimatter15RenderPass: RenderPassProtocol {
         var modelMatrix: Int = -1
         var viewMatrix: Int = -1
         var projectionMatrix: Int = -1
-        var viewport: Int = -1
-        var scale: Int = -1
+        var drawableSize: Int = -1
+        var splatScale: Int = -1
     }
 
     struct State {
@@ -249,7 +253,7 @@ struct GaussianSplatAntimatter15RenderPass: RenderPassProtocol {
         var cameraMatrix: simd_float4x4
         var projection: PerspectiveProjection
         var debug: Bool
-        var scale: Float = 2.0
+        var splatScale: Float = 1.0
 //        var blendConfiguration: BlendConfiguration = .init(
 //            sourceRGBBlendFactor: .sourceAlpha,
 //            destinationRGBBlendFactor: .oneMinusSourceAlpha,
@@ -334,7 +338,6 @@ struct GaussianSplatAntimatter15RenderPass: RenderPassProtocol {
         let viewMatrix = configuration.cameraMatrix.inverse
         let modelMatrix = configuration.modelMatrix
         var projectionMatrix = configuration.projection.projectionMatrix(for: info.drawableSize)
-        projectionMatrix[1][1] = -1
 
 
 
@@ -361,8 +364,8 @@ struct GaussianSplatAntimatter15RenderPass: RenderPassProtocol {
                 commandEncoder.setVertexBytes(of: modelMatrix, index: state.vertexBindings.modelMatrix)
                 commandEncoder.setVertexBytes(of: viewMatrix, index: state.vertexBindings.viewMatrix)
                 commandEncoder.setVertexBytes(of: projectionMatrix, index: state.vertexBindings.projectionMatrix)
-                commandEncoder.setVertexBytes(of: drawableSize, index: state.vertexBindings.viewport)
-                commandEncoder.setVertexBytes(of: configuration.scale, index: state.vertexBindings.scale)
+                commandEncoder.setVertexBytes(of: drawableSize, index: state.vertexBindings.drawableSize)
+                commandEncoder.setVertexBytes(of: configuration.splatScale, index: state.vertexBindings.splatScale)
             }
             commandEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4, instanceCount: splatCloud.splats.count)
         }

@@ -39,16 +39,29 @@ VertexOut vertexMain(
     constant float4x4 &modelMatrix [[buffer(4)]],
     constant float4x4 &viewMatrix [[buffer(5)]],
     constant float4x4 &projectionMatrix [[buffer(6)]],
-    constant float2 &viewport [[buffer(8)]],
-    constant float &scale [[buffer(9)]]
+    constant float2 &drawableSize [[buffer(7)]],
+    constant float &splatScale [[buffer(8)]]
 ) {
     VertexOut out;
     const uint splatIndex = indexedDistances[instance_id].index;
     const SplatX splat = splats[splatIndex];
-    const float2 focal = float2(projectionMatrix[1][1], projectionMatrix[2][2]) * viewport / 2;
+    const float2 focal = float2(projectionMatrix[1][1], -projectionMatrix[2][2]) * drawableSize / 2.0;
     const float4x4 modelViewMatrix = viewMatrix * modelMatrix;
     const float4 cam = modelViewMatrix * float4(splat.position, 1);
     float4 pos2d = projectionMatrix * cam;
+
+//    if (instance_id == 0) {
+////        os_log_default.log("instance_id : %d", instance_id);
+//        os_log_default.log("focal: (%v2hlf)", focal);
+////        os_log_default.log("projectionMatrix[1][1], projectionMatrix[2][2]: (%f, %f)", projectionMatrix[1][1], projectionMatrix[2][2]);
+////        os_log_default.log("pos2d: (%v4hlf)", pos2d);
+////        os_log_default.log("projection: (%f, %f, %f, %f), (%f, %f, %f, %f), (%f, %f, %f, %f), (%f, %f, %f, %f)",
+////            projectionMatrix[0][0], projectionMatrix[1][0], projectionMatrix[2][0], projectionMatrix[3][0], // Column 1
+////            projectionMatrix[0][1], projectionMatrix[1][1], projectionMatrix[2][1], projectionMatrix[3][1], // Column 2
+////            projectionMatrix[0][2], projectionMatrix[1][2], projectionMatrix[2][2], projectionMatrix[3][2], // Column 3
+////            projectionMatrix[0][3], projectionMatrix[1][3], projectionMatrix[2][3], projectionMatrix[3][3]  // Column 4
+////        );
+//    }
 
     const float clip = 1.2 * pos2d.w;
     if (pos2d.z < -clip || pos2d.x < -clip || pos2d.x > clip || pos2d.y < -clip || pos2d.y > clip) {
@@ -66,7 +79,7 @@ VertexOut vertexMain(
     );
     const float3x3 J = float3x3(
         focal.x / cam.z, 0, -(focal.x * cam.x) / (cam.z * cam.z),
-        0, -focal.y / cam.z, (focal.y * cam.y) / (cam.z * cam.z),
+        0, focal.y / cam.z, -(focal.y * cam.y) / (cam.z * cam.z),
         0, 0, 0
     );
     const float3x3 T = transpose(truncateTo3x3(modelViewMatrix)) * J;
@@ -92,8 +105,8 @@ VertexOut vertexMain(
     out.color = clamp(pos2d.z / pos2d.w + 1.0, 0.0, 1.0) * float4(splat.color) / 255.0;
 
     const float2 vCenter = pos2d.xy / pos2d.w;
-    const float3 vertexPosition = in.position * scale;
-    const float2 position = vertexPosition.x * majorAxis / viewport + vertexPosition.y * minorAxis / viewport;
+    const float3 vertexPosition = in.position * splatScale * 2.0;
+    const float2 position = vertexPosition.x * majorAxis / drawableSize + vertexPosition.y * minorAxis / drawableSize;
     out.relativePosition = in.position.xy * 2;
 
 
