@@ -55,7 +55,7 @@
          <EnvironmentVariable
             key = "METAL_LOGGING"
             value = "1"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </EnvironmentVariable>
       </EnvironmentVariables>
    </LaunchAction>
