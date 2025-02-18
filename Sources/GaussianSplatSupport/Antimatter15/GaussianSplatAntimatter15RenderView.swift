@@ -234,7 +234,6 @@ struct GaussianSplatAntimatter15RenderPass: RenderPassProtocol {
         var modelMatrix: Int = -1
         var viewMatrix: Int = -1
         var projectionMatrix: Int = -1
-        var focal: Int = -1
         var viewport: Int = -1
         var scale: Int = -1
     }
@@ -335,15 +334,6 @@ struct GaussianSplatAntimatter15RenderPass: RenderPassProtocol {
         let viewMatrix = configuration.cameraMatrix.inverse
         let modelMatrix = configuration.modelMatrix
         var projectionMatrix = configuration.projection.projectionMatrix(for: info.drawableSize)
-
-
-        let focal = SIMD2<Float>(projectionMatrix[1, 1], -projectionMatrix[2, 2]) * info.drawableSize / 2
-        print(focal)
-
-
-
-
-
         projectionMatrix[1][1] = -1
 
 
@@ -371,7 +361,6 @@ struct GaussianSplatAntimatter15RenderPass: RenderPassProtocol {
                 commandEncoder.setVertexBytes(of: modelMatrix, index: state.vertexBindings.modelMatrix)
                 commandEncoder.setVertexBytes(of: viewMatrix, index: state.vertexBindings.viewMatrix)
                 commandEncoder.setVertexBytes(of: projectionMatrix, index: state.vertexBindings.projectionMatrix)
-                commandEncoder.setVertexBytes(of: focal, index: state.vertexBindings.focal)
                 commandEncoder.setVertexBytes(of: drawableSize, index: state.vertexBindings.viewport)
                 commandEncoder.setVertexBytes(of: configuration.scale, index: state.vertexBindings.scale)
             }

@@ -39,14 +39,13 @@ VertexOut vertexMain(
     constant float4x4 &modelMatrix [[buffer(4)]],
     constant float4x4 &viewMatrix [[buffer(5)]],
     constant float4x4 &projectionMatrix [[buffer(6)]],
-    constant float2 &focal [[buffer(7)]],
     constant float2 &viewport [[buffer(8)]],
     constant float &scale [[buffer(9)]]
 ) {
     VertexOut out;
     const uint splatIndex = indexedDistances[instance_id].index;
     const SplatX splat = splats[splatIndex];
-
+    const float2 focal = float2(projectionMatrix[1][1], projectionMatrix[2][2]) * viewport / 2;
     const float4x4 modelViewMatrix = viewMatrix * modelMatrix;
     const float4 cam = modelViewMatrix * float4(splat.position, 1);
     float4 pos2d = projectionMatrix * cam;
