@@ -70,6 +70,7 @@ struct DemosView: View {
     var body: some View {
         NavigationSplitView {
             List(selection: $currentDemo) {
+                row(for: SplatsEditorDemo.self)
                 row(for: GaussianSplatAntimatter15DemoView.self)
                 row(for: ProceduralAnimationDemoView.self)
                 row(for: SingleSplatView.self)
