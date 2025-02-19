@@ -157,7 +157,11 @@ public struct GaussianSplatAntimatter15RenderView: View {
             Form {
                 Text("\(splatCloud.label ?? "")")
                 Text("\(splatCloud.count) splats")
-//                Toggle("debug", isOn: $configuration.debug)
+                Picker("Debug Mode", selection: $configuration.debugMode) {
+                    ForEach(GaussianSplatAntimatter15RenderPass.Configuration.DebugMode.allCases, id: \.self) { mode in
+                        Text("\(mode)").tag(mode)
+                    }
+                }
                 Toggle("flip", isOn: $flipModel)
                 TextField("Splat Scale", value: $configuration.splatScale, format: .number.precision(.fractionLength(0...3)))
 
@@ -249,9 +253,10 @@ struct GaussianSplatAntimatter15RenderPass: RenderPassProtocol {
 
     struct Configuration: Equatable {
 
-        enum DebugMode: Int32 {
+        enum DebugMode: Int32, CaseIterable {
             case off = 0
             case wireframe = 1
+            case filled = 2
         }
 
         var modelMatrix: simd_float4x4

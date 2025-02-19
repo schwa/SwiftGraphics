@@ -123,7 +123,6 @@ float4 fragmentMain(
     FragmentIn in [[stage_in]],
     uint primitive_id[[primitive_id]]
 ) {
-//    return float4(in.color.rgb, 1);
 
     if (debug_mode == 1) {
         switch (primitive_id) {
@@ -134,7 +133,9 @@ float4 fragmentMain(
             default:
                 return float4(0, 0, 0, 0);
         }
-
+    }
+    else if (debug_mode == 2) {
+        return float4(in.color.rgb, 1);
     }
     else {
         float A = -dot(in.relativePosition, in.relativePosition);
