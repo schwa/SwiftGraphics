@@ -1,5 +1,4 @@
 import BaseSupport
-import Widgets3D
 import Everything
 import GaussianSplatShaders
 import GaussianSplatSupport
@@ -16,7 +15,6 @@ import SwiftFields
 import SwiftUI
 import UniformTypeIdentifiers
 import Widgets3D
-
 public struct SingleSplatView: View {
     @State
     private var viewModel: GaussianSplatViewModel

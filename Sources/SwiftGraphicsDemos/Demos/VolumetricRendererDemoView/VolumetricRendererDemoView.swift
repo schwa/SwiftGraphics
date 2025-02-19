@@ -1,6 +1,5 @@
 #if !os(visionOS)
 import BaseSupport
-import Widgets3D
 import CoreGraphicsSupport
 import Metal
 import MetalKit
@@ -12,6 +11,7 @@ import RenderKitSceneGraph
 import RenderKitUISupport
 import SwiftGraphicsDemosShaders
 import SwiftUI
+import Widgets3D
 
 // https://www.youtube.com/watch?v=y4KdxaMC69w&t=1761s
 

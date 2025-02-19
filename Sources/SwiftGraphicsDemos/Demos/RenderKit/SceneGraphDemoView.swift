@@ -1,4 +1,3 @@
-import Widgets3D
 import Metal
 import MetalKit
 import MetalSupport
@@ -10,7 +9,6 @@ import simd
 import SIMDSupport
 import SwiftUI
 import Widgets3D
-
 struct SceneGraphDemoView: View, DemoView {
     @State
     private var scene: SceneGraph

@@ -1,5 +1,4 @@
 import BaseSupport
-import Widgets3D
 @preconcurrency import Metal
 import MetalKit
 import MetalSupport
@@ -10,6 +9,7 @@ import Shapes3D
 import SIMDSupport
 import SwiftGLTF
 import SwiftUI
+import Widgets3D
 
 struct SimplePBRSceneGraphDemoView: View, DemoView {
     let device: MTLDevice

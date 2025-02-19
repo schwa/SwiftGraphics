@@ -46,7 +46,7 @@ internal actor AsyncSortManager <Splat> where Splat: SplatProtocol {
 
     private func startSorting() async throws {
         let channel = _sortRequestChannel.removeDuplicates { lhs, rhs in
-            return lhs == rhs
+            lhs == rhs
         }
         .throttle(for: .milliseconds(33.333)) // 33.333ms = 30fps
 

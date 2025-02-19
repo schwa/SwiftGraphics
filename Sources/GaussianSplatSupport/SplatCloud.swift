@@ -80,15 +80,14 @@ struct SortState: Sendable, Equatable {
 
 extension SortState: CustomDebugStringConvertible {
     var debugDescription: String {
-        return "SortState(camera: \(String(format: "%02X", camera.hashValue)), model: \(String(format: "%02X", model.hashValue)), reversed: \(reversed), count: \(count))"
+        "SortState(camera: \(String(format: "%02X", camera.hashValue)), model: \(String(format: "%02X", model.hashValue)), reversed: \(reversed), count: \(count))"
     }
 }
 
 extension SortState {
     var shortDescription: String {
-        return "[\(String(format: "%02X", camera.hashValue))|\(String(format: "%02X", model.hashValue))|\(reversed ? "􀄨" : "􀄩")|\(count))]"
+        "[\(String(format: "%02X", camera.hashValue))|\(String(format: "%02X", model.hashValue))|\(reversed ? "􀄨" : "􀄩")|\(count))]"
     }
-
 }
 
 extension SIMD3<Float> {

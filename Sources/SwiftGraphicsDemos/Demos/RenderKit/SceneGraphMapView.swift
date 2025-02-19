@@ -1,11 +1,11 @@
 import BaseSupport
-import Widgets3D
 import CoreGraphicsSupport
 import Metal
 import MetalKit
 import RenderKitSceneGraph
 import SIMDSupport
 import SwiftUI
+import Widgets3D
 
 @available(*, deprecated, message: "Deprecated")
 public struct SceneGraphMapView: View {

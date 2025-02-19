@@ -3,7 +3,6 @@ import BaseSupport
 #if !targetEnvironment(simulator)
 import MetalFX
 #endif
-import Widgets3D
 import MetalKit
 import MetalSupport
 import ModelIO
@@ -15,6 +14,7 @@ import simd
 import SIMDSupport
 import SwiftUI
 import Traces
+import Widgets3D
 
 @Observable
 @MainActor
@@ -128,7 +128,7 @@ public class GaussianSplatViewModel {
                             modelMatrix: simd_float3x3(truncating: splatsNode.transform.matrix),
                             cameraPosition: cameraNode.transform.matrix.translation
                         )
-                         GaussianSplatBitonicSortComputePass(id: "sort", splats: splats)
+                        GaussianSplatBitonicSortComputePass(id: "sort", splats: splats)
                     }
                     if configuration.renderSkybox && fullRedraw {
                         GroupPass(id: "g2", renderPassDescriptor: initialRenderPassDescriptor) {

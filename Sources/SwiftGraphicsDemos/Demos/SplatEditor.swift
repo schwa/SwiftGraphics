@@ -1,19 +1,18 @@
-import SwiftUI
 import GaussianSplatSupport
+import SwiftUI
 
 struct SplatsEditor: View {
-
     @Binding
     var splats: [Identified<Int, SplatD>]
 
     @State
-    var selection: Set<Int> = []
+    private var selection: Set<Int> = []
 
     @State
-    var exportData: [SplatsTransferable] = []
+    private var exportData: [SplatsTransferable] = []
 
     @State
-    var fileExporterIsPresented: Bool = false
+    private var fileExporterIsPresented: Bool = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -49,7 +48,7 @@ struct SplatsEditor: View {
                 }
                 Button("-") {
                     var splats = splats
-                    splats.removeAll(where: { selection.contains($0.id) })
+                    splats.removeAll { selection.contains($0.id) }
                     splats = splats.enumerated().map { index, splat in
                         .init(id: index, content: splat.content)
                     }
@@ -63,7 +62,7 @@ struct SplatsEditor: View {
         .toolbar {
             Menu("Template") {
                 Button("Splats") {
-                    self.splats = template().enumerated().map { .init(id: $0, content: $1) }
+                    splats = template().enumerated().map { .init(id: $0, content: $1) }
                 }
             }
             Button("Export") {
@@ -82,16 +81,14 @@ struct SplatsTransferable: Transferable {
 
     static var transferRepresentation: some TransferRepresentation {
         DataRepresentation(exportedContentType: .json) { item in
-
             try JSONEncoder().encode(item.splats)
 
-//            item.splats.withUnsafeBytes { buffer in
-//                Data(buffer)
-//            }
+            //            item.splats.withUnsafeBytes { buffer in
+            //                Data(buffer)
+            //            }
         }
     }
 }
-
 
 extension SplatD {
     init() {
@@ -101,7 +98,7 @@ extension SplatD {
 
 struct SplatsEditorDemo: View {
     @State
-    var splats: [Identified<Int, SplatD>] = [
+    private var splats: [Identified<Int, SplatD>] = [
         .init(id: 0, content: .init())
     ]
 
@@ -134,11 +131,11 @@ func template() -> [SplatD] {
         .init(position: [0, 0, 1], scale: [1, 1, 1], color: [0, 0, 1, 1], rotation: .identity),
         .init(position: [0, 0, -1], scale: [1, 1, 1], color: [0, 0, 1, 1], rotation: .identity),
     ]
-        splats = splats.map { splat in
-            var splat = splat
-            splat.scale *= 0.1
-            return splat
-        }
+    splats = splats.map { splat in
+        var splat = splat
+        splat.scale *= 0.1
+        return splat
+    }
 
     return splats
 }

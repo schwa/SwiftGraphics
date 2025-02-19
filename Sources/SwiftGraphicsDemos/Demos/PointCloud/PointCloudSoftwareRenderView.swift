@@ -1,11 +1,9 @@
-import Widgets3D
 import CoreGraphicsSupport
 import Projection
 import RenderKitUISupport
 import SIMDSupport
 import SwiftUI
 import Widgets3D
-
 struct PointCloudSoftwareRenderView: View, DemoView {
     @State
     private var cameraTransform: Transform = .translation([0, 0, -5])

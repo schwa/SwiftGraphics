@@ -116,8 +116,6 @@ public struct MatrixEditor <Matrix>: View where Matrix: FormattableMatrix & Matr
 
 // MARK: -
 
-
-
 public protocol MatrixOperations {
     static var zero: Self { get }
     static var identity: Self { get }

@@ -1,5 +1,5 @@
 import BaseSupport
-import Widgets3D
+import CoreGraphicsSupport
 import GaussianSplatShaders
 @preconcurrency import Metal
 import MetalSupport
@@ -7,10 +7,10 @@ import os
 import RenderKit
 import simd
 import SIMDSupport
+import Spatial
 import SwiftUI
 import UniformTypeIdentifiers
-import Spatial
-import CoreGraphicsSupport
+import Widgets3D
 
 extension UTType {
     static let splat = UTType(filenameExtension: "splat")!
@@ -27,7 +27,7 @@ public struct GaussianSplatAntimatter15DemoView: View {
     private var isDropTargeted = false
 
     public init() {
-//        let url = Bundle.main.url(forResource: "ThreeSplats", withExtension: "json")!
+        //        let url = Bundle.main.url(forResource: "ThreeSplats", withExtension: "json")!
         let url = Bundle.main.url(forResource: "centered_lastchance", withExtension: "splat")!
         let splatCloud = try! SplatCloud<SplatX>(device: MTLCreateSystemDefaultDevice()!, url: url)
         splatCloud.label = "\(url.lastPathComponent)"
@@ -36,33 +36,33 @@ public struct GaussianSplatAntimatter15DemoView: View {
 
     public var body: some View {
         GaussianSplatAntimatter15RenderView(splatCloud: splatCloud)
-        .onDrop(of: [.splat, .json], isTargeted: $isDropTargeted) { providers in
-            guard let provider = providers.first else {
-                return false
-            }
-            Task {
-                guard let url = try! await provider.loadItem(forTypeIdentifier: UTType.item.identifier, options: nil) as? URL else {
-                    return
+            .onDrop(of: [.splat, .json], isTargeted: $isDropTargeted) { providers in
+                guard let provider = providers.first else {
+                    return false
                 }
-                let splatCloud = try! SplatCloud<SplatX>(device: MTLCreateSystemDefaultDevice()!, url: url)
-                splatCloud.label = "\(url)"
-                await MainActor.run {
-                    self.splatCloud = splatCloud
-                }
-            }
-            return true
-        }
-        .toolbar {
-            Menu("Load") {
-                ForEach(allSplats(), id: \.self) { url in
-                    Button("Load \(url.lastPathComponent)") {
-                        let splatCloud = try! SplatCloud<SplatX>(device: MTLCreateSystemDefaultDevice()!, url: url)
-                        splatCloud.label = "\(url.lastPathComponent)"
+                Task {
+                    guard let url = try! await provider.loadItem(forTypeIdentifier: UTType.item.identifier, options: nil) as? URL else {
+                        return
+                    }
+                    let splatCloud = try! SplatCloud<SplatX>(device: MTLCreateSystemDefaultDevice()!, url: url)
+                    splatCloud.label = "\(url)"
+                    await MainActor.run {
                         self.splatCloud = splatCloud
                     }
                 }
+                return true
             }
-        }
+            .toolbar {
+                Menu("Load") {
+                    ForEach(allSplats(), id: \.self) { url in
+                        Button("Load \(url.lastPathComponent)") {
+                            let splatCloud = try! SplatCloud<SplatX>(device: MTLCreateSystemDefaultDevice()!, url: url)
+                            splatCloud.label = "\(url.lastPathComponent)"
+                            self.splatCloud = splatCloud
+                        }
+                    }
+                }
+            }
     }
 
     func allSplats() -> [URL] {
@@ -145,7 +145,6 @@ public struct GaussianSplatAntimatter15RenderView: View {
                     }
                 }
             }
-
         }
         .onChange(of: flipModel, initial: true) {
             if !flipModel {
@@ -161,7 +160,7 @@ public struct GaussianSplatAntimatter15RenderView: View {
             }
             requestSort()
         }
-        .onGeometryChange(for: CGSize.self, of: \.size, action: { size = $0 })
+        .onGeometryChange(for: CGSize.self, of: \.size) { size = $0 }
         .onChange(of: configuration.cameraMatrix) {
             requestSort()
         }
@@ -175,7 +174,7 @@ public struct GaussianSplatAntimatter15RenderView: View {
             requestSort()
         }
         .modifier(NewBallControllerViewModifier(constraint: .init(radius: 2), transform: $configuration.cameraMatrix, debug: ballControllerDebug))
-//        .modifier(GameControllerModifier(cameraMatrix: $configuration.cameraMatrix))
+        //        .modifier(GameControllerModifier(cameraMatrix: $configuration.cameraMatrix))
         .inspector(isPresented: $isInspectorPresented) {
             Form {
                 Text("\(splatCloud.label ?? "")")
@@ -196,7 +195,6 @@ public struct GaussianSplatAntimatter15RenderView: View {
                             Text("\(currentSortState.shortDescription)")
                         }
                     }
-
 
                     LabeledContent("Theoretical Sort State") {
                         let state = SortState(camera: pass.configuration.cameraMatrix, model: configuration.modelMatrix, reversed: reversedSort, count: splatCloud.count)
@@ -247,22 +245,21 @@ public struct GaussianSplatAntimatter15RenderView: View {
                 }
                 DisclosureGroup("Projection") {
                     PerspectiveProjectionEditor(projection: $configuration.projection, size: size, displayScale: displayScale)
-                    .controlSize(.mini)
+                        .controlSize(.mini)
                 }
 
                 DisclosureGroup("Camera") {
-                        MatrixView(configuration.cameraMatrix)
-                            .controlSize(.mini)
-                    }
+                    MatrixView(configuration.cameraMatrix)
+                        .controlSize(.mini)
+                }
                 DisclosureGroup("View") {
-                        MatrixView(configuration.cameraMatrix.inverse)
-                            .controlSize(.mini)
-                    }
+                    MatrixView(configuration.cameraMatrix.inverse)
+                        .controlSize(.mini)
+                }
                 DisclosureGroup("Model") {
-                        MatrixView(configuration.modelMatrix)
-                            .controlSize(.mini)
-                    }
-
+                    MatrixView(configuration.modelMatrix)
+                        .controlSize(.mini)
+                }
             }
         }
     }
@@ -272,7 +269,7 @@ public struct GaussianSplatAntimatter15RenderView: View {
     }
 
     func requestSort() {
-        sortManager!.requestSort(camera: pass.configuration.cameraMatrix, model: configuration.modelMatrix, reversed: reversedSort,  count: splatCloud.count)
+        sortManager!.requestSort(camera: pass.configuration.cameraMatrix, model: configuration.modelMatrix, reversed: reversedSort, count: splatCloud.count)
     }
 }
 
@@ -297,7 +294,6 @@ struct GaussianSplatAntimatter15RenderPass: RenderPassProtocol {
     }
 
     struct Configuration: Equatable {
-
         enum DebugMode: Int32, CaseIterable {
             case off = 0
             case wireframe = 1
@@ -309,14 +305,14 @@ struct GaussianSplatAntimatter15RenderPass: RenderPassProtocol {
         var projection: PerspectiveProjection
         var debugMode: DebugMode
         var splatScale: Float = 1.0
-//        var blendConfiguration: BlendConfiguration = .init(
-//            sourceRGBBlendFactor: .sourceAlpha,
-//            destinationRGBBlendFactor: .oneMinusSourceAlpha,
-//            rgbBlendOperation: .add,
-//            sourceAlphaBlendFactor: .sourceAlpha,
-//            destinationAlphaBlendFactor: .oneMinusSourceAlpha,
-//            alphaBlendOperation: .add
-//        )
+        //        var blendConfiguration: BlendConfiguration = .init(
+        //            sourceRGBBlendFactor: .sourceAlpha,
+        //            destinationRGBBlendFactor: .oneMinusSourceAlpha,
+        //            rgbBlendOperation: .add,
+        //            sourceAlphaBlendFactor: .sourceAlpha,
+        //            destinationAlphaBlendFactor: .oneMinusSourceAlpha,
+        //            alphaBlendOperation: .add
+        //        )
         var blendConfiguration: BlendConfiguration = .init(
             sourceRGBBlendFactor: .one,
             destinationRGBBlendFactor: .oneMinusSourceAlpha,
@@ -390,16 +386,10 @@ struct GaussianSplatAntimatter15RenderPass: RenderPassProtocol {
             return
         }
         let drawableSize = info.drawableSize
-//        print(drawableSize)
+        //        print(drawableSize)
         let viewMatrix = configuration.cameraMatrix.inverse
         let modelMatrix = configuration.modelMatrix
         var projectionMatrix = configuration.projection.projectionMatrix(for: info.drawableSize)
-
-
-
-
-
-
 
         try commandBuffer.withRenderCommandEncoder(descriptor: renderPassDescriptor, label: "\(type(of: self))", useDebugGroup: true) { commandEncoder in
             if info.configuration.depthStencilPixelFormat != .invalid {
@@ -526,8 +516,6 @@ extension ClosedRange {
 }
 
 struct PerspectiveProjectionEditor: View {
-
-
     @Binding
     var projection: PerspectiveProjection
 
@@ -535,23 +523,21 @@ struct PerspectiveProjectionEditor: View {
     let displayScale: CGFloat
 
     @State
-    var userSize = SIMD2<Float>(1024, 768)
+    private var userSize = SIMD2<Float>(1024, 768)
 
     var body: some View {
-            TextField("Angle", value: $projection.verticalAngleOfView.degrees, format: .number)
-            Slider(value: $projection.verticalAngleOfView.degrees, in: 0...360)
+        TextField("Angle", value: $projection.verticalAngleOfView.degrees, format: .number)
+        Slider(value: $projection.verticalAngleOfView.degrees, in: 0...360)
 
-            TextField("Near", value: $projection.zClip.editableLowerBound, format: .number)
-            TextField("Far", value: $projection.zClip.editableUpperBound, format: .number)
+        TextField("Near", value: $projection.zClip.editableLowerBound, format: .number)
+        TextField("Far", value: $projection.zClip.editableUpperBound, format: .number)
 
-            //            let size = size * displayScale
-            let projectionMatrix = projection.projectionMatrix(for: userSize)
-            TextField("Width", value: $userSize.x, format: .number)
-            TextField("Height", value: $userSize.y, format: .number)
-            LabeledContent("PRojection") {
-                MatrixView(projectionMatrix)
-            }
-
+        //            let size = size * displayScale
+        let projectionMatrix = projection.projectionMatrix(for: userSize)
+        TextField("Width", value: $userSize.x, format: .number)
+        TextField("Height", value: $userSize.y, format: .number)
+        LabeledContent("PRojection") {
+            MatrixView(projectionMatrix)
+        }
     }
-
 }

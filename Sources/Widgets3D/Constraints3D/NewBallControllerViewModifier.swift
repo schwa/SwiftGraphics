@@ -1,8 +1,8 @@
 import simd
 import SIMDSupport
-import SwiftUI
-import SwiftFormats
 import SwiftFields
+import SwiftFormats
+import SwiftUI
 
 public struct NewBallControllerViewModifier: ViewModifier {
     @State
@@ -12,7 +12,6 @@ public struct NewBallControllerViewModifier: ViewModifier {
     var transform: simd_float4x4
 
     var debug: Bool = false
-
 
     public init(constraint: NewBallConstraint, transform: Binding<simd_float4x4>, debug: Bool = false) {
         self._constraint = State(initialValue: constraint)
@@ -31,10 +30,10 @@ public struct NewBallControllerViewModifier: ViewModifier {
             .overlay(alignment: .bottom) {
                 if debug {
                     NewBallConstraintEditor(constraint: $constraint)
-                    .controlSize(.small)
-                    .padding()
-                    .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 8))
-                    .padding()
+                        .controlSize(.small)
+                        .padding()
+                        .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 8))
+                        .padding()
                 }
             }
     }
@@ -79,7 +78,6 @@ public struct NewBallConstraint: Equatable {
 // MARK: -
 
 struct NewBallConstraintEditor: View {
-
     @Binding
     var constraint: NewBallConstraint
 
@@ -108,10 +106,10 @@ struct NewBallConstraintEditor: View {
                     }
                 }
             }
-//            LabeledContent("Transform") {
-//                Text("\(constraint.transform, format: .matrix.scalarStyle(.number.precision(.fractionLength(0...2))))")
-                MatrixView(constraint.transform)
-//            }
+            //            LabeledContent("Transform") {
+            //                Text("\(constraint.transform, format: .matrix.scalarStyle(.number.precision(.fractionLength(0...2))))")
+            MatrixView(constraint.transform)
+            //            }
 
             Menu("Options", systemImage: "gear") {
                 Button("Reset") {
@@ -122,6 +120,5 @@ struct NewBallConstraintEditor: View {
             }
             .labelsHidden()
         }
-
     }
 }

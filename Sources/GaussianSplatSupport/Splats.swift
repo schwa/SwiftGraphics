@@ -59,7 +59,6 @@ public struct SplatD: Equatable {
 }
 
 extension SplatD: Codable {
-    
 }
 
 public extension SplatB {

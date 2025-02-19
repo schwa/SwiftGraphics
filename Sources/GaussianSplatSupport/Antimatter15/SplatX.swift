@@ -1,5 +1,5 @@
-import simd
 import GaussianSplatShaders
+import simd
 
 public extension SplatX {
     init(_ splat: SplatB) {
@@ -13,10 +13,10 @@ extension SplatX: @unchecked @retroactive Sendable {
 extension SplatX: @retroactive Equatable {
     public static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.position == rhs.position
-        && lhs.color == rhs.color
-        && lhs.u1 == rhs.u1
-        && lhs.u2 == rhs.u2
-        && lhs.u3 == rhs.u3
+            && lhs.color == rhs.color
+            && lhs.u1 == rhs.u1
+            && lhs.u2 == rhs.u2
+            && lhs.u3 == rhs.u3
     }
 }
 

@@ -1,8 +1,8 @@
 import GameController
 import Observation
 import simd
-import SwiftUI
 import SIMDSupport
+import SwiftUI
 
 struct GameControllerModifier: ViewModifier {
     @State
@@ -18,24 +18,19 @@ struct GameControllerModifier: ViewModifier {
     func body(content: Content) -> some View {
         TimelineView(.animation) { timeline in
             content
-            .onChange(of: timeline.date) {
+                .onChange(of: timeline.date) {
+                    // adjust camera matrix by controller input
+                    let movement = viewModel.movement
+                    let translation = simd_make_float3(movement.x, 0, movement.y * -1) * 0.1
+                    cameraMatrix = cameraMatrix * simd_float4x4(translate: translation)
 
-
-                // adjust camera matrix by controller input
-                let movement = viewModel.movement
-                let translation = simd_make_float3(movement.x, 0, movement.y * -1) * 0.1
-                cameraMatrix = cameraMatrix * simd_float4x4(translate: translation)
-
-                // adjust camera matrix by controller input
-                let rotation = viewModel.rotation
-                let yaw = Angle(radians: Double(rotation.x) * .pi) * 0.1
-                let pitch = Angle(radians: Double(rotation.y) * .pi) * 0.05
-                let quaternion = simd_quatf(angle: yaw, axis: [0, 1, 0]) * simd_quatf(angle: pitch, axis: [1, 0, 0])
-                cameraMatrix = cameraMatrix * simd_float4x4(quaternion)
-
-
-
-            }
+                    // adjust camera matrix by controller input
+                    let rotation = viewModel.rotation
+                    let yaw = Angle(radians: Double(rotation.x) * .pi) * 0.1
+                    let pitch = Angle(radians: Double(rotation.y) * .pi) * 0.05
+                    let quaternion = simd_quatf(angle: yaw, axis: [0, 1, 0]) * simd_quatf(angle: pitch, axis: [1, 0, 0])
+                    cameraMatrix = cameraMatrix * simd_float4x4(quaternion)
+                }
         }
         .overlay(alignment: .bottom) {
             VStack {

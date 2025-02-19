@@ -112,13 +112,13 @@ public extension MTLFunctionConstantValues {
             let baseAddress = buffer.baseAddress.forceUnwrap("Could not get base Address")
             let type: MTLDataType = switch value {
             case is Bool:
-                    .bool
+                .bool
             case is Int32:
-                    .int
+                .int
             case is UInt32:
-                    .uint
+                .uint
             case is Float:
-                    .float
+                .float
             default:
                 // TODO: More constant types.
                 fatalError("Unsupported constant value type: (\(type(of: value)))")
@@ -182,29 +182,29 @@ public extension MTLVertexFormat {
         case .short4, .short4Normalized:
             return 4 * MemoryLayout<Int16>.size
         case .half:
-#if arch(arm64)
+            #if arch(arm64)
             return MemoryLayout<Float16>.size
-#else
+            #else
             return MemoryLayout<Int16>.size
-#endif
+            #endif
         case .half2:
-#if arch(arm64)
+            #if arch(arm64)
             return 2 * MemoryLayout<Float16>.size
-#else
+            #else
             return 2 * MemoryLayout<Int16>.size
-#endif
+            #endif
         case .half3:
-#if arch(arm64)
+            #if arch(arm64)
             return 3 * MemoryLayout<Float16>.size
-#else
+            #else
             return 3 * MemoryLayout<Int16>.size
-#endif
+            #endif
         case .half4:
-#if arch(arm64)
+            #if arch(arm64)
             return MemoryLayout<Float16>.size
-#else
+            #else
             return MemoryLayout<Int16>.size
-#endif
+            #endif
         case .float:
             return MemoryLayout<Float>.size
         case .float2:

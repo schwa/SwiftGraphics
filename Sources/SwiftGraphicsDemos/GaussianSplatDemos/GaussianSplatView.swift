@@ -1,5 +1,4 @@
 import BaseSupport
-import Widgets3D
 import CoreGraphicsUnsafeConformances
 import Everything
 import Foundation
@@ -17,6 +16,7 @@ import SwiftUI
 import SwiftUISupport
 import Traces
 import UniformTypeIdentifiers
+import Widgets3D
 
 // swiftlint:disable force_unwrapping
 

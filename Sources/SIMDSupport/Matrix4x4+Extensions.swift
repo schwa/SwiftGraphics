@@ -93,10 +93,10 @@ public extension simd_float4x4 {
         }
         set {
             self = .init(columns:
-                (simd_float4(newValue[0], newValue[1], newValue[2], newValue[3]),
-                simd_float4(newValue[4], newValue[5], newValue[6], newValue[7]),
-                simd_float4(newValue[8], newValue[9], newValue[10], newValue[11]),
-                simd_float4(newValue[12], newValue[13], newValue[14], newValue[15]))
+                            (simd_float4(newValue[0], newValue[1], newValue[2], newValue[3]),
+                             simd_float4(newValue[4], newValue[5], newValue[6], newValue[7]),
+                             simd_float4(newValue[8], newValue[9], newValue[10], newValue[11]),
+                             simd_float4(newValue[12], newValue[13], newValue[14], newValue[15]))
             )
         }
     }

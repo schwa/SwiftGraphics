@@ -1,4 +1,3 @@
-import Widgets3D
 import CoreGraphicsSupport
 import Projection
 import RenderKitUISupport
@@ -6,7 +5,6 @@ import Shapes3D
 import SIMDSupport
 import SwiftUI
 import Widgets3D
-
 struct SoftwareRendererBoxesDemoView: View, DemoView {
     @State
     private var models: [any PolygonConvertable]
