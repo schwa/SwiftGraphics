@@ -212,7 +212,7 @@ public class GaussianSplatViewModel {
             logger?.log("Can't sort. Missing dependencies.")
             return
         }
-        cpuSorter.requestSort(camera: cameraNode.transform.matrix, model: splatsNode.transform.matrix, count: splatCloud.splats.count)
+        cpuSorter.requestSort(camera: cameraNode.transform.matrix, model: splatsNode.transform.matrix, reversed: false, count: splatCloud.splats.count)
         Traces.shared.trace(name: "Sort Requested")
     }
 }

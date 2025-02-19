@@ -74,12 +74,13 @@ extension SplatIndices: CustomDebugStringConvertible {
 struct SortState: Sendable {
     var camera: simd_float4x4
     var model: simd_float4x4
+    var reversed: Bool
     var count: Int
 }
 
 extension SortState: CustomDebugStringConvertible {
     var debugDescription: String {
-        "SortState(camera: \(camera.hashValue), model: \(model.hashValue), count: \(count))"
+        return "SortState(camera: \(String(format: "%02X", camera.hashValue)), model: \(String(format: "%02X", model.hashValue)), reversed: \(reversed), count: \(count))"
     }
 }
 

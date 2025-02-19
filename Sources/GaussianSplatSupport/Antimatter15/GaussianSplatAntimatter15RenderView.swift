@@ -85,6 +85,11 @@ public struct GaussianSplatAntimatter15DemoView: View {
 // MARK: -
 
 public struct GaussianSplatAntimatter15RenderView: View {
+    enum Controller {
+        case ball
+        case gameController
+    }
+
     private let splatCloud: SplatCloud<SplatX>
 
     @State
@@ -93,16 +98,14 @@ public struct GaussianSplatAntimatter15RenderView: View {
     @State
     private var configuration: GaussianSplatAntimatter15RenderPass.Configuration
 
-    enum Controller {
-        case ball
-        case gameController
-    }
-
     @State
     private var controller = Controller.ball
 
     @State
     private var size: CGSize = .zero
+
+    @State
+    private var currentSortState: SortState?
 
     @Environment(\.displayScale)
     private var displayScale
@@ -113,17 +116,14 @@ public struct GaussianSplatAntimatter15RenderView: View {
     @MainActor
     public init(splatCloud: SplatCloud<SplatX>) {
         self.splatCloud = splatCloud
-        // Rotate the model by 180°
         let perspectiveProjection = PerspectiveProjection(verticalAngleOfView: .degrees(75), zClip: 0.2 ... 200)
         configuration = GaussianSplatAntimatter15RenderPass.Configuration(modelMatrix: .identity, cameraMatrix: .identity, projection: perspectiveProjection, debugMode: .off)
         sortManager = try! AsyncSortManager(device: MTLCreateSystemDefaultDevice()!, splatCloud: splatCloud, capacity: splatCloud.capacity, logger: Logger())
-        sortManager = try! AsyncSortManager(device: MTLCreateSystemDefaultDevice()!, splatCloud: splatCloud, capacity: splatCloud.capacity, logger: nil)
     }
 
     public var body: some View {
         RenderView(pass: pass) { configuration in
             configuration.colorPixelFormat = .bgra8Unorm
-
         }
         .onChange(of: flipModel, initial: true) {
             if !flipModel {
@@ -148,15 +148,32 @@ public struct GaussianSplatAntimatter15RenderView: View {
             let channel = await sortManager.sortedIndicesChannel()
             for await sort in channel {
                 pass.splatCloud.indexedDistances = sort
+                MainActor.runTask {
+                    currentSortState = sort.state
+                }
             }
         }
         .onChange(of: configuration.cameraMatrix) {
-            sortManager.requestSort(camera: pass.configuration.cameraMatrix, model: configuration.modelMatrix, count: splatCloud.count)
+            sortManager.requestSort(camera: pass.configuration.cameraMatrix, model: configuration.modelMatrix, reversed: false,  count: splatCloud.count)
         }
         .inspector(isPresented: .constant(true)) {
             Form {
                 Text("\(splatCloud.label ?? "")")
                 Text("\(splatCloud.count) splats")
+
+                LabeledContent("Current Sort State") {
+                    if let currentSortState {
+                        Text("\(currentSortState)")
+                    }
+                }
+
+
+                LabeledContent("Theoretical Sort State") {
+                    let x = SortState(camera: pass.configuration.cameraMatrix, model: configuration.modelMatrix, reversed: false, count: splatCloud.count)
+                    Text("\(x)")
+                }
+
+
                 Picker("Debug Mode", selection: $configuration.debugMode) {
                     ForEach(GaussianSplatAntimatter15RenderPass.Configuration.DebugMode.allCases, id: \.self) { mode in
                         Text("\(mode)").tag(mode)
