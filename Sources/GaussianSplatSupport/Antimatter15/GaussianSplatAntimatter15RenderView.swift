@@ -27,6 +27,7 @@ public struct GaussianSplatAntimatter15DemoView: View {
     private var isDropTargeted = false
 
     public init() {
+//        let url = Bundle.main.url(forResource: "ThreeSplats", withExtension: "json")!
         let url = Bundle.main.url(forResource: "centered_lastchance", withExtension: "splat")!
         let splatCloud = try! SplatCloud<SplatX>(device: MTLCreateSystemDefaultDevice()!, url: url)
         splatCloud.label = "\(url.lastPathComponent)"
@@ -62,7 +63,6 @@ public struct GaussianSplatAntimatter15DemoView: View {
                         splatCloud.label = "\(url.lastPathComponent)"
                         self.splatCloud = splatCloud
                     }
-
                 }
             }
         }
@@ -74,7 +74,7 @@ public struct GaussianSplatAntimatter15DemoView: View {
         let enumerator = FileManager().enumerator(at: bundleURL, includingPropertiesForKeys: nil)!
         for element in enumerator {
             let url = element as! URL
-            if url.pathExtension == "splat" {
+            if url.pathExtension == "splat" || url.pathExtension == "json" {
                 splats.append(url)
             }
         }
@@ -93,7 +93,7 @@ public struct GaussianSplatAntimatter15RenderView: View {
     private let splatCloud: SplatCloud<SplatX>
 
     @State
-    private var sortManager: AsyncSortManager<SplatX>
+    private var sortManager: AsyncSortManager<SplatX>?
 
     @State
     private var configuration: GaussianSplatAntimatter15RenderPass.Configuration
@@ -116,17 +116,36 @@ public struct GaussianSplatAntimatter15RenderView: View {
     @State
     private var reversedSort: Bool = false
 
+    @State
+    private var isInspectorPresented = false
+
     @MainActor
     public init(splatCloud: SplatCloud<SplatX>) {
         self.splatCloud = splatCloud
         let perspectiveProjection = PerspectiveProjection(verticalAngleOfView: .degrees(75), zClip: 0.2 ... 200)
         configuration = GaussianSplatAntimatter15RenderPass.Configuration(modelMatrix: .identity, cameraMatrix: .identity, projection: perspectiveProjection, debugMode: .off)
-        sortManager = try! AsyncSortManager(device: MTLCreateSystemDefaultDevice()!, splatCloud: splatCloud, capacity: splatCloud.capacity, logger: Logger())
     }
 
     public var body: some View {
         RenderView(pass: pass) { configuration in
             configuration.colorPixelFormat = .bgra8Unorm
+        }
+        .toolbar {
+            Toggle("Inspector", isOn: $isInspectorPresented)
+        }
+        .onChange(of: splatCloud, initial: true) {
+            sortManager = try! AsyncSortManager(device: MTLCreateSystemDefaultDevice()!, splatCloud: splatCloud, capacity: splatCloud.capacity, logger: Logger())
+            Task {
+                let channel = await sortManager!.sortedIndicesChannel()
+                for await sort in channel {
+                    pass.splatCloud.indexedDistances = sort
+                    MainActor.runTask {
+                        currentSortState = sort.state
+                        print("Setting current sort state to \(sort.state.shortDescription)")
+                    }
+                }
+            }
+
         }
         .onChange(of: flipModel, initial: true) {
             if !flipModel {
@@ -147,16 +166,6 @@ public struct GaussianSplatAntimatter15RenderView: View {
 
         .modifier(NewBallControllerViewModifier(constraint: .init(radius: 2), transform: $configuration.cameraMatrix, debug: true))
 //        .modifier(GameControllerModifier(cameraMatrix: $configuration.cameraMatrix))
-        .task {
-            let channel = await sortManager.sortedIndicesChannel()
-            for await sort in channel {
-                pass.splatCloud.indexedDistances = sort
-                MainActor.runTask {
-                    currentSortState = sort.state
-                    print("Setting current sort state to \(sort.state.shortDescription)")
-                }
-            }
-        }
         .onChange(of: configuration.cameraMatrix) {
             requestSort()
         }
@@ -169,23 +178,10 @@ public struct GaussianSplatAntimatter15RenderView: View {
         .onChange(of: splatCloud) {
             requestSort()
         }
-        .inspector(isPresented: .constant(true)) {
+        .inspector(isPresented: $isInspectorPresented) {
             Form {
                 Text("\(splatCloud.label ?? "")")
                 Text("\(splatCloud.count) splats")
-
-                LabeledContent("Current Sort State") {
-                    if let currentSortState {
-                        Text("\(currentSortState.shortDescription)")
-                    }
-                }
-
-
-                LabeledContent("Theoretical Sort State") {
-                    let state = SortState(camera: pass.configuration.cameraMatrix, model: configuration.modelMatrix, reversed: reversedSort, count: splatCloud.count)
-                    Text("\(state.shortDescription)")
-                }
-
                 Toggle("Reversed Sort", isOn: $reversedSort)
 
                 Picker("Debug Mode", selection: $configuration.debugMode) {
@@ -194,6 +190,21 @@ public struct GaussianSplatAntimatter15RenderView: View {
                     }
                 }
                 Toggle("flip", isOn: $flipModel)
+
+                DisclosureGroup("Sort State") {
+                    LabeledContent("Current Sort State") {
+                        if let currentSortState {
+                            Text("\(currentSortState.shortDescription)")
+                        }
+                    }
+
+
+                    LabeledContent("Theoretical Sort State") {
+                        let state = SortState(camera: pass.configuration.cameraMatrix, model: configuration.modelMatrix, reversed: reversedSort, count: splatCloud.count)
+                        Text("\(state.shortDescription)")
+                    }
+                }
+
                 TextField("Splat Scale", value: $configuration.splatScale, format: .number.precision(.fractionLength(0...3)))
 
                 DisclosureGroup("Blend") {
@@ -262,7 +273,7 @@ public struct GaussianSplatAntimatter15RenderView: View {
     }
 
     func requestSort() {
-        sortManager.requestSort(camera: pass.configuration.cameraMatrix, model: configuration.modelMatrix, reversed: reversedSort,  count: splatCloud.count)
+        sortManager!.requestSort(camera: pass.configuration.cameraMatrix, model: configuration.modelMatrix, reversed: reversedSort,  count: splatCloud.count)
     }
 }
 

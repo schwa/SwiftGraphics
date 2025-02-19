@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4501BD6F2C37204B002CE55F /* SwiftGraphicsDemos in Frameworks */ = {isa = PBXBuildFile; productRef = 4501BD6E2C37204B002CE55F /* SwiftGraphicsDemos */; };
+		45205DA22D666939008B4074 /* ThreeSplats.json in Resources */ = {isa = PBXBuildFile; fileRef = 45205DA12D666939008B4074 /* ThreeSplats.json */; };
 		455471BA2D6520D40035DFC1 /* plane.splat in Resources */ = {isa = PBXBuildFile; fileRef = 455471B62D6520D40035DFC1 /* plane.splat */; };
 		455471BB2D6520D40035DFC1 /* centered_lastchance.splat in Resources */ = {isa = PBXBuildFile; fileRef = 455471B42D6520D40035DFC1 /* centered_lastchance.splat */; };
 		455471BC2D6520D40035DFC1 /* winter fountain.cropped.playcanvas supersplat.splat in Resources */ = {isa = PBXBuildFile; fileRef = 455471B82D6520D40035DFC1 /* winter fountain.cropped.playcanvas supersplat.splat */; };
@@ -20,6 +21,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		45205DA12D666939008B4074 /* ThreeSplats.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ThreeSplats.json; sourceTree = "<group>"; };
 		455471B42D6520D40035DFC1 /* centered_lastchance.splat */ = {isa = PBXFileReference; lastKnownFileType = file; path = centered_lastchance.splat; sourceTree = "<group>"; };
 		455471B52D6520D40035DFC1 /* lastchance.splat */ = {isa = PBXFileReference; lastKnownFileType = file; path = lastchance.splat; sourceTree = "<group>"; };
 		455471B62D6520D40035DFC1 /* plane.splat */ = {isa = PBXFileReference; lastKnownFileType = file; path = plane.splat; sourceTree = "<group>"; };
@@ -62,6 +64,7 @@
 				455471B62D6520D40035DFC1 /* plane.splat */,
 				455471B72D6520D40035DFC1 /* train.splat */,
 				455471B82D6520D40035DFC1 /* winter fountain.cropped.playcanvas supersplat.splat */,
+				45205DA12D666939008B4074 /* ThreeSplats.json */,
 			);
 			path = Splats;
 			sourceTree = "<group>";
@@ -200,6 +203,7 @@
 				455471BC2D6520D40035DFC1 /* winter fountain.cropped.playcanvas supersplat.splat in Resources */,
 				455471BD2D6520D40035DFC1 /* train.splat in Resources */,
 				455471BE2D6520D40035DFC1 /* lastchance.splat in Resources */,
+				45205DA22D666939008B4074 /* ThreeSplats.json in Resources */,
 				45CDB0442BF4025700096326 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
