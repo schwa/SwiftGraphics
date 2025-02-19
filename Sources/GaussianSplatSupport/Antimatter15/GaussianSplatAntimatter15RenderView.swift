@@ -115,7 +115,7 @@ public struct GaussianSplatAntimatter15RenderView: View {
         self.splatCloud = splatCloud
         // Rotate the model by 180°
         let perspectiveProjection = PerspectiveProjection(verticalAngleOfView: .degrees(75), zClip: 0.2 ... 200)
-        configuration = GaussianSplatAntimatter15RenderPass.Configuration(modelMatrix: .identity, cameraMatrix: .identity, projection: perspectiveProjection, debug: false)
+        configuration = GaussianSplatAntimatter15RenderPass.Configuration(modelMatrix: .identity, cameraMatrix: .identity, projection: perspectiveProjection, debugMode: .off)
         sortManager = try! AsyncSortManager(device: MTLCreateSystemDefaultDevice()!, splatCloud: splatCloud, capacity: splatCloud.capacity, logger: Logger())
         sortManager = try! AsyncSortManager(device: MTLCreateSystemDefaultDevice()!, splatCloud: splatCloud, capacity: splatCloud.capacity, logger: nil)
     }
@@ -157,7 +157,7 @@ public struct GaussianSplatAntimatter15RenderView: View {
             Form {
                 Text("\(splatCloud.label ?? "")")
                 Text("\(splatCloud.count) splats")
-                Toggle("debug", isOn: $configuration.debug)
+//                Toggle("debug", isOn: $configuration.debug)
                 Toggle("flip", isOn: $flipModel)
                 TextField("Splat Scale", value: $configuration.splatScale, format: .number.precision(.fractionLength(0...3)))
 
@@ -223,7 +223,7 @@ public struct GaussianSplatAntimatter15RenderView: View {
     }
 
     private var pass: GaussianSplatAntimatter15RenderPass {
-        .init(id: .init(CompositeHash("Antimatter15", configuration.debug, configuration.blendConfiguration)), splatCloud: splatCloud, configuration: configuration)
+        .init(id: .init(CompositeHash("Antimatter15", configuration.debugMode, configuration.blendConfiguration)), splatCloud: splatCloud, configuration: configuration)
     }
 }
 
@@ -248,10 +248,16 @@ struct GaussianSplatAntimatter15RenderPass: RenderPassProtocol {
     }
 
     struct Configuration: Equatable {
+
+        enum DebugMode: Int32 {
+            case off = 0
+            case wireframe = 1
+        }
+
         var modelMatrix: simd_float4x4
         var cameraMatrix: simd_float4x4
         var projection: PerspectiveProjection
-        var debug: Bool
+        var debugMode: DebugMode
         var splatScale: Float = 1.0
 //        var blendConfiguration: BlendConfiguration = .init(
 //            sourceRGBBlendFactor: .sourceAlpha,
@@ -298,7 +304,8 @@ struct GaussianSplatAntimatter15RenderPass: RenderPassProtocol {
         vertexDescriptor.layouts[0].stride = MemoryLayout<SIMD2<Float>>.stride
 
         renderPipelineDescriptor.vertexDescriptor = vertexDescriptor
-        let constantValues = MTLFunctionConstantValues(dictionary: [1: self.configuration.debug])
+        // TODO: Magic constant
+        let constantValues = MTLFunctionConstantValues(dictionary: [2: self.configuration.debugMode.rawValue])
 
         renderPipelineDescriptor.vertexFunction = try library.makeFunction(name: "GaussianSplatAntimatter15RenderShaders::vertexMain", constantValues: constantValues)
         renderPipelineDescriptor.fragmentFunction = try library.makeFunction(name: "GaussianSplatAntimatter15RenderShaders::fragmentMain", constantValues: constantValues)
@@ -349,7 +356,7 @@ struct GaussianSplatAntimatter15RenderPass: RenderPassProtocol {
                 commandEncoder.setDepthStencilState(state.depthStencilState)
             }
             commandEncoder.setRenderPipelineState(state.renderPipelineState)
-            if configuration.debug {
+            if configuration.debugMode == .wireframe {
                 commandEncoder.setTriangleFillMode(.lines)
             }
             commandEncoder.withDebugGroup("VertexShader") {

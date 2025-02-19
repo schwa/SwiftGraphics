@@ -7,7 +7,7 @@
 
 namespace GaussianSplatAntimatter15RenderShaders {
 
-constant bool debug [[function_constant(1)]];
+constant int debug_mode [[function_constant(2)]];
 
 inline float3x3 truncateTo3x3(const float4x4 M) {
     return float3x3(M[0].xyz, M[1].xyz, M[2].xyz);
@@ -125,7 +125,7 @@ float4 fragmentMain(
 ) {
 //    return float4(in.color.rgb, 1);
 
-    if (debug) {
+    if (debug_mode == 1) {
         switch (primitive_id) {
             case 0:
                 return float4(1, 0, 0, 1);
