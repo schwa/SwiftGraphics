@@ -51,16 +51,18 @@ VertexOut vertexMain(
     float4 pos2d = projectionMatrix * cam;
 
 //    if (instance_id == 0) {
-////        os_log_default.log("instance_id : %d", instance_id);
-//        os_log_default.log("focal: (%v2hlf)", focal);
-////        os_log_default.log("projectionMatrix[1][1], projectionMatrix[2][2]: (%f, %f)", projectionMatrix[1][1], projectionMatrix[2][2]);
-////        os_log_default.log("pos2d: (%v4hlf)", pos2d);
-////        os_log_default.log("projection: (%f, %f, %f, %f), (%f, %f, %f, %f), (%f, %f, %f, %f), (%f, %f, %f, %f)",
-////            projectionMatrix[0][0], projectionMatrix[1][0], projectionMatrix[2][0], projectionMatrix[3][0], // Column 1
-////            projectionMatrix[0][1], projectionMatrix[1][1], projectionMatrix[2][1], projectionMatrix[3][1], // Column 2
-////            projectionMatrix[0][2], projectionMatrix[1][2], projectionMatrix[2][2], projectionMatrix[3][2], // Column 3
-////            projectionMatrix[0][3], projectionMatrix[1][3], projectionMatrix[2][3], projectionMatrix[3][3]  // Column 4
-////        );
+//        os_log_default.log("instance_id : %d %d %d %d", splat.color.x, splat.color.y, splat.color.z, splat.color.w);
+//
+//////        os_log_default.log("instance_id : %d", instance_id);
+////        os_log_default.log("focal: (%v2hlf)", focal);
+//////        os_log_default.log("projectionMatrix[1][1], projectionMatrix[2][2]: (%f, %f)", projectionMatrix[1][1], projectionMatrix[2][2]);
+//////        os_log_default.log("pos2d: (%v4hlf)", pos2d);
+//////        os_log_default.log("projection: (%f, %f, %f, %f), (%f, %f, %f, %f), (%f, %f, %f, %f), (%f, %f, %f, %f)",
+//////            projectionMatrix[0][0], projectionMatrix[1][0], projectionMatrix[2][0], projectionMatrix[3][0], // Column 1
+//////            projectionMatrix[0][1], projectionMatrix[1][1], projectionMatrix[2][1], projectionMatrix[3][1], // Column 2
+//////            projectionMatrix[0][2], projectionMatrix[1][2], projectionMatrix[2][2], projectionMatrix[3][2], // Column 3
+//////            projectionMatrix[0][3], projectionMatrix[1][3], projectionMatrix[2][3], projectionMatrix[3][3]  // Column 4
+//////        );
 //    }
 
     const float clip = 1.2 * pos2d.w;
@@ -121,6 +123,7 @@ float4 fragmentMain(
     FragmentIn in [[stage_in]],
     uint primitive_id[[primitive_id]]
 ) {
+//    return float4(in.color.rgb, 1);
 
     if (debug) {
         switch (primitive_id) {

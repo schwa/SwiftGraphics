@@ -17,7 +17,7 @@ public final class SplatCloud <Splat>: Equatable, @unchecked Sendable where Spla
 
     public init(device: MTLDevice, splats: TypedMTLBuffer<Splat>) throws {
         self.splats = splats
-        self.indexedDistances = try AsyncSortManager.sort(device: device, splats: splats, camera: .identity, model: .identity)
+        self.indexedDistances = try AsyncSortManager.sort(device: device, splats: splats, camera: .identity, model: .identity, reversed: false)
     }
 
     public convenience init(device: MTLDevice, capacity: Int) throws {

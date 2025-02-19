@@ -35,15 +35,14 @@ public struct GaussianSplatAntimatter15DemoView: View {
 
     public var body: some View {
         GaussianSplatAntimatter15RenderView(splatCloud: splatCloud)
-        .onDrop(of: [.splat], isTargeted: $isDropTargeted) { providers in
+        .onDrop(of: [.splat, .json], isTargeted: $isDropTargeted) { providers in
             guard let provider = providers.first else {
                 return false
             }
             Task {
-                guard let url = try! await provider.loadItem(forTypeIdentifier: UTType.splat.identifier, options: nil) as? URL else {
+                guard let url = try! await provider.loadItem(forTypeIdentifier: UTType.item.identifier, options: nil) as? URL else {
                     return
                 }
-
                 let splatCloud = try! SplatCloud<SplatX>(device: MTLCreateSystemDefaultDevice()!, url: url)
                 splatCloud.label = "\(url)"
                 await MainActor.run {
@@ -389,6 +388,10 @@ extension SplatCloud where Splat == SplatX {
                 let splats = bytes.bindMemory(to: SplatX.self)
                 return Array(splats)
             }
+        case "json":
+            // JSON format is only useful for demo data.
+            let splatds = try JSONDecoder().decode([SplatD].self, from: data)
+            splats = splatds.map(SplatB.init).map(SplatX.init)
         default:
             fatalError("Unknown file extension")
         }

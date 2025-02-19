@@ -56,7 +56,7 @@ internal actor AsyncSortManager <Splat> where Splat: SplatProtocol {
         for await state in channel where state.count > 0 {
             logger?.log("Sort starting.")
             let start = CFAbsoluteTimeGetCurrent()
-            let currentIndexedDistances = try sorter.sort(splats: splatCloud.splats, camera: state.camera, model: state.model)
+            let currentIndexedDistances = try sorter.sort(splats: splatCloud.splats, camera: state.camera, model: state.model, reversed: true) // JIW: HERE
             let end = CFAbsoluteTimeGetCurrent()
             logger?.log("Sort ended (\(end - start)).")
             await self._sortedIndicesChannel.send(.init(state: state, indices: currentIndexedDistances))
@@ -68,9 +68,9 @@ internal actor AsyncSortManager <Splat> where Splat: SplatProtocol {
 // MARK: -
 
 internal extension AsyncSortManager {
-    static func sort(device: MTLDevice, splats: TypedMTLBuffer<Splat>, camera: simd_float4x4, model: simd_float4x4) throws -> SplatIndices {
+    static func sort(device: MTLDevice, splats: TypedMTLBuffer<Splat>, camera: simd_float4x4, model: simd_float4x4, reversed: Bool) throws -> SplatIndices {
         let sorter = CPUSplatRadixSorter<Splat>(device: device, capacity: splats.capacity)
-        let indices = try sorter.sort(splats: splats, camera: camera, model: model)
+        let indices = try sorter.sort(splats: splats, camera: camera, model: model, reversed: reversed)
         return .init(state: .init(camera: camera, model: model, count: splats.count), indices: indices)
     }
 }

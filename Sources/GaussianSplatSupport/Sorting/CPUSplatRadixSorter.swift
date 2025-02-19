@@ -20,9 +20,9 @@ internal class CPUSplatRadixSorter <Splat> where Splat: SplatProtocol {
         temporaryIndexedDistances = .init(repeating: .init(), count: capacity)
     }
 
-    internal func sort(splats: TypedMTLBuffer<Splat>, camera: simd_float4x4, model: simd_float4x4) throws -> TypedMTLBuffer<IndexedDistance> {
+    internal func sort(splats: TypedMTLBuffer<Splat>, camera: simd_float4x4, model: simd_float4x4, reversed: Bool) throws -> TypedMTLBuffer<IndexedDistance> {
         var currentIndexedDistances = try device.makeTypedBuffer(element: IndexedDistance.self, capacity: capacity).labelled("Splats-IndexDistances-\(Date.now.iso8601)")
-        cpuRadixSort(splats: splats, indexedDistances: &currentIndexedDistances, temporaryIndexedDistances: &temporaryIndexedDistances, camera: camera, model: model)
+        cpuRadixSort(splats: splats, indexedDistances: &currentIndexedDistances, temporaryIndexedDistances: &temporaryIndexedDistances, camera: camera, model: model, reversed: reversed)
         return currentIndexedDistances
     }
 }
@@ -39,7 +39,7 @@ extension Date {
 
 // MARK: -
 
-private func cpuRadixSort<Splat>(splats: TypedMTLBuffer<Splat>, indexedDistances: inout TypedMTLBuffer<IndexedDistance>, temporaryIndexedDistances: inout [IndexedDistance], camera: simd_float4x4, model: simd_float4x4) where Splat: SplatProtocol {
+private func cpuRadixSort<Splat>(splats: TypedMTLBuffer<Splat>, indexedDistances: inout TypedMTLBuffer<IndexedDistance>, temporaryIndexedDistances: inout [IndexedDistance], camera: simd_float4x4, model: simd_float4x4, reversed: Bool) where Splat: SplatProtocol {
     guard !splats.isEmpty else {
         return
     }
@@ -53,7 +53,7 @@ private func cpuRadixSort<Splat>(splats: TypedMTLBuffer<Splat>, indexedDistances
         splats.withUnsafeBufferPointer { splats in
             for index in 0..<splats.count {
                 let position = modelView * SIMD4<Float>(splats[index].floatPosition, 1.0)
-                let distance = position.z
+                let distance = position.z * (reversed ? -1.0 : 1.0)
                 indexedDistances[index] = .init(index: UInt32(index), distance: distance)
             }
         }

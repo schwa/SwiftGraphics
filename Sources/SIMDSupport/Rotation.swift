@@ -32,6 +32,20 @@ extension Rotation: Equatable {
     }
 }
 
+extension Rotation: Codable {
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let vector = try container.decode(SIMD4<Float>.self)
+        let quaternion = simd_quatf(vector: vector)
+        self = .init(quaternion)
+    }
+
+    public func encode(to encoder: any Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(quaternion.vector)
+    }
+}
+
 public extension Rotation {
     init(_ quaternion: simd_quatf) {
         storage = .quaternion(quaternion)
