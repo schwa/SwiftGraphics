@@ -176,3 +176,13 @@ extension simd_float4x4 {
         )
     }
 }
+
+extension SplatB {
+    init(bytes: [UInt8]) {
+        self = bytes.withUnsafeBufferPointer { buffer in
+            buffer.withMemoryRebound(to: SplatB.self) { splats in
+                splats[0]
+            }
+        }
+    }
+}

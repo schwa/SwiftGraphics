@@ -70,6 +70,7 @@ struct DemosView: View {
     var body: some View {
         NavigationSplitView {
             List(selection: $currentDemo) {
+                row(for: GaussianSplatAntimatter15DemoView.self)
                 row(for: ProceduralAnimationDemoView.self)
                 row(for: SingleSplatView.self)
                 //                row(for: GaussianSplatLobbyView.self)
@@ -164,6 +165,9 @@ struct SettingsView: View {
         }
         .frame(minWidth: 320, minHeight: 240)
     }
+}
+
+extension GaussianSplatAntimatter15DemoView: DemoView {
 }
 
 extension SingleSplatView: DemoView {
