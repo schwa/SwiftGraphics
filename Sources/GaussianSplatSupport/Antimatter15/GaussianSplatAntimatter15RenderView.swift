@@ -54,9 +54,6 @@ public struct GaussianSplatAntimatter15DemoView: View {
         }
         .toolbar {
             Menu("Load") {
-                Button("Load Single Splat") {
-                    splatCloud = .singleSplat()
-                }
                 ForEach(allSplats(), id: \.self) { url in
                     Button("Load \(url.lastPathComponent)") {
                         let splatCloud = try! SplatCloud<SplatX>(device: MTLCreateSystemDefaultDevice()!, url: url)
@@ -119,6 +116,9 @@ public struct GaussianSplatAntimatter15RenderView: View {
     @State
     private var isInspectorPresented = false
 
+    @State
+    private var ballControllerDebug = false
+
     @MainActor
     public init(splatCloud: SplatCloud<SplatX>) {
         self.splatCloud = splatCloud
@@ -161,11 +161,7 @@ public struct GaussianSplatAntimatter15RenderView: View {
             }
             requestSort()
         }
-        .frame(width: 1024, height: 768)
         .onGeometryChange(for: CGSize.self, of: \.size, action: { size = $0 })
-
-        .modifier(NewBallControllerViewModifier(constraint: .init(radius: 2), transform: $configuration.cameraMatrix, debug: true))
-//        .modifier(GameControllerModifier(cameraMatrix: $configuration.cameraMatrix))
         .onChange(of: configuration.cameraMatrix) {
             requestSort()
         }
@@ -178,6 +174,8 @@ public struct GaussianSplatAntimatter15RenderView: View {
         .onChange(of: splatCloud) {
             requestSort()
         }
+        .modifier(NewBallControllerViewModifier(constraint: .init(radius: 2), transform: $configuration.cameraMatrix, debug: ballControllerDebug))
+//        .modifier(GameControllerModifier(cameraMatrix: $configuration.cameraMatrix))
         .inspector(isPresented: $isInspectorPresented) {
             Form {
                 Text("\(splatCloud.label ?? "")")
@@ -190,6 +188,7 @@ public struct GaussianSplatAntimatter15RenderView: View {
                     }
                 }
                 Toggle("flip", isOn: $flipModel)
+                Toggle("Ball Controller Debug", isOn: $ballControllerDebug)
 
                 DisclosureGroup("Sort State") {
                     LabeledContent("Current Sort State") {
@@ -454,30 +453,6 @@ extension SplatCloud where Splat == SplatX {
             fatalError("Unknown file extension")
         }
         try self.init(device: MTLCreateSystemDefaultDevice()!, splats: splats)
-    }
-}
-
-public extension SplatCloud where Splat == SplatX {
-    static func singleSplat() -> SplatCloud<SplatX> {
-        let splatD = SplatD(position: [0, 0, 0], scale: [1, 0.5, 0.25], color: [1, 0, 1, 1], rotation: .init(angle: .zero, axis: [0, 0, 0]))
-        let splatB = SplatB(splatD)
-        let splatX = SplatX(splatB)
-        let splats = [splatX]
-        let splatCloud = try! SplatCloud<SplatX>(device: MTLCreateSystemDefaultDevice()!, splats: splats)
-        splatCloud.label = "single splat"
-        return splatCloud
-    }
-
-    static func trainSplats() -> SplatCloud<SplatX> {
-        let splatCloud = try! SplatCloud<SplatX>(device: MTLCreateSystemDefaultDevice()!, url: Bundle.main.url(forResource: "train", withExtension: "splat")!)
-        splatCloud.label = "train"
-        return splatCloud
-    }
-
-    static func planeSplats() -> SplatCloud<SplatX> {
-        let splatCloud = try! SplatCloud<SplatX>(device: MTLCreateSystemDefaultDevice()!, url: Bundle.main.url(forResource: "plane", withExtension: "splat")!)
-        splatCloud.label = "plane"
-        return splatCloud
     }
 }
 
