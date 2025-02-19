@@ -71,7 +71,7 @@ extension SplatIndices: CustomDebugStringConvertible {
 
 // MARK: -
 
-struct SortState: Sendable {
+struct SortState: Sendable, Equatable {
     var camera: simd_float4x4
     var model: simd_float4x4
     var reversed: Bool
@@ -84,12 +84,11 @@ extension SortState: CustomDebugStringConvertible {
     }
 }
 
-extension SortState: Hashable {
-    func hash(into hasher: inout Hasher) {
-        camera.hash(into: &hasher)
-        model.hash(into: &hasher)
-        count.hash(into: &hasher)
+extension SortState {
+    var shortDescription: String {
+        return "[\(String(format: "%02X", camera.hashValue))|\(String(format: "%02X", model.hashValue))|\(reversed ? "􀄨" : "􀄩")|\(count))]"
     }
+
 }
 
 extension SIMD3<Float> {

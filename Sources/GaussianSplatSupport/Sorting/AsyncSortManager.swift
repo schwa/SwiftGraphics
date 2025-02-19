@@ -39,27 +39,26 @@ internal actor AsyncSortManager <Splat> where Splat: SplatProtocol {
     internal func requestSort(camera: simd_float4x4, model: simd_float4x4, reversed: Bool, count: Int) {
         Task {
             let request = SortState(camera: camera, model: model, reversed: reversed, count: count)
-            await logger?.log("Sort requested: \(String(describing: request))")
+            await logger?.log("Sort requested: \(request.shortDescription))")
             await _sortRequestChannel.send(request)
         }
     }
 
     private func startSorting() async throws {
         let channel = _sortRequestChannel.removeDuplicates { lhs, rhs in
-            lhs.camera == rhs.camera && lhs.model == rhs.model && lhs.count == rhs.count
+            return lhs == rhs
         }
-        .throttle(for: .milliseconds(33.333))
+        .throttle(for: .milliseconds(33.333)) // 33.333ms = 30fps
 
         // swiftlint:disable:next empty_count
         for await state in channel where state.count > 0 {
-            logger?.log("Sort starting.")
+            logger?.log("Sort starting: \(state.shortDescription)")
             let start = CFAbsoluteTimeGetCurrent()
             let currentIndexedDistances = try sorter.sort(splats: splatCloud.splats, camera: state.camera, model: state.model, reversed: state.reversed)
             let end = CFAbsoluteTimeGetCurrent()
-            logger?.log("Sort ended (\(end - start)).")
+            logger?.log("Sort ended: \(state.shortDescription) (\(end - start)).")
             await self._sortedIndicesChannel.send(.init(state: state, indices: currentIndexedDistances))
         }
-        logger?.log("Ended sort async loop.")
     }
 }
 
