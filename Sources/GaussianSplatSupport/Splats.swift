@@ -45,12 +45,12 @@ extension SplatC: SplatProtocol {
 }
 
 public struct SplatD: Equatable {
-    public var position: PackedFloat3
-    public var scale: PackedFloat3
+    public var position: SIMD3<Float>
+    public var scale: SIMD3<Float>
     public var color: SIMD4<Float>
     public var rotation: Rotation
 
-    public init(position: PackedFloat3, scale: PackedFloat3, color: SIMD4<Float>, rotation: Rotation) {
+    public init(position: SIMD3<Float>, scale: SIMD3<Float>, color: SIMD4<Float>, rotation: Rotation) {
         self.position = position
         self.scale = scale
         self.color = color
@@ -58,12 +58,16 @@ public struct SplatD: Equatable {
     }
 }
 
+extension SplatD: Codable {
+    
+}
+
 public extension SplatB {
     init(_ other: SplatD) {
-        let color = SIMD4<UInt8>(other.color * 255)
+        let color = SIMD4<UInt8>(other.color.clamped(to: 0...1) * 255)
         let rotation_vector = other.rotation.quaternion.vectorRealFirst
         let rotation = ((rotation_vector / rotation_vector.length) * 128 + 128).clamped(to: 0...255)
-        self = SplatB(position: other.position, scale: other.scale, color: color, rotation: SIMD4<UInt8>(rotation))
+        self = SplatB(position: PackedFloat3(other.position), scale: PackedFloat3(other.scale), color: color, rotation: SIMD4<UInt8>(rotation))
     }
 }
 

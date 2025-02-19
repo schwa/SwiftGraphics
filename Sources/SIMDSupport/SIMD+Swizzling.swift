@@ -55,7 +55,14 @@ public extension SIMD4 {
     }
 
     var xyz: SIMD3<Scalar> {
-        SIMD3(x, y, z)
+        get {
+            SIMD3(x, y, z)
+        }
+        set {
+            self.x = newValue[0]
+            self.y = newValue[1]
+            self.z = newValue[2]
+        }
     }
 
     var rgb: SIMD3<Scalar> {
