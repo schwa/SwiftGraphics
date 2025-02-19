@@ -202,7 +202,10 @@ public struct GaussianSplatAntimatter15RenderView: View {
                     }
                 }
 
-                TextField("Splat Scale", value: $configuration.splatScale, format: .number.precision(.fractionLength(0...3)))
+                VStack {
+                    TextField("Splat Scale", value: $configuration.splatScale, format: .number.precision(.fractionLength(0...3)))
+                    Slider(value: $configuration.splatScale, in: 0.1...10)
+                }
 
                 DisclosureGroup("Blend") {
                     Picker("Source RGB Blend Factor", selection: $configuration.blendConfiguration.sourceRGBBlendFactor) {
