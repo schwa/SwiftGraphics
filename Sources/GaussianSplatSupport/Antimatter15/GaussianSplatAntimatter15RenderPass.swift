@@ -31,11 +31,15 @@ struct GaussianSplatAntimatter15RenderPass: RenderPassProtocol {
     }
 
     struct Configuration: Equatable {
+        enum DebugMode: Int32, CaseIterable {
+            case off = 0
+            case wireframe = 1
+            case filled = 2
+        }
+
         var modelMatrix: simd_float4x4
         var cameraMatrix: simd_float4x4
         var projection: PerspectiveProjection
-        var debug: Bool
-        var scale: Float = 2.0
 //        var blendConfiguration: BlendConfiguration = .init(
 //            sourceRGBBlendFactor: .sourceAlpha,
 //            destinationRGBBlendFactor: .oneMinusSourceAlpha,
@@ -44,6 +48,8 @@ struct GaussianSplatAntimatter15RenderPass: RenderPassProtocol {
 //            destinationAlphaBlendFactor: .oneMinusSourceAlpha,
 //            alphaBlendOperation: .add
 //        )
+        var debugMode: DebugMode
+        var splatScale: Float = 2.0
         var blendConfiguration: BlendConfiguration = .init(
             sourceRGBBlendFactor: .one,
             destinationRGBBlendFactor: .oneMinusSourceAlpha,
@@ -81,7 +87,8 @@ struct GaussianSplatAntimatter15RenderPass: RenderPassProtocol {
         vertexDescriptor.layouts[0].stride = MemoryLayout<SIMD2<Float>>.stride
 
         renderPipelineDescriptor.vertexDescriptor = vertexDescriptor
-        let constantValues = MTLFunctionConstantValues(dictionary: [1: self.configuration.debug])
+        // TODO: Magic constant
+        let constantValues = MTLFunctionConstantValues(dictionary: [2: self.configuration.debugMode.rawValue])
 
         renderPipelineDescriptor.vertexFunction = try library.makeFunction(name: "GaussianSplatAntimatter15RenderShaders::vertexMain", constantValues: constantValues)
         renderPipelineDescriptor.fragmentFunction = try library.makeFunction(name: "GaussianSplatAntimatter15RenderShaders::fragmentMain", constantValues: constantValues)
@@ -127,7 +134,7 @@ struct GaussianSplatAntimatter15RenderPass: RenderPassProtocol {
                 commandEncoder.setDepthStencilState(state.depthStencilState)
             }
             commandEncoder.setRenderPipelineState(state.renderPipelineState)
-            if configuration.debug {
+            if configuration.debugMode == .wireframe {
                 commandEncoder.setTriangleFillMode(.lines)
             }
             commandEncoder.withDebugGroup("VertexShader") {
@@ -142,7 +149,7 @@ struct GaussianSplatAntimatter15RenderPass: RenderPassProtocol {
                 commandEncoder.setVertexBytes(of: viewMatrix, index: state.vertexBindings.viewMatrix)
                 commandEncoder.setVertexBytes(of: projectionMatrix, index: state.vertexBindings.projectionMatrix)
                 commandEncoder.setVertexBytes(of: drawableSize, index: state.vertexBindings.viewport)
-                commandEncoder.setVertexBytes(of: configuration.scale, index: state.vertexBindings.scale)
+                commandEncoder.setVertexBytes(of: configuration.splatScale, index: state.vertexBindings.scale)
             }
             commandEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4, instanceCount: splatCloud.splats.count)
         }

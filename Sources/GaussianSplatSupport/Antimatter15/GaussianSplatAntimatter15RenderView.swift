@@ -118,7 +118,7 @@ public struct GaussianSplatAntimatter15RenderView: View {
             .init(0.0,  0.0,  0.0,  1.0)
         ))
         let perspectiveProjection = PerspectiveProjection(verticalAngleOfView: .degrees(75), zClip: 0.2 ... 200)
-        configuration = GaussianSplatAntimatter15RenderPass.Configuration(modelMatrix: modelMatrix, cameraMatrix: .identity, projection: perspectiveProjection, debug: false)
+        configuration = GaussianSplatAntimatter15RenderPass.Configuration(modelMatrix: modelMatrix, cameraMatrix: .identity, projection: perspectiveProjection, debugMode: .off)
         sortManager = try! AsyncSortManager(device: MTLCreateSystemDefaultDevice()!, splatCloud: splatCloud, capacity: splatCloud.capacity, logger: Logger())
         sortManager = try! AsyncSortManager(device: MTLCreateSystemDefaultDevice()!, splatCloud: splatCloud, capacity: splatCloud.capacity, logger: nil)
     }
@@ -146,8 +146,8 @@ public struct GaussianSplatAntimatter15RenderView: View {
             Form {
                 Text("\(splatCloud.label ?? "")")
                 Text("\(splatCloud.count) splats")
-                Toggle("debug", isOn: $configuration.debug)
-                TextField("Scale", value: $configuration.scale, format: .number.precision(.fractionLength(0...3)))
+//                Toggle("debug", isOn: $configuration.debug)
+                TextField("Splat Scale", value: $configuration.splatScale, format: .number.precision(.fractionLength(0...3)))
 
                 DisclosureGroup("Blend") {
                     Picker("Source RGB Blend Factor", selection: $configuration.blendConfiguration.sourceRGBBlendFactor) {
@@ -211,7 +211,7 @@ public struct GaussianSplatAntimatter15RenderView: View {
     }
 
     private var pass: GaussianSplatAntimatter15RenderPass {
-        .init(id: .init(CompositeHash("Antimatter15", configuration.debug, configuration.blendConfiguration)), splatCloud: splatCloud, configuration: configuration)
+        .init(id: .init(CompositeHash("Antimatter15", configuration.debugMode, configuration.blendConfiguration)), splatCloud: splatCloud, configuration: configuration)
     }
 }
 
