@@ -45,12 +45,10 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
         didSet {
             let oldValue = oldValue
             let phase = phase
-            logger?.debug("Phase change \(oldValue) -> \(phase).")
         }
     }
 
     init(device: MTLDevice, passes: PassCollection, logger: Logger? = nil, callbacks: Callbacks = .init(), gpuCounters: GPUCounters? = nil) throws {
-        logger?.debug("Renderer.\(#function)")
         self.device = device
         self.passes = passes
         self.logger = logger
@@ -85,7 +83,6 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
     }
 
     mutating func configure(_ configuration: inout MetalConfiguration) throws {
-        logger?.debug("Renderer.\(#function)")
         assert(phase == .initialized)
         self.phase = .configured(sizeKnown: false)
         try setupPasses(passes: passes.elements, configuration: &configuration)
@@ -93,7 +90,6 @@ struct Renderer <MetalConfiguration>: Sendable where MetalConfiguration: MetalCo
     }
 
     mutating func drawableSizeWillChange(_ size: SIMD2<Float>) throws {
-        logger?.debug("Renderer.\(#function): \(size)")
         assert(phase != .initialized)
         phase = .configured(sizeKnown: true)
         for renderPass in passes.renderPasses {
