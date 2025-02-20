@@ -1,5 +1,5 @@
 import BaseSupport
-import Widgets3D
+import CoreGraphicsSupport
 import GaussianSplatShaders
 @preconcurrency import Metal
 import MetalSupport
@@ -7,10 +7,10 @@ import os
 import RenderKit
 import simd
 import SIMDSupport
+import Spatial
 import SwiftUI
 import UniformTypeIdentifiers
-import Spatial
-import CoreGraphicsSupport
+import Widgets3D
 
 extension UTType {
     static let splat = UTType(filenameExtension: "splat")!
