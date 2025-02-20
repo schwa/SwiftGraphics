@@ -27,7 +27,7 @@ namespace GaussianSplatShaders {
         const auto position = modelMatrix * float3(splats[index].position);
         const auto distance = distance_squared(position, cameraPosition);
         indexedDistances[index].index = index;
-        indexedDistances[index].distance = distance;
+        indexedDistances[index].distanceToCamera = distance;
     }
 }
 #endif // __METAL_VERSION__

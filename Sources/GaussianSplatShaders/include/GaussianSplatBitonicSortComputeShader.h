@@ -36,8 +36,8 @@ namespace GaussianSplatShaders {
 
         const auto valueLeft = indexedDistances[indexLeft];
         const auto valueRight = indexedDistances[indexRight];
-        auto distanceLeft = valueLeft.distance;
-        auto distanceRight = valueRight.distance;
+        auto distanceLeft = valueLeft.distanceToCamera;
+        auto distanceRight = valueRight.distanceToCamera;
         // Swap entries if value is descending
         if (distanceLeft < distanceRight) {
             // TODO: Does metal have a swap function?

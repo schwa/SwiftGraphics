@@ -2,7 +2,7 @@
 
 struct IndexedDistance {
     unsigned int index;
-    float distance;
+    float distanceToCamera;
 };
 
 struct GaussianSplatUniforms {

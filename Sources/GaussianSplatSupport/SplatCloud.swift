@@ -17,7 +17,7 @@ public final class SplatCloud <Splat>: Equatable, @unchecked Sendable where Spla
 
     public init(device: MTLDevice, splats: TypedMTLBuffer<Splat>) throws {
         self.splats = splats
-        self.indexedDistances = try AsyncSortManager.sort(device: device, splats: splats, camera: .identity, model: .identity)
+        self.indexedDistances = try AsyncSortManager.sort(device: device, splats: splats, camera: .identity, model: .identity, reversed: false)
     }
 
     public convenience init(device: MTLDevice, capacity: Int) throws {
@@ -71,23 +71,22 @@ extension SplatIndices: CustomDebugStringConvertible {
 
 // MARK: -
 
-struct SortState: Sendable {
+struct SortState: Sendable, Equatable {
     var camera: simd_float4x4
     var model: simd_float4x4
+    var reversed: Bool
     var count: Int
 }
 
 extension SortState: CustomDebugStringConvertible {
     var debugDescription: String {
-        "SortState(camera: \(camera.hashValue), model: \(model.hashValue), count: \(count))"
+        "SortState(camera: \(String(format: "%02X", camera.hashValue)), model: \(String(format: "%02X", model.hashValue)), reversed: \(reversed), count: \(count))"
     }
 }
 
-extension SortState: Hashable {
-    func hash(into hasher: inout Hasher) {
-        camera.hash(into: &hasher)
-        model.hash(into: &hasher)
-        count.hash(into: &hasher)
+extension SortState {
+    var shortDescription: String {
+        "[\(String(format: "%02X", camera.hashValue))|\(String(format: "%02X", model.hashValue))|\(reversed ? "􀄨" : "􀄩")|\(count))]"
     }
 }
 
