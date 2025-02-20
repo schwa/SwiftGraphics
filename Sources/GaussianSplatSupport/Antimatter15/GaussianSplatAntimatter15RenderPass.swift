@@ -40,14 +40,14 @@ struct GaussianSplatAntimatter15RenderPass: RenderPassProtocol {
         var modelMatrix: simd_float4x4
         var cameraMatrix: simd_float4x4
         var projection: PerspectiveProjection
-//        var blendConfiguration: BlendConfiguration = .init(
-//            sourceRGBBlendFactor: .sourceAlpha,
-//            destinationRGBBlendFactor: .oneMinusSourceAlpha,
-//            rgbBlendOperation: .add,
-//            sourceAlphaBlendFactor: .sourceAlpha,
-//            destinationAlphaBlendFactor: .oneMinusSourceAlpha,
-//            alphaBlendOperation: .add
-//        )
+        //        var blendConfiguration: BlendConfiguration = .init(
+        //            sourceRGBBlendFactor: .sourceAlpha,
+        //            destinationRGBBlendFactor: .oneMinusSourceAlpha,
+        //            rgbBlendOperation: .add,
+        //            sourceAlphaBlendFactor: .sourceAlpha,
+        //            destinationAlphaBlendFactor: .oneMinusSourceAlpha,
+        //            alphaBlendOperation: .add
+        //        )
         var debugMode: DebugMode
         var splatScale: Float = 2.0
         var blendConfiguration: BlendConfiguration = .init(
@@ -123,7 +123,7 @@ struct GaussianSplatAntimatter15RenderPass: RenderPassProtocol {
             return
         }
         let drawableSize = info.drawableSize
-//        print(drawableSize)
+        //        print(drawableSize)
         let viewMatrix = configuration.cameraMatrix.inverse
         let modelMatrix = configuration.modelMatrix
         var projectionMatrix = configuration.projection.projectionMatrix(for: info.drawableSize)

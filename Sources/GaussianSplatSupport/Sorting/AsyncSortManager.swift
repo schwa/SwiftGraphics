@@ -60,7 +60,6 @@ internal actor AsyncSortManager <Splat> where Splat: SplatProtocol {
             logger?.log("Sort ended: \(state.shortDescription) (\(duration)).")
             if duration > 0.033 {
                 logger?.warning("### Sort took longer than expected (\(duration), \(duration / 0.033).")
-
             }
             await self._sortedIndicesChannel.send(.init(state: state, indices: currentIndexedDistances))
         }

@@ -20,7 +20,6 @@ struct ProceduralAnimationDemoView: DemoView {
             Canvas { context, _ in
                 for creature in creatures {
                     context.draw(creature: creature)
-
                 }
             }
             .onChange(of: timeline.date) {
@@ -47,10 +46,9 @@ struct ProceduralAnimationDemoView: DemoView {
                     }
                     creatures[index] = creature
                 }
-
             }
         }
-        .onGeometryChange(for: CGSize.self, of: \.size, action: { size = $0})
+        .onGeometryChange(for: CGSize.self, of: \.size) { size = $0 }
         .gesture {
             DragGesture()
                 .onChanged { value in
@@ -188,12 +186,12 @@ extension GraphicsContext {
         fill(Path.dot(first.position + -first.direction.perpendicular * first.radius, radius: 10), with: .color(.black))
         fill(Path.dot(first.position + first.direction.perpendicular * first.radius, radius: 10), with: .color(.black))
 
-//            for node in creature.nodes {
-//                let path = Path.circle(center: node.position, radius: node.radius)
-//                stroke(path, with: .color(.black.opacity(0.2)))
-//                stroke(Path.line(from: node.position, to: node.position + node.direction * node.radius), with: .color(.black))
-//                draw(Text(node.direction.angle, format: .angle), at: node.position)
-//            }
+        //            for node in creature.nodes {
+        //                let path = Path.circle(center: node.position, radius: node.radius)
+        //                stroke(path, with: .color(.black.opacity(0.2)))
+        //                stroke(Path.line(from: node.position, to: node.position + node.direction * node.radius), with: .color(.black))
+        //                draw(Text(node.direction.angle, format: .angle), at: node.position)
+        //            }
 
     }
 }
