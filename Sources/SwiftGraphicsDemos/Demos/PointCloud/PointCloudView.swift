@@ -1,5 +1,4 @@
 import BaseSupport
-import Widgets3D
 import GaussianSplatSupport
 @preconcurrency import Metal
 import MetalKit
@@ -11,6 +10,7 @@ import RenderKitShaders
 import RenderKitUISupport
 import Shapes3D
 import SwiftUI
+import Widgets3D
 
 struct PointCloudView: View, DemoView {
     @State

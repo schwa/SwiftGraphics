@@ -1,4 +1,3 @@
-import Widgets3D
 import CoreGraphicsSupport
 import Everything
 import MetalSupport
@@ -11,7 +10,6 @@ import SIMDSupport
 import SwiftFormats
 import SwiftUI
 import Widgets3D
-
 struct SoftwareRendererMeshDemoView: View, DemoView {
     enum Source: Hashable {
         case file(String)

@@ -1,6 +1,6 @@
-import SwiftUI
 import simd
 import SwiftFormats
+import SwiftUI
 
 public struct MatrixView <Matrix>: View where Matrix: FormattableMatrix, Matrix.Scalar: BinaryFloatingPoint {
     var matrix: Matrix
@@ -28,7 +28,6 @@ public struct MatrixView <Matrix>: View where Matrix: FormattableMatrix, Matrix.
         }
         .contextMenu {
             Button("Copy") {
-
             }
         }
     }
@@ -49,6 +48,6 @@ public struct MatrixView <Matrix>: View where Matrix: FormattableMatrix, Matrix.
 }
 
 extension simd_double4x4: @retroactive FormattableMatrix {
-    public var columnCount: Int { return 4 }
-    public var rowCount: Int { return 4 }
+    public var columnCount: Int { 4 }
+    public var rowCount: Int { 4 }
 }
