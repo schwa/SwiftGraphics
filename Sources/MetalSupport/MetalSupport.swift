@@ -103,17 +103,27 @@ public extension MTLFunctionConstantValues {
         self.init()
 
         for (index, value) in dictionary {
-            withUnsafeBytes(of: value) { buffer in
-                let baseAddress = buffer.baseAddress.forceUnwrap("Could not get base Address")
-                setConstantValue(baseAddress, type: .bool, index: index)
-            }
+            setConstantValue(value, index: index)
         }
     }
 
-    func setConstantValue(_ value: Bool, index: Int) {
+    func setConstantValue<T>(_ value: T, index: Int) {
         withUnsafeBytes(of: value) { buffer in
             let baseAddress = buffer.baseAddress.forceUnwrap("Could not get base Address")
-            setConstantValue(baseAddress, type: .bool, index: index)
+            let type: MTLDataType = switch value {
+            case is Bool:
+                .bool
+            case is Int32:
+                .int
+            case is UInt32:
+                .uint
+            case is Float:
+                .float
+            default:
+                // TODO: More constant types.
+                fatalError("Unsupported constant value type: (\(type(of: value)))")
+            }
+            setConstantValue(baseAddress, type: type, index: index)
         }
     }
 }
