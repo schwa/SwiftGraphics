@@ -119,14 +119,8 @@ public struct GaussianSplatAntimatter15RenderView: View {
     @MainActor
     public init(splatCloud: SplatCloud<SplatX>) {
         self.splatCloud = splatCloud
-        let modelMatrix = simd_float4x4(columns: (
-            .init(1.0, 0.0, 0.0, 0.0),
-            .init(0.0, 1.0, 0.0, 0.0),
-            .init(0.0, 0.0, 1.0, 0.0),
-            .init(0.0, 0.0, 0.0, 1.0)
-        ))
         let perspectiveProjection = PerspectiveProjection(verticalAngleOfView: .degrees(75), zClip: 0.2 ... 200)
-        configuration = GaussianSplatAntimatter15RenderPass.Configuration(modelMatrix: modelMatrix, cameraMatrix: .identity, projection: perspectiveProjection, debugMode: .off)
+        configuration = GaussianSplatAntimatter15RenderPass.Configuration(modelMatrix: .identity, cameraMatrix: .identity, projection: perspectiveProjection, debugMode: .off)
     }
 
     public var body: some View {
