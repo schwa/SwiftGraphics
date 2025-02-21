@@ -20,7 +20,7 @@ struct GaussianSplatAntimatter15RenderPass: RenderPassProtocol {
         var modelMatrix: Int = -1
         var viewMatrix: Int = -1
         var projectionMatrix: Int = -1
-        var viewport: Int = -1
+        var drawableSize: Int = -1
         var scale: Int = -1
     }
 
@@ -148,7 +148,7 @@ struct GaussianSplatAntimatter15RenderPass: RenderPassProtocol {
                 commandEncoder.setVertexBytes(of: modelMatrix, index: state.vertexBindings.modelMatrix)
                 commandEncoder.setVertexBytes(of: viewMatrix, index: state.vertexBindings.viewMatrix)
                 commandEncoder.setVertexBytes(of: projectionMatrix, index: state.vertexBindings.projectionMatrix)
-                commandEncoder.setVertexBytes(of: drawableSize, index: state.vertexBindings.viewport)
+                commandEncoder.setVertexBytes(of: drawableSize, index: state.vertexBindings.drawableSize)
                 commandEncoder.setVertexBytes(of: configuration.splatScale, index: state.vertexBindings.scale)
             }
             commandEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4, instanceCount: splatCloud.splats.count)
